@@ -1,0 +1,28 @@
+== taban
+{
+ "al": "200",
+ "cek900": "200",
+ "once": "120 500 · 128 100",
+ "kuyrukOnce": "100 = F1 100",
+ "f3": "invoice-0a5e06d9-e7e1-4e36-a46f-49109924551e",
+ "sonra": "120 500 · 128 100",
+ "kuyrukSonra": "100 = F1 100",
+ "pesinSatiri": [
+  "A 120 300"
+ ],
+ "mutabakat": []
+}
+== yeni
+{
+ "al": "200",
+ "cek900": "409 Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç 600,00 TL, açık şüpheli 1.000,00 TL); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin.",
+ "once": "120 500 · 128 1000",
+ "kuyrukOnce": "1000 = F1 1000",
+ "f3": "invoice-071ab021-bd39-45fb-95c2-cff971785ca9",
+ "sonra": "120 500 · 128 1000",
+ "kuyrukSonra": "1000 = F1 1000",
+ "pesinSatiri": [
+  "A 120 300"
+ ],
+ "mutabakat": []
+}

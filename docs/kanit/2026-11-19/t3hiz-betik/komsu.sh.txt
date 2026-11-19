@@ -1,0 +1,11 @@
+#!/bin/bash
+# t3hiz KOMŞU (iş 5; ders 10): değiştirilen dosyaları adıyla ya da API yoluyla anan BÜTÜN test dosyaları (tarama: komsu.txt) — tek saat diliminde (çağrıda verilir), kanit.mjs kos ile.
+# Çağrı: timeout 7000 bash komsu.sh <TZ>
+A=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3hiz-a
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-af7c4e455433c3703
+TZN=$1; ad=${TZN//\//-}
+cd $W || exit 1
+echo "komşu $TZN · $(wc -l < $A/komsu.txt) dosya · uç $(git rev-parse --short HEAD) · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S)"
+HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=$TZN KANIT_DIR=$A/kanit timeout -k 10 6800 node tools/kanit.mjs kos t3hiz-komsu-$ad -- node --disable-warning=ExperimentalWarning --test --test-reporter=tap --test-concurrency=3 $(cat $A/komsu.txt) > $A/komsu-$ad.out 2>&1
+echo "çıkış $? · $(grep -E '^# (tests|pass|fail|cancelled|skipped|todo) ' $A/komsu-$ad.out | tr '\n' ' ') · sonda $(cat /proc/loadavg) · $(date -u +%H:%M:%S)"
+grep -E '^not ok ' $A/komsu-$ad.out | head -20

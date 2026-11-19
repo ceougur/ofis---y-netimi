@@ -1,5 +1,5 @@
 // 2.4.9 R2 (ders 7, 38): test/iade-kesinti-tarama-249.test.mjs'in dişi. Yeni kodun AYRI kopyasında (git archive — ders 23) her mutasyon tek başına
-// routes/plans.mjs'e uygulanır, test koşulur, dosya özgün hâline döner. Beklenen: her mutasyonda test KIRMIZI ve kırmızı hücre(ler) beklenen nedenle (ileti yazılır).
+// lib/account-lines.mjs'e (2.5.0 Ç5-A tur 3b'de routes/plans.mjs'ten taşındı; desenler aynı) uygulanır, test koşulur, dosya özgün hâline döner. Beklenen: her mutasyonda test KIRMIZI ve kırmızı hücre(ler) beklenen nedenle (ileti yazılır).
 // Kullanım: node test/r2-249/mutasyon.mjs <yeni kod kopyası>
 import { spawnSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
@@ -7,7 +7,7 @@ import path from "node:path";
 
 const [KOPYA] = process.argv.slice(2);
 if (!KOPYA) throw new Error("kullanım: mutasyon.mjs <kopya>");
-const PL = path.join(KOPYA, "server/routes/plans.mjs");
+const PL = path.join(KOPYA, "server/lib/account-lines.mjs");
 const ASIL = readFileSync(PL, "utf8");
 const MUTASYONLAR = [
   ["M1 önbellek okunmaz (her çağrıda tam tarama — eski davranış)", "    if (cutsCache.cuts && cutsCache.stamp === stamp) return cutsCache.cuts;\n", "", ["YAPI"]],

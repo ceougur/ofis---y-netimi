@@ -1,0 +1,35 @@
+A	A1 hesapsız havale kaydı	kabul, 20.09 havale 5.000, hesapsız	form kapandı	{"amount":5000,"method":"bank","date":"2026-09-20","note":""}
+A	A2 hesap yokken kova (102.00)	6.700	—	6.700,00
+A	A4 Hesabı Atanmamış kovası (Havale 102.00)	2.700	Hesabı Atanmamış Eski Hareketler ¦ ₺6.700,00 ¦ Havale / EFT (102.00) ₺6.700,00 · POS / Kart (108.00) ₺0,00 — Gerçek Banka'ya ve hiçbir toplama girmez. ¦ Şimdi Düzenle	6.700,00 · defter 102.00 = 6.700,00
+A	A4 Eski Hareketler: satır / rozetli / toplam	4 satır · rozet 2 (20.09, 25.09) · Havale toplamı 2.700	4 satır · rozet 0 [] · Havale / EFT (102.00) ¦ ₺6.700,00 ¦ POS / Kart (108.00) ¦ ₺0,00 ¦ Kilitli Dönem — Atanamaz ¦ 0 ¦ 4 hareket	—
+A	A4 defter: 30.09'a kadar 519 bakiyesi	4.000 (B 5.000 − A 1.000)	—	0,00
+A	A5 519 dökümü 'Hesapsız Hareketler (Açılıştan Önce)'	4.000	SATIR YOK	0,00
+A	A6 + Kart Faizi düğmesi	var	TABANDA YOK	—
+A	A7 08.10 defter maddeleri	B 108.01 10.000 / A 120 10.000 · B 653 250 / A 108.01 250 (pos-commission)	form kapandı	2026-10-08 account [108/108.01 B 10.000,00 · 120 A 10.000,00]
+A	A7 08.10 mizan 653 · 108	250 · 9.750	—	0 · 10000
+A	A8 POS Komisyon Raporu ↔ defter 653	rapor komisyon 250 (08.10 satışı) · defter 653 08.10'da 250	0 satırda 250,00 · özet [["Brüt (Net)","10.000,00 TL"],["Komisyon (Net)","238,10 TL"],["İadede Geri Alınan Komisyon","0,00 TL"],["BSMV","11,90 TL"],["KDV","0,00 TL"],["Bankaya Geçen (Net)","9.750,00 TL"],["Satır","1"]]	
+A	A9 gün fişi (ekran)	12.10 B 102.01 9.750 / A 108.01 9.750 (653 yok)	—	2026-10-12 [108/108.01 A 10.000,00 · 102/102.01 B 9.750,00 · 653 B 250,00]
+A	A9 653 (tarih) · 108 · Ziraat	250 (08.10) · 0 · 109.750	—	2026-10-12 250,00 · 0,00 · 109.750,00
+A	A10 Mutabakat Testi	bulgusuz	—	200 ok=true bulgusuz
+B	B0 kurulum S168 Müşteri	120 = 100, 128 = 1.000	—	120 = 100,00, 128 = 1.000,00
+B	B0 kurulum Pay Sıfır	120 = 500, 128 = 1.000	—	120 = 500,00, 128 = 1.000,00
+B	B1 F2'ye bağlı 300	kabul · 120 = 100, 128 = 700	RED: × ¦ No 1 · S168 Müşteri ¦ Tahsilat ¦ Cariden para alındı: bakiyeden düşer, Kasa'ya tahsilat olarak girer, makbuzu alınır. ¦ Tutar (₺) * ¦ Tahsilat Yolu ¦ Nakit ¦ Havale / EFT ¦ POS ¦ Çek / Senet (port	120 = 100,00, 128 = 1.000,00 · son satır {"amount":400,"date":"2026-09-18","f2":0,"skip":1}
+B	B2 F2'ye bağlı 200	kabul · 120 = 0, 128 = 600	RED: × ¦ No 1 · S168 Müşteri ¦ Tahsilat ¦ Cariden para alındı: bakiyeden düşer, Kasa'ya tahsilat olarak girer, makbuzu alınır. ¦ Tutar (₺) * ¦ Tahsilat Yolu ¦ Nakit ¦ Havale / EFT ¦ POS ¦ Çek / Senet (port	120 = 100,00, 128 = 1.000,00
+B	B2 etiketler (S168 Müşteri)	tam: [işaretli 400] · kısmi: ['Kısmen Normal Cariye İşlendi (₺100,00)' @ 200'lük satır] · 300'lük satır etiketsiz	—	{"tam":["18.09.2026Tahsilat Nakit Makbuz 1 Normal Cariye İşlendi₺400,00₺1.100,00BorçluMak"],"kismi":[]}
+B	B3 Pay Sıfır F2'ye bağlı 200	kabul · 120 = 300, 128 = 1.000	form kapandı	120 = 300,00, 128 = 1.000,00
+B	B3 etiketler (Pay Sıfır)	tam: [200'lük satır] · kısmi: []	—	{"tam":["08.10.2026Tahsilat Nakit Makbuz 2 Faturaya Bağlı Normal Cariye İşlendi₺200,00₺1."],"kismi":[]}
+B	B4 S168 Müşteri satırı	31–60 Gün 600 · Şüpheli 600 · Toplam 600	S168 Müşteri | 60 | ₺0,00 | ₺500,00 | ₺600,00 | ₺0,00 | ₺0,00 |  | ₺1.000,00 | ₺1.100,00 | ₺1.100,00	["S168 Müşteri","60","0,00 TL","500,00 TL","600,00 TL","0,00 TL","0,00 TL","","1.000,00 TL","1.100,00 TL","1.100,00 TL"]
+B	B4 Pay Sıfır satırı	31–60 Gün 1.000 · 1–30 Gün 300 · Şüpheli 1.000 · Toplam 1.300	Pay Sıfır Müşteri | 60 | ₺0,00 | ₺300,00 | ₺1.000,00 | ₺0,00 | ₺0,00 |  | ₺1.000,00 | ₺1.300,00 | ₺1.300,00	["Pay Sıfır Müşteri","60","0,00 TL","300,00 TL","1.000,00 TL","0,00 TL","0,00 TL","","1.000,00 TL","1.300,00 TL","1.300,00 TL"]
+B	B5 mizan 120 · 128 (iki cari toplamı)	120 = 0 + 300 = 300 · 128 = 600 + 1.000 = 1.600	120 | Alıcılar (Müşteri Carileri) | ₺0,00 | ₺3.000,00 | ₺2.600,00 | ₺400,00 | Borç ; 128 | Şüpheli Ticari Alacaklar | ₺0,00 | ₺2.000,00 | ₺0,00 | ₺2.000,00 | Borç	400 · 2000
+B	B5 Mutabakat Testi	bulgusuz	—	200 ok=true bulgusuz
+C	Cb2 ön izleme (kilit 31.12.2026)	01.01.2027 B 500 700 / A 671 700, etkin	HESAP HESAP ADI BORÇ ALACAK ¦ 500 Sermaye ₺700,00  ¦ 671 Önceki Dönem Gelir ve Kârları ₺700,00 ¦ Toplam ₺700,00 ₺700,00 · pasif true	—
+C	Cb2 fiş + Mutabakat satırı	Fiş 2027-000001 01.01.2027 · 'Düzeltildi (Fiş 2027-000001)'	Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001); ki	[{"type":"rule-diff-correction","year":2027,"no":1,"date":"2027-01-01","tersOf":null}]
+C	Cb3 pencere	PASİF · 'Fişle düzeltilebilen fark kalmadı.' · satır yok	pasif true · Kaydetmek için onay kutusunu işaretleyin. · satırlar HESAP HESAP ADI BORÇ ALACAK ¦ 602 Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları) ₺700,00 ¦ 671 Önceki Dönem Gelir ve Kârları ₺700,00  ¦ Toplam ₺700,00 ₺700,00	ön izleme ucu 200 kod ? satır [{"account":"602","sub":"","party":"","debit":0,"credit":70000,"name":"Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tah
+C	Cb3 Mutabakat satırı	'Düzeltildi (Fiş 2027-000001)'	Mutabakat: 65 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Değişikliği Farkı (Kilitli Dönem: 30.11.2026 ve Öncesi) — 1 madde, fark ₺700,00. K	200 ok=false bulgu: ledger:rule-diff
+C	Cb3 mizan 2026: 602 · 671 / 2027 (devirli bakiye): 500 · 671	0 · 0 / 0 · −700	—	0 · 0 / 0 · -700
+C	Ca2 ön izleme (kilit 31.12.2026)	01.01.2027 B 500 700 / A 671 700, etkin	HESAP HESAP ADI BORÇ ALACAK ¦ 500 Sermaye ₺700,00  ¦ 671 Önceki Dönem Gelir ve Kârları ₺700,00 ¦ Toplam ₺700,00 ₺700,00 · pasif true	—
+C	Ca2 fiş + Mutabakat satırı	Fiş 2027-000001 01.01.2027 · 'Düzeltildi (Fiş 2027-000001)'	Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001); ki	[{"type":"rule-diff-correction","year":2027,"no":1,"date":"2027-01-01","tersOf":null}]
+C	Ca3 pencere	PASİF · neden fiş numarasıyla '… kendi yılında ters kaydedin' · satır yok	pasif true · (yok) · satırlar HESAP HESAP ADI BORÇ ALACAK ¦ 500 Sermaye ₺700,00 ¦ 671 Önceki Dönem Gelir ve Kârları ₺700,00  ¦ Toplam ₺700,00 ₺700,00	ön izleme ucu 200 kod ?
+C	Ca3 Mutabakat satırı	kendi yılı ipucu (Fiş 2027-000001 … kendi yılında … ters kaydedin)	Mutabakat: 65 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzelt	200 ok=false bulgu: ledger:rule-diff
+C	Ca4 ters kayıt → pencere · satır	Fiş 2027-000002 01.01.2027 · 'Düzeltilecek kural farkı yok.' · satır kalkar	Düzeltilecek kural farkı yok. · (yok)	Mutabakat: 63 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.
+C	Ca4 mizan 2026: 602 · 500 · 671 / 2027 (devirli bakiye): 500 · 671 · 602	−700 · 0 · 0 / 0 · 0 · −700 (devir)	—	-700 · 0 · 0 / 0 · 0 · -700

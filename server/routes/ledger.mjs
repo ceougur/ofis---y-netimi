@@ -12,6 +12,8 @@ import { createLedgerSnapshots } from "../lib/ledger-snapshots.mjs";
 import { createHash } from "node:crypto";
 import { nextDayOf, oldRulePinnedPlans, openingMatchBalance, openingMatchPlan, openingMatchTargets, postedRuleDiffCorrections, ruleDiffCorrectionPlan, ruleDiffCorrectionYear } from "../lib/ledger-opening.mjs";
 import { leanAll } from "../lib/lean-rows.mjs";
+import { coverBounds } from "../lib/bank/opening-cover.mjs";
+import { commissionGlOf, commissionReady, salesSql as commissionSalesSql, settledSql as commissionSettledSql } from "../lib/bank/pos-commission.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -42,6 +44,10 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const out = { accounts: {}, pos: {} };
     if (has("bank_accounts")) for (const row of store.all("SELECT id, kind, gl, gl_sub AS glSub FROM bank_accounts")) out.accounts[row.id] = { kind: row.kind, gl: row.gl, glSub: row.glSub };
     if (has("pos_terminals")) for (const row of store.all("SELECT id, gl_sub AS glSub FROM pos_terminals")) out.pos[row.id] = { glSub: row.glSub };
+    // 2.5.0 Ç7a tur 2 (K-14 / K-15, S179 = A; lib/bank/opening-cover.mjs): hesabı atanmamış satırın "açılışta sayılmış" sınırları (yalnız okuma).
+    out.cover = coverBounds(store);
+    // 2.5.0 Ç7a tur 2b (KG-6, lib/bank/pos-commission.mjs): bekleyen POS kaleminin satış günü maddesinin komisyon hesabı (Banka Ayarları; yalnız okuma).
+    out.commissionGl = commissionGlOf(store);
     return out;
   }
   // filter (v2.1.0, §3.11 mutabakat kapısı "dokunulan varlıklar"): yalnız bu varlıkların satırları — { parties, plans, cheques, invoices,
@@ -216,7 +222,15 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     }
     // Banka Fişi satırları (v2.1.0): THP kodu, alt hesap ve kuruş yazım anında saklanır.
     if (has("bank_lines") && has("fin_events")) {
-      out.bankLines = all(`SELECT l.event_id AS eventId, e.rowid AS eventSeq, l.seq, l.role, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l ${J} fin_events e ON e.id = l.event_id${filter ? ` WHERE ${set?.events ? `l.event_id IN ${set.events}` : "0"}` : ""} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
+      // 2.5.0 Ç7a tur 2 (K-14; yalnız okuma): ref (hesabı atanmamış satır '') ve carry (Devir Kapanışı ya da ters kaydı — lib/bank/opening-cover.mjs CARRY_FLAG_SQL'in eşi).
+      out.bankLines = all(`SELECT l.event_id AS eventId, e.rowid AS eventSeq, l.seq, l.role, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description, l.ref AS ref,
+        CASE WHEN e.type = 'carry_close' OR (e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type = 'carry_close')) THEN 1 ELSE 0 END AS carry FROM bank_lines l ${J} fin_events e ON e.id = l.event_id${filter ? ` WHERE ${set?.events ? `l.event_id IN ${set.events}` : "0"}` : ""} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
+    }
+    // 2.5.0 Ç7a tur 2b (KG-6 = A, S177 = A, S178 = A; lib/bank/pos-commission.mjs — yalnız okuma): POS kaydı başına TEK satır (satış / iade günü komisyon maddesi) ve gün fişi
+    // başına bağlı kalemlerin kesintisi (gün fişi türetmede net). Süzgeçli kurulumda (kapı) olaylarla — defter beklenenleri (money-lines groups) AYNI süzgeçle.
+    if (commissionReady(store) && has("fin_events") && has("bank_lines")) {
+      out.posCommission = all(commissionSalesSql(filter ? set?.events : null), wanted(set?.events));
+      out.posSettled = all(commissionSettledSql(filter ? set?.events : null), wanted(set?.events));
     }
     if (has("cheques")) {
       const eventOf = refOf("cheque_events", "ev") === "''" ? "''" : "ev.event_id";
@@ -616,7 +630,12 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     if (!lock) [reason, code] = ["Dönem kilidi yok; düzeltilecek kilitli dönem farkı yok.", "rule-diff-no-lock"];
     else if (pendingFreeze || cover !== lock) [reason, code] = ["Kilitli dönemin defteri dondurulurken düzeltme fişi yazılmaz; dondurma bitince yeniden açın.", "rule-diff-freezing"];
     else if (candidates) [reason, code] = [`Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen ${candidates} kayıt var (Yönetim › Sistem › Açılış Olabilir Kayıtlar).`, "rule-diff-candidates"];
-    else if (!plan.lines.length) [reason, code] = [posted.active.length ? "Fişle düzeltilebilen fark kalmadı." : "Düzeltilecek kural farkı yok.", "rule-diff-nothing"];
+    else if (plan.ownYearOver?.length) {
+      // S185 = A: yılı eşleme yılından sonra olan fiş farkı aşıyor — kilitli döneme (eşleme yılına) fiş önerilmez; fiş kendi yılında ters kaydedilir (Ters Kaydet fişin kendi tarihiyle yazar).
+      const years = new Set(plan.ownYearOver.map(row => row.year));
+      const own = posted.active.filter(voucher => years.has(Number(String(voucher.date).slice(0, 4)))).map(voucher => vouchers.voucherNoText(voucher.year, voucher.no));
+      [reason, code] = [`Kural Farkı Düzeltme Fişi (${own.join(", ")}) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı); bu döneme fiş önerilmez. Fişi aşağıdaki Yazılmış Düzeltme Fişleri'nden kendi yılında ters kaydedin; kalan fark varsa sonra burada görünür.`, "rule-diff-own-year"];
+    } else if (!plan.lines.length) [reason, code] = [posted.active.length ? "Fişle düzeltilebilen fark kalmadı." : "Düzeltilecek kural farkı yok.", "rule-diff-nothing"];
     else if (date > today) [reason, code] = ["Kilit bugünün tarihinde; düzeltme fişi yarın yazılabilir.", "rule-diff-lock-today"];
     const lines = plan.lines.map(line => ({ ...line, name: accountName(line.account) }));
     const digest = createHash("sha256").update(JSON.stringify({ date, lines: plan.lines })).digest("hex").slice(0, 32);
@@ -662,7 +681,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
   //   POST /api/admin/ledger/opening-match                 → { requestId, date, lines, confirm: true } — yazım anında YENİDEN doğrulanır (iki kişi aynı anda: ikincisi güncel bakiyeyle)
   // lines: [{ account, sub?, side: "debit" | "credit", amount }] (TL). Yetki system.manage (fiş defteri ve dönem kilidiyle aynı; Muhasebe 403). Kilit / ileri tarih / alt defter / istek
   // kimliği Ç2'nin post sözleşmesiyle; 519'un ters bakiyeye geçmesi ve izinsiz hedef bu planla (lib/ledger-opening.mjs openingMatchPlan).
-  const MATCH_PARTS = { cash: "Kasa Açılışı", accounts: "Cari Açılışları", plans: "Taksit Kartları", stock: "Stok Açılışı", bank: "Banka Açılışları", cheques: "Açılış Evrakı", vouchers: "Fişler", other: "Diğer" };
+  const MATCH_PARTS = { cash: "Kasa Açılışı", accounts: "Cari Açılışları", plans: "Taksit Kartları", stock: "Stok Açılışı", bank: "Banka Açılışları", unassigned: "Hesapsız Hareketler (Açılıştan Önce)", cheques: "Açılış Evrakı", vouchers: "Fişler", other: "Diğer" };
   const dayText = iso => iso.split("-").reverse().join(".");
   function matchDate(value) {
     const date = text(value) || period?.today() || "";

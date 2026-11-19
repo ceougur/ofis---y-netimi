@@ -5,6 +5,7 @@ import { ACCOUNT_PLAN, LEDGER_RULE_ALIASES, localDayOf } from "./general-ledger.
 import { leanAll } from "./lean-rows.mjs";
 import { parseAmount, roundMoney } from "./money.mjs";
 import { isOpeningCandidateNote } from "./migrations.mjs";
+import { createMoneyLines } from "./bank/money-lines.mjs";
 
 export { isOpeningCandidateNote };
 /** KG-16 durumları (account_entries.opening_review, göç 48): '' = listede değil; candidate = onay bekliyor (S47: defterde 519); confirmed = açılış (M-02 / M-03); rejected = sıradan Borç / Alacak Yaz. */
@@ -42,7 +43,7 @@ export function restoredOpeningReview(payload, restoredIsOpening) {
  *   500, rol opening / closing) · cariye işlenmemiş açılış evrakı (alınan −, verilen +, carisiz karşılıksız +) · saklanan fişler (ledger_voucher_lines).
  */
 export function openingCounterpart(store) {
-  const parts = { cash: 0, accounts: 0, plans: 0, stock: 0, bank: 0, cheques: 0, vouchers519: 0, vouchers500: 0 };
+  const parts = { cash: 0, accounts: 0, plans: 0, stock: 0, bank: 0, unassigned: 0, cheques: 0, vouchers519: 0, vouchers500: 0 };
   const sum = (sql, ...args) => Number(store.get(sql, ...args)?.n) || 0;
   if (has(store, "cash_entries") && hasColumn(store, "cash_entries", "is_opening")) {
     parts.cash = -sum("SELECT COALESCE(SUM(CAST(ROUND(amount * 100) AS INTEGER)), 0) AS n FROM cash_entries WHERE is_opening = 1 AND kind = 'in' AND COALESCE(transfer_id, '') = ''");
@@ -76,6 +77,9 @@ export function openingCounterpart(store) {
   if (has(store, "bank_lines") && has(store, "fin_events")) {
     parts.bank = sum("SELECT COALESCE(SUM(CASE l.side WHEN 'D' THEN l.try_minor ELSE -l.try_minor END), 0) AS n FROM bank_lines l JOIN fin_events f ON f.id = l.event_id WHERE l.role IN ('opening', 'closing') AND l.gl = '500' AND l.try_minor > 0");
   }
+  // 2.5.0 Ç7a tur 2 (K-14 / K-15, S179 = A; lib/bank/opening-cover.mjs): "açılışta sayılmış" hesabı atanmamış satırlar (Hesapsız (Açılıştan Önce), Devir Kapanışı'nın kapattığı
+  // eski hareketler; Devir Kapanışı'nın para tarafı dahil — `bank`'taki kapanış satırını netler) defterde 519'dadır: giriş B 519, çıkış A 519.
+  if (has(store, "bank_accounts") || has(store, "fin_events")) parts.unassigned = createMoneyLines(store).coveredTotal().cents;
   if (has(store, "cheques") && hasColumn(store, "cheques", "is_opening")) {
     const planLinked = has(store, "plan_entries") && has(store, "plans") ? "AND NOT EXISTS (SELECT 1 FROM plan_entries pe JOIN plans p ON p.id = pe.plan_id AND p.deleted_at IS NULL WHERE pe.cheque_id = c.id)" : "";
     const posted = "EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id AND e.kind = ?)";
@@ -94,7 +98,7 @@ export function openingCounterpart(store) {
     parts.vouchers519 = sum("SELECT COALESCE(SUM(debit_minor - credit_minor), 0) AS n FROM ledger_voucher_lines WHERE account = '519'");
     parts.vouchers500 = sum("SELECT COALESCE(SUM(debit_minor - credit_minor), 0) AS n FROM ledger_voucher_lines WHERE account = '500'");
   }
-  const counterpart = parts.cash + parts.accounts + parts.plans + parts.stock + parts.bank + parts.cheques + parts.vouchers519;
+  const counterpart = parts.cash + parts.accounts + parts.plans + parts.stock + parts.bank + parts.unassigned + parts.cheques + parts.vouchers519;
   return { 519: counterpart, 500: parts.vouchers500, parts };
 }
 
@@ -313,8 +317,10 @@ export const ruleDiffCorrectionYear = ({ lock = "", cover = "", today = "" } = {
  *     fark `excluded`'da nedeniyle). Dışlama kararlı noktaya kadar yinelenir (bir maddenin dışlanması başka bir alt defter hesabının birikimini sıfırdan çıkarabilir).
  * Yazılmış fişin düşülmesi (S174 = A — fiş KENDİ yılında düzeltilmiş sayılır): fişin yılı < `year` ise fişin 6 / 7 sınıfı (671 / 681 dışı) satırı o yılın HAM farkından (yıl, hesap, alt
  * hesap) düşülür ve kalan ham fark `year`a göre eşlenir; fişin öbür satırları (1–5 sınıfı, 671 / 681) ve yılı ≥ `year` olan fişin bütün satırları eşlenmiş toplamdan düşülür. Bütün fişler
- * `year`ın fişiyse sonuç `expected − posted` (eski hesap AYNEN).
- * Dönüş: { expected: Map, lines (düzeltilmemiş kalan; fiş satırları, kuruş), excluded: [{ account, sub, party, minor }], excludedEntries: Set, sources: [...] }.
+ * `year`ın fişiyse sonuç `expected − posted` (eski hesap AYNEN). Yılı `year`dan SONRA olan fiş (kilit fişin yılından geriye alındı; S185 = A) kendi yılının eşlemesiyle düşülür; farkı
+ * aşıyorsa `ownYearOver`a girer ve hiç satır önerilmez (fiş kendi yılında ters kaydedilir).
+ * Dönüş: { expected: Map, lines (düzeltilmemiş kalan; fiş satırları, kuruş), excluded: [{ account, sub, party, minor }], excludedEntries: Set, sources: [...],
+ *   ownYearOver: [{ year, minor }] (yılı `year`dan sonra olan ve farkı aşan fişlerin yılı ve fazlası — borç tarafı, kuruş) }.
  */
 export function ruleDiffCorrectionPlan({ diff, subledger = new Set(), year, posted = new Map(), postedByYear = null }) {
   const entries = (diff?.entries || []).filter(entry => entry.deltas?.length);
@@ -365,11 +371,14 @@ export function ruleDiffCorrectionPlan({ diff, subledger = new Set(), year, post
     if (!minor) continue;
     add(expected, priorOf(minor), minor);
   }
-  // Yazılmış fişler (S174 = A): önceki yılın fişinin sonuç satırı o yılın ham farkından; öbürleri eşlenmiş toplamdan.
+  // Yazılmış fişler (S174 = A): önceki yılın fişinin sonuç satırı o yılın ham farkından; öbürleri eşlenmiş toplamdan. Yılı eşleme yılından SONRA olan fiş (kilit fişin yılından
+  // geriye alındı — S185 = A) burada değil, aşağıda KENDİ yılının eşlemesiyle düşülür.
   const byYear = postedByYear || new Map([[year, posted]]);
+  const later = [...byYear].filter(([postYear]) => Number(postYear) > year).sort((a, b) => Number(a[0]) - Number(b[0]));
   const prior = new Map(result);
   const deducted = new Map();
   for (const [postYear, map] of byYear) {
+    if (Number(postYear) > year) continue;
     for (const [key, minor] of map) {
       if (!minor) continue;
       const account = key.split("|")[0];
@@ -379,10 +388,54 @@ export function ruleDiffCorrectionPlan({ diff, subledger = new Set(), year, post
   }
   const due = new Map(same);
   for (const [, minor] of prior) if (minor) add(due, priorOf(minor), minor);
-  const lines = [];
+  const rest = new Map();
   for (const key of new Set([...due.keys(), ...deducted.keys()])) {
     const minor = (due.get(key) || 0) - (deducted.get(key) || 0);
-    if (!minor) continue;
+    if (minor) rest.set(key, minor);
+  }
+  // S185 = A (C5-ACILIS-TASARIM §17.15): yılı eşleme yılından SONRA olan fiş de KENDİ yılında düzeltilmiş sayılır. Kalan fark fişin yılının eşlemesine çevrilir (1–5 sınıfı ve
+  // 671 / 681 aynı hesap; eşleme yılının 6 / 7 sınıfı farkı fişin yılında önceki yıl → kalanın yönüyle 671 / 681), fişin satırı kendi kovasındaki farkı (aynı yönde, en çok farkın kendisi
+  // kadar) kapatır. Fişin satırı kovasındaki farkı AŞIYORSA fiş FAZLADIR (ownYearOver): eşleme yılına fiş ÖNERİLMEZ (hiç satır yok) — fazlası fişin kendi yılındadır, fiş kendi yılında
+  // ters kaydedilir; ters kayıttan sonra kalan fark eşleme yılında önerilir. Kısmen kapanan kovada kalanı birden çok hesaba bölmek gerekirse (karar bunu söylemiyor) o fiş bugünkü
+  // kuralla (eşlenmiş toplamdan) düşülür.
+  const ownYearOver = [];
+  for (const [postYear, map] of later) {
+    const ownKey = (key, minor) => (RESULT_CLASSES.has(key[0]) && !PRIOR_YEAR_SET.has(key.split("|")[0]) ? priorOf(minor) : key);
+    const buckets = new Map();
+    for (const [key, minor] of rest) {
+      const bucket = ownKey(key, minor);
+      const item = buckets.get(bucket) || { minor: 0, keys: [] };
+      item.minor += minor;
+      item.keys.push(key);
+      buckets.set(bucket, item);
+    }
+    const apply = [];
+    const over = { debit: 0, credit: 0 };
+    let split = false;
+    for (const [key, minor] of map) {
+      if (!minor) continue;
+      const item = buckets.get(key) || { minor: 0, keys: [] };
+      const covered = Math.sign(item.minor) === Math.sign(minor) ? Math.sign(minor) * Math.min(Math.abs(minor), Math.abs(item.minor)) : 0;
+      if (minor - covered > 0) over.debit += minor - covered;
+      else over.credit += covered - minor;
+      if (!covered) continue;
+      if (covered === item.minor) for (const own of item.keys) apply.push([own, rest.get(own)]);
+      else if (item.keys.length === 1) apply.push([item.keys[0], covered]);
+      else split = true;
+    }
+    if (over.debit || over.credit) {
+      ownYearOver.push({ year: Number(postYear), minor: Math.max(over.debit, over.credit) });
+      continue;
+    }
+    if (split) {
+      for (const [key, minor] of map) if (minor) add(rest, key, -minor);
+      continue;
+    }
+    for (const [key, minor] of apply) add(rest, key, -minor);
+  }
+  const lines = [];
+  for (const [key, minor] of rest) {
+    if (!minor || ownYearOver.length) continue;
     const [account, sub] = key.split("|");
     lines.push({ account, sub, party: "", debit: minor > 0 ? minor : 0, credit: minor < 0 ? -minor : 0 });
   }
@@ -395,7 +448,7 @@ export function ruleDiffCorrectionPlan({ diff, subledger = new Set(), year, post
     })
     .sort((a, b) => a.account.localeCompare(b.account) || a.sub.localeCompare(b.sub) || a.party.localeCompare(b.party));
   const sources = entries.map(entry => ({ id: entry.id, date: entry.date, source: entry.source || "", text: entry.text || "", inFrozen: entry.inFrozen !== false, inLive: entry.inLive !== false, excluded: out.has(entry.id), deltas: entry.deltas }));
-  return { expected, lines, excluded, excludedEntries: out, sources };
+  return { expected, lines, excluded, excludedEntries: out, sources, ownYearOver };
 }
 
 /**
@@ -445,7 +498,7 @@ const sourceKind = id => MATCH_SOURCES.find(([prefix]) => String(id).startsWith(
  * `date`'ten sonra olan maddeler sayılmaz, AYNI günün maddeleri (açılışlar, önceki eşleştirme ve kural farkı fişleri) sayılır. Dökümün toplamı = bakiye.
  */
 export function openingMatchBalance(entries, date) {
-  const parts = { cash: 0, accounts: 0, plans: 0, stock: 0, bank: 0, cheques: 0, vouchers: 0, other: 0 };
+  const parts = { cash: 0, accounts: 0, plans: 0, stock: 0, bank: 0, unassigned: 0, cheques: 0, vouchers: 0, other: 0 };
   let balance = 0;
   for (const entry of entries) {
     if (entry.date > date) continue;
@@ -453,7 +506,8 @@ export function openingMatchBalance(entries, date) {
       if (line.account !== OPENING_MATCH_ACCOUNT) continue;
       const minor = line.debit - line.credit;
       balance += minor;
-      parts[sourceKind(entry.id)] += minor;
+      // 2.5.0 Ç7a tur 2 (K-14 / K-15): hesabı atanmamış açılış öncesi hareketin 519 satırı (general-ledger journal `cover`) ayrı tür.
+      parts[line.cover ? "unassigned" : sourceKind(entry.id)] += minor;
     }
   }
   return { balance, parts };

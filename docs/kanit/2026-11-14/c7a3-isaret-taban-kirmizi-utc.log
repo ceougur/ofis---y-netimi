@@ -1,0 +1,201 @@
+TAP version 13
+# (node:21773) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7a — Hesabı Atanmamış listesi ve banka raporları: 'Açılışta Sayıldı' satırı kalır, toplam = kova
+    # Subtest: 1. liste: açılışta sayılmış satırlar işaretli kalır; toplamlar kova
+    not ok 1 - 1. liste: açılışta sayılmış satırlar işaretli kalır; toplamlar kova
+      ---
+      duration_ms: 11.615141
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/hesapsiz-isaret-250.test.mjs:62:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              '2026-09-20',
+        +     undefined
+        -     true
+            ],
+            [
+              '2026-09-22',
+        +     undefined
+        -     false
+            ],
+            [
+              '2026-09-25',
+        +     undefined
+        -     true
+            ],
+            [
+              '2026-10-01',
+        +     undefined
+        -     false
+            ],
+            [
+              '2026-10-03',
+        +     undefined
+        -     false
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '2026-09-20'
+          1: true
+        1:
+          0: '2026-09-22'
+          1: false
+        2:
+          0: '2026-09-25'
+          1: true
+        3:
+          0: '2026-10-01'
+          1: false
+        4:
+          0: '2026-10-03'
+          1: false
+      actual:
+        0:
+          0: '2026-09-20'
+        1:
+          0: '2026-09-22'
+        2:
+          0: '2026-09-25'
+        3:
+          0: '2026-10-01'
+        4:
+          0: '2026-10-03'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/hesapsiz-isaret-250.test.mjs:65:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 2. Banka Bakiye Raporu: Hesabı Atanmamış satırları ve özeti kova
+    not ok 2 - 2. Banka Bakiye Raporu: Hesabı Atanmamış satırları ve özeti kova
+      ---
+      duration_ms: 12.985298
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/hesapsiz-isaret-250.test.mjs:71:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   '102.00': 670000,
+        -   '102.00': 270000,
+            '108.00': 300000
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        102.00: 270000
+        108.00: 300000
+      actual:
+        102.00: 670000
+        108.00: 300000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/hesapsiz-isaret-250.test.mjs:75:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 3. Banka Hareket Raporu: işaretli satırlar kalır, tutar hücreleri boş; toplamlar ve devir kova ile
+    not ok 3 - 3. Banka Hareket Raporu: işaretli satırlar kalır, tutar hücreleri boş; toplamlar ve devir kova ile
+      ---
+      duration_ms: 8.899314
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/hesapsiz-isaret-250.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iki işaretli satır
+        
+        0 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/hesapsiz-isaret-250.test.mjs:83:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 4. Günlük Banka Raporu: işaretli satırlar günlere girmez
+    not ok 4 - 4. Günlük Banka Raporu: işaretli satırlar günlere girmez
+      ---
+      duration_ms: 4.412612
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/hesapsiz-isaret-250.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        970000 !== 570000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 570000
+      actual: 970000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/hesapsiz-isaret-250.test.mjs:96:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 5. Cari Banka Hareketleri ve Banka ve POS Hareketleri (Hesabı Atanmamış): satır kalır, toplama girmez
+    not ok 5 - 5. Cari Banka Hareketleri ve Banka ve POS Hareketleri (Hesabı Atanmamış): satır kalır, toplama girmez
+      ---
+      duration_ms: 5.32058
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/hesapsiz-isaret-250.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        0 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/hesapsiz-isaret-250.test.mjs:102:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - Ç7a — Hesabı Atanmamış listesi ve banka raporları: 'Açılışta Sayıldı' satırı kalır, toplam = kova
+  ---
+  duration_ms: 540.001053
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban-wt/test/hesapsiz-isaret-250.test.mjs:41:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 937.00887

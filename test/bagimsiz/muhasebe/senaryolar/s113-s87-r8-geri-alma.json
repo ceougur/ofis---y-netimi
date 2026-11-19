@@ -1,0 +1,152 @@
+{
+ "aciklama": "S87 A: Silinenler'den geri alınan Kasa açılışı ilk Kasa hareketinden sonraya düşüyorsa red (R8); aynı gün kabul.",
+ "ad": "s113-s87-r8-geri-alma",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "mu": [],
+   "mz0/satirlar/100/bakiye": 2000,
+   "mz0/satirlar/519/bakiye": 0,
+   "mz0/satirlar/649.90/bakiye": -2000,
+   "mz1/satirlar/100/bakiye": 12000,
+   "mz1/satirlar/519/bakiye": -10000,
+   "mz1/satirlar/649.90/bakiye": -2000,
+   "redler": [
+    "KASA_ACILIS_SONRA"
+   ]
+  }
+ },
+ "kapsam": [
+  "S87",
+  "R8",
+  "M-01",
+  "R-04",
+  "G-7",
+  "Y15",
+  "Ş16"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "id": "KA",
+   "tarih": "2026-01-10",
+   "tur": "kasa_acilis",
+   "tutar": 10000
+  },
+  {
+   "kaynak": "KA",
+   "tur": "sil"
+  },
+  {
+   "id": "KG1",
+   "tarih": "2026-01-05",
+   "tur": "kasa_giris",
+   "tutar": 2000
+  },
+  {
+   "kaynak": "KA",
+   "tur": "geri_yukle"
+  },
+  {
+   "ad": "mz0",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "degisiklik": {
+    "tarih": "2026-01-10"
+   },
+   "kaynak": "KG1",
+   "tur": "duzenle"
+  },
+  {
+   "kaynak": "KA",
+   "tur": "geri_yukle"
+  },
+  {
+   "ad": "mz1",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mu",
+   "rapor": "mutabakat_uyarilari",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

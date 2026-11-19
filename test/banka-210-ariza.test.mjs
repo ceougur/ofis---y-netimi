@@ -128,7 +128,9 @@ describe("A1 — Kurulum Sihirbazı ortasında SIGKILL (elektrik kesintisi)", ()
       assert.equal((await must("kurulumlar", again.get("/api/workspace/bank/setup"))).runs.length, 0, "kurulum kaydı yok");
       const maxNo = store.get("SELECT MAX(seq) AS n FROM fin_events").n;
       const subs = Object.fromEntries((await must("alt hesap", again.get("/api/workspace/bank/sub-trial"))).rows.map(row => [row.sub, row.balance]));
-      assert.deepEqual([subs["102.00"], subs["102.01"]], [6000, 100000], "eski havaleler Hesabı Atanmamış'ta, Ziraat yalnız açılış");
+      // 2.5.0 Ç7a tur 2 — BEKLENTİ BİLEREK DEĞİŞTİ (K-14, S179 = A): açılıştan önceki 4.000 hesapsız havale açılışta sayılır (defterde 519), Hesabı Atanmamış'ta yalnız
+      // açılıştan sonraki 2.000 (önce 6.000 — 4.000'i Devir Kapanışı'nı bekliyordu).
+      assert.deepEqual([subs["102.00"], subs["102.01"]], [2000, 100000], "açılıştan sonraki eski havale Hesabı Atanmamış'ta, Ziraat yalnız açılış");
       assert.equal(server.app.integrity.run().ok, true, "Mutabakat Testi tutarlı");
       // Aynı istek kimliğiyle yeniden: kesintide istek kaydı yazılmadığı için çalışır (replayed değil); numara boşluksuz.
       const run = await must("yeniden çalıştır", again.post("/api/workspace/bank/setup", { accountId: ziraat.id, carryClose: true, assign: "all", requestId: "sihirbaz-kesinti-0001-abcdef" }));

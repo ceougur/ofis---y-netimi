@@ -1130,9 +1130,18 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
         const remainderMinor = plan.lines.reduce((sum, line) => sum + line.debit, 0);
         const excludedMinor = plan.excluded.reduce((sum, row) => sum + Math.abs(row.minor), 0) / 2;
         const numbers = corrections.active.map(voucher => voucherNoText(voucher.year, voucher.no));
-        const over = diff.count === 0 && remainderMinor > 0;
-        if (numbers.length || over) item.correction = { vouchers: numbers, remainderMinor, excludedMinor, over };
-        if (numbers.length && diff.count && !remainderMinor && !excludedMinor) {
+        // S185 = A: yılı eşleme yılından sonra olan fiş farkı aşıyorsa fazlası KENDİ yılındadır — eşleme yılına fiş önerilmez, ipucu fişi kendi yılında ters kaydettirir.
+        const ownYears = new Set((plan.ownYearOver || []).map(row => row.year));
+        const ownYearMinor = (plan.ownYearOver || []).reduce((sum, row) => sum + row.minor, 0);
+        const ownNumbers = corrections.active.filter(voucher => ownYears.has(Number(String(voucher.date).slice(0, 4)))).map(voucher => voucherNoText(voucher.year, voucher.no));
+        const over = (diff.count === 0 && remainderMinor > 0) || ownYearMinor > 0;
+        if (numbers.length || over) item.correction = { vouchers: numbers, remainderMinor, excludedMinor, over, ...(ownYearMinor ? { ownYear: ownNumbers, ownYearMinor } : {}) };
+        if (ownYearMinor) {
+          item.ok = false;
+          item.count = numbers.length || 1;
+          item.severity = "warning";
+          item.hint = `Kural Farkı Düzeltme Fişi (${ownNumbers.join(", ")}) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı) — fişi kendi yılında, Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin; kalan fark varsa sonra ön izlemede görünür.`;
+        } else if (numbers.length && diff.count && !remainderMinor && !excludedMinor) {
           // Düzeltildi: uyarı bilgiye iner (Mutabakat Testi uyarısız; öğe listede kalır).
           item.ok = true;
           item.corrected = { vouchers: numbers };
@@ -1143,7 +1152,11 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
           item.ok = false;
           item.count = numbers.length || 1;
           item.severity = "warning";
-          item.hint = `Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (${numbers.join(", ") || "ters kaydı eksik"}) artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin.`;
+          // Tur 2f DÜŞÜK-1: fişin tarihi kilitli dönemdeyse ters kaydı yazılamaz (409) — ipucu ekranda yapılabilen yolu (ön izlemedeki fiş, ilk açık güne) söyler.
+          const locked = Boolean(lock) && corrections.active.some(voucher => String(voucher.date) <= lock);
+          item.hint = locked
+            ? `Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (${numbers.join(", ") || "ters kaydı eksik"}) artık fazla. Fişin tarihi kilitli dönemde olduğu için ters kaydı yazılamaz — Yönetim › Sistem › Kural Farkı Düzeltme'de ön izlemedeki fişi kaydedin; fazla ilk açık güne alınır.`
+            : `Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (${numbers.join(", ") || "ters kaydı eksik"}) artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin.`;
         } else if (numbers.length && diff.count) {
           item.hint = remainderMinor
             ? `${item.hint} Kural Farkı Düzeltme Fişi (${numbers.join(", ")}) farkın bir kısmını düzeltti; kalan ön izlemede.`

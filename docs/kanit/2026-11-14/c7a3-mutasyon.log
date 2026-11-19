@@ -1,0 +1,47 @@
+taban: 16 geçti / 0 kaldı (çıkış 0)
+ok 1 - D-07: kart hesabı Faiz Gideri'nde yine reddedilir (kabul geri alınır): çıkış 1, 0 geçti / 3 kaldı — neden: 400 !== 200
+ok 2 - D-07: kart faizinin para satırı 309 yerine 102 (kart ↔ banka): çıkış 1, 1 geçti / 2 kaldı — neden: fiş interest_out: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Alt Hesap Mutabakatı (102.00 Hesabı Atanmamış Eski Hareketler): 210,00 TL fark). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.
+ok 3 - D-07: BSMV / KKDF satırı düşer (yalnız faiz yazılır): çıkış 1, 1 geçti / 2 kaldı — neden: D-07: B 780 faiz + BSMV / A 309.k
+ok 4 - D-07: kart faizi Planlı İşlem'de de kabul edilir (planMain yok sayılır): çıkış 1, 2 geçti / 1 kaldı — neden: kart faizi planlanmaz: 200 {"id":"bplan-de239665-ed47-4196-9779-14d74187181a","kind":"interest_out","typeLabel":"Faiz Gideri","accountId":"bacc-8a3e29da-f9ac-4b97-a6de-34c45062e56b","accountLabel":"Ziraat Bankası · Şirket Kartı","toAccountI
+ok 5 - D-07: faiz gideri hesabı 780 yerine 770 (hesap eşlemesi): çıkış 1, 1 geçti / 2 kaldı — neden: D-07: B 780 faiz + BSMV / A 309.k
+ok 6 - K-14: açılıştan önceki hesapsız satır banka tarafına yazılır (defterde 519'a geçmez): çıkış 1, 0 geçti / 0 kaldı — neden: hesap aç Ziraat Bankası Ana TL Hesabı: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (gl:102, bank:sub:102.00).","code":"gate-equivalence","failures":[{"code":"gl:102","name":"102 Ba
+ok 7 - K-14: açılış günü sınırı '<' yerine '≤' (açılış günündeki satır da 519'a): çıkış 1, 0 geçti / 0 kaldı — neden: hesap aç Ziraat Bankası Ana TL Hesabı: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (gl:102, bank:sub:102.00).","code":"gate-equivalence","failures":[{"code":"gl:102","name":"102 Ba
+ok 8 - K-14: EN GEÇ yerine EN ERKEN açılış tarihi: çıkış 1, 2 geçti / 3 kaldı — neden: 01.10 ve 03.10 Garanti'nin açılışından (05.10) önce
+ok 9 - K-14: kovanın ekran bakiyesi açılışta sayılmış satırları düşmez: çıkış 1, 1 geçti / 4 kaldı — neden: actual: 6700
+ok 10 - K-14: pasif hesabın açılışı sınırdan düşer (durum fark etmez kuralı bozulur): çıkış 1, 2 geçti / 3 kaldı — neden: pasif hesabın açılışı sınırda kalır
+ok 11 - K-14: Devir Kapanışı maddesi netlenmez (B 519 / A 519 yevmiyede kalır): çıkış 1, 4 geçti / 1 kaldı — neden: B 519 / A 519 netlenir, madde yazılmaz
+ok 12 - K-15: kart yolunda yön ayrımı kalkar (kart ödemesi de POS sınırına — yalnız Devir Kapanışı): çıkış 1, 4 geçti / 1 kaldı — neden: hesap aç Ziraat Bankası Şirket Kartı: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (gl:108, bank:sub:108.00).","code":"gate-equivalence","failures":[{"code":"gl:108","name":"108 Kre
+ok 13 - K-14: 519 ikinci yükleyicisi açılışta sayılmış satırları bilmez (Açılış Karşılığı yanlış alarm): çıkış 1, 0 geçti / 5 kaldı — neden: açılıştan önceki hesapsız havale: mutabakat bozuk [{"code":"opening:519","name":"Açılış Karşılığı (519 Eşleştirilecek Açılış Bakiyeleri = Kasa, cari, banka, stok, taksit ve evrak açılışları + fişler)","ok":false,"count":1,"difference":4000,
+ok 14 - K-14: defter beklenenleri (groups) açılışta sayılmış satırı 102.00'da bekler (yanlış alarm): çıkış 1, 0 geçti / 0 kaldı — neden: hesap aç Ziraat Bankası Ana TL Hesabı: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (gl:102, bank:sub:102.00).","code":"gate-equivalence","failures":[{"code":"gl:102","name":"102 Ba
+ok 15 - KG-6: komisyon yine valör gününde (küme boş — türetme, beklenen ve Alt Hesap Mizanı birlikte eski kurala döner): çıkış 1, 1 geçti / 7 kaldı — neden: 08.10 B 653 250 / A 108.01 250
+ok 16 - KG-6: satış günü maddesinin komisyon hesabı 653 yerine 760: çıkış 1, 1 geçti / 7 kaldı — neden: 08.10 B 653 250 / A 108.01 250
+ok 17 - KG-6: KDV kipi de satış gününe alınır (S178 = A'ya aykırı): çıkış 1, 7 geçti / 1 kaldı — neden: KDV kipinde satış günü maddesi yok
+not ok 18 - KG-6: taksitli satışta yalnız ilk kalemin kesintisi: çıkış 1, 7 geçti / 1 kaldı — beklenen neden görülmedi (/420 = 3 × 140/)
+    not ok 2 - 2. taksitli satış: BÜTÜN taksitlerin kesintisi satış gününde; İade Edilmez iade komisyon maddesi doğurmaz
+      error: |-
+      name: 'AssertionError'
+not ok 1 - Ç7a KG-6 — POS komisyonu satış (çekim) günü; valörde net (KG-6 = A, S177 = A, S178 = A)
+  error: '1 subtest failed'
+not ok 19 - KG-6: gün fişinin 108 satırı netlenmez (brüt kalır): çıkış 1, 3 geçti / 5 kaldı — beklenen neden görülmedi (/12\.10 B 102\.01 9\.750 \/ A 108\.01 9\.750/)
+    not ok 1 - 1. tek çekim: satış günü B 653 / A 108.01; valöre kadar 108.01 = net; gün fişi net (653 satırı yok)
+      error: |-
+      name: 'AssertionError'
+    not ok 3 - 3. Oransal iade: iade edilen kesinti iade gününde ters (B 108.01 / A 653); gün fişi net
+      error: |-
+      name: 'AssertionError'
+    not ok 4 - 4. Elle Onay: Komisyon Farkı valörün (onayın) gününde (S177 = A); satış günü maddesi değişmez
+      error: |-
+      name: 'AssertionError'
+    not ok 7 - 7. bankaya geçmiş satış düzeltilir (yeniden planlama): eski maddeler kalkar, yeni satışın komisyonu satış gününde
+      error: |-
+      name: 'AssertionError'
+ok 20 - KG-6: defter beklenenleri bekleyen kesintiyi düşmez (yanlış alarm): çıkış 1, 1 geçti / 7 kaldı — neden: POS tahsilatı 10.000: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (108 Kredi Kartı Tahsilatları (POS): -250,00 TL fark). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integr
+not ok 21 - KG-6: silinen (void) kalemler kümeye girer: çıkış 0, 8 geçti / 0 kaldı — beklenen neden görülmedi (/yalnız yeni satış \(200\)/)
+
+ok 22 - KG-6: iade kaleminin kesintisi satış gibi (işaret çevrilmez): çıkış 1, 7 geçti / 1 kaldı — neden: iade günü B 108.01 100 / A 653 100
+ok 23 - KG-6: Alt Hesap Mizanı 108.POS'u brütten gösterir (düzeltme yok): çıkış 1, 5 geçti / 3 kaldı — neden: 108.01 = bankaya geçmemiş NET alacak 9.750
+ok 24 - KG-6: BSMV Hariç kipte BSMV kesintiye girmez: çıkış 1, 7 geçti / 1 kaldı — neden: 250 + 12,50
+
+# tests 24
+# pass 21
+# fail 3

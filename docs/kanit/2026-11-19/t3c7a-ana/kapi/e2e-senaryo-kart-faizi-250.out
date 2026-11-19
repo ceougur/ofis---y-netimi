@@ -1,0 +1,44 @@
+
+> destekofis@2.4.9 test:senaryo-kart-faizi-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-kart-faizi-250.mjs
+
+
+1. Kart hesabının Hesap Detayı'nda + Kart Faizi; form Faiz Gideri ve kartla açılır
+  ✓ Hesap Detayı'nda '+ Kart Faizi' düğmesi
+  ✓ etkin kartta düğme etkin
+  ✓ Kart Borcu Ödemesi düğmesi yerinde
+  ✓ İşlem Türü seçenekleri: Faiz Geliri, Faiz Gideri
+  ✓ İşlem Türü Faiz Gideri seçili
+  ✓ hesap listesi: Ziraat Bankası · Ana TL Hesabı (ZIR-TL) | Ziraat Bankası · Şirket Kartı (ZIR-KART) (kart ve Ziraat; pasif kart yok)
+  ✓ Banka Hesabı = Şirket Kartı (hesap detayından seçili)
+  ✓ kart seçiliyken alan adı: "Kredi Kartı"
+  ✓ Ziraat seçilince alan adı: "Banka Hesabı"
+  ✓ karta dönünce yine Kredi Kartı
+
+2. Klavyeyle 200 + BSMV 10; önizleme Kart Borcuna Eklenen 210; Kaydet → kart borcu 5.210, B 780 / A 309.k
+  ✓ Tab ile BSMV / KKDF alanına geçildi (taxAmount)
+  ✓ önizleme: Kart Borcuna Eklenen ₺210,00 · Faiz ₺200,00 · BSMV / KKDF ₺10,00
+  ✓ kart borcu 5.210 (sunucu -5210)
+  ✓ ekranda kart borcu: ₺5.210,00
+  ✓ kartın hareketlerinde Faiz Gideri satırı
+  ✓ fiş satırları (kitap D-07): 309|309.01|C|21000 · 780||D|1000 · 780||D|20000
+  ✓ Ziraat bakiyesi değişmedi (para bankadan çıkmaz)
+  ✓ mizan 780 = 210
+  ✓ Mutabakat Testi temiz
+
+3. Faiz Geliri seçilince kart hesap listesinden çıkar; Esc → yazılmaz
+  ✓ Faiz Geliri'nde hesaplar: Ziraat Bankası · Ana TL Hesabı (ZIR-TL) (kart yok)
+  ✓ Faiz Gideri'ne dönünce kart yeniden listede
+  ✓ Esc: yeni hareket yok
+
+4. + Planlı İşlem → Faiz Gideri: kart listede yok (kart faizi planlanmaz)
+  ✓ planlı Faiz Gideri hesapları: Ziraat Bankası · Ana TL Hesabı (ZIR-TL)
+
+5. Pasif kartta + Kart Faizi pasif, nedeni görünür yazı
+  ✓ pasif kartta düğme pasif + neden (title)
+  ✓ neden ekranda görünür yazı
+  ✓ tarayıcı hatası yok
+
+TAMAM: 26 denetim geçti, 0 başarısız. Ekran görüntüleri: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag/test/e2e/artifacts/senaryo-kart-faizi-250
+
+[kanit] t3c7a-e2e-senaryo-kart-faizi-250: GEÇTİ · çıkış 0 · 26/26 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9c09f18 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4

@@ -1,0 +1,3 @@
+[zorla 1/1] test/obligation-input-250.test.mjs · ön koşul BİLİNMİYOR (süre doldu, kanıt satırı yok) · test KIRMIZI (çıkış 124) · tests ? pass ? fail ? · SÜRE DOLDU: yineleme 240 sn'de bitmedi (asıldı)
+
+[zorla özet] test/obligation-input-250.test.mjs · 1 yineleme · ön koşul gerçekleşti 0 · gerçekleşmedi 0 · ön koşullu yeşil 0 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilinmiyor 1

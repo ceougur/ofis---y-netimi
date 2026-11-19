@@ -1,0 +1,18 @@
+taban: 4 geçti / 0 kaldı (çıkış 0)
+M1 YAKALANDI — H1 ön denetim bağsız evrakın carisini de aday sayar (evrakın carisi kolunda fatura bağı koşulu yok) (3 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 1 subtest failed
+M2 YAKALANDI — H1 ön denetimde ciro edilen ve olayın carisi kolları düşer (3 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 1 subtest failed
+M3 YAKALANDI — H1 ön denetimde evrakın carisi kolu düşer (2 geçti / 2 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 2 subtests failed
+M4 YAKALANDI — H2 peşin bağlarının sırası eski planınkinden farklı (ORDER BY yok) (3 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 1 subtest failed
+M5 YAKALANDI — H2 Vade / Beklenen Ödeme Tarihi haritasının sırası farklı (ORDER BY yok) (3 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 1 subtest failed
+M6 YAKALANDI — H2 evrak olaylarında ciro edilen ve olayın carisi kolları düşer (2 geçti / 2 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 2 subtests failed
+M7 YAKALANDI — H2 tek cari Vade sorgusu yanlış satır türünü okur (elle satır yerine hiçbiri) (2 geçti / 2 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 2 subtests failed
+M8 YAKALANDI — H3 bellek anahtarı sabit (veri durumu okunmaz — yazımdan sonra bayat) (2 geçti / 2 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 2 subtests failed
+M9 YAKALANDI — H3 bellek veri tabanı işleminin İÇİNDE de okunur / yazılır (geri alınan işlemin durumu kalır) (3 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 1 subtest failed
+M10 YAKALANDI — H3 kesit anahtarı açık kayıtların kalanını taşımaz (3 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 1 subtest failed
+M11 YAKALANDI — H3 kesit anahtarı aynı gün işlenenleri (include) taşımaz (3 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 1 subtest failed
+M12 YAKALANDI — ortak: bir carinin (ilk aday) bağlı payı atlanır (bellekli = belleksiz; yalnız hakem yakalar) (2 geçti / 2 kaldı; değer iletisi var; çökme yok) düşen:  · neden: görünümler farklı sonuç vermeli (sınama anlamlı): 1
+M13 YAKALANDI — ortak: kesitin şüpheli kalanı yarıya düşer (bellekli = belleksiz; yalnız hakem yakalar) (0 geçti / 4 kaldı; değer iletisi var; çökme yok) düşen:  · neden: sınıf verisi yok (Aynı Gün Şüpheli)
+M14 YAKALANDI — H1 ön denetimde evrak sorgusu yalnız ZATEN aday olan carilere sorulur (birleşim yerine kesişim) (3 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen:  · neden: 1 subtest failed
+SONUÇ: 14 geçti, 0 kaldı (14 mutasyonun 14'i yakalandı)
+
+[kanit] t3hiz-mutasyon: GEÇTİ · çıkış 0 · 14/14 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v653 x64 · Node v22.23.4

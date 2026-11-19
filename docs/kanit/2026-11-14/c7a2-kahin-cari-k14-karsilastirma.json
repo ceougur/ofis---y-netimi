@@ -1,0 +1,32 @@
+{
+  "ad": "c7a2-kahin-cari-k14-karsilastirma",
+  "komut": "npm run test:kahin-cari",
+  "commit": "01297bd5572bc785d6421b484c01a8fdb4f86e64",
+  "dal": "worktree-agent-a72dc7db7f2bd153a",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T09:44:13.842Z",
+  "sure_sn": 258.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17136,
+    "gecen": 17136,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2q/kanit/2026-11-14/c7a2-kahin-cari-k14-karsilastirma.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a72dc7db7f2bd153a",
+  "ham_cikti_sha256": "737d31dd086fffdebf5956ab8740de56545768b48c08de4a34994fb7a5ea4a62",
+  "ham_cikti_bayt": 68352
+}

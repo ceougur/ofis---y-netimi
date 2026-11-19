@@ -1,0 +1,32 @@
+{
+  "ad": "c5a3d-komsu-utc",
+  "komut": "node --test test/acilis-519-250.test.mjs test/acilis-onarimi-hiz-250.test.mjs test/acilis-onarimi-savunma-250.test.mjs test/banka-210-saat.test.mjs test/banka-230-supheli-ayni-gun.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli-ekran.test.mjs test/banka-230-supheli.test.mjs test/cek-istek-kimligi-247.test.mjs test/ebelge-244-gonderim-izi.test.mjs test/ebelge-244-yerel-iptal.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/geri-yukleme-uyari-244.test.mjs test/kalan-metin-246.test.mjs test/kapama-tek-gecis-245.test.mjs test/kasa-acilis-once-250.test.mjs test/kilit-izi-alanlar-250.test.mjs test/numara-silinen-244.test.mjs test/obligation-input-250.test.mjs test/projeksiyon-vade-246.test.mjs test/supheli-230-ayni-gun-degersiz.test.mjs test/supheli-230-elestirmen.test.mjs test/supheli-230-karar.test.mjs test/supheli-230-kontrol2.test.mjs test/supheli-230-sil-cakisma.test.mjs test/supheli-230-yargic.test.mjs test/supheli-240-k4-iptal.test.mjs test/supheli-etiket-pay-250.test.mjs test/supheli-ileti-b8-250.test.mjs test/supheli-kuyruk-defter-250.test.mjs test/takvim-govde-250.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/uiux-244-ux9.test.mjs test/vekil-sunucu-uygulama.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/yazim-duzeni.test.mjs test/kilavuz-surum.test.mjs test/kilavuz-pdf-surum.test.mjs test/gorunen-adres-247.test.mjs test/banka-220-kredi-karti-metin.test.mjs",
+  "commit": "41f38493ca5620334bcc6884773ea67510e64250",
+  "dal": "worktree-agent-a58859d049073732b",
+  "kirli": 2,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T10:23:49.535Z",
+  "sure_sn": 67.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 387,
+    "gecen": 387,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-14/c5a3d-komsu-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a58859d049073732b",
+  "ham_cikti_sha256": "f271ed99d7250fec169809c74496964fb6c7848637a34cf1c8326a4bf1a28582",
+  "ham_cikti_bayt": 185382
+}

@@ -1,0 +1,15 @@
+  ✓ kurulum: {"b120":100,"b128":1000} (120 = 100, 128 = 1.000)
+■ 1 + Tahsilat → Kapatılacak Fatura = Fatura 2 → 700 (120'ye düşecek 300 > şüpheli dışı borç 100): RET, form açık, ileti iki tutarı söyler
+  ✓ formun yardım metni yeni kuralı söyler
+  ✓ Kapatılacak Fatura listesinde Fatura 2 var
+  ✓ form kapanmadı
+  ✓ ileti: “Normal cari hesaba işlenecek kısım (300,00 TL; 700,00 TL tahsilatın 400,00 TL'si faturanın şüpheli alacaktaki payından düşüyor) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda.”
+  ✓ veri tabanı: satır yazılmadı (3 satır, başta 3; {"b120":100,"b128":1000})
+■ 2 Tutarı 300'e düzelt (seç + yaz + Tab) → Kaydet: KABUL (bugünkü kuralda 409 idi); 128 = 700, 120 = 100
+  ✓ form kapandı (kayıt alındı)
+  ✓ veri tabanı: 4 satır (başta 3 + 1), {"b120":100,"b128":700} (128 = 700, 120 = 100)
+  ✓ yeni satır: {"amount":300,"invoiceId":"invoice-de9da205-c4f5-4cd8-bc62-8f239cf20dcb","skip":0} (Fatura 2 FIS2026000000002)
+  ✓ mizan: 128 = 700, 120 = 100
+  ✓ Mutabakat Testi tamam (iki yükleyici aynı kural)
+  ✓ sayfa hatası yok
+✓ senaryo-supheli-kuyruk-250: 12 geçti, 0 kaldı

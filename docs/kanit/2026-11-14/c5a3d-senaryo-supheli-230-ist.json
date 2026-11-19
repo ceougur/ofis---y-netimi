@@ -1,0 +1,32 @@
+{
+  "ad": "c5a3d-senaryo-supheli-230-ist",
+  "komut": "node test/e2e/senaryo-supheli-230.mjs",
+  "commit": "bf405be8b8ae3a323fc6ad2bcd895aca95805278",
+  "dal": "worktree-agent-a58859d049073732b",
+  "kirli": 2,
+  "izlenmeyen": 20,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T10:27:09.984Z",
+  "sure_sn": 37.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 67,
+    "gecen": 67,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-14/c5a3d-senaryo-supheli-230-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a58859d049073732b",
+  "ham_cikti_sha256": "5ad8061a12d804ca8fb4fffb2fc017d135df28fea173f86acb3537c0e7f02a83",
+  "ham_cikti_bayt": 6953
+}

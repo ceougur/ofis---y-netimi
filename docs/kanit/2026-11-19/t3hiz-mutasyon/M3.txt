@@ -1,0 +1,3310 @@
+TAP version 13
+# Subtest: 2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön denetimi, kuyruk girdisinin sorgu planları ve işlem dışı belleği — davranış AYNEN
+    # Subtest: H1 + H2: aday cari kümesi ve kuyruk girdisi (her cari) ESKİ sorgu / gövdeyle aynı — harita sırası dahil, iki şirkette
+    not ok 1 - H1 + H2: aday cari kümesi ve kuyruk girdisi (her cari) ESKİ sorgu / gövdeyle aynı — harita sırası dahil, iki şirkette
+      ---
+      duration_ms: 2575.072748
+      type: 'test'
+      location: '/dev/shm/t3hiz/k-uc4/test/t3hiz-esdegerlik-250.test.mjs:256:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        evrak bağlı cariler kümesi eski sorguyla aynı
+        + actual - expected
+        
+          [
+        +   undefined,
+        +   undefined,
+        +   undefined,
+        +   undefined
+        -   'account-18a0cade-1fb0-4166-9932-1036f3672a77',
+        -   'account-262b4c15-19d1-4374-9e3b-2b1ccaf60a03',
+        -   'account-8537ea9b-b79d-4db7-bc40-42dbb9e33817',
+        -   'account-e273baea-35f2-4d8b-9933-77434a6deb4c'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'account-18a0cade-1fb0-4166-9932-1036f3672a77'
+        1: 'account-262b4c15-19d1-4374-9e3b-2b1ccaf60a03'
+        2: 'account-8537ea9b-b79d-4db7-bc40-42dbb9e33817'
+        3: 'account-e273baea-35f2-4d8b-9933-77434a6deb4c'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/t3hiz/k-uc4/test/t3hiz-esdegerlik-250.test.mjs:271:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: H3: bellekli ↔ belleksiz ↔ hakem — ilk durum, kilitli dönem, yazım, kapı reddi, store dışı yazım, başka bağlantı, kilit kalkınca; iki şirket
+    not ok 2 - H3: bellekli ↔ belleksiz ↔ hakem — ilk durum, kilitli dönem, yazım, kapı reddi, store dışı yazım, başka bağlantı, kilit kalkınca; iki şirket
+      ---
+      duration_ms: 134.206854
+      type: 'test'
+      location: '/dev/shm/t3hiz/k-uc4/test/t3hiz-esdegerlik-250.test.mjs:296:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        1 ilk: düzeltmeden önceki kodun hakemiyle farklı
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            all: {
+              allocations: {
+                '[Map]': [
+                  [
+        ...
+                  [
+        +           'account:account_entries#17',
+        +           {
+        +             lossMinor: 0,
+        +             provisionUsed: 0,
+        +             records: [
+        +               {
+        +                 minor: 30000,
+        +                 recordId: 'doubtful_receivables#4'
+        +               }
+        +             ]
+        +           }
+        +         ],
+        +         [
+                    'account:account_entries#19',
+                    {
+                      lossMinor: 0,
+                      provisionUsed: 0,
+                      records: [
+        ...
+                      closedOn: '',
+        +             collected: 30000,
+        -             collected: 0,
+                      collectedOnCloseDay: 0,
+        +             collectedSameDay: 30000,
+        +             lastCreditDate: '2026-01-14',
+        -             collectedSameDay: 0,
+        -             lastCreditDate: '',
+                      lost: 0,
+                      provision: 0,
+                      provisionAdded: 0,
+                      provisionReleased: 0,
+                      provisionUsed: 0,
+                      released: 0,
+        +             remaining: 50000,
+        -             remaining: 80000,
+                      taken: 80000,
+                      writtenOff: 0
+                    }
+                  ],
+                  [
+        ...
+                doubtful: {
+        +         collectedMinor: 30000,
+        -         collectedMinor: 0,
+                  count: 1,
+                  openCount: 1,
+        +         openMinor: 50000,
+        -         openMinor: 80000,
+                  provisionMinor: 0,
+                  releasedMinor: 0,
+                  writtenOffMinor: 0
+                },
+                entries: [
+        ...
+                lines: [
+        +         '128 cari<Şüpheli Çekli 001> 0 30000'
+        -         '120 cari<Şüpheli Çekli 001> 0 30000'
+                ]
+              },
+              {
+                date: '2026-01-15',
+                id: 'invoice:invoices#9',
+        ...
+                allocations: {
+        +         '[Map]': [
+        +           [
+        +             'account:account_entries#17',
+        +             {
+        +               lossMinor: 0,
+        +               provisionUsed: 0,
+        +               records: [
+        +                 {
+        +                   minor: 30000,
+        +                   recordId: 'doubtful_receivables#4'
+        +                 }
+        +               ]
+        +             }
+        +           ]
+        +         ]
+        -         '[Map]': []
+                },
+                provisions: [],
+                records: [
+                  {
+                    accountDeletedAt: null,
+        ...
+                        closedOn: '',
+        +               collected: 30000,
+        -               collected: 0,
+                        collectedOnCloseDay: 0,
+        +               collectedSameDay: 30000,
+        +               lastCreditDate: '2026-01-14',
+        -               collectedSameDay: 0,
+        -               lastCreditDate: '',
+                        lost: 0,
+                        provision: 0,
+                        provisionAdded: 0,
+                        provisionReleased: 0,
+                        provisionUsed: 0,
+                        released: 0,
+        +               remaining: 50000,
+        -               remaining: 80000,
+                        taken: 80000,
+                        writtenOff: 0
+                      }
+                    ]
+                  ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        all:
+          records:
+            0:
+              id: 'doubtful_receivables#1'
+              seq: 1
+              party: 'cari<Şüpheli S168 001>'
+              date: '2025-12-26'
+              amountMinor: 100000
+              reason: 'lawsuit'
+              note: 't3hiz'
+              chequeId: ''
+              status: 'open'
+              closedDate: ''
+              eventId: 'fin_events#1'
+              closeEventId: ''
+              createdBy: 'users#1'
+              createdAt: '2026-10-20T09:04:00.000Z'
+              accountType: 'customer'
+              accountName: 'Şüpheli S168 001'
+              accountRefNo: '1'
+              accountDeletedAt: ~
+              chequeSerialNo: ''
+              chequeInstrument: ''
+              eventNo: 'BNK-2025-000001'
+              closeEventNo: ''
+              control: '120'
+              reasonLabel: 'Dava'
+            1:
+              id: 'doubtful_receivables#3'
+              seq: 3
+              party: 'cari<Kısmi Şüpheli 001>'
+              date: '2026-01-07'
+              amountMinor: 60000
+              reason: 'lawsuit'
+              note: 't3hiz'
+              chequeId: ''
+              status: 'open'
+              closedDate: ''
+              eventId: 'fin_events#9'
+              closeEventId: ''
+              createdBy: 'users#1'
+              createdAt: '2026-10-20T09:19:00.000Z'
+              accountType: 'customer'
+              accountName: 'Kısmi Şüpheli 001'
+              accountRefNo: '3'
+              accountDeletedAt: ~
+              chequeSerialNo: ''
+              chequeInstrument: ''
+              eventNo: 'BNK-2026-000005'
+              closeEventNo: ''
+              control: '120'
+              reasonLabel: 'Dava'
+            2:
+              id: 'doubtful_receivables#4'
+              seq: 4
+              party: 'cari<Şüpheli Çekli 001>'
+              date: '2026-01-12'
+              amountMinor: 80000
+              reason: 'lawsuit'
+              note: 't3hiz'
+              chequeId: ''
+              status: 'open'
+              closedDate: ''
+              eventId: 'fin_events#12'
+              closeEventId: ''
+              createdBy: 'users#1'
+              createdAt: '2026-10-20T09:26:00.000Z'
+              accountType: 'customer'
+              accountName: 'Şüpheli Çekli 001'
+              accountRefNo: '4'
+              accountDeletedAt: ~
+              chequeSerialNo: ''
+              chequeInstrument: ''
+              eventNo: 'BNK-2026-000008'
+              closeEventNo: ''
+              control: '120'
+              reasonLabel: 'Dava'
+            3:
+              id: 'doubtful_receivables#5'
+              seq: 5
+              party: 'cari<Şüpheli Bağsız Çekli 001>'
+              date: '2026-01-16'
+              amountMinor: 70000
+              reason: 'lawsuit'
+              note: 't3hiz'
+              chequeId: ''
+              status: 'open'
+              closedDate: ''
+              eventId: 'fin_events#13'
+              closeEventId: ''
+              createdBy: 'users#1'
+              createdAt: '2026-10-20T09:31:00.000Z'
+              accountType: 'customer'
+              accountName: 'Şüpheli Bağsız Çekli 001'
+              accountRefNo: '5'
+              accountDeletedAt: ~
+              chequeSerialNo: ''
+              chequeInstrument: ''
+              eventNo: 'BNK-2026-000009'
+              closeEventNo: ''
+              control: '120'
+              reasonLabel: 'Dava'
+          provisions:
+          state:
+            [Map]:
+              0:
+                0: 'doubtful_receivables#1'
+                1:
+                  taken: 100000
+                  collected: 60000
+                  writtenOff: 0
+                  released: 0
+                  remaining: 40000
+                  provision: 0
+                  provisionAdded: 0
+                  provisionReleased: 0
+                  provisionUsed: 0
+                  lost: 0
+                  closedOn: ''
+                  lastCreditDate: '2025-12-31'
+                  collectedSameDay: 10000
+                  collectedOnCloseDay: 0
+              1:
+                0: 'doubtful_receivables#3'
+                1:
+                  taken: 60000
+                  collected: 30000
+                  writtenOff: 0
+                  released: 0
+                  remaining: 30000
+                  provision: 0
+                  provisionAdded: 0
+                  provisionReleased: 0
+                  provisionUsed: 0
+                  lost: 0
+                  closedOn: ''
+                  lastCreditDate: '2026-01-10'
+                  collectedSameDay: 20000
+                  collectedOnCloseDay: 0
+              2:
+                0: 'doubtful_receivables#4'
+                1:
+                  taken: 80000
+                  collected: 0
+                  writtenOff: 0
+                  released: 0
+                  remaining: 80000
+                  provision: 0
+                  provisionAdded: 0
+                  provisionReleased: 0
+                  provisionUsed: 0
+                  lost: 0
+                  closedOn: ''
+                  lastCreditDate: ''
+                  collectedSameDay: 0
+                  collectedOnCloseDay: 0
+              3:
+                0: 'doubtful_receivables#5'
+                1:
+                  taken: 70000
+                  collected: 25000
+                  writtenOff: 0
+                  released: 0
+                  remaining: 45000
+                  provision: 0
+                  provisionAdded: 0
+                  provisionReleased: 0
+                  provisionUsed: 0
+                  lost: 0
+                  closedOn: ''
+                  lastCreditDate: '2026-01-17'
+                  collectedSameDay: 25000
+                  collectedOnCloseDay: 0
+          allocations:
+            [Map]:
+              0:
+                0: 'account:account_entries#13'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#3'
+                      minor: 10000
+                  provisionUsed: 0
+                  lossMinor: 0
+              1:
+                0: 'account:account_entries#14'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#3'
+                      minor: 20000
+                  provisionUsed: 0
+                  lossMinor: 0
+              2:
+                0: 'account:account_entries#19'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#5'
+                      minor: 25000
+                  provisionUsed: 0
+                  lossMinor: 0
+              3:
+                0: 'account:account_entries#4'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#1'
+                      minor: 30000
+                  provisionUsed: 0
+                  lossMinor: 0
+              4:
+                0: 'account:account_entries#5'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#1'
+                      minor: 20000
+                  provisionUsed: 0
+                  lossMinor: 0
+              5:
+                0: 'account:account_entries#6'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#1'
+                      minor: 10000
+                  provisionUsed: 0
+                  lossMinor: 0
+        party:
+          cari<Şüpheli S168 001>:
+            records:
+              0:
+                id: 'doubtful_receivables#1'
+                seq: 1
+                party: 'cari<Şüpheli S168 001>'
+                date: '2025-12-26'
+                amountMinor: 100000
+                reason: 'lawsuit'
+                note: 't3hiz'
+                chequeId: ''
+                status: 'open'
+                closedDate: ''
+                eventId: 'fin_events#1'
+                closeEventId: ''
+                createdBy: 'users#1'
+                createdAt: '2026-10-20T09:04:00.000Z'
+                accountType: 'customer'
+                accountName: 'Şüpheli S168 001'
+                accountRefNo: '1'
+                accountDeletedAt: ~
+                chequeSerialNo: ''
+                chequeInstrument: ''
+                eventNo: 'BNK-2025-000001'
+                closeEventNo: ''
+                control: '120'
+                reasonLabel: 'Dava'
+            provisions:
+            state:
+              [Map]:
+                0:
+                  0: 'doubtful_receivables#1'
+                  1:
+                    taken: 100000
+                    collected: 60000
+                    writtenOff: 0
+                    released: 0
+                    remaining: 40000
+                    provision: 0
+                    provisionAdded: 0
+                    provisionReleased: 0
+                    provisionUsed: 0
+                    lost: 0
+                    closedOn: ''
+                    lastCreditDate: '2025-12-31'
+                    collectedSameDay: 10000
+                    collectedOnCloseDay: 0
+            allocations:
+              [Map]:
+                0:
+                  0: 'account:account_entries#4'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#1'
+                        minor: 30000
+                    provisionUsed: 0
+                    lossMinor: 0
+                1:
+                  0: 'account:account_entries#5'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#1'
+                        minor: 20000
+                    provisionUsed: 0
+                    lossMinor: 0
+                2:
+                  0: 'account:account_entries#6'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#1'
+                        minor: 10000
+                    provisionUsed: 0
+                    lossMinor: 0
+          cari<Kısmi Şüpheli 001>:
+            records:
+              0:
+                id: 'doubtful_receivables#3'
+                seq: 3
+                party: 'cari<Kısmi Şüpheli 001>'
+                date: '2026-01-07'
+                amountMinor: 60000
+                reason: 'lawsuit'
+                note: 't3hiz'
+                chequeId: ''
+                status: 'open'
+                closedDate: ''
+                eventId: 'fin_events#9'
+                closeEventId: ''
+                createdBy: 'users#1'
+                createdAt: '2026-10-20T09:19:00.000Z'
+                accountType: 'customer'
+                accountName: 'Kısmi Şüpheli 001'
+                accountRefNo: '3'
+                accountDeletedAt: ~
+                chequeSerialNo: ''
+                chequeInstrument: ''
+                eventNo: 'BNK-2026-000005'
+                closeEventNo: ''
+                control: '120'
+                reasonLabel: 'Dava'
+            provisions:
+            state:
+              [Map]:
+                0:
+                  0: 'doubtful_receivables#3'
+                  1:
+                    taken: 60000
+                    collected: 30000
+                    writtenOff: 0
+                    released: 0
+                    remaining: 30000
+                    provision: 0
+                    provisionAdded: 0
+                    provisionReleased: 0
+                    provisionUsed: 0
+                    lost: 0
+                    closedOn: ''
+                    lastCreditDate: '2026-01-10'
+                    collectedSameDay: 20000
+                    collectedOnCloseDay: 0
+            allocations:
+              [Map]:
+                0:
+                  0: 'account:account_entries#13'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#3'
+                        minor: 10000
+                    provisionUsed: 0
+                    lossMinor: 0
+                1:
+                  0: 'account:account_entries#14'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#3'
+                        minor: 20000
+                    provisionUsed: 0
+                    lossMinor: 0
+          cari<Şüpheli Çekli 001>:
+            records:
+              0:
+                id: 'doubtful_receivables#4'
+                seq: 4
+                party: 'cari<Şüpheli Çekli 001>'
+                date: '2026-01-12'
+                amountMinor: 80000
+                reason: 'lawsuit'
+                note: 't3hiz'
+                chequeId: ''
+                status: 'open'
+                closedDate: ''
+                eventId: 'fin_events#12'
+                closeEventId: ''
+                createdBy: 'users#1'
+                createdAt: '2026-10-20T09:26:00.000Z'
+                accountType: 'customer'
+                accountName: 'Şüpheli Çekli 001'
+                accountRefNo: '4'
+                accountDeletedAt: ~
+                chequeSerialNo: ''
+                chequeInstrument: ''
+                eventNo: 'BNK-2026-000008'
+                closeEventNo: ''
+                control: '120'
+                reasonLabel: 'Dava'
+            provisions:
+            state:
+              [Map]:
+                0:
+                  0: 'doubtful_receivables#4'
+                  1:
+                    taken: 80000
+                    collected: 0
+                    writtenOff: 0
+                    released: 0
+                    remaining: 80000
+                    provision: 0
+                    provisionAdded: 0
+                    provisionReleased: 0
+                    provisionUsed: 0
+                    lost: 0
+                    closedOn: ''
+                    lastCreditDate: ''
+                    collectedSameDay: 0
+                    collectedOnCloseDay: 0
+            allocations:
+              [Map]:
+          cari<Şüpheli Bağsız Çekli 001>:
+            records:
+              0:
+                id: 'doubtful_receivables#5'
+                seq: 5
+                party: 'cari<Şüpheli Bağsız Çekli 001>'
+                date: '2026-01-16'
+                amountMinor: 70000
+                reason: 'lawsuit'
+                note: 't3hiz'
+                chequeId: ''
+                status: 'open'
+                closedDate: ''
+                eventId: 'fin_events#13'
+                closeEventId: ''
+                createdBy: 'users#1'
+                createdAt: '2026-10-20T09:31:00.000Z'
+                accountType: 'customer'
+                accountName: 'Şüpheli Bağsız Çekli 001'
+                accountRefNo: '5'
+                accountDeletedAt: ~
+                chequeSerialNo: ''
+                chequeInstrument: ''
+                eventNo: 'BNK-2026-000009'
+                closeEventNo: ''
+                control: '120'
+                reasonLabel: 'Dava'
+            provisions:
+            state:
+              [Map]:
+                0:
+                  0: 'doubtful_receivables#5'
+                  1:
+                    taken: 70000
+                    collected: 25000
+                    writtenOff: 0
+                    released: 0
+                    remaining: 45000
+                    provision: 0
+                    provisionAdded: 0
+                    provisionReleased: 0
+                    provisionUsed: 0
+                    lost: 0
+                    closedOn: ''
+                    lastCreditDate: '2026-01-17'
+                    collectedSameDay: 25000
+                    collectedOnCloseDay: 0
+            allocations:
+              [Map]:
+                0:
+                  0: 'account:account_entries#19'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#5'
+                        minor: 25000
+                    provisionUsed: 0
+                    lossMinor: 0
+        journal:
+          0:
+            id: 'invoice:invoices#1'
+            date: '2025-12-25'
+            lines:
+              0: '120 cari<Şüpheli S168 001> 100000 0'
+          1:
+            id: 'doubtful-take:doubtful_receivables#1'
+            date: '2025-12-26'
+            lines:
+              0: '128 cari<Şüpheli S168 001> 100000 0'
+              1: '120 cari<Şüpheli S168 001> 0 100000'
+          2:
+            id: 'invoice:invoices#2'
+            date: '2025-12-27'
+            lines:
+              0: '120 cari<Şüpheli S168 001> 50000 0'
+          3:
+            id: 'account:account_entries#3'
+            date: '2025-12-28'
+            lines:
+              0: '120 cari<Şüpheli S168 001> 0 40000'
+          4:
+            id: 'account:account_entries#4'
+            date: '2025-12-29'
+            lines:
+              0: '128 cari<Şüpheli S168 001> 0 30000'
+          5:
+            id: 'account:account_entries#5'
+            date: '2025-12-30'
+            lines:
+              0: '128 cari<Şüpheli S168 001> 0 20000'
+          6:
+            id: 'account:account_entries#6'
+            date: '2025-12-31'
+            lines:
+              0: '128 cari<Şüpheli S168 001> 0 10000'
+          7:
+            id: 'invoice:invoices#5'
+            date: '2026-01-06'
+            lines:
+              0: '120 cari<Kısmi Şüpheli 001> 100000 0'
+          8:
+            id: 'doubtful-take:doubtful_receivables#3'
+            date: '2026-01-07'
+            lines:
+              0: '128 cari<Kısmi Şüpheli 001> 60000 0'
+              1: '120 cari<Kısmi Şüpheli 001> 0 60000'
+          9:
+            id: 'account:account_entries#13'
+            date: '2026-01-09'
+            lines:
+              0: '128 cari<Kısmi Şüpheli 001> 0 10000'
+          10:
+            id: 'account:account_entries#14'
+            date: '2026-01-10'
+            lines:
+              0: '128 cari<Kısmi Şüpheli 001> 0 20000'
+          11:
+            id: 'invoice:invoices#7'
+            date: '2026-01-11'
+            lines:
+              0: '120 cari<Şüpheli Çekli 001> 80000 0'
+          12:
+            id: 'doubtful-take:doubtful_receivables#4'
+            date: '2026-01-12'
+            lines:
+              0: '128 cari<Şüpheli Çekli 001> 80000 0'
+              1: '120 cari<Şüpheli Çekli 001> 0 80000'
+          13:
+            id: 'invoice:invoices#8'
+            date: '2026-01-13'
+            lines:
+              0: '120 cari<Şüpheli Çekli 001> 40000 0'
+          14:
+            id: 'account:account_entries#17'
+            date: '2026-01-14'
+            lines:
+              0: '120 cari<Şüpheli Çekli 001> 0 30000'
+          15:
+            id: 'invoice:invoices#9'
+            date: '2026-01-15'
+            lines:
+              0: '120 cari<Şüpheli Bağsız Çekli 001> 70000 0'
+          16:
+            id: 'doubtful-take:doubtful_receivables#5'
+            date: '2026-01-16'
+            lines:
+              0: '128 cari<Şüpheli Bağsız Çekli 001> 70000 0'
+              1: '120 cari<Şüpheli Bağsız Çekli 001> 0 70000'
+          17:
+            id: 'account:account_entries#19'
+            date: '2026-01-17'
+            lines:
+              0: '128 cari<Şüpheli Bağsız Çekli 001> 0 25000'
+        input:
+          cari<Şüpheli S168 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#1'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2025-12-25'
+                  at: '2026-10-20T09:03:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#1'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2025000000001'
+                  receiptNo: ~
+                  debit: 1000
+                  credit: 0
+                  balance: 1000
+                1:
+                  id: 'account_entries#2'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2025-12-27'
+                  at: '2026-10-20T09:05:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#2'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2025000000002'
+                  receiptNo: ~
+                  debit: 500
+                  credit: 0
+                  balance: 1500
+                2:
+                  id: 'account_entries#3'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2025-12-28'
+                  at: '2026-10-20T09:06:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 1
+                  debit: 0
+                  credit: 400
+                  balance: 1100
+                3:
+                  id: 'account_entries#4'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2025-12-29'
+                  at: '2026-10-20T09:07:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: 'invoices#2'
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 2
+                  debit: 0
+                  credit: 300
+                  balance: 800
+                4:
+                  id: 'account_entries#5'
+                  origin: 'cheque'
+                  kind: 'credit'
+                  date: '2025-12-30'
+                  at: '2026-10-20T09:08:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#1'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek alındı · No T3H001-2 · Akbank · vade 19.12.2026'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 200
+                  balance: 600
+                5:
+                  id: 'account_entries#6'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2025-12-31'
+                  at: '2026-10-20T09:09:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 3
+                  debit: 0
+                  credit: 100
+                  balance: 500
+              invoices:
+                0:
+                  id: 'invoices#1'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 1000
+                  originalId: ''
+                  dueDate: '2025-12-25'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:03:00.000Z'
+                1:
+                  id: 'invoices#2'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 500
+                  originalId: ''
+                  dueDate: '2025-12-27'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:05:00.000Z'
+              links:
+                [Map]:
+                  0:
+                    0: 'account_entries#4'
+                    1: 'invoices#2'
+                  1:
+                    0: 'account_entries#5'
+                    1: 'invoices#1'
+              chequeEvents:
+                [Map]:
+                  0:
+                    0: 'account_entries#5'
+                    1: 'receive'
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+            promises:
+              [Map]:
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+          cari<Kısmi Şüpheli 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#12'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-06'
+                  at: '2026-10-20T09:18:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#5'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000003'
+                  receiptNo: ~
+                  debit: 1000
+                  credit: 0
+                  balance: 1000
+                1:
+                  id: 'account_entries#13'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2026-01-09'
+                  at: '2026-10-20T09:21:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 7
+                  debit: 0
+                  credit: 100
+                  balance: 900
+                2:
+                  id: 'account_entries#14'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2026-01-10'
+                  at: '2026-10-20T09:22:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: 'invoices#5'
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 8
+                  debit: 0
+                  credit: 200
+                  balance: 700
+              invoices:
+                0:
+                  id: 'invoices#5'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 1000
+                  originalId: ''
+                  dueDate: '2026-01-06'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:18:00.000Z'
+                1:
+                  id: 'invoices#6'
+                  kind: 'sale'
+                  status: 'cancelled'
+                  payable: 300
+                  originalId: ''
+                  dueDate: '2026-01-08'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:20:00.000Z'
+              links:
+                [Map]:
+                  0:
+                    0: 'account_entries#14'
+                    1: 'invoices#5'
+              chequeEvents:
+                [Map]:
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+            promises:
+              [Map]:
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+          cari<Şüpheli Çekli 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#15'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-11'
+                  at: '2026-10-20T09:25:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#7'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000005'
+                  receiptNo: ~
+                  debit: 800
+                  credit: 0
+                  balance: 800
+                1:
+                  id: 'account_entries#16'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-13'
+                  at: '2026-10-20T09:27:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#8'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000006'
+                  receiptNo: ~
+                  debit: 400
+                  credit: 0
+                  balance: 1200
+                2:
+                  id: 'account_entries#17'
+                  origin: 'cheque'
+                  kind: 'credit'
+                  date: '2026-01-14'
+                  at: '2026-10-20T09:28:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#2'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek alındı · No T3H001-6 · Akbank · vade 19.12.2026'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 300
+                  balance: 900
+              invoices:
+                0:
+                  id: 'invoices#7'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 800
+                  originalId: ''
+                  dueDate: '2026-01-11'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:25:00.000Z'
+                1:
+                  id: 'invoices#8'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 400
+                  originalId: ''
+                  dueDate: '2026-01-13'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:27:00.000Z'
+              links:
+                [Map]:
+                  0:
+                    0: 'account_entries#17'
+                    1: 'invoices#8'
+              chequeEvents:
+                [Map]:
+                  0:
+                    0: 'account_entries#17'
+                    1: 'receive'
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+            promises:
+              [Map]:
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+          cari<Şüpheli Bağsız Çekli 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#18'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-15'
+                  at: '2026-10-20T09:30:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#9'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000007'
+                  receiptNo: ~
+                  debit: 700
+                  credit: 0
+                  balance: 700
+                1:
+                  id: 'account_entries#19'
+                  origin: 'cheque'
+                  kind: 'credit'
+                  date: '2026-01-17'
+                  at: '2026-10-20T09:32:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#3'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek alındı · No T3H001-8 · Akbank · vade 19.12.2026'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 250
+                  balance: 450
+              invoices:
+                0:
+                  id: 'invoices#9'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 700
+                  originalId: ''
+                  dueDate: '2026-01-15'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:30:00.000Z'
+              links:
+                [Map]:
+              chequeEvents:
+                [Map]:
+                  0:
+                    0: 'account_entries#19'
+                    1: 'receive'
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+            promises:
+              [Map]:
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+          cari<Şüphelisiz Kalabalık 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#20'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-18'
+                  at: '2026-10-20T09:34:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#10'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000008'
+                  receiptNo: ~
+                  debit: 900
+                  credit: 0
+                  balance: 900
+                1:
+                  id: 'account_entries#21'
+                  origin: 'invoice'
+                  kind: 'in'
+                  date: '2026-01-18'
+                  at: '2026-10-20T09:34:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: 'invoices#10'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: 'Satış Faturası FIS2026000000008 · peşin tahsilat'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 225
+                  balance: 675
+                2:
+                  id: 'account_entries#22'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-19'
+                  at: '2026-10-20T09:35:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#11'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000009'
+                  receiptNo: ~
+                  debit: 800
+                  credit: 0
+                  balance: 1475
+                3:
+                  id: 'account_entries#23'
+                  origin: 'invoice'
+                  kind: 'in'
+                  date: '2026-01-19'
+                  at: '2026-10-20T09:35:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: 'invoices#11'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: 'Satış Faturası FIS2026000000009 · peşin tahsilat'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 200
+                  balance: 1275
+                4:
+                  id: 'account_entries#24'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-20'
+                  at: '2026-10-20T09:36:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#12'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000010'
+                  receiptNo: ~
+                  debit: 700
+                  credit: 0
+                  balance: 1975
+                5:
+                  id: 'account_entries#25'
+                  origin: 'invoice'
+                  kind: 'in'
+                  date: '2026-01-20'
+                  at: '2026-10-20T09:36:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: 'invoices#12'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: 'Satış Faturası FIS2026000000010 · peşin tahsilat'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 175
+                  balance: 1800
+                6:
+                  id: 'account_entries#26'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-21'
+                  at: '2026-10-20T09:37:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#13'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000011'
+                  receiptNo: ~
+                  debit: 600
+                  credit: 0
+                  balance: 2400
+                7:
+                  id: 'account_entries#27'
+                  origin: 'invoice'
+                  kind: 'in'
+                  date: '2026-01-21'
+                  at: '2026-10-20T09:37:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: 'invoices#13'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: 'Satış Faturası FIS2026000000011 · peşin tahsilat'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 150
+                  balance: 2250
+                8:
+                  id: 'account_entries#31'
+                  origin: 'account'
+                  kind: 'debt'
+                  date: '2026-01-21'
+                  at: '2026-10-20T09:41:00.000Z'
+                  label: 'Borç'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'vade 30/30'
+                  receiptNo: ~
+                  debit: 160
+                  credit: 0
+                  balance: 2410
+                9:
+                  id: 'account_entries#28'
+                  origin: 'account'
+                  kind: 'debt'
+                  date: '2026-01-22'
+                  at: '2026-10-20T09:38:00.000Z'
+                  label: 'Borç'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'vade 20/25'
+                  receiptNo: ~
+                  debit: 145
+                  credit: 0
+                  balance: 2555
+                10:
+                  id: 'account_entries#29'
+                  origin: 'account'
+                  kind: 'debt'
+                  date: '2026-01-23'
+                  at: '2026-10-20T09:39:00.000Z'
+                  label: 'Borç'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'vade 10/0'
+                  receiptNo: ~
+                  debit: 110
+                  credit: 0
+                  balance: 2665
+                11:
+                  id: 'account_entries#30'
+                  origin: 'account'
+                  kind: 'debt'
+                  date: '2026-01-24'
+                  at: '2026-10-20T09:40:00.000Z'
+                  label: 'Borç'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'vade 0/15'
+                  receiptNo: ~
+                  debit: 115
+                  credit: 0
+                  balance: 2780
+                12:
+                  id: 'account_entries#32'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2026-01-25'
+                  at: '2026-10-20T09:42:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: 'invoices#11'
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 9
+                  debit: 0
+                  credit: 150
+                  balance: 2630
+                13:
+                  id: 'account_entries#33'
+                  origin: 'cheque'
+                  kind: 'credit'
+                  date: '2026-01-26'
+                  at: '2026-10-20T09:43:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#4'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek alındı · No T3H001-10 · Akbank · vade 19.12.2026'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 220
+                  balance: 2410
+                14:
+                  id: 'account_entries#34'
+                  origin: 'cheque'
+                  kind: 'credit'
+                  date: '2026-01-27'
+                  at: '2026-10-20T09:44:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#5'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek alındı · No T3H001-11 · Akbank · vade 19.12.2026'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 130
+                  balance: 2280
+              invoices:
+                0:
+                  id: 'invoices#10'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 900
+                  originalId: ''
+                  dueDate: '2026-01-18'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:34:00.000Z'
+                1:
+                  id: 'invoices#11'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 800
+                  originalId: ''
+                  dueDate: '2026-01-19'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:35:00.000Z'
+                2:
+                  id: 'invoices#12'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 700
+                  originalId: ''
+                  dueDate: '2026-01-20'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:36:00.000Z'
+                3:
+                  id: 'invoices#13'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 600
+                  originalId: ''
+                  dueDate: '2026-01-21'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:37:00.000Z'
+              links:
+                [Map]:
+                  0:
+                    0: 'account_entries#21'
+                    1: 'invoices#10'
+                  1:
+                    0: 'account_entries#23'
+                    1: 'invoices#11'
+                  2:
+                    0: 'account_entries#25'
+                    1: 'invoices#12'
+                  3:
+                    0: 'account_entries#27'
+                    1: 'invoices#13'
+                  4:
+                    0: 'account_entries#32'
+                    1: 'invoices#11'
+                  5:
+                    0: 'account_entries#33'
+                    1: 'invoices#12'
+                  6:
+                    0: 'account_entries#36'
+                    1: 'invoices#14'
+              chequeEvents:
+                [Map]:
+                  0:
+                    0: 'account_entries#33'
+                    1: 'receive'
+                  1:
+                    0: 'account_entries#34'
+                    1: 'receive'
+                  2:
+                    0: 'account_entries#36'
+                    1: 'endorse'
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+                0:
+                  0: 'account_entries#28'
+                  1: '2026-11-09'
+                1:
+                  0: 'account_entries#29'
+                  1: '2026-10-30'
+                2:
+                  0: 'account_entries#31'
+                  1: '2026-11-19'
+            promises:
+              [Map]:
+                0:
+                  0: 'account_entries#28'
+                  1: '2026-11-14'
+                1:
+                  0: 'account_entries#30'
+                  1: '2026-11-04'
+                2:
+                  0: 'account_entries#31'
+                  1: '2026-11-19'
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+          cari<Tedarikçi Ciro 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#35'
+                  origin: 'invoice'
+                  kind: 'credit'
+                  date: '2026-01-28'
+                  at: '2026-10-20T09:46:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#14'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Alış Faturası T3H-001'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 220
+                  balance: -220
+                1:
+                  id: 'account_entries#36'
+                  origin: 'cheque'
+                  kind: 'debt'
+                  date: '2026-01-28'
+                  at: '2026-10-20T09:46:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#4'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek ciro edildi · No T3H001-10 · Akbank · vade 19.12.2026 · T3H-001'
+                  receiptNo: ~
+                  debit: 220
+                  credit: 0
+                  balance: 0
+              invoices:
+                0:
+                  id: 'invoices#14'
+                  kind: 'purchase'
+                  status: 'issued'
+                  payable: 220
+                  originalId: ''
+                  dueDate: '2026-01-28'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:46:00.000Z'
+              links:
+                [Map]:
+                  0:
+                    0: 'account_entries#33'
+                    1: 'invoices#12'
+                  1:
+                    0: 'account_entries#36'
+                    1: 'invoices#14'
+              chequeEvents:
+                [Map]:
+                  0:
+                    0: 'account_entries#33'
+                    1: 'receive'
+                  1:
+                    0: 'account_entries#36'
+                    1: 'endorse'
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+            promises:
+              [Map]:
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+        card:
+          cari<Şüpheli S168 001>:
+            doubtful:
+              count: 1
+              openCount: 1
+              openMinor: 40000
+              provisionMinor: 0
+              collectedMinor: 60000
+              writtenOffMinor: 0
+              releasedMinor: 0
+            entries:
+              0:
+                id: 'account_entries#1'
+                amount: 1000
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              1:
+                id: 'account_entries#2'
+                amount: 500
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              2:
+                id: 'account_entries#3'
+                amount: 400
+                doubtfulNormal: true
+                doubtfulNormalPart: ~
+              3:
+                id: 'account_entries#4'
+                amount: 300
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              4:
+                id: 'account_entries#5'
+                amount: 200
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              5:
+                id: 'account_entries#6'
+                amount: 100
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+            balance: ~
+          cari<Kısmi Şüpheli 001>:
+            doubtful:
+              count: 1
+              openCount: 1
+              openMinor: 30000
+              provisionMinor: 0
+              collectedMinor: 30000
+              writtenOffMinor: 0
+              releasedMinor: 0
+            entries:
+              0:
+                id: 'account_entries#12'
+                amount: 1000
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              1:
+                id: 'account_entries#13'
+                amount: 100
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              2:
+                id: 'account_entries#14'
+                amount: 200
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+            balance: ~
+          cari<Şüpheli Çekli 001>:
+            doubtful:
+              count: 1
+              openCount: 1
+              openMinor: 80000
+              provisionMinor: 0
+              collectedMinor: 0
+              writtenOffMinor: 0
+              releasedMinor: 0
+            entries:
+              0:
+                id: 'account_entries#15'
+                amount: 800
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              1:
+                id: 'account_entries#16'
+                amount: 400
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              2:
+                id: 'account_entries#17'
+                amount: 300
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+            balance: ~
+          cari<Şüpheli Bağsız Çekli 001>:
+            doubtful:
+              count: 1
+              openCount: 1
+              openMinor: 45000
+              provisionMinor: 0
+              collectedMinor: 25000
+              writtenOffMinor: 0
+              releasedMinor: 0
+            entries:
+              0:
+                id: 'account_entries#18'
+                amount: 700
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              1:
+                id: 'account_entries#19'
+                amount: 250
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+            balance: ~
+        integrity:
+      actual:
+        all:
+          records:
+            0:
+              id: 'doubtful_receivables#1'
+              seq: 1
+              party: 'cari<Şüpheli S168 001>'
+              date: '2025-12-26'
+              amountMinor: 100000
+              reason: 'lawsuit'
+              note: 't3hiz'
+              chequeId: ''
+              status: 'open'
+              closedDate: ''
+              eventId: 'fin_events#1'
+              closeEventId: ''
+              createdBy: 'users#1'
+              createdAt: '2026-10-20T09:04:00.000Z'
+              accountType: 'customer'
+              accountName: 'Şüpheli S168 001'
+              accountRefNo: '1'
+              accountDeletedAt: ~
+              chequeSerialNo: ''
+              chequeInstrument: ''
+              eventNo: 'BNK-2025-000001'
+              closeEventNo: ''
+              control: '120'
+              reasonLabel: 'Dava'
+            1:
+              id: 'doubtful_receivables#3'
+              seq: 3
+              party: 'cari<Kısmi Şüpheli 001>'
+              date: '2026-01-07'
+              amountMinor: 60000
+              reason: 'lawsuit'
+              note: 't3hiz'
+              chequeId: ''
+              status: 'open'
+              closedDate: ''
+              eventId: 'fin_events#9'
+              closeEventId: ''
+              createdBy: 'users#1'
+              createdAt: '2026-10-20T09:19:00.000Z'
+              accountType: 'customer'
+              accountName: 'Kısmi Şüpheli 001'
+              accountRefNo: '3'
+              accountDeletedAt: ~
+              chequeSerialNo: ''
+              chequeInstrument: ''
+              eventNo: 'BNK-2026-000005'
+              closeEventNo: ''
+              control: '120'
+              reasonLabel: 'Dava'
+            2:
+              id: 'doubtful_receivables#4'
+              seq: 4
+              party: 'cari<Şüpheli Çekli 001>'
+              date: '2026-01-12'
+              amountMinor: 80000
+              reason: 'lawsuit'
+              note: 't3hiz'
+              chequeId: ''
+              status: 'open'
+              closedDate: ''
+              eventId: 'fin_events#12'
+              closeEventId: ''
+              createdBy: 'users#1'
+              createdAt: '2026-10-20T09:26:00.000Z'
+              accountType: 'customer'
+              accountName: 'Şüpheli Çekli 001'
+              accountRefNo: '4'
+              accountDeletedAt: ~
+              chequeSerialNo: ''
+              chequeInstrument: ''
+              eventNo: 'BNK-2026-000008'
+              closeEventNo: ''
+              control: '120'
+              reasonLabel: 'Dava'
+            3:
+              id: 'doubtful_receivables#5'
+              seq: 5
+              party: 'cari<Şüpheli Bağsız Çekli 001>'
+              date: '2026-01-16'
+              amountMinor: 70000
+              reason: 'lawsuit'
+              note: 't3hiz'
+              chequeId: ''
+              status: 'open'
+              closedDate: ''
+              eventId: 'fin_events#13'
+              closeEventId: ''
+              createdBy: 'users#1'
+              createdAt: '2026-10-20T09:31:00.000Z'
+              accountType: 'customer'
+              accountName: 'Şüpheli Bağsız Çekli 001'
+              accountRefNo: '5'
+              accountDeletedAt: ~
+              chequeSerialNo: ''
+              chequeInstrument: ''
+              eventNo: 'BNK-2026-000009'
+              closeEventNo: ''
+              control: '120'
+              reasonLabel: 'Dava'
+          provisions:
+          state:
+            [Map]:
+              0:
+                0: 'doubtful_receivables#1'
+                1:
+                  taken: 100000
+                  collected: 60000
+                  writtenOff: 0
+                  released: 0
+                  remaining: 40000
+                  provision: 0
+                  provisionAdded: 0
+                  provisionReleased: 0
+                  provisionUsed: 0
+                  lost: 0
+                  closedOn: ''
+                  lastCreditDate: '2025-12-31'
+                  collectedSameDay: 10000
+                  collectedOnCloseDay: 0
+              1:
+                0: 'doubtful_receivables#3'
+                1:
+                  taken: 60000
+                  collected: 30000
+                  writtenOff: 0
+                  released: 0
+                  remaining: 30000
+                  provision: 0
+                  provisionAdded: 0
+                  provisionReleased: 0
+                  provisionUsed: 0
+                  lost: 0
+                  closedOn: ''
+                  lastCreditDate: '2026-01-10'
+                  collectedSameDay: 20000
+                  collectedOnCloseDay: 0
+              2:
+                0: 'doubtful_receivables#4'
+                1:
+                  taken: 80000
+                  collected: 30000
+                  writtenOff: 0
+                  released: 0
+                  remaining: 50000
+                  provision: 0
+                  provisionAdded: 0
+                  provisionReleased: 0
+                  provisionUsed: 0
+                  lost: 0
+                  closedOn: ''
+                  lastCreditDate: '2026-01-14'
+                  collectedSameDay: 30000
+                  collectedOnCloseDay: 0
+              3:
+                0: 'doubtful_receivables#5'
+                1:
+                  taken: 70000
+                  collected: 25000
+                  writtenOff: 0
+                  released: 0
+                  remaining: 45000
+                  provision: 0
+                  provisionAdded: 0
+                  provisionReleased: 0
+                  provisionUsed: 0
+                  lost: 0
+                  closedOn: ''
+                  lastCreditDate: '2026-01-17'
+                  collectedSameDay: 25000
+                  collectedOnCloseDay: 0
+          allocations:
+            [Map]:
+              0:
+                0: 'account:account_entries#13'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#3'
+                      minor: 10000
+                  provisionUsed: 0
+                  lossMinor: 0
+              1:
+                0: 'account:account_entries#14'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#3'
+                      minor: 20000
+                  provisionUsed: 0
+                  lossMinor: 0
+              2:
+                0: 'account:account_entries#17'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#4'
+                      minor: 30000
+                  provisionUsed: 0
+                  lossMinor: 0
+              3:
+                0: 'account:account_entries#19'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#5'
+                      minor: 25000
+                  provisionUsed: 0
+                  lossMinor: 0
+              4:
+                0: 'account:account_entries#4'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#1'
+                      minor: 30000
+                  provisionUsed: 0
+                  lossMinor: 0
+              5:
+                0: 'account:account_entries#5'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#1'
+                      minor: 20000
+                  provisionUsed: 0
+                  lossMinor: 0
+              6:
+                0: 'account:account_entries#6'
+                1:
+                  records:
+                    0:
+                      recordId: 'doubtful_receivables#1'
+                      minor: 10000
+                  provisionUsed: 0
+                  lossMinor: 0
+        party:
+          cari<Şüpheli S168 001>:
+            records:
+              0:
+                id: 'doubtful_receivables#1'
+                seq: 1
+                party: 'cari<Şüpheli S168 001>'
+                date: '2025-12-26'
+                amountMinor: 100000
+                reason: 'lawsuit'
+                note: 't3hiz'
+                chequeId: ''
+                status: 'open'
+                closedDate: ''
+                eventId: 'fin_events#1'
+                closeEventId: ''
+                createdBy: 'users#1'
+                createdAt: '2026-10-20T09:04:00.000Z'
+                accountType: 'customer'
+                accountName: 'Şüpheli S168 001'
+                accountRefNo: '1'
+                accountDeletedAt: ~
+                chequeSerialNo: ''
+                chequeInstrument: ''
+                eventNo: 'BNK-2025-000001'
+                closeEventNo: ''
+                control: '120'
+                reasonLabel: 'Dava'
+            provisions:
+            state:
+              [Map]:
+                0:
+                  0: 'doubtful_receivables#1'
+                  1:
+                    taken: 100000
+                    collected: 60000
+                    writtenOff: 0
+                    released: 0
+                    remaining: 40000
+                    provision: 0
+                    provisionAdded: 0
+                    provisionReleased: 0
+                    provisionUsed: 0
+                    lost: 0
+                    closedOn: ''
+                    lastCreditDate: '2025-12-31'
+                    collectedSameDay: 10000
+                    collectedOnCloseDay: 0
+            allocations:
+              [Map]:
+                0:
+                  0: 'account:account_entries#4'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#1'
+                        minor: 30000
+                    provisionUsed: 0
+                    lossMinor: 0
+                1:
+                  0: 'account:account_entries#5'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#1'
+                        minor: 20000
+                    provisionUsed: 0
+                    lossMinor: 0
+                2:
+                  0: 'account:account_entries#6'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#1'
+                        minor: 10000
+                    provisionUsed: 0
+                    lossMinor: 0
+          cari<Kısmi Şüpheli 001>:
+            records:
+              0:
+                id: 'doubtful_receivables#3'
+                seq: 3
+                party: 'cari<Kısmi Şüpheli 001>'
+                date: '2026-01-07'
+                amountMinor: 60000
+                reason: 'lawsuit'
+                note: 't3hiz'
+                chequeId: ''
+                status: 'open'
+                closedDate: ''
+                eventId: 'fin_events#9'
+                closeEventId: ''
+                createdBy: 'users#1'
+                createdAt: '2026-10-20T09:19:00.000Z'
+                accountType: 'customer'
+                accountName: 'Kısmi Şüpheli 001'
+                accountRefNo: '3'
+                accountDeletedAt: ~
+                chequeSerialNo: ''
+                chequeInstrument: ''
+                eventNo: 'BNK-2026-000005'
+                closeEventNo: ''
+                control: '120'
+                reasonLabel: 'Dava'
+            provisions:
+            state:
+              [Map]:
+                0:
+                  0: 'doubtful_receivables#3'
+                  1:
+                    taken: 60000
+                    collected: 30000
+                    writtenOff: 0
+                    released: 0
+                    remaining: 30000
+                    provision: 0
+                    provisionAdded: 0
+                    provisionReleased: 0
+                    provisionUsed: 0
+                    lost: 0
+                    closedOn: ''
+                    lastCreditDate: '2026-01-10'
+                    collectedSameDay: 20000
+                    collectedOnCloseDay: 0
+            allocations:
+              [Map]:
+                0:
+                  0: 'account:account_entries#13'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#3'
+                        minor: 10000
+                    provisionUsed: 0
+                    lossMinor: 0
+                1:
+                  0: 'account:account_entries#14'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#3'
+                        minor: 20000
+                    provisionUsed: 0
+                    lossMinor: 0
+          cari<Şüpheli Çekli 001>:
+            records:
+              0:
+                id: 'doubtful_receivables#4'
+                seq: 4
+                party: 'cari<Şüpheli Çekli 001>'
+                date: '2026-01-12'
+                amountMinor: 80000
+                reason: 'lawsuit'
+                note: 't3hiz'
+                chequeId: ''
+                status: 'open'
+                closedDate: ''
+                eventId: 'fin_events#12'
+                closeEventId: ''
+                createdBy: 'users#1'
+                createdAt: '2026-10-20T09:26:00.000Z'
+                accountType: 'customer'
+                accountName: 'Şüpheli Çekli 001'
+                accountRefNo: '4'
+                accountDeletedAt: ~
+                chequeSerialNo: ''
+                chequeInstrument: ''
+                eventNo: 'BNK-2026-000008'
+                closeEventNo: ''
+                control: '120'
+                reasonLabel: 'Dava'
+            provisions:
+            state:
+              [Map]:
+                0:
+                  0: 'doubtful_receivables#4'
+                  1:
+                    taken: 80000
+                    collected: 30000
+                    writtenOff: 0
+                    released: 0
+                    remaining: 50000
+                    provision: 0
+                    provisionAdded: 0
+                    provisionReleased: 0
+                    provisionUsed: 0
+                    lost: 0
+                    closedOn: ''
+                    lastCreditDate: '2026-01-14'
+                    collectedSameDay: 30000
+                    collectedOnCloseDay: 0
+            allocations:
+              [Map]:
+                0:
+                  0: 'account:account_entries#17'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#4'
+                        minor: 30000
+                    provisionUsed: 0
+                    lossMinor: 0
+          cari<Şüpheli Bağsız Çekli 001>:
+            records:
+              0:
+                id: 'doubtful_receivables#5'
+                seq: 5
+                party: 'cari<Şüpheli Bağsız Çekli 001>'
+                date: '2026-01-16'
+                amountMinor: 70000
+                reason: 'lawsuit'
+                note: 't3hiz'
+                chequeId: ''
+                status: 'open'
+                closedDate: ''
+                eventId: 'fin_events#13'
+                closeEventId: ''
+                createdBy: 'users#1'
+                createdAt: '2026-10-20T09:31:00.000Z'
+                accountType: 'customer'
+                accountName: 'Şüpheli Bağsız Çekli 001'
+                accountRefNo: '5'
+                accountDeletedAt: ~
+                chequeSerialNo: ''
+                chequeInstrument: ''
+                eventNo: 'BNK-2026-000009'
+                closeEventNo: ''
+                control: '120'
+                reasonLabel: 'Dava'
+            provisions:
+            state:
+              [Map]:
+                0:
+                  0: 'doubtful_receivables#5'
+                  1:
+                    taken: 70000
+                    collected: 25000
+                    writtenOff: 0
+                    released: 0
+                    remaining: 45000
+                    provision: 0
+                    provisionAdded: 0
+                    provisionReleased: 0
+                    provisionUsed: 0
+                    lost: 0
+                    closedOn: ''
+                    lastCreditDate: '2026-01-17'
+                    collectedSameDay: 25000
+                    collectedOnCloseDay: 0
+            allocations:
+              [Map]:
+                0:
+                  0: 'account:account_entries#19'
+                  1:
+                    records:
+                      0:
+                        recordId: 'doubtful_receivables#5'
+                        minor: 25000
+                    provisionUsed: 0
+                    lossMinor: 0
+        journal:
+          0:
+            id: 'invoice:invoices#1'
+            date: '2025-12-25'
+            lines:
+              0: '120 cari<Şüpheli S168 001> 100000 0'
+          1:
+            id: 'doubtful-take:doubtful_receivables#1'
+            date: '2025-12-26'
+            lines:
+              0: '128 cari<Şüpheli S168 001> 100000 0'
+              1: '120 cari<Şüpheli S168 001> 0 100000'
+          2:
+            id: 'invoice:invoices#2'
+            date: '2025-12-27'
+            lines:
+              0: '120 cari<Şüpheli S168 001> 50000 0'
+          3:
+            id: 'account:account_entries#3'
+            date: '2025-12-28'
+            lines:
+              0: '120 cari<Şüpheli S168 001> 0 40000'
+          4:
+            id: 'account:account_entries#4'
+            date: '2025-12-29'
+            lines:
+              0: '128 cari<Şüpheli S168 001> 0 30000'
+          5:
+            id: 'account:account_entries#5'
+            date: '2025-12-30'
+            lines:
+              0: '128 cari<Şüpheli S168 001> 0 20000'
+          6:
+            id: 'account:account_entries#6'
+            date: '2025-12-31'
+            lines:
+              0: '128 cari<Şüpheli S168 001> 0 10000'
+          7:
+            id: 'invoice:invoices#5'
+            date: '2026-01-06'
+            lines:
+              0: '120 cari<Kısmi Şüpheli 001> 100000 0'
+          8:
+            id: 'doubtful-take:doubtful_receivables#3'
+            date: '2026-01-07'
+            lines:
+              0: '128 cari<Kısmi Şüpheli 001> 60000 0'
+              1: '120 cari<Kısmi Şüpheli 001> 0 60000'
+          9:
+            id: 'account:account_entries#13'
+            date: '2026-01-09'
+            lines:
+              0: '128 cari<Kısmi Şüpheli 001> 0 10000'
+          10:
+            id: 'account:account_entries#14'
+            date: '2026-01-10'
+            lines:
+              0: '128 cari<Kısmi Şüpheli 001> 0 20000'
+          11:
+            id: 'invoice:invoices#7'
+            date: '2026-01-11'
+            lines:
+              0: '120 cari<Şüpheli Çekli 001> 80000 0'
+          12:
+            id: 'doubtful-take:doubtful_receivables#4'
+            date: '2026-01-12'
+            lines:
+              0: '128 cari<Şüpheli Çekli 001> 80000 0'
+              1: '120 cari<Şüpheli Çekli 001> 0 80000'
+          13:
+            id: 'invoice:invoices#8'
+            date: '2026-01-13'
+            lines:
+              0: '120 cari<Şüpheli Çekli 001> 40000 0'
+          14:
+            id: 'account:account_entries#17'
+            date: '2026-01-14'
+            lines:
+              0: '128 cari<Şüpheli Çekli 001> 0 30000'
+          15:
+            id: 'invoice:invoices#9'
+            date: '2026-01-15'
+            lines:
+              0: '120 cari<Şüpheli Bağsız Çekli 001> 70000 0'
+          16:
+            id: 'doubtful-take:doubtful_receivables#5'
+            date: '2026-01-16'
+            lines:
+              0: '128 cari<Şüpheli Bağsız Çekli 001> 70000 0'
+              1: '120 cari<Şüpheli Bağsız Çekli 001> 0 70000'
+          17:
+            id: 'account:account_entries#19'
+            date: '2026-01-17'
+            lines:
+              0: '128 cari<Şüpheli Bağsız Çekli 001> 0 25000'
+        input:
+          cari<Şüpheli S168 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#1'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2025-12-25'
+                  at: '2026-10-20T09:03:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#1'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2025000000001'
+                  receiptNo: ~
+                  debit: 1000
+                  credit: 0
+                  balance: 1000
+                1:
+                  id: 'account_entries#2'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2025-12-27'
+                  at: '2026-10-20T09:05:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#2'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2025000000002'
+                  receiptNo: ~
+                  debit: 500
+                  credit: 0
+                  balance: 1500
+                2:
+                  id: 'account_entries#3'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2025-12-28'
+                  at: '2026-10-20T09:06:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 1
+                  debit: 0
+                  credit: 400
+                  balance: 1100
+                3:
+                  id: 'account_entries#4'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2025-12-29'
+                  at: '2026-10-20T09:07:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: 'invoices#2'
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 2
+                  debit: 0
+                  credit: 300
+                  balance: 800
+                4:
+                  id: 'account_entries#5'
+                  origin: 'cheque'
+                  kind: 'credit'
+                  date: '2025-12-30'
+                  at: '2026-10-20T09:08:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#1'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek alındı · No T3H001-2 · Akbank · vade 19.12.2026'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 200
+                  balance: 600
+                5:
+                  id: 'account_entries#6'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2025-12-31'
+                  at: '2026-10-20T09:09:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 3
+                  debit: 0
+                  credit: 100
+                  balance: 500
+              invoices:
+                0:
+                  id: 'invoices#1'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 1000
+                  originalId: ''
+                  dueDate: '2025-12-25'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:03:00.000Z'
+                1:
+                  id: 'invoices#2'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 500
+                  originalId: ''
+                  dueDate: '2025-12-27'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:05:00.000Z'
+              links:
+                [Map]:
+                  0:
+                    0: 'account_entries#4'
+                    1: 'invoices#2'
+                  1:
+                    0: 'account_entries#5'
+                    1: 'invoices#1'
+              chequeEvents:
+                [Map]:
+                  0:
+                    0: 'account_entries#5'
+                    1: 'receive'
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+            promises:
+              [Map]:
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+          cari<Kısmi Şüpheli 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#12'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-06'
+                  at: '2026-10-20T09:18:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#5'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000003'
+                  receiptNo: ~
+                  debit: 1000
+                  credit: 0
+                  balance: 1000
+                1:
+                  id: 'account_entries#13'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2026-01-09'
+                  at: '2026-10-20T09:21:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 7
+                  debit: 0
+                  credit: 100
+                  balance: 900
+                2:
+                  id: 'account_entries#14'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2026-01-10'
+                  at: '2026-10-20T09:22:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: 'invoices#5'
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 8
+                  debit: 0
+                  credit: 200
+                  balance: 700
+              invoices:
+                0:
+                  id: 'invoices#5'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 1000
+                  originalId: ''
+                  dueDate: '2026-01-06'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:18:00.000Z'
+                1:
+                  id: 'invoices#6'
+                  kind: 'sale'
+                  status: 'cancelled'
+                  payable: 300
+                  originalId: ''
+                  dueDate: '2026-01-08'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:20:00.000Z'
+              links:
+                [Map]:
+                  0:
+                    0: 'account_entries#14'
+                    1: 'invoices#5'
+              chequeEvents:
+                [Map]:
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+            promises:
+              [Map]:
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+          cari<Şüpheli Çekli 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#15'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-11'
+                  at: '2026-10-20T09:25:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#7'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000005'
+                  receiptNo: ~
+                  debit: 800
+                  credit: 0
+                  balance: 800
+                1:
+                  id: 'account_entries#16'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-13'
+                  at: '2026-10-20T09:27:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#8'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000006'
+                  receiptNo: ~
+                  debit: 400
+                  credit: 0
+                  balance: 1200
+                2:
+                  id: 'account_entries#17'
+                  origin: 'cheque'
+                  kind: 'credit'
+                  date: '2026-01-14'
+                  at: '2026-10-20T09:28:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#2'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek alındı · No T3H001-6 · Akbank · vade 19.12.2026'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 300
+                  balance: 900
+              invoices:
+                0:
+                  id: 'invoices#7'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 800
+                  originalId: ''
+                  dueDate: '2026-01-11'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:25:00.000Z'
+                1:
+                  id: 'invoices#8'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 400
+                  originalId: ''
+                  dueDate: '2026-01-13'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:27:00.000Z'
+              links:
+                [Map]:
+                  0:
+                    0: 'account_entries#17'
+                    1: 'invoices#8'
+              chequeEvents:
+                [Map]:
+                  0:
+                    0: 'account_entries#17'
+                    1: 'receive'
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+            promises:
+              [Map]:
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+          cari<Şüpheli Bağsız Çekli 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#18'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-15'
+                  at: '2026-10-20T09:30:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#9'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000007'
+                  receiptNo: ~
+                  debit: 700
+                  credit: 0
+                  balance: 700
+                1:
+                  id: 'account_entries#19'
+                  origin: 'cheque'
+                  kind: 'credit'
+                  date: '2026-01-17'
+                  at: '2026-10-20T09:32:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#3'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek alındı · No T3H001-8 · Akbank · vade 19.12.2026'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 250
+                  balance: 450
+              invoices:
+                0:
+                  id: 'invoices#9'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 700
+                  originalId: ''
+                  dueDate: '2026-01-15'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:30:00.000Z'
+              links:
+                [Map]:
+              chequeEvents:
+                [Map]:
+                  0:
+                    0: 'account_entries#19'
+                    1: 'receive'
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+            promises:
+              [Map]:
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+          cari<Şüphelisiz Kalabalık 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#20'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-18'
+                  at: '2026-10-20T09:34:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#10'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000008'
+                  receiptNo: ~
+                  debit: 900
+                  credit: 0
+                  balance: 900
+                1:
+                  id: 'account_entries#21'
+                  origin: 'invoice'
+                  kind: 'in'
+                  date: '2026-01-18'
+                  at: '2026-10-20T09:34:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: 'invoices#10'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: 'Satış Faturası FIS2026000000008 · peşin tahsilat'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 225
+                  balance: 675
+                2:
+                  id: 'account_entries#22'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-19'
+                  at: '2026-10-20T09:35:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#11'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000009'
+                  receiptNo: ~
+                  debit: 800
+                  credit: 0
+                  balance: 1475
+                3:
+                  id: 'account_entries#23'
+                  origin: 'invoice'
+                  kind: 'in'
+                  date: '2026-01-19'
+                  at: '2026-10-20T09:35:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: 'invoices#11'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: 'Satış Faturası FIS2026000000009 · peşin tahsilat'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 200
+                  balance: 1275
+                4:
+                  id: 'account_entries#24'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-20'
+                  at: '2026-10-20T09:36:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#12'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000010'
+                  receiptNo: ~
+                  debit: 700
+                  credit: 0
+                  balance: 1975
+                5:
+                  id: 'account_entries#25'
+                  origin: 'invoice'
+                  kind: 'in'
+                  date: '2026-01-20'
+                  at: '2026-10-20T09:36:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: 'invoices#12'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: 'Satış Faturası FIS2026000000010 · peşin tahsilat'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 175
+                  balance: 1800
+                6:
+                  id: 'account_entries#26'
+                  origin: 'invoice'
+                  kind: 'debt'
+                  date: '2026-01-21'
+                  at: '2026-10-20T09:37:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#13'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Satış Faturası FIS2026000000011'
+                  receiptNo: ~
+                  debit: 600
+                  credit: 0
+                  balance: 2400
+                7:
+                  id: 'account_entries#27'
+                  origin: 'invoice'
+                  kind: 'in'
+                  date: '2026-01-21'
+                  at: '2026-10-20T09:37:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: 'invoices#13'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: 'Satış Faturası FIS2026000000011 · peşin tahsilat'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 150
+                  balance: 2250
+                8:
+                  id: 'account_entries#31'
+                  origin: 'account'
+                  kind: 'debt'
+                  date: '2026-01-21'
+                  at: '2026-10-20T09:41:00.000Z'
+                  label: 'Borç'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'vade 30/30'
+                  receiptNo: ~
+                  debit: 160
+                  credit: 0
+                  balance: 2410
+                9:
+                  id: 'account_entries#28'
+                  origin: 'account'
+                  kind: 'debt'
+                  date: '2026-01-22'
+                  at: '2026-10-20T09:38:00.000Z'
+                  label: 'Borç'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'vade 20/25'
+                  receiptNo: ~
+                  debit: 145
+                  credit: 0
+                  balance: 2555
+                10:
+                  id: 'account_entries#29'
+                  origin: 'account'
+                  kind: 'debt'
+                  date: '2026-01-23'
+                  at: '2026-10-20T09:39:00.000Z'
+                  label: 'Borç'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'vade 10/0'
+                  receiptNo: ~
+                  debit: 110
+                  credit: 0
+                  balance: 2665
+                11:
+                  id: 'account_entries#30'
+                  origin: 'account'
+                  kind: 'debt'
+                  date: '2026-01-24'
+                  at: '2026-10-20T09:40:00.000Z'
+                  label: 'Borç'
+                  sourceId: ''
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'vade 0/15'
+                  receiptNo: ~
+                  debit: 115
+                  credit: 0
+                  balance: 2780
+                12:
+                  id: 'account_entries#32'
+                  origin: 'account'
+                  kind: 'in'
+                  date: '2026-01-25'
+                  at: '2026-10-20T09:42:00.000Z'
+                  label: 'Tahsilat'
+                  sourceId: ''
+                  invoiceId: 'invoices#11'
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: 'cash'
+                  note: ''
+                  receiptNo: 9
+                  debit: 0
+                  credit: 150
+                  balance: 2630
+                13:
+                  id: 'account_entries#33'
+                  origin: 'cheque'
+                  kind: 'credit'
+                  date: '2026-01-26'
+                  at: '2026-10-20T09:43:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#4'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek alındı · No T3H001-10 · Akbank · vade 19.12.2026'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 220
+                  balance: 2410
+                14:
+                  id: 'account_entries#34'
+                  origin: 'cheque'
+                  kind: 'credit'
+                  date: '2026-01-27'
+                  at: '2026-10-20T09:44:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#5'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek alındı · No T3H001-11 · Akbank · vade 19.12.2026'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 130
+                  balance: 2280
+              invoices:
+                0:
+                  id: 'invoices#10'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 900
+                  originalId: ''
+                  dueDate: '2026-01-18'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:34:00.000Z'
+                1:
+                  id: 'invoices#11'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 800
+                  originalId: ''
+                  dueDate: '2026-01-19'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:35:00.000Z'
+                2:
+                  id: 'invoices#12'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 700
+                  originalId: ''
+                  dueDate: '2026-01-20'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:36:00.000Z'
+                3:
+                  id: 'invoices#13'
+                  kind: 'sale'
+                  status: 'issued'
+                  payable: 600
+                  originalId: ''
+                  dueDate: '2026-01-21'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:37:00.000Z'
+              links:
+                [Map]:
+                  0:
+                    0: 'account_entries#21'
+                    1: 'invoices#10'
+                  1:
+                    0: 'account_entries#23'
+                    1: 'invoices#11'
+                  2:
+                    0: 'account_entries#25'
+                    1: 'invoices#12'
+                  3:
+                    0: 'account_entries#27'
+                    1: 'invoices#13'
+                  4:
+                    0: 'account_entries#32'
+                    1: 'invoices#11'
+                  5:
+                    0: 'account_entries#33'
+                    1: 'invoices#12'
+                  6:
+                    0: 'account_entries#36'
+                    1: 'invoices#14'
+              chequeEvents:
+                [Map]:
+                  0:
+                    0: 'account_entries#33'
+                    1: 'receive'
+                  1:
+                    0: 'account_entries#34'
+                    1: 'receive'
+                  2:
+                    0: 'account_entries#36'
+                    1: 'endorse'
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+                0:
+                  0: 'account_entries#28'
+                  1: '2026-11-09'
+                1:
+                  0: 'account_entries#29'
+                  1: '2026-10-30'
+                2:
+                  0: 'account_entries#31'
+                  1: '2026-11-19'
+            promises:
+              [Map]:
+                0:
+                  0: 'account_entries#28'
+                  1: '2026-11-14'
+                1:
+                  0: 'account_entries#30'
+                  1: '2026-11-04'
+                2:
+                  0: 'account_entries#31'
+                  1: '2026-11-19'
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+          cari<Tedarikçi Ciro 001>:
+            settle:
+              lines:
+                0:
+                  id: 'account_entries#35'
+                  origin: 'invoice'
+                  kind: 'credit'
+                  date: '2026-01-28'
+                  at: '2026-10-20T09:46:00.000Z'
+                  label: 'Fatura'
+                  sourceId: 'invoices#14'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Alış Faturası T3H-001'
+                  receiptNo: ~
+                  debit: 0
+                  credit: 220
+                  balance: -220
+                1:
+                  id: 'account_entries#36'
+                  origin: 'cheque'
+                  kind: 'debt'
+                  date: '2026-01-28'
+                  at: '2026-10-20T09:46:00.000Z'
+                  label: 'Çek / Senet'
+                  sourceId: 'cheques#4'
+                  invoiceId: ''
+                  doubtfulSkip: false
+                  doubtfulNormal: false
+                  method: ''
+                  note: 'Çek ciro edildi · No T3H001-10 · Akbank · vade 19.12.2026 · T3H-001'
+                  receiptNo: ~
+                  debit: 220
+                  credit: 0
+                  balance: 0
+              invoices:
+                0:
+                  id: 'invoices#14'
+                  kind: 'purchase'
+                  status: 'issued'
+                  payable: 220
+                  originalId: ''
+                  dueDate: '2026-01-28'
+                  planId: ''
+                  issuedAt: '2026-10-20T09:46:00.000Z'
+              links:
+                [Map]:
+                  0:
+                    0: 'account_entries#33'
+                    1: 'invoices#12'
+                  1:
+                    0: 'account_entries#36'
+                    1: 'invoices#14'
+              chequeEvents:
+                [Map]:
+                  0:
+                    0: 'account_entries#33'
+                    1: 'receive'
+                  1:
+                    0: 'account_entries#36'
+                    1: 'endorse'
+              reversals:
+                [Map]:
+              offsets:
+              today: ''
+            dueDates:
+              [Map]:
+            promises:
+              [Map]:
+            schedules:
+              [Map]:
+            linkTimes:
+              [Map]:
+            linkMoments:
+              [Map]:
+        card:
+          cari<Şüpheli S168 001>:
+            doubtful:
+              count: 1
+              openCount: 1
+              openMinor: 40000
+              provisionMinor: 0
+              collectedMinor: 60000
+              writtenOffMinor: 0
+              releasedMinor: 0
+            entries:
+              0:
+                id: 'account_entries#1'
+                amount: 1000
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              1:
+                id: 'account_entries#2'
+                amount: 500
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              2:
+                id: 'account_entries#3'
+                amount: 400
+                doubtfulNormal: true
+                doubtfulNormalPart: ~
+              3:
+                id: 'account_entries#4'
+                amount: 300
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              4:
+                id: 'account_entries#5'
+                amount: 200
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              5:
+                id: 'account_entries#6'
+                amount: 100
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+            balance: ~
+          cari<Kısmi Şüpheli 001>:
+            doubtful:
+              count: 1
+              openCount: 1
+              openMinor: 30000
+              provisionMinor: 0
+              collectedMinor: 30000
+              writtenOffMinor: 0
+              releasedMinor: 0
+            entries:
+              0:
+                id: 'account_entries#12'
+                amount: 1000
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              1:
+                id: 'account_entries#13'
+                amount: 100
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              2:
+                id: 'account_entries#14'
+                amount: 200
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+            balance: ~
+          cari<Şüpheli Çekli 001>:
+            doubtful:
+              count: 1
+              openCount: 1
+              openMinor: 50000
+              provisionMinor: 0
+              collectedMinor: 30000
+              writtenOffMinor: 0
+              releasedMinor: 0
+            entries:
+              0:
+                id: 'account_entries#15'
+                amount: 800
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              1:
+                id: 'account_entries#16'
+                amount: 400
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              2:
+                id: 'account_entries#17'
+                amount: 300
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+            balance: ~
+          cari<Şüpheli Bağsız Çekli 001>:
+            doubtful:
+              count: 1
+              openCount: 1
+              openMinor: 45000
+              provisionMinor: 0
+              collectedMinor: 25000
+              writtenOffMinor: 0
+              releasedMinor: 0
+            entries:
+              0:
+                id: 'account_entries#18'
+                amount: 700
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+              1:
+                id: 'account_entries#19'
+                amount: 250
+                doubtfulNormal: false
+                doubtfulNormalPart: ~
+            balance: ~
+        integrity:
+      operator: 'deepStrictEqual'
+      stack: |-
+        stage (file:///dev/shm/t3hiz/k-uc4/test/t3hiz-esdegerlik-250.test.mjs:252:17)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/t3hiz/k-uc4/test/t3hiz-esdegerlik-250.test.mjs:306:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: H3: kesit belleğinin anahtarı görünümü taşır — aynı satır, farklı açık kalan / aynı gün işlenen → belleksiz sonuçla aynı
+    ok 3 - H3: kesit belleğinin anahtarı görünümü taşır — aynı satır, farklı açık kalan / aynı gün işlenen → belleksiz sonuçla aynı
+      ---
+      duration_ms: 9.846494
+      type: 'test'
+      ...
+    # Subtest: H3: geri alınan işlemin İÇİNDE okunan durum bellekte kalmaz (geri alma total_changes'ı azaltmaz — aynı anahtar)
+    ok 4 - H3: geri alınan işlemin İÇİNDE okunan durum bellekte kalmaz (geri alma total_changes'ı azaltmaz — aynı anahtar)
+      ---
+      duration_ms: 3.88128
+      type: 'test'
+      ...
+    1..4
+not ok 1 - 2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön denetimi, kuyruk girdisinin sorgu planları ve işlem dışı belleği — davranış AYNEN
+  ---
+  duration_ms: 3198.221382
+  type: 'suite'
+  location: '/dev/shm/t3hiz/k-uc4/test/t3hiz-esdegerlik-250.test.mjs:110:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3591.75073
+

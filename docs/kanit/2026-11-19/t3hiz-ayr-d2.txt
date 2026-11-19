@@ -1,0 +1,114 @@
+AYRIŞTIRMA d2 (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/temiz-100k) · kilitsiz · tekrar 3 · yollar borc,evrak,fatura · kilit 06:49:34 · yük 0.14 0.80 1.63
+=== ana · başta 0.14 0.80 1.63 1/110 18402 
+kod /dev/shm/t3hiz/k-ana · yük (başta) 0.39 0.81 1.62 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 248.8 ms · ortanca 275.7 ms · olay döngüsü en çok 278.7 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 45.7 ms · ortanca 48.2 ms · olay döngüsü en çok 50.9 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 160.3 ms · ortanca 177.6 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 84.9 ms · ortanca 87.5 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 0.39 0.81 1.62
+çıkış 0 · sonda 0.39 0.81 1.62 1/113 18461
+=== t0 · başta 0.39 0.81 1.62 1/113 18466 
+kod /dev/shm/t3hiz/k-t0 · yük (başta) 0.87 0.89 1.62 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 246.7 ms · ortanca 267.7 ms · olay döngüsü en çok 261.2 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 48 ms · ortanca 49.7 ms · olay döngüsü en çok 50.3 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 160.1 ms · ortanca 178.7 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 85.8 ms · ortanca 86.2 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 0.87 0.89 1.62
+çıkış 0 · sonda 0.87 0.89 1.62 1/113 18504
+=== t1 · başta 0.87 0.89 1.62 1/113 18509 
+kod /dev/shm/t3hiz/k-t1 · yük (başta) 1.15 0.96 1.63 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 240.9 ms · ortanca 261.6 ms · olay döngüsü en çok 266.9 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 43 ms · ortanca 49.7 ms · olay döngüsü en çok 47.1 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 154.8 ms · ortanca 163.8 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 82.4 ms · ortanca 82.8 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.14 0.96 1.63
+çıkış 0 · sonda 1.14 0.96 1.63 1/113 18568
+=== t2 · başta 1.14 0.96 1.63 1/113 18573 
+kod /dev/shm/t3hiz/k-t2 · yük (başta) 1.17 0.98 1.62 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 238.5 ms · ortanca 257 ms · olay döngüsü en çok 252.4 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 43.3 ms · ortanca 43.4 ms · olay döngüsü en çok 47.1 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 153.3 ms · ortanca 157.6 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 81.8 ms · ortanca 84.1 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.17 0.98 1.62
+çıkış 0 · sonda 1.17 0.98 1.62 1/111 18585
+=== c1 · başta 1.17 0.98 1.62 1/111 18590 
+kod /dev/shm/t3hiz/k-c1 · yük (başta) 1.12 0.99 1.61 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 262.5 ms · ortanca 299.1 ms · olay döngüsü en çok 294.4 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 74.2 ms · ortanca 77.7 ms · olay döngüsü en çok 76 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 185.8 ms · ortanca 186.4 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 109.1 ms · ortanca 110.6 ms · olay döngüsü en çok 114.1 ms (n=3)
+yük (sonda) 1.11 0.99 1.60
+çıkış 0 · sonda 1.11 0.99 1.60 1/113 18603
+=== c2 · başta 1.11 0.99 1.60 1/113 18608 
+kod /dev/shm/t3hiz/k-c2 · yük (başta) 1.21 1.02 1.60 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 258.2 ms · ortanca 301.8 ms · olay döngüsü en çok 300.4 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 70.1 ms · ortanca 73.8 ms · olay döngüsü en çok 80.4 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 182.8 ms · ortanca 198.2 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 108 ms · ortanca 115.3 ms · olay döngüsü en çok 112.3 ms (n=3)
+yük (sonda) 1.21 1.02 1.60
+çıkış 0 · sonda 1.21 1.02 1.60 1/111 18632
+=== t3 · başta 1.21 1.02 1.60 1/111 18637 
+kod /dev/shm/t3hiz/k-t3 · yük (başta) 1.21 1.03 1.59 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 272.9 ms · ortanca 275.6 ms · olay döngüsü en çok 288.6 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 71.8 ms · ortanca 74.7 ms · olay döngüsü en çok 75.5 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 189 ms · ortanca 191.6 ms · olay döngüsü en çok 210.6 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 109.6 ms · ortanca 116.5 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.21 1.03 1.59
+çıkış 0 · sonda 1.21 1.03 1.59 1/111 18677
+=== t4 · başta 1.21 1.03 1.59 1/112 18683 
+kod /dev/shm/t3hiz/k-t4 · yük (başta) 1.15 1.03 1.58 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 261.9 ms · ortanca 275.9 ms · olay döngüsü en çok 292.8 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 71.1 ms · ortanca 73.3 ms · olay döngüsü en çok 69.1 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 190.4 ms · ortanca 198.1 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 114.3 ms · ortanca 115 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.15 1.03 1.58
+çıkış 0 · sonda 1.15 1.03 1.58 1/115 18795
+=== s1 · başta 1.15 1.03 1.58 1/115 18808 
+kod /dev/shm/t3hiz/k-s1 · yük (başta) 1.28 1.07 1.58 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 272.7 ms · ortanca 275.9 ms · olay döngüsü en çok 303.3 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 72.8 ms · ortanca 81 ms · olay döngüsü en çok 96.1 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 210 ms · ortanca 211.3 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 115.7 ms · ortanca 118.2 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.28 1.07 1.58
+çıkış 0 · sonda 1.28 1.07 1.58 1/115 18844
+=== a1 · başta 1.28 1.07 1.58 1/115 18849 
+kod /dev/shm/t3hiz/k-a1 · yük (başta) 1.55 1.15 1.59 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 230 ms · ortanca 239.8 ms · olay döngüsü en çok 259.9 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 44.8 ms · ortanca 45.1 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 154.2 ms · ortanca 163 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 82.2 ms · ortanca 87.6 ms · olay döngüsü en çok 85.1 ms (n=3)
+yük (sonda) 1.50 1.15 1.59
+çıkış 0 · sonda 1.50 1.15 1.59 1/115 18876
+=== a2 · başta 1.50 1.15 1.59 1/115 18881 
+kod /dev/shm/t3hiz/k-a2 · yük (başta) 1.43 1.15 1.58 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 237.1 ms · ortanca 237.8 ms · olay döngüsü en çok 275.8 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 43.2 ms · ortanca 45.5 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 153.9 ms · ortanca 166.7 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 82 ms · ortanca 82.8 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.43 1.15 1.58
+çıkış 0 · sonda 1.43 1.15 1.58 1/112 18921
+=== a3 · başta 1.43 1.15 1.58 1/112 18926 
+kod /dev/shm/t3hiz/k-a3 · yük (başta) 1.38 1.16 1.57 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 236.8 ms · ortanca 240.9 ms · olay döngüsü en çok 262.7 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 42.8 ms · ortanca 47.2 ms · olay döngüsü en çok 48.2 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 156.4 ms · ortanca 161.2 ms · olay döngüsü en çok 174.5 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 86.4 ms · ortanca 87.7 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.35 1.16 1.57
+çıkış 0 · sonda 1.35 1.16 1.57 1/112 18982
+=== s2 · başta 1.35 1.16 1.57 1/112 18987 
+kod /dev/shm/t3hiz/k-s2 · yük (başta) 1.25 1.14 1.55 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 261.5 ms · ortanca 312.1 ms · olay döngüsü en çok 307.2 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 71.5 ms · ortanca 79.8 ms · olay döngüsü en çok 84.4 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 184.8 ms · ortanca 210.6 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 114.9 ms · ortanca 118.4 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.25 1.14 1.55
+çıkış 0 · sonda 1.25 1.14 1.55 1/114 19039
+=== s3 · başta 1.25 1.14 1.55 1/114 19044 
+kod /dev/shm/t3hiz/k-s3 · yük (başta) 1.16 1.13 1.54 · TZ Europe/Istanbul
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 270 ms · ortanca 293.1 ms · olay döngüsü en çok 307 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 73.1 ms · ortanca 76.7 ms · olay döngüsü en çok 70.9 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 188.6 ms · ortanca 190.1 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 114.1 ms · ortanca 116 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.16 1.13 1.54
+çıkış 0 · sonda 1.16 1.13 1.54 1/115 19126
+bitti 06:54:57

@@ -60,7 +60,9 @@ describe("Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
 
   it("Hesabı Atanmamış liste ve özet: 102.00 = 6.000, 108.00 = 3.000; satırlar İşlem No'lu", async () => {
     const legacy = await must("eski", ctx.api.get(`${BANK}/legacy`));
-    assert.equal(legacy.totals.bankMinor, 600_000);
+    // 2.5.0 Ç7a tur 2 — BEKLENTİ BİLEREK DEĞİŞTİ (K-14, KULLANICI KARARI S179 = A): açılıştan (01.10) önceki havaleler (20.09 +5.000, 25.09 −1.000) açılışta sayılır
+    // (defterde 519); kovanın bakiyesi yalnız 03.10'daki 2.000 (önce 6.000). Satırlar listede DURUR (aşağıda dört satır). POS (22.09, giriş) yalnız Devir Kapanışı'yla: 3.000.
+    assert.equal(legacy.totals.bankMinor, 200_000);
     assert.equal(legacy.totals.cardMinor, 300_000);
     const ids = legacy.rows.map(row => row.id).sort();
     assert.deepEqual(ids, [rows.before.id, rows.out.id, rows.after.id, rows.pos.id].sort());
@@ -71,11 +73,11 @@ describe("Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
     assert.equal(after.kind, "in");
     assert.match(after.eventNo, /^BNK-2026-/);
     const summary = await must("özet", ctx.api.get(`${BANK}/summary`));
-    assert.equal(summary.unassigned.bankMinor, 600_000);
+    assert.equal(summary.unassigned.bankMinor, 200_000);
     assert.equal(summary.unassigned.cardMinor, 300_000);
     assert.equal(summary.realBank.minor, 10_000_000, "Gerçek Banka eski hareketleri içermez");
     const subs = await subBalances(ctx.api);
-    assert.equal(subs["102.00"].balance, 6000);
+    assert.equal(subs["102.00"].balance, 2000, "Alt Hesap Mizanı = defter (açılıştan önceki 4.000 519'da)");
     assert.equal(subs["102.00"].name, "Hesabı Atanmamış Eski Hareketler");
     assert.equal(subs["108.00"].balance, 3000);
   });
@@ -122,9 +124,11 @@ describe("Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
 
   it("sihirbaz: önizleme → çalıştır → geri al (birebir eski hâl); ikinci geri al 409", async () => {
     const before = await balancesOf(ctx.api);
-    assert.equal(before.subs["102.00"], 6000);
-    assert.equal(before.trial["102"], 106000);
-    assert.equal(before.trial["519"], -100000);
+    // 2.5.0 Ç7a tur 2 — BEKLENTİ BİLEREK DEĞİŞTİ (K-14, S179 = A): açılıştan önceki 4.000 havale kurulumdan ÖNCE de 519'da (önce 102.00 = 6.000, 102 = 106.000, 519 = −100.000).
+    // Kurulumdan sonraki hâl (aşağıda 519 = −93.000) DEĞİŞMEDİ; Devir Kapanışı maddesi defterde netlenir (B 519 / A 519).
+    assert.equal(before.subs["102.00"], 2000);
+    assert.equal(before.trial["102"], 102000);
+    assert.equal(before.trial["519"], -96000);
     const eventBefore = ctx.store.get("SELECT * FROM fin_events WHERE id = ?", rows.after.eventId);
     const preview = await must("önizleme", ctx.api.post(`${BANK}/setup?dryRun=1`, { accountId: ziraat.id, carryClose: true, assign: "all" }));
     assert.equal(preview.date, "2026-10-01");
@@ -198,7 +202,8 @@ describe("Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
     expectStatus(await ctx.api.post(`${BANK}/legacy/assign`, { accountId: ziraat.id, rows: [{ table: "account_entries", id: rows.after.id }] }), 409, "bank-already-assigned", "zaten bağlı");
     const subs = await subBalances(ctx.api);
     assert.equal(subs["102.01"].balance, 102000);
-    assert.equal(subs["102.00"].balance, 4000);
+    // 2.5.0 Ç7a tur 2 — BEKLENTİ BİLEREK DEĞİŞTİ (K-14, S179 = A): kalan iki eski havale (20.09, 25.09) açılıştan önce → 519; 102.00 0 (önce 4.000).
+    assert.equal(subs["102.00"]?.balance || 0, 0);
     await integrityOk(ctx.api, "tek atama");
   });
 
@@ -259,6 +264,11 @@ describe("Aşama 3 — sihirbaz eski sürüm verisinde (v2.0.26 zincir fikstür�
       assert.deepEqual(failuresOf(integrity), baseline, JSON.stringify(integrity.failures).slice(0, 800));
       await okData("geri al", api.post(`${BANK}/setup/${run.id}/undo`, {}));
       await okData("hesabı düzelt 0", api.post(`${BANK}/accounts/${account.id}/opening`, { date: today, amount: "0", confirmed: true }));
+      // 2.5.0 Ç7a tur 2 (K-14, S179 = A): açılışı bugün olan hesap durdukça bugünden önceki hesapsız havaleler açılışta sayılır (defterde 519) — "birebir eski hâl" için hesap
+      // da silinir (eski hâlde hesap yoktu). Hesap dururken 102.00 → 519 kayması bilerek: aşağıda ayrıca denetlenir.
+      const covered = await trialOf();
+      assert.ok(Math.abs((covered["519"] || 0) - (before.trial["519"] || 0) - ((before.trial["102"] || 0) - (covered["102"] || 0))) < 0.005, "hesap dururken 102'den düşen = 519'a eklenen");
+      await okData("hesabı sil", api.del(`${BANK}/accounts/${account.id}`));
       const after = { trial: await trialOf(), subs: await subsOf() };
       assert.deepEqual(nonZero(after.trial), nonZero(before.trial), "mizan birebir");
       assert.deepEqual(nonZero(after.subs), nonZero(before.subs), "alt hesaplar birebir");

@@ -1,0 +1,7 @@
+yeni UTC çıkış 0 # tests 10 # pass 10 # fail 0 
+yeni Europe/Istanbul çıkış 0 # tests 10 # pass 10 # fail 0 
+taban UTC çıkış 1 # tests 10 # pass 6 # fail 4 
+taban Europe/Istanbul çıkış 1 # tests 10 # pass 6 # fail 4 
+mutant çıkış 0
+yeni temiz: 0 · taban temiz: 0 · mut temiz: 0
+BITTI

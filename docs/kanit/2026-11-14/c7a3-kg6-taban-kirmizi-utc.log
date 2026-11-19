@@ -1,0 +1,309 @@
+TAP version 13
+# (node:9846) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7a KG-6 — POS komisyonu satış (çekim) günü; valörde net (KG-6 = A, S177 = A, S178 = A)
+    # Subtest: 1. tek çekim: satış günü B 653 / A 108.01; valöre kadar 108.01 = net; gün fişi net (653 satırı yok)
+    not ok 1 - 1. tek çekim: satış günü B 653 / A 108.01; valöre kadar 108.01 = net; gün fişi net (653 satırı yok)
+      ---
+      duration_ms: 475.9831
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:46:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        08.10 B 653 250 / A 108.01 250
+        + actual - expected
+        
+        + []
+        - [
+        -   {
+        -     date: '2026-10-08',
+        -     lines: [
+        -       '108/108.01:0:25000',
+        -       '653:25000:0'
+        -     ]
+        -   }
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          date: '2026-10-08'
+          lines:
+            0: '108/108.01:0:25000'
+            1: '653:25000:0'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:50:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 2. taksitli satış: BÜTÜN taksitlerin kesintisi satış gününde; İade Edilmez iade komisyon maddesi doğurmaz
+    not ok 2 - 2. taksitli satış: BÜTÜN taksitlerin kesintisi satış gününde; İade Edilmez iade komisyon maddesi doğurmaz
+      ---
+      duration_ms: 373.99197
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:70:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        420 = 3 × 140
+        + actual - expected
+        
+        + []
+        - [
+        -   {
+        -     date: '2026-10-08',
+        -     lines: [
+        -       '108/108.01:0:42000',
+        -       '653:42000:0'
+        -     ]
+        -   }
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          date: '2026-10-08'
+          lines:
+            0: '108/108.01:0:42000'
+            1: '653:42000:0'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:74:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 3. Oransal iade: iade edilen kesinti iade gününde ters (B 108.01 / A 653); gün fişi net
+    not ok 3 - 3. Oransal iade: iade edilen kesinti iade gününde ters (B 108.01 / A 653); gün fişi net
+      ---
+      duration_ms: 427.998798
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:88:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iade günü B 108.01 100 / A 653 100
+        + actual - expected
+        
+        + []
+        - [
+        -   {
+        -     date: '2026-10-08',
+        -     lines: [
+        -       '108/108.01:0:25000',
+        -       '653:25000:0'
+        -     ]
+        -   },
+        -   {
+        -     date: '2026-10-09',
+        -     lines: [
+        -       '108/108.01:10000:0',
+        -       '653:0:10000'
+        -     ]
+        -   }
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          date: '2026-10-08'
+          lines:
+            0: '108/108.01:0:25000'
+            1: '653:25000:0'
+        1:
+          date: '2026-10-09'
+          lines:
+            0: '108/108.01:10000:0'
+            1: '653:0:10000'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:95:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 4. Elle Onay: Komisyon Farkı valörün (onayın) gününde (S177 = A); satış günü maddesi değişmez
+    not ok 4 - 4. Elle Onay: Komisyon Farkı valörün (onayın) gününde (S177 = A); satış günü maddesi değişmez
+      ---
+      duration_ms: 377.240871
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   {
+        -     date: '2026-10-08',
+        -     lines: [
+        -       '108/108.01:0:25000',
+        -       '653:25000:0'
+        -     ]
+        -   }
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          date: '2026-10-08'
+          lines:
+            0: '108/108.01:0:25000'
+            1: '653:25000:0'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:118:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 5. BSMV Hariç (kesinti = komisyon + BSMV) ve sabit işlem ücreti satış gününde
+    not ok 5 - 5. BSMV Hariç (kesinti = komisyon + BSMV) ve sabit işlem ücreti satış gününde
+      ---
+      duration_ms: 356.563329
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:128:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        250 + 12,50
+        + actual - expected
+        
+        + []
+        - [
+        -   {
+        -     date: '2026-10-08',
+        -     lines: [
+        -       '108/108.01:0:26250',
+        -       '653:26250:0'
+        -     ]
+        -   }
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          date: '2026-10-08'
+          lines:
+            0: '108/108.01:0:26250'
+            1: '653:26250:0'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:132:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 6. KDV kipi (Ödeme Kuruluşu): satış günü maddesi yok; kesinti valörde sağlayıcıya (bugünkü gibi — S178 = A)
+    ok 6 - 6. KDV kipi (Ödeme Kuruluşu): satış günü maddesi yok; kesinti valörde sağlayıcıya (bugünkü gibi — S178 = A)
+      ---
+      duration_ms: 399.179671
+      type: 'test'
+      ...
+    # Subtest: 7. bankaya geçmiş satış düzeltilir (yeniden planlama): eski maddeler kalkar, yeni satışın komisyonu satış gününde
+    not ok 7 - 7. bankaya geçmiş satış düzeltilir (yeniden planlama): eski maddeler kalkar, yeni satışın komisyonu satış gününde
+      ---
+      duration_ms: 411.289011
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:168:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yalnız yeni satış (200)
+        + actual - expected
+        
+        + []
+        - [
+        -   {
+        -     date: '2026-10-08',
+        -     lines: [
+        -       '108/108.01:0:20000',
+        -       '653:20000:0'
+        -     ]
+        -   }
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          date: '2026-10-08'
+          lines:
+            0: '108/108.01:0:20000'
+            1: '653:20000:0'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:177:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 8. yıl dönümü: 30.12 satışın komisyonu 2026'da; 2027'deki gün fişinde 653 yok
+    not ok 8 - 8. yıl dönümü: 30.12 satışın komisyonu 2026'da; 2027'deki gün fişinde 653 yok
+      ---
+      duration_ms: 451.28258
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:188:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   {
+        -     date: '2026-12-30',
+        -     lines: [
+        -       '108/108.01:0:25000',
+        -       '653:25000:0'
+        -     ]
+        -   }
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          date: '2026-12-30'
+          lines:
+            0: '108/108.01:0:25000'
+            1: '653:25000:0'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:195:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 1 - Ç7a KG-6 — POS komisyonu satış (çekim) günü; valörde net (KG-6 = A, S177 = A, S178 = A)
+  ---
+  duration_ms: 3275.552813
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/taban/test/pos-komisyon-satis-gunu-250.test.mjs:45:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 1
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3583.228994

@@ -1,0 +1,10 @@
+esd hazir3c · kaynak /dev/shm/t3hiz/hazir3c-kaynak · yeni k-uc2 · başta 1.88 1.35 1.63 6/225 7647 · 08:13:38
+s3 çıkış 0 · 770 sn · {"cariler":1891,"sirketler":[{"id":"sirket-001","cari":1485,"fatura":34046,"kartli":5406},{"id":"sirket-5a5ffa3a-674f-4df8-b2f6-5c43b11b61a8","cari":406,"fatura":3915,"kartli":522}],"satir":1897,"sha2
+uc2 çıkış 0 · 234 sn · {"cariler":1891,"sirketler":[{"id":"sirket-001","cari":1485,"fatura":34046,"kartli":5406},{"id":"sirket-5a5ffa3a-674f-4df8-b2f6-5c43b11b61a8","cari":406,"fatura":3915,"kartli":522}],"satir":1897,"sha2
+SONUÇ hazir3c: BAYT BAYT AYNI (1897 satır; 503880829 bayt; sha256 291fc8548974fa91); şüpheli satırı 4
+sonda 2.26 2.45 2.34 1/202 10850 · 08:30:25
+esd temiz100k · kaynak /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/temiz-100k · yeni k-uc2 · başta 2.26 2.45 2.34 4/201 10853 · 08:30:25
+s3 çıkış 0 · 795 sn · {"cariler":1890,"sirketler":[{"id":"sirket-001","cari":1484,"fatura":34026,"kartli":5406},{"id":"sirket-5a5ffa3a-674f-4df8-b2f6-5c43b11b61a8","cari":406,"fatura":3915,"kartli":522}],"satir":1896,"sha2
+uc2 çıkış 0 · 234 sn · {"cariler":1890,"sirketler":[{"id":"sirket-001","cari":1484,"fatura":34026,"kartli":5406},{"id":"sirket-5a5ffa3a-674f-4df8-b2f6-5c43b11b61a8","cari":406,"fatura":3915,"kartli":522}],"satir":1896,"sha2
+SONUÇ temiz100k: BAYT BAYT AYNI (1896 satır; 503640858 bayt; sha256 4103041622364238); şüpheli satırı 4
+sonda 3.01 2.68 2.42 2/191 13778 · 08:47:36

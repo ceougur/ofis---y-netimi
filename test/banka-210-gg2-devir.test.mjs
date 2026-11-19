@@ -125,7 +125,9 @@ describe("GG2 — iki hesap, ters sıra (B 15.09 önce, A 01.10 sonra); kuruluml
     await must("C geri al", ctx.api.post(`${BANK}/setup/${jobC.id}/undo`, {}));
     await must("B geri al", ctx.api.post(`${BANK}/setup/${jobB.id}/undo`, {}));
     const back = await state(ctx.api);
-    assert.equal(back.u, 900_000, "başlangıçtaki 102.00 (5.000 + 3.000 + 1.000)");
+    // 2.5.0 Ç7a tur 2 — BEKLENTİ BİLEREK DEĞİŞTİ (K-14, S179 = A): üç hesapsız havale (10.09, 20.09, 05.10) havale hesaplarının EN GEÇ açılışından (C, 06.10) önce →
+    // açılışta sayılır (defterde 519); Hesabı Atanmamış 0 (önce 9.000).
+    assert.equal(back.u, 0, "kurulumlar geri alınınca hesapsız havaleler en geç açılıştan önce: Hesabı Atanmamış 0");
     await integrityOk(ctx.api, "geri alındıktan sonra");
   });
 });
@@ -240,7 +242,9 @@ describe("GG2 — Bankaya Geçmiş Say / Kart Borcuna Aktar: yalnız açılışt
     const subs = await subBalances(ctx.api);
     assert.equal(subs["102.01"].balance, 103000);
     assert.equal(subs["309.01"].balance, -1000);
-    assert.equal(subs["108.00"].balance, 2000, "açılış öncesi net 2.000 Devir Kapanışı'nı bekler");
+    // 2.5.0 Ç7a tur 2 — BEKLENTİ BİLEREK DEĞİŞTİ (K-15, S179 = A): 23.09 kartla ödeme 1.000 kartın açılışından (01.10) önce → açılışta (A 519); 108.00'da yalnız
+    // açılıştan önceki POS tahsilatı 3.000 (POS'un açılışı yok — yalnız Devir Kapanışı'yla). Önce 2.000 (3.000 − 1.000).
+    assert.equal(subs["108.00"].balance, 3000, "açılış öncesi POS 3.000 Devir Kapanışı'nı bekler; kart ödemesi açılışta");
     await must("sihirbaz", ctx.api.post(`${BANK}/setup`, { accountId: ziraat.id, carryClose: true, assign: "all" }));
     const after = await subBalances(ctx.api);
     assert.equal(after["108.00"]?.balance || 0, 0);

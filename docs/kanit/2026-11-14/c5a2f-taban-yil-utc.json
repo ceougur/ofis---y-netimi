@@ -1,0 +1,53 @@
+{
+  "ad": "c5a2f-taban-yil-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-reporter=tap test/kural-farki-yil-250.test.mjs",
+  "commit": "807c70f62b2527b8cddfd3016e0a80f766c1edcf",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T12:34:06.901Z",
+  "sure_sn": 3.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 6,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan) › [y5] fazla düzeltme yıl sonundan sonra: tutar doğru (700); fişin yılı eşleme yılından SONRA ise (kilit geri alındı) satırlar fişin tersi",
+      "konum": "test/kural-farki-yil-250.test.mjs:72:3",
+      "hata": "fişin yılı > eşleme yılı: 2026'ya fiş önerilmez · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan) › [y8] S185 = A iki yönde: fişin yılı > eşleme yılı — 2027 fişi 2026'nın farkını KENDİ yılında (671) düzeltmiş sayılır; yalnız düzeltilmemiş fark 2026'ya (602), fazla fiş kendi yılında",
+      "konum": "test/kural-farki-yil-250.test.mjs:89:3",
+      "hata": "fark 2027 fişiyle kendi yılında kapanmış: 2026'ya fiş önerilmez (2026 mizanı 671 = 0) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi) › [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) → kilit 31.12 (671) → aday onayı → 'Fişle düzeltilebilen fark kalmadı' + Düzeltildi; ikinci fiş; ters kayıt; kilit kaldır / yeniden kilitle",
+      "konum": "test/kural-farki-yil-250.test.mjs:147:3",
+      "hata": "The input did not match the regular expression /\\(Fiş 2026-000001\\) artık fazla\\. Fişin tarihi kilitli dönemde olduğu için ters kaydı yazılamaz — Yönetim › Sistem › Kural Farkı Düzeltme'de ön izlemedeki fişi kaydedin; fazla ilk açık güne alınır\\.$/. Input: · \"Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (Fiş 2026-000001) artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin.\" (beklenen , gelen Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (Fiş 2026-000001) artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin.)"
+    },
+    {
+      "ad": "Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi) › [y10] S185 = A uçtan uca: 2027 fişi → kilit 30.11.2026'ya geri — (b) doğrudan: Düzeltildi, 2026'ya fiş yok, yeni 2026 farkı 602'ye; (a) önce kaldır: fiş fazla, ipucu kendi yılında ters kayıt, ters kayıtla temiz",
+      "konum": "test/kural-farki-yil-250.test.mjs:307:3",
+      "hata": "2026'ya ikinci fiş önerilmez (tur 2e: B 671 700 / A 602 700): [{\"account\":\"602\",\"sub\":\"\",\"party\":\"\",\"debit\":0,\"credit\":70000,\"name\":\"Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)\"},{\"account\":\"671\",\"sub\":\"\",\"party\":\"\",\"debit\":70000,\"credit\":0,\"name\":\"Önceki Dönem Gelir ve Kârları\"}] · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-14/c5a2f-taban-yil-utc.log",
+  "klasor": "/dev/shm/c5a2f-k1/taban",
+  "ham_cikti_sha256": "846d60c599d4545bc7ce368fd71949d7cc7b9771fb693b3d1a79de55a9cafe8a",
+  "ham_cikti_bayt": 11040
+}

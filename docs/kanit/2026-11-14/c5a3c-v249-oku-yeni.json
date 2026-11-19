@@ -1,0 +1,440 @@
+{
+ "kod": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/yeni",
+ "dondurma": {
+  "coverage": "2026-07-12",
+  "lock": "2026-07-12",
+  "pending": null
+ },
+ "canliOnce": {
+  "Kilitli F1 Bağlı Nakit": {
+   "b120": 900,
+   "b128": 200,
+   "v249": {
+    "b120": 500,
+    "b128": 600
+   }
+  },
+  "Kilitli F2 Bağlı Çek": {
+   "b120": 500,
+   "b128": 600,
+   "v249": {
+    "b120": 900,
+    "b128": 200
+   }
+  },
+  "Kilitli F1 Bağlı Çek": {
+   "b120": 900,
+   "b128": 200,
+   "v249": {
+    "b120": 900,
+    "b128": 200
+   }
+  },
+  "Kilitli Bağsız Nakit": {
+   "b120": 900,
+   "b128": 200,
+   "v249": {
+    "b120": 900,
+    "b128": 200
+   }
+  },
+  "Kilitli S168 F2 Nakit 100": {
+   "b120": 100,
+   "b128": 900,
+   "v249": {
+    "b120": 0,
+    "b128": 1000
+   }
+  },
+  "Kilitsiz F1 Bağlı Nakit": {
+   "b120": 900,
+   "b128": 200,
+   "v249": {
+    "b120": 500,
+    "b128": 600
+   }
+  },
+  "Kilitsiz F2 Bağlı Çek": {
+   "b120": 500,
+   "b128": 600,
+   "v249": {
+    "b120": 900,
+    "b128": 200
+   }
+  }
+ },
+ "mutabakatBulgu": [],
+ "kuralFarki": "öğe yok",
+ "scanKeys": [
+  "findings",
+  "result"
+ ],
+ "onizlemeTam": {
+  "lockedUntil": "2026-07-12",
+  "frozenThrough": "2026-07-12",
+  "today": "2026-10-20",
+  "date": "2026-07-13",
+  "count": 3,
+  "lines": [],
+  "digest": "83fafe35cd909cf9545cacfc899d6c57",
+  "totalMinor": 0,
+  "excluded": [
+   {
+    "account": "120",
+    "sub": "",
+    "party": "account-598f8c5d-86ad-467c-abea-6e64b117c2bb",
+    "minor": 10000,
+    "subledger": true,
+    "name": "Alıcılar (Müşteri Carileri)",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   },
+   {
+    "account": "120",
+    "sub": "",
+    "party": "account-7247750e-012a-4eb8-93d8-8d10bb86ac75",
+    "minor": 40000,
+    "subledger": true,
+    "name": "Alıcılar (Müşteri Carileri)",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   },
+   {
+    "account": "120",
+    "sub": "",
+    "party": "account-9c9c29a1-4862-4596-9950-b407d55d982f",
+    "minor": -40000,
+    "subledger": true,
+    "name": "Alıcılar (Müşteri Carileri)",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   },
+   {
+    "account": "128",
+    "sub": "",
+    "party": "account-598f8c5d-86ad-467c-abea-6e64b117c2bb",
+    "minor": -10000,
+    "subledger": true,
+    "name": "Şüpheli Ticari Alacaklar",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   },
+   {
+    "account": "128",
+    "sub": "",
+    "party": "account-7247750e-012a-4eb8-93d8-8d10bb86ac75",
+    "minor": -40000,
+    "subledger": true,
+    "name": "Şüpheli Ticari Alacaklar",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   },
+   {
+    "account": "128",
+    "sub": "",
+    "party": "account-9c9c29a1-4862-4596-9950-b407d55d982f",
+    "minor": 40000,
+    "subledger": true,
+    "name": "Şüpheli Ticari Alacaklar",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   }
+  ],
+  "sources": [
+   {
+    "id": "account:aentry-bd327f25-1f6f-4f26-a7c2-4154b7ec0595",
+    "date": "2026-01-23",
+    "source": "Cari tahsilat",
+    "text": "",
+    "inFrozen": true,
+    "inLive": true,
+    "excluded": true,
+    "deltas": [
+     {
+      "year": 2026,
+      "account": "120",
+      "sub": "",
+      "party": "account-7247750e-012a-4eb8-93d8-8d10bb86ac75",
+      "minor": 40000,
+      "name": "Alıcılar (Müşteri Carileri)"
+     },
+     {
+      "year": 2026,
+      "account": "128",
+      "sub": "",
+      "party": "account-7247750e-012a-4eb8-93d8-8d10bb86ac75",
+      "minor": -40000,
+      "name": "Şüpheli Ticari Alacaklar"
+     }
+    ]
+   },
+   {
+    "id": "account:aentry-5981f840-b142-465e-8a00-4369d79ce0ae",
+    "date": "2026-03-04",
+    "source": "Çek / Senet",
+    "text": "Çek alındı · No V249-1 · Akbank · vade 19.12.2026",
+    "inFrozen": true,
+    "inLive": true,
+    "excluded": true,
+    "deltas": [
+     {
+      "year": 2026,
+      "account": "128",
+      "sub": "",
+      "party": "account-9c9c29a1-4862-4596-9950-b407d55d982f",
+      "minor": 40000,
+      "name": "Şüpheli Ticari Alacaklar"
+     },
+     {
+      "year": 2026,
+      "account": "120",
+      "sub": "",
+      "party": "account-9c9c29a1-4862-4596-9950-b407d55d982f",
+      "minor": -40000,
+      "name": "Alıcılar (Müşteri Carileri)"
+     }
+    ]
+   },
+   {
+    "id": "account:aentry-13b04e2f-e6ac-49cc-91c8-c894e846587b",
+    "date": "2026-07-02",
+    "source": "Cari tahsilat",
+    "text": "",
+    "inFrozen": true,
+    "inLive": true,
+    "excluded": true,
+    "deltas": [
+     {
+      "year": 2026,
+      "account": "120",
+      "sub": "",
+      "party": "account-598f8c5d-86ad-467c-abea-6e64b117c2bb",
+      "minor": 10000,
+      "name": "Alıcılar (Müşteri Carileri)"
+     },
+     {
+      "year": 2026,
+      "account": "128",
+      "sub": "",
+      "party": "account-598f8c5d-86ad-467c-abea-6e64b117c2bb",
+      "minor": -10000,
+      "name": "Şüpheli Ticari Alacaklar"
+     }
+    ]
+   }
+  ],
+  "sourceCount": 3,
+  "candidates": 0,
+  "vouchers": [],
+  "disabled": true,
+  "reason": "Düzeltilecek kural farkı yok.",
+  "code": "rule-diff-nothing"
+ },
+ "integrityApi": {
+  "status": 200,
+  "keys": [
+   "ok",
+   "checks",
+   "failures",
+   "durationMs",
+   "log"
+  ],
+  "kuralFarki": [
+   {
+    "code": "ledger:rule-diff",
+    "name": "Kural Değişikliği Farkı (Kilitli Dönem: 12.07.2026 ve Öncesi)",
+    "ok": false,
+    "count": 3,
+    "difference": 100,
+    "sample": [
+     "account:aentry-bd327f25-1f6f-4f26-a7c2-4154b7ec0595 (23.01.2026)",
+     "account:aentry-5981f840-b142-465e-8a00-4369d79ce0ae (04.03.2026)",
+     "account:aentry-13b04e2f-e6ac-49cc-91c8-c894e846587b (02.07.2026)"
+    ],
+    "breakdown": [
+     {
+      "account": "120",
+      "frozenMinor": -50000,
+      "liveMinor": -40000,
+      "differenceMinor": 10000
+     },
+     {
+      "account": "128",
+      "frozenMinor": -40000,
+      "liveMinor": -50000,
+      "differenceMinor": -10000
+     }
+    ],
+    "severity": "warning",
+    "hint": "Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin kapının görmediği bir yolla değişmesi olabilir. Kilitli dönemin raporları donmuş defterden okunur, değişmez. Kural farkı Kural Farkı Düzeltme Fişi ile ilk açık güne alınır."
+   }
+  ]
+ },
+ "onizleme": {
+  "status": 200,
+  "disabled": true,
+  "reason": "Düzeltilecek kural farkı yok.",
+  "lines": [],
+  "excluded": [
+   {
+    "account": "120",
+    "sub": "",
+    "party": "account-598f8c5d-86ad-467c-abea-6e64b117c2bb",
+    "minor": 10000,
+    "subledger": true,
+    "name": "Alıcılar (Müşteri Carileri)",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   },
+   {
+    "account": "120",
+    "sub": "",
+    "party": "account-7247750e-012a-4eb8-93d8-8d10bb86ac75",
+    "minor": 40000,
+    "subledger": true,
+    "name": "Alıcılar (Müşteri Carileri)",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   },
+   {
+    "account": "120",
+    "sub": "",
+    "party": "account-9c9c29a1-4862-4596-9950-b407d55d982f",
+    "minor": -40000,
+    "subledger": true,
+    "name": "Alıcılar (Müşteri Carileri)",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   },
+   {
+    "account": "128",
+    "sub": "",
+    "party": "account-598f8c5d-86ad-467c-abea-6e64b117c2bb",
+    "minor": -10000,
+    "subledger": true,
+    "name": "Şüpheli Ticari Alacaklar",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   },
+   {
+    "account": "128",
+    "sub": "",
+    "party": "account-7247750e-012a-4eb8-93d8-8d10bb86ac75",
+    "minor": -40000,
+    "subledger": true,
+    "name": "Şüpheli Ticari Alacaklar",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   },
+   {
+    "account": "128",
+    "sub": "",
+    "party": "account-9c9c29a1-4862-4596-9950-b407d55d982f",
+    "minor": 40000,
+    "subledger": true,
+    "name": "Şüpheli Ticari Alacaklar",
+    "reason": "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."
+   }
+  ],
+  "sources": [
+   {
+    "id": "account:aentry-bd327f25-1f6f-4f26-a7c2-4154b7ec0595",
+    "date": "2026-01-23",
+    "source": "Cari tahsilat",
+    "text": "",
+    "inFrozen": true,
+    "inLive": true,
+    "excluded": true,
+    "deltas": [
+     {
+      "year": 2026,
+      "account": "120",
+      "sub": "",
+      "party": "account-7247750e-012a-4eb8-93d8-8d10bb86ac75",
+      "minor": 40000,
+      "name": "Alıcılar (Müşteri Carileri)"
+     },
+     {
+      "year": 2026,
+      "account": "128",
+      "sub": "",
+      "party": "account-7247750e-012a-4eb8-93d8-8d10bb86ac75",
+      "minor": -40000,
+      "name": "Şüpheli Ticari Alacaklar"
+     }
+    ]
+   },
+   {
+    "id": "account:aentry-5981f840-b142-465e-8a00-4369d79ce0ae",
+    "date": "2026-03-04",
+    "source": "Çek / Senet",
+    "text": "Çek alındı · No V249-1 · Akbank · vade 19.12.2026",
+    "inFrozen": true,
+    "inLive": true,
+    "excluded": true,
+    "deltas": [
+     {
+      "year": 2026,
+      "account": "128",
+      "sub": "",
+      "party": "account-9c9c29a1-4862-4596-9950-b407d55d982f",
+      "minor": 40000,
+      "name": "Şüpheli Ticari Alacaklar"
+     },
+     {
+      "year": 2026,
+      "account": "120",
+      "sub": "",
+      "party": "account-9c9c29a1-4862-4596-9950-b407d55d982f",
+      "minor": -40000,
+      "name": "Alıcılar (Müşteri Carileri)"
+     }
+    ]
+   },
+   {
+    "id": "account:aentry-13b04e2f-e6ac-49cc-91c8-c894e846587b",
+    "date": "2026-07-02",
+    "source": "Cari tahsilat",
+    "text": "",
+    "inFrozen": true,
+    "inLive": true,
+    "excluded": true,
+    "deltas": [
+     {
+      "year": 2026,
+      "account": "120",
+      "sub": "",
+      "party": "account-598f8c5d-86ad-467c-abea-6e64b117c2bb",
+      "minor": 10000,
+      "name": "Alıcılar (Müşteri Carileri)"
+     },
+     {
+      "year": 2026,
+      "account": "128",
+      "sub": "",
+      "party": "account-598f8c5d-86ad-467c-abea-6e64b117c2bb",
+      "minor": -10000,
+      "name": "Şüpheli Ticari Alacaklar"
+     }
+    ]
+   }
+  ],
+  "keys": [
+   "lockedUntil",
+   "frozenThrough",
+   "today",
+   "date",
+   "count",
+   "lines",
+   "digest",
+   "totalMinor",
+   "excluded",
+   "sources",
+   "sourceCount",
+   "candidates",
+   "vouchers",
+   "disabled",
+   "reason",
+   "code"
+  ]
+ },
+ "acikDonemYazim": "200 ",
+ "canliSonra": {
+  "b120": 900,
+  "b128": 100,
+  "v249": {
+   "b120": 500,
+   "b128": 600
+  }
+ },
+ "mutabakatSonra": []
+}

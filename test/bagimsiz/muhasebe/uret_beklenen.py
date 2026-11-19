@@ -39,7 +39,7 @@ def beklenen(s):
     b = {"dil": M.DIL, "ad": s["ad"], "dallar": {}}
     for et in M.dal_etiketleri(s):
         r = M.kos(s, M.Kurallar.etiketten(et))
-        b["dallar"][et] = {k: r[k] for k in ("raporlar", "redler", "degismezler", "devirler", "acilis_olabilir")}
+        b["dallar"][et] = {k: r[k] for k in ("raporlar", "redler", "degismezler", "devirler", "acilis_olabilir", "susmalar") if k in r}   # susmalar: bakım 12 (S168), yalnız doluysa
     return b
 
 

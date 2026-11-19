@@ -901,6 +901,75 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
   return { mode, items, itemByKey, cards, lockLinks };
 }
 
+// M13 (S3): açık şüpheli kayıtların kalanı, kayıt gününe kadar doğmuş açık borç kalemlerinden S2 sırasıyla şüpheli kuyruğuna (yetmezse sonrakilerden). assemble ve doubtfulBefore'un TEK kuralı.
+// Dönüş: held (kalem anahtarı → kuruş), amount (Σ), byRecord (kalem anahtarı → [{ recordId, minor }] — 2.5.0 Ç5-A tur 3c, K-1 (b); kayıt kimliği girdide `id` varsa).
+function holdDoubtful(net, doubtfulRecords = []) {
+  const held = new Map();
+  const byRecord = new Map();
+  let amount = 0;
+  const openDebit = net.items.filter(item => item.sign > 0 && item.left > 0).sort(s2);
+  for (const record of [...doubtfulRecords].sort((a, b) => (a.date === b.date ? 0 : a.date < b.date ? -1 : 1))) {
+    let rest = Math.max(0, Math.round(Number(record.remainingMinor) || 0));
+    for (const pass of [true, false]) {
+      for (const item of openDebit) {
+        if (!(rest > 0)) break;
+        if (pass && item.born > record.date) continue;
+        const free = item.left - (held.get(item.key) || 0);
+        const take = Math.min(free, rest);
+        if (!(take > 0)) continue;
+        held.set(item.key, (held.get(item.key) || 0) + take);
+        rest -= take;
+        amount += take;
+        if (!byRecord.has(item.key)) byRecord.set(item.key, []);
+        const list = byRecord.get(item.key);
+        const last = list[list.length - 1];
+        if (last && last.recordId === (record.id ?? "")) last.minor += take;
+        else list.push({ recordId: record.id ?? "", minor: take });
+      }
+    }
+  }
+  return { held, amount, byRecord };
+}
+
+/**
+ * 2.5.0 Ç5-A tur 3c (BAŞ MİMAR KARARI K-1; C5-ACILIS-TASARIM §19): belirli bir ANA kadarki şüpheli dağılımı (M13), kalem başına kayıtlarıyla — defter (lib/doubtful-gl.mjs ayırıcı)
+ * tahsilat tahsilat ilerleyerek okur. Kesit: girdinin satırlarından kuyruğun KENDİ olay anahtarıyla (tarih → gün sınıfı → kayıt anı → yazım sırası) `lineId` satırından ÖNCE gelenler; satırın
+ * kendisi dahil değil. include(line) → true / false verirse o satır için anahtarın yerine geçer (ayırıcının aynı gün işlediği alacaklar; undefined → anahtar). Şüpheli kalanları girdinin
+ * `doubtfulRecords`'undan ([{ id, date, remainingMinor }] — çağıran o anki durumu verir). Kuyruğun KAPAMA KURALI aynıdır (net görünüm; implicitRefunds + runQueue); buildObligations'ın
+ * çıktısına dokunmaz. Dönüş: Map(kalem anahtarı — `inv:<fatura>`, `line:<satır>` … → { minor, records: [{ recordId, minor }] }).
+ */
+export function doubtfulBefore(input, { lineId, include = null } = {}) {
+  const lines = input.lines || [];
+  const cut = lines.find(line => line.id === lineId);
+  if (!cut) return new Map();
+  const byId = new Map((input.invoices || []).map(invoice => [invoice.id, invoice]));
+  const kindOf = line => (line.origin === "invoice" ? byId.get(line.sourceId)?.kind || "" : "");
+  const chequeEvents = input.chequeEvents || new Map();
+  // Gün sınıfı (queueOnce ile aynı: borç / yükümlülük 0, ödeme / alacak 2); kart satırları (taksitler 0, Mevcut Borç kartının açılışı ve kart tahsilatı 2).
+  const clsOf = line => {
+    if (line.origin === "plan") return line.kind === "plan" && !line.covers ? 0 : 2;
+    const role = classifyLine(line, { invoiceKind: kindOf(line), chequeEvent: chequeEvents.get(line.id) || "" });
+    return role.recvDue || role.payDue ? 0 : 2;
+  };
+  const sorted = [...lines].sort((a, b) => (a.date === b.date ? String(a.at || "").localeCompare(String(b.at || "")) : a.date < b.date ? -1 : 1));
+  const rank = new Map(sorted.map((line, index) => [line.id, index]));
+  const keyOf = line => ({ date: line.date, cls: clsOf(line), at: String(line.at || ""), rank: rank.get(line.id) ?? 0, sub: 0 });
+  const edge = keyOf(cut);
+  const kept = lines.filter(line => {
+    if (line.id === lineId) return false;
+    if (line.date !== cut.date) return line.date < cut.date;
+    const forced = include ? include(line) : undefined;
+    if (forced === true || forced === false) return forced;
+    return eventOrder(keyOf(line), edge) < 0;
+  });
+  const part = { ...input, lines: kept };
+  const net = runQueue(part, "net", implicitRefunds(part));
+  const { held, byRecord } = holdDoubtful(net, input.doubtfulRecords || []);
+  const out = new Map();
+  for (const [key, minor] of held) out.set(key, { minor, records: byRecord.get(key) || [] });
+  return out;
+}
+
 function assemble(input, side, net) {
   const { invoices = [], today = "", doubtfulRecords = [] } = input;
   const byId = new Map(invoices.map(invoice => [invoice.id, invoice]));
@@ -992,25 +1061,10 @@ function assemble(input, side, net) {
     out.set(invoice.id, { ...clean, state, label: PAY_STATES[state] });
   }
   // ---- Net kuyruk (G1) ----
-  // M13: açık şüpheli kayıtların kalanı, kayıt gününe kadar doğmuş açık borç kalemlerinden S2 sırasıyla şüpheli kuyruğuna (yetmezse sonrakilerden).
+  // M13: açık şüpheli kayıtların kalanı, kayıt gününe kadar doğmuş açık borç kalemlerinden S2 sırasıyla şüpheli kuyruğuna (yetmezse sonrakilerden) — holdDoubtful.
   const doubtful = { amount: 0, items: [] };
-  const held = new Map();
-  const openDebit = net.items.filter(item => item.sign > 0 && item.left > 0).sort(s2);
-  for (const record of [...doubtfulRecords].sort((a, b) => (a.date === b.date ? 0 : a.date < b.date ? -1 : 1))) {
-    let rest = Math.max(0, Math.round(Number(record.remainingMinor) || 0));
-    for (const pass of [true, false]) {
-      for (const item of openDebit) {
-        if (!(rest > 0)) break;
-        if (pass && item.born > record.date) continue;
-        const free = item.left - (held.get(item.key) || 0);
-        const take = Math.min(free, rest);
-        if (!(take > 0)) continue;
-        held.set(item.key, (held.get(item.key) || 0) + take);
-        rest -= take;
-        doubtful.amount += take;
-      }
-    }
-  }
+  const { held, amount: heldAmount } = holdDoubtful(net, doubtfulRecords);
+  doubtful.amount = heldAmount;
   const viewItems = [];
   for (const item of net.items) {
     if (item.kind === "pseudo") continue;

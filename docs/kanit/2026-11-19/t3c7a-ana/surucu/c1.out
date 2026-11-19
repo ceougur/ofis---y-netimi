@@ -1,0 +1,249 @@
+s08-pos-kg6 [TZ=UTC]: 20 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 22 ms
+    s08-pos-kg6 [UTC] öz denetim TAMAM · AYNI 29 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 1 sn)
+s08-pos-kg6 [TZ=Europe/Istanbul]: 20 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 20 ms
+    s08-pos-kg6 [Europe/Istanbul] öz denetim TAMAM · AYNI 29 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 1 sn)
+s11-kasa-carisiz-kg3 [TZ=Europe/Istanbul]: 19 olay · yapıldı 16 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+    AssertionError: senaryo hatası: S179 — hesapsız hareket (2025-12-20) banka hesaplarının en geç açılışından önce değil → 'Hesabı Atanmamış' kovası; kitapta hesabı yok — kâhin susar (README bakım 12 Ş3)  (1 sn + 0 sn)
+s11-kasa-carisiz-kg3 [TZ=UTC]: 19 olay · yapıldı 16 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 24 ms
+    AssertionError: senaryo hatası: S179 — hesapsız hareket (2025-12-20) banka hesaplarının en geç açılışından önce değil → 'Hesabı Atanmamış' kovası; kitapta hesabı yok — kâhin susar (README bakım 12 Ş3)  (1 sn + 0 sn)
+s110-s179-hesapsiz-sinir-en-gec-acilis [TZ=UTC]: 11 olay · yapıldı 8 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 24 ms
+    s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] öz denetim TAMAM · AYNI 36 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 3 · ÖLÇÜLEMEDİ 0 · red farkı 1 · adım farkı 4 (sınıfsız 4)  (1 sn + 0 sn)
+s110-s179-hesapsiz-sinir-en-gec-acilis [TZ=Europe/Istanbul]: 11 olay · yapıldı 8 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 23 ms
+    s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] öz denetim TAMAM · AYNI 36 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 3 · ÖLÇÜLEMEDİ 0 · red farkı 1 · adım farkı 4 (sınıfsız 4)  (1 sn + 0 sn)
+s111-s174-s180-kural-farki-kendi-yilinda [TZ=UTC]: 19 olay · yapıldı 6 · red 0 · api_yok 1 · uygulanmadı 4 · sürücü hatası 0 · olay döngüsü en çok 101 ms
+    s111-s174-s180-kural-farki-kendi-yilinda [UTC] öz denetim TAMAM · AYNI 10 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 10 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s111-s174-s180-kural-farki-kendi-yilinda [TZ=Europe/Istanbul]: 19 olay · yapıldı 6 · red 0 · api_yok 1 · uygulanmadı 4 · sürücü hatası 0 · olay döngüsü en çok 87 ms
+    s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] öz denetim TAMAM · AYNI 10 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 10 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s112-s181-bagli-tahsilat-120-siniri [TZ=Europe/Istanbul]: 24 olay · yapıldı 19 · red 3 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 37 ms
+    s112-s181-bagli-tahsilat-120-siniri [Europe/Istanbul] öz denetim TAMAM · AYNI 11 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s112-s181-bagli-tahsilat-120-siniri [TZ=UTC]: 24 olay · yapıldı 19 · red 3 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 25 ms
+    s112-s181-bagli-tahsilat-120-siniri [UTC] öz denetim TAMAM · AYNI 11 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s113-s87-r8-geri-alma [TZ=Europe/Istanbul]: 11 olay · yapıldı 3 · red 1 · api_yok 4 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 18 ms
+    s113-s87-r8-geri-alma [Europe/Istanbul] öz denetim TAMAM · AYNI 9 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 1 · adım farkı 1 (sınıfsız 1)  (1 sn + 0 sn)
+s113-s87-r8-geri-alma [TZ=UTC]: 11 olay · yapıldı 3 · red 1 · api_yok 4 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 18 ms
+    s113-s87-r8-geri-alma [UTC] öz denetim TAMAM · AYNI 9 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 1 · adım farkı 1 (sınıfsız 1)  (1 sn + 0 sn)
+s12-banka-islemleri [TZ=Europe/Istanbul]: 17 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 24 ms
+    s12-banka-islemleri [Europe/Istanbul] öz denetim TAMAM · AYNI 31 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+s12-banka-islemleri [TZ=UTC]: 17 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 27 ms
+    s12-banka-islemleri [UTC] öz denetim TAMAM · AYNI 31 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+s13-kart-kredi-ters-bakiye [TZ=UTC]: 21 olay · yapıldı 18 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 22 ms
+    s13-kart-kredi-ters-bakiye [UTC] öz denetim TAMAM · AYNI 33 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 1 (sınıfsız 1)  (1 sn + 0 sn)
+s13-kart-kredi-ters-bakiye [TZ=Europe/Istanbul]: 21 olay · yapıldı 18 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 22 ms
+    s13-kart-kredi-ters-bakiye [Europe/Istanbul] öz denetim TAMAM · AYNI 33 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 1 (sınıfsız 1)  (1 sn + 0 sn)
+s23-devir-pos-valor-kg6 [TZ=Europe/Istanbul]: 7 olay · yapıldı 3 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 21 ms
+    s23-devir-pos-valor-kg6 [Europe/Istanbul] öz denetim TAMAM · AYNI 8 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s23-devir-pos-valor-kg6 [TZ=UTC]: 7 olay · yapıldı 3 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 20 ms
+    s23-devir-pos-valor-kg6 [UTC] öz denetim TAMAM · AYNI 8 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s27-devir-yoldaki-supheli-evrak-taksit [TZ=Europe/Istanbul]: 31 olay · yapıldı 27 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 31 ms
+    s27-devir-yoldaki-supheli-evrak-taksit [Europe/Istanbul] öz denetim TAMAM · AYNI 27 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 1 (sınıfsız 1)  (1 sn + 0 sn)
+s27-devir-yoldaki-supheli-evrak-taksit [TZ=UTC]: 31 olay · yapıldı 27 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 23 ms
+    s27-devir-yoldaki-supheli-evrak-taksit [UTC] öz denetim TAMAM · AYNI 27 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 1 (sınıfsız 1)  (1 sn + 0 sn)
+s30-kilit-kural-farki-kg15 [TZ=UTC]: 21 olay · yapıldı 13 · red 1 · api_yok 1 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 106 ms
+    s30-kilit-kural-farki-kg15 [UTC] öz denetim TAMAM · AYNI 35 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 14 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s30-kilit-kural-farki-kg15 [TZ=Europe/Istanbul]: 21 olay · yapıldı 13 · red 1 · api_yok 1 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 106 ms
+    s30-kilit-kural-farki-kg15 [Europe/Istanbul] öz denetim TAMAM · AYNI 35 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 14 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s37-kart-borcuna-aktar [TZ=UTC]: 10 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 31 ms
+    AssertionError: senaryo hatası: kart_borcuna_aktar.acilistan_once (True) açılışlardan türetilenle (False) çelişiyor — alan artık kart açılışlarından türetilir (README bakım 12 Ş4)  (1 sn + 0 sn)
+s37-kart-borcuna-aktar [TZ=Europe/Istanbul]: 10 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 28 ms
+    AssertionError: senaryo hatası: kart_borcuna_aktar.acilistan_once (True) açılışlardan türetilenle (False) çelişiyor — alan artık kart açılışlarından türetilir (README bakım 12 Ş4)  (1 sn + 0 sn)
+s49-m7-kural-farki-671-681 [TZ=UTC]: 10 olay · yapıldı 6 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 18 ms
+    s49-m7-kural-farki-671-681 [UTC] öz denetim TAMAM · AYNI 12 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 10 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 3 (sınıfsız 3)  (1 sn + 0 sn)
+s49-m7-kural-farki-671-681 [TZ=Europe/Istanbul]: 10 olay · yapıldı 6 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 18 ms
+    s49-m7-kural-farki-671-681 [Europe/Istanbul] öz denetim TAMAM · AYNI 12 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 10 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 3 (sınıfsız 3)  (1 sn + 0 sn)
+s68-s14-supheli-caride-bagli-cek [TZ=Europe/Istanbul]: 46 olay · yapıldı 37 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 24 ms
+    s68-s14-supheli-caride-bagli-cek [Europe/Istanbul] öz denetim TAMAM · AYNI 28 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+s68-s14-supheli-caride-bagli-cek [TZ=UTC]: 46 olay · yapıldı 37 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 24 ms
+    s68-s14-supheli-caride-bagli-cek [UTC] öz denetim TAMAM · AYNI 28 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+s72-s21-pos-valor-resmi-tatil [TZ=UTC]: 33 olay · yapıldı 22 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 20 ms
+    s72-s21-pos-valor-resmi-tatil [UTC] öz denetim TAMAM · AYNI 12 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s72-s21-pos-valor-resmi-tatil [TZ=Europe/Istanbul]: 33 olay · yapıldı 22 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 23 ms
+    s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] öz denetim TAMAM · AYNI 12 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s74-s25-ab-kismi-ve-fazla [TZ=UTC]: 39 olay · yapıldı 26 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 19 ms
+    s74-s25-ab-kismi-ve-fazla [UTC] öz denetim TAMAM · AYNI 28 · U 5 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s74-s25-ab-kismi-ve-fazla [TZ=Europe/Istanbul]: 39 olay · yapıldı 26 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 25 ms
+    s74-s25-ab-kismi-ve-fazla [Europe/Istanbul] öz denetim TAMAM · AYNI 28 · U 5 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s75-s25-c-nakit-havale-pos [TZ=UTC]: 33 olay · yapıldı 21 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 25 ms
+    s75-s25-c-nakit-havale-pos [UTC] öz denetim TAMAM · AYNI 27 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s75-s25-c-nakit-havale-pos [TZ=Europe/Istanbul]: 33 olay · yapıldı 21 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 28 ms
+    s75-s25-c-nakit-havale-pos [Europe/Istanbul] öz denetim TAMAM · AYNI 27 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s93-b14-alt-defter-kural-farki [TZ=UTC]: 16 olay · yapıldı 10 · red 0 · api_yok 0 · uygulanmadı 2 · sürücü hatası 0 · olay döngüsü en çok 25 ms
+    s93-b14-alt-defter-kural-farki [UTC] öz denetim TAMAM · AYNI 14 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 12 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+s93-b14-alt-defter-kural-farki [TZ=Europe/Istanbul]: 16 olay · yapıldı 10 · red 0 · api_yok 0 · uygulanmadı 2 · sürücü hatası 0 · olay döngüsü en çok 23 ms
+    s93-b14-alt-defter-kural-farki [Europe/Istanbul] öz denetim TAMAM · AYNI 14 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 12 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+
+AYNI 700 · U 50 · P 0 · K 0 · R 0 · SINIFLANMADI 98 · ÖLÇÜLEMEDİ 0 · red farkı 4 · uygulanamayan olay 12 · sınıfsız adım farkı 32 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 4
+Ölçüm (olay döngüsü en çok, ms): s30-kilit-kural-farki-kg15 [Europe/Istanbul] 106 (koşu 1 sn; GET ledger ort 3 / en çok 6 ms) · s30-kilit-kural-farki-kg15 [UTC] 106 (koşu 1 sn; GET ledger ort 3 / en çok 6 ms) · s111-s174-s180-kural-farki-kendi-yilinda [UTC] 101 (koşu 1 sn; GET ledger ort 4 / en çok 8 ms) · s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] 87 (koşu 1 sn; GET ledger ort 3 / en çok 5 ms) · s112-s181-bagli-tahsilat-120-siniri [Europe/Istanbul] 37 (koşu 1 sn; GET ledger ort 4 / en çok 8 ms)
+BEKLEYEN KURAL FARKLARI (kimlik: senaryo / denetim [UTC]): D2–D4 3/3 · Ç2 1/1 · Ç5-(1) 1/3 · Ç5-(2) 2/4 · Ç5-B1 (ortak açık kalem görünümü) 2/3 · Ç5-B1 3/6 · Ç5-KG15 4/19 · Ç5-S7 3/5 · Ç7b-KG2 1/2
+U etiketleri: KG2-H03 4
+
+FARKLAR (150; ilk 200):
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] KOŞU HATASI:  S179 — hesapsız hareket ({k.tarih}) banka hesaplarının en geç açılışından önce değil → 'Hesabı Atanmamış' kovası; kitapta "
+                         "hesabı yok — kâhin susar (README bakım 12 Ş3)")
+AssertionError: senaryo hatası: S179 — hesapsız hareket (2025-12-20) banka hesaplarının en geç açılışından önce değil → 'Hesabı Atanmamış' kovası; kitapta hesabı yok — kâhin susar (README bakım 12 Ş3)
+
+  s11-kasa-carisiz-kg3 [UTC] KOŞU HATASI:  S179 — hesapsız hareket ({k.tarih}) banka hesaplarının en geç açılışından önce değil → 'Hesabı Atanmamış' kovası; kitapta "
+                         "hesabı yok — kâhin susar (README bakım 12 Ş3)")
+AssertionError: senaryo hatası: S179 — hesapsız hareket (2025-12-20) banka hesaplarının en geç açılışından önce değil → 'Hesabı Atanmamış' kovası; kitapta hesabı yok — kâhin susar (README bakım 12 Ş3)
+
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] RED #6 kart_borcuna_aktar: kâhin kabul · program 409 bank-before-opening → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] ADIM 1 banka_acilis BA1 {"ana":{"500":100000,"519":-100000}} → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] ADIM 2 banka_acilis BA2 {"ana":{"500":50000,"519":-50000}} → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] ADIM 6 kart_borcuna_aktar KB1 {"alt":{"309.KK1":-100000},"ana":{"309":-100000,"519":100000}} → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] ADIM 8 kart_acilis KA1 {"alt":{"309.KK1":100000},"ana":{"309":100000,"500":-100000}} → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] mz1 ana:309 program -100000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] mz1 ana:519 program -30000 · kâhin -130000 · bugün 20000 → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] mz1 alt:309.KK1 program -100000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] RED #6 kart_borcuna_aktar: kâhin kabul · program 409 bank-before-opening → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] ADIM 1 banka_acilis BA1 {"ana":{"500":100000,"519":-100000}} → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] ADIM 2 banka_acilis BA2 {"ana":{"500":50000,"519":-50000}} → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] ADIM 6 kart_borcuna_aktar KB1 {"alt":{"309.KK1":-100000},"ana":{"309":-100000,"519":100000}} → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] ADIM 8 kart_acilis KA1 {"alt":{"309.KK1":100000},"ana":{"309":100000,"500":-100000}} → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] mz1 ana:309 program -100000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] mz1 ana:519 program -30000 · kâhin -130000 · bugün 20000 → SINIFLANMADI
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] mz1 alt:309.KK1 program -100000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] OLAY #3 acilis_onayla (api_yok) → SINIFLANMADI: olay türü sürücüde yok: acilis_onayla
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz26 ana:500 program 0 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz26 ana:519 program -70000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz26b ana:500 program 0 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz26b ana:519 program -70000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz27 ana:500 program 0 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz27 ana:519 program -70000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz27b ana:500 program 0 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz27b ana:519 program -70000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] son ana:500 program 0 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] son ana:519 program -70000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] OLAY #3 acilis_onayla (api_yok) → SINIFLANMADI: olay türü sürücüde yok: acilis_onayla
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz26 ana:500 program 0 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz26 ana:519 program -70000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz26b ana:500 program 0 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz26b ana:519 program -70000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz27 ana:500 program 0 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz27 ana:519 program -70000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz27b ana:500 program 0 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz27b ana:519 program -70000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] son ana:500 program 0 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] son ana:519 program -70000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s113-s87-r8-geri-alma [Europe/Istanbul] RED #3 kasa_giris: kâhin kabul · program 409 cash-before-opening → SINIFLANMADI
+  s113-s87-r8-geri-alma [Europe/Istanbul] OLAY #2 sil (api_yok) → SINIFLANMADI: sil: kasa_acilis için silme eşlemesi yazılmadı
+  s113-s87-r8-geri-alma [Europe/Istanbul] OLAY #4 geri_yukle (api_yok) → SINIFLANMADI: Silinenler'de KA yok (program faturayı silmemiş olabilir)
+  s113-s87-r8-geri-alma [Europe/Istanbul] OLAY #6 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s113-s87-r8-geri-alma [Europe/Istanbul] OLAY #7 geri_yukle (api_yok) → SINIFLANMADI: Silinenler'de KA yok (program faturayı silmemiş olabilir)
+  s113-s87-r8-geri-alma [Europe/Istanbul] ADIM 1 kasa_acilis KA {"ana":{"500":10000,"519":-10000}} → SINIFLANMADI
+  s113-s87-r8-geri-alma [UTC] RED #3 kasa_giris: kâhin kabul · program 409 cash-before-opening → SINIFLANMADI
+  s113-s87-r8-geri-alma [UTC] OLAY #2 sil (api_yok) → SINIFLANMADI: sil: kasa_acilis için silme eşlemesi yazılmadı
+  s113-s87-r8-geri-alma [UTC] OLAY #4 geri_yukle (api_yok) → SINIFLANMADI: Silinenler'de KA yok (program faturayı silmemiş olabilir)
+  s113-s87-r8-geri-alma [UTC] OLAY #6 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s113-s87-r8-geri-alma [UTC] OLAY #7 geri_yukle (api_yok) → SINIFLANMADI: Silinenler'de KA yok (program faturayı silmemiş olabilir)
+  s113-s87-r8-geri-alma [UTC] ADIM 1 kasa_acilis KA {"ana":{"500":10000,"519":-10000}} → SINIFLANMADI
+  s12-banka-islemleri [Europe/Istanbul] ADIM 1 banka_acilis  {"ana":{"500":1000000,"519":-1000000}} → SINIFLANMADI
+  s12-banka-islemleri [Europe/Istanbul] ADIM 2 banka_acilis  {"ana":{"500":200000,"519":-200000}} → SINIFLANMADI
+  s12-banka-islemleri [UTC] ADIM 1 banka_acilis  {"ana":{"500":1000000,"519":-1000000}} → SINIFLANMADI
+  s12-banka-islemleri [UTC] ADIM 2 banka_acilis  {"ana":{"500":200000,"519":-200000}} → SINIFLANMADI
+  s13-kart-kredi-ters-bakiye [Europe/Istanbul] ADIM 1 banka_acilis  {"ana":{"500":-50000,"519":50000}} → SINIFLANMADI
+  s13-kart-kredi-ters-bakiye [UTC] ADIM 1 banka_acilis  {"ana":{"500":-50000,"519":50000}} → SINIFLANMADI
+  s27-devir-yoldaki-supheli-evrak-taksit [Europe/Istanbul] ADIM 1 banka_acilis  {"ana":{"500":500000,"519":-500000}} → SINIFLANMADI
+  s27-devir-yoldaki-supheli-evrak-taksit [UTC] ADIM 1 banka_acilis  {"ana":{"500":500000,"519":-500000}} → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] OLAY #11 acilis_onayla (api_yok) → SINIFLANMADI: olay türü sürücüde yok: acilis_onayla
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] bil ana:500 program 0 · kâhin -150000 · bugün -150000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] bil ana:519 program -160000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] bil0331 ana:500 program 0 · kâhin -150000 · bugün -150000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] bil0331 ana:519 program -160000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] gt ana:602 program -40000 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] gt ana:770 program 0 · kâhin 20000 · bugün 20000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] mz ana:500 program 0 · kâhin -150000 · bugün -150000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] mz ana:519 program -160000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] mz ana:602 program -40000 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] mz ana:770 program 0 · kâhin 20000 · bugün 20000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] son ana:500 program 0 · kâhin -150000 · bugün -150000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] son ana:519 program -160000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] son ana:602 program -40000 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [Europe/Istanbul] son ana:770 program 0 · kâhin 20000 · bugün 20000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] OLAY #11 acilis_onayla (api_yok) → SINIFLANMADI: olay türü sürücüde yok: acilis_onayla
+  s30-kilit-kural-farki-kg15 [UTC] bil ana:500 program 0 · kâhin -150000 · bugün -150000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] bil ana:519 program -160000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] bil0331 ana:500 program 0 · kâhin -150000 · bugün -150000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] bil0331 ana:519 program -160000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] gt ana:602 program -40000 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] gt ana:770 program 0 · kâhin 20000 · bugün 20000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] mz ana:500 program 0 · kâhin -150000 · bugün -150000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] mz ana:519 program -160000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] mz ana:602 program -40000 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] mz ana:770 program 0 · kâhin 20000 · bugün 20000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] son ana:500 program 0 · kâhin -150000 · bugün -150000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] son ana:519 program -160000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] son ana:602 program -40000 · kâhin -70000 · bugün -70000 → SINIFLANMADI
+  s30-kilit-kural-farki-kg15 [UTC] son ana:770 program 0 · kâhin 20000 · bugün 20000 → SINIFLANMADI
+  s37-kart-borcuna-aktar [Europe/Istanbul] KOŞU HATASI: ror(f"senaryo hatası: kart_borcuna_aktar.acilistan_once ({k.v['acilistan_once']}) açılışlardan türetilenle ({once}) çelişiyor — alan artık "
+                         "kart açılışlarından türetilir (README bakım 12 Ş4)")
+AssertionError: senaryo hatası: kart_borcuna_aktar.acilistan_once (True) açılışlardan türetilenle (False) çelişiyor — alan artık kart açılışlarından türetilir (README bakım 12 Ş4)
+
+  s37-kart-borcuna-aktar [UTC] KOŞU HATASI: ror(f"senaryo hatası: kart_borcuna_aktar.acilistan_once ({k.v['acilistan_once']}) açılışlardan türetilenle ({once}) çelişiyor — alan artık "
+                         "kart açılışlarından türetilir (README bakım 12 Ş4)")
+AssertionError: senaryo hatası: kart_borcuna_aktar.acilistan_once (True) açılışlardan türetilenle (False) çelişiyor — alan artık kart açılışlarından türetilir (README bakım 12 Ş4)
+
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] ADIM 1 kasa_acilis  {"ana":{"500":100000,"519":-100000}} → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] ADIM 2 evrak_acilis  {"ana":{"519":-30000,"602":30000}} → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] ADIM 3 evrak_acilis  {"ana":{"519":20000,"770":-20000}} → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] bil ana:500 program 0 · kâhin -100000 · bugün -100000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] bil ana:519 program -110000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] mz ana:500 program 0 · kâhin -100000 · bugün -100000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] mz ana:519 program -110000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] mz ana:602 program 0 · kâhin -30000 · bugün -30000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] mz ana:770 program 0 · kâhin 20000 · bugün 20000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] son ana:500 program 0 · kâhin -100000 · bugün -100000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] son ana:519 program -110000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] son ana:602 program 0 · kâhin -30000 · bugün -30000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [Europe/Istanbul] son ana:770 program 0 · kâhin 20000 · bugün 20000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] ADIM 1 kasa_acilis  {"ana":{"500":100000,"519":-100000}} → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] ADIM 2 evrak_acilis  {"ana":{"519":-30000,"602":30000}} → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] ADIM 3 evrak_acilis  {"ana":{"519":20000,"770":-20000}} → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] bil ana:500 program 0 · kâhin -100000 · bugün -100000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] bil ana:519 program -110000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] mz ana:500 program 0 · kâhin -100000 · bugün -100000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] mz ana:519 program -110000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] mz ana:602 program 0 · kâhin -30000 · bugün -30000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] mz ana:770 program 0 · kâhin 20000 · bugün 20000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] son ana:500 program 0 · kâhin -100000 · bugün -100000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] son ana:519 program -110000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] son ana:602 program 0 · kâhin -30000 · bugün -30000 → SINIFLANMADI
+  s49-m7-kural-farki-671-681 [UTC] son ana:770 program 0 · kâhin 20000 · bugün 20000 → SINIFLANMADI
+  s68-s14-supheli-caride-bagli-cek [Europe/Istanbul] ADIM 12 tahsilat P4 {"ana":{"120":2000,"128":-2000}} → SINIFLANMADI
+  s68-s14-supheli-caride-bagli-cek [Europe/Istanbul] ADIM 13 tahsilat P5 {"ana":{"120":-2000,"128":2000}} → SINIFLANMADI
+  s68-s14-supheli-caride-bagli-cek [UTC] ADIM 12 tahsilat P4 {"ana":{"120":2000,"128":-2000}} → SINIFLANMADI
+  s68-s14-supheli-caride-bagli-cek [UTC] ADIM 13 tahsilat P5 {"ana":{"120":-2000,"128":2000}} → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] ADIM 1 kasa_acilis  {"ana":{"500":10000,"519":-10000}} → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] ADIM 5 donem_kilitle  {"ana":{"120":4000,"128":-4000}} → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] bil ana:120 program 0 · kâhin -4000 · bugün -4000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] bil ana:128 program 6000 · kâhin 10000 · bugün 10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] bil ana:500 program 0 · kâhin -10000 · bugün -10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] bil ana:519 program -10000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] mz ana:120 program 0 · kâhin -4000 · bugün -4000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] mz ana:128 program 6000 · kâhin 10000 · bugün 10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] mz ana:500 program 0 · kâhin -10000 · bugün -10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] mz ana:519 program -10000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] son ana:120 program 0 · kâhin -4000 · bugün -4000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] son ana:128 program 6000 · kâhin 10000 · bugün 10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] son ana:500 program 0 · kâhin -10000 · bugün -10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [Europe/Istanbul] son ana:519 program -10000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] ADIM 1 kasa_acilis  {"ana":{"500":10000,"519":-10000}} → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] ADIM 5 donem_kilitle  {"ana":{"120":4000,"128":-4000}} → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] bil ana:120 program 0 · kâhin -4000 · bugün -4000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] bil ana:128 program 6000 · kâhin 10000 · bugün 10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] bil ana:500 program 0 · kâhin -10000 · bugün -10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] bil ana:519 program -10000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] mz ana:120 program 0 · kâhin -4000 · bugün -4000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] mz ana:128 program 6000 · kâhin 10000 · bugün 10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] mz ana:500 program 0 · kâhin -10000 · bugün -10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] mz ana:519 program -10000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] son ana:120 program 0 · kâhin -4000 · bugün -4000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] son ana:128 program 6000 · kâhin 10000 · bugün 10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] son ana:500 program 0 · kâhin -10000 · bugün -10000 → SINIFLANMADI
+  s93-b14-alt-defter-kural-farki [UTC] son ana:519 program -10000 · kâhin 0 · bugün 0 → SINIFLANMADI
+
+# tests 900
+# pass 750
+# fail 150
+# cancelled 0
+# skipped 0
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-surucu/c1

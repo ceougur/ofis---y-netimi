@@ -1,0 +1,51 @@
+// Ç7a tur 2b HIZ KABUL veri hazırlığı: temiz 100 bin satırlık kopyaya TABAN koduyla (API'den) bir POS + N POS tahsilatı (tek çekim ve 3 taksit, 2026 boyunca) ve
+// hesabı atanmamış eski havaleler; sonra Şimdi Aktar. Ölçüm (olc-c7a3.mjs) bu kopyanın İKİ AYRI kopyasında (taban / yeni) koşar — aynı veri.
+// Kullanım: node tohum.mjs <taban kod kökü> <veri kopyası> [N=3000]
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir, nText = "3000"] = process.argv.slice(2);
+const N = Number(nText) || 3000;
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+await app.ledger.snapshots.runPending?.();
+const { port } = await app.listen(0, "127.0.0.1");
+const client = createClient(`http://127.0.0.1:${port}`);
+if ((await client.login("admin", PASS)).status !== 200) throw new Error("giriş");
+const store = app.store;
+const must = async (label, promise) => {
+  const res = await promise;
+  if (res.status !== 200) throw new Error(`${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
+  return res.data;
+};
+const bank = store.get("SELECT id, opening_date AS d FROM bank_accounts WHERE deleted_at IS NULL AND kind = 'demand' AND currency = 'TRY' AND status = 'active' ORDER BY opening_date LIMIT 1");
+if (!bank) throw new Error("vadesiz hesap yok");
+console.log(`hesap ${bank.id} açılış ${bank.d}`);
+await must("POS Kullan", client.put(`/api/workspace/bank/accounts/${bank.id}`, { usePos: true }));
+const pos = await must("POS", client.post("/api/workspace/bank/pos", { name: "Ölçüm POS", bankAccountId: bank.id, kind: "physical", providerKind: "bank", tax: "bsmv_incl", valorRule: "business", valorDays: 2, installmentPayout: "monthly", provisionDays: 0, refundCommission: "proportional", validFrom: "2026-01-01", rates: [{ installments: 1, rate: "2,5" }, { installments: 3, rate: "3,5" }] }));
+const posId = pos.pos?.id || pos.id;
+const parties = store.all("SELECT id FROM accounts WHERE deleted_at IS NULL AND type = 'customer' ORDER BY rowid LIMIT 200").map(row => row.id);
+const start = bank.d > "2026-01-02" ? bank.d : "2026-01-02";
+const day = i => {
+  const t = new Date(`${start}T12:00:00Z`).getTime() + Math.floor((i / N) * (new Date("2026-10-07T12:00:00Z").getTime() - new Date(`${start}T12:00:00Z`).getTime()));
+  return new Date(t).toISOString().slice(0, 10);
+};
+let ok = 0;
+const t0 = Date.now();
+for (let i = 0; i < N; i += 1) {
+  const res = await client.post(`/api/workspace/accounts/${parties[i % parties.length]}/entries`, { kind: "in", method: "card", posId, posInstallments: i % 7 === 0 ? 3 : 1, amount: String(100 + (i % 50) * 37), date: day(i), note: `ölçüm POS ${i}`, similarOk: true, cashForce: true, negativeOk: true });
+  if (res.status === 200) ok += 1;
+  else if (i < 5) console.log(`POS ${i}: ${res.status} ${JSON.stringify(res.data).slice(0, 200)}`);
+}
+console.log(`POS tahsilatı ${ok} / ${N} (${Math.round((Date.now() - t0) / 1000)} sn)`);
+await must("Şimdi Aktar", client.post("/api/workspace/bank/settle", {}));
+const stats = store.get("SELECT (SELECT COUNT(*) FROM pos_sales) AS sales, (SELECT COUNT(*) FROM pos_items) AS items, (SELECT COUNT(*) FROM pos_items WHERE status = 'pending') AS pending, (SELECT COUNT(*) FROM fin_events WHERE type = 'pos_settlement') AS vouchers");
+console.log(`pos_sales ${stats.sales} · pos_items ${stats.items} (bekleyen ${stats.pending}) · gün fişi ${stats.vouchers}`);
+await app.close();

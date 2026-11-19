@@ -249,7 +249,8 @@ describe("E — düzeltme (§4.6): bekleyen satışta tutar değişimi tek etkin
       assert.deepEqual(sales.map(sale => [sale.status, sale.grossMinor]).sort(), [["active", kurus(1500)], ["void", kurus(1000)]]);
       const active = sales.find(sale => sale.status === "active");
       assert.deepEqual([active.authCode, active.cardLast4, active.items.length, active.items[0].netMinor], ["PRV1", "1234", 1, kurus(1500) - kurus(37.5)], "kalem yeniden: 1.500 − %2,5");
-      assert.equal(kurus((await subBalances(w.api))["108.01"]?.balance || 0), kurus(1500), "108.01 = 1.500");
+      // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2b, KG-6 = A — kullanıcı 05.11 17:16 (5)): komisyon 37,50 satış gününde → 108.01 = bankaya geçmemiş NET alacak.
+      assert.equal(kurus((await subBalances(w.api))["108.01"]?.balance || 0), kurus(1500) - kurus(37.5), "108.01 = 1.462,50 (1.500 − %2,5; void kaydın maddesi yok)");
       await must("yol nakit", w.api.put(url, { kind: "in", method: "cash", amount: "1.500", date: TODAY, cashForce: true }));
       sales = await salesOf(w.api, "?kind=sale&status=");
       assert.ok(sales.every(sale => sale.status === "void"), "POS'tan nakde: satış void");

@@ -22,6 +22,7 @@ import { systemClock } from "../lib/clock.mjs";
 import { K10_LABELS } from "../lib/bank/accounts.mjs";
 import { STATUS_LABELS, typeLabel } from "../lib/bank/event-types.mjs";
 import { waysFor } from "../lib/bank/money-lines.mjs";
+import { coverBounds, isCovered } from "../lib/bank/opening-cover.mjs";
 import { TRANSFER_CHANNELS } from "../lib/bank/vouchers.mjs";
 import { TAX_LABELS, taxChoiceOf } from "../lib/bank/pos-math.mjs";
 import { CHART, stockOpeningValue } from "../lib/general-ledger.mjs";
@@ -353,11 +354,24 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     const scope = choice.unassigned ? { ways: ["bank", "card"], unbound: true } : choice.single ? { ref: choice.single.id } : choice.refs.size ? { ways: ["bank"], refs: [...choice.refs] } : null;
     if (!lines?.classified || !scope) return { before: [], lines: [] };
     const keep = line => (choice.unassigned ? !line.ref : choice.single ? true : Boolean(line.ref) && choice.refs.has(line.ref));
+    // 2.5.0 Ç7a tur 2b (BAŞ MİMAR KARARI 14.11 10:17 (2)): "açılışta sayılmış" hesabı atanmamış satır devre girmez (uncounted) ve dönem satırında işaretlidir (counted).
     return {
-      before: from && lines.keyTotals ? lines.keyTotals({ ...scope, before: from, until: to }) : [],
-      lines: lines.classified({ ...scope, since: from, until: to }).filter(keep),
+      before: from && lines.keyTotals ? lines.keyTotals({ ...scope, before: from, until: to, uncounted: true }) : [],
+      lines: markCounted(lines.classified({ ...scope, since: from, until: to }).filter(keep)),
     };
   }
+  // 2.5.0 Ç7a tur 2b (S179 = A + BAŞ MİMAR KARARI 14.11 10:17 (2); TEK kaynak lib/bank/opening-cover.mjs isCovered — Ana Defter'in ve kovanın koşulu): hesabı atanmamış satır
+  // açılıştan önceyse (açılış bakiyesinin içinde; defterde 519) satır raporda KALIR, "Açılışta Sayıldı" işaretiyle; tutarı özet / TOPLAM / bakiyeye girmez (toplam = kova).
+  function markCounted(list) {
+    const bounds = coverBounds(store);
+    for (const line of list) {
+      if (line.ref) continue;
+      const bankLine = Number(line.src) === 9;
+      line.counted = isCovered({ way: line.way === "bank" ? "bank" : "card", kind: line.kind, date: line.date, bankLine, carry: bankLine && line.base_type === "carry_close" }, bounds);
+    }
+    return list;
+  }
+  const countedLabel = (line, label) => `${label ? `${label} · ` : ""}Açılışta Sayıldı (${line.kind === "in" ? "Giriş" : "Çıkış"} ${cents(Number(line.cents) || 0)}; toplama girmez)`;
   const keyOf = (choice, line) => (choice.unassigned ? `u:${line.way}` : line.ref);
   const keyLabel = (choice, key) => {
     if (choice.unassigned) {
@@ -413,7 +427,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
   function scopedLines(choice, range, ways = NONCASH_WAYS) {
     const lines = moneyLines();
     if (!lines?.classified) return [];
-    const list = lines.classified({ ways, ...choice.scope, since: range.from, until: range.to });
+    const list = markCounted(lines.classified({ ways, ...choice.scope, since: range.from, until: range.to }));
     return choice.unassigned ? list.filter(line => !line.ref) : list;
   }
   // Günlük / Aylık Banka Raporu: seçimin (Banka Hareket Raporu'yla aynı kapsam) dönem satırları anahtara (gün ya da ay) toplanır; devir dönem
@@ -422,7 +436,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     const source = bankLinesOf(choice, range.from, range.to);
     const opening = source.before.reduce((sum, item) => sum + item.cents, 0);
     const buckets = new Map();
-    for (const line of source.lines) {
+    // Ç7a tur 2b: açılışta sayılmış satır günlere / aylara girmez (sayı, ilk / son gün dahil).
+    const lines = source.lines.filter(line => !line.counted);
+    for (const line of lines) {
       const key = keyOf(line.date);
       const bucket = buckets.get(key) || { count: 0, extIn: 0, extOut: 0, trIn: 0, trOut: 0, adjust: 0 };
       bucket.count += 1;
@@ -433,7 +449,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
       bucket.adjust += Number(line.adjust) || 0;
       buckets.set(key, bucket);
     }
-    return { opening, buckets, count: source.lines.length, first: source.lines[0]?.date || "", last: source.lines.at(-1)?.date || "" };
+    return { opening, buckets, count: lines.length, first: lines[0]?.date || "", last: lines.at(-1)?.date || "" };
   }
   const netOf = bucket => bucket.extIn - bucket.extOut + bucket.trIn - bucket.trOut + bucket.adjust;
   const periodSummary = (choice, opening, totals, closing, countLabel, count) => [
@@ -453,7 +469,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     const out = new Map();
     const lines = moneyLines();
     if (!lines?.classifiedTotals) return out;
-    for (const item of lines.classifiedTotals({ ways: [...NONCASH_WAYS], until: to, day: today() })) if (Number(item.ahead) !== 1) out.set(item.key, (out.get(item.key) || 0) + Number(item.closing));
+    for (const item of lines.classifiedTotals({ ways: [...NONCASH_WAYS], until: to, day: today(), uncounted: true })) if (Number(item.ahead) !== 1) out.set(item.key, (out.get(item.key) || 0) + Number(item.closing));
     return out;
   }
   // Banka Bazında / Para Birimi Bazında Bakiye: aynı tablo, farklı gruplama anahtarı.
@@ -792,7 +808,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         // toplamlar SQL'de, satırlar JS'e çekilmeden (moneyLines.classifiedTotals: satır yoluyla AYNI sınıflama — CLASS_SQL). Sonuç aynı.
         const day = today();
         const ahead = { count: 0, cents: 0, first: "" };
-        const totals = moneyLines()?.classifiedTotals ? moneyLines().classifiedTotals({ ways: ["bank", "card", "ccard", "loan"], until: range.to, from: range.from, day }) : [];
+        const totals = moneyLines()?.classifiedTotals ? moneyLines().classifiedTotals({ ways: ["bank", "card", "ccard", "loan"], until: range.to, from: range.from, day, uncounted: true }) : [];
         for (const item of totals) {
           if (Number(item.ahead) === 1) {
             ahead.count += Number(item.lines);
@@ -868,6 +884,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         }
         for (const line of source.lines) {
           const key = keyOf(choice, line);
+          // 2.5.0 Ç7a tur 2b: açılışta sayılmış satır listede kalır (tutar / bakiye hücreleri boş), anahtarın devrini ve yürüyen bakiyesini açmaz.
+          if (line.counted) {
+            if (!move) body.push([dayText(line.date), line.event_no || "", keyLabel(choice, key), lineType(line), countedLabel(line, cashLabel(moneyLines().shape(line)) || ""), "", "", "", "", ""]);
+            continue;
+          }
           if (!balance.has(key)) {
             balance.set(key, 0);
             opening.set(key, 0);
@@ -1411,10 +1432,10 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         const totals = { in: 0, out: 0, parties: new Set() };
         const rows = lines.map(line => {
           const entry = moneyLines().shape(line);
-          const amount = Number(line.cents) || 0;
+          const amount = line.counted ? 0 : Number(line.cents) || 0;
           totals[line.kind === "in" ? "in" : "out"] += amount;
           totals.parties.add(line.party_id);
-          return [dayText(line.date), line.event_no || "", names.get(line.party_id) || entry.accountName || "", lineAccountText(line, choice.rows, poses), wayText(line), LINE_SOURCE[entry.source] || entry.source, lineText(entry), line.kind === "in" ? cents(amount) : "", line.kind === "in" ? "" : cents(amount), users.get(line.actor_id) || ""];
+          return [dayText(line.date), line.event_no || "", names.get(line.party_id) || entry.accountName || "", lineAccountText(line, choice.rows, poses), wayText(line), LINE_SOURCE[entry.source] || entry.source, line.counted ? countedLabel(line, lineText(entry)) : lineText(entry), line.kind === "in" && amount ? cents(amount) : "", line.kind === "in" || !amount ? "" : cents(amount), users.get(line.actor_id) || ""];
         });
         return {
           subtitle: `${accountId ? names.get(accountId) : "Tüm Cariler"} · ${choice.title} · ${rangeText(range)}`,
@@ -1470,11 +1491,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
             link = invoiceId ? "fee" : "";
           }
           if (!link) continue;
-          const amount = Number(line.cents) || 0;
+          const amount = line.counted ? 0 : Number(line.cents) || 0;
           const signed = line.kind === "in" ? amount : -amount;
           totals[line.kind === "in" ? "in" : "out"] += amount;
           totals.byLink[LINK[link]] += signed;
-          rows.push([dayText(line.date), line.event_no || "", numbers.get(invoiceId) || "", LINK[link], names.get(line.party_id) || entry.accountName || "", lineAccountText(line, choice.rows, poses), wayText(line), lineText(entry), line.kind === "in" ? cents(amount) : "", line.kind === "in" ? "" : cents(amount), users.get(line.actor_id) || ""]);
+          rows.push([dayText(line.date), line.event_no || "", numbers.get(invoiceId) || "", LINK[link], names.get(line.party_id) || entry.accountName || "", lineAccountText(line, choice.rows, poses), wayText(line), line.counted ? countedLabel(line, lineText(entry)) : lineText(entry), line.kind === "in" && amount ? cents(amount) : "", line.kind === "in" || !amount ? "" : cents(amount), users.get(line.actor_id) || ""]);
         }
         return {
           subtitle: `${choice.title} · ${rangeText(range)}`,
@@ -1504,10 +1525,10 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         const totals = { in: 0, out: 0, plans: new Set() };
         const rows = scopedLines(choice, range).filter(line => Number(line.src) === 6).map(line => {
           const entry = moneyLines().shape(line);
-          const amount = Number(line.cents) || 0;
+          const amount = line.counted ? 0 : Number(line.cents) || 0;
           totals[line.kind === "in" ? "in" : "out"] += amount;
           totals.plans.add(entry.planId);
-          return [dayText(line.date), line.event_no || "", entry.planName || "", names.get(line.party_id) || "", lineAccountText(line, choice.rows, poses), wayText(line), lineText(entry), line.kind === "in" ? cents(amount) : "", line.kind === "in" ? "" : cents(amount), users.get(line.actor_id) || ""];
+          return [dayText(line.date), line.event_no || "", entry.planName || "", names.get(line.party_id) || "", lineAccountText(line, choice.rows, poses), wayText(line), line.counted ? countedLabel(line, lineText(entry)) : lineText(entry), line.kind === "in" && amount ? cents(amount) : "", line.kind === "in" || !amount ? "" : cents(amount), users.get(line.actor_id) || ""];
         });
         return {
           subtitle: `${choice.title} · ${rangeText(range)}`,
@@ -1541,7 +1562,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
           const lines = moneyLines();
           // Hesap seçiliyken yol seçilmemişse (Banka ve POS (Tümü)) hesabın bütün satırları (kart hesabında 309 kart yolu, kredi hesabında 300).
           const ways = method === "noncash" && choice.scope.ref ? [...NONCASH_WAYS] : waysFor(method) || ["bank", "card"];
-          const before = range.from && lines?.keyTotals ? lines.keyTotals({ ways, ...choice.scope, before: range.from, until: range.to }) : [];
+          const before = range.from && lines?.keyTotals ? lines.keyTotals({ ways, ...choice.scope, before: range.from, until: range.to, uncounted: true }) : [];
           const opening = before.filter(item => !choice.unassigned || item.key.startsWith("u:")).reduce((sum, item) => sum + item.cents, 0);
           const users = userNames();
           const rows = [[openingDay(range.from), "", "Devir", `Dönem başı ${which.toLocaleLowerCase("tr-TR")} · ${choice.title}`, "", "", cents(opening), ""]];
@@ -1549,6 +1570,10 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
           let balance = opening;
           for (const line of scopedLines(choice, range, ways)) {
             const entry = lines.shape(line);
+            if (line.counted) {
+              rows.push([dayText(line.date), wayText(line), entry.transferId ? "Kasa ↔ Banka" : CASH_SOURCE[entry.source] || entry.source, countedLabel(line, cashLabel(entry) || entry.description || ""), "", "", "", users.get(line.actor_id) || ""]);
+              continue;
+            }
             balance += line.kind === "in" ? Number(line.cents) : -Number(line.cents);
             let label = cashLabel(entry) || entry.description || "";
             if (line.adjust) {

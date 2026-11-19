@@ -1,0 +1,26 @@
+# .cpuprofile -> kendi süresi ve kapsayan süre, işlev dosya:satır başına. Çağrı: python3 -I prof.py <dosya> [süzgeç]
+import json, sys, collections
+p = json.load(open(sys.argv[1])); flt = sys.argv[2] if len(sys.argv) > 2 else ''
+nodes = {n['id']: n for n in p['nodes']}
+dt = collections.Counter()
+for s, d in zip(p['samples'], p['timeDeltas']): dt[s] += d
+up = {}
+for n in p['nodes']:
+    for c in n.get('children', []): up[c] = n['id']
+key = lambda n: f"{n['callFrame']['functionName'] or '(anon)'} {n['callFrame']['url'].split('/')[-1]}:{n['callFrame']['lineNumber']+1}"
+self_t = collections.Counter(); tot = collections.Counter()
+for nid, t in dt.items():
+    self_t[key(nodes[nid])] += t
+    seen = set(); x = nid
+    while x is not None:
+        k = key(nodes[x])
+        if k not in seen: tot[k] += t; seen.add(k)
+        x = up.get(x)
+print('SELF')
+for k, v in self_t.most_common(20): print(f"{v/1000:9.0f} ms  {k}")
+print('KAPSAYAN')
+n = 0
+for k, v in tot.most_common(2000):
+    if flt in k and '.mjs' in k:
+        print(f"{v/1000:9.0f} ms  {k}"); n += 1
+        if n >= 70: break

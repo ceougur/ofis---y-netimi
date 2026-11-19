@@ -13,6 +13,7 @@
      "madde_dengesi": [],
      "mizan_dengesi": [],
      "modul_defter": [],
+     "s127_tek_yazim": [],
      "tyk": []
     },
     "canli": {
@@ -24,6 +25,7 @@
      "madde_dengesi": [],
      "mizan_dengesi": [],
      "modul_defter": [],
+     "s127_tek_yazim": [],
      "tahmini_aylik_toplam": [],
      "tyk": []
     }
@@ -1400,9 +1402,9 @@
        "devir": 0
       },
       "108": {
-       "alacak": 2154835,
+       "alacak": 2143435,
        "bakiye": 0,
-       "borc": 2154835,
+       "borc": 2143435,
        "devir": 0
       },
       "120": {
@@ -1652,12 +1654,6 @@
        "alacak": 870080,
        "bakiye": -163652,
        "borc": 706428,
-       "devir": 0
-      },
-      "108.90": {
-       "alacak": 11400,
-       "bakiye": 0,
-       "borc": 11400,
        "devir": 0
       },
       "108.POS1": {
@@ -1945,9 +1941,9 @@
      },
      "son": "2026-12-31",
      "toplam": {
-      "alacak": 175674210,
+      "alacak": 175662810,
       "bakiye": 0,
-      "borc": 175674210,
+      "borc": 175662810,
       "devir": 0
      }
     },
@@ -3382,7 +3378,18 @@
      }
     }
    },
-   "redler": []
+   "redler": [],
+   "susmalar": [
+    {
+     "cari": "C3",
+     "dosya": "arsiv-2026",
+     "kaynak": "P253",
+     "kural": "S168",
+     "pay_m13": 0,
+     "pay_tek_kuyruk": 291960,
+     "tarih": "2026-08-07"
+    }
+   ]
   }
  },
  "dil": "muhasebe-kahin/1"

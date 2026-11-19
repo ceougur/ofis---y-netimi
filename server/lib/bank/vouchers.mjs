@@ -43,7 +43,10 @@ const TRANSFER_KINDS = new Set([...BANK_KINDS, "time"]);
 const TYPE_RULES = Object.freeze({
   fee: { main: BANK_KINDS, purpose: "banka masrafı Vadesiz, Ticari ya da Diğer TL hesaptan girilir" },
   interest_in: { main: new Set([...BANK_KINDS, "time"]), purpose: "faiz geliri vadesiz, ticari, diğer ya da vadeli TL hesaba girilir" },
-  interest_out: { main: BANK_KINDS, purpose: "faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir" },
+  // 2.5.0 Ç7a (kural kitabı D-07 "Kart faizi / gecikme bedeli | 780 | 309.NN | tutar (+ BS)"; muhasebe sürücüsü bulgusu P3): kredi kartı ekstresindeki faiz ve gecikme bedeli
+  // Faiz Gideri fişiyle KART HESABINA girilir — B 780 faiz · B 780 BSMV / KKDF / A 309.k (interestOutLines; kart borcu artar, banka, Kasa ve cari değişmez). Planlı İşlem'de
+  // kart seçilmez (planMain): kart faizi ekstre gelince girilir; planı Nakit Akış'ta "bankadan çıkış" sayılırdı (planFlows PLAN_OUT).
+  interest_out: { main: new Set([...BANK_KINDS, "card"]), purpose: "faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan ya da kredi kartından (kart faizi, gecikme bedeli) girilir", planMain: BANK_KINDS, planPurpose: "planlı faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir; kart faizi planlanmaz, ekstre gelince Faiz Gideri olarak girilir" },
   other_in: { main: BANK_KINDS, purpose: "diğer gelir Vadesiz, Ticari ya da Diğer TL hesaba girilir" },
   other_out: { main: BANK_KINDS, purpose: "diğer gider Vadesiz, Ticari ya da Diğer TL hesaptan girilir" },
   card_payment: { main: BANK_KINDS, purpose: "kart borcu Vadesiz, Ticari ya da Diğer TL hesaptan ödenir", counter: { field: "cardAccountId", kinds: new Set(["card"]), label: "Kredi Kartı", purpose: "kredi kartı hesabı değil" } },
@@ -234,7 +237,8 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
       if (from && to && from.currency !== to.currency) throw bad(400, `Farklı para birimli hesaplar arasında transfer yapılamaz (${labelOf(from)} ${from.currency === "TRY" ? "TL" : from.currency}, ${labelOf(to)} ${to.currency === "TRY" ? "TL" : to.currency}).`, "bank-currency", { field: rule.counter.field });
     }
     const currencyText = isTransfer ? "Bankalar arası transfer yalnız TL hesaplar arasında yapılır." : "";
-    const account = accountFor(body.accountId, { kinds: rule.main, purpose: rule.purpose, currencyText, ...(isTransfer ? { label: "Gönderen Hesap" } : {}) });
+    const planOnly = forPlan && rule.planMain;
+    const account = accountFor(body.accountId, { kinds: planOnly ? rule.planMain : rule.main, purpose: planOnly ? rule.planPurpose : rule.purpose, currencyText, ...(isTransfer ? { label: "Gönderen Hesap" } : {}) });
     let counter = null;
     if (rule.counter) {
       counter = accountFor(body[rule.counter.field], { field: rule.counter.field, label: rule.counter.label, kinds: rule.counter.kinds, purpose: rule.counter.purpose, currencyText });

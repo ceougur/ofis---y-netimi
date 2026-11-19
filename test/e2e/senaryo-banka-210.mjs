@@ -704,7 +704,8 @@ try {
     await answerYes(admin);
     await admin.waitForFunction(() => document.querySelectorAll(".hof-bank-legacy tbody input[data-pick]").length > 0, null, { timeout: 8000 });
     const legacyText = await textOf(admin, `${bankWin} .hof-bank-stats`);
-    ok(has(legacyText, "7.000,00") && has(legacyText, "3.000,00"), `Geri Al: eski hâl (Havale 7.000, POS 3.000): ${legacyText}`);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2 — K-14, KULLANICI KARARI S179 = A): açılıştan önceki hesapsız havale açılışta sayılır (defterde 519) → Hesabı Atanmamış kovası düşer. Havale kovası 2.000 (5.000 açılışta sayıldı; listede "Açılışta Sayıldı").
+    ok(has(legacyText, "2.000,00") && has(legacyText, "3.000,00"), `Geri Al: eski hâl (Havale 2.000 + açılışta sayılan 5.000, POS 3.000): ${legacyText}`);
     ok(has(await textOf(admin, `${bankWin} [data-bank]`), "Geri Alındı"), "Kurulum Geçmişi'nde Geri Alındı");
     // Bu Hesaba Ata: yalnız açılıştan sonraki havale satırı seçilebilir (20.09 açılıştan önce, POS satırı bağlanmaz).
     const pickable = await admin.$$eval(`${bankWin} .hof-bank-legacy tbody input[data-pick]`, list => list.length);
@@ -717,7 +718,8 @@ try {
     await answerYes(admin);
     ok((await assigned).status() === 200, "Bu Hesaba Ata: POST /legacy/assign 200");
     let summary = await must("özet", api.get(`/api/workspace/bank/summary?${q}`));
-    ok(summary.realBank.minor === 10_200_000 && summary.unassigned.bankMinor === 500_000, `Bu Hesaba Ata: Gerçek Banka ${summary.realBank.minor / 100}, Hesabı Atanmamış havale ${summary.unassigned.bankMinor / 100}`);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2 — K-14, KULLANICI KARARI S179 = A): açılıştan önceki hesapsız havale açılışta sayılır (defterde 519) → Hesabı Atanmamış kovası düşer.
+    ok(summary.realBank.minor === 10_200_000 && summary.unassigned.bankMinor === 0, `Bu Hesaba Ata: Gerçek Banka ${summary.realBank.minor / 100}, Hesabı Atanmamış havale ${summary.unassigned.bankMinor / 100}`);
     // Bankaya Geçmiş Say (GG2 F4): yalnız hesabın açılışından sonraki POS tahsilatı aktarılır. 22.09'daki 3.000 açılıştan (01.10) önce:
     // açılış bakiyesinin içinde, Devir Kapanışı'nın konusu — form açılmaz, nedeni söylenir.
     // Bankaya Geçmiş Say tıklamasının sonucu: form ya da YENİ "yok" bildirimi (hangisi önce gelirse; sabit bekleme değil, bildirim
@@ -2467,9 +2469,10 @@ try {
     ok(/−₺?0\b/.test(tile.sub.split("Transfer")[0]), "bugün çıkış 0 (Kasa'dan gelen 1.000 transfer sayılmaz)");
     ok(/Transfer \+₺?1\.000/.test(tile.transfer), `Transfer satırı ayrı: “${tile.transfer}”`);
     ok(/Kart ve Kredi Borcu ₺?3\.000/.test(tile.debt), `Kart ve Kredi Borcu ayrı satır: “${tile.debt}”`);
-    ok(/Hesabı Atanmamış Eski Hareketler ₺?5\.000/.test(tile.unassigned), `Hesabı Atanmamış ayrı satır: “${tile.unassigned}”`);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2 — K-14, KULLANICI KARARI S179 = A): açılıştan önceki hesapsız havale açılışta sayılır (defterde 519) → Hesabı Atanmamış kovası düşer. Kova 0 → satır görünmez.
+    ok(!/₺?5\.000/.test(tile.unassigned || ""), `Hesabı Atanmamış satırı (kova 0): “${tile.unassigned}”`);
     const overview = await must("ANLIK DURUM", api.get("/api/workspace/overview"));
-    ok(overview.cash.bank.balance === 160484.25 && overview.cash.bank.debt.total === 3000 && overview.cash.bank.unassigned.total === 5000 && overview.cash.balance === 9000, `API ile aynı: Gerçek Banka ${overview.cash.bank.balance}, borç ${overview.cash.bank.debt.total}, atanmamış ${overview.cash.bank.unassigned.total}, Nakit Kasa ${overview.cash.balance}`);
+    ok(overview.cash.bank.balance === 160484.25 && overview.cash.bank.debt.total === 3000 && overview.cash.bank.unassigned.total === 0 && overview.cash.balance === 9000, `API ile aynı: Gerçek Banka ${overview.cash.bank.balance}, borç ${overview.cash.bank.debt.total}, atanmamış ${overview.cash.bank.unassigned.total}, Nakit Kasa ${overview.cash.balance}`);
     await shot(admin, "rapor-anlik-durum-banka-k10", { clip: await admin.$eval("#hof-pulse", node => { const box = node.getBoundingClientRect(); return { x: Math.max(0, box.x - 4), y: Math.max(0, box.y - 4), width: box.width + 8, height: box.height + 8 }; }) });
     await admin.click('#hof-pulse [data-pulse-go="bank"]');
     ok(await admin.waitForSelector(`${bankWin} [data-bank] .hof-bank-tabs`, { timeout: 10000 }).then(() => true).catch(() => false), "kutuya tıklayınca Banka penceresi açılır");
@@ -2496,7 +2499,7 @@ try {
     const col = header => data.heads.indexOf(header);
     ok(data.rows.length === 2 && byBank("Ziraat Bankası")?.[col("Dönem Sonu")] === "87.984,25 TL" && byBank("Garanti BBVA")?.[col("Dönem Sonu")] === "72.500,00 TL", `hesaplar: ${data.rows.map(cells => `${cells[1]} ${cells[col("Dönem Sonu")]}`).join(" · ")}`);
     ok(data.footer?.[col("Dönem Sonu")] === "160.484,25 TL" && data.footer?.[col("Giriş")] === "21.500,00 TL" && data.footer?.[col("Çıkış")] === "15,75 TL" && data.footer?.[col("Transfer Giriş")] === "21.000,00 TL" && data.footer?.[col("Transfer Çıkış")] === "32.000,00 TL", `TOPLAM: ${data.footer?.join(" | ")}`);
-    ok(data.summary["Gerçek Banka"] === "160.484,25 TL" && data.summary["Kart ve Kredi Borcu"] === "3.000,00 TL" && data.summary["Hesabı Atanmamış Eski Hareketler"] === "5.000,00 TL", `özet K10 adlarıyla: ${JSON.stringify(data.summary)}`);
+    ok(data.summary["Gerçek Banka"] === "160.484,25 TL" && data.summary["Kart ve Kredi Borcu"] === "3.000,00 TL" && data.summary["Hesabı Atanmamış Eski Hareketler"] === undefined, `özet K10 adlarıyla (Ç7a tur 2b: kova 0 — satır yok): ${JSON.stringify(data.summary)}`);
     await shot(admin, "rapor-banka-bakiye");
     const [pdfHref, xlsxHref] = data.links;
     const routed = await admin.evaluate(list => list.map(href => window.HOF.apiUrl(href)), [pdfHref, xlsxHref]);
@@ -2512,7 +2515,8 @@ try {
     ok(xlsx.status === 200 && sheet[0].join("|") === data.heads.join("|") && sheet.at(-1)[0] === "TOPLAM" && Math.round(sheet.at(-1)[sheet[0].indexOf("Dönem Sonu")] * 100) === 16_048_425, `Excel: kolonlar ekranla aynı, TOPLAM 160.484,25 (${sheet.at(-1).join(" | ")})`);
     await admin.selectOption(`${modal} [data-param="bankGroup"]`, "all");
     data = await waitPreview(admin, view => view.rows.length === 4);
-    ok(data.rows.length === 4 && !data.footer && data.rows.some(cells => cells[0] === "Kart ve Kredi Borcu" && cells[col("Dönem Sonu")] === "-3.000,00 TL") && data.rows.some(cells => cells[0] === "Hesabı Atanmamış Eski Hareketler" && cells[3] === "102.00" && cells[col("Dönem Sonu")] === "5.000,00 TL"), `Tümü: kart ve atanmamış ayrı grup, TOPLAM yok (${data.rows.map(cells => `${cells[0]} ${cells[3]} ${cells[col("Dönem Sonu")]}`).join(" · ")})`);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2b — BAŞ MİMAR KARARI 14.11 10:17 (2)): açılışta sayılmış satır bakiye raporlarının Hesabı Atanmamış toplamına / satırına girmez (toplam = kova).
+    ok(data.rows.length === 3 && !data.footer && data.rows.some(cells => cells[0] === "Kart ve Kredi Borcu" && cells[col("Dönem Sonu")] === "-3.000,00 TL") && !data.rows.some(cells => cells[0] === "Hesabı Atanmamış Eski Hareketler"), `Tümü: kart ve atanmamış ayrı grup, TOPLAM yok (${data.rows.map(cells => `${cells[0]} ${cells[3]} ${cells[col("Dönem Sonu")]}`).join(" · ")})`);
     await shot(admin, "rapor-banka-bakiye-tumu");
   });
 
@@ -2553,7 +2557,7 @@ try {
     await admin.click(`${modal} [data-rc-list] [data-report="alt-hesap-mizani"]`);
     const data = await waitPreview(admin, view => view.rows.length === 4);
     const bal = sub => { const cells = data.rows.find(row => row[0] === sub); return cells ? `${cells[data.heads.indexOf("Bakiye")]} ${cells[data.heads.indexOf("Yön")]}` : "yok"; };
-    ok(bal("101.01") === "yok" && bal("102.00") === "5.000,00 TL Borç" && bal(R6.ziraat.glSub) === "87.984,25 TL Borç" && bal(R6.garanti.glSub) === "72.500,00 TL Borç" && bal(R6.card.glSub) === "3.000,00 TL Alacak", `alt hesaplar: ${data.rows.map(row => `${row[0]} ${row[data.heads.indexOf("Bakiye")]} ${row[data.heads.indexOf("Yön")]}`).join(" · ")}`);
+    ok(bal("101.01") === "yok" && bal("102.00") === "yok" && bal(R6.ziraat.glSub) === "87.984,25 TL Borç" && bal(R6.garanti.glSub) === "72.500,00 TL Borç" && bal(R6.card.glSub) === "3.000,00 TL Alacak", `alt hesaplar: ${data.rows.map(row => `${row[0]} ${row[data.heads.indexOf("Bakiye")]} ${row[data.heads.indexOf("Yön")]}`).join(" · ")}`);
     ok(data.summary["Alt Hesap Mutabakatı"] === "Tutarlı", "ana hesaplar alt hesaplarının toplamına eşit");
     await shot(admin, "rapor-alt-hesap-mizani");
   });
@@ -2583,7 +2587,7 @@ try {
     const ziraat = data.rows.find(cells => cells[0] === "Ziraat Bankası");
     const garanti = data.rows.find(cells => cells[0] === "Garanti BBVA");
     ok(ziraat?.[col("Gerçek Banka")] === "87.984,25 TL" && ziraat?.[col("Kart ve Kredi Borcu")] === "3.000,00 TL" && ziraat?.[col("Net")] === "84.984,25 TL" && garanti?.[col("Gerçek Banka")] === "72.500,00 TL", `Banka Bazında: ${data.rows.map(cells => cells.join(" | ")).join(" · ")}`);
-    ok(data.footer?.[col("Gerçek Banka")] === "160.484,25 TL" && data.summary["Hesabı Atanmamış Eski Hareketler"] === "5.000,00 TL", `TOPLAM Gerçek Banka 160.484,25; Hesabı Atanmamış özette ayrı (${data.footer?.join(" | ")})`);
+    ok(data.footer?.[col("Gerçek Banka")] === "160.484,25 TL" && data.summary["Hesabı Atanmamış Eski Hareketler"] === undefined, `(Ç7a tur 2b: kova 0) TOPLAM Gerçek Banka 160.484,25; Hesabı Atanmamış özette ayrı (${data.footer?.join(" | ")})`);
     await shot(admin, "rapor-banka-bazinda");
     await admin.click(`${modal} [data-rc-list] [data-report="kasa-banka-transfer"]`);
     data = await waitPreview(admin, view => view.rows.length === 2);
@@ -2596,7 +2600,7 @@ try {
     await shot(admin, "rapor-bankalar-arasi-transfer");
     await admin.click(`${modal} [data-rc-list] [data-report="banka-nakit-akis"]`);
     data = await waitPreview(admin, view => view.rows.length >= 1 && view.summary["Başlangıç"]);
-    ok(data.rows[0][1] === "Başlangıç" && data.summary["Bugünkü Gerçek Banka"] === "160.484,25 TL" && data.summary["Hesabı Atanmamış Eski Hareketler"] === "5.000,00 TL", `Banka Nakit Akış: başlangıç Gerçek Banka (${JSON.stringify(data.summary)})`);
+    ok(data.rows[0][1] === "Başlangıç" && data.summary["Bugünkü Gerçek Banka"] === "160.484,25 TL" && data.summary["Hesabı Atanmamış Eski Hareketler"] === undefined, `(Ç7a tur 2: kova 0) Banka Nakit Akış: başlangıç Gerçek Banka (${JSON.stringify(data.summary)})`);
   });
 
   await step("46c. Tüm Zamanlar (İz 5.2): Banka Hareket Raporu'nda Tüm Zamanlar seçilince Başlangıç alanı BOŞ, kapsam metni 'Tüm Zamanlar', ekranda ve PDF'te '1976' yok", async () => {
@@ -2671,7 +2675,7 @@ try {
     ok(["Gerçek Banka", "Kart ve Kredi Borcu", "Hesabı Atanmamış Eski Hareketler"].every(name => table.heads.includes(name)) && !table.heads.includes("Banka / POS"), `sütunlar: ${table.heads.join(" | ")}`);
     const mine = table.rows.find(cells => cells[0].includes("Rapor Şirketi"));
     const at = name => mine?.[table.heads.indexOf(name)] || "";
-    ok(/160\.384,25/.test(at("Gerçek Banka")) && /3\.000,00/.test(at("Kart ve Kredi Borcu")) && /5\.000,00/.test(at("Hesabı Atanmamış Eski Hareketler")), `Rapor Şirketi satırı: ${at("Gerçek Banka")} · ${at("Kart ve Kredi Borcu")} · ${at("Hesabı Atanmamış Eski Hareketler")}`);
+    ok(/160\.384,25/.test(at("Gerçek Banka")) && /3\.000,00/.test(at("Kart ve Kredi Borcu")) && /^₺?0,00/.test(at("Hesabı Atanmamış Eski Hareketler")), `Rapor Şirketi satırı: ${at("Gerçek Banka")} · ${at("Kart ve Kredi Borcu")} · ${at("Hesabı Atanmamış Eski Hareketler")}`);
     await shot(admin, "rapor-birlesik-k10");
     await admin.goto(`${BASE}/`, { waitUntil: "load" });
     await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });

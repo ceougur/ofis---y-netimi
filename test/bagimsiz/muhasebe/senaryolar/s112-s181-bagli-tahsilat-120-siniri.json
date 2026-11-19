@@ -1,0 +1,215 @@
+{
+ "aciklama": "S181 B: faturaya bağlı evrak / tahsilatın 120'ye düşen kısmı (faturanın açığını aşan fazla dahil) carinin şüpheli dışı borcunu aşarsa red; eşitlik kabul; şüpheli payı (kâhinin kuyruğu, M13) 128'den.",
+ "ad": "s112-s181-bagli-tahsilat-120-siniri",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "g3/gecikmis": 0,
+   "g3/supheli": 100000,
+   "mz/satirlar/100/bakiye": 100000,
+   "mz/satirlar/101.01/bakiye": 0,
+   "mz/satirlar/120|C1/bakiye": 0,
+   "mz/satirlar/120|C3/bakiye": 0,
+   "mz/satirlar/128|C1/bakiye": 100000,
+   "mz/satirlar/128|C3/bakiye": 100000,
+   "mz/satirlar/600/bakiye": -300000,
+   "redler": [
+    "SUPHELI_NORMAL_ASIM",
+    "SUPHELI_NORMAL_ASIM",
+    "SUPHELI_NORMAL_ASIM"
+   ]
+  }
+ },
+ "kapsam": [
+  "S181",
+  "S168",
+  "S155",
+  "S14",
+  "S25",
+  "K3",
+  "J-01",
+  "T-13",
+  "§3.11b/2",
+  "Ş13",
+  "Ş14"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 100000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-01-10",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 100000,
+   "cari": "C3",
+   "id": "F3",
+   "tarih": "2026-01-11",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 50000,
+   "cari": "C3",
+   "id": "F4",
+   "tarih": "2026-01-12",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "id": "SA1",
+   "tarih": "2026-02-01",
+   "tur": "supheliye_al",
+   "tutar": 100000
+  },
+  {
+   "K": 0,
+   "M": 50000,
+   "cari": "C1",
+   "id": "F2",
+   "tarih": "2026-02-10",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "evrak": "CK1",
+   "fatura": "F2",
+   "id": "T1",
+   "tarih": "2026-02-15",
+   "tur": "tahsilat",
+   "tutar": 90000,
+   "yol": "cek"
+  },
+  {
+   "cari": "C1",
+   "fatura": "F2",
+   "id": "T2",
+   "tarih": "2026-02-16",
+   "tur": "tahsilat",
+   "tutar": 50000,
+   "yol": "nakit"
+  },
+  {
+   "cari": "C1",
+   "fatura": "F2",
+   "id": "T3",
+   "tarih": "2026-02-17",
+   "tur": "tahsilat",
+   "tutar": 1,
+   "yol": "nakit"
+  },
+  {
+   "cari": "C3",
+   "id": "SB",
+   "tarih": "2026-02-01",
+   "tur": "supheliye_al",
+   "tutar": 120000
+  },
+  {
+   "cari": "C3",
+   "fatura": "F4",
+   "id": "T4",
+   "tarih": "2026-02-20",
+   "tur": "tahsilat",
+   "tutar": 60000,
+   "yol": "nakit"
+  },
+  {
+   "cari": "C3",
+   "fatura": "F4",
+   "id": "T5",
+   "tarih": "2026-02-21",
+   "tur": "tahsilat",
+   "tutar": 50000,
+   "yol": "nakit"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-02-28",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g3",
+   "cari": "C3",
+   "rapor": "gecikmis",
+   "tarih": "2026-03-01",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

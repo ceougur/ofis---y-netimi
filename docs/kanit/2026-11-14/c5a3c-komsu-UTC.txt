@@ -1,0 +1,12 @@
+  ...
+1..899
+# tests 3869
+# suites 894
+# pass 3869
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 849123.14829
+
+[kanit] c5a3c-komsu-UTC: GEÇTİ · çıkış 0 · 3869/3869 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 2346e05 +5 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4

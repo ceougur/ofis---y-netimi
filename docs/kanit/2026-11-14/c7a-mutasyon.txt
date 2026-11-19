@@ -1,0 +1,10 @@
+taban: 3 geçti / 0 kaldı (çıkış 0)
+ok 1 - D-07: kart hesabı Faiz Gideri'nde yine reddedilir (kabul geri alınır): çıkış 1, 0 geçti / 3 kaldı
+ok 2 - D-07: kart faizinin para satırı 309 yerine 102 (kart ↔ banka): çıkış 1, 1 geçti / 2 kaldı
+ok 3 - D-07: BSMV / KKDF satırı düşer (yalnız faiz yazılır): çıkış 1, 1 geçti / 2 kaldı
+ok 4 - D-07: kart faizi Planlı İşlem'de de kabul edilir (planMain yok sayılır): çıkış 1, 2 geçti / 1 kaldı
+ok 5 - D-07: faiz gideri hesabı 780 yerine 770 (hesap eşlemesi): çıkış 1, 1 geçti / 2 kaldı
+
+# tests 5
+# pass 5
+# fail 0

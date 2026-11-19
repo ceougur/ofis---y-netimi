@@ -10,6 +10,7 @@ import { bankForm } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { allocate, dayText, daysUntil, distribute, isoDay, mapHeaders, parseDay } from "../lib/plans.mjs";
+import { createAccountLines } from "../lib/account-lines.mjs";
 import { extractSchedules, spreadPaid } from "../lib/insight/schedules.mjs";
 import { tabContext } from "../lib/insight/dues.mjs";
 import { planStatementPdf, receiptPdf } from "../lib/plan-report.mjs";
@@ -1635,119 +1636,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     }
     return out;
   }
-  // v2.0.24: iadelerin Mevcut Borç kartlarından düştüğü tutar (iade belgesinde payment_json.coverCuts; iptal/silinen iade
-  // sayılmaz). Kartın kapsamı açıldığı andaki tutarla kurulur (lib/accounts.mjs coverTotal): iadenin kapattığı borç kartın
-  // payından düşer; küçülen tutar başka (daha eski) bir faturayı kapsamdan çıkarıp aynı borcu iki kez saydırmaz.
-  // 2.4.9 R2 (ders 47): forAccount (cari kartı, kartın WhatsApp çekirdeği waFacts) her çağrıda bütün iadeleri tarıyordu — 1.001 iadeli şirkette 2.000 kişilik
-  // elle alıcı listesi 10,9 sn, olay döngüsü ~10 sn. Tarama KURALI AYNEN (scanReturnCuts); sonuç veri tabanına bir yazma olana kadar saklanır: total_changes()
-  // bu bağlantının her INSERT/UPDATE/DELETE'inde (store dışı db.prepare/exec dahil) artar, data_version başka bir bağlantının kesinleşen yazmasında değişir
-  // (fatura listesi settleKey, stok rozeti alerts, banka toplamları money-lines ile aynı kural). Veri tabanı işleminin İÇİNDE saklı değer ne okunur ne yazılır
-  // (geri alınan işlemde total_changes azalmaz — GG2): işlem içinde her çağrı eskisi gibi tarar. Saklanan Map salt okunurdur (çağıranlar yalnız get eder).
-  // Kart kimliğiyle SQL'de süzmek (instr) denendi, yetmedi: çağrı başına 1,56 ms (tam tarama 2,64 ms) — 1.310 kartlı caride ~2 sn.
-  let cutsCache = { stamp: "", cuts: null };
-  function returnCuts() {
-    if (store.inTransaction || typeof store.changeCounters !== "function") return scanReturnCuts();
-    const counters = store.changeCounters();
-    const stamp = `${counters.total}|${counters.version}`;
-    if (cutsCache.cuts && cutsCache.stamp === stamp) return cutsCache.cuts;
-    const cuts = scanReturnCuts();
-    cutsCache = { stamp, cuts };
-    return cuts;
-  }
-  function scanReturnCuts() {
-    const out = new Map();
-    for (const row of store.all("SELECT payment_json AS j FROM invoices WHERE kind = 'sale_return' AND status = 'issued' AND payment_json LIKE '%coverCuts%'")) {
-      let cuts = {};
-      try {
-        cuts = JSON.parse(row.j || "{}").coverCuts || {};
-      } catch {
-        cuts = {};
-      }
-      for (const [planId, cut] of Object.entries(cuts)) out.set(planId, roundMoney((out.get(planId) || 0) + (Number(cut) || 0)));
-    }
-    return out;
-  }
-  // Ç5-B kapanış düzeltmesi (dar kontrol ORTA-1 — GERİLEME; S110 = A; S133 = C): satışla açılan Mevcut Borç kartının KAYNAĞI (hangi stok satışıyla açıldı) kalıcı bilgiden
-  // — kartın açılış izinden (audit_events 'plan.created'; iz silinmez, yedekle / geri yüklemeyle taşınır). Tek Yükümlülük Kuyruğu kartın "kendi satışını" bununla tanır
-  // (lib/accounts.mjs coverSale → lib/obligation-queue.mjs ownSaleOf); tutar ya da kayıt anı eşitliğine bakılmaz.
-  //   2.5.0'dan itibaren: iz yükündeki `saleMoveId` (createForAccount; alan HER toplu kartta yazılır — boşsa kart satışla açılmamıştır, çıkarım yapılmaz).
-  //   Eski veri (v2.0.13 – v2.4.9; yükte alan YOK): stoktan satış aynı işlemde önce 'stock.out' izini, hemen ardından kartın 'plan.created' izini yazar
-  //   (routes/stock.mjs; iki satır ardışıktır — aynı işlem, araya yazım giremez). Kartın izinden HEMEN ÖNCEKİ satır aynı kullanıcının, aynı cariye, açık hesaba (veresiye),
-  //   kartın AÇILIŞ tutarında (izdeki total — sonradan düzenlenen tutar değil) stok satışıysa kart o satışla açılmıştır. Koşul tutmuyorsa kaynak bilinmez: kart elle açılmış
-  //   kart gibi eski tanımada kalır (S133 = C).
-  // Kaynak kart açıldıktan sonra DEĞİŞMEZ → kart kimliğiyle bellekte tutulur (şirket örneği başına; yalnız bilinmeyen kartlar için izden okunur — ders 47: kart başına
-  // sorgu yok, tek sorgu). Veri tabanı işleminin içinde bellek yazılmaz (geri alınan işlemin kartı bellekte kalmasın).
-  const saleSourceCache = new Map();
-  const SALE_SOURCE_SQL = `SELECT e.entity_id AS planId, e.actor_id AS actor, e.payload_json AS payload, s.type AS prevType, s.entity_id AS prevId, s.actor_id AS prevActor, s.payload_json AS prevPayload
-       FROM audit_events e LEFT JOIN audit_events s ON s.rowid = (SELECT MAX(x.rowid) FROM audit_events x WHERE x.rowid < e.rowid)
-       WHERE e.type = 'plan.created' AND e.entity_id IN (SELECT value FROM json_each(?))`;
-  const parsePayload = text => {
-    try {
-      const value = JSON.parse(text || "{}");
-      return value && typeof value === "object" ? value : {};
-    } catch {
-      return {};
-    }
-  };
-  function saleSourceOfEvent(row) {
-    const created = parsePayload(row.payload);
-    if (Object.hasOwn(created, "saleMoveId")) return String(created.saleMoveId || "");
-    if (created.bulk !== true || created.coversBalance !== true || created.invoiceId || row.prevType !== "stock.out" || row.prevActor !== row.actor) return "";
-    const sale = parsePayload(row.prevPayload);
-    // 'stock.out' = satış (tedarikçiye iade 'stock.preturn'); izdeki accountId yalnız açık hesaba (veresiye) satışta doludur (routes/stock.mjs moveInput).
-    if (!created.accountId || sale.accountId !== created.accountId) return "";
-    return Math.round((Number(sale.amount) || 0) * 100) === Math.round((Number(created.total) || 0) * 100) ? String(row.prevId || "") : "";
-  }
-  /** Kart kimlikleri → Map(kart → stok hareketi kimliği); satışla açılmamış / kaynağı bilinmeyen kart haritada YOK. */
-  function saleSources(planIds) {
-    const out = new Map();
-    const missing = [];
-    for (const id of planIds) {
-      if (!saleSourceCache.has(id)) missing.push(id);
-      else if (saleSourceCache.get(id)) out.set(id, saleSourceCache.get(id));
-    }
-    if (missing.length) {
-      const found = new Map(missing.map(id => [id, ""]));
-      for (const row of store.all(SALE_SOURCE_SQL, JSON.stringify(missing))) {
-        const move = saleSourceOfEvent(row);
-        if (move) found.set(row.planId, move);
-      }
-      for (const [id, move] of found) {
-        if (!store.inTransaction) saleSourceCache.set(id, move);
-        if (move) out.set(id, move);
-      }
-    }
-    return out;
-  }
-  // Mizan (v2.0.7): tüm carilerin kartları, hareketleriyle; carinin defteri (accountLedger) Cari kartıyla aynı girdiyi alır.
-  function ledgerPlansByAccount() {
-    const out = new Map();
-    // import_id: Excel / Tablodan Aktar kartı (2.5.0 Ç5-B tur 2b-2 — S110 / S120 bu kartlara uygulanmaz; lib/accounts.mjs coverSource).
-    const plans = store.all("SELECT id, account_id AS accountId, name, total, status, covers_balance AS coversBalance, registered_on AS registeredOn, created_at AS createdAt, updated_at AS updatedAt, closed_at AS closedAt, import_id AS importId FROM plans WHERE deleted_at IS NULL AND account_id <> ''");
-    if (!plans.length) return out;
-    const seqs = new Map();
-    const counts = new Map();
-    const planned = new Map();
-    for (const item of store.all("SELECT id, plan_id AS planId, seq, amount FROM plan_items")) {
-      seqs.set(item.id, item.seq);
-      counts.set(item.planId, (counts.get(item.planId) || 0) + 1);
-      planned.set(item.planId, (planned.get(item.planId) || 0) + (Number(item.amount) || 0));
-    }
-    const entries = new Map();
-    for (const entry of store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date, note, receipt_no AS receiptNo, opening, cheque_id AS chequeId, created_at AS createdAt FROM plan_entries ORDER BY date, created_at, rowid")) {
-      if (!entries.has(entry.planId)) entries.set(entry.planId, []);
-      entries.get(entry.planId).push({ ...entry, opening: Boolean(entry.opening), itemSeq: entry.itemId ? seqs.get(entry.itemId) || null : null });
-    }
-    const cutsOf = returnCuts();
-    const sales = saleSources(plans.filter(plan => plan.coversBalance && !plan.importId).map(plan => plan.id));
-    for (const plan of plans) {
-      const own = entries.get(plan.id) || [];
-      const paid = roundMoney(own.reduce((sum, entry) => sum + (entry.kind === "in" ? Number(entry.amount) || 0 : -(Number(entry.amount) || 0)), 0));
-      if (!out.has(plan.accountId)) out.set(plan.accountId, []);
-      out.get(plan.accountId).push({ ...plan, itemCount: counts.get(plan.id) || 0, planned: roundMoney(planned.get(plan.id) || 0), returnCuts: cutsOf.get(plan.id) || 0, saleMoveId: sales.get(plan.id) || "", totals: { paid }, entries: own });
-    }
-    return out;
-  }
+  const { returnCuts, saleSources, ledgerPlansByAccount } = createAccountLines({ store });
   function forAccount(accountId, user) {
     if (!accountId) return [];
     const cutsOf = returnCuts();

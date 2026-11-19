@@ -1,0 +1,9 @@
+API TABAN (mutantsız): tests 35, pass 35, fail 0, çıkış 0
+KD1-c ÖLDÜ (tests 35, pass 33, fail 2) — ORTA-1 eski veri — çıkarım cariye bakmaz (başka cariye satışın ardından açılan kart o satışa bağlanır) · öldüren: B — hemen önceki satış BAŞKA cariye ⇒ kaynak yok | G — hemen önceki satış PEŞİN (cariye yazılmamış) ⇒ kaynak yok | Ç5-B kapanış — ORTA-1 eski veri: kartın kaynağı açılış izinden ÇIKARILIR (2.4.9'a kadar izde satış kimliği yok) — koşulların her biri
+KD1-d ÖLDÜ (tests 35, pass 34, fail 1) — ORTA-1 eski veri — çıkarım açılış tutarına bakmaz · öldüren: C — hemen önceki satışın tutarı kartın açılış tutarından FARKLI ⇒ kaynak yok | Ç5-B kapanış — ORTA-1 eski veri: kartın kaynağı açılış izinden ÇIKARILIR (2.4.9'a kadar izde satış kimliği yok) — koşulların her biri
+KD1-e ÖLDÜ (tests 35, pass 34, fail 1) — ORTA-1 eski veri — çıkarım kullanıcıya bakmaz · öldüren: F — hemen önceki satışı BAŞKA kullanıcı yazmış ⇒ kaynak yok | Ç5-B kapanış — ORTA-1 eski veri: kartın kaynağı açılış izinden ÇIKARILIR (2.4.9'a kadar izde satış kimliği yok) — koşulların her biri
+KD1-f ÖLDÜ (tests 35, pass 34, fail 1) — ORTA-1 — izde boş yazılmış satış kimliği yok sayılır (bugünkü biçimde de çıkarım yapılır) · öldüren: E — BUGÜNKÜ biçim (izde alan boş yazılı): çıkarım yapılmaz ⇒ kaynak yok | Ç5-B kapanış — ORTA-1 eski veri: kartın kaynağı açılış izinden ÇIKARILIR (2.4.9'a kadar izde satış kimliği yok) — koşulların her biri
+KD1-i ÖLDÜ (tests 35, pass 33, fail 2) — ORTA-1 — toplu yol (bütün cariler) kaynağı vermez (liste / Vade Takip ↔ kart ekranı ayrışır) · öldüren: kaynak KALICI: kartın açılış izinde satışın kimliği yazılı; program yeniden açılınca (bellek boş) sayılar aynı | Ç5-B kapanış — ORTA-1 (S110 = A): satışla açılan kart kendi satışını HER KOŞULDA tanır (adımlı saat — gerçek kurulum) | toplu yol (bütün carilerin kartları) tek cari yoluyla AYNI kaynağı 
+# tests 5
+# pass 5
+# fail 0

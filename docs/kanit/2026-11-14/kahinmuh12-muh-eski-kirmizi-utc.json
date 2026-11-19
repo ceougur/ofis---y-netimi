@@ -1,0 +1,32 @@
+{
+  "ad": "kahinmuh12-muh-eski-kirmizi-utc",
+  "komut": "python3 -I -B /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-utc/muhasebe/test_model.py",
+  "commit": "eab3aedc73c97a0c10aae1c45e72d898ae43ce8e",
+  "dal": "kahin-muh12-calisma",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T12:32:48.987Z",
+  "sure_sn": 15.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 198,
+    "gecen": 184,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kanit/2026-11-14/kahinmuh12-muh-eski-kirmizi-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/kahin-muh12-aa91",
+  "ham_cikti_sha256": "69e5bb1cbe5c8913eb2a4f19a1f7d15a8494e000d2afef3fbdbc567634c6a23d",
+  "ham_cikti_bayt": 13583
+}

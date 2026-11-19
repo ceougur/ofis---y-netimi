@@ -1,0 +1,336 @@
+KOD KÖKÜ: /home/user/ofis---y-netimi/.claude/worktrees/agent-a47fc9ca741d7db39
+ÇIKTI: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3yy-yuruyus/aday
+
+BEKLENEN (A; girdilerden elle; sahte saat 08.10.2026 Perşembe; S179 = A, D-07, KG-6 = A):
+  Hesap yokken ABC Ltd.'ye havale: 20.09 giriş 5.000 (EKRANDAN), 25.09 çıkış 1.000, 01.10 giriş 700, 03.10 giriş 2.000 (API) → kova 6.700.
+  Ziraat (açılış 01.10, 100.000) ve Şirket Kartı (açılış 01.10, borç 5.000) açılınca: 20.09 ve 25.09 açılıştan önce → 'Açılışta Sayıldı', defterde 519 (20.09 B 519 5.000 / A 120; 25.09 B 120 / A 519 1.000);
+  01.10 (açılış günü, 'küçüktür') ve 03.10 102.00'da kalır → Hesabı Atanmamış kovası 2.700 (Havale), liste 4 satır, toplam 2.700; 102.00 = 2.700.
+  Açılış Eşleştirme 519 dökümünde 'Hesapsız Hareketler (Açılıştan Önce)' = 5.000 − 1.000 = 4.000 (borç).
+  + Kart Faizi 200 + BSMV / KKDF 10 → önizleme 'Kart Borcuna Eklenen ₺210,00'; kart borcu 5.000 → 5.210; fiş B 780 200 · B 780 10 / A 309 210; Ziraat değişmez; 780 = 210.
+  POS (Ziraat Fiziki POS, Tek Çekim %2,5, valör 2 iş günü → 12.10) 08.10 tahsilat 10.000 → 08.10 B 108.01 10.000 / A 120 + 08.10 B 653 250 / A 108.01 250 (satış günü);
+  08.10'da 653 = 250, 108 = 9.750; POS Komisyon Raporu komisyonu 250 (08.10 satışı). 12.10 Şimdi Aktar → B 102.01 9.750 / A 108.01 9.750 (653 satırı yok); 653 = 250 (08.10'da), Ziraat 109.750.
+
+■ [A] A1 Hesap yokken cari kartından + Tahsilat: 5.000, Tab, Havale / EFT, tarih 20.09 (klavye, insan hızı)
+  Tab sonrası odak: method
+  [görüntü 01-A-hesapsiz-havale-formu.png]
+  soru yok (hesapsız havale; soru beklenmiyor)
+  ▶ ÜÇLÜ [A] A1 hesapsız havale kaydı: BEKLENEN kabul, 20.09 havale 5.000, hesapsız · EKRAN form kapandı · DEFTER/VT {"amount":5000,"method":"bank","date":"2026-09-20","note":""}
+  [görüntü 02-A-hesapsiz-havale-sonra.png]
+
+■ [A] A2 Diğer hesapsız hareketler (API: aynı form A1'de ekrandan sınandı; geçmiş tarihli seri)
+  ▶ ÜÇLÜ [A] A2 hesap yokken kova (102.00): BEKLENEN 6.700 · EKRAN — · DEFTER/VT 6.700,00
+
+■ [A] A3 Ziraat + Şirket Kartı açılır (ön koşul API: hesap açma formu bu paketin konusu değil)
+  Ziraat bacc-87403672-ca64-4c84-845a-546b27a8d064 · kart bacc-3c914fc0-d2b9-4afc-bbf6-b0b8760ecf32 (alt hesap 309.01)
+
+■ [A] A4 Banka › Genel Bakış: Hesabı Atanmamış kovası; Eski Hareketler listesi ('Açılışta Sayıldı' rozeti)
+  [görüntü 03-A-genel-bakis.png]
+  ▶ ÜÇLÜ [A] A4 Hesabı Atanmamış kovası (Havale 102.00): BEKLENEN 2.700 · EKRAN Hesabı Atanmamış Eski Hareketler ¦ ₺2.700,00 ¦ Havale / EFT (102.00) ₺2.700,00 · POS / Kart (108.00) ₺0,00 — Gerçek Banka'ya ve hiçbir toplama girmez. ¦ Şimdi Düzenle · DEFTER/VT 2.700,00 · defter 102.00 = 2.700,00
+  Eski Hareketler satırları (4):
+    03.10.2026 Havale / EFT ABC Ltd. BNK-2026-000004 +₺2.000,00
+    01.10.2026 Havale / EFT ABC Ltd. BNK-2026-000003 +₺700,00
+    25.09.2026 Havale / EFT ABC Ltd. BNK-2026-000002 −₺1.000,00 Açılıştan Önce Açılışta Sayıldı
+    20.09.2026 Havale / EFT ABC Ltd. BNK-2026-000001 +₺5.000,00 Açılıştan Önce Açılışta Sayıldı
+  ▶ ÜÇLÜ [A] A4 Eski Hareketler: satır / rozetli / toplam: BEKLENEN 4 satır · rozet 2 (20.09, 25.09) · Havale toplamı 2.700 · EKRAN 4 satır · rozet 2 [25.09.2026 H ; 20.09.2026 H] · Havale / EFT (102.00) ¦ ₺2.700,00 ¦ POS / Kart (108.00) ¦ ₺0,00 ¦ Kilitli Dönem — Atanamaz ¦ 0 ¦ 4 hareket · DEFTER/VT —
+  [görüntü 04-A-eski-hareketler.png]
+  DEFTER (açılıştan önceki 519 maddeleri): 2026-09-20 account [519 B 5.000,00 · 120 A 5.000,00] || 2026-09-25 account [120 B 1.000,00 · 519 A 1.000,00]
+  ▶ ÜÇLÜ [A] A4 defter: 30.09'a kadar 519 bakiyesi: BEKLENEN 4.000 (B 5.000 − A 1.000) · EKRAN — · DEFTER/VT 4.000,00
+
+■ [A] A5 Yönetim › Sistem › Açılış Eşleştirme: 519 dökümü
+  Yönetim › Sistem · Dönem Kilidi: Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 81 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.
+  519 dökümü: Banka Açılışları₺95.000,00 Alacak ; Hesapsız Hareketler (Açılıştan Önce)₺4.000,00 Borç ; Toplam₺91.000,00 Alacak · Fiş tarihinin gün sonunda 519 Eşleştirilecek Açılış Bakiyeleri: ₺91.000,00 Alacak.
+  ▶ ÜÇLÜ [A] A5 519 dökümü 'Hesapsız Hareketler (Açılıştan Önce)': BEKLENEN 4.000 · EKRAN Hesapsız Hareketler (Açılıştan Önce)₺4.000,00 Borç · DEFTER/VT 4.000,00
+  [görüntü 05-A-acilis-eslestirme-519.png]
+
+■ [A] A6 Banka › Hesaplar › Şirket Kartı › + Kart Faizi: 200, Tab, 10 (klavye) → önizleme → Kaydet
+  [görüntü 06-A-kart-hesap-detayi.png]
+  form: İşlem Türü Faiz Gideri · alan adı "Kredi Kartı"
+  ▶ ÜÇLÜ [A] A6 Kart Faizi formu: Tab sonrası alan · alan adı · önizleme: BEKLENEN taxAmount · Kredi Kartı · Kart Borcuna Eklenen ₺210,00 · EKRAN taxAmount · Kredi Kartı · Kart Borcuna Eklenen ₺210,00 · Faiz ₺200,00 · BSMV / KKDF ₺10,00 · DEFTER/VT —
+  [görüntü 07-A-kart-faizi-formu.png]
+  ▶ ÜÇLÜ [A] A6 kart borcu: BEKLENEN 5.210 (borç) · EKRAN ₺5.210,00 · DEFTER/VT -5.210,00
+  ▶ ÜÇLÜ [A] A6 kart faizi fişi: BEKLENEN B 780 200 · B 780 10 / A 309 210 (08.10) · EKRAN — · DEFTER/VT 2026-10-08 [780 B 200,00 · 780 B 10,00 · 309/309.01 A 210,00]
+  ▶ ÜÇLÜ [A] A6 Ziraat değişmez · mizan 780: BEKLENEN 100.000,00 · 210 · EKRAN — · DEFTER/VT 100.000,00 · 210
+  [görüntü 08-A-kart-faizi-sonra.png]
+
+■ [A] A7 POS tanımı (API: POS kurulum formu bu paketin konusu değil) + cari kartından POS tahsilatı 10.000 (ekrandan)
+  Tab sonrası odak: method
+  POS seçicisi yok: tek POS kendiliğinden seçili
+  POS önizleme / form: Tutar (₺) * ¦ Tahsilat Yolu ¦ Nakit ¦ Havale / EFT ¦ POS ¦ Çek / Senet (portföye alınır) ¦ Ziraat Fiziki POS POS'una yazılır. ¦ POS Taksit Sayısı ¦ Tek Çekim ¦ 3 Taksit ¦ Provizyon No ¦ Kartın Son 4 Hanesi ¦ Komisyon %2,50 (₺250,00) · Bankaya Geçecek ₺9.750,00 · Valör 12.10.2026 ¦ Tarih ¦ Açıklama ¦ Vazgeç ¦ Tahsilat
+  [görüntü 09-A-pos-tahsilat-formu.png]
+  soru yok (POS tahsilatı; soru beklenmiyor)
+  ▶ ÜÇLÜ [A] A7 08.10 defter maddeleri: BEKLENEN B 108.01 10.000 / A 120 10.000 · B 653 250 / A 108.01 250 (pos-commission) · EKRAN form kapandı · DEFTER/VT 2026-10-08 account [108/108.01 B 10.000,00 · 120 A 10.000,00] || 2026-10-08 pos-commission [653 B 250,00 · 108/108.01 A 250,00]
+  ▶ ÜÇLÜ [A] A7 08.10 mizan 653 · 108: BEKLENEN 250 · 9.750 · EKRAN — · DEFTER/VT 250 · 9750
+  [görüntü 10-A-pos-tahsilat-sonra.png]
+
+■ [A] A8 POS Komisyon Raporu (ekran + API) ↔ defter 653 (aynı gün, aynı tutar)
+  POS Komisyon Raporu (3 satır):
+    Dönem | POS | Tür | Kip | İşlem | Brüt | Komisyon | BSMV | KDV | Net | Kesinti %
+    Ekim 2026 | Ziraat Fiziki POS | POS Satışı | BSMV Dahil | 1 | ₺10.000,00 | ₺238,10 | ₺11,90 |  | ₺9.750,00 | %2,50
+    TOPLAM |  |  |  | 1 | ₺10.000,00 | ₺238,10 | ₺11,90 |  | ₺9.750,00 | 
+  [görüntü 11-A-pos-komisyon-raporu.png]
+  ▶ ÜÇLÜ [A] A8 POS Komisyon Raporu ↔ defter 653: BEKLENEN rapor komisyon 250 (08.10 satışı) · defter 653 08.10'da 250 · EKRAN 0 satırda 250,00 · özet [["Brüt (Net)","10.000,00 TL"],["Komisyon (Net)","238,10 TL"],["İadede Geri Alınan Komisyon","0,00 TL"],["BSMV","11,90 TL"],["KDV","0,00 TL"],["Bankaya Geçen (Net)","9.750,00 TL"],["Satır","1"]] · DEFTER/VT 2026-10-08 pos-commission [653 B 250,00 · 108/108.01 A 250,00]
+
+■ [A] A9 Saat 12.10 Pazartesi → Banka › POS › Şimdi Aktar (ekrandan) → gün fişi net
+  soru yok (Şimdi Aktar; onay sorusu olabilir)
+  [görüntü 12-A-pos-simdi-aktar.png]
+  ▶ ÜÇLÜ [A] A9 gün fişi (ekran): BEKLENEN 12.10 B 102.01 9.750 / A 108.01 9.750 (653 yok) · EKRAN — · DEFTER/VT 2026-10-12 [108/108.01 A 9.750,00 · 102/102.01 B 9.750,00]
+  ▶ ÜÇLÜ [A] A9 653 (tarih) · 108 · Ziraat: BEKLENEN 250 (08.10) · 0 · 109.750 · EKRAN — · DEFTER/VT 2026-10-08 250,00 · 0,00 · 109.750,00
+
+■ [A] A10 Yevmiye Defteri (ekran) 653 / 519 / 780 satırları + Mutabakat Testi
+  Yevmiye Defteri (23 satır; 653 / 519 / 780 / 108 geçenler):
+    20.09.2026 | Cari tahsilat |  | 519 | ₺5.000,00 | 
+    25.09.2026 | Cari ödeme |  | 519 |  | ₺1.000,00
+    01.10.2026 | Banka fişi | Açılış Bakiyesi · Ziraat Bankası · Ana TL Hesabı | 519 |  | ₺100.000,00
+    01.10.2026 | Banka fişi | Açılış Bakiyesi · Ziraat Bankası · Şirket Kartı | 519 | ₺5.000,00 | 
+    08.10.2026 | Cari tahsilat |  | 108.01 | ₺10.000,00 | 
+    08.10.2026 | POS Komisyonu | POS Komisyonu (Satış Günü) · BNK-2026-000008 | 653 | ₺250,00 | 
+    08.10.2026 | POS Komisyonu | POS Komisyonu (Satış Günü) · BNK-2026-000008 | 108.01 |  | ₺250,00
+    08.10.2026 | Banka fişi | BNK-2026-000007 | 780 | ₺200,00 | 
+    08.10.2026 | Banka fişi | BNK-2026-000007 | 780 | ₺10,00 | 
+    12.10.2026 | Banka fişi | POS Gün Sonu · Ziraat Fiziki POS | 108.01 |  | ₺9.750,00
+  [görüntü 13-A-yevmiye.png]
+  ▶ ÜÇLÜ [A] A10 Mutabakat Testi: BEKLENEN bulgusuz · EKRAN — · DEFTER/VT 200 ok=true bulgusuz
+
+BEKLENEN (B; S168 = B karar örneği, girdilerden elle; bugün 08.10.2026):
+  Cari 'S168 Müşteri': F1 1.000 (2026-08-09) → Şüpheliye Al 1.000 (2026-08-29) → F2 500 (2026-09-08, kayıttan sonra) → Normal Cari Hesaba İşle 400 (2026-09-18) ⇒ 120 = 100, 128 = 1.000.
+  EKRANDAN F2'ye bağlı nakit 300 (2026-09-28): faturanın şüpheli payından → A 128 300 ⇒ 128 = 700, 120 = 100; etiket YOK.
+  EKRANDAN F2'ye bağlı nakit 200 (bugün): F2'nin kalan şüpheli payı 100 → 100'ü 128, 100'ü 120 ⇒ 128 = 600, 120 = 0; etiket 'Kısmen Normal Cariye İşlendi (₺100,00)'. İşaretli 400 'Normal Cariye İşlendi'.
+  Cari 'Pay Sıfır Müşteri': F1 1.000 → Şüpheliye Al 1.000 → F2 500 (kayıttan sonra) → EKRANDAN F2'ye bağlı 200 (bugün): F2'nin şüpheli payı 0 → A 120 200 ⇒ 120 = 300, 128 = 1.000; etiket 'Normal Cariye İşlendi'.
+  Alacak Yaşlandırma: S168 Müşteri — kalan F1 600 (60 gün) → '31–60 Gün' 600, Şüpheli 600, Toplam 600; Pay Sıfır — F1 1.000 (31–60) + F2 300 (30 gün, 1–30), Şüpheli 1.000, Toplam 1.300.
+  TABANDA (S168 = B öncesi): bağlı 300 ve bağlı 200 409 ile REDDEDİLİR (bağlı tahsilat her zaman 120; şüpheli dışı borç 100).
+
+■ [B] B0 Kurulum (API: fatura / şüpheliye alma / işaretli tahsilat — bu paketin konusu bağlı tahsilat)
+  ▶ ÜÇLÜ [B] B0 kurulum S168 Müşteri: BEKLENEN 120 = 100, 128 = 1.000 · EKRAN — · DEFTER/VT 120 = 100,00, 128 = 1.000,00
+  ▶ ÜÇLÜ [B] B0 kurulum Pay Sıfır: BEKLENEN 120 = 500, 128 = 1.000 · EKRAN — · DEFTER/VT 120 = 500,00, 128 = 1.000,00
+
+■ [B] B1 S168 Müşteri kartı → + Tahsilat 300, Tab, tarih −10, Kapatılacak Fatura = F2 (klavye, insan hızı)
+  [görüntü 14-B-s168-kart-once.png]
+  Tab sonrası odak: method
+  [görüntü 15-B-s168-bagli-300-formu.png]
+  soru yok (F2'ye bağlı 300; soru beklenmiyor)
+  ▶ ÜÇLÜ [B] B1 F2'ye bağlı 300: BEKLENEN kabul · 120 = 100, 128 = 700 · EKRAN form kapandı · DEFTER/VT 120 = 100,00, 128 = 700,00 · son satır {"amount":300,"date":"2026-09-28","f2":1,"skip":0}
+
+■ [B] B2 Aynı kartta + Tahsilat 200 (bugün), Kapatılacak Fatura = F2
+  Tab sonrası odak: method
+  soru yok (F2'ye bağlı 200; soru beklenmiyor)
+  ▶ ÜÇLÜ [B] B2 F2'ye bağlı 200: BEKLENEN kabul · 120 = 0, 128 = 600 · EKRAN form kapandı · DEFTER/VT 120 = 0,00, 128 = 600,00
+  ▶ ÜÇLÜ [B] B2 etiketler (S168 Müşteri): BEKLENEN tam: [işaretli 400] · kısmi: ['Kısmen Normal Cariye İşlendi (₺100,00)' @ 200'lük satır] · 300'lük satır etiketsiz · EKRAN — · DEFTER/VT {"tam":["18.09.2026Tahsilat Nakit Makbuz 1 Normal Cariye İşlendi₺400,00₺1.100,00BorçluMak"],"kismi":["Kısmen Normal Cariye İşlendi (₺100,00) @ 08.10.2026Tahsilat Nakit Makbuz 3 Faturaya Bağlı K"]}
+  kart KPI: ₺1.500,00 ¦ Borç Toplamı ¦ ₺900,00 ¦ Alacak Toplamı · Tahsil ₺900,00 ¦ ₺600,00 ¦ Bakiye · Borçlu ¦ ₺0,00 ¦ Taksitten Kalan (bakiyeye dahil) ¦ ₺0,00 ¦ Gecikmiş Borç
+  şüpheli bölümü: TARİH NEDEN TUTAR KARŞILIK TAHSİL EDİLEN DEĞERSİZ KALAN DURUM  ¦ 29.08.2026 ¦ BNK-2026-000001 ¦   ¦ Dava ¦ dava ¦  ₺1.000,00 ₺0,00 ₺400,00 ₺0,00  ¦ ₺600,00 ¦  Şüpheli Alacakta Karşılık AyırDeğersiz Alacak YazŞüpheliden Çıkar×
+  [görüntü 16-B-s168-kart-etiketler.png]
+  [görüntü 17-B-s168-hareketler.png]
+
+■ [B] B3 Pay Sıfır Müşteri kartı → + Tahsilat 200, Kapatılacak Fatura = F2 (payı 0)
+  Tab sonrası odak: method
+  soru yok (Pay Sıfır F2'ye bağlı 200; soru beklenmiyor)
+  ▶ ÜÇLÜ [B] B3 Pay Sıfır F2'ye bağlı 200: BEKLENEN kabul · 120 = 300, 128 = 1.000 · EKRAN form kapandı · DEFTER/VT 120 = 300,00, 128 = 1.000,00
+  ▶ ÜÇLÜ [B] B3 etiketler (Pay Sıfır): BEKLENEN tam: [200'lük satır] · kısmi: [] · EKRAN — · DEFTER/VT {"tam":["08.10.2026Tahsilat Nakit Makbuz 4 Faturaya Bağlı Normal Cariye İşlendi₺200,00₺1."],"kismi":[]}
+  [görüntü 18-B-payi-sifir-kart.png]
+
+■ [B] B4 Alacak Yaşlandırma (ekran + API)
+    Cari / Kişi | Vade Gecikme (Gün) | Vadesi Gelmemiş | 1–30 Gün | 31–60 Gün | 61–90 Gün | 90+ Gün | Faturasız Alacak (dilimlere dahil) | Şüpheli Alacak (dilimlere dahil) | Toplam Gecikmiş | Toplam
+    Pay Sıfır Müşteri | 60 | ₺0,00 | ₺300,00 | ₺1.000,00 | ₺0,00 | ₺0,00 |  | ₺1.000,00 | ₺1.300,00 | ₺1.300,00
+    S168 Müşteri | 60 | ₺0,00 | ₺0,00 | ₺600,00 | ₺0,00 | ₺0,00 |  | ₺600,00 | ₺600,00 | ₺600,00
+    TOPLAM |  | ₺0,00 | ₺300,00 | ₺1.600,00 | ₺0,00 | ₺0,00 |  | ₺1.600,00 | ₺1.900,00 | ₺1.900,00
+  [görüntü 19-B-alacak-yaslandirma.png]
+  ▶ ÜÇLÜ [B] B4 S168 Müşteri satırı: BEKLENEN 31–60 Gün 600 · Şüpheli 600 · Toplam 600 · EKRAN S168 Müşteri | 60 | ₺0,00 | ₺0,00 | ₺600,00 | ₺0,00 | ₺0,00 |  | ₺600,00 | ₺600,00 | ₺600,00 · DEFTER/VT ["S168 Müşteri","60","0,00 TL","0,00 TL","600,00 TL","0,00 TL","0,00 TL","","600,00 TL","600,00 TL","600,00 TL"]
+  ▶ ÜÇLÜ [B] B4 Pay Sıfır satırı: BEKLENEN 31–60 Gün 1.000 · 1–30 Gün 300 · Şüpheli 1.000 · Toplam 1.300 · EKRAN Pay Sıfır Müşteri | 60 | ₺0,00 | ₺300,00 | ₺1.000,00 | ₺0,00 | ₺0,00 |  | ₺1.000,00 | ₺1.300,00 | ₺1.300,00 · DEFTER/VT ["Pay Sıfır Müşteri","60","0,00 TL","300,00 TL","1.000,00 TL","0,00 TL","0,00 TL","","1.000,00 TL","1.300,00 TL","1.300,00 TL"]
+
+■ [B] B5 Hesap Planı Mizanı (ekran) 120 / 128 + Mutabakat Testi
+    100 | Kasa (Nakit) | ₺0,00 | ₺1.100,00 | ₺0,00 | ₺1.100,00 | Borç
+    120 | Alıcılar (Müşteri Carileri) | ₺0,00 | ₺3.000,00 | ₺2.700,00 | ₺300,00 | Borç
+    128 | Şüpheli Ticari Alacaklar | ₺0,00 | ₺2.000,00 | ₺400,00 | ₺1.600,00 | Borç
+    600 | Yurt İçi Satışlar (Stok) | ₺0,00 | ₺0,00 | ₺3.000,00 | ₺3.000,00 | Alacak
+  [görüntü 20-B-mizan.png]
+  ▶ ÜÇLÜ [B] B5 mizan 120 · 128 (iki cari toplamı): BEKLENEN 120 = 0 + 300 = 300 · 128 = 600 + 1.000 = 1.600 · EKRAN 120 | Alıcılar (Müşteri Carileri) | ₺0,00 | ₺3.000,00 | ₺2.700,00 | ₺300,00 | Borç ; 128 | Şüpheli Ticari Alacaklar | ₺0,00 | ₺2.000,00 | ₺400,00 | ₺1.600,00 | Borç · DEFTER/VT 300 · 1600
+  ▶ ÜÇLÜ [B] B5 Mutabakat Testi: BEKLENEN bulgusuz · EKRAN — · DEFTER/VT 200 ok=true bulgusuz
+
+BEKLENEN (C; girdiler + S174 = A ve S185 = A karar metni 'sonraki yılın fişi de KENDİ yılında düzeltilmiş sayılır'):
+  v2.4.9 (20.10.2026): cari 'Yürüyüş Müşteri A' 02.10 'Açılış bakiyesi' 700 Borç Yaz; kilit 05.10.2026 (donmuş defter eski kuralla: B 120 700 / A 500 700).
+  Güncel kod 10.01.2027: Açılış Olabilir'de 700 REDDEDİLİR (açılış değil → 2.5.0 kuralında karşılık 602) → kilitli dönemde kural farkı 500 ↔ 602.
+  Kilit 31.12.2026 → Kural Farkı penceresi: fiş 01.01.2027 B 500 700 / A 671 700 (önceki yılın geliri 671) → Fişi Kaydet → 'Düzeltildi (Fiş 2027-000001)'.
+  (b) kilit DOĞRUDAN 30.11.2026: fiş kendi yılında düzeltilmiş sayılır → pencere PASİF 'Fişle düzeltilebilen fark kalmadı.', satır 'Düzeltildi (Fiş 2027-000001)'; 2026'ya ikinci fiş YOK:
+      2026 mizanı 602 = 0, 671 = 0 (500 donmuş eski kuralla alacak 700); 2027 hareketi B 500 700 / A 671 700 → 2027 devirli bakiye 500 = 0 (devir −700 + 700), 671 = −700.
+  (a) kilit önce KALDIRILIR, sonra 30.11.2026 (dönem yeni kuralla yeniden dondurulur): fiş FAZLA → pencere PASİF, neden fiş numarasıyla 'kendi yılında ters kaydedin', satırda kendi yılı ipucu;
+      ekrandan Ters Kaydet → Fiş 2027-000002 (01.01.2027) → pencere 'Düzeltilecek kural farkı yok.'; 2026: 602 alacak 700, 500 = 0, 671 = 0; 2027 net 0.
+  TABANDA (tur 2e): (b) ön izleme 01.12.2026 B 671 700 / A 602 700 önerir; (a) ön izleme B 671 700 / A 500 700 önerir (S185 = A öncesi).
+  v2.4.9 verisi hazır (ccf0b0cab9); 700 kaydı aentry-8d73c322-b932-4f1d-862b-dccec569e553
+
+■ [Cb] Cb0 Güncel kod 10.01.2027: Yönetim › Sistem (karar öncesi)
+  Yönetim › Sistem · Dönem Kilidi: 05.10.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 64 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — 1 madde, fark ₺700,00. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır.
+  [görüntü 21-Cb-sistem-once.png]
+
+■ [Cb] Cb1 Açılış Olabilir Kayıtlar: 700 REDDET (ekrandan)
+  tablo: TARİH CARİ TÜR TUTAR AÇIKLAMA DURUM DÖNEM İŞLEM ¦  02.10.2026 Yürüyüş Müşteri A ¦ 1 Borç Yaz ₺700,00 Açılış bakiyesi Onay Bekliyor Kilitli Açılış (Onayla) Açılış Değil (Reddet)
+  soru yok (ret; onay sorusu olabilir)
+  [görüntü 22-Cb-olabilir-ret.png]
+  aday durumu (veri tabanı): [{"amount":700,"durum":"rejected"}]
+
+■ [Cb] Cb2 Dönem Kilidi 31.12.2026 (ekrandan) → Kural Farkı penceresi → Tab + Boşluk → Fişi Kaydet
+  Yönetim › Sistem · Dönem Kilidi: 05.10.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 62 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — 1 madde, fark ₺700,00. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır.
+  dondurma bitti (kilit 2026-12-31; 0 sn) · kilit 2026-12-31 · donmuş 2026-12-31
+  kilit (veri tabanı / API): 2026-12-31
+  Yönetim › Sistem · Dönem Kilidi: 31.12.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 62 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — 1 madde, fark ₺700,00. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır.
+  Kural Farkı penceresi (kilit 31.12.2026): satırlar HESAP HESAP ADI BORÇ ALACAK ¦ 500 Sermaye ₺700,00  ¦ 671 Önceki Dönem Gelir ve Kârları ₺700,00 ¦ Toplam ₺700,00 ₺700,00 · neden (yok) · Fişi Kaydet pasif true (Kaydetmek için onay kutusunu işaretleyin.) · yazılmış fişler (yok)
+  ▶ ÜÇLÜ [C] Cb2 ön izleme (kilit 31.12.2026): BEKLENEN 01.01.2027 B 500 700 / A 671 700, etkin · EKRAN HESAP HESAP ADI BORÇ ALACAK ¦ 500 Sermaye ₺700,00  ¦ 671 Önceki Dönem Gelir ve Kârları ₺700,00 ¦ Toplam ₺700,00 ₺700,00 · pasif true · DEFTER/VT —
+  [görüntü 23-Cb-kural-farki-31-12.png]
+  Tab ile onay kutusuna ulaşıldı: true
+  soru yok (Fişi Kaydet; soru beklenmiyor)
+  Yönetim › Sistem · Dönem Kilidi: 31.12.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001); kilitli dönemin farkı ilk açık güne alındı.
+  [görüntü 24-Cb-sistem-fisten-sonra.png]
+  ▶ ÜÇLÜ [C] Cb2 fiş + Mutabakat satırı: BEKLENEN Fiş 2027-000001 01.01.2027 · 'Düzeltildi (Fiş 2027-000001)' · EKRAN Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001); ki · DEFTER/VT [{"type":"rule-diff-correction","year":2027,"no":1,"date":"2027-01-01","tersOf":null}]
+  MİZAN (fişten sonra) 2026: 120 = 700, 500 = -700, 519 = 0, 602 = 0, 671 = 0, 681 = 0 || 2027: 120 = 700, 500 = 0, 519 = 0, 602 = 0, 671 = -700, 681 = 0
+  DEFTER hareketi (canlı türetme) 2027: 2027-01-01 voucher [500 B 700,00 · 671 A 700,00]
+
+■ [Cb] Cb3 (b) Dönem Kilidi DOĞRUDAN 30.11.2026 (ekrandan) → pencere + satır + mizan
+  Yönetim › Sistem · Dönem Kilidi: 31.12.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001); kilitli dönemin farkı ilk açık güne alındı.
+  dondurma bitti (kilit 2026-11-30; 0 sn) · kilit 2026-11-30 · donmuş 2026-11-30
+  kilit (veri tabanı / API): 2026-11-30
+  Yönetim › Sistem · Dönem Kilidi: 30.11.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 30.11.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001); kilitli dönemin farkı ilk açık güne alındı.
+  [görüntü 25-Cb-sistem-kilit-30-11.png]
+  Yönetim › Sistem · Dönem Kilidi: 30.11.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 30.11.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001); kilitli dönemin farkı ilk açık güne alındı.
+  Kural Farkı penceresi (kilit 30.11.2026 (b)): satırlar (yok) · neden Fişle düzeltilebilen fark kalmadı. · Fişi Kaydet pasif true (Fişle düzeltilebilen fark kalmadı.) · yazılmış fişler Fiş 2027-000001 · 01.01.2027 ¦ Ters Kaydet
+  [görüntü 26-Cb-kural-farki-30-11-b.png]
+  MİZAN (kilit 30.11 (b)) 2026: 120 = 700, 500 = -700, 519 = 0, 602 = 0, 671 = 0, 681 = 0 || 2027: 120 = 700, 500 = 0, 519 = 0, 602 = 0, 671 = -700, 681 = 0
+  DEFTER hareketi (canlı türetme) 2027: 2027-01-01 voucher [500 B 700,00 · 671 A 700,00]
+  ▶ ÜÇLÜ [C] Cb3 pencere: BEKLENEN PASİF · 'Fişle düzeltilebilen fark kalmadı.' · satır yok · EKRAN pasif true · Fişle düzeltilebilen fark kalmadı. · satırlar (yok) · DEFTER/VT ön izleme ucu 200 kod rule-diff-nothing satır []
+  ▶ ÜÇLÜ [C] Cb3 Mutabakat satırı: BEKLENEN 'Düzeltildi (Fiş 2027-000001)' · EKRAN Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 30.11.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001); kilitli dönemin farkı  · DEFTER/VT 200 ok=true bulgusuz
+  ▶ ÜÇLÜ [C] Cb3 mizan 2026: 602 · 671 / 2027 (devirli bakiye): 500 · 671: BEKLENEN 0 · 0 / 0 · −700 · EKRAN — · DEFTER/VT 0 · 0 / 0 · -700
+  fişler (veri tabanı): [{"type":"rule-diff-correction","year":2027,"no":1,"date":"2027-01-01","tersOf":null}]
+
+■ [Cb] Cb9 Hesap Planı Mizanı (Bu Yıl = 2027, ekran)
+    Hesap | Hesap Adı | Devir | Borç | Alacak | Bakiye | Yön
+    120 | Alıcılar (Müşteri Carileri) | ₺700,00 | ₺0,00 | ₺0,00 | ₺700,00 | Borç
+    500 | Sermaye | -₺700,00 | ₺700,00 | ₺0,00 | ₺0,00 | 
+    671 | Önceki Dönem Gelir ve Kârları | ₺0,00 | ₺0,00 | ₺700,00 | ₺700,00 | Alacak
+    TOPLAM |  | ₺0,00 | ₺700,00 | ₺700,00 |  | 
+  [görüntü 27-Cb-mizan-2027.png]
+
+■ [Ca] Ca0 Güncel kod 10.01.2027: Yönetim › Sistem (karar öncesi)
+  Yönetim › Sistem · Dönem Kilidi: 05.10.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 64 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — 1 madde, fark ₺700,00. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır.
+  [görüntü 28-Ca-sistem-once.png]
+
+■ [Ca] Ca1 Açılış Olabilir Kayıtlar: 700 REDDET (ekrandan)
+  tablo: TARİH CARİ TÜR TUTAR AÇIKLAMA DURUM DÖNEM İŞLEM ¦  02.10.2026 Yürüyüş Müşteri A ¦ 1 Borç Yaz ₺700,00 Açılış bakiyesi Onay Bekliyor Kilitli Açılış (Onayla) Açılış Değil (Reddet)
+  soru yok (ret; onay sorusu olabilir)
+  [görüntü 29-Ca-olabilir-ret.png]
+  aday durumu (veri tabanı): [{"amount":700,"durum":"rejected"}]
+
+■ [Ca] Ca2 Dönem Kilidi 31.12.2026 (ekrandan) → Kural Farkı penceresi → Tab + Boşluk → Fişi Kaydet
+  Yönetim › Sistem · Dönem Kilidi: 05.10.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 62 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi) — 1 madde, fark ₺700,00. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır.
+  dondurma bitti (kilit 2026-12-31; 0 sn) · kilit 2026-12-31 · donmuş 2026-12-31
+  kilit (veri tabanı / API): 2026-12-31
+  Yönetim › Sistem · Dönem Kilidi: 31.12.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 62 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — 1 madde, fark ₺700,00. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır.
+  Kural Farkı penceresi (kilit 31.12.2026): satırlar HESAP HESAP ADI BORÇ ALACAK ¦ 500 Sermaye ₺700,00  ¦ 671 Önceki Dönem Gelir ve Kârları ₺700,00 ¦ Toplam ₺700,00 ₺700,00 · neden (yok) · Fişi Kaydet pasif true (Kaydetmek için onay kutusunu işaretleyin.) · yazılmış fişler (yok)
+  ▶ ÜÇLÜ [C] Ca2 ön izleme (kilit 31.12.2026): BEKLENEN 01.01.2027 B 500 700 / A 671 700, etkin · EKRAN HESAP HESAP ADI BORÇ ALACAK ¦ 500 Sermaye ₺700,00  ¦ 671 Önceki Dönem Gelir ve Kârları ₺700,00 ¦ Toplam ₺700,00 ₺700,00 · pasif true · DEFTER/VT —
+  [görüntü 30-Ca-kural-farki-31-12.png]
+  Tab ile onay kutusuna ulaşıldı: true
+  soru yok (Fişi Kaydet; soru beklenmiyor)
+  Yönetim › Sistem · Dönem Kilidi: 31.12.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001); kilitli dönemin farkı ilk açık güne alındı.
+  [görüntü 31-Ca-sistem-fisten-sonra.png]
+  ▶ ÜÇLÜ [C] Ca2 fiş + Mutabakat satırı: BEKLENEN Fiş 2027-000001 01.01.2027 · 'Düzeltildi (Fiş 2027-000001)' · EKRAN Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001); ki · DEFTER/VT [{"type":"rule-diff-correction","year":2027,"no":1,"date":"2027-01-01","tersOf":null}]
+  MİZAN (fişten sonra) 2026: 120 = 700, 500 = -700, 519 = 0, 602 = 0, 671 = 0, 681 = 0 || 2027: 120 = 700, 500 = 0, 519 = 0, 602 = 0, 671 = -700, 681 = 0
+  DEFTER hareketi (canlı türetme) 2027: 2027-01-01 voucher [500 B 700,00 · 671 A 700,00]
+
+■ [Ca] Ca3 (a) Kilidi KALDIR (ekrandan) → Kilit 30.11.2026 (ekrandan) → pencere + satır
+  Yönetim › Sistem · Dönem Kilidi: 31.12.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 66 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Bilgi: Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi) — Düzeltildi (Fiş 2027-000001); kilitli dönemin farkı ilk açık güne alındı.
+  SORU (kilidi kaldır): × ¦ ONAY ¦ Dönem Kilidini Kaldır ¦ Kapalı dönemdeki hareketler yeniden değiştirilebilir olur. Düzeltmeden sonra yeniden kilitlemeyi unutmayın. ¦ Vazgeç ¦ Kilidi Kaldır
+  dondurma bitti (kilit kaldırıldı; 0 sn) · kilit yok · donmuş —
+  kilit (veri tabanı / API): yok
+  Yönetim › Sistem · Dönem Kilidi: Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 65 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (Fiş 2027-000001) artık fazla — Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin.
+  dondurma bitti (kilit 2026-11-30; 0 sn) · kilit 2026-11-30 · donmuş 2026-11-30
+  kilit (veri tabanı / API): 2026-11-30
+  Yönetim › Sistem · Dönem Kilidi: 30.11.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 65 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Farkı Düzeltme Fişi (Fiş 2027-000001) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı) — fişi kendi yılında, Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin; kalan fark varsa sonra ön izlemede görünür.
+  [görüntü 32-Ca-sistem-kaldir-30-11.png]
+  Yönetim › Sistem · Dönem Kilidi: 30.11.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 65 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Farkı Düzeltme Fişi (Fiş 2027-000001) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı) — fişi kendi yılında, Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin; kalan fark varsa sonra ön izlemede görünür.
+  Kural Farkı penceresi (kaldır → 30.11.2026 (a)): satırlar (yok) · neden Kural Farkı Düzeltme Fişi (Fiş 2027-000001) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı); bu döneme fiş önerilmez. Fişi aşağıdaki Yazılmış Düzeltme Fişleri'nden kendi yılında ters kaydedin; kalan fark varsa sonra burada görünür. · Fişi Kaydet pasif true (Kural Farkı Düzeltme Fişi (Fiş 2027-000001) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı); bu döneme fiş önerilmez. Fişi aşağıdaki Yazılmış Düzeltme Fişleri'nden kendi yılında ters kaydedin; kalan fark varsa sonra burada görünür.) · yazılmış fişler Fiş 2027-000001 · 01.01.2027 ¦ Ters Kaydet
+  [görüntü 33-Ca-kural-farki-30-11-a.png]
+  ▶ ÜÇLÜ [C] Ca3 pencere: BEKLENEN PASİF · neden fiş numarasıyla '… kendi yılında ters kaydedin' · satır yok · EKRAN pasif true · Kural Farkı Düzeltme Fişi (Fiş 2027-000001) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı); bu döneme fiş önerilmez. Fişi aşağıdaki Yazılmış Düzeltme Fişleri'nden kendi yılında ters kaydedin; kalan fark varsa sonra burada görünür. · satırlar (yok) · DEFTER/VT ön izleme ucu 200 kod rule-diff-own-year
+  ▶ ÜÇLÜ [C] Ca3 Mutabakat satırı: BEKLENEN kendi yılı ipucu (Fiş 2027-000001 … kendi yılında … ters kaydedin) · EKRAN Mutabakat: 65 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Farkı Düzeltme Fişi (Fiş 2027-000001) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı) — fişi kendi y · DEFTER/VT 200 ok=false bulgu: ledger:rule-diff
+  Yönetim › Sistem · Dönem Kilidi: 30.11.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 65 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Farkı Düzeltme Fişi (Fiş 2027-000001) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı) — fişi kendi yılında, Yönetim › Sistem › Kural Farkı Düzeltme'den ters kaydedin; kalan fark varsa sonra ön izlemede görünür.
+  SORU (Ters Kaydet; beklenen soru var): × ¦ ONAY ¦ Fiş 2027-000001 ters kaydedilsin mi? ¦ Ters kayıt fişi bugünün tarihiyle yazılır; kural farkı yeniden düzeltilmemiş görünür. ¦ Vazgeç ¦ Ters Kaydet
+  [görüntü 34-Ca-ters-kaydet-sorusu.png]
+  fişler (veri tabanı): [{"type":"rule-diff-correction","year":2027,"no":1,"date":"2027-01-01","tersOf":null},{"type":"reversal","year":2027,"no":2,"date":"2027-01-01","tersOf":"lv-e75d7116-e1a0-4c8e-82c7-e855c60d2733"}]
+  Yönetim › Sistem · Dönem Kilidi: 30.11.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 63 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.
+  Yönetim › Sistem · Dönem Kilidi: 30.11.2026 ve öncesi kilitli.
+  Yönetim › Sistem · Mutabakat satırı: Mutabakat: 63 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.
+  Kural Farkı penceresi (ters kayıttan sonra (a)): satırlar (yok) · neden Düzeltilecek kural farkı yok. · Fişi Kaydet pasif true (Düzeltilecek kural farkı yok.) · yazılmış fişler (yok)
+  [görüntü 35-Ca-kural-farki-ters-sonra.png]
+  MİZAN (ters kayıttan sonra (a)) 2026: 120 = 700, 500 = 0, 519 = 0, 602 = -700, 671 = 0, 681 = 0 || 2027: 120 = 700, 500 = 0, 519 = 0, 602 = -700, 671 = 0, 681 = 0
+  DEFTER hareketi (canlı türetme) 2027: 2027-01-01 voucher [500 B 700,00 · 671 A 700,00] || 2027-01-01 voucher [500 A 700,00 · 671 B 700,00]
+  ▶ ÜÇLÜ [C] Ca4 ters kayıt → pencere · satır: BEKLENEN Fiş 2027-000002 01.01.2027 · 'Düzeltilecek kural farkı yok.' · satır kalkar · EKRAN Düzeltilecek kural farkı yok. · (yok) · DEFTER/VT Mutabakat: 63 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.
+  ▶ ÜÇLÜ [C] Ca4 mizan 2026: 602 · 500 · 671 / 2027 (devirli bakiye): 500 · 671 · 602: BEKLENEN −700 · 0 · 0 / 0 · 0 · −700 (devir) · EKRAN — · DEFTER/VT -700 · 0 · 0 / 0 · 0 · -700
+
+■ [Ca] Ca9 Hesap Planı Mizanı (Bu Yıl = 2027, ekran)
+    Hesap | Hesap Adı | Devir | Borç | Alacak | Bakiye | Yön
+    120 | Alıcılar (Müşteri Carileri) | ₺700,00 | ₺0,00 | ₺0,00 | ₺700,00 | Borç
+    500 | Sermaye | ₺0,00 | ₺700,00 | ₺700,00 | ₺0,00 | 
+    602 | Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları) | -₺700,00 | ₺0,00 | ₺0,00 | ₺700,00 | Alacak
+    671 | Önceki Dönem Gelir ve Kârları | ₺0,00 | ₺700,00 | ₺700,00 | ₺0,00 | 
+    TOPLAM |  | ₺0,00 | ₺1.400,00 | ₺1.400,00 |  | 
+  [görüntü 36-Ca-mizan-2027.png]
+
+BEKLENEN (D): taban ile aday AYNI (davranış eşdeğer hız düzeltmesi). Şüpheli caride bağlı tahsilat YOK (tur 3c kuralı tabanla bilerek farklı; burada yalnız bağsız).
+
+■ [D] D0 Kurulum (API; hacim için): K1 120 fatura + 60 tahsilat (30'u faturaya bağlı) + 10 Borç Yaz; K2 40 fatura + şüpheliye al 20.000 + 15 bağsız tahsilat; K3 sade
+  kurulum 7 sn · satır sayısı 253
+
+■ [D] D1 Cari Listesi (ekran): bütün satırlar ve KPI
+  Cari Listesi açılış ~904 ms (bilgi; ölçüm değil)
+  KPI: ₺143.032,00 ¦ Borçlular · 2 cari ¦ ₺10.800,00 ¦ Alacaklılar · 1 cari ¦ ₺0,00 ¦ Taksitlerden Kalan (bakiyeye dahil) ¦ ₺131.132,00 ¦ Gecikmiş Borç · 127 kalem
+     | 1 | Kalabalık Müşteri Grupsuz | ₺137.166,00 | ₺37.610,00 | ₺99.556,00BorçluGecikmiş ₺99.556,00 | —
+     | 2 | Kalabalık Şüpheli Müşteri ŞüpheliGrupsuz | ₺51.576,00 | ₺8.100,00 | ₺43.476,00BorçluGecikmiş ₺31.576,00 | —
+     | 3 | Sade Tedarikçi TedarikçiGrupsuz | ₺0,00 | ₺10.800,00 | ₺10.800,00Alacaklı | —
+  [görüntü 37-D-cari-listesi.png]
+
+■ [D] D2 Cari kartı: Kalabalık Müşteri (KPI, şüpheli bölümü, hareketlerin hepsi)
+  kart açılış ~3126 ms (bilgi)
+  KPI: ₺137.166,00 ¦ Borç Toplamı ¦ ₺37.610,00 ¦ Alacak Toplamı · Tahsil ₺37.610,00 ¦ ₺99.556,00 ¦ Bakiye · Borçlu ¦ ₺0,00 ¦ Taksitten Kalan (bakiyeye dahil) ¦ ₺99.556,00 ¦ Gecikmiş Borç · 102 kalem · hareket satırı 192 · fatura satırı 9
+  [görüntü 38-D-kart-k1.png]
+
+■ [D] D2 Cari kartı: Kalabalık Şüpheli Müşteri (KPI, şüpheli bölümü, hareketlerin hepsi)
+  kart açılış ~2966 ms (bilgi)
+  KPI: ₺51.576,00 ¦ Borç Toplamı ¦ ₺8.100,00 ¦ Alacak Toplamı · Tahsil ₺8.100,00 ¦ ₺43.476,00 ¦ Bakiye · Borçlu ¦ ₺0,00 ¦ Taksitten Kalan (bakiyeye dahil) ¦ ₺31.576,00 ¦ Gecikmiş Borç · 25 kalem · hareket satırı 57 · fatura satırı 9
+  [görüntü 39-D-kart-k2.png]
+
+■ [D] D2 Cari kartı: Sade Tedarikçi (KPI, şüpheli bölümü, hareketlerin hepsi)
+  kart açılış ~2909 ms (bilgi)
+  KPI: ₺0,00 ¦ Borç Toplamı ¦ ₺10.800,00 ¦ Alacak Toplamı · Tahsil ₺0,00 ¦ ₺10.800,00 ¦ Bakiye · Alacaklı ¦ ₺0,00 ¦ Taksitten Kalan (bakiyeye dahil) ¦ ₺0,00 ¦ Gecikmiş Borç · hareket satırı 10 · fatura satırı 0
+  [görüntü 40-D-kart-k3.png]
+
+■ [D] D3 Cari Listesi ve Bakiyeler + Alacak Yaşlandırma (rapor; ekran + API)
+    Cari No | Cari | Tür | Telefon | Grup | Borç | Alacak | Bakiye | Durum | Geciken
+    1 | Kalabalık Müşteri | Müşteri |  |  | ₺137.166,00 | ₺37.610,00 | ₺99.556,00 | Borçlu | 
+    2 | Kalabalık Şüpheli Müşteri | Müşteri |  |  | ₺51.576,00 | ₺8.100,00 | ₺43.476,00 | Borçlu | 
+    3 | Sade Tedarikçi | Tedarikçi |  |  | ₺0,00 | ₺10.800,00 | ₺10.800,00 | Alacaklı | 
+    TOPLAM |  |  |  |  | ₺188.742,00 | ₺56.510,00 | ₺132.232,00 | Borçlu | 
+  [görüntü 41-D-rapor-cari-listesi.png]
+    Cari / Kişi | Vade Gecikme (Gün) | Vadesi Gelmemiş | 1–30 Gün | 31–60 Gün | 61–90 Gün | 90+ Gün | Faturasız Alacak (dilimlere dahil) | Şüpheli Alacak (dilimlere dahil) | Toplam Gecikmiş | Toplam
+    Kalabalık Müşteri | 337 | ₺0,00 | ₺0,00 | ₺7.673,60 | ₺9.896,00 | ₺81.986,40 | ₺1.950,00 |  | ₺99.556,00 | ₺99.556,00
+    Kalabalık Şüpheli Müşteri | 352 | ₺0,00 | ₺0,00 | ₺0,00 | ₺0,00 | ₺43.476,00 |  | ₺11.900,00 | ₺43.476,00 | ₺43.476,00
+    TOPLAM |  | ₺0,00 | ₺0,00 | ₺7.673,60 | ₺9.896,00 | ₺125.462,40 | ₺1.950,00 | ₺11.900,00 | ₺143.032,00 | ₺143.032,00
+  [görüntü 42-D-rapor-alacak-yaslandirma.png]
+
+==================== ÖZET ====================
+ÜÇLÜ satırı: 38 (uclu.tsv) · D özeti: 302 satır (d-ozet.txt)
+ADIM YARIDA (0):
+YAZIM DÜZENİ ADAYLARI (0; elle bakılır):
+çıkış 0

@@ -1,0 +1,1518 @@
+TAP version 13
+# Subtest: A1 — Kurulum Sihirbazı ortasında SIGKILL (elektrik kesintisi)
+    # Subtest: işlem geçmişi yazılırken kesinti → bağ, Devir Kapanışı, kurulum kaydı, istek kaydı yok; aynı istek kimliğiyle yeniden çalışır; İşlem No boşluksuz
+    ok 1 - işlem geçmişi yazılırken kesinti → bağ, Devir Kapanışı, kurulum kaydı, istek kaydı yok; aynı istek kimliğiyle yeniden çalışır; İşlem No boşluksuz
+      ---
+      duration_ms: 916.448404
+      type: 'test'
+      ...
+    1..1
+ok 1 - A1 — Kurulum Sihirbazı ortasında SIGKILL (elektrik kesintisi)
+  ---
+  duration_ms: 920.908683
+  type: 'suite'
+  ...
+# Subtest: A2–A5 — banka verili iki şirkette disk dolu, geri yükleme arızası, kilitli dosya ve yedek tatbikatı
+    # Subtest: A2: 001'in yedeği alınırken disk dolu → 500 açık hata, yarım dosya yok; 001 ve 002'nin banka verisi aynı; yer açılınca yedek alınır
+    ok 1 - A2: 001'in yedeği alınırken disk dolu → 500 açık hata, yarım dosya yok; 001 ve 002'nin banka verisi aynı; yer açılınca yedek alınır
+      ---
+      duration_ms: 82.73145
+      type: 'test'
+      ...
+    # Subtest: A3: 002'nin geri yüklemesinde EIO ve EBUSY → 500, banka verisi aynı; hata geçince geri yükleme yedek anına döner
+    ok 2 - A3: 002'nin geri yüklemesinde EIO ve EBUSY → 500, banka verisi aynı; hata geçince geri yükleme yedek anına döner
+      ---
+      duration_ms: 498.45634
+      type: 'test'
+      ...
+    # Subtest: A4: 002'nin veri dosyası başka programca kilitli → banka uçları 503 company-unavailable (001'e düşmez); kilit kalkınca bakiyeler aynı
+    ok 3 - A4: 002'nin veri dosyası başka programca kilitli → banka uçları 503 company-unavailable (001'e düşmez); kilit kalkınca bakiyeler aynı
+      ---
+      duration_ms: 6120.189536
+      type: 'test'
+      ...
+    # Subtest: A5: yedek tatbikatı (002, hesaba bağlı veri): yedek → çalış → geri yükle → sayılar → yeniden çalış → yedek → geri yükle
+    ok 4 - A5: yedek tatbikatı (002, hesaba bağlı veri): yedek → çalış → geri yükle → sayılar → yeniden çalış → yedek → geri yükle
+      ---
+      duration_ms: 543.658799
+      type: 'test'
+      ...
+    1..4
+ok 2 - A2–A5 — banka verili iki şirkette disk dolu, geri yükleme arızası, kilitli dosya ve yedek tatbikatı
+  ---
+  duration_ms: 8062.091017
+  type: 'suite'
+  ...
+# Subtest: GG2 — iki hesap, farklı açılış günü (A 01.10 önce, B 15.09 sonra)
+    # Subtest: A'nın sihirbazı 01.10'dan önceki 8.000'i kapatır
+    ok 1 - A'nın sihirbazı 01.10'dan önceki 8.000'i kapatır
+      ---
+      duration_ms: 53.953108
+      type: 'test'
+      ...
+    # Subtest: kapanmış satır listede atanamaz; başka hesaba Bu Hesaba Ata → 409 bank-carry-closed
+    ok 2 - kapanmış satır listede atanamaz; başka hesaba Bu Hesaba Ata → 409 bank-carry-closed
+      ---
+      duration_ms: 38.916483
+      type: 'test'
+      ...
+    # Subtest: B'nin (daha erken açılışlı) sihirbazı ikinci kez kapatmaz: önizleme 0, çalıştırma boş
+    ok 3 - B'nin (daha erken açılışlı) sihirbazı ikinci kez kapatmaz: önizleme 0, çalıştırma boş
+      ---
+      duration_ms: 23.127902
+      type: 'test'
+      ...
+    1..3
+ok 3 - GG2 — iki hesap, farklı açılış günü (A 01.10 önce, B 15.09 sonra)
+  ---
+  duration_ms: 585.072861
+  type: 'suite'
+  ...
+# Subtest: GG2 — iki hesap, ters sıra (B 15.09 önce, A 01.10 sonra); kurulumlar sondan başa geri alınır
+    # Subtest: B'nin sihirbazı 10.09'u kapatır, 20.09'u B'ye bağlar; A'nın sihirbazında kapatılacak bir şey kalmaz
+    ok 1 - B'nin sihirbazı 10.09'u kapatır, 20.09'u B'ye bağlar; A'nın sihirbazında kapatılacak bir şey kalmaz
+      ---
+      duration_ms: 40.72122
+      type: 'test'
+      ...
+    # Subtest: A'ya sonradan bağlanan satır ikinci kurulum; önce B geri alınamaz (409 bank-setup-order), sondan başa geri alınır
+    ok 2 - A'ya sonradan bağlanan satır ikinci kurulum; önce B geri alınamaz (409 bank-setup-order), sondan başa geri alınır
+      ---
+      duration_ms: 135.446712
+      type: 'test'
+      ...
+    1..2
+ok 4 - GG2 — iki hesap, ters sıra (B 15.09 önce, A 01.10 sonra); kurulumlar sondan başa geri alınır
+  ---
+  duration_ms: 519.224378
+  type: 'suite'
+  ...
+# Subtest: GG2 — kurulumlu hesapta Açılışı Düzelt (tarih) ve Sil → aynı adla yeniden aç
+    # Subtest: Açılışı Düzelt tarihi değiştiremez (409 bank-opening-setup); aynı gün tutar değişebilir
+    ok 1 - Açılışı Düzelt tarihi değiştiremez (409 bank-opening-setup); aynı gün tutar değişebilir
+      ---
+      duration_ms: 36.142382
+      type: 'test'
+      ...
+    # Subtest: kurulumlu hesap silinmez (409 bank-account-has-setup); Geri Al → sil → aynı adla daha erken aç → sihirbaz: tek kez kapanır
+    ok 2 - kurulumlu hesap silinmez (409 bank-account-has-setup); Geri Al → sil → aynı adla daha erken aç → sihirbaz: tek kez kapanır
+      ---
+      duration_ms: 71.440532
+      type: 'test'
+      ...
+    1..2
+ok 5 - GG2 — kurulumlu hesapta Açılışı Düzelt (tarih) ve Sil → aynı adla yeniden aç
+  ---
+  duration_ms: 414.453206
+  type: 'suite'
+  ...
+# Subtest: GG2 — kapı: etkin Devir Kapanışları tarihçe geriye gitmez (bank:carry)
+    # Subtest: 01.10 kapanışından sonra 15.09 tarihli Devir Kapanışı yazmak (bank.post içinden) → 409, hiçbir şey yazılmaz
+    ok 1 - 01.10 kapanışından sonra 15.09 tarihli Devir Kapanışı yazmak (bank.post içinden) → 409, hiçbir şey yazılmaz
+      ---
+      duration_ms: 10.509077
+      type: 'test'
+      ...
+    1..1
+ok 6 - GG2 — kapı: etkin Devir Kapanışları tarihçe geriye gitmez (bank:carry)
+  ---
+  duration_ms: 352.440002
+  type: 'suite'
+  ...
+# Subtest: GG2 — Bankaya Geçmiş Say / Kart Borcuna Aktar: yalnız açılıştan sonraki, yönüne göre ayrı havuz
+    # Subtest: açılıştan önceki POS bakiyesi bankaya geçmiş sayılmaz (409 bank-legacy-exceeds); Devir Kapanışı'nın konusudur
+    ok 1 - açılıştan önceki POS bakiyesi bankaya geçmiş sayılmaz (409 bank-legacy-exceeds); Devir Kapanışı'nın konusudur
+      ---
+      duration_ms: 10.532431
+      type: 'test'
+      ...
+    # Subtest: açılıştan sonra POS 3.000 + kartla ödeme 1.000: bankaya 3.000 ve karta 1.000 ayrı ayrı aktarılır, fazlası 409
+    ok 2 - açılıştan sonra POS 3.000 + kartla ödeme 1.000: bankaya 3.000 ve karta 1.000 ayrı ayrı aktarılır, fazlası 409
+      ---
+      duration_ms: 115.293642
+      type: 'test'
+      ...
+    1..2
+ok 7 - GG2 — Bankaya Geçmiş Say / Kart Borcuna Aktar: yalnız açılıştan sonraki, yönüne göre ayrı havuz
+  ---
+  duration_ms: 455.571525
+  type: 'suite'
+  ...
+# Subtest: B1 — tek hesap: açılıştan önceki hesapsız satırlar düzeltilir, eski tarihli hareket hesapsız girilir (§3.5/1)
+    # Subtest: cari havale ve kurumsal kart ödemesi: tutar, tarih, yeni eski tarihli satır, boş hesap; Gerçek Banka değişmez
+    ok 1 - cari havale ve kurumsal kart ödemesi: tutar, tarih, yeni eski tarihli satır, boş hesap; Gerçek Banka değişmez
+      ---
+      duration_ms: 619.503952
+      type: 'test'
+      ...
+    # Subtest: taksit tahsilatı, stok peşini, Kasa → Banka transferi ve fatura peşini: eski tarihli hesapsız satır düzeltilir/girilir
+    ok 2 - taksit tahsilatı, stok peşini, Kasa → Banka transferi ve fatura peşini: eski tarihli hesapsız satır düzeltilir/girilir
+      ---
+      duration_ms: 441.947213
+      type: 'test'
+      ...
+    # Subtest: gerçek 2.0.26 verisi (o sürümün koduyla üretilmiş fikstür): ilk hesap bugünkü açılışla; eski havaleler düzeltilir, eski tarihli havale girilir
+    ok 3 - gerçek 2.0.26 verisi (o sürümün koduyla üretilmiş fikstür): ilk hesap bugünkü açılışla; eski havaleler düzeltilir, eski tarihli havale girilir
+      ---
+      duration_ms: 577.14316
+      type: 'test'
+      ...
+    1..3
+ok 8 - B1 — tek hesap: açılıştan önceki hesapsız satırlar düzeltilir, eski tarihli hareket hesapsız girilir (§3.5/1)
+  ---
+  duration_ms: 1639.602711
+  type: 'suite'
+  ...
+# Subtest: B1 — çok hesap: tarih yalnız bir hesabın açılışından sonraysa o hesap; açıkça Hesapsız yalnız açılıştan önceki harekette
+    # Subtest: A 01.09, B 01.10: 15.09 → A; Hesapsız seçimi; 15.08 → hesapsız; 05.10 seçim zorunlu
+    ok 1 - A 01.09, B 01.10: 15.09 → A; Hesapsız seçimi; 15.08 → hesapsız; 05.10 seçim zorunlu
+      ---
+      duration_ms: 361.346003
+      type: 'test'
+      ...
+    1..1
+ok 9 - B1 — çok hesap: tarih yalnız bir hesabın açılışından sonraysa o hesap; açıkça Hesapsız yalnız açılıştan önceki harekette
+  ---
+  duration_ms: 361.60464
+  type: 'suite'
+  ...
+# Subtest: Y1 / B4 / Y2 — Devir Kapanışı havuzundaki eski satır parası değişmez (409 bank-reclass-active)
+    # Subtest: tutar, silme, nakde çevirme ve yeni eski tarihli satır 409; açıklama ve havuz içinde tarih serbest; Geri Al'dan sonra düzeltilir
+    ok 1 - tutar, silme, nakde çevirme ve yeni eski tarihli satır 409; açıklama ve havuz içinde tarih serbest; Geri Al'dan sonra düzeltilir
+      ---
+      duration_ms: 375.214564
+      type: 'test'
+      ...
+    1..1
+ok 10 - Y1 / B4 / Y2 — Devir Kapanışı havuzundaki eski satır parası değişmez (409 bank-reclass-active)
+  ---
+  duration_ms: 375.388452
+  type: 'suite'
+  ...
+# Subtest: Y1 / B4 — Kart Borcuna Aktar ve Bankaya Geçmiş Say havuzu (409 bank-reclass-active, satır karta kendiliğinden bağlanmaz)
+    # Subtest: Kart Borcuna Aktar edilmiş kartla ödeme: tutar ve silme 409; kart borcu tek kez; K7 gerçek borçla
+    ok 1 - Kart Borcuna Aktar edilmiş kartla ödeme: tutar ve silme 409; kart borcu tek kez; K7 gerçek borçla
+      ---
+      duration_ms: 323.695266
+      type: 'test'
+      ...
+    # Subtest: Bankaya Geçmiş Say edilmiş POS tahsilatı: tutar ve silme 409; aynı penceredeki yeni POS tahsilatı serbest
+    ok 2 - Bankaya Geçmiş Say edilmiş POS tahsilatı: tutar ve silme 409; aynı penceredeki yeni POS tahsilatı serbest
+      ---
+      duration_ms: 315.255232
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi bank:pool havuz sapmasını gösterir (store dışı yazım)
+    ok 3 - Mutabakat Testi bank:pool havuz sapmasını gösterir (store dışı yazım)
+      ---
+      duration_ms: 311.662101
+      type: 'test'
+      ...
+    1..3
+ok 11 - Y1 / B4 — Kart Borcuna Aktar ve Bankaya Geçmiş Say havuzu (409 bank-reclass-active, satır karta kendiliğinden bağlanmaz)
+  ---
+  duration_ms: 951.205388
+  type: 'suite'
+  ...
+# Subtest: B2 — Kurulum Sihirbazı Geri Al, sihirbazın bağlaması ve Bu Hesaba Ata: K7 ve pasif hesap
+    # Subtest: Geri Al: Engelle → 409 cash-blocked; Uyar → 409 cash-negative, negativeOk ile geçer
+    ok 1 - Geri Al: Engelle → 409 cash-blocked; Uyar → 409 cash-negative, negativeOk ile geçer
+      ---
+      duration_ms: 755.495194
+      type: 'test'
+      ...
+    # Subtest: Geri Al pasif hesapta 400 bank-account-passive
+    ok 2 - Geri Al pasif hesapta 400 bank-account-passive
+      ---
+      duration_ms: 286.621433
+      type: 'test'
+      ...
+    # Subtest: Bu Hesaba Ata ve sihirbaz eski ödemeyi Engelle'deki hesaba bağlamaz (409 cash-blocked); Uyar'da negativeOk; pasif hesapta 400
+    ok 3 - Bu Hesaba Ata ve sihirbaz eski ödemeyi Engelle'deki hesaba bağlamaz (409 cash-blocked); Uyar'da negativeOk; pasif hesapta 400
+      ---
+      duration_ms: 659.219298
+      type: 'test'
+      ...
+    1..3
+ok 12 - B2 — Kurulum Sihirbazı Geri Al, sihirbazın bağlaması ve Bu Hesaba Ata: K7 ve pasif hesap
+  ---
+  duration_ms: 1701.628423
+  type: 'suite'
+  ...
+# Subtest: B3 — pasif hesapta banka fişi Ters Kaydet / Düzelt ve Açılışı Düzelt 400 bank-account-passive
+    # Subtest: masraf Ters Kaydet, Düzelt, transferin alıcısı pasif, Açılışı Düzelt; etkinleştirince Ters Kaydet geçer
+    ok 1 - masraf Ters Kaydet, Düzelt, transferin alıcısı pasif, Açılışı Düzelt; etkinleştirince Ters Kaydet geçer
+      ---
+      duration_ms: 382.610751
+      type: 'test'
+      ...
+    1..1
+ok 13 - B3 — pasif hesapta banka fişi Ters Kaydet / Düzelt ve Açılışı Düzelt 400 bank-account-passive
+  ---
+  duration_ms: 382.780844
+  type: 'suite'
+  ...
+# Subtest: kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+    # Subtest: Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+    ok 1 - Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+      ---
+      duration_ms: 366.703568
+      type: 'test'
+      ...
+    1..1
+ok 14 - kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+  ---
+  duration_ms: 367.424087
+  type: 'suite'
+  ...
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 2.493519
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 8871.239043
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 5197
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 304.054585
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 493.924645
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 1169.359205
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5448, moneyLines denetimi 493
+    1..5
+ok 15 - hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 17579.742695
+  type: 'suite'
+  ...
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 2.534785
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 9337.787181
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 4964
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 305.989122
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 593.102734
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 1108.654591
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5145, moneyLines denetimi 493
+    1..5
+ok 16 - hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 17677.685525
+  type: 'suite'
+  ...
+# Subtest: 2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel)
+    # Subtest: katalog: Banka grubu dört rapor; süzgeçleri ve hesap seçenekleri (bakiye dönmez)
+    ok 1 - katalog: Banka grubu dört rapor; süzgeçleri ve hesap seçenekleri (bakiye dönmez)
+      ---
+      duration_ms: 5.634236
+      type: 'test'
+      ...
+    # Subtest: Banka Bakiye Raporu: her grup × her dönem — Gerçek Banka, Kart ve Kredi Borcu, Hesabı Atanmamış ayrı; Giriş/Çıkış yalnız dış hareket
+    ok 2 - Banka Bakiye Raporu: her grup × her dönem — Gerçek Banka, Kart ve Kredi Borcu, Hesabı Atanmamış ayrı; Giriş/Çıkış yalnız dış hareket
+      ---
+      duration_ms: 249.112009
+      type: 'test'
+      ...
+    # Subtest: Banka Hareket Raporu: her hesap × her hareket süzgeci × her dönem — satır satır, yürüyen bakiye, İşlem No
+    ok 3 - Banka Hareket Raporu: her hesap × her hareket süzgeci × her dönem — satır satır, yürüyen bakiye, İşlem No
+      ---
+      duration_ms: 560.515897
+      type: 'test'
+      ...
+    # Subtest: Banka Masraf Raporu: transfer ücreti dahil, BSMV ve KDV ayrı kolonlarda; her hesap × her dönem; 770 ile tutar
+    ok 4 - Banka Masraf Raporu: transfer ücreti dahil, BSMV ve KDV ayrı kolonlarda; her hesap × her dönem; 770 ile tutar
+      ---
+      duration_ms: 142.358223
+      type: 'test'
+      ...
+    # Subtest: Alt Hesap Mizanı: her dönem; alt hesaplar = bağımsız defter; ana hesaplar = Hesap Planı Mizanı (102, 108, 300, 309)
+    ok 5 - Alt Hesap Mizanı: her dönem; alt hesaplar = bağımsız defter; ana hesaplar = Hesap Planı Mizanı (102, 108, 300, 309)
+      ---
+      duration_ms: 45.333703
+      type: 'test'
+      ...
+    # Subtest: R1/R8: her süzgeç parametresi rapora ulaşır (queryOf) ve geçersiz değer 400/404 (sessizce tümü değil)
+    ok 6 - R1/R8: her süzgeç parametresi rapora ulaşır (queryOf) ve geçersiz değer 400/404 (sessizce tümü değil)
+      ---
+      duration_ms: 46.367984
+      type: 'test'
+      ...
+    # Subtest: R5: ileri tarihli hareket girilemez; raporlar değişmez
+    ok 7 - R5: ileri tarihli hareket girilemez; raporlar değişmez
+      ---
+      duration_ms: 12.500843
+      type: 'test'
+      ...
+    # Subtest: R2/K10: ANLIK DURUM Banka kutusu = Gerçek Banka; Kart ve Kredi Borcu ve Hesabı Atanmamış ayrı; Bugün Giriş/Çıkış dış, Transfer ayrı; Banka Genel Bakış ile aynı
+    ok 8 - R2/K10: ANLIK DURUM Banka kutusu = Gerçek Banka; Kart ve Kredi Borcu ve Hesabı Atanmamış ayrı; Bugün Giriş/Çıkış dış, Transfer ayrı; Banka Genel Bakış ile aynı
+      ---
+      duration_ms: 17.8579
+      type: 'test'
+      ...
+    # Subtest: R2: Banka ve POS Hareketleri — Kasa ↔ Banka ve bankalar arası transfer Dönem Giriş/Çıkış'ı şişirmez; Transfer satırında; dönem sonu aynı
+    ok 9 - R2: Banka ve POS Hareketleri — Kasa ↔ Banka ve bankalar arası transfer Dönem Giriş/Çıkış'ı şişirmez; Transfer satırında; dönem sonu aynı
+      ---
+      duration_ms: 76.584263
+      type: 'test'
+      ...
+    # Subtest: R9: Birleşik Rapor banka sütunları ANLIK DURUM'la aynı adlar ve aynı sayılar; PDF ve Excel aynı adlar; yetkisize boş
+    ok 10 - R9: Birleşik Rapor banka sütunları ANLIK DURUM'la aynı adlar ve aynı sayılar; PDF ve Excel aynı adlar; yetkisize boş
+      ---
+      duration_ms: 88.446668
+      type: 'test'
+      ...
+    # Subtest: R10: açık ANLIK DURUM yeni sayıyı gösterir (önbellek); banka ve fatura yazımı overview.changed yayımlar
+    ok 11 - R10: açık ANLIK DURUM yeni sayıyı gösterir (önbellek); banka ve fatura yazımı overview.changed yayımlar
+      ---
+      duration_ms: 313.661705
+      type: 'test'
+      ...
+    # Subtest: R6: yetki — personel 403 (dosya sızmaz); muhasebe yalnız Banka grubu; Banka Raporları kaldırılınca 403; Finans Raporları rolü Banka grubunu görmez
+    ok 12 - R6: yetki — personel 403 (dosya sızmaz); muhasebe yalnız Banka grubu; Banka Raporları kaldırılınca 403; Finans Raporları rolü Banka grubunu görmez
+      ---
+      duration_ms: 294.068413
+      type: 'test'
+      ...
+    # Subtest: R4/R7: 002 boş — raporlar boş, ANLIK DURUM "Banka Hesabı Tanımlanmadı"; ?hofCompany= ile 001'in hesabı 404; 001'in verisi 002'de görünmez
+    ok 13 - R4/R7: 002 boş — raporlar boş, ANLIK DURUM "Banka Hesabı Tanımlanmadı"; ?hofCompany= ile 001'in hesabı 404; 001'in verisi 002'de görünmez
+      ---
+      duration_ms: 160.295839
+      type: 'test'
+      ...
+# [banka-210-raporlar] ekran birleşimi 243, TOPLAM kolonu 438, PDF/Excel dosyası 108
+    # Subtest: son: mutabakat tutarlı; denenen birleşim sayısı
+    ok 14 - son: mutabakat tutarlı; denenen birleşim sayısı
+      ---
+      duration_ms: 12.161402
+      type: 'test'
+      ...
+    1..14
+ok 17 - 2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel)
+  ---
+  duration_ms: 2934.294595
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
+    # Subtest: Hesabı Atanmamış liste ve özet: 102.00 = 6.000, 108.00 = 3.000; satırlar İşlem No'lu
+    ok 1 - Hesabı Atanmamış liste ve özet: 102.00 = 6.000, 108.00 = 3.000; satırlar İşlem No'lu
+      ---
+      duration_ms: 20.170579
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: Bu Hesaba Ata — açılıştan önce 409, POS satırı 400, uygun olmayan hesap 400, satır yok 404
+    ok 2 - nasıl bozarım: Bu Hesaba Ata — açılıştan önce 409, POS satırı 400, uygun olmayan hesap 400, satır yok 404
+      ---
+      duration_ms: 78.946715
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: kilitli dönemdeki satır — uçta 409 period-locked; bank.post içinden doğrudan bağlansa kapı (kilit izi) 409
+    ok 3 - nasıl bozarım: kilitli dönemdeki satır — uçta 409 period-locked; bank.post içinden doğrudan bağlansa kapı (kilit izi) 409
+      ---
+      duration_ms: 248.413392
+      type: 'test'
+      ...
+    # Subtest: sihirbaz: önizleme → çalıştır → geri al (birebir eski hâl); ikinci geri al 409
+    ok 4 - sihirbaz: önizleme → çalıştır → geri al (birebir eski hâl); ikinci geri al 409
+      ---
+      duration_ms: 112.610894
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: kilitli D ile sihirbaz 409; Geri Al'dan önce kilit → 409
+    ok 5 - nasıl bozarım: kilitli D ile sihirbaz 409; Geri Al'dan önce kilit → 409
+      ---
+      duration_ms: 354.414159
+      type: 'test'
+      ...
+    # Subtest: Bu Hesaba Ata tek satır; zaten bağlı satır 409
+    ok 6 - Bu Hesaba Ata tek satır; zaten bağlı satır 409
+      ---
+      duration_ms: 29.079208
+      type: 'test'
+      ...
+    # Subtest: Bankaya Geçmiş Say ve Kart Borcuna Aktar: tutar sınırı, kart hesabı, geri alınabilir
+    ok 7 - Bankaya Geçmiş Say ve Kart Borcuna Aktar: tutar sınırı, kart hesabı, geri alınabilir
+      ---
+      duration_ms: 86.591788
+      type: 'test'
+      ...
+    1..7
+ok 18 - Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
+  ---
+  duration_ms: 1408.299278
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 — sihirbaz eski sürüm verisinde (v2.0.26 zincir fikstürü)
+    # Subtest: olaysız eski satırlar: sihirbaz → mutabakat tamam → geri al → mizan ve alt hesaplar birebir aynı
+    ok 1 - olaysız eski satırlar: sihirbaz → mutabakat tamam → geri al → mizan ve alt hesaplar birebir aynı
+      ---
+      duration_ms: 722.066662
+      type: 'test'
+      ...
+    1..1
+ok 19 - Aşama 3 — sihirbaz eski sürüm verisinde (v2.0.26 zincir fikstürü)
+  ---
+  duration_ms: 722.313356
+  type: 'suite'
+  ...
+# Subtest: POS seçimi: POS yoksa eski davranış (108.00); tek POS kendiliğinden; iki POS'ta seçim zorunlu; banka hesabı verilemez
+    # Subtest: önce fatura/tahsilat (POS yokken) → 108.00 Hesabı Atanmamış; sonra POS tanımlanınca yeni tahsilat 108.01'e, eskisi yerinde
+    ok 1 - önce fatura/tahsilat (POS yokken) → 108.00 Hesabı Atanmamış; sonra POS tanımlanınca yeni tahsilat 108.01'e, eskisi yerinde
+      ---
+      duration_ms: 81.66107
+      type: 'test'
+      ...
+    # Subtest: POS tahsilatında banka hesabı verilirse 400 bank-account-invalid; ödemede POS verilirse 400 pos-not-for-payment
+    ok 2 - POS tahsilatında banka hesabı verilirse 400 bank-account-invalid; ödemede POS verilirse 400 pos-not-for-payment
+      ---
+      duration_ms: 8.686917
+      type: 'test'
+      ...
+    # Subtest: ikinci POS açılınca seçim zorunlu (400 pos-required); seçilen POS'a yazılır
+    ok 3 - ikinci POS açılınca seçim zorunlu (400 pos-required); seçilen POS'a yazılır
+      ---
+      duration_ms: 44.621526
+      type: 'test'
+      ...
+    1..3
+ok 20 - POS seçimi: POS yoksa eski davranış (108.00); tek POS kendiliğinden; iki POS'ta seçim zorunlu; banka hesabı verilemez
+  ---
+  duration_ms: 597.268194
+  type: 'suite'
+  ...
+# Subtest: Aşama 10 Nasıl Bozarım
+    # Subtest: tanımsız taksit → 400 pos-rate-missing ("Bu POS'ta 9 taksit oranı tanımlı değil."); taksit sayısı 0 / 40 → 400
+    ok 1 - tanımsız taksit → 400 pos-rate-missing ("Bu POS'ta 9 taksit oranı tanımlı değil."); taksit sayısı 0 / 40 → 400
+      ---
+      duration_ms: 9.450773
+      type: 'test'
+      ...
+    # Subtest: aynı provizyon numarası aynı gün aynı POS'ta → 409 pos-auth-duplicate; kart numarasının tamamı → 400 pos-card-last4
+    ok 2 - aynı provizyon numarası aynı gün aynı POS'ta → 409 pos-auth-duplicate; kart numarasının tamamı → 400 pos-card-last4
+      ---
+      duration_ms: 32.1161
+      type: 'test'
+      ...
+    # Subtest: pasif POS → 400 pos-passive; etkinleştirince kabul
+    ok 3 - pasif POS → 400 pos-passive; etkinleştirince kabul
+      ---
+      duration_ms: 28.114462
+      type: 'test'
+      ...
+    # Subtest: oran değişince geçmiş değişmez: 09.10'dan geçerli %3 → eski satış komisyonu 12,50 (%2,5) kalır, yeni satış %3; aynı tarihli oran ikinci kez → 409 pos-rate-exists
+    ok 4 - oran değişince geçmiş değişmez: 09.10'dan geçerli %3 → eski satış komisyonu 12,50 (%2,5) kalır, yeni satış %3; aynı tarihli oran ikinci kez → 409 pos-rate-exists
+      ---
+      duration_ms: 26.845238
+      type: 'test'
+      ...
+    # Subtest: POS sil → yalnız hiç kullanılmamış POS silinir; kullanılmış → 409 pos-in-use; silinen POS'un adıyla yeniden açılan POS yeni alt hesap alır
+    ok 5 - POS sil → yalnız hiç kullanılmamış POS silinir; kullanılmış → 409 pos-in-use; silinen POS'un adıyla yeniden açılan POS yeni alt hesap alır
+      ---
+      duration_ms: 52.411467
+      type: 'test'
+      ...
+    # Subtest: POS kartında bağlı hesap değişince bekleyenler ESKİ hesaba (kopya); "Bekleyenleri Yeni Hesaba Taşı" ile yenisine
+    ok 6 - POS kartında bağlı hesap değişince bekleyenler ESKİ hesaba (kopya); "Bekleyenleri Yeni Hesaba Taşı" ile yenisine
+      ---
+      duration_ms: 106.316257
+      type: 'test'
+      ...
+    # Subtest: provizyon süresi geçmiş satışta POS İşlemleri → İptal Et → 409 pos-provision-expired, neden yazısı; provizyon içinde → void, komisyon doğmaz
+    ok 7 - provizyon süresi geçmiş satışta POS İşlemleri → İptal Et → 409 pos-provision-expired, neden yazısı; provizyon içinde → void, komisyon doğmaz
+      ---
+      duration_ms: 72.36013
+      type: 'test'
+      ...
+    # Subtest: faturanın POS peşini POS İşlemleri'nden void edilmez (409 pos-void-invoice; faturayı iptal edin)
+    ok 8 - faturanın POS peşini POS İşlemleri'nden void edilmez (409 pos-void-invoice; faturayı iptal edin)
+      ---
+      duration_ms: 34.6196
+      type: 'test'
+      ...
+    1..8
+ok 21 - Aşama 10 Nasıl Bozarım
+  ---
+  duration_ms: 680.513186
+  type: 'suite'
+  ...
+# Subtest: Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade)
+    # Subtest: kabul 17–19: Ziraat Fiziki POS (Banka, BSMV Dahil, Tek Çekim %2,5, 3 Taksit %3,5, valör 2 iş günü, her ay, provizyon aynı gün) → 108.01
+    ok 1 - kabul 17–19: Ziraat Fiziki POS (Banka, BSMV Dahil, Tek Çekim %2,5, 3 Taksit %3,5, valör 2 iş günü, her ay, provizyon aynı gün) → 108.01
+      ---
+      duration_ms: 20.785743
+      type: 'test'
+      ...
+    # Subtest: kabul 20–22: Satış Faturası Ürün B 10 × 1.000 peşin POS Tek Çekim → Ürün B 15; ABC 0; Ziraat 90.000 (değişmedi); POS Bekleyen 10.000 brüt / 9.750 net; valör 12.10.2026
+    ok 2 - kabul 20–22: Satış Faturası Ürün B 10 × 1.000 peşin POS Tek Çekim → Ürün B 15; ABC 0; Ziraat 90.000 (değişmedi); POS Bekleyen 10.000 brüt / 9.750 net; valör 12.10.2026
+      ---
+      duration_ms: 63.717464
+      type: 'test'
+      ...
+    # Subtest: kabul 23–24: saat 12.10.2026 → kuyruk → Ziraat 99.750; POS Bekleyen 0; 653 = 250; İşlem Kartı "Valör 12.10.2026 (08.10 Perşembe + 2 iş günü)"
+    ok 3 - kabul 23–24: saat 12.10.2026 → kuyruk → Ziraat 99.750; POS Bekleyen 0; 653 = 250; İşlem Kartı "Valör 12.10.2026 (08.10 Perşembe + 2 iş günü)"
+      ---
+      duration_ms: 57.629778
+      type: 'test'
+      ...
+    # Subtest: kabul 25–26: 12.10 Satış Faturası Ürün B 12 × 1.000 peşin POS 3 Taksit → Ürün B 3; takvim 12.11 / 14.12 (12.12 Cumartesi) / 12.01.2027 × 3.860; bekleyen net 11.580 (brüt 12.000, komisyon 420)
+    ok 4 - kabul 25–26: 12.10 Satış Faturası Ürün B 12 × 1.000 peşin POS 3 Taksit → Ürün B 3; takvim 12.11 / 14.12 (12.12 Cumartesi) / 12.01.2027 × 3.860; bekleyen net 11.580 (brüt 12.000, komisyon 420)
+      ---
+      duration_ms: 31.283246
+      type: 'test'
+      ...
+    # Subtest: kabul 27–28: 13.10 Satıştan İade (asıl adım 20) Ürün B 3 = 3.000 POS İadesi, İade Edilmez → Ürün B 6; ABC 0; iade valörü 15.10; Σ iade 3.000 ≤ 10.000; saat 15.10 → Ziraat 96.750
+    ok 5 - kabul 27–28: 13.10 Satıştan İade (asıl adım 20) Ürün B 3 = 3.000 POS İadesi, İade Edilmez → Ürün B 6; ABC 0; iade valörü 15.10; Σ iade 3.000 ≤ 10.000; saat 15.10 → Ziraat 96.750
+      ---
+      duration_ms: 63.873826
+      type: 'test'
+      ...
+    # Subtest: adım 33 mizanının POS satırları (ekstre adımları 2.3.0'da): 108.01 = 11.580 (KG-6: net), 610 = 2.500, 653 = 670; Borç = Alacak
+    ok 6 - adım 33 mizanının POS satırları (ekstre adımları 2.3.0'da): 108.01 = 11.580 (KG-6: net), 610 = 2.500, 653 = 670; Borç = Alacak
+      ---
+      duration_ms: 7.046304
+      type: 'test'
+      ...
+    1..6
+ok 22 - Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade)
+  ---
+  duration_ms: 769.162924
+  type: 'suite'
+  ...
+# Subtest: İş günü: hafta sonu, arife ve bayram, ay sonu taksiti (plan §4.5 örnekleri)
+    # Subtest: 02.10.2026 Cuma + 2 iş günü = 06.10.2026 Salı; 27.10.2026 + 2 iş günü = 30.10.2026 (28.10 yarım gün, 29.10 tatil)
+    ok 1 - 02.10.2026 Cuma + 2 iş günü = 06.10.2026 Salı; 27.10.2026 + 2 iş günü = 30.10.2026 (28.10 yarım gün, 29.10 tatil)
+      ---
+      duration_ms: 487.444089
+      type: 'test'
+      ...
+    # Subtest: ay sonu taksiti: 31.01.2028 3 taksit → 29.02.2028 (artık yıl), 31.03.2028, 02.05.2028 (30.04 Pazar, 01.05 tatil)
+    ok 2 - ay sonu taksiti: 31.01.2028 3 taksit → 29.02.2028 (artık yıl), 31.03.2028, 02.05.2028 (30.04 Pazar, 01.05 tatil)
+      ---
+      duration_ms: 385.286472
+      type: 'test'
+      ...
+    1..2
+ok 23 - İş günü: hafta sonu, arife ve bayram, ay sonu taksiti (plan §4.5 örnekleri)
+  ---
+  duration_ms: 873.579553
+  type: 'suite'
+  ...
+# Subtest: Valör kuyruğu: sunucu kapalıyken geçen valör, iki tetik aynı anda, kilit (Gecikmeli Aktarım, bekleyen uyarısı), onay kipi
+    # Subtest: sunucu kapalıyken geçen valör → açılışta her gün kendi tarihiyle (12.10 ve 13.10 ayrı gün fişleri)
+    ok 1 - sunucu kapalıyken geçen valör → açılışta her gün kendi tarihiyle (12.10 ve 13.10 ayrı gün fişleri)
+      ---
+      duration_ms: 432.19075
+      type: 'test'
+      ...
+    # Subtest: iki tetik aynı anda (iki "Şimdi Aktar") → tek gün fişi
+    ok 2 - iki tetik aynı anda (iki "Şimdi Aktar") → tek gün fişi
+      ---
+      duration_ms: 329.960232
+      type: 'test'
+      ...
+    # Subtest: kilit konarken valörü gelmiş bekleyen → 409 bank-pending-before-lock + liste; Yine de Kilitle → fiş kilit + 1'e Gecikmeli Aktarım (late); kilit + 1 bugünden sonraysa bekler
+    ok 3 - kilit konarken valörü gelmiş bekleyen → 409 bank-pending-before-lock + liste; Yine de Kilitle → fiş kilit + 1'e Gecikmeli Aktarım (late); kilit + 1 bugünden sonraysa bekler
+      ---
+      duration_ms: 730.744175
+      type: 'test'
+      ...
+    # Subtest: onay kipi (Elle Onay): valör gelince kuyruk yazmaz (Onay Bekleyen); onayda gerçek tarih 13.10 ve net 9.740 → fark 10 BSMV kipinde 653'e (653 = 260)
+    ok 4 - onay kipi (Elle Onay): valör gelince kuyruk yazmaz (Onay Bekleyen); onayda gerçek tarih 13.10 ve net 9.740 → fark 10 BSMV kipinde 653'e (653 = 260)
+      ---
+      duration_ms: 355.493314
+      type: 'test'
+      ...
+    1..4
+ok 24 - Valör kuyruğu: sunucu kapalıyken geçen valör, iki tetik aynı anda, kilit (Gecikmeli Aktarım, bekleyen uyarısı), onay kipi
+  ---
+  duration_ms: 1848.874821
+  type: 'suite'
+  ...
+# Subtest: İade, komisyon tahsili ve net eksi (plan §4.6)
+    # Subtest: iade > satış → 409 pos-refund-exceeds; iade satıştan önce → 400; asıl işlem seçilmeden (birden çok aday) → 400 pos-refund-origin
+    ok 1 - iade > satış → 409 pos-refund-exceeds; iade satıştan önce → 400; asıl işlem seçilmeden (birden çok aday) → 400 pos-refund-origin
+      ---
+      duration_ms: 391.843709
+      type: 'test'
+      ...
+    # Subtest: tam iade valörden önce (İade Edilmez) → 12.10 banka −250, 653 = 250; Komisyon Tahsili Bekleyen 250
+    ok 2 - tam iade valörden önce (İade Edilmez) → 12.10 banka −250, 653 = 250; Komisyon Tahsili Bekleyen 250
+      ---
+      duration_ms: 385.845515
+      type: 'test'
+      ...
+    # Subtest: valörden sonra kısmi iade 3.000: İade Edilmez → iade valöründe banka −3.000; Oransal → −2.925 ve 653 −75 (plan §4.6 tablosu)
+    ok 3 - valörden sonra kısmi iade 3.000: İade Edilmez → iade valöründe banka −3.000; Oransal → −2.925 ve 653 −75 (plan §4.6 tablosu)
+      ---
+      duration_ms: 679.10813
+      type: 'test'
+      ...
+    # Subtest: valörden önce kısmi iade 3.000 (Oransal): bekleyen kalem net 6.825 (kom. 175); valörde banka +6.825
+    ok 4 - valörden önce kısmi iade 3.000 (Oransal): bekleyen kalem net 6.825 (kom. 175); valörde banka +6.825
+      ---
+      duration_ms: 361.089188
+      type: 'test'
+      ...
+    # Subtest: 10 TL satış + 15 TL sabit ücret (oran %0) → banka −5
+    ok 5 - 10 TL satış + 15 TL sabit ücret (oran %0) → banka −5
+      ---
+      duration_ms: 342.67237
+      type: 'test'
+      ...
+    1..5
+ok 25 - İade, komisyon tahsili ve net eksi (plan §4.6)
+  ---
+  duration_ms: 2161.173609
+  type: 'suite'
+  ...
+# Subtest: Taksitli kısmi iade (3 taksit, 1'i bankaya geçmiş, Oransal) — bağımsız BigInt modeli
+    # Subtest: 12.000 / %3,5 / 3 taksit; 13.11'de 5.000 iade → gün netleri ve banka toplamı modelle aynı
+    ok 1 - 12.000 / %3,5 / 3 taksit; 13.11'de 5.000 iade → gün netleri ve banka toplamı modelle aynı
+      ---
+      duration_ms: 364.395769
+      type: 'test'
+      ...
+    1..1
+ok 26 - Taksitli kısmi iade (3 taksit, 1'i bankaya geçmiş, Oransal) — bağımsız BigInt modeli
+  ---
+  duration_ms: 364.569966
+  type: 'suite'
+  ...
+# Subtest: Düzeltme, silme, geri yükleme, fatura iptali (plan §3.8, §4.6)
+    # Subtest: valörden sonra tutar düzelt → bank.replan (gün fişi ters + r2); eşleşmişse 409 pos-settled
+    ok 1 - valörden sonra tutar düzelt → bank.replan (gün fişi ters + r2); eşleşmişse 409 pos-settled
+      ---
+      duration_ms: 388.83536
+      type: 'test'
+      ...
+    # Subtest: POS'lu satırı sil (valörden önce void) → valör geçsin → geri yükle: asıl valörüyle etkin, gün fişi asıl valör tarihiyle
+    ok 2 - POS'lu satırı sil (valörden önce void) → valör geçsin → geri yükle: asıl valörüyle etkin, gün fişi asıl valör tarihiyle
+      ---
+      duration_ms: 394.394806
+      type: 'test'
+      ...
+    # Subtest: aynı provizyonla yeni satış → eskisini geri yükle → 409 pos-auth-duplicate
+    ok 3 - aynı provizyonla yeni satış → eskisini geri yükle → 409 pos-auth-duplicate
+      ---
+      duration_ms: 328.919655
+      type: 'test'
+      ...
+    # Subtest: POS'lu faturayı aynı provizyonla 6 kez düzelt (peşin satırı silinip yeniden yazılır) → her düzeltme 200; tek etkin satış, eskiler void
+    ok 4 - POS'lu faturayı aynı provizyonla 6 kez düzelt (peşin satırı silinip yeniden yazılır) → her düzeltme 200; tek etkin satış, eskiler void
+      ---
+      duration_ms: 420.431018
+      type: 'test'
+      ...
+    # Subtest: iki POS satırlı faturada yanlış girilen provizyonları düzelt: 2. satırı sil, 1. satıra 2.'nin provizyonu + 3 Taksit → 200; tek etkin satış (BBB2, 3 taksit)
+    ok 5 - iki POS satırlı faturada yanlış girilen provizyonları düzelt: 2. satırı sil, 1. satıra 2.'nin provizyonu + 3 Taksit → 200; tek etkin satış (BBB2, 3 taksit)
+      ---
+      duration_ms: 375.975493
+      type: 'test'
+      ...
+    # Subtest: POS'lu faturayı aynı gün iptal → void, komisyon 0; ertesi gün taksitli faturayı iptal → İptal İadesi: 3 Komisyon Tahsili 140, 108.01 = 0, POS Bekleyen (Net) −420
+    ok 6 - POS'lu faturayı aynı gün iptal → void, komisyon 0; ertesi gün taksitli faturayı iptal → İptal İadesi: 3 Komisyon Tahsili 140, 108.01 = 0, POS Bekleyen (Net) −420
+      ---
+      duration_ms: 382.768213
+      type: 'test'
+      ...
+    # Subtest: bankaya geçmiş ve eşleşmiş POS'lu faturayı iptal (Müşteriye İade Edildi) → 200, iade kalemi, eski fiş ve eşleşme değişmez; Kayıt Hatası → 409 pos-settled
+    ok 7 - bankaya geçmiş ve eşleşmiş POS'lu faturayı iptal (Müşteriye İade Edildi) → 200, iade kalemi, eski fiş ve eşleşme değişmez; Kayıt Hatası → 409 pos-settled
+      ---
+      duration_ms: 405.254307
+      type: 'test'
+      ...
+    1..7
+ok 27 - Düzeltme, silme, geri yükleme, fatura iptali (plan §3.8, §4.6)
+  ---
+  duration_ms: 2697.258445
+  type: 'suite'
+  ...
+# Subtest: A — fatura İptal / Sil penceresinin POS İşlemi seçimi (Müşteriye İade Edildi / Kayıt Hatası) toplu yollarda ve liste bayrağı (plan §3.8 Fatura, §4.6)
+    # Subtest: bankaya geçmiş ve eşleşmiş POS'lu faturalar: toplu iptal Kayıt Hatası → yalnız o belge 409 pos-settled; Müşteriye İade Edildi → İptal İadesi; toplu silme Kayıt Hatası → 409
+    ok 1 - bankaya geçmiş ve eşleşmiş POS'lu faturalar: toplu iptal Kayıt Hatası → yalnız o belge 409 pos-settled; Müşteriye İade Edildi → İptal İadesi; toplu silme Kayıt Hatası → 409
+      ---
+      duration_ms: 535.060504
+      type: 'test'
+      ...
+    # Subtest: liste ve kart: POS peşinli satış faturasında posCash true (pencere POS İşlemi seçimini yalnız bunlarda gösterir); nakit faturada ve alışta false
+    ok 2 - liste ve kart: POS peşinli satış faturasında posCash true (pencere POS İşlemi seçimini yalnız bunlarda gösterir); nakit faturada ve alışta false
+      ---
+      duration_ms: 360.986598
+      type: 'test'
+      ...
+    1..2
+ok 28 - A — fatura İptal / Sil penceresinin POS İşlemi seçimi (Müşteriye İade Edildi / Kayıt Hatası) toplu yollarda ve liste bayrağı (plan §3.8 Fatura, §4.6)
+  ---
+  duration_ms: 897.052672
+  type: 'suite'
+  ...
+# Subtest: B — alan belge türüne göre: cari ÖDEME İADESİ kredi kartına (tedarikçi parayı kartımıza iade etti) → Kredi Kartı, POS oluşmaz, 309 düşer
+    # Subtest: giriş + kart + cardRefund → satır kart hesabına (fin_ref = kart), POS kaydı yok, kart borcu 600 → 360, 309.NN −360; tek kartta kart kendiliğinden; posId verilirse 400
+    ok 1 - giriş + kart + cardRefund → satır kart hesabına (fin_ref = kart), POS kaydı yok, kart borcu 600 → 360, 309.NN −360; tek kartta kart kendiliğinden; posId verilirse 400
+      ---
+      duration_ms: 376.596744
+      type: 'test'
+      ...
+    # Subtest: cardRefund olmadan giriş + kart POS'tur (kart hesabı verilirse 400 bank-account-invalid; verilmezse POS satışı); düzeltmede kart bağı korunur (tutar 240 → 300)
+    ok 2 - cardRefund olmadan giriş + kart POS'tur (kart hesabı verilirse 400 bank-account-invalid; verilmezse POS satışı); düzeltmede kart bağı korunur (tutar 240 → 300)
+      ---
+      duration_ms: 375.324938
+      type: 'test'
+      ...
+    1..2
+ok 29 - B — alan belge türüne göre: cari ÖDEME İADESİ kredi kartına (tedarikçi parayı kartımıza iade etti) → Kredi Kartı, POS oluşmaz, 309 düşer
+  ---
+  duration_ms: 752.228376
+  type: 'suite'
+  ...
+# Subtest: C — alan belge türüne göre: ALIŞTAN İADE karta, POS tanımlıyken → Kredi Kartı (309 düşer), POS satışı oluşmaz (eşleme 93)
+    # Subtest: alış 600 kartla → KK −600; alıştan iade 240 kartla → KK −360, pos_sales boş, 108.01 = 0; satıştan iade aynı POS'ta POS İadesi (karşılaştırma)
+    ok 1 - alış 600 kartla → KK −600; alıştan iade 240 kartla → KK −360, pos_sales boş, 108.01 = 0; satıştan iade aynı POS'ta POS İadesi (karşılaştırma)
+      ---
+      duration_ms: 457.336302
+      type: 'test'
+      ...
+    1..1
+ok 30 - C — alan belge türüne göre: ALIŞTAN İADE karta, POS tanımlıyken → Kredi Kartı (309 düşer), POS satışı oluşmaz (eşleme 93)
+  ---
+  duration_ms: 457.521057
+  type: 'suite'
+  ...
+# Subtest: D — Kayıt Hatası Silme (§4.6 tablo 3): valörden önce void; bankaya geçmişse bank.replan (eşleşmemiş, açık dönem) ya da 409 pos-settled
+    # Subtest: iki satış aynı gün fişinde bankaya geçti → B'yi Kayıt Hatası ile iptal: gün fişi ters kaydedilir, A'nın kalemi yeni fişle (r2) yeniden geçer, banka A'nın neti kadar; B void, komisyon doğmaz
+    ok 1 - iki satış aynı gün fişinde bankaya geçti → B'yi Kayıt Hatası ile iptal: gün fişi ters kaydedilir, A'nın kalemi yeni fişle (r2) yeniden geçer, banka A'nın neti kadar; B void, komisyon doğmaz
+      ---
+      duration_ms: 402.650534
+      type: 'test'
+      ...
+    # Subtest: gün fişi kapatılmış (kilitli) dönemdeyken Kayıt Hatası: faturanın kendi tarihi de kilitte → 409 (dönem kilidi); hiçbir şey değişmez; kilit kalkınca replan
+    ok 2 - gün fişi kapatılmış (kilitli) dönemdeyken Kayıt Hatası: faturanın kendi tarihi de kilitte → 409 (dönem kilidi); hiçbir şey değişmez; kilit kalkınca replan
+      ---
+      duration_ms: 526.128342
+      type: 'test'
+      ...
+    1..2
+ok 31 - D — Kayıt Hatası Silme (§4.6 tablo 3): valörden önce void; bankaya geçmişse bank.replan (eşleşmemiş, açık dönem) ya da 409 pos-settled
+  ---
+  duration_ms: 929.160829
+  type: 'suite'
+  ...
+# Subtest: E — düzeltme (§4.6): bekleyen satışta tutar değişimi tek etkin kayıt; yol/hesap değişiminde eski olay iptal, yeni olay
+    # Subtest: cari POS tahsilatı 1.000 → 1.500: tek etkin satış 1.500 (kalemler yeniden), eski void, provizyon korunur; → nakit: satış void, 108.01 = 0; → yeniden POS: yeni satış
+    ok 1 - cari POS tahsilatı 1.000 → 1.500: tek etkin satış 1.500 (kalemler yeniden), eski void, provizyon korunur; → nakit: satış void, 108.01 = 0; → yeniden POS: yeni satış
+      ---
+      duration_ms: 383.02092
+      type: 'test'
+      ...
+    1..1
+ok 32 - E — düzeltme (§4.6): bekleyen satışta tutar değişimi tek etkin kayıt; yol/hesap değişiminde eski olay iptal, yeni olay
+  ---
+  duration_ms: 383.182957
+  type: 'suite'
+  ...
+# Subtest: F — iade kuralları (§4.6): Σ iade (İptal İadesi dahil) ≤ satış; 3 ondalık; iade silme ve geri yükleme (ders 10 komşuları)
+    # Subtest: 10.000 satış: iade 3.000 + 4.000 → İptal İadesi kalan 3.000 (Σ 10.000); iptal edilmiş satışa yeni iade → 404; iade tutarı 3 ondalık → 400
+    ok 1 - 10.000 satış: iade 3.000 + 4.000 → İptal İadesi kalan 3.000 (Σ 10.000); iptal edilmiş satışa yeni iade → 404; iade tutarı 3 ondalık → 400
+      ---
+      duration_ms: 477.988319
+      type: 'test'
+      ...
+    # Subtest: valörden sonra kısmi iade (İade Edilmez) → iade valöründe banka −3.000; sonra İptal İadesi kalan 7.000 (iadeler yalnız modülden silinmişse)
+    ok 2 - valörden sonra kısmi iade (İade Edilmez) → iade valöründe banka −3.000; sonra İptal İadesi kalan 7.000 (iadeler yalnız modülden silinmişse)
+      ---
+      duration_ms: 398.361181
+      type: 'test'
+      ...
+    1..2
+ok 33 - F — iade kuralları (§4.6): Σ iade (İptal İadesi dahil) ≤ satış; 3 ondalık; iade silme ve geri yükleme (ders 10 komşuları)
+  ---
+  duration_ms: 876.638989
+  type: 'suite'
+  ...
+# Subtest: G — bağ türü verisi (eşleme 290; Fatura ve Banka Hareketleri raporu bunu okur): Peşin · Kapatılacak Fatura · Otomatik (en eski) · Komisyon Kesintisi (Bağlı)
+    # Subtest: peşin satır source=invoice+invoice_id; Kapatılacak Fatura seçilen tahsilat invoice_id dolu, kapatan 'Bağlı'; bağsız tahsilat 'Otomatik (en eski)'; komisyon kesintisi source=bank → komisyon faturasına bağlı
+    ok 1 - peşin satır source=invoice+invoice_id; Kapatılacak Fatura seçilen tahsilat invoice_id dolu, kapatan 'Bağlı'; bağsız tahsilat 'Otomatik (en eski)'; komisyon kesintisi source=bank → komisyon faturasına bağlı
+      ---
+      duration_ms: 561.615409
+      type: 'test'
+      ...
+    1..1
+ok 34 - G — bağ türü verisi (eşleme 290; Fatura ve Banka Hareketleri raporu bunu okur): Peşin · Kapatılacak Fatura · Otomatik (en eski) · Komisyon Kesintisi (Bağlı)
+  ---
+  duration_ms: 561.787095
+  type: 'suite'
+  ...
+# Subtest: H — net eksiye düşerse, KDV kipi (§4.6 E1.06): Komisyon Tahsili kalemi valörde sağlayıcı carisine out/bank satırı → B 320 / A 102.x (653 değil)
+    # Subtest: KDV Hariç POS (%2,5 + KDV = 300), 10.000 satış + aynı gün tam iade (İade Edilmez) → valörde (12.10) Ziraat −300, sağlayıcı carisine out/bank 300 (fin_ref = Ziraat), 320 borçlanır, 653 = 0
+    ok 1 - KDV Hariç POS (%2,5 + KDV = 300), 10.000 satış + aynı gün tam iade (İade Edilmez) → valörde (12.10) Ziraat −300, sağlayıcı carisine out/bank 300 (fin_ref = Ziraat), 320 borçlanır, 653 = 0
+      ---
+      duration_ms: 374.343582
+      type: 'test'
+      ...
+    1..1
+ok 35 - H — net eksiye düşerse, KDV kipi (§4.6 E1.06): Komisyon Tahsili kalemi valörde sağlayıcı carisine out/bank satırı → B 320 / A 102.x (653 değil)
+  ---
+  duration_ms: 374.516316
+  type: 'suite'
+  ...
+# \# kaynak tarama: 36 sorgu, 215 sütun okunuyor; izde 138; istisna 43; istisna tablosu 19; rowid 17
+# Subtest: Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)
+    # Subtest: türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)
+    ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)
+      ---
+      duration_ms: 1826.209817
+      type: 'test'
+      ...
+    # Subtest: kilit izinin önbelleği: aynı durumda aynı iz; bu bağlantının yazımı, başka bağlantının yazımı ve geri alınan işlem sonrası baştan hesaplanan izle aynı
+    ok 2 - kilit izinin önbelleği: aynı durumda aynı iz; bu bağlantının yazımı, başka bağlantının yazımı ve geri alınan işlem sonrası baştan hesaplanan izle aynı
+      ---
+      duration_ms: 30.704696
+      type: 'test'
+      ...
+    1..2
+ok 36 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)
+  ---
+  duration_ms: 3153.223996
+  type: 'suite'
+  ...
+# Subtest: Ç7a K-14 / K-15 — açılıştan önceki hesapsız hareketin karşılığı 519 (S179 = A)
+    # Subtest: 1. açılıştan önceki havale 519'da, açılış günü ve sonrası 102.00'da; POS yalnız Devir Kapanışı'yla; kova ve 519 dökümü aynı satırları düşer
+    ok 1 - 1. açılıştan önceki havale 519'da, açılış günü ve sonrası 102.00'da; POS yalnız Devir Kapanışı'yla; kova ve 519 dökümü aynı satırları düşer
+      ---
+      duration_ms: 38.197266
+      type: 'test'
+      ...
+    # Subtest: 2. sınır yolun EN GEÇ açılışı; hesabın pasifliği sınırı değiştirmez; silinen hesabın açılışı sayılmaz
+    ok 2 - 2. sınır yolun EN GEÇ açılışı; hesabın pasifliği sınırı değiştirmez; silinen hesabın açılışı sayılmaz
+      ---
+      duration_ms: 92.89804
+      type: 'test'
+      ...
+    # Subtest: 3. Devir Kapanışı: D'den önceki POS da 519'a; kapanış maddesi yevmiyede yok; Geri Al birebir
+    ok 3 - 3. Devir Kapanışı: D'den önceki POS da 519'a; kapanış maddesi yevmiyede yok; Geri Al birebir
+      ---
+      duration_ms: 94.916062
+      type: 'test'
+      ...
+    # Subtest: 4. K-15: kart hesabından önceki kurumsal kart ödemesi 519'da; Kart Borcuna Aktar havuzu boş; sonraki ödeme kart hesabına
+    ok 4 - 4. K-15: kart hesabından önceki kurumsal kart ödemesi 519'da; Kart Borcuna Aktar havuzu boş; sonraki ödeme kart hesabına
+      ---
+      duration_ms: 73.008016
+      type: 'test'
+      ...
+    # Subtest: 5. kapı: hesap varken 'Hesapsız (Açılıştan Önce)' ile girilen satır yazılır (süzgeçli kapı 409 vermez), 519'a düşer; silinince geri gelir
+    ok 5 - 5. kapı: hesap varken 'Hesapsız (Açılıştan Önce)' ile girilen satır yazılır (süzgeçli kapı 409 vermez), 519'a düşer; silinince geri gelir
+      ---
+      duration_ms: 58.80096
+      type: 'test'
+      ...
+    1..5
+ok 37 - Ç7a K-14 / K-15 — açılıştan önceki hesapsız hareketin karşılığı 519 (S179 = A)
+  ---
+  duration_ms: 863.800163
+  type: 'suite'
+  ...
+# Subtest: Ç7a K-14 / K-15 — v2.4.9 kilitli verisinde hesapsız açılış öncesi hareketler (kabul D): fark tam, donmuş defter değişmez, Kural Farkı fişi
+    # Subtest: [1] Kural Değişikliği Farkı: dört kaynak (H1, K1, H2, Devir Kapanışı) elle hesapla aynı; donmuş defter değişmedi
+    ok 1 - [1] Kural Değişikliği Farkı: dört kaynak (H1, K1, H2, Devir Kapanışı) elle hesapla aynı; donmuş defter değişmedi
+      ---
+      duration_ms: 9.497295
+      type: 'test'
+      ...
+    # Subtest: [2] Kural Farkı Düzeltme Fişi: yalnız bu kuralın kalemleri ve Ç5-A'nın 500 → 519'u; 102.00 / 108.00 alt defter hesabı farkı ayrı (fişe yazılmaz)
+    ok 2 - [2] Kural Farkı Düzeltme Fişi: yalnız bu kuralın kalemleri ve Ç5-A'nın 500 → 519'u; 102.00 / 108.00 alt defter hesabı farkı ayrı (fişe yazılmaz)
+      ---
+      duration_ms: 39.06733
+      type: 'test'
+      ...
+    # Subtest: [3] açık dönemde yeni hesapsız satır (Garanti'den önce) yeni kuralla: B 519 / A 120; farkta yok
+    ok 3 - [3] açık dönemde yeni hesapsız satır (Garanti'den önce) yeni kuralla: B 519 / A 120; farkta yok
+      ---
+      duration_ms: 29.225435
+      type: 'test'
+      ...
+    1..3
+ok 38 - Ç7a K-14 / K-15 — v2.4.9 kilitli verisinde hesapsız açılış öncesi hareketler (kabul D): fark tam, donmuş defter değişmez, Kural Farkı fişi
+  ---
+  duration_ms: 1040.912351
+  type: 'suite'
+  ...
+# Subtest: Ç7a — Hesabı Atanmamış listesi ve banka raporları: 'Açılışta Sayıldı' satırı kalır, toplam = kova
+    # Subtest: 1. liste: açılışta sayılmış satırlar işaretli kalır; toplamlar kova
+    ok 1 - 1. liste: açılışta sayılmış satırlar işaretli kalır; toplamlar kova
+      ---
+      duration_ms: 14.874807
+      type: 'test'
+      ...
+    # Subtest: 2. Banka Bakiye Raporu: Hesabı Atanmamış satırları ve özeti kova
+    ok 2 - 2. Banka Bakiye Raporu: Hesabı Atanmamış satırları ve özeti kova
+      ---
+      duration_ms: 7.216485
+      type: 'test'
+      ...
+    # Subtest: 3. Banka Hareket Raporu: işaretli satırlar kalır, tutar hücreleri boş; toplamlar ve devir kova ile
+    ok 3 - 3. Banka Hareket Raporu: işaretli satırlar kalır, tutar hücreleri boş; toplamlar ve devir kova ile
+      ---
+      duration_ms: 12.660577
+      type: 'test'
+      ...
+    # Subtest: 4. Günlük Banka Raporu: işaretli satırlar günlere girmez
+    ok 4 - 4. Günlük Banka Raporu: işaretli satırlar günlere girmez
+      ---
+      duration_ms: 4.695218
+      type: 'test'
+      ...
+    # Subtest: 5. Cari Banka Hareketleri ve Banka ve POS Hareketleri (Hesabı Atanmamış): satır kalır, toplama girmez
+    ok 5 - 5. Cari Banka Hareketleri ve Banka ve POS Hareketleri (Hesabı Atanmamış): satır kalır, toplama girmez
+      ---
+      duration_ms: 8.590059
+      type: 'test'
+      ...
+    1..5
+ok 39 - Ç7a — Hesabı Atanmamış listesi ve banka raporları: 'Açılışta Sayıldı' satırı kalır, toplam = kova
+  ---
+  duration_ms: 529.173081
+  type: 'suite'
+  ...
+# Subtest: Ç7a D-07 — kart faizi / gecikme bedeli: Faiz Gideri fişi kredi kartı hesabına (B 780 / A 309.k)
+    # Subtest: 1–2: faiz + BSMV ve gecikme bedeli kart hesabına; kart borcu artar, banka / Kasa / cari değişmez
+    ok 1 - 1–2: faiz + BSMV ve gecikme bedeli kart hesabına; kart borcu artar, banka / Kasa / cari değişmez
+      ---
+      duration_ms: 80.482474
+      type: 'test'
+      ...
+    # Subtest: 3: Ters Kaydet ve Düzelt kart faizinde de çalışır; kart borcu satırlarla yürür
+    ok 2 - 3: Ters Kaydet ve Düzelt kart faizinde de çalışır; kart borcu satırlarla yürür
+      ---
+      duration_ms: 48.179222
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: kartta masraf / diğer gider / faiz geliri, planlı kart faizi, kredi ve vadeli hesap, kilit ve açılış öncesi reddedilir; satır yazılmaz
+    ok 3 - nasıl bozarım: kartta masraf / diğer gider / faiz geliri, planlı kart faizi, kredi ve vadeli hesap, kilit ve açılış öncesi reddedilir; satır yazılmaz
+      ---
+      duration_ms: 210.627828
+      type: 'test'
+      ...
+    1..3
+ok 40 - Ç7a D-07 — kart faizi / gecikme bedeli: Faiz Gideri fişi kredi kartı hesabına (B 780 / A 309.k)
+  ---
+  duration_ms: 740.385563
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan)
+    # Subtest: [y1] eşleme yılı tek tanım: ilk açık günün (kilit + 1) yılı; 30.12 / 31.12 sınırı; kilit yoksa donmuş dönem, o da yoksa bugün
+    ok 1 - [y1] eşleme yılı tek tanım: ilk açık günün (kilit + 1) yılı; 30.12 / 31.12 sınırı; kilit yoksa donmuş dönem, o da yoksa bugün
+      ---
+      duration_ms: 1.276299
+      type: 'test'
+      ...
+    # Subtest: [y2] S174 = A: 2026'da yazılmış fiş (B 500 / A 602) kilit 31.12.2026'yı aşınca kendi yılında düzeltilmiş sayılır — 2027'de fiş önerilmez
+    ok 2 - [y2] S174 = A: 2026'da yazılmış fiş (B 500 / A 602) kilit 31.12.2026'yı aşınca kendi yılında düzeltilmiş sayılır — 2027'de fiş önerilmez
+      ---
+      duration_ms: 1.641968
+      type: 'test'
+      ...
+    # Subtest: [y3] eski yıldan DÜZELTİLMEMİŞ fark + aynı yıl düzeltilmiş fark birlikte: yeni fiş yalnız düzeltilmemiş kısmı, 671'e
+    ok 3 - [y3] eski yıldan DÜZELTİLMEMİŞ fark + aynı yıl düzeltilmiş fark birlikte: yeni fiş yalnız düzeltilmemiş kısmı, 671'e
+      ---
+      duration_ms: 1.004408
+      type: 'test'
+      ...
+    # Subtest: [y4] eski biçim (yıl ayrımsız toplam) ve tek yıl fişi: sonuç expected − posted (bugünkü hesap AYNEN)
+    ok 4 - [y4] eski biçim (yıl ayrımsız toplam) ve tek yıl fişi: sonuç expected − posted (bugünkü hesap AYNEN)
+      ---
+      duration_ms: 0.357434
+      type: 'test'
+      ...
+    # Subtest: [y5] fazla düzeltme yıl sonundan sonra: tutar doğru (700); fişin yılı eşleme yılından SONRA ise (kilit geri alındı) satırlar fişin tersi
+    ok 5 - [y5] fazla düzeltme yıl sonundan sonra: tutar doğru (700); fişin yılı eşleme yılından SONRA ise (kilit geri alındı) satırlar fişin tersi
+      ---
+      duration_ms: 0.406283
+      type: 'test'
+      ...
+    # Subtest: [y8] S185 = A iki yönde: fişin yılı > eşleme yılı — 2027 fişi 2026'nın farkını KENDİ yılında (671) düzeltmiş sayılır; yalnız düzeltilmemiş fark 2026'ya (602), fazla fiş kendi yılında
+    ok 6 - [y8] S185 = A iki yönde: fişin yılı > eşleme yılı — 2027 fişi 2026'nın farkını KENDİ yılında (671) düzeltmiş sayılır; yalnız düzeltilmemiş fark 2026'ya (602), fazla fiş kendi yılında
+      ---
+      duration_ms: 0.581828
+      type: 'test'
+      ...
+    # Subtest: [y9] DÜŞÜK-3 (P3): önceki yılın fazla düzeltmesinde 671 / 681 yönü KALAN farkın yönünden (EK-1 M7) — ham farkın yönünden değil
+    ok 7 - [y9] DÜŞÜK-3 (P3): önceki yılın fazla düzeltmesinde 671 / 681 yönü KALAN farkın yönünden (EK-1 M7) — ham farkın yönünden değil
+      ---
+      duration_ms: 0.323728
+      type: 'test'
+      ...
+    # Subtest: [y6] N1: alt defter dışlaması kararlı noktaya kadar yinelenir — birinci maddenin dışlanması ikinci maddenin alt defter hesabını sıfırdan çıkarır
+    ok 8 - [y6] N1: alt defter dışlaması kararlı noktaya kadar yinelenir — birinci maddenin dışlanması ikinci maddenin alt defter hesabını sıfırdan çıkarır
+      ---
+      duration_ms: 0.569273
+      type: 'test'
+      ...
+    1..8
+ok 41 - Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan)
+  ---
+  duration_ms: 7.465912
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi)
+    # Subtest: [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) → kilit 31.12 (671) → aday onayı → 'Fişle düzeltilebilen fark kalmadı' + Düzeltildi; ikinci fiş; ters kayıt; kilit kaldır / yeniden kilitle
+    ok 1 - [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) → kilit 31.12 (671) → aday onayı → 'Fişle düzeltilebilen fark kalmadı' + Düzeltildi; ikinci fiş; ters kayıt; kilit kaldır / yeniden kilitle
+      ---
+      duration_ms: 1530.340766
+      type: 'test'
+      ...
+    # Subtest: [y10] S185 = A uçtan uca: 2027 fişi → kilit 30.11.2026'ya geri — (b) doğrudan: Düzeltildi, 2026'ya fiş yok, yeni 2026 farkı 602'ye; (a) önce kaldır: fiş fazla, ipucu kendi yılında ters kayıt, ters kayıtla temiz
+    ok 2 - [y10] S185 = A uçtan uca: 2027 fişi → kilit 30.11.2026'ya geri — (b) doğrudan: Düzeltildi, 2026'ya fiş yok, yeni 2026 farkı 602'ye; (a) önce kaldır: fiş fazla, ipucu kendi yılında ters kayıt, ters kayıtla temiz
+      ---
+      duration_ms: 1745.967547
+      type: 'test'
+      ...
+    1..2
+ok 42 - Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi)
+  ---
+  duration_ms: 3276.607622
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-A tur 3a — kuyruğun girdi kurucusu (lib/obligation-input.mjs): yalnız store ile = servis yüzü; davranış taşımadan önceki kodla aynı
+    # Subtest: sınıf verisi iki şirkette, kilitli ↔ kilitsiz: modül (yalnız store) = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+    ok 1 - sınıf verisi iki şirkette, kilitli ↔ kilitsiz: modül (yalnız store) = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+      ---
+      duration_ms: 1518.484252
+      type: 'test'
+      ...
+    1..1
+ok 43 - 2.5.0 Ç5-A tur 3a — kuyruğun girdi kurucusu (lib/obligation-input.mjs): yalnız store ile = servis yüzü; davranış taşımadan önceki kodla aynı
+  ---
+  duration_ms: 1873.371617
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı
+    # Subtest: sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+    ok 1 - sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+      ---
+      duration_ms: 969.766264
+      type: 'test'
+      ...
+    1..1
+ok 44 - 2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı
+  ---
+  duration_ms: 1220.301107
+  type: 'suite'
+  ...
+# Subtest: Ç7a KG-6 — POS komisyonu satış (çekim) günü; valörde net (KG-6 = A, S177 = A, S178 = A)
+    # Subtest: 1. tek çekim: satış günü B 653 / A 108.01; valöre kadar 108.01 = net; gün fişi net (653 satırı yok)
+    ok 1 - 1. tek çekim: satış günü B 653 / A 108.01; valöre kadar 108.01 = net; gün fişi net (653 satırı yok)
+      ---
+      duration_ms: 493.58432
+      type: 'test'
+      ...
+    # Subtest: 2. taksitli satış: BÜTÜN taksitlerin kesintisi satış gününde; İade Edilmez iade komisyon maddesi doğurmaz
+    ok 2 - 2. taksitli satış: BÜTÜN taksitlerin kesintisi satış gününde; İade Edilmez iade komisyon maddesi doğurmaz
+      ---
+      duration_ms: 339.349261
+      type: 'test'
+      ...
+    # Subtest: 3. Oransal iade: iade edilen kesinti iade gününde ters (B 108.01 / A 653); gün fişi net
+    ok 3 - 3. Oransal iade: iade edilen kesinti iade gününde ters (B 108.01 / A 653); gün fişi net
+      ---
+      duration_ms: 331.943107
+      type: 'test'
+      ...
+    # Subtest: 4. Elle Onay: Komisyon Farkı valörün (onayın) gününde (S177 = A); satış günü maddesi değişmez
+    ok 4 - 4. Elle Onay: Komisyon Farkı valörün (onayın) gününde (S177 = A); satış günü maddesi değişmez
+      ---
+      duration_ms: 366.495921
+      type: 'test'
+      ...
+    # Subtest: 5. BSMV Hariç (kesinti = komisyon + BSMV) ve sabit işlem ücreti satış gününde
+    ok 5 - 5. BSMV Hariç (kesinti = komisyon + BSMV) ve sabit işlem ücreti satış gününde
+      ---
+      duration_ms: 666.058226
+      type: 'test'
+      ...
+    # Subtest: 6. KDV kipi (Ödeme Kuruluşu): satış günü maddesi yok; kesinti valörde sağlayıcıya (bugünkü gibi — S178 = A)
+    ok 6 - 6. KDV kipi (Ödeme Kuruluşu): satış günü maddesi yok; kesinti valörde sağlayıcıya (bugünkü gibi — S178 = A)
+      ---
+      duration_ms: 364.751232
+      type: 'test'
+      ...
+    # Subtest: 7. bankaya geçmiş satış düzeltilir (yeniden planlama): eski maddeler kalkar, yeni satışın komisyonu satış gününde
+    ok 7 - 7. bankaya geçmiş satış düzeltilir (yeniden planlama): eski maddeler kalkar, yeni satışın komisyonu satış gününde
+      ---
+      duration_ms: 384.832916
+      type: 'test'
+      ...
+    # Subtest: 8. yıl dönümü: 30.12 satışın komisyonu 2026'da; 2027'deki gün fişinde 653 yok
+    ok 8 - 8. yıl dönümü: 30.12 satışın komisyonu 2026'da; 2027'deki gün fişinde 653 yok
+      ---
+      duration_ms: 432.283299
+      type: 'test'
+      ...
+    1..8
+ok 45 - Ç7a KG-6 — POS komisyonu satış (çekim) günü; valörde net (KG-6 = A, S177 = A, S178 = A)
+  ---
+  duration_ms: 3380.776242
+  type: 'suite'
+  ...
+# Subtest: Ç7a KG-6 — v2.4.9 kilitli verisinde POS komisyonu (kabul D): fark tam, donmuş defter değişmez, Kilidi Aç → Yeniden Kilitle
+    # Subtest: [1] Kural Değişikliği Farkı: KG-6 kaynakları sınıf sınıf elle hesapla aynı; açık dönem farkta yok; donmuş defter değişmedi
+    ok 1 - [1] Kural Değişikliği Farkı: KG-6 kaynakları sınıf sınıf elle hesapla aynı; açık dönem farkta yok; donmuş defter değişmedi
+      ---
+      duration_ms: 26.200833
+      type: 'test'
+      ...
+    # Subtest: [2] Kural Farkı Düzeltme Fişi: KG-6 maddeleri 108.01 alt defter hesabına dokunduğu için fişin DIŞINDA (S76 = A); fişte 653 ve 108 yok
+    ok 2 - [2] Kural Farkı Düzeltme Fişi: KG-6 maddeleri 108.01 alt defter hesabına dokunduğu için fişin DIŞINDA (S76 = A); fişte 653 ve 108 yok
+      ---
+      duration_ms: 4.350329
+      type: 'test'
+      ...
+    # Subtest: [3] Kilidi Aç → Yeniden Kilitle: donmuş defter yeni kuralla, KG-6 farkı kalmaz; 653'ün kilitli dönem toplamı satış günleriyle
+    ok 3 - [3] Kilidi Aç → Yeniden Kilitle: donmuş defter yeni kuralla, KG-6 farkı kalmaz; 653'ün kilitli dönem toplamı satış günleriyle
+      ---
+      duration_ms: 185.449555
+      type: 'test'
+      ...
+    # Subtest: [4] açık dönemde yeni satış yeni kuralla: 22.04 satış 1.000 → 22.04 B 653 25 / A 108.01 25
+    ok 4 - [4] açık dönemde yeni satış yeni kuralla: 22.04 satış 1.000 → 22.04 B 653 25 / A 108.01 25
+      ---
+      duration_ms: 42.65498
+      type: 'test'
+      ...
+    1..4
+ok 46 - Ç7a KG-6 — v2.4.9 kilitli verisinde POS komisyonu (kabul D): fark tam, donmuş defter değişmez, Kilidi Aç → Yeniden Kilitle
+  ---
+  duration_ms: 1326.800015
+  type: 'suite'
+  ...
+# Subtest: 2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel)
+    # Subtest: katalog: Banka grubunda on yeni rapor, başlıkları ve süzgeçleri; anyAccount seçenekleri (bakiye dönmez)
+    ok 1 - katalog: Banka grubunda on yeni rapor, başlıkları ve süzgeçleri; anyAccount seçenekleri (bakiye dönmez)
+      ---
+      duration_ms: 5.889426
+      type: 'test'
+      ...
+    # Subtest: Günlük Banka Raporu: her hesap × her dönem — gün gün dış giriş/çıkış, transfer ayrı, Net = bakiye değişimi, Gün Sonu Bakiye yürür; devir dönem öncesi
+    ok 2 - Günlük Banka Raporu: her hesap × her dönem — gün gün dış giriş/çıkış, transfer ayrı, Net = bakiye değişimi, Gün Sonu Bakiye yürür; devir dönem öncesi
+      ---
+      duration_ms: 157.54365
+      type: 'test'
+      ...
+    # Subtest: Aylık Banka Raporu: her hesap × her dönem — Ay Başı/Ay Sonu Bakiye, hareketsiz ay devirle; boş dönemde satır yok
+    ok 3 - Aylık Banka Raporu: her hesap × her dönem — Ay Başı/Ay Sonu Bakiye, hareketsiz ay devirle; boş dönemde satır yok
+      ---
+      duration_ms: 128.014656
+      type: 'test'
+      ...
+    # Subtest: Banka Bazında Bakiye ve Para Birimi Bazında Bakiye: her dönem — banka (hesapları birlikte) ve TL satırı; Gerçek Banka / Borç / Net; Hesabı Atanmamış özette
+    ok 4 - Banka Bazında Bakiye ve Para Birimi Bazında Bakiye: her dönem — banka (hesapları birlikte) ve TL satırı; Gerçek Banka / Borç / Net; Hesabı Atanmamış özette
+      ---
+      duration_ms: 54.325336
+      type: 'test'
+      ...
+    # Subtest: Bankalar Arası Transfer Raporu: her hesap × her dönem — ücretli transfer, ters kaydedilen asıl + eksi Ters Kayıt; TOPLAM net; kanal ve durum
+    ok 5 - Bankalar Arası Transfer Raporu: her hesap × her dönem — ücretli transfer, ters kaydedilen asıl + eksi Ters Kayıt; TOPLAM net; kanal ve durum
+      ---
+      duration_ms: 74.786724
+      type: 'test'
+      ...
+    # Subtest: Kasa ve Banka Transfer Raporu: her hesap × her dönem — iki yön ayrı kolon, Net (Bankaya); hesabı atanmamış süzgeci boş
+    ok 6 - Kasa ve Banka Transfer Raporu: her hesap × her dönem — iki yön ayrı kolon, Net (Bankaya); hesabı atanmamış süzgeci boş
+      ---
+      duration_ms: 71.914701
+      type: 'test'
+      ...
+    # Subtest: Cari ve Banka Hareketleri: her hesap × cari × dönem — yalnız carili satırlar (cari, fatura peşini, taksit, eski havale); masraf, transfer, kart borcu girmez
+    ok 7 - Cari ve Banka Hareketleri: her hesap × cari × dönem — yalnız carili satırlar (cari, fatura peşini, taksit, eski havale); masraf, transfer, kart borcu girmez
+      ---
+      duration_ms: 263.467946
+      type: 'test'
+      ...
+    # Subtest: Fatura ve Banka Hareketleri: bağ türü Peşin / Kapatılacak Fatura / Otomatik (En Eski); fatura no; taksit ve masraf girmez; özet bağ türüne göre
+    ok 8 - Fatura ve Banka Hareketleri: bağ türü Peşin / Kapatılacak Fatura / Otomatik (En Eski); fatura no; taksit ve masraf girmez; özet bağ türüne göre
+      ---
+      duration_ms: 111.82638
+      type: 'test'
+      ...
+    # Subtest: Taksit ve Banka Hareketleri: her hesap × her dönem — yalnız taksit kartı tahsilatı; kart adı ve cari
+    ok 9 - Taksit ve Banka Hareketleri: her hesap × her dönem — yalnız taksit kartı tahsilatı; kart adı ve cari
+      ---
+      duration_ms: 104.743282
+      type: 'test'
+      ...
+    # Subtest: Banka Nakit Akış Raporu: başlangıç Gerçek Banka (Hesabı Atanmamış girmez); planlı masraf/gelir, kart borcu son ödeme günü, tahsildeki çek; Planlanan Transfer ayrı kolon (bakiye değişmez); gecikmiş planlı girmez, özette
+    ok 10 - Banka Nakit Akış Raporu: başlangıç Gerçek Banka (Hesabı Atanmamış girmez); planlı masraf/gelir, kart borcu son ödeme günü, tahsildeki çek; Planlanan Transfer ayrı kolon (bakiye değişmez); gecikmiş planlı girmez, özette
+      ---
+      duration_ms: 28.552203
+      type: 'test'
+      ...
+    # Subtest: Banka ve POS Hareketleri: Yol Kredi Kartı (309) ve Kredi (300) + Hesap süzgeci — her seçenek satırları değiştirir; eski üç seçim aynen; tanınmayan hesap 404
+    ok 11 - Banka ve POS Hareketleri: Yol Kredi Kartı (309) ve Kredi (300) + Hesap süzgeci — her seçenek satırları değiştirir; eski üç seçim aynen; tanınmayan hesap 404
+      ---
+      duration_ms: 47.501011
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış, Vade Takip ve Zil: planlı banka işlemleri ve kart borcu son ödeme günü kalemleri; planlı transfer genel Nakit Akış'a girmez (toplam 0), Vade Takip'te tutarsız
+    ok 12 - Nakit Akış, Vade Takip ve Zil: planlı banka işlemleri ve kart borcu son ödeme günü kalemleri; planlı transfer genel Nakit Akış'a girmez (toplam 0), Vade Takip'te tutarsız
+      ---
+      duration_ms: 124.602143
+      type: 'test'
+      ...
+    # Subtest: yetki: personel 403 (ekran, PDF, Excel; dosya sızmaz); muhasebe yeni raporları görür; Finans Raporları rolü görmez
+    ok 13 - yetki: personel 403 (ekran, PDF, Excel; dosya sızmaz); muhasebe yeni raporları görür; Finans Raporları rolü görmez
+      ---
+      duration_ms: 271.110691
+      type: 'test'
+      ...
+    # Subtest: iki şirket: 002 boş — yeni raporlar boş (500 yok), Banka Nakit Akış 'Banka Hesabı Tanımlanmadı'; ?hofCompany= ile 001'in hesabı 404; ileri tarihli hareket 400
+    ok 14 - iki şirket: 002 boş — yeni raporlar boş (500 yok), Banka Nakit Akış 'Banka Hesabı Tanımlanmadı'; ?hofCompany= ile 001'in hesabı 404; ileri tarihli hareket 400
+      ---
+      duration_ms: 168.044283
+      type: 'test'
+      ...
+    1..14
+ok 47 - 2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel)
+  ---
+  duration_ms: 2406.279062
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 3d: 'Normal Cariye İşlendi' etiketi ve fatura iptali bildirimi ayırıcının payından
+    # Subtest: pay = tutar: F2'ye bağlı 300 tamamı şüpheliden (128) → etiket YOK; işaretli 400 → 'Normal Cariye İşlendi'; iptal penceresinde bildirim yok
+    ok 1 - pay = tutar: F2'ye bağlı 300 tamamı şüpheliden (128) → etiket YOK; işaretli 400 → 'Normal Cariye İşlendi'; iptal penceresinde bildirim yok
+      ---
+      duration_ms: 164.130913
+      type: 'test'
+      ...
+    # Subtest: kısmi pay: F2'ye bağlı 500 → 400 128'den, 100 120'den → 'Kısmen Normal Cariye İşlendi' 100; iptal bildirimi 100'ü söyler
+    ok 2 - kısmi pay: F2'ye bağlı 500 → 400 128'den, 100 120'den → 'Kısmen Normal Cariye İşlendi' 100; iptal bildirimi 100'ü söyler
+      ---
+      duration_ms: 136.216086
+      type: 'test'
+      ...
+    # Subtest: pay 0: faturanın kuyrukta şüpheli payı yok (işaretli tahsilat yok) → bağlı 200 tamamı 120 → 'Normal Cariye İşlendi'; iptal bildirimi eski metin
+    ok 3 - pay 0: faturanın kuyrukta şüpheli payı yok (işaretli tahsilat yok) → bağlı 200 tamamı 120 → 'Normal Cariye İşlendi'; iptal bildirimi eski metin
+      ---
+      duration_ms: 83.771754
+      type: 'test'
+      ...
+    1..3
+ok 48 - Ç5-A tur 3d: 'Normal Cariye İşlendi' etiketi ve fatura iptali bildirimi ayırıcının payından
+  ---
+  duration_ms: 728.394726
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168 = B) ve 'Normal Cari Hesaba İşle' sınırı
+    # Subtest: S168 örneği — Fatura 2'ye bağlı 300 NAKİT: KABUL (bugün 409), 128 = 700, 120 = 100; satır A 128 300
+    ok 1 - S168 örneği — Fatura 2'ye bağlı 300 NAKİT: KABUL (bugün 409), 128 = 700, 120 = 100; satır A 128 300
+      ---
+      duration_ms: 164.651331
+      type: 'test'
+      ...
+    # Subtest: S168 örneği — Fatura 2'ye bağlı 300 ÇEK: KABUL, 128 = 700, 120 = 100 (kuyruğun Fatura 2 payından)
+    ok 2 - S168 örneği — Fatura 2'ye bağlı 300 ÇEK: KABUL, 128 = 700, 120 = 100 (kuyruğun Fatura 2 payından)
+      ---
+      duration_ms: 119.63483
+      type: 'test'
+      ...
+    # Subtest: Fatura 2'ye bağlı 100 nakit → 128'den 100 (Fatura 2'nin şüpheli payı 400 ≥ 100): 128 = 900, 120 = 100 (bugün A 120 100)
+    ok 3 - Fatura 2'ye bağlı 100 nakit → 128'den 100 (Fatura 2'nin şüpheli payı 400 ≥ 100): 128 = 900, 120 = 100 (bugün A 120 100)
+      ---
+      duration_ms: 139.275035
+      type: 'test'
+      ...
+    # Subtest: Fatura 1'e bağlı 300 nakit → KABUL (bugün 409), 128'den 300: 128 = 700, 120 = 100
+    ok 4 - Fatura 1'e bağlı 300 nakit → KABUL (bugün 409), 128'den 300: 128 = 700, 120 = 100
+      ---
+      duration_ms: 146.147971
+      type: 'test'
+      ...
+    # Subtest: bağsız işaretsiz 300 nakit → DEĞİŞMEZ (en eski açık kayıttan 128 300)
+    ok 5 - bağsız işaretsiz 300 nakit → DEĞİŞMEZ (en eski açık kayıttan 128 300)
+      ---
+      duration_ms: 120.943605
+      type: 'test'
+      ...
+    # Subtest: Fatura 2'ye bağlı 500 nakit → 400'ü 128'den, 100'ü 120'den (S25 (a)): 128 = 600, 120 = 0
+    ok 6 - Fatura 2'ye bağlı 500 nakit → 400'ü 128'den, 100'ü 120'den (S25 (a)): 128 = 600, 120 = 0
+      ---
+      duration_ms: 126.959909
+      type: 'test'
+      ...
+    # Subtest: Fatura 2'ye bağlı 500 ÇEK → 400 128'den, 100 120'den (S25 (a); bugün en eski kayıttan 128 500)
+    ok 7 - Fatura 2'ye bağlı 500 ÇEK → 400 128'den, 100 120'den (S25 (a); bugün en eski kayıttan 128 500)
+      ---
+      duration_ms: 123.72579
+      type: 'test'
+      ...
+    # Subtest: SINIR: Fatura 2'ye bağlı 700 nakit → 120'ye düşecek 300 > şüpheli dışı borç 100: RET AYNEN, ileti iki tutarı söyler, hiçbir şey yazılmaz
+    ok 8 - SINIR: Fatura 2'ye bağlı 700 nakit → 120'ye düşecek 300 > şüpheli dışı borç 100: RET AYNEN, ileti iki tutarı söyler, hiçbir şey yazılmaz
+      ---
+      duration_ms: 154.133399
+      type: 'test'
+      ...
+    # Subtest: SINIR: 'Normal Cari Hesaba İşle' işaretli tahsilat bugünkü gibi (tamamı 120): 300 > 100 → RET, ileti 'tahsilat (300,00 TL)'
+    ok 9 - SINIR: 'Normal Cari Hesaba İşle' işaretli tahsilat bugünkü gibi (tamamı 120): 300 > 100 → RET, ileti 'tahsilat (300,00 TL)'
+      ---
+      duration_ms: 143.098771
+      type: 'test'
+      ...
+    # Subtest: sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı nakit (S25 (c))
+    ok 10 - sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı nakit (S25 (c))
+      ---
+      duration_ms: 133.697391
+      type: 'test'
+      ...
+    # Subtest: sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı çek (S14)
+    ok 11 - sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı çek (S14)
+      ---
+      duration_ms: 118.74795
+      type: 'test'
+      ...
+    # Subtest: sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı nakit (S14'ün sözü)
+    ok 12 - sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı nakit (S14'ün sözü)
+      ---
+      duration_ms: 136.223218
+      type: 'test'
+      ...
+    # Subtest: sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı çek (S14; bugün 128)
+    ok 13 - sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı çek (S14; bugün 128)
+      ---
+      duration_ms: 133.93221
+      type: 'test'
+      ...
+    # Subtest: sınıf: bağsız nakit (değişmez)
+    ok 14 - sınıf: bağsız nakit (değişmez)
+      ---
+      duration_ms: 142.287199
+      type: 'test'
+      ...
+    # Subtest: sınıf: bağsız çek (değişmez)
+    ok 15 - sınıf: bağsız çek (değişmez)
+      ---
+      duration_ms: 141.785158
+      type: 'test'
+      ...
+    # Subtest: sınıf: kısmen şüpheli faturaya bağlı 700 nakit (S25 (a): 600 128, 100 120)
+    ok 16 - sınıf: kısmen şüpheli faturaya bağlı 700 nakit (S25 (a): 600 128, 100 120)
+      ---
+      duration_ms: 158.987875
+      type: 'test'
+      ...
+    # Subtest: iki kayıt (K-1 (b)): Fatura 2'ye bağlı çek Fatura 2'yi tutan İKİNCİ kayıttan düşer (en eski kayıttan değil)
+    ok 17 - iki kayıt (K-1 (b)): Fatura 2'ye bağlı çek Fatura 2'yi tutan İKİNCİ kayıttan düşer (en eski kayıttan değil)
+      ---
+      duration_ms: 162.212922
+      type: 'test'
+      ...
+    # Subtest: aynı gün bağlı + bağsız iki tahsilat: toplam ayırıcının sırasından bağımsız (ders 31) — iki cari, ters yazım sırası, aynı 120 / 128
+    ok 18 - aynı gün bağlı + bağsız iki tahsilat: toplam ayırıcının sırasından bağımsız (ders 31) — iki cari, ters yazım sırası, aynı 120 / 128
+      ---
+      duration_ms: 673.326519
+      type: 'test'
+      ...
+    # Subtest: düzeltme: bağ kaldırılır / yeniden kurulur, tutar sınırı düzeltmede de; sil + bağsız yeniden gir
+    ok 19 - düzeltme: bağ kaldırılır / yeniden kurulur, tutar sınırı düzeltmede de; sil + bağsız yeniden gir
+      ---
+      duration_ms: 353.060346
+      type: 'test'
+      ...
+    # Subtest: K-1 (a) + (b): doubtfulBefore — satırdan ÖNCEKİ anki dağılım, kalem başına kayıt kimliğiyle; kuyruğun bugünkü çıktısına alan eklenmez
+    ok 20 - K-1 (a) + (b): doubtfulBefore — satırdan ÖNCEKİ anki dağılım, kalem başına kayıt kimliğiyle; kuyruğun bugünkü çıktısına alan eklenmez
+      ---
+      duration_ms: 218.32923
+      type: 'test'
+      ...
+    # Subtest: kart haritası (ledgerPlansOf) cari kümesiyle = bütün harita (ledgerPlansByAccount) — her cari
+    ok 21 - kart haritası (ledgerPlansOf) cari kümesiyle = bütün harita (ledgerPlansByAccount) — her cari
+      ---
+      duration_ms: 287.659143
+      type: 'test'
+      ...
+    # Subtest: kilit: kilitli dönemin 120 / 128'i donmuş = canlı (aynı kural); kilitten sonra bağlı tahsilat o anki dağılımdan
+    ok 22 - kilit: kilitli dönemin 120 / 128'i donmuş = canlı (aynı kural); kilitten sonra bağlı tahsilat o anki dağılımdan
+      ---
+      duration_ms: 511.644678
+      type: 'test'
+      ...
+    # Subtest: ESM döngüsü (lib/bank/doubtful.mjs ↔ lib/obligation-input.mjs): hangisi önce yüklenirse yüklensin çalışır
+    ok 23 - ESM döngüsü (lib/bank/doubtful.mjs ↔ lib/obligation-input.mjs): hangisi önce yüklenirse yüklensin çalışır
+      ---
+      duration_ms: 214.475035
+      type: 'test'
+      ...
+    1..23
+ok 49 - Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168 = B) ve 'Normal Cari Hesaba İşle' sınırı
+  ---
+  duration_ms: 4959.9727
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 3c — v2.4.9 gerçek verisi (kilitli + kilitsiz; sınıf sınıf)
+    # Subtest: donmuş 2.4.9 ↔ canlı yeni kural; fark kaynağıyla ön izlemede, fiş satırı yok; açık dönemde yeni kural
+    ok 1 - donmuş 2.4.9 ↔ canlı yeni kural; fark kaynağıyla ön izlemede, fiş satırı yok; açık dönemde yeni kural
+      ---
+      duration_ms: 345.317018
+      type: 'test'
+      ...
+    1..1
+ok 50 - Ç5-A tur 3c — v2.4.9 gerçek verisi (kilitli + kilitsiz; sınıf sınıf)
+  ---
+  duration_ms: 345.494016
+  type: 'suite'
+  ...
+1..50
+# tests 191
+# suites 50
+# pass 191
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 104802.178696
+
+[kanit] t3c7a-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 191/191 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9c09f18 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4

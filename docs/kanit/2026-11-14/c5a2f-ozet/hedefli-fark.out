@@ -1,0 +1,10 @@
+Europe_Istanbul vaka A: yeni 30 satır, taban 32 satır · birebir 4 · ipucu dışında aynı 4
+Europe_Istanbul vaka B: yeni 11 satır, taban 11 satır · birebir 9 · ipucu dışında aynı 11
+Europe_Istanbul vaka C: yeni 7 satır, taban 7 satır · birebir 7 · ipucu dışında aynı 7
+Europe_Istanbul vaka D: yeni 8 satır, taban 8 satır · birebir 6 · ipucu dışında aynı 8
+UTC vaka A: yeni 30 satır, taban 32 satır · birebir 4 · ipucu dışında aynı 4
+UTC vaka B: yeni 11 satır, taban 11 satır · birebir 9 · ipucu dışında aynı 11
+UTC vaka C: yeni 7 satır, taban 7 satır · birebir 7 · ipucu dışında aynı 7
+UTC vaka D: yeni 8 satır, taban 8 satır · birebir 6 · ipucu dışında aynı 8
+yeni: İstanbul ↔ UTC farklı satır 0 (ilk satır KOD/TZ hariç; satır 57 / 57)
+taban: İstanbul ↔ UTC farklı satır 0 (ilk satır KOD/TZ hariç; satır 59 / 59)

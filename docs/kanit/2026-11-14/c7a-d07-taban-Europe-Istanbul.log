@@ -1,0 +1,83 @@
+TAP version 13
+# Subtest: Ç7a D-07 — kart faizi / gecikme bedeli: Faiz Gideri fişi kredi kartı hesabına (B 780 / A 309.k)
+    # Subtest: 1–2: faiz + BSMV ve gecikme bedeli kart hesabına; kart borcu artar, banka / Kasa / cari değişmez
+    not ok 1 - 1–2: faiz + BSMV ve gecikme bedeli kart hesabına; kart borcu artar, banka / Kasa / cari değişmez
+      ---
+      duration_ms: 17.511257
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/kart-faizi-250.test.mjs:32:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        fiş interest_out: 400 {"ok":false,"error":"Ziraat Bankası · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir.","code":"bank-account-invalid","field":"accountId"}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/kart-faizi-250.test.mjs:38:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 3: Ters Kaydet ve Düzelt kart faizinde de çalışır; kart borcu satırlarla yürür
+    not ok 2 - 3: Ters Kaydet ve Düzelt kart faizinde de çalışır; kart borcu satırlarla yürür
+      ---
+      duration_ms: 0.926925
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/kart-faizi-250.test.mjs:60:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/kart-faizi-250.test.mjs:63:59)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: nasıl bozarım: kartta masraf / diğer gider / faiz geliri, planlı kart faizi, kredi ve vadeli hesap, kilit ve açılış öncesi reddedilir; satır yazılmaz
+    not ok 3 - nasıl bozarım: kartta masraf / diğer gider / faiz geliri, planlı kart faizi, kredi ve vadeli hesap, kilit ve açılış öncesi reddedilir; satır yazılmaz
+      ---
+      duration_ms: 32.580474
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/kart-faizi-250.test.mjs:80:3'
+      failureType: 'testCodeFailure'
+      error: 'planlı kart faizinin nedeni yazılı'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Ziraat Bankası · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir.'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/kart-faizi-250.test.mjs:92:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - Ç7a D-07 — kart faizi / gecikme bedeli: Faiz Gideri fişi kredi kartı hesabına (B 780 / A 309.k)
+  ---
+  duration_ms: 462.111606
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod/test/kart-faizi-250.test.mjs:19:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 752.255948

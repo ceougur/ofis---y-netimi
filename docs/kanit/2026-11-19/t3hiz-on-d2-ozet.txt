@@ -1,0 +1,6 @@
+yol | ana! | uc1
+cari kartı (şüphelisiz, en kalabalık) | 222/230/236 | 146/148/170
+YAZIM Borç Yaz (kapı) | 274/287/0 | 153/155/150
+YAZIM evrak (alınan çek, carili) | 50/50/54 | 12/14/0
+YAZIM fatura (satış, açık hesap) | 175/184/0 | 67/70/0
+YAZIM fatura iptali | 96/98/0 | 57/60/56

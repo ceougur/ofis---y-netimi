@@ -46,11 +46,37 @@ export const EXCEPTIONS = new Map([
   // SINIF 2.
   ["account_entries.opening_review", "SINIF 2 — kapının yazdığı kopya + opening:review denetimi (§15.2 (2), K8-2)"],
   ["account_entries.invoice_id", "SINIF 2 — BAŞ MİMAR KARARI GEREKİYOR (§16.4): fatura iptali kilitli tahsilatın bağını meşru olarak koparır"],
+  // 2.5.0 Ç5-A tur 3c (§19; S14, S25, S168 = B — şüpheli ↔ kuyruk kuralı kuyruğun bağını okur, lib/bank/doubtful.mjs linkedShares → lib/obligation-input.mjs chequeLinks): evrakın fatura
+  // bağı ve evrak olaylarını carinin kuyruğuna seçen iki sütun. account_entries.invoice_id ile AYNI aile: kilitli evrakın bağı / olayın carisi programın yolundan değişmez (dönem kilidi,
+  // S160 = A); kapı dışı değişiklik S164 = C (kullanıcı kararı 13.11 17:30: "kilit izine EKLENMEZ" — BİLİNEN SINIR). BAŞ MİMAR değerlendirmesine (tur 3c raporu).
+  ["cheque_events.invoice_id", "SINIF 2 — Ç5-A tur 3c (§19): evrakın Kapatılacak Fatura bağı (şüpheli carisinde 120 / 128); S160 = A, S164 = C"],
+  ["cheque_events.account_id", "SINIF 2 — Ç5-A tur 3c (§19): evrak olayının carisi (kuyruğun girdisinde olay seçimi); S164 = C"],
+  ["cheques.endorse_account_id", "SINIF 2 — Ç5-A tur 3c (§19): ciro edilen cari (kuyruğun girdisinde olay seçimi); S164 = C"],
   // SINIF 3 (§16.3).
   ["bank_accounts.id", "SINIF 3 — banka / POS tanımı; dış değişikliği bank:sub görür, kapıdan alt hesap değişmez (§16.3)"],
   ["bank_accounts.kind", "SINIF 3 (§16.3)"],
   ["bank_accounts.gl", "SINIF 3 (§16.3)"],
   ["bank_accounts.gl_sub", "SINIF 3 (§16.3)"],
+  // Ç7a tur 2 (K-14 / K-15, S179 = A; lib/bank/opening-cover.mjs coverBounds): "açılışta sayılmış" sınırı — yolun hesaplarının EN GEÇ açılış tarihi ve etkin Devir Kapanışı günü.
+  // Programdan değişimi açılış / Devir Kapanışı fişini yazar ya da ters kaydeder (kilitli tarihte 409 period-locked); kilitli dönemin türetmesi değişirse ruleDiff'te (Kural
+  // Değişikliği Farkı) görünür, donmuş defter değişmez. Dış değişikliği Açılış Karşılığı (opening:519) ve bank:sub görür. SINIF 3 (§16.3) — banka tanımı.
+  ["bank_accounts.opening_date", "SINIF 3 — Ç7a K-14 sınırı (opening-cover; §16.3)"],
+  ["bank_accounts.currency", "SINIF 3 — Ç7a K-14 sınırı: yalnız TL hesaplar (opening-cover; §16.3)"],
+  ["fin_events.status", "SINIF 3 — Ç7a K-14 sınırı: etkin Devir Kapanışı (Geri Al ters kaydı yazar; kilitli dönemde 409; §16.3)"],
+  // Ç7a tur 2b (KG-6 = A; lib/bank/pos-commission.mjs): POS kaydının satış günü komisyon maddesi ve gün fişinin net 108'i. Kalemin tutarları satış anında yazılır (kaydın kopyası;
+  // kaydın tutarları kilit izinde — pos_sales_lock); kalemin durumu / gün fişi bağı yalnız (a) açık dönemdeki gün fişiyle değişir (bekleyen ↔ bankaya geçmiş: satış günü maddesi
+  // değişmez; gün fişi kilitliyse yeniden planlama 409 pos-settled) ya da (b) kaynak satırın silinmesi / düzeltilmesiyle (kilitli tarihte 409 period-locked). Kaydın durumu (void /
+  // cancelled / repair) aynı yollarla ya da açılış onarımıyla. Dış değişikliği pos:schedule ve ruleDiff (Kural Değişikliği Farkı) görür; donmuş defter değişmez. SINIF 3 (§16.3).
+  ["pos_items.commission_minor", "SINIF 3 — Ç7a KG-6: kalemin komisyonu (satış anında; §16.3)"],
+  ["pos_items.tax_minor", "SINIF 3 — Ç7a KG-6: kalemin vergisi (satış anında; §16.3)"],
+  ["pos_items.fee_minor", "SINIF 3 — Ç7a KG-6: kalemin sabit ücreti (satış anında; §16.3)"],
+  ["pos_items.role", "SINIF 3 — Ç7a KG-6: satış / iade kalemi (satış anında; §16.3)"],
+  ["pos_items.sale_id", "SINIF 3 — Ç7a KG-6: kalemin kaydı (satış anında; §16.3)"],
+  ["pos_items.pos_id", "SINIF 3 — Ç7a KG-6: kalemin POS'u (satış anında; §16.3)"],
+  ["pos_items.status", "SINIF 3 — Ç7a KG-6: bekleyen / bankaya geçmiş / void (açık dönemdeki gün fişi ya da kaynak satır; §16.3)"],
+  ["pos_items.event_id", "SINIF 3 — Ç7a KG-6: kalemin gün fişi (açık dönemde yazılır; kilitli gün fişi değişmez; §16.3)"],
+  ["pos_sales.status", "SINIF 3 — Ç7a KG-6: kaydın durumu (kaynak satır ya da açılış onarımı; §16.3)"],
+  ["settings.value", "SINIF 3 — Ç7a KG-6: Banka Ayarları komisyon hesabı (bekleyen kalemin satış günü maddesi; ayar değişince kilitli dönemin farkı ruleDiff'te — BİLİNEN SINIR adayı, C7A §14.4)"],
   ["pos_terminals.id", "SINIF 3 — POS alt hesabı BİLİNEN SINIR adayı (§16.3)"],
   ["pos_terminals.gl_sub", "SINIF 3 (§16.3)"],
   ["vat_offsets.created_at", "SINIF 3 — yalnız aynı tarihli sıra (§16.3)"],
@@ -91,6 +117,14 @@ async function makeData() {
     const T = await must("T", api.post("/api/workspace/accounts", { name: "Kaynak Temizlik", type: "supplier", registeredOn: "2026-09-01" }));
     await must("A borç", api.post(`/api/workspace/accounts/${A.id}/entries`, { kind: "debt", amount: "3000", date: "2026-09-02", note: "Hizmet" }));
     await must("A havale", api.post(`/api/workspace/accounts/${A.id}/entries`, { kind: "in", amount: "200", date: "2026-09-03", method: "bank", bankAccountId: bankId }));
+    // 2.5.0 Ç7a tur 2b (KG-6): POS satışları kilitli dönemde — biri bankaya geçmiş (valör 14.09), biri taksitli (kalemleri kilitten sonra bekliyor); satış günü komisyon maddesinin
+    // okuduğu sütunlar kilitli satırla sınansın.
+    await must("POS Kullan", api.put(`/api/workspace/bank/accounts/${bankId}`, { usePos: true }));
+    const pos = await must("POS", api.post("/api/workspace/bank/pos", { name: "Kaynak POS", bankAccountId: bankId, kind: "physical", providerKind: "bank", tax: "bsmv_incl", valorRule: "business", valorDays: 2, installmentPayout: "monthly", provisionDays: 0, refundCommission: "none", validFrom: "2026-09-01", rates: [{ installments: 1, rate: "2,5" }, { installments: 3, rate: "3,5" }] }));
+    const posId = pos.pos?.id || pos.id;
+    const P = await must("P", api.post("/api/workspace/accounts", { name: "Kaynak POS Müşterisi", type: "customer", registeredOn: "2026-09-01" }));
+    await must("P POS", api.post(`/api/workspace/accounts/${P.id}/entries`, { kind: "in", amount: "1000", date: "2026-09-10", method: "card", posId, posInstallments: 1 }));
+    await must("P POS taksitli", api.post(`/api/workspace/accounts/${P.id}/entries`, { kind: "in", amount: "1200", date: "2026-09-10", method: "card", posId, posInstallments: 3 }));
     const cheque = body => must(`evrak ${body.serialNo}`, api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", bank: "Akbank", drawer: "X", dueDate: "2026-12-01", issueDate: "2026-09-03", ...body }));
     const c1 = await cheque({ serialNo: "K-1", amount: "400", accountId: A.id });
     const c2 = await cheque({ serialNo: "K-2", amount: "300" });

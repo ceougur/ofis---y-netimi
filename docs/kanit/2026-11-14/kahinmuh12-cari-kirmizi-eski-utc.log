@@ -1,0 +1,33 @@
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z1t:durum: elle "ok" · kâhin "ret"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z1d1:durum: elle "ret" · kâhin "ok"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z1d2:durum: elle "ok" · kâhin "ret"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json k1:cari:Z1:bakiye: elle 10000 · kâhin 39900
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z2e:durum: elle "ret" · kâhin "ok"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z2d:durum: elle "ok" · kâhin "ret"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json k1:cari:Z2:bakiye: elle 50000 · kâhin 60000
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z3t:durum: elle "ok" · kâhin "ret"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z3d:durum: elle "ret" · kâhin "ok"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json k1:cari:Z3:bakiye: elle 0 · kâhin 99900
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z7d2:durum: elle "ok" · kâhin "ret"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json k1:cari:Z7:bakiye: elle 5000 · kâhin 65000
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z8t:durum: elle "ok" · kâhin "ret"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z8x:durum: elle "ok" · kâhin "ret"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z8g:durum: elle "ok" · kâhin "ret"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z8d1:durum: elle "ret" · kâhin "ok"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z8d2:durum: elle "ok" · kâhin "ret"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json k1:cari:Z8:bakiye: elle 10000 · kâhin 39900
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z4t:durum: elle YOK (tanımsız) · kâhin "ret"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json k1:cari:Z4:bakiye: elle YOK (tanımsız) · kâhin 100000
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json adim:z5t:durum: elle YOK (tanımsız) · kâhin "ret"
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json k1:cari:Z5:bakiye: elle YOK (tanımsız) · kâhin 100000
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json belirsiz kaydı yok: cari Z4 + SK-38 (d)
+  ✗ d47-c5-s168-s181-bagli-tahsilat.json belirsiz kaydı yok: cari Z5 + SK-38 (c)
+d47-c5-s168-s181-bagli-tahsilat.json: 29 elle denetim, 24 kırmızı
+  ✗ d44-c5-s155-s158.json adim:x9t:durum: elle "ok" · kâhin "ret"
+  ✗ d44-c5-s155-s158.json k1:cari:X9:bakiye: elle 70000 · kâhin 100000
+d44-c5-s155-s158.json: 79 elle denetim, 2 kırmızı
+ESKİ KÂHİN KIRMIZISI: 26/108 elle denetim kırmızı, 82 aynı (beklenen: kırmızı > 0; her kırmızının eski değeri yukarıda)
+# tests 26
+# pass 26
+# fail 0
+26/26 denetim geçti

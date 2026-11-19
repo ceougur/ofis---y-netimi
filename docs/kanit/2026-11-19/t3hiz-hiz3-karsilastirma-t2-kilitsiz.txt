@@ -1,0 +1,22 @@
+ATILAN (GEÇERSİZ) BLOKLAR: yok
+yol | ana en iyi / ort.ortanca / döngü | taban | uç | uç/ana en iyi | uç/ana ortanca | uç/taban ortanca | hüküm (uç ↔ ana)
+AÇILIŞ (göç dahil) | 22179 / 23815 / 0 | 23978 / 25369 / 0 | 23606 / 26109 / 0 | 1.06 | 1.10 | 1.03 | tamam
+Mizan + mutabakat (GET ledger) | 3096 / 3728 / 4375 | 3628 / 4177 / 4257 | 3487 / 3863 / 4134 | 1.13 | 1.04 | 0.92 | eşikte (tek ölçüt)
+Yevmiye Defteri (rapor) | 2276 / 2476 / 2982 | 2368 / 2702 / 3032 | 2336 / 2648 / 3007 | 1.03 | 1.07 | 0.98 | tamam
+Hesap Planı Mizanı (rapor) | 3206 / 3663 / 3894 | 3365 / 4032 / 4731 | 3210 / 3671 / 4092 | 1.00 | 1.00 | 0.91 | tamam
+Alt Hesap Mizanı (rapor) | 455 / 509 / 0 | 497 / 587 / 634 | 484 / 523 / 0 | 1.06 | 1.03 | 0.89 | tamam
+Defter Mutabakatı (rapor) | 11378 / 12544 / 0 | 12248 / 13684 / 0 | 12557 / 13222 / 0 | 1.10 | 1.05 | 0.97 | eşikte (tek ölçüt)
+Mutabakat Testi (GET ledger/integrity) | 7028 / 7684 / 7885 | 7979 / 9397 / 10326 | 7919 / 8558 / 8682 | 1.13 | 1.11 | 0.91 | KÖTÜ
+Yevmiye Defteri bütün zaman (rapor) | 3082 / 3277 / 3341 | 3336 / 3627 / 5562 | 3434 / 3638 / 4480 | 1.11 | 1.11 | 1.00 | KÖTÜ
+YAZIM Borç Yaz | 284 / 323 / 452 | 308 / 379 / 416 | 179 / 228 / 279 | 0.63 | 0.71 | 0.60 | tamam
+YAZIM evrak (alınan çek, carili) | 49 / 55 / 74 | 78 / 99 / 129 | 12 / 17 / 24 | 0.24 | 0.31 | 0.17 | tamam
+YAZIM fatura (satış, açık hesap) | 187 / 214 / 223 | 215 / 266 / 254 | 69 / 89 / 0 | 0.37 | 0.41 | 0.33 | tamam
+YAZIM fatura iptali | 97 / 105 / 100 | 132 / 152 / 154 | 59 / 69 / 0 | 0.61 | 0.66 | 0.46 | tamam
+cari kartı | 230 / 252 / 0 | 234 / 258 / 0 | 154 / 187 / 0 | 0.67 | 0.74 | 0.72 | tamam
+Açılış Olabilir listesi (sayfasız) | 75 / 80 / 82 | 74 / 82 / 0 | 75 / 80 / 0 | 1.00 | 1.00 | 0.97 | tamam
+Açılış Olabilir listesi sayfalı (yeni; tabanda | 118 / 128 / 0 | 118 / 130 / 0 | 118 / 121 / 0 | 1.00 | 0.95 | 0.94 | tamam
+Zil sayısı (yeni; tabanda tam liste) | 38 / 40 / 0 | 38 / 42 / 0 | 38 / 40 / 0 | 1.00 | 1.00 | 0.96 | tamam
+Kural Farkı Düzeltme ön izlemesi (yeni; taband | 2 / 2 / 0 | 2 / 3 / 0 | 2 / 3 / 0 | 1.05 | 1.15 | 0.85 | küçük (<20 ms)
+Açılış Eşleştirme GET (yeni; tabanda 404) | 1983 / 2312 / 0 | 2065 / 2539 / 2796 | 2032 / 2324 / 2246 | 1.02 | 1.01 | 0.92 | tamam
+Açılış Eşleştirme ön izleme (yeni; tabanda 404 | 2059 / 2168 / 3032 | 2136 / 2462 / 3072 | 2034 / 2337 / 2355 | 0.99 | 1.08 | 0.95 | tamam
+KÖTÜLEŞEN YOL SAYISI (uç ↔ ana) 2

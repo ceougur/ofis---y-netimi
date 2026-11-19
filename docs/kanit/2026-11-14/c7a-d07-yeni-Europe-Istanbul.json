@@ -1,0 +1,32 @@
+{
+  "ad": "c7a-d07-yeni-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kart-faizi-250.test.mjs",
+  "commit": "58d9d434bb06778bd83ee7a43dec4bd70552887d",
+  "dal": "worktree-agent-a2a0272debd031466",
+  "kirli": 3,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T05:53:33.187Z",
+  "sure_sn": 1.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/kanit/2026-11-14/c7a-d07-yeni-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2a0272debd031466",
+  "ham_cikti_sha256": "f5480fb7f2d6dd825f51b8c1b05d158da258c0f0567c3496cfc94b3f6a32d3e2",
+  "ham_cikti_bayt": 1387
+}

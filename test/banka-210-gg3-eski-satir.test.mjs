@@ -79,8 +79,10 @@ describe("B1 — tek hesap: açılıştan önceki hesapsız satırlar düzeltili
 
       const view = await summary(api);
       assert.equal(view.realBank.minor, (5000 + 300) * TL, "Gerçek Banka = açılış + açılıştan sonraki havale");
-      assert.equal(view.unassigned.bankMinor, (1200 + 50 + 25) * TL, "Hesabı Atanmamış (102.00) = eski havaleler");
-      assert.equal(view.unassigned.cardMinor, -450 * TL, "Hesabı Atanmamış (108.00) = eski kartla ödeme");
+      // 2.5.0 Ç7a tur 2 — BEKLENTİ BİLEREK DEĞİŞTİ (K-14 / K-15, S179 = A): eski havaleler (16.09, 20.09, 21.09) hesabın açılışından (01.10), eski kartla ödeme (15.09) kartın
+      // açılışından (01.10) önce → açılışta sayılır (defterde 519); kovada yok (önce 102.00 = 1.275, 108.00 = −450). Satırların düzeltilebilmesi (yukarıda) DEĞİŞMEDİ.
+      assert.equal(view.unassigned.bankMinor, 0, "Hesabı Atanmamış (102.00): açılıştan önceki eski havaleler açılışta");
+      assert.equal(view.unassigned.cardMinor, 0, "Hesabı Atanmamış (108.00): açılıştan önceki kartla ödeme açılışta");
       await integrityClean(api, "B1 cari");
     } finally {
       await ctx.server.close();
@@ -117,7 +119,9 @@ describe("B1 — tek hesap: açılıştan önceki hesapsız satırlar düzeltili
 
       const view = await summary(api);
       assert.equal(view.realBank.minor, 5000 * TL, "Gerçek Banka = açılış (açılıştan önceki satırlar hesaba girmez)");
-      assert.equal(view.unassigned.bankMinor, (600 + 160 + 250 + 100 + 700) * TL, "Hesabı Atanmamış = eski satırlar");
+      // 2.5.0 Ç7a tur 2 — BEKLENTİ BİLEREK DEĞİŞTİ (K-14, S179 = A): beş eski satır (taksit, stok peşini, Kasa → Banka, fatura peşini; 15.09–25.09) hesabın açılışından
+      // (01.10) önce → açılışta sayılır (defterde 519; Mutabakat Testi aşağıda temiz); kovada yok (önce 1.810).
+      assert.equal(view.unassigned.bankMinor, 0, "Hesabı Atanmamış: açılıştan önceki eski satırlar açılışta");
       await integrityClean(api, "B1 modüller");
     } finally {
       await ctx.server.close();

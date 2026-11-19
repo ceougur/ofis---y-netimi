@@ -1,0 +1,32 @@
+{
+  "ad": "c5a3a-mutabakat-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/mutabakat-cekirdek.test.mjs test/mutabakat-213.test.mjs test/mutabakat-araci-uyari-250.test.mjs test/banka-210-mutabakat-araci.test.mjs test/mutabakat-yil-donumu.test.mjs test/defter-243-kapi.test.mjs test/defter-243-raporlar.test.mjs test/kural-farki-alarm-250.test.mjs test/kural-farki-duzeltme-250.test.mjs test/kural-farki-kapi-disi-250.test.mjs",
+  "commit": "dc32f6206e0cbb5c855d73ab7b8891239b98cc93",
+  "dal": "worktree-agent-a068d42a7b77ba335",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T01:05:00.433Z",
+  "sure_sn": 119,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 63,
+    "gecen": 63,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3a-t1/kanit/2026-11-14/c5a3a-mutabakat-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a068d42a7b77ba335",
+  "ham_cikti_sha256": "3b7616d5b2f1085fbdf1415e493bedad16553a8d8712d1ca49f3255df5e1190d",
+  "ham_cikti_bayt": 23412
+}

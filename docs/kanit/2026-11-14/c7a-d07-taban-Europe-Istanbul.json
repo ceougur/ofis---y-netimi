@@ -1,0 +1,48 @@
+{
+  "ad": "c7a-d07-taban-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kart-faizi-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T05:53:35.266Z",
+  "sure_sn": 0.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 0,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç7a D-07 — kart faizi / gecikme bedeli: Faiz Gideri fişi kredi kartı hesabına (B 780 / A 309.k) › 1–2: faiz + BSMV ve gecikme bedeli kart hesabına; kart borcu artar, banka / Kasa / cari değişmez",
+      "konum": "test/kart-faizi-250.test.mjs:32:3",
+      "hata": "fiş interest_out: 400 {\"ok\":false,\"error\":\"Ziraat Bankası · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir.\",\"code\":\"bank-account-invalid\",\"field\":\"accountId\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "Ç7a D-07 — kart faizi / gecikme bedeli: Faiz Gideri fişi kredi kartı hesabına (B 780 / A 309.k) › 3: Ters Kaydet ve Düzelt kart faizinde de çalışır; kart borcu satırlarla yürür",
+      "konum": "test/kart-faizi-250.test.mjs:60:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "Ç7a D-07 — kart faizi / gecikme bedeli: Faiz Gideri fişi kredi kartı hesabına (B 780 / A 309.k) › nasıl bozarım: kartta masraf / diğer gider / faiz geliri, planlı kart faizi, kredi ve vadeli hesap, kilit ve açılış öncesi reddedilir; satır yazılmaz",
+      "konum": "test/kart-faizi-250.test.mjs:80:3",
+      "hata": "planlı kart faizinin nedeni yazılı (beklenen , gelen Ziraat Bankası · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir.)"
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-14/c7a-d07-taban-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod",
+  "ham_cikti_sha256": "3d78f16671dfd3c511cac6f3677bb5bd645ea36850e907319122e61cf061944f",
+  "ham_cikti_bayt": 4491
+}

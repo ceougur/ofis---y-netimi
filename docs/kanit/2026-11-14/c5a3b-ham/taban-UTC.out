@@ -1,0 +1,74 @@
+TAP version 13
+# Subtest: 2.5.0 Ç5-A tur 3a — kuyruğun girdi kurucusu (lib/obligation-input.mjs): yalnız store ile = servis yüzü; davranış taşımadan önceki kodla aynı
+    # Subtest: sınıf verisi iki şirkette, kilitli ↔ kilitsiz: modül (yalnız store) = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+    ok 1 - sınıf verisi iki şirkette, kilitli ↔ kilitsiz: modül (yalnız store) = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+      ---
+      duration_ms: 1527.545151
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.5.0 Ç5-A tur 3a — kuyruğun girdi kurucusu (lib/obligation-input.mjs): yalnız store ile = servis yüzü; davranış taşımadan önceki kodla aynı
+  ---
+  duration_ms: 1850.635572
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı
+    # Subtest: sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+    not ok 1 - sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+      ---
+      duration_ms: 847.602046
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3b-z4/taban/test/obligation-input-250.test.mjs:415:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        modül ≠ servis (6): modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı) · modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı) · modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)
+        + actual - expected
+        
+        + [
+        +   'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)',
+        +   'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)',
+        +   'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)',
+        +   'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)',
+        +   'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)',
+        +   'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)'
+        1: 'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)'
+        2: 'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)'
+        3: 'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)'
+        4: 'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)'
+        5: 'modül carinin satırlarını kendisi kuramıyor (ledgerLines yok — zincir taşınmadı)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3b-z4/taban/test/obligation-input-250.test.mjs:446:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - 2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı
+  ---
+  duration_ms: 1092.522688
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3b-z4/taban/test/obligation-input-250.test.mjs:282:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 2
+# suites 2
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3218.122482

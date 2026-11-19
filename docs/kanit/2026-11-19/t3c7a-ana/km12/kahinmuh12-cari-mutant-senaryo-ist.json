@@ -1,0 +1,32 @@
+{
+  "ad": "kahinmuh12-cari-mutant-senaryo-ist",
+  "komut": "python3 -I -B docs/kanit/2026-11-14/kahinmuh12-arac/mutant-senaryo.py --model test/bagimsiz/cari",
+  "commit": "c2d503a8f8e49c5ea33213fc65653339e2c52089",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T13:51:29.286Z",
+  "sure_sn": 15.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 784,
+    "gecen": 784,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kanit/2026-11-14/kahinmuh12-cari-mutant-senaryo-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-km12/yeni",
+  "ham_cikti_sha256": "8fb282cbbf346be0a8a3fadf9ae676e1b35d08ed5d464b30b6b4e5473030ab2f",
+  "ham_cikti_bayt": 61541
+}

@@ -1,0 +1,78 @@
+{
+  "ad": "c7a3-mutasyon",
+  "komut": "node test/c7a-banka-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/mut-kopya",
+  "commit": "11e030e7a54634ced8d3ac448b6a07d461c5f667",
+  "dal": "worktree-agent-a39ae245edbf12bf8",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T11:46:04.172Z",
+  "sure_sn": 55.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 21,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "KG-6: taksitli satışta yalnız ilk kalemin kesintisi: çıkış 1, 7 geçti / 1 kaldı — beklenen neden görülmedi (/420 = 3 × 140/)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "2. taksitli satış: BÜTÜN taksitlerin kesintisi satış gününde; İade Edilmez iade komisyon maddesi doğurmaz",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ç7a KG-6 — POS komisyonu satış (çekim) günü; valörde net (KG-6 = A, S177 = A, S178 = A)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "KG-6: gün fişinin 108 satırı netlenmez (brüt kalır): çıkış 1, 3 geçti / 5 kaldı — beklenen neden görülmedi (/12\\.10 B 102\\.01 9\\.750 \\/ A 108\\.01 9\\.750/)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1. tek çekim: satış günü B 653 / A 108.01; valöre kadar 108.01 = net; gün fişi net (653 satırı yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "3. Oransal iade: iade edilen kesinti iade gününde ters (B 108.01 / A 653); gün fişi net",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "4. Elle Onay: Komisyon Farkı valörün (onayın) gününde (S177 = A); satış günü maddesi değişmez",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "7. bankaya geçmiş satış düzeltilir (yeniden planlama): eski maddeler kalkar, yeni satışın komisyonu satış gününde",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "KG-6: silinen (void) kalemler kümeye girer: çıkış 0, 8 geçti / 0 kaldı — beklenen neden görülmedi (/yalnız yeni satış \\(200\\)/)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-t2b/kanit/2026-11-14/c7a3-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a39ae245edbf12bf8",
+  "ham_cikti_sha256": "b71381437fba33c0e9adca4823e26af7463c2c7629680ca8ddb7c1c261be925e",
+  "ham_cikti_bayt": 6750
+}
