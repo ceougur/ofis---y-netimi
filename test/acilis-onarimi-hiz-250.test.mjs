@@ -80,9 +80,38 @@ describe("2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, ç
   });
 
   it("eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda", async () => {
-    const dump = await dumpRepair(app, { screen: true });
+    // 2.5.0 Ç7b tur 2e — BEKLENTİ BİLEREK DEĞİŞTİ (YALNIZ Mutabakat Testi bölümü; ONARIM EŞDEĞERLİĞİ kararı — BAŞ MİMAR KARARI 19.11 09:29, ders 6; docs/erp/C7B-FATURA-TASARIM.md §15.4):
+    // K-01 (§2.1 — carisiz Kasa girişi 649 → 649.90) kilitli dönemdeki (kilit 07.10.2026) 08.08.2026 "Açılış" Kasa girişini (200.000 TL) alt hesaba taşır; donmuş defter 2.4.9 kuralıyla
+    // (649), canlı türetme Ç7b kuralıyla (649.90) → Kural Değişikliği Farkı TEK madde. B-8 (kural geçiş günü; §13 başlığı) bunu KAPSAMAZ, kararla: ".90 alt hesapları (alt defter dışı)
+    // Kural Farkı Düzeltme Fişi'yle eskisi gibi" (§4 (5), §13.4 (6)). Beklenen: ledger:rule-diff uyarısı yalnız bu madde (B-8'in üç kuralının hesaplarında — 336 / 191 / 391 / 602 — fark
+    // YOK); Kural Farkı Düzeltme Fişi yazılınca Mutabakat Testi eski dökümün Mutabakat'ıyla BİREBİR. Fikstür ve beklenen döküm dosyası (eski kodun gerçek çıktısı) DEĞİŞMEDİ.
+    const after = {};
+    const dump = await dumpRepair(app, {
+      screen: true,
+      afterDump: async ({ client, get }) => {
+        after.diff = app.context.ledger.snapshots.ruleDiff({ detail: true });
+        const view = await get("/api/admin/ledger/rule-diff-correction");
+        after.preview = { date: view.date, lines: view.lines.map(({ account, sub, debit, credit }) => ({ account, sub, debit, credit })), disabled: view.disabled, code: view.code };
+        const posted = await client.post("/api/admin/ledger/rule-diff-correction", { requestId: "c7b2e-onarim-kural-farki-1", digest: view.digest, confirm: true });
+        after.posted = posted.status;
+        const integrity = await get("/api/workspace/ledger/integrity");
+        after.mutabakat = { ok: integrity.ok, failures: (integrity.failures || []).map(item => item.code) };
+      },
+    });
     const problems = [];
-    for (const key of Object.keys(expected)) if (JSON.stringify(dump[key]) !== JSON.stringify(expected[key])) problems.push(`${key}: yeni ${JSON.stringify(dump[key]).slice(0, 300)} ↔ eski ${JSON.stringify(expected[key]).slice(0, 300)}`);
+    for (const key of Object.keys(expected)) {
+      if (key === "mutabakat") continue;
+      if (JSON.stringify(dump[key]) !== JSON.stringify(expected[key])) problems.push(`${key}: yeni ${JSON.stringify(dump[key]).slice(0, 300)} ↔ eski ${JSON.stringify(expected[key]).slice(0, 300)}`);
+    }
+    if (JSON.stringify(dump.mutabakat) !== JSON.stringify({ ok: false, failures: ["ledger:rule-diff"] })) problems.push(`mutabakat (fişten önce; K-01): ${JSON.stringify(dump.mutabakat)} ↔ beklenen {ok:false, failures:[ledger:rule-diff]}`);
+    const entries = after.diff?.entries || [];
+    const ONE = [{ year: 2026, account: "649", sub: "", party: "", minor: 20000000 }, { year: 2026, account: "649", sub: "649.90", party: "", minor: -20000000 }];
+    if (entries.length !== 1 || entries[0].date !== "2026-08-08" || entries[0].source !== "Kasa" || JSON.stringify(entries[0].deltas) !== JSON.stringify(ONE)) {
+      problems.push(`kural farkı: yalnız 08.08.2026 Kasa girişi 649 → 649.90 (200.000 TL) beklenir; görülen ${JSON.stringify(entries.map(item => ({ date: item.date, source: item.source, deltas: item.deltas }))).slice(0, 600)}`);
+    }
+    if (JSON.stringify(after.preview) !== JSON.stringify({ date: "2026-10-08", lines: [{ account: "649", sub: "", debit: 20000000, credit: 0 }, { account: "649", sub: "649.90", debit: 0, credit: 20000000 }], disabled: false, code: "" })) problems.push(`Kural Farkı Düzeltme Fişi ön izlemesi: ${JSON.stringify(after.preview)}`);
+    if (after.posted !== 200) problems.push(`Kural Farkı Düzeltme Fişi yazılamadı: ${after.posted}`);
+    if (JSON.stringify(after.mutabakat) !== JSON.stringify(expected.mutabakat)) problems.push(`mutabakat (fişten sonra): yeni ${JSON.stringify(after.mutabakat)} ↔ eski ${JSON.stringify(expected.mutabakat)}`);
     for (const key of Object.keys(dump)) if (key !== "eleme" && !(key in expected)) problems.push(`${key}: beklenen dökümde yok`);
     if (dump.eleme?.farkli !== 0) problems.push(`eleme: ${dump.eleme?.farkli} adayda toplu durum ≠ cari başına durum ${JSON.stringify(dump.eleme?.ornek)}`);
     // Fikstürün kapsamı (boş fikstürle yeşil olmasın): onarılan, kilitli ve dokunulmayan aday var; aynı caride birden çok onarım var.
