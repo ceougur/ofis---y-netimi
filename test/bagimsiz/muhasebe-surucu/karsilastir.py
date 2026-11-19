@@ -539,6 +539,8 @@ for x in P["olaylar"]:
             prog_kum = topla(prog_kum, prog_gorunum(x.get("delta")) or {})
     if not x.get("delta"):
         continue
+    if x.get("surum"):   # SÜRÜCÜ BAKIMI 3: eski sürümün (göç öncesi) okuması — karşılaştırılmaz; göç adımı ("gun", gecis) bütün farkı birlikte getirir
+        continue
     r_, hata = guvenli(lambda: bek_gorunum(mb, ufuk, True))
     if hata:
         ARA_SUSMA.append({"no": no, "tur": x["tur"], "neden": hata})

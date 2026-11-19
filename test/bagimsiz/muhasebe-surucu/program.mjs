@@ -522,7 +522,10 @@ async function uygula(o, no) {
       if (g.eslenemez) return apiYok(g.eslenemez);
       const tevUyari = faturaGovdesi.uyari;
       const pesin = pesinler(o);
-      const cash = pesin.filter(x => ["nakit", "havale"].includes(x.yol)).map((x, i) => ({ amount: tl(x.tutar), method: YOL[x.yol], lineKey: `p${i + 1}`, ...(x.yol === "havale" ? { bankAccountId: ids.banka[x.banka] } : {}) }));
+      // SÜRÜCÜ BAKIMI 3: havale peşininin banka hesabı bankaId ile (henüz açılmamış hesap açılır) — önceki ids.banka[x.banka] hesap açılmamışsa boş gidiyordu, program peşini
+      // hesabı atanmamış (102.00) yazıyordu (s104 / s107 / s69 P1: Alt Hesap Mizanı 102.00 +300 / 102.B1 −300 — sürücü hatası).
+      const cash = [];
+      for (const [i, x] of pesin.filter(y => ["nakit", "havale"].includes(y.yol)).entries()) cash.push({ amount: tl(x.tutar), method: YOL[x.yol], lineKey: `p${i + 1}`, ...(x.yol === "havale" ? { bankAccountId: await bankaId(x.banka || "B1") } : {}) });
       for (const x of pesin) tuketilen.add(x);
       const kartOlayi = o.tur === "satis_faturasi" ? faturaKartOlayi(o) : null;
       const taksitli = kartOlayi ? { rest: "installments", installments: { count: kartOlayi.taksitler?.length || 1, firstDue: kartOlayi.taksitler?.[0]?.vade || o.tarih, everyMonths: 1 } } : null;
@@ -895,7 +898,11 @@ async function uygula(o, no) {
     }
     case "evrak_karsiliksiz": {
       // SÜRÜCÜ BAKIMI 3 (S48 / S66 = A — kâhin bakımı 8 `evrak_karsiliksiz.cari`): carisiz açılış / form evrakında karşılıksız penceresinin isteğe bağlı Cari alanı (accountId).
-      const r = await evrakIslem(v, "bounce", v.cari ? { accountId: await cariAc(v.cari) } : {});
+      // Açılış evrakı (Excel "carilere dokunmadan") programda cariye bağlı olmayabilir; kâhinin evrak_acilis olayının carisi varsa kullanıcı pencerede o cariyi seçer (bağlıysa
+      // aynı cari — program kabul eder).
+      const acilisEvraki = s.olaylar.find(x => x.tur === "evrak_acilis" && x.evrak === v.evrak && x.yon === "alinan");
+      const secilen = v.cari || acilisEvraki?.cari || "";
+      const r = await evrakIslem(v, "bounce", secilen ? { accountId: await cariAc(secilen) } : {});
       return r ? sonuc(o, r) : apiYok(`evrak ${v.evrak} programda yok`);
     }
     case "carisiz_evrak": {
@@ -1374,7 +1381,14 @@ try {
       if ((await client.login("admin", ADMIN_PASSWORD)).status !== 200) throw new Error("göçten sonra giriş olmadı");
       saat(program.saat);
       program.gecis = { no, eski: ESKI_SURUM };
-      if (ADIM) sonOkunan.deger = await durum(`gecis:${no}`);
+      // SÜRÜCÜ BAKIMI 3: göçün kendi farkı (eski sürümün 2.4.9 türetmesi → sınanan programın türetmesi; ör. açılışlar 500 → 519) ayrı "gun" adımı olarak yazılır — önceki
+      // sürücü okumayı yeniden başlatıyordu (fark kayboluyordu; BUGÜN görünümünün 519 → 500 dönüşümü bunu örtüyordu). Eski sürüm adımları (kayıtta `surum`) karşılaştırıcıda
+      // KARŞILAŞTIRILMAZ (okuma eski programın); karşılaştırma bu göç adımından başlar.
+      if (ADIM) {
+        const d = await durum(`gecis:${no}`);
+        olaylar.push({ no: `${no}g`, tur: "gun", tarih: program.saat, onceki: program.saat, durum: "yapildi", gecis: ESKI_SURUM, delta: fark(sonOkunan.deger, d) });
+        sonOkunan.deger = d;
+      }
     }
   }
   await api("POST", "/api/workspace/bank/settle", {}, "pos-gun-sonu");
