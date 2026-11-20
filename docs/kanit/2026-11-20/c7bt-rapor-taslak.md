@@ -41,3 +41,10 @@ Taban: c7b3b-taban = b3a59f2a. İş: P7 (S219 = A) + S200 okuması. P6 → 2.5.1
 - Yeni 17.580 / 17.582, taban 17.580 / 17.582 — AYNI iki fark (d50-c5-s206-s25c-b1-iptal-havale k1:kart:KI2 / KI3:toplam; program 30.000 / 0, kâhin 90.000) iki tarafta da → bu turun farkı DEĞİL (d50 bekleyen toplu kâhin bakımında, S210 / S211).
 - Yapım aşaması kendi kopyada (KAHIN_YAPIM_ASAMASI): 2 kayıt, ikisi de yukarıdaki d50 farkı ('AYRIŞTIRILMADI' — üretici etiketi; paket Ç7b tur 3b / d50 bakımı, bu tur değil); depodaki liste BOŞ, değiştirilmedi. Bu turun yeni kaydı 0.
 - E2E: senaryo-c7bt-ayni-ad-250 kanıtla 21/21; tabanda 15/21 (c7bt-e2e-ayni-ad-taban.log). Ekran görüntüleri c7bt-ekran/.
+
+## 6. C — muhasebe sürücüsü (iki TZ; sürücü DEĞİŞTİRİLMEDİ)
+- Taban: 7.580 / 7.756 geçti, 36 başarısız, 140 atlanan. Yeni: 7.594 / 7.760 geçti, 22 başarısız, 144 atlanan.
+- KALKAN (16; hepsi s91, iki TZ): P7-AYNI-ADLI-EXCEL-KARTI (g1b gecikmiş C1, kt1 TE1 kartı, mz2 120 / 519 / cari C1, son 120 / 519 / cari C1) → program = kâhin.
+- KALAN P6 (S44 / S79 bağ düzeltme yolu; s81, s82, s94, s103) AYNEN; başka sınıf değişmedi (sıralı fark listelerinin comm'u: yalnız tabanda 16 satır, yalnız yenide 2 satır).
+- YENİ (2; yalnız TZ=UTC): s91 mz0 (01.01–09.03 mizanı) ana:120 program 3.200 · kâhin 1.200; ana:519 −3.200 · −1.200 → SINIFLANMADI. KÖK NEDEN (ders 6, okundu): TE1'in yükleme anı 2026-03-09T22:30:00Z — UTC sürecinde 09.03, İstanbul'da 10.03; program KG-5 maddesini sürecin yerel gününe (09.03), kâhin İstanbul gününe (10.03) yazar → aynı R-B5-YEREL-GUN-UTC farkı (sınıflamada yalnız mz1 için yazılı). Bugüne dek TE1'in kartı P7 yüzünden açılmadığı için mz0'da görünmüyordu. TZ=Europe/Istanbul koşusunda AYNI. Program hatası DEĞİL; sınıflamaya mz0 satırı eklenmesi ana oturumun (sürücü bakımı) işi.
+- s51 (S120): taban ve yeni iki TZ AYNI 9 / 9 (U 0, P 0, K 0, R 0) — değişmedi.
