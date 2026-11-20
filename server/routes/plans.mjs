@@ -1473,8 +1473,19 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
           ({ person, outcome, accountId, start } = store.tx(() => {
             const g = groupName ? ensureGroup(user, groupName) : null;
             const sg = g && subgroupName ? ensureGroup(user, subgroupName, g) : null;
-            const duplicate = store.get("SELECT id FROM plans WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND COALESCE(group_id, '') = ?", name, g || "");
-            if (duplicate) throw new SkippedRow("Aynı adla açık kart var");
+            // 2.5.0 Ç7b P7 (S219 = A): aynı ad + aynı gruptaki açık kart yalnız AYNI KİŞİNİNSE satır atlanır; kişi kartın bağlanacağı cariyi bulan
+            // kuralla (routes/accounts.mjs planDuplicate → planPerson / samePerson) belirlenir. Telefonu farklı aynı adlı kişinin kartı kendi carisiyle
+            // açılır; kişi kesin seçilemiyorsa atlanır (çift kart / borç açılmaz). Önceden yalnız ada bakılıyordu (aynı adlı ikinci kişinin kartı açılmıyordu).
+            const cards = store.all(
+              `SELECT CASE WHEN a.id IS NULL THEN '' ELSE p.account_id END AS accountId, CASE WHEN a.id IS NULL THEN p.phone ELSE a.phone END AS phone
+               FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND p.account_id <> '' AND a.deleted_at IS NULL
+               WHERE p.deleted_at IS NULL AND p.name = ? COLLATE NOCASE AND COALESCE(p.group_id, '') = ?`,
+              name,
+              g || "",
+            );
+            const duplicate = accounts()?.planDuplicate ? accounts().planDuplicate({ name, phone, groupId: g || "", caseKey: record?.key || "", caseSource: record ? source : "" }, cards) : cards.length ? "same" : "";
+            if (duplicate === "same") throw new SkippedRow("Aynı adla açık kart var");
+            if (duplicate === "unknown") throw new SkippedRow("Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin");
             if (record?.carded) throw new SkippedRow("Tablodaki kaydının taksit kartı zaten var");
             const who = { name, phone, note: cell(row, col.note).slice(0, 1000), registeredOn, groupId: g, subgroupId: sg, caseKey: record?.key || "", caseSource: record ? source : "", caseTitle: record?.title || "" };
             // Cari (v2.0.6): aynı ad ve telefonla (ya da telefonsuz aynı ad ve grupla) tek bir cari varsa ona bağlanır; yoksa açılır.
