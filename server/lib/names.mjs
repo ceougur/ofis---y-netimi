@@ -34,3 +34,45 @@ export function resolveUserByName(store, value) {
   if (byName.length) return single(byName.filter(user => user.active).length ? byName.filter(user => user.active) : byName);
   return single(users.filter(user => foldName(user.username) === wanted));
 }
+
+// 2.5.0 S223 = A (kullanıcı 20.11.2026): kişi eşleştiren içe aktarmalarda (cari Excel / Sheets, taksit Excel / Sheets, çek / senet içe aktarma,
+// Tablodan Aktar) cari adı foldName ile (Türkçe büyük / küçük harf, boşluk, Unicode biçimi) karşılaştırılır. Ad → kimlik haritası yükleme başına
+// BİR KEZ, ilk sorulduğunda kurulur (load: [{ id, name }]; ders 47: satır başına tablo taraması yok); yüklemede açılan ya da adı değişen kayıt add
+// ile eklenir (harita kurulmadan önceki add gereksizdir: kurulurken güncel tablo okunur). ids(name) aynı katlanmış adın kimlikleri — geri alınmış
+// iç işlemde açılmış ya da sonradan adı değişmiş kayıt da olabilir; çağıran güncel satırı okuyup adı yeniden denetler.
+// foldPersonName: foldName'in AYNI sonucu (test/s223-turkce-ad-eslesme-250.test.mjs bütün Unicode kod noktalarında denetler), yalnız hızlı —
+// toLocaleLowerCase("tr-TR") 100 bin adda ~0,25 sn; Türkçe kuralın farkı yalnız I → ı ve İ → i (NFC 'I' + U+0307'yi İ'ye birleştirir), gerisi
+// yerel ayarsız toLowerCase ile aynı. foldName değişmez (kullanıcı / rol adı yolları onu kullanır).
+const TURKISH_I = /[Iİ]/g;
+const SPACE_RUN = /\s\s|[^\S ]/;
+export const foldPersonName = value => {
+  const trimmed = String(value ?? "").normalize("NFC").trim();
+  const spaced = SPACE_RUN.test(trimmed) ? trimmed.replace(/\s+/g, " ") : trimmed;
+  return (spaced.includes("I") || spaced.includes("İ") ? spaced.replace(TURKISH_I, letter => (letter === "I" ? "ı" : "i")) : spaced).toLowerCase();
+};
+export function foldedNameIndex(load) {
+  let map = null;
+  const put = (id, name) => {
+    const key = foldPersonName(name);
+    if (!key) return;
+    let ids = map.get(key);
+    if (!ids) map.set(key, (ids = new Set()));
+    ids.add(id);
+  };
+  const ready = () => {
+    if (!map) {
+      map = new Map();
+      for (const row of load()) put(row.id, row.name);
+    }
+    return map;
+  };
+  return {
+    add(id, name) {
+      if (map && id) put(id, name);
+    },
+    ids(name) {
+      const key = foldPersonName(name);
+      return key ? [...(ready().get(key) || [])] : [];
+    },
+  };
+}

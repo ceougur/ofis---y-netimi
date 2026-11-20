@@ -32,6 +32,7 @@ import { accountMovements, movementBlockText } from "../lib/account-movements.mj
 import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
 import { restoredOpeningReview } from "../lib/ledger-opening.mjs";
 import { recordingHidden } from "../lib/cash-opening.mjs";
+import { foldPersonName, foldedNameIndex } from "../lib/names.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -1485,7 +1486,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       .slice(0, 60)
       .map(item => ({ ...item, ...classifyAccountType(item.value) }));
   }
-  function matchExisting({ caseKey, caseSource, refNo, name, phone }) {
+  // S228 = A sırası (matchExisting, matchPerson, matchName): önce BUGÜNKÜ karşılaştırma (SQLite NOCASE, yalnız A–Z katlanır; bugün bağlanan satır
+  // değişmez); o hiç cari bulamazsa Türkçe katlamalı (index verilmişse); o da tek değilse bugünkü gibi şüpheli.
+  function matchExisting({ caseKey, caseSource, refNo, name, phone }, index = null) {
     if (caseKey) {
       const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ?", caseKey, caseSource);
       if (found) return found.id;
@@ -1495,13 +1498,39 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     if (refNo) {
       const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND ref_no = ? AND name = ? COLLATE NOCASE", refNo, name);
       if (found) return found.id;
+      const folded = foldedCandidates(index, name).filter(row => String(row.refNo ?? "") === refNo);
+      if (folded.length === 1) return folded[0].id;
     }
     const phoneDigits = digits(phone);
     if (phoneDigits.length >= 7) {
       const found = store.all("SELECT id, phone FROM accounts WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE", name).filter(row => digits(row.phone) === phoneDigits);
       if (found.length === 1) return found[0].id;
+      if (found.length) return "";
+      const folded = foldedCandidates(index, name).filter(row => digits(row.phone) === phoneDigits);
+      if (folded.length === 1) return folded[0].id;
     }
     return "";
+  }
+  // 2.5.0 S223 = A: içe aktarma başına BİR ad haritası (lib/names.mjs foldedNameIndex; ilk Türkçe sorguda silinmemiş carilerin kimliği + adı tek
+  // okumayla). Yüklemede açılan / adı değişen cari add ile eklenir.
+  function personIndex() {
+    return foldedNameIndex(() => store.all("SELECT id, name FROM accounts WHERE deleted_at IS NULL"));
+  }
+  // Haritadaki adayların GÜNCEL satırları: silinmiş, geri alınmış iç işlemde açılmış ya da adı sonradan değişmiş cari düşer.
+  function foldedCandidates(index, name) {
+    const ids = index ? index.ids(name) : [];
+    if (!ids.length) return [];
+    const wanted = foldPersonName(name);
+    return store
+      .all("SELECT id, name, phone, group_id AS groupId, ref_no AS refNo FROM accounts WHERE deleted_at IS NULL AND id IN (SELECT value FROM json_each(?)) ORDER BY rowid", JSON.stringify(ids))
+      .filter(row => foldPersonName(row.name) === wanted);
+  }
+  // Çek / senet içe aktarma (routes/cheques.mjs): keşideci / lehtar adıyla TEK cari (şüphede bağlanmaz); S228 = A sırasıyla.
+  function matchName(name, index = null) {
+    const found = store.all("SELECT id FROM accounts WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE LIMIT 2", name);
+    if (found.length) return found.length === 1 ? found[0].id : "";
+    const folded = foldedCandidates(index, name);
+    return folded.length === 1 ? folded[0].id : "";
   }
   // 2.4.8 I1: kalıcı istek kimliği (lib/import-request.mjs; kapsam "account.import"): yanıt kaybolup yeniden "Carileri Oluştur"a basılınca Cari No'suz /
   // telefonsuz cariler ve açılış bakiyeleri (cari + yevmiye) ikinci kez yazılmaz, ilk yüklemenin raporu döner (replayed). Denetim ve kayıt yüklemenin işleminde.
@@ -1566,6 +1595,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const prior = imports.replay(ticket);
       if (prior) return prior;
       let autoRef = Number(nextRef()) - 1;
+      const people = personIndex();
       rows.forEach((row, index) => {
         if (!Array.isArray(row) || !row.some(value => sanitizeCell(value))) return;
         const name = cell(row, col.name).slice(0, 160);
@@ -1593,7 +1623,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
           caseTitle: "",
         };
         const tax = { ...taxOf(row, index), taxOffice: cell(row, col.taxOffice).slice(0, 120), city: cell(row, col.city).slice(0, 80), district: cell(row, col.district).slice(0, 80) };
-        const matched = matchExisting(person);
+        const matched = matchExisting(person, people);
         if (matched && mode === "skip") return skip(index, "Bu cari zaten var");
         const groupId = person.groupName ? ensure(person.groupName) : null;
         const subgroupId = groupId && person.subgroupName ? ensure(person.subgroupName, groupId) : null;
@@ -1611,6 +1641,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
             person.name, person.phone || previous.phone, person.email || previous.email, person.address || previous.address, person.note || previous.note, cell(row, col.registered) ? person.registeredOn : previous.registeredOn,
             groupId || previous.groupId, subgroupId || previous.subgroupId, JSON.stringify(fieldsInput(merged)), person.caseKey || previous.caseKey, person.caseKey ? person.caseSource : previous.caseSource, person.caseKey ? person.caseTitle : previous.caseTitle, user.id, now(), matched,
           );
+          people.add(matched, person.name);
           plans()?.followAccount?.(matched, { name: previous.name, phone: previous.phone }, { name: person.name, phone: person.phone || previous.phone });
           // Vergi bilgisi: dolu gelen yazılır, boş gelen eskisi kalır.
           const keep = (value, old) => value || old || "";
@@ -1626,6 +1657,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
           while (!freeRef(wanted));
         }
         const id = insertAccount(user, { ...person, ...tax, refNo: wanted, groupId, subgroupId });
+        people.add(id, person.name);
         if (typed.warn) {
           report.typeDefaultedTotal += 1;
           if (report.typeDefaulted.length < 500) report.typeDefaulted.push({ row: headerAt + index + 2, ...typed.warn });
@@ -1738,9 +1770,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // ---------- Diğer modüller için ----------
   // Taksit kartı açılırken cari: tablodaki aynı kayda bağlı cari varsa o, yoksa kartın bilgileriyle yeni cari.
   // outcome (isteğe bağlı): { created, linked } — aktarma geri alınırken yalnız kendi açtığı/bağladığı cariye dokunur.
-  function createFromPlan(user, person, outcome = null) {
+  // index (isteğe bağlı; S223 = A): içe aktarmanın ad haritası (personIndex) — verilirse Türkçe katlamalı eşleşme, açılan cari haritaya eklenir.
+  function createFromPlan(user, person, outcome = null, index = null) {
     const source = person.caseSource || currentSource();
-    const found = planPerson(person);
+    const found = planPerson(person, index);
     if (found.id) {
       if (found.link) {
         store.run("UPDATE accounts SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ''", person.caseKey, source, person.caseTitle || person.name, user.id, now(), found.id);
@@ -1750,15 +1783,19 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     }
     const id = insertAccount(user, { name: person.name, phone: person.phone, note: person.note, registeredOn: person.registeredOn, groupId: person.groupId, subgroupId: person.subgroupId, caseKey: person.caseKey, caseSource: person.caseKey ? source : "", caseTitle: person.caseTitle, type: "customer", fields: [] });
     audit(user, "account.created", id, { name: person.name, from: "plan" });
+    index?.add(id, person.name);
     if (outcome) outcome.created = true;
     return id;
   }
   // Taksit Excel'inden gelen kişi için kesin eşleşme: aynı ad + aynı telefon (7+ hane) ya da telefonsuz aynı ad + aynı grup
   // ve bu eşleşme tek olmalı. Şüpheli durumda yeni cari açılır (başka kişinin hesabına yazılmaz).
-  function matchPerson(person) {
+  // S223 = A / S228 = A: bugünkü (NOCASE) karşılaştırma hiç kesin eşleşme bulamazsa (index verilmişse) Türkçe katlamalı aynı ad; o da tek değilse şüpheli.
+  function matchPerson(person, index = null) {
     const candidates = store.all("SELECT id, phone, group_id AS groupId FROM accounts WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE", person.name);
     const hits = candidates.filter(row => samePerson(person, row));
-    return hits.length === 1 ? hits[0].id : "";
+    if (hits.length || !index) return hits.length === 1 ? hits[0].id : "";
+    const folded = foldedCandidates(index, person.name).filter(row => samePerson(person, row));
+    return folded.length === 1 ? folded[0].id : "";
   }
   // Kişi eşleştirme kuralının TEK yeri (matchPerson, planPerson, planDuplicate; aynı ad varsayılır): kişinin telefonu 7+ haneyse aynı telefon;
   // değilse telefonsuz + aynı grup.
@@ -1771,13 +1808,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // v2.0.7: aynı ad + aynı telefon (ya da telefonsuz, aynı grupta tek aynı ad) kesin eşleşirse o cari; boşa cari açılmaz.
   // v2.0.8: kart bir kayda bağlıysa, başka bir kayda bağlı cari kullanılmaz (aynı adlı iki kişinin hesabı karışmaz).
   // { id: "" } → yeni cari açılır; link → bulunan cari kayda bağlanır.
-  function planPerson(person) {
+  function planPerson(person, index = null) {
     const source = person.caseSource || currentSource();
     if (person.caseKey) {
       const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ?", person.caseKey, source);
       if (found) return { id: found.id, link: false };
     }
-    const matched = matchPerson({ name: person.name, phone: person.phone, groupId: person.groupId || "" });
+    const matched = matchPerson({ name: person.name, phone: person.phone, groupId: person.groupId || "" }, index);
     const owner = matched ? store.get("SELECT case_key AS caseKey, case_source AS caseSource FROM accounts WHERE id = ?", matched) : null;
     const foreign = Boolean(person.caseKey && owner?.caseKey && (owner.caseKey !== person.caseKey || owner.caseSource !== source));
     if (matched && !foreign) return { id: matched, link: Boolean(person.caseKey && !owner?.caseKey) };
@@ -1786,9 +1823,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // 2.5.0 Ç7b P7 (S219 = A): Excel taksit satırının kişisi, aynı adlı (aynı gruptaki) açık kartlardan birinin sahibi mi? Kişi, kartın bağlanacağı
   // cariyi bulan kuralla (planPerson) belirlenir. cards: [{ accountId, phone }] — carili kartta carinin telefonu, carisiz kartta kartın telefonu.
   // "same": kişinin kendi kartı var (atlanır); "unknown": kişi kesin seçilemiyor (atlanır; çift kart / borç açılmaz); "": kartlar başka kişilerin (kart açılır).
-  function planDuplicate(person, cards) {
+  function planDuplicate(person, cards, index = null) {
     if (!cards.length) return "";
-    const own = planPerson(person).id;
+    const own = planPerson(person, index).id;
     const phone = phoneKey(person.phone);
     let unknown = false;
     for (const card of cards) {
@@ -2215,5 +2252,5 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, planDuplicate,stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, waFacts, list, allLedgers, assertUnlocked, invoiceLink, dueItems, openDueItems, dueFingerprint };
+  return { exists, accountRow, createFromPlan, matchPerson, planDuplicate, personIndex, matchName, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, waFacts, list, allLedgers, assertUnlocked, invoiceLink, dueItems, openDueItems, dueFingerprint };
 }

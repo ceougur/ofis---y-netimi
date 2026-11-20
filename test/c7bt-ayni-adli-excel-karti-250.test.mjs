@@ -10,6 +10,7 @@
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { boot, must } from "./banka-210-ortak.mjs";
+import { foldName } from "../server/lib/names.mjs";
 
 const NOW = "2026-10-08T12:00:00+03:00";
 const AMBIGUOUS = "Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin";
@@ -65,7 +66,7 @@ describe("Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kiş
     await integrity("(1)");
   });
 
-  it("(2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (yalnız ASCII harfler katlanır; I/ı ayrımı BİLİNEN SINIR)", async () => {
+  it("(2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (S223 = A: Türkçe harf katlamalı; önceden yalnız ASCII katlanıyordu)", async () => {
     const before120 = await gl120();
     const plansBefore = count("SELECT COUNT(*) AS n FROM plans WHERE deleted_at IS NULL");
     const accountsBefore = count("SELECT COUNT(*) AS n FROM accounts WHERE deleted_at IS NULL");
@@ -178,14 +179,17 @@ describe("Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kiş
       assert.equal((await api.put("/api/admin/period-lock", { lockedUntil: "" })).status, 200);
     }
   });
-  it("(11) ad eşleşmesi veri tabanının NOCASE kuralıyla AYNI (hız düzeltmesinin eşdeğerliği): yalnız ASCII harfler katlanır; I / ı, İ / i ayrı ad", async () => {
+  // 2.5.0 S223 = A / S228 = A (BEKLENTİ DEĞİŞTİ — ders 28): yinelenen kart denetimi önce veri tabanının NOCASE kuralıyla (bellekteki eşdeğeri; hız
+  // düzeltmesi), kişinin kartını bulamazsa Türkçe harf katlamalı adla. Dört yazımın hepsi aynı kişi ('irmak İnce' / 'IRMAK İNCE' NOCASE'te, 'ırmak İnce'
+  // ve 'Irmak ince' Türkçe katlamada). Önceden 'ırmak İnce' / 'Irmak ince' ayrı ad sayılıyor, aynı kişiye İKİNCİ kart ve ikinci cari açılıyordu.
+  it("(11) ad eşleşmesi: önce veri tabanının NOCASE kuralı (hız düzeltmesinin eşdeğerliği), bulamazsa Türkçe harf katlaması (S223 = A); I / ı, İ / i aynı kişi", async () => {
     const owner = await account("Irmak İnce", "0544 100 00 01");
     await load([row("Irmak İnce", "0544 100 00 01", "300")], "irmak.xlsx");
     assert.deepEqual(cards(owner).map(item => item.total), [300]);
     for (const variant of ["irmak İnce", "IRMAK İNCE", "ırmak İnce", "Irmak ince"]) {
-      const same = ctx.store.get("SELECT ? = ? COLLATE NOCASE AS x", variant, "Irmak İnce").x === 1;
+      const same = ctx.store.get("SELECT ? = ? COLLATE NOCASE AS x", variant, "Irmak İnce").x === 1 || foldName(variant) === foldName("Irmak İnce");
       const report = await load([row(variant, "0544 100 00 01", "300")], `irmak-${variant.length}.xlsx`);
-      assert.deepEqual(reasons(report), same ? ["Aynı adla açık kart var"] : [], `${JSON.stringify(variant)} — veri tabanı NOCASE ${same ? "aynı" : "farklı"} ad diyor`);
+      assert.deepEqual(reasons(report), same ? ["Aynı adla açık kart var"] : [], `${JSON.stringify(variant)} — NOCASE ya da Türkçe katlama ${same ? "aynı" : "farklı"} ad diyor`);
       if (!same) await must("geri al", api.post(`/api/workspace/plans/imports/${report.importId}/undo`, {}));
     }
     assert.deepEqual(cards(owner).map(item => item.total), [300], "aynı kişiye ikinci kart açılmadı");
