@@ -31,7 +31,7 @@ def hesap_ailesi(tur, h):
     if tur == "taksit_excel" and h <= {"120", "519", "500", "602"}:
         out.add("Ç7b taksit küçük turu — P7 (S219 / S221 / S222 = A)")
     if h <= {"120", "128", "129", "644", "100", "102"} and h & {"128", "129", "644"} and tur in ("tahsilat", "gun"):
-        out.add("S212 = A (tek aday düzeltme 9db9b69d — bağlı tahsilatın kesiti bağın önceliğini taşır)")
+        out.add("S212 = A / B1 (tek aday düzeltme 9db9b69d / 0612d825 — bağlı tahsilatın kesiti bağın önceliğini taşır; şüpheli ayırıcısında aynı gün sırası)")
     if h & {"601"}:
         out.add("KG-24 ihracat 601")
     if h & {"336"} or ({"602"} & h and tur in ("kayit_tahsilati",)):
@@ -111,7 +111,7 @@ for tz in TZ:
             if "taksit_excel" in turler:
                 kurallar.add("Ç7b taksit küçük turu — P7 (kart raporu / gecikmiş)")
             if "supheliye_al" in turler and not (turler & {"taksit_kapat", "taksit_excel"}):
-                kurallar.add("S212 = A (şüpheli ↔ bağlı tahsilat; kuyruk raporu)")
+                kurallar.add("S212 = A / B1 (şüpheli ↔ bağlı tahsilat; kuyruk raporu)")
         if rfark and not kurallar and not alan:
             aciklanmayan.append("rapor farkı (aile yok): " + ", ".join(rfark[:6]))
         se, sy = SINIF.get(("eski", ad, tz), {}), SINIF.get(("yeni", ad, tz), {})

@@ -51,3 +51,10 @@
 - Bekleyen U: 2.5.1-Ç7b-B1 4/44 · D2–D4 28/30 · D4-(7) 1/1 · D4-GERI-AL 1/1 · GÖRÜNÜM-YOK 32/77 + 1/1 · Ç5-C 27/140. Ç7b kimlikli U: 0.
 - Ateşleme: 15 kuralın hepsi ateşledi. Tablolar surucu5-tablo.txt.
 - Gerileme koşusu (aynı sürücü, --program c7b2-taban kopyası) başlatıldı.
+
+## Adım 5 — gerileme (aynı sürücü 4959ab79; eski = c7b2-taban kopyası, yeni = son koşu)
+- Eski kod koşusu: kanit çıkış 1 · 7.336/8.350 geçti, 874 başarısız (beklenen: Ç7b öncesi kod).
+  Eski kodda (TZ başına): AYNI ~3.413 · SINIFLANMADI 271 · sınıfsız adım 147 · red farkı 5 · uygulanamayan 1 (s91 TE1 "atlandi" — P7 eski kodda) · R 5 / 3.
+- gerileme.py: 248 koşu, BİREBİR 176, FARKLI 72 (36 senaryo × iki TZ). Atıf aracı 62'sini aileyle açıkladı; kalan 10 koşu (rastgele-1, s121, s28, s58, s69 × iki TZ)
+  elle açıklandı (surucu5-gerileme-atif-elle.txt) → AÇIKLANMAYAN 0. s112 farkı yalnız ret iletisi (tek aday düzeltme S181 iletisi 29eb3a5c).
+- Her farklı koşuda eski kodun kırmızısı ≥ yeni kodun kırmızısı; artan tek koşu s91 UTC (3 → 4: TE1 artık açıldığı için mz0'da R-B5 görünür).
