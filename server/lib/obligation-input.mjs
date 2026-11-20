@@ -149,7 +149,13 @@ export function createObligationInput({ store }) {
     for (const row of store.all(`SELECT i.id, i.plan_id AS planId, i.seq, i.due_date AS dueDate, i.amount FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE 1 = 1${only} ORDER BY i.due_date, i.seq`, ...args)) groupInto(schedules, row.planId, { id: row.id, seq: row.seq, dueDate: row.dueDate, amount: row.amount });
     const dueDates = new Map();
     const promises = new Map();
-    for (const row of store.all(`SELECT id, account_id AS accountId, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND (due_date <> '' OR expected_date <> '')${accountId ? " AND account_id = ?" : ""}`, ...args)) {
+    // 2.5.0 TEK ADAY HIZ (t3hiz; ders 47): tek cari yolunda `+source` — dizinsiz planlayıcı `source = ''` için idx_account_entries_source'u seçip BÜTÜN elle satırları dolaşıyordu (100 bin
+    // satırda ~18 ms; şüpheli ↔ kuyruk ayırıcısı bunu her kurulumda çağırır). Satır kümesi AYNI; sıra eski planın sırası (source_id, rowid) — haritalar yalnız get ile okunur, yine de aynı
+    // tutuldu (eşdeğerlik test/t3hiz-esdegerlik-250.test.mjs: eski sorgu hakem). Bütün cariler yolu DEĞİŞMEDİ.
+    const datedSql = accountId
+      ? "SELECT id, account_id AS accountId, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE account_id = ? AND +source = '' AND kind IN ('debt', 'credit') AND (due_date <> '' OR expected_date <> '') ORDER BY source_id, rowid"
+      : "SELECT id, account_id AS accountId, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND (due_date <> '' OR expected_date <> '')";
+    for (const row of store.all(datedSql, ...args)) {
       if (row.dueDate) dueDates.set(row.id, row.dueDate);
       if (row.expectedDate) promises.set(row.id, row.expectedDate);
     }
@@ -218,7 +224,8 @@ export function createObligationInput({ store }) {
     // Bu carinin bütün faturaları (listede olmayanlar da kapamada yer tutar).
     const all = store.all("SELECT id, kind, status, try_payable AS payable, original_id AS originalId, due_date AS dueDate, plan_id AS planId, COALESCE(NULLIF(issued_at, ''), created_at) AS issuedAt FROM invoices WHERE account_id = ?", accountId);
     const links = new Map();
-    for (const entry of store.all("SELECT id, source_id AS invoiceId FROM account_entries WHERE account_id = ? AND source = 'invoice' AND kind IN ('in', 'out')", accountId)) links.set(entry.id, entry.invoiceId);
+    // 2.5.0 TEK ADAY HIZ (t3hiz): `+source` (yukarıdaki datedSql notu — idx_account_entries_source bütün fatura peşinlerini dolaşıyordu, ~40 ms); küme aynı, sıra eski planınki.
+    for (const entry of store.all("SELECT id, source_id AS invoiceId FROM account_entries WHERE account_id = ? AND +source = 'invoice' AND kind IN ('in', 'out') ORDER BY source_id, rowid", accountId)) links.set(entry.id, entry.invoiceId);
     // v2.0.17: cari kartından "Kapatılacak Fatura" seçilerek girilen tahsilat/ödeme.
     // v2.0.23: taksitli faturaya kurulmuş bağ (eski veri) yok sayılır (toplu yolla aynı kural).
     const planned = new Set(all.filter(item => item.planId).map(item => item.id));
@@ -227,7 +234,12 @@ export function createObligationInput({ store }) {
     const chequeEvents = new Map();
     const reversals = new Map();
     // Bağlı fatura başka carinin olsa (bozuk veri) kapamada zaten yer almaz (yalnız bu carinin faturaları); taksitli olanlar bu carinin kümesinde.
-    chequeLinks(store.all("SELECT ev.cheque_id AS chequeId, ev.kind, ev.invoice_id AS invoiceId, ev.effects_json AS effects, c.invoice_id AS own FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE c.account_id = ? OR c.endorse_account_id = ? OR ev.account_id = ? ORDER BY ev.rowid", accountId, accountId, accountId), planned, links, chequeEvents, reversals);
+    // 2.5.0 TEK ADAY HIZ (t3hiz): üç kolun VEYA'sı her olay satırında evrakı arayan tam taramaydı (~17 ms); kollar ayrı (evrakın carisi idx_cheques_account'tan) ve birleşimi — olay kümesi
+    // ve sırası (rowid) AYNI (evrak kimliği tekil: her olay en çok bir evrakla eşleşir).
+    chequeLinks(store.all(`SELECT ev.cheque_id AS chequeId, ev.kind, ev.invoice_id AS invoiceId, ev.effects_json AS effects, c.invoice_id AS own FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id
+      WHERE ev.rowid IN (SELECT x.rowid FROM cheques y CROSS JOIN cheque_events x ON x.cheque_id = y.id WHERE y.account_id = ?1
+        UNION SELECT x.rowid FROM cheques y CROSS JOIN cheque_events x ON x.cheque_id = y.id WHERE y.endorse_account_id = ?1
+        UNION SELECT rowid FROM cheque_events WHERE account_id = ?1) ORDER BY ev.rowid`, accountId), planned, links, chequeEvents, reversals);
     const offsets = store.all("SELECT id, invoice_id AS invoiceId, counter_type AS counterType, counter_id AS counterId, amount, date, note, created_at AS createdAt FROM invoice_offsets WHERE account_id = ? ORDER BY date, created_at", accountId).map(offset => ({ ...offset, label: offsetLabel(offset) }));
     const plansById = new Map();
     for (const invoice of all.filter(item => item.planId)) {

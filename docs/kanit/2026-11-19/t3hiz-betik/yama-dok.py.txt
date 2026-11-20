@@ -1,0 +1,25 @@
+# dok.mjs'e (tur 3b'nin dökümü, kopya) t3hiz'in ayırıcı dökümü eklenir: bütün şirket + cari başına doubtfulState, açık şüpheli (bütün + cari başına), cari listesi (bütün + ids'li),
+# yevmiye 120 / 128 / 129 satırları (şüpheli carileri), şüpheli carilerinin kartı (detail). Bellek ılıkken ikinci okuma da (yeni kodda bellek; eskide aynı yol).
+p = '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3hiz-a/dok.mjs'
+s = open(p).read()
+anchor = '  lines.push(JSON.stringify({ sirket: company.id, cari: "[toplu]", tumKalan: plain(allEntries), odeme: plain(pay), onarim: plain(repair), kart: plain(card) }));\n'
+assert s.count(anchor) == 1
+add = anchor + '''  {
+    const D = await import(pathToFileURL(path.join(root, "server", "lib", "bank", "doubtful.mjs")).href);
+    const st = ctx.store;
+    const parties = st.all("SELECT DISTINCT account_id AS id FROM doubtful_receivables ORDER BY rowid").map(row => row.id);
+    for (const pass of [1, 2]) {
+      const journal = [];
+      for (const entry of target.ledger.build()) {
+        const own = (entry.lines || []).filter(line => ["120", "128", "129"].includes(line.account) && parties.includes(line.party));
+        if (own.length) journal.push([entry.id, own.map(line => `${line.account} ${line.party} ${line.debit} ${line.credit}`)]);
+      }
+      lines.push(JSON.stringify({ sirket: company.id, cari: `[şüpheli ${pass}]`, tum: plain(D.doubtfulState(st)), tek: parties.map(id => plain(D.doubtfulState(st, { parties: [id] }))),
+        acik: plain(D.doubtfulOpenByAccount(st)), acikTek: parties.map(id => plain(D.doubtfulOpenByAccount(st).byAccount.get(id) || null)),
+        liste: plain(ctx.accounts.list(AUDITOR, { status: "all" })), listeTek: ids.slice(0, 80).concat(parties).map(id => plain(ctx.accounts.list(AUDITOR, { status: "all", ids: [id] }))),
+        kart: parties.map(id => plain(ctx.accounts.detail(id, AUDITOR))), yevmiye: journal }));
+    }
+  }
+'''
+s = s.replace(anchor, add)
+open(p, 'w').write(s)

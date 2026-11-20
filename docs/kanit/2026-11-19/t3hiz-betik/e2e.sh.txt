@@ -1,0 +1,14 @@
+#!/bin/bash
+# t3hiz: şüpheli / kuyruk ekran senaryoları (tarama: test/e2e'de doubtful / şüpheli geçenler) iki saat diliminde, kanit.mjs kos ile.
+A=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3hiz-a
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-af7c4e455433c3703
+export PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194
+cd $W || exit 1
+for tz in Europe/Istanbul UTC; do
+  ad=${tz//\//-}
+  for sc in senaryo-supheli-230 senaryo-supheli-kuyruk-250 senaryo-banka-210; do
+    s=$(date +%s)
+    HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=$tz KANIT_DIR=$A/kanit timeout -k 10 2400 node tools/kanit.mjs kos t3hiz-e2e-$sc-$ad -- node --disable-warning=ExperimentalWarning test/e2e/$sc.mjs > $A/e2e-$sc-$ad.out 2>&1
+    echo "$tz $sc çıkış $? · $(( $(date +%s) - s )) sn · $(tail -1 $A/e2e-$sc-$ad.out | cut -c1-260)"
+  done
+done

@@ -1598,19 +1598,46 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
             summary: [["Hesap", choice.title], ["Devir", cents(opening)], ["Dönem Giriş", cents(period.in)], ["Dönem Çıkış", cents(period.out)], ["Dönem Net", cents(period.in - period.out)], ...(period.transfers ? [["Transfer Giriş", cents(period.trIn)], ["Transfer Çıkış", cents(period.trOut)]] : []), ...(period.adjusted ? [["Açılış ve Devir Düzeltmeleri", cents(period.adjust)]] : []), ["Dönem Sonu", cents(balance)]],
           };
         }
+        const bounds = coverBounds(store);
+        const covering = Boolean(bounds.bank || bounds.card || bounds.pos || bounds.carry);
+        // G1 hız 3 (ders 47, 53 (a)): sayılmış satır olabilecekse yol × hesap toplamı + sayılmış pay TEK okumada saklanır (moneyLines.coverGroups) — Kasa raporunun balances()'ı
+        // (cash().report) ve aşağıdaki coveredWays aynı saklı okumayı kullanır: ikinci tarama yok. Sınır yoksa okuma eskisi gibi (Kasa'nın rawGroups'u).
+        if (covering) moneyLines()?.coverGroups?.();
         const data = cash().report(admin, range.from, range.to, method);
         // v2.1.0 Aşama 14 (§3.4, K10; Aşama 9 bilinen sınırı): iç hareket (Kasa ↔ Banka, bankalar arası transfer, kredi, kart borcu ve ters kayıtları)
         // Giriş / Çıkış kolonuna yazılmaz — tutarı açıklamada "(Transfer Giriş / Çıkış: …)", bakiyede; özetin "Transfer Giriş / Çıkış" satırlarında.
         // İç hareketin gider payı (transfer ücreti, kredi faizi) dış çıkıştır: o satırın Çıkış kolonunda. Payların kuralı Banka penceresinin
         // "Bugün ve Bu Ay"ı ile aynı (moneyLines.classified ↔ flows).
         const parts = new Map();
+        // 2.5.0 tek aday düzeltme turu G1 (S214 = A; BAŞ MİMAR KARARI 14.11 10:17 (2)): Tüm Hesaplar seçiminde de "açılışta sayılmış" hesabı atanmamış satır (TEK
+        // koşul lib/bank/opening-cover.mjs — Ana Defter'in 519'u ve kovanınki) raporda KALIR, "Açılışta Sayıldı" işaretiyle; tutarı devre, dönem giriş / çıkışına, yürüyen
+        // bakiyeye, Dönem Sonu'na ve "(tüm hareketler)" satırlarına girmez — rapor = defter (102 + 108) = hesaplar + Hesabı Atanmamış kovası. Sınır yoksa (banka hesabı ve
+        // Devir Kapanışı yok) hiçbir satır sayılmamıştır: ek okuma yapılmaz, rapor eskisiyle birebir. Kasa penceresi ve Kasa raporları (cash().report) DEĞİŞMEZ.
+        // Açılışta sayılmış hesabı atanmamış satırların yol bazında toplamı (kuruş; moneyLines.coveredWays — Ana Defter'in 519 payıyla AYNI küme, COVER_SQL; yukarıdaki saklı okumadan). Hız (ders 47, 53 (a); tek aday düzeltme turu ölçümü): ilk yazım keyTotals'ı dört kez çağırıyor, ikincisi bağsız ~32.000 satırı JS'e çekiyordu (100 bin satırda raporu
+        // ~400–600 ms yavaşlattı).
+        const covered = covering && moneyLines()?.coveredWays ? moneyLines().coveredWays({ before: range.from || "" }) : {};
+        const coveredBefore = range.from ? [...new Set(waysFor(method) || ["bank", "card"])].reduce((sum, way) => sum + (covered[way]?.before || 0), 0) : 0;
+        // "(tüm hareketler)" satırları yoldan bağımsız (havale + POS; Kasa özetinin yol bakiyeleri) — düşülen de iki yolun bütün sayılmış satırları.
+        const coveredAll = new Map(Object.entries(covered).map(([way, item]) => [`u:${way}`, item.cents]));
         // Paylar yalnız dönem satırları için okunur (raporun satırları dönem içinden; 11.10.2026 hız düzeltmesi).
-        for (const line of moneyLines()?.classified ? moneyLines().classified({ ways: waysFor(method), since: range.from, until: range.to, light: true }) : []) parts.set(`${moneyLines().sourceName(line.src)}|${line.id}`, line);
-        const rows = [[openingDay(range.from), "", "Devir", `Dönem başı ${which.toLocaleLowerCase("tr-TR")}`, "", "", money(data.opening), ""]];
+        const periodLines = moneyLines()?.classified ? moneyLines().classified({ ways: waysFor(method), since: range.from, until: range.to, light: true }) : [];
+        for (const line of covering ? markCounted(periodLines) : periodLines) parts.set(`${moneyLines().sourceName(line.src)}|${line.id}`, line);
+        const openingCents = toCents(data.opening) - coveredBefore;
+        const rows = [[openingDay(range.from), "", "Devir", `Dönem başı ${which.toLocaleLowerCase("tr-TR")}`, "", "", cents(openingCents), ""]];
         const period = { in: 0, out: 0, trIn: 0, trOut: 0, transfers: 0 };
+        // Dönem içinde o satıra kadar açılışta sayılmış satırların işaretli toplamı (kuruş): yürüyen bakiyeden düşer. adjust: işaretsiz düzeltme satırlarının toplamı.
+        let coveredRun = coveredBefore;
+        let coveredAdjust = 0;
         // GG2: açılış ve Devir Kapanışı satırları giriş/çıkış kolonuna yazılmaz (TOPLAM = dönem giriş/çıkış); tutarı açıklamada, bakiyede.
         for (const entry of data.entries) {
           const part = parts.get(`${entry.source}|${entry.id}`);
+          const signed = (entry.kind === "in" ? 1 : -1) * toCents(entry.amount);
+          if (part?.counted) {
+            coveredRun += signed;
+            if (entry.adjust) coveredAdjust += signed;
+            rows.push([dayText(entry.date), methodLabel(entry.method, entry.kind), entry.transferId ? "Kasa ↔ Banka" : CASH_SOURCE[entry.source] || entry.source, countedLabel(part, cashLabel(entry)), "", "", "", entry.actorName || ""]);
+            continue;
+          }
           let label = cashLabel(entry);
           let inCents = entry.kind === "in" ? Math.round(entry.amount * 100) : 0;
           let outCents = entry.kind === "out" ? Math.round(entry.amount * 100) : 0;
@@ -1628,17 +1655,18 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
           }
           period.in += inCents;
           period.out += outCents;
-          rows.push([dayText(entry.date), methodLabel(entry.method, entry.kind), entry.transferId ? "Kasa ↔ Banka" : CASH_SOURCE[entry.source] || entry.source, label, inCents ? cents(inCents) : "", outCents ? cents(outCents) : "", money(entry.balance), entry.actorName || ""]);
+          rows.push([dayText(entry.date), methodLabel(entry.method, entry.kind), entry.transferId ? "Kasa ↔ Banka" : CASH_SOURCE[entry.source] || entry.source, label, inCents ? cents(inCents) : "", outCents ? cents(outCents) : "", cents(toCents(entry.balance) - coveredRun), entry.actorName || ""]);
         }
-        const adjust = data.period.adjust || 0;
-        const closing = roundMoney(data.opening + data.period.in - data.period.out + adjust);
+        const adjust = toCents(data.period.adjust || 0) - coveredAdjust;
+        const closing = toCents(roundMoney(data.opening + data.period.in - data.period.out + (data.period.adjust || 0))) - coveredRun;
+        const allOf = way => toCents(data.byMethod[way]) - (coveredAll.get(`u:${way}`) || 0);
         const transferLines = period.transfers ? [["Transfer Giriş", cents(period.trIn)], ["Transfer Çıkış", cents(period.trOut)]] : [];
         return {
           subtitle: `${which} · ${rangeText(range)}`,
           headers: ["Tarih", "Yol", "Kaynak", "Açıklama", "Giriş", "Çıkış", "Bakiye", "Giren"],
           types: ["", "", "", "", "money", "money", "money", ""],
           rows,
-          summary: [["Devir", money(data.opening)], ["Dönem Giriş", cents(period.in)], ["Dönem Çıkış", cents(period.out)], ["Dönem Net", cents(period.in - period.out)], ...transferLines, ...(adjust || data.entries.some(entry => entry.adjust) ? [["Açılış ve Devir Düzeltmeleri", money(adjust)]] : []), ["Dönem Sonu", money(closing)], ["Banka (tüm hareketler)", money(data.byMethod.bank)], ["POS / Kredi Kartı (tüm hareketler)", money(data.byMethod.card)]],
+          summary: [["Devir", cents(openingCents)], ["Dönem Giriş", cents(period.in)], ["Dönem Çıkış", cents(period.out)], ["Dönem Net", cents(period.in - period.out)], ...transferLines, ...(adjust || data.entries.some(entry => entry.adjust && !parts.get(`${entry.source}|${entry.id}`)?.counted) ? [["Açılış ve Devir Düzeltmeleri", cents(adjust)]] : []), ["Dönem Sonu", cents(closing)], ["Banka (tüm hareketler)", cents(allOf("bank"))], ["POS / Kredi Kartı (tüm hareketler)", cents(allOf("card"))]],
         };
       },
     },

@@ -955,8 +955,11 @@ export function doubtfulBefore(input, { lineId, include = null } = {}) {
   const rank = new Map(sorted.map((line, index) => [line.id, index]));
   const keyOf = line => ({ date: line.date, cls: clsOf(line), at: String(line.at || ""), rank: rank.get(line.id) ?? 0, sub: 0 });
   const edge = keyOf(cut);
+  // 2.5.0 tek aday düzeltme turu S212 = A (05.11 (2) 24 = A + S192 = A): kesit satırı KUYRUĞA GİRER — bağı hedefini her durumda kapatır (bağlar kuyrukta bağsız ödemelerden önce
+  // işlenir), hedefi önceden kapatmış bağsız ödeme serbest kalıp kendi tarihinde yeniden dağılır; satırın KENDİ ödemesi ise şüpheli dağılımına girmez (aşağıda kalemlerin kalanına geri
+  // eklenir: "satırdan önceki an"). Önceden satır kesite hiç girmiyordu: bağsız ödemeyle kapanmış hedef faturanın şüpheli payı 0 sayılıyor, bağlı tahsilat 120'den düşüyordu.
   const kept = lines.filter(line => {
-    if (line.id === lineId) return false;
+    if (line.id === lineId) return true;
     if (line.date !== cut.date) return line.date < cut.date;
     const forced = include ? include(line) : undefined;
     if (forced === true || forced === false) return forced;
@@ -964,7 +967,14 @@ export function doubtfulBefore(input, { lineId, include = null } = {}) {
   });
   const part = { ...input, lines: kept };
   const net = runQueue(part, "net", implicitRefunds(part));
-  const { held, byRecord } = holdDoubtful(net, input.doubtfulRecords || []);
+  // Satırın kapattığı tutarlar kalemlerin kalanına geri eklenir (yalnız şüpheli dağılımı için; kuyruğun çıktısı değişmez).
+  const own = new Map();
+  for (const item of net.items) {
+    const paid = (item.closures || []).reduce((sum, closure) => (closure.payer?.lineId === lineId && !closure.reverse ? sum + closure.amount : sum), 0);
+    if (paid > 0) own.set(item.key, paid);
+  }
+  const view = own.size ? { ...net, items: net.items.map(item => (own.has(item.key) ? { ...item, left: item.left + own.get(item.key) } : item)) } : net;
+  const { held, byRecord } = holdDoubtful(view, input.doubtfulRecords || []);
   const out = new Map();
   for (const [key, minor] of held) out.set(key, { minor, records: byRecord.get(key) || [] });
   return out;

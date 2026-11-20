@@ -1,0 +1,22 @@
+ÖLDÜ N33 K3 SINIR: normal tahsilat 120 bakiyesini aşabilir | 1 / 192 test_s52_k3_supheli_caride_alacak_satirlari
+ÖLDÜ B40c Y4 S14 sınırı eski: SUPHELI_NORMAL_ASIM bağlı çekin tamamına | 14 / 192 test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez,test_S14_hedef_kalem_kapanir,test_S25_a_kismi_once_supheli,test_S39_kart_iade_s25_ile_ayni
+ÖLDÜ B51 Z6 S25 (b) B: faturanın açık kısmını aşan fazla reddedilir | 5 / 192 test_S181_S168_bagli_tahsilat,test_s112_s181_bagli_tahsilat_120_siniri,test_s74_s25_ab_kismi_ve_fazla,test_s78_s39_kart_iade_supheli
+ÖLDÜ B62 X3 S39 sınır: kart iadesinin faturanın açık kısmını aşan fazlası reddedilir (S25 (b) k | 1 / 192 test_s78_s39_kart_iade_supheli
+ÖLDÜ B110 Ş1 S175 = A: valörlü transfer 108.90 ile (çıkış / valör maddesi; KG-19 kitabın A'sı) | 4 / 192 test_K02_K14_K07,test_S175_KG19_valorlu_transfer_islem_gunu,test_s12_banka_islemleri,test_s27_devir_yoldaki_supheli_evrak_taksit
+ÖLDÜ B110b Ş1 S175 = B: alıcı bankanın modül hareketi valör gününde (defter işlem gününde) | 3 / 192 test_S175_KG19_valorlu_transfer_islem_gunu,test_s12_banka_islemleri,test_s27_devir_yoldaki_supheli_evrak_taksit
+ÖLDÜ B111 Ş3 S179 sınırı EN ERKEN açılış | 3 / 192 test_S179_K14_sinir_en_gec_banka_acilisi,test_S179_K15_iki_okuma,test_s110_s179_hesapsiz_sinir_en_gec_acilis
+ÖLDÜ B111b Ş3 K-14 sınırsız: hesapsız havale her zaman 519 (bakım 11 bayrak okuması) | 2 / 192 test_S179_K14_sinir_en_gec_banka_acilisi,test_S179_silinmis_acilis_susar
+ÖLDÜ B111c Ş4 K-15 iki okuma susması yok (yalnız bütün kartların en geç açılışı) | 1 / 192 test_S179_K15_iki_okuma
+ÖLDÜ B111d Ş5 aynı gün 519 sayılır (sınır dahil, susma yok) | 1 / 192 test_S179_K14_sinir_en_gec_banka_acilisi
+ÖLDÜ B111e Ş9 S183 susması yok (kilitten sonra yazılan açılış kilitli satırı sessizce yeniden s | 1 / 192 test_S183_kilitten_sonra_acilis_susar
+ÖLDÜ B111f Ş4 K-15 sınırsız: eski kart hareketi her zaman 309 (açılıştan önce de) | 4 / 192 test_S179_K15_iki_okuma,test_S183_kilitten_sonra_acilis_susar,test_s110_s179_hesapsiz_sinir_en_gec_acilis,test_s37_kart_borcuna_aktar
+ÖLDÜ B112 Ş10 S174 = B: kilit fişin yılının sonunu aşınca fark yeniden açılır (ikinci fiş) | 1 / 192 test_s111_s174_s180_kural_farki_kendi_yilinda
+ÖLDÜ B112b Ş10 S180 = B: fişin tersi farkı yeniden açar (ters kendi yılına) | 1 / 192 test_s111_s174_s180_kural_farki_kendi_yilinda
+ÖLDÜ B113 Ş12 S127 değişmezi dişsiz (donmuş + açık dönem çift yazımı görmez) | 1 / 192 test_S127_tek_yazim_degismezi
+ÖLDÜ B114 Ş13 S181 = A / bakım 11: fazla sınıra girmez (yalnız bağın 120'de kapattığı) | 2 / 192 test_S181_S168_bagli_tahsilat,test_s112_s181_bagli_tahsilat_120_siniri
+ÖLDÜ B114b Ş13 S181 eşitlik red | 13 / 192 test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez,test_S14_hedef_kalem_kapanir,test_S39_kart_iade_s25_ile_ayni,test_S81_olagan_duzeltme_siniri
+ÖLDÜ B114c Ş13 S155 ölçü susması yok (yalnız gün ölçüsü) | 1 / 192 test_S181_S168_bagli_tahsilat
+ÖLDÜ B114d Ş15 S159 susması yok (S181 harfiyle red) | 1 / 192 test_S181_S168_bagli_tahsilat
+ÖLDÜ B115 Ş14 S168 susması yok: tek kuyrukta kabul / ret ayrışsa da kâhinin kuyruğu (M13) | 1 / 192 test_S181_S168_bagli_tahsilat
+ÖLDÜ B115b Ş14 S168 susmalar yazılmaz (iki görünümün payı ayrışsa da) | 1 / 192 test_S181_S168_bagli_tahsilat
+ÖLDÜ B116 Ş16 S87 = B: Silinenler'den geri alınan Kasa açılışında R8 yok | 1 / 192 test_s113_s87_r8_geri_alma

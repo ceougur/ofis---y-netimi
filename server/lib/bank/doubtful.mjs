@@ -71,7 +71,17 @@ export function doubtfulRows(store, { parties = null } = {}) {
       );
   // 2.5.0 Ç5-A tur 3c: yevmiye yükleyicisinin (applyDoubtfulToJournal) şüpheli ↔ kuyruk geri çağrısı — ikinci yükleyiciyle aynı (sayılmayan özellik: satır verisi gibi dolaşmaz).
   const linked = records.length ? linkedShares(store, records.map(record => record.party)) : null;
-  return linked ? Object.defineProperty({ records, provisions }, "linked", { value: linked, enumerable: false }) : { records, provisions };
+  const out = linked ? Object.defineProperty({ records, provisions }, "linked", { value: linked, enumerable: false }) : { records, provisions };
+  // B1 (ders 31): yevmiye yükleyicisinin yazım sırası — SQL yükleyicisinin (doubtfulCredits) at / seq'i, ref (account:… / plan-entry:… / plan-close:… / invoice:…) başına. TEMBEL: ayırıcı
+  // yalnız aynı gün aynı sınıfta iki alacak karşılaşınca sorar; sorgu çağrı başına bir kez (kayıtların carileri).
+  if (records.length) {
+    let byRef = null;
+    Object.defineProperty(out, "writeOrder", { enumerable: false, value: ref => {
+      byRef ||= new Map(doubtfulCredits(store, new Set(records.map(record => record.party))).map(row => [row.key, { at: row.at, seq: row.seq }]));
+      return byRef.get(String(ref)) || null;
+    } });
+  }
+  return out;
 }
 
 /**
@@ -88,7 +98,8 @@ export function doubtfulCredits(store, parties) {
   const parts = [
     // Karar 15.10.2026 (plan §3.11b/2; lib/doubtful-gl.mjs doubtfulSkipOf ikizi): "Normal Cari Hesaba İşle" (doubtful_skip) ve fatura peşini (source 'invoice') tahsilatı
     // şüpheliden düşmez → hiç yüklenmez. 2.5.0 Ç5-A tur 3c (S25 (c), S39, S168 = B): Kapatılacak Fatura bağlı (invoice_id) tahsilat YÜKLENİR — payı ayırıcının `linked` kuralıyla.
-    `SELECT 'account:' || e.id AS key, e.account_id AS party, e.date, ${c("e.amount")} AS minor, CASE WHEN e.source = 'doubtful' THEN e.source_id ELSE '' END AS target, '' AS openedOn
+    `SELECT 'account:' || e.id AS key, e.account_id AS party, e.date, ${c("e.amount")} AS minor, CASE WHEN e.source = 'doubtful' THEN e.source_id ELSE '' END AS target, '' AS openedOn,
+            COALESCE(e.created_at, '') AS at, e.rowid AS seq
      FROM json_each(?1) j CROSS JOIN account_entries e ON e.account_id = j.value
      WHERE (e.kind = 'in' AND e.doubtful_skip = 0 AND e.source <> 'invoice') OR (e.kind = 'credit' AND e.source <> 'invoice')`,
   ];
@@ -97,18 +108,27 @@ export function doubtfulCredits(store, parties) {
     // Kontrol turu 2 K1 (15.10.2026): "Mevcut borcu taksitlendir" (covers_balance) kartı yeni alacak getirmez (yevmiyede 602 yazılmaz; borç
     // caride zaten yazılı) → tarih kapısı YOK, taksiti şüpheliden düşer (önceden 128'den hiç düşmüyor, 120 bitince kapı reddediyordu).
     const openedOn = "CASE WHEN p.covers_balance = 1 THEN '' ELSE COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) END";
-    parts.push(`SELECT 'plan-entry:' || pe.id, p.account_id, pe.date, ${c("pe.amount")}, '', ${openedOn} FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE pe.kind = 'in'`);
+    parts.push(`SELECT 'plan-entry:' || pe.id, p.account_id, pe.date, ${c("pe.amount")}, '', ${openedOn}, COALESCE(pe.created_at, ''), pe.rowid FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE pe.kind = 'in'`);
     // Vazgeçilen kalan kuruşla: kart tutarı (kuruş) − net tahsilat (her satır kuruşa çevrilip toplanır; banka kodunda REAL toplam yok).
     parts.push(
       `SELECT 'plan-close:' || p.id, p.account_id, MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), ${openedOn}),
-              MAX(0, ${c("p.total")} - COALESCE((SELECT SUM(CAST(ROUND((CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) * 100) AS INTEGER)) FROM plan_entries x WHERE x.plan_id = p.id), 0)), '', ${openedOn}
+              MAX(0, ${c("p.total")} - COALESCE((SELECT SUM(CAST(ROUND((CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) * 100) AS INTEGER)) FROM plan_entries x WHERE x.plan_id = p.id), 0)), '', ${openedOn},
+              COALESCE(p.updated_at, p.created_at, ''), p.rowid
        FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL WHERE p.status = 'closed'`,
     );
   }
-  if (has("invoices")) parts.push(`SELECT 'invoice:' || i.id, i.account_id, i.issue_date, ${c("i.try_payable")}, '', '' FROM json_each(?1) j CROSS JOIN invoices i ON i.account_id = j.value WHERE i.status = 'issued' AND i.kind IN ('sale_return', 'purchase')`);
-  return store.all(`SELECT * FROM (${parts.join("\nUNION ALL\n")}) WHERE minor > 0`, list).map(row => ({ key: row.key, party: row.party, date: row.date, minor: Number(row.minor), target: row.target || "", openedOn: row.openedOn || "" }));
+  // Tek aday düzeltme turu (B1 hız; ders 47, 53 (a)): durum / tür koşulu dizin DIŞINDA (+) — planlayıcı carinin dizinini (idx_invoices_account) kullanır. Önceden idx_invoices_status'u
+  // seçip carinin her satırı için BÜTÜN kesilmiş iade / alış faturalarını dolaşıyordu (100 bin satırda tek cari ~16 ms); B1'in yevmiye yükleyicisi (writeOrder) bu sorguyu bir kez
+  // daha çağırdığından bağlı çek / tahsilat yazımı yavaşladı. Satır kümesi aynı (yalnız sıra / dizin seçimi).
+  if (has("invoices")) parts.push(`SELECT 'invoice:' || i.id, i.account_id, i.issue_date, ${c("i.try_payable")}, '', '', COALESCE(NULLIF(i.issued_at, ''), i.created_at, ''), i.rowid FROM json_each(?1) j CROSS JOIN invoices i ON i.account_id = j.value WHERE +i.status = 'issued' AND +i.kind IN ('sale_return', 'purchase')`);
+  // B1 (ders 31): at / seq — satırın yazım sırası (yazım anı, kaynak tablonun rowid'i); ayırıcı aynı gün aynı sınıfta bununla sıralar (lib/doubtful-gl.mjs by).
+  return store.all(`SELECT * FROM (${parts.join("\nUNION ALL\n")}) WHERE minor > 0`, list).map(row => ({ key: row.key, party: row.party, date: row.date, minor: Number(row.minor), target: row.target || "", openedOn: row.openedOn || "", at: row.at || "", seq: Number(row.seq) }));
 }
 
+// Bağlı evrakı olan cariler (linkedShares'in ön denetimi): evrakın carisi / ciro edilen / olayın carisi j listesindeyse ve evrakın faturaya bağlı bir olayı (invoice_id) varsa.
+export const LINKED_CHEQUE_PARTIES_SQL = `SELECT c.account_id AS id FROM json_each(?1) j CROSS JOIN cheques c ON c.account_id = j.value WHERE EXISTS (SELECT 1 FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.invoice_id <> '')
+  UNION SELECT c.endorse_account_id FROM cheques c WHERE c.endorse_account_id IN (SELECT value FROM json_each(?1)) AND EXISTS (SELECT 1 FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.invoice_id <> '')
+  UNION SELECT ev.account_id FROM cheque_events ev WHERE ev.account_id IN (SELECT value FROM json_each(?1)) AND ev.invoice_id <> '' AND EXISTS (SELECT 1 FROM cheques c WHERE c.id = ev.cheque_id)`;
 /**
  * 2.5.0 Ç5-A tur 3c (S14, S25 (a)(b)(c), S39, S168 = B; C5-ACILIS-TASARIM §19.1; BAŞ MİMAR KARARI K-1): ayırıcının (lib/doubtful-gl.mjs allocateDoubtful) `linked` geri çağrısı — İKİ yükleyici
  * (yevmiye: doubtfulRows → applyDoubtfulToJournal; SQL: doubtfulState) AYNISINI verir. Kuyruğun BAĞI olan cari satırı (Kapatılacak Fatura invoice_id — taksitli fatura hariç; faturaya bağlı
@@ -120,31 +140,57 @@ export function linkedShares(store, parties) {
   const ids = [...new Set(parties || [])];
   if (!ids.length || !hasTable(store, "account_entries")) return null;
   const list = JSON.stringify(ids);
-  const candidates = new Set(store.all("SELECT DISTINCT e.account_id AS id FROM json_each(?) j CROSS JOIN account_entries e ON e.account_id = j.value WHERE e.invoice_id <> '' AND e.kind = 'in'", list).map(row => row.id));
-  if (hasTable(store, "cheque_events") && hasTable(store, "cheques")) {
-    for (const row of store.all("SELECT DISTINCT j.value AS id FROM json_each(?) j WHERE EXISTS (SELECT 1 FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE ev.invoice_id <> '' AND (c.account_id = j.value OR c.endorse_account_id = j.value OR ev.account_id = j.value))", list)) candidates.add(row.id);
+  // TEK ADAY HIZ (t3hiz): aday kümesi de işlem dışı bellekte (aynı veri durumu, aynı cari listesi → aynı küme; linkedMemoOf).
+  const memo = linkedMemoOf(store);
+  const remembered = memo?.candidates.get(list);
+  const candidates = remembered || new Set(store.all("SELECT DISTINCT e.account_id AS id FROM json_each(?) j CROSS JOIN account_entries e ON e.account_id = j.value WHERE e.invoice_id <> '' AND e.kind = 'in'", list).map(row => row.id));
+  if (!remembered && hasTable(store, "cheque_events") && hasTable(store, "cheques")) {
+    // 2.5.0 TEK ADAY HIZ (t3hiz; ders 47): koşul AYNI (faturaya bağlı olayı olan evrakın carisi / ciro edileni / olayın carisi), ama kollar ayrı — önceki tek EXISTS her cari için
+    // bütün olayları evrakıyla dolaşıyordu (100 bin satırda cari başına ~13 ms; şüpheli kaydı olan her şirkette HER yazımın kapısında). Evrakın carisi idx_cheques_account'tan; ciro edilen ve
+    // olayın carisi dizinsiz kolonlar → tek tarama (cari sayısından bağımsız). Eşdeğerlik test/t3hiz-esdegerlik-250.test.mjs (eski sorgu hakem; bütün cariler kümesinde de).
+    // Küme BİRLEŞİMDİR: bağlı tahsilatı olduğu için zaten aday olan cari evrak sorgusuna sorulmaz (yazımın kapısında tek bağlı carisi → sorgu hiç koşmaz).
+    const rest = ids.filter(id => !candidates.has(id));
+    if (rest.length) for (const row of store.all(LINKED_CHEQUE_PARTIES_SQL, JSON.stringify(rest))) candidates.add(row.id);
   }
+  if (!remembered) memo?.candidates.set(list, candidates);
   if (!candidates.size) return null;
   let input = null;
   let lines = null;
   let plans = null;
   const bases = new Map();
-  const baseOf = party => {
-    if (bases.has(party)) return bases.get(party);
-    input ||= createObligationInput({ store });
-    lines ||= createAccountLines({ store });
-    plans ||= lines.ledgerPlansOf([...candidates]);
-    const ledger = input.ledgerLines({ ids: [party], plans }).get(party) || [];
-    const base = input.withExtras(input.accountSettleInput(party, ledger, ""), input.obligationExtras(party, new Map()), party);
-    bases.set(party, base);
-    return base;
-  };
   // Kesitin aynı gün kuralı (§19.1): ayırıcıya giren alacak satırı ayırıcının işlediği kadarıyla; ref biçimi ayırıcınınki (account:<satır> / plan-entry:… / plan-close:… / invoice:<fatura>).
   const refOfLine = line => (line.origin === "plan" ? String(line.id) : line.origin === "invoice" ? `invoice:${line.sourceId}` : `account:${line.id}`);
+  // Cari başına kurulum (girdi + satırın günü + aynı günün satırları + kesit belleği). TEK ADAY HIZ (t3hiz): işlem DIŞINDA, aynı veri durumunda (total_changes · data_version) ÇAĞRILAR
+  // ARASINDA paylaşılır (linkedMemoOf); işlem içinde her çağrı kendi kurar (bugünkü gibi).
+  const baseOf = party => {
+    if (bases.has(party)) return bases.get(party);
+    const memo = linkedMemoOf(store);
+    let entry = memo?.entries.get(party);
+    if (!entry) {
+      input ||= createObligationInput({ store });
+      lines ||= createAccountLines({ store });
+      plans ||= lines.ledgerPlansOf([...candidates]);
+      const ledger = input.ledgerLines({ ids: [party], plans }).get(party) || [];
+      const base = input.withExtras(input.accountSettleInput(party, ledger, ""), input.obligationExtras(party, new Map()), party);
+      // dayOf: kesit satırının günü — doubtfulBefore gibi İLK eşleşen satırdan (lines.find); sameDay: o günün bütün satırları (include yalnız onlar için sorulur).
+      const sameDay = new Map();
+      const dayOf = new Map();
+      for (const line of base.lines || []) {
+        if (!sameDay.has(line.date)) sameDay.set(line.date, []);
+        sameDay.get(line.date).push(line);
+        if (!dayOf.has(line.id)) dayOf.set(line.id, line.date);
+      }
+      entry = { base, dayOf, sameDay, cuts: new Map() };
+      memo?.entries.set(party, entry);
+    }
+    bases.set(party, entry);
+    return entry;
+  };
   return (credit, view) => {
     const ref = String(credit.ref ?? credit.key ?? "");
     if (!ref.startsWith("account:") || !candidates.has(credit.party)) return null;
-    const base = baseOf(credit.party);
+    const entry = baseOf(credit.party);
+    const { base } = entry;
     const lineId = ref.slice("account:".length);
     const invoiceId = base.links.get(lineId);
     if (!invoiceId) return null;
@@ -152,9 +198,35 @@ export function linkedShares(store, parties) {
       const key = refOfLine(line);
       return view.known?.has(key) ? view.done.has(key) : undefined;
     };
+    // Kesit belleği (TEK ADAY HIZ, t3hiz): doubtfulBefore SAF işlevdir — sonucu girdi (bu kurulum), kesit satırı, aynı gün satırlarının include değeri ve açık kayıtların o anki kalanıyla
+    // BELİRLİ; anahtar bu dördünü (kurulum = bellek girdisinin kendisi) taşır. Aynı veri durumunda iki yükleyici / birkaç çağıran (cari kartı, Mizan) kesiti bir kez kurar.
+    const day = entry.dayOf.get(lineId);
+    const cutKey = `${lineId}|${(entry.sameDay.get(day) || []).map(line => { const value = include(line); return value === true ? "1" : value === false ? "0" : "-"; }).join("")}|${JSON.stringify(view.open)}`;
+    const known = entry.cuts.get(cutKey);
+    if (known) return known;
     const held = doubtfulBefore({ ...base, doubtfulRecords: view.open }, { lineId, include });
-    return held.get(`inv:${invoiceId}`)?.records || [];
+    const out = Object.freeze((held.get(`inv:${invoiceId}`)?.records || []).map(item => Object.freeze({ ...item })));
+    entry.cuts.set(cutKey, out);
+    return out;
   };
+}
+
+// TEK ADAY HIZ (t3hiz; ders 47 — docs/erp/C5-ACILIS-TASARIM.md §19.9): linkedShares'in cari başına kurulumu bir veri tabanı İŞLEMİNİN DIŞINDA, aynı veri durumunda çağrılar arasında paylaşılır.
+// Anahtar şirketin store'u + total_changes() · data_version (lib/account-lines.mjs returnCuts, lib/obligation-input.mjs lockResolver ile AYNI kural): bu bağlantının her yazımı (store dışı
+// db.prepare / exec dahil) total_changes'ı, başka bağlantının kesinleşen yazımı data_version'ı değiştirir. İşlem içinde (ya da açık kalmış işlemde) bellek ne okunur ne yazılır — geri alınan
+// işlemde total_changes azalmaz (GG2). YALNIZ TEST: LINKED_MEMO_TEST.off belleği kapatır (eşdeğerlik testi bellekli ↔ belleksiz).
+const LINKED_MEMO = new WeakMap();
+export const LINKED_MEMO_TEST = { off: false };
+function linkedMemoOf(store) {
+  if (LINKED_MEMO_TEST.off || store.inTransaction || typeof store.changeCounters !== "function") return null;
+  const counters = store.changeCounters();
+  const stamp = `${counters.total}|${counters.version}`;
+  let memo = LINKED_MEMO.get(store);
+  if (!memo || memo.stamp !== stamp) {
+    memo = { stamp, entries: new Map(), candidates: new Map() };
+    LINKED_MEMO.set(store, memo);
+  }
+  return memo;
 }
 
 /** Kayıtlar + karşılıklar + SQL alacak satırlarıyla ayırma: { records, provisions, state, allocations }. */
@@ -297,11 +369,13 @@ export function doubtfulSummary(store, accountId) {
  * kalanı olan kayıtların carisi → { openMinor, provisionMinor, count }; totals bütün carilerin toplamı. Şüpheli hiç kullanılmamışsa tek sorgu
  * (doubtfulUsed) ve boş sonuç — listeler ve ANLIK DURUM bu yardımcıyı her istekte çağırır.
  */
-export function doubtfulOpenByAccount(store) {
+export function doubtfulOpenByAccount(store, { parties = null } = {}) {
   const byAccount = new Map();
   const totals = { openMinor: 0, provisionMinor: 0, count: 0, accountCount: 0 };
   if (!doubtfulUsed(store)) return { byAccount, totals };
-  const { records, state } = doubtfulState(store);
+  // TEK ADAY HIZ (t3hiz; ders 47): parties verilirse yalnız o cariler (cari servisinin ids'li listesi — kartın bakiye / sınır okuması); ayırıcı cari başına bağımsız koşar → her carinin
+  // satırı bütün şirket okumasındakiyle AYNI (totals yalnız verilen carilerin toplamı). Eşdeğerlik test/t3hiz-esdegerlik-250.test.mjs.
+  const { records, state } = doubtfulState(store, parties ? { parties } : {});
   for (const record of records) {
     const s = state.get(record.id);
     if (!s || s.remaining <= 0) continue;
@@ -652,5 +726,5 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
   }
   /** Cari satırının (account_entries) ayırma kuralıyla şüpheli kayıtlara düşen kuruşu (kontrol turu 2 K3; routes/accounts.mjs assertNormalRoom). */
   const allocatedMinor = (accountId, entryId) => (doubtfulState(store, { parties: [accountId] }).allocations.get(`account:${entryId}`)?.records || []).reduce((sum, item) => sum + item.minor, 0);
-  return { recordRow, listFor, report, summary: accountId => doubtfulSummary(store, accountId), openByAccount: () => doubtfulOpenByAccount(store), headroom, allocatedMinor, take, release, provision, writeOff, remove, removeProvision, removeWriteOff, restore, assertNone, statusOf: doubtfulStatusOf };
+  return { recordRow, listFor, report, summary: accountId => doubtfulSummary(store, accountId), openByAccount: (options = {}) => doubtfulOpenByAccount(store, options), headroom, allocatedMinor, take, release, provision, writeOff, remove, removeProvision, removeWriteOff, restore, assertNone, statusOf: doubtfulStatusOf };
 }

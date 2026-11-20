@@ -1,0 +1,50 @@
+AYRIŞTIRMA d2 (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/temiz-100k) · kilitsiz · tekrar 5 · yollar mtest,yevall · kilit 12:24:09 · yük 1.50 1.22 1.36
+=== ana · başta 1.50 1.22 1.36 1/116 28553 
+kod /dev/shm/t3hiz/k-ana · yük (başta) 1.33 1.20 1.35 · TZ Europe/Istanbul
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7313 ms · ortanca 7529.7 ms · olay döngüsü en çok 8317.3 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 3046.7 ms · ortanca 3299.9 ms · olay döngüsü en çok 3525.3 ms (n=5)
+yük (sonda) 1.81 1.34 1.39
+çıkış 0 · sonda 1.81 1.34 1.39 1/122 28691
+=== a3 · başta 1.81 1.34 1.39 1/122 28696 
+kod /dev/shm/t3hiz/k-a3 · yük (başta) 1.59 1.33 1.38 · TZ Europe/Istanbul
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7152.6 ms · ortanca 7566.9 ms · olay döngüsü en çok 8933.9 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 2953.1 ms · ortanca 3119.9 ms · olay döngüsü en çok 3248.5 ms (n=5)
+yük (sonda) 1.24 1.27 1.36
+çıkış 0 · sonda 1.24 1.27 1.36 1/119 28723
+=== s1 · başta 1.24 1.27 1.36 1/119 28728 
+kod /dev/shm/t3hiz/k-s1 · yük (başta) 1.17 1.25 1.35 · TZ Europe/Istanbul
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7198.2 ms · ortanca 7606.1 ms · olay döngüsü en çok 8673.8 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 3057.9 ms · ortanca 3212.4 ms · olay döngüsü en çok 3269.5 ms (n=5)
+yük (sonda) 1.35 1.30 1.36
+çıkış 0 · sonda 1.35 1.30 1.36 1/122 28762
+=== uc2 · başta 1.35 1.30 1.36 1/122 28767 
+kod /dev/shm/t3hiz/k-uc2 · yük (başta) 1.50 1.34 1.37 · TZ Europe/Istanbul
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7272.4 ms · ortanca 7593.1 ms · olay döngüsü en çok 8900.3 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 3019.6 ms · ortanca 3097.6 ms · olay döngüsü en çok 3284.1 ms (n=5)
+yük (sonda) 1.28 1.30 1.35
+çıkış 0 · sonda 1.28 1.30 1.35 1/120 28796
+=== ana · başta 1.28 1.30 1.35 1/123 28804 
+kod /dev/shm/t3hiz/k-ana · yük (başta) 1.26 1.29 1.35 · TZ Europe/Istanbul
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7091.3 ms · ortanca 7155.5 ms · olay döngüsü en çok 8145.3 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 2988.8 ms · ortanca 3109.8 ms · olay döngüsü en çok 3158.3 ms (n=5)
+yük (sonda) 1.15 1.26 1.33
+çıkış 0 · sonda 1.15 1.26 1.33 1/121 28832
+=== a3 · başta 1.14 1.25 1.33 1/121 28837 
+kod /dev/shm/t3hiz/k-a3 · yük (başta) 1.10 1.23 1.32 · TZ Europe/Istanbul
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7103.2 ms · ortanca 7575.6 ms · olay döngüsü en çok 8346.7 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 2909 ms · ortanca 3045.4 ms · olay döngüsü en çok 3284.1 ms (n=5)
+yük (sonda) 1.10 1.21 1.31
+çıkış 0 · sonda 1.10 1.21 1.31 1/125 28872
+=== s1 · başta 1.10 1.21 1.31 1/125 28877 
+kod /dev/shm/t3hiz/k-s1 · yük (başta) 1.13 1.21 1.31 · TZ Europe/Istanbul
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7174.3 ms · ortanca 7255.3 ms · olay döngüsü en çok 8338.3 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 3074.5 ms · ortanca 3168.3 ms · olay döngüsü en çok 3166.7 ms (n=5)
+yük (sonda) 1.05 1.17 1.29
+çıkış 0 · sonda 1.05 1.17 1.29 1/119 28903
+=== uc2 · başta 1.05 1.17 1.29 1/119 28908 
+kod /dev/shm/t3hiz/k-uc2 · yük (başta) 1.04 1.16 1.28 · TZ Europe/Istanbul
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7322.6 ms · ortanca 7342.5 ms · olay döngüsü en çok 8472.5 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 3071.4 ms · ortanca 3101 ms · olay döngüsü en çok 3099.6 ms (n=5)
+yük (sonda) 1.15 1.18 1.27
+çıkış 0 · sonda 1.15 1.18 1.27 1/119 28949
+bitti 12:34:28

@@ -1,0 +1,36 @@
+p = 'server/lib/bank/money-lines.mjs'
+s = open(p).read()
+old = s[s.index("  function periodGroups({ from = \"\", to = \"\" } = {}) {"):s.index("  /**\n   * 2.5.0 Ç7a tur 2 (K-14 / K-15, S179 = A): \"açılışta sayılmış\" hesabı atanmamış satırların işaretli toplamı")]
+new = '''  // TEK ADAY HIZ (t3hiz; ders 47 — docs/erp/C5-ACILIS-TASARIM.md §19.9 (5)): Ç7a tur 2'nin "açılışta sayılmış" ayrımı bütün para satırlarında satır başına yol ifadesiyle (CASE WHEN COVER_SQL)
+  // ve Devir Kapanışı işaret kolonuyla gruplanıyordu (100 bin satırda +35 ms). SONUÇ AYNI: ham gruplar eski (Ç7a öncesi) sorguyla, açılışta sayılmış satırlar AYRI — bağsız satırların kısmi
+  // dizininden (coveredTotal ile aynı küme: COVER_SQL yalnız hesabı atanmamış — ref '' — havale / kart yolunu kapsar) — yol bazında; o yolun ('', ref) grubundan düşülür, 'opening' grubuna
+  // eklenir; satırı kalmayan grup düşer; sıra eski ORDER BY 1, w.ref (SQLite BINARY = UTF-8 bayt sırası). Eşdeğerlik test/t3hiz-esdegerlik-250.test.mjs (Ç7a sorgusu hakem).
+  const PERIOD_SUMS = `COALESCE(SUM(CASE WHEN :pfrom <> '' AND w.date < :pfrom THEN (CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END) ELSE 0 END), 0) AS opening,
+        COALESCE(SUM(CASE WHEN (:pfrom = '' OR w.date >= :pfrom) AND w.kind = 'in' THEN w.cents ELSE 0 END), 0) AS debit,
+        COALESCE(SUM(CASE WHEN (:pfrom = '' OR w.date >= :pfrom) AND w.kind <> 'in' THEN w.cents ELSE 0 END), 0) AS credit, COUNT(*) AS n`;
+  function periodGroups({ from = "", to = "" } = {}) {
+    const base = store.all(`SELECT w.way AS way, w.ref AS ref, ${PERIOD_SUMS} FROM (${waySql({ light: true, until: to })}) w GROUP BY w.way, w.ref`, { ...params({ until: to }), pfrom: from });
+    // 2.5.0 Ç7a tur 2 (S179 = A): "açılışta sayılmış" hesabı atanmamış satırlar yol "opening" (Alt Hesap Mizanı 102.00 / 108.00'a girmez; defterde 519).
+    const covered = store.all(`SELECT w.way AS way, w.ref AS ref, ${PERIOD_SUMS} FROM (${waySql({ light: true, until: to, unbound: true, cover: true })}) w WHERE ${COVER_SQL} GROUP BY w.way, w.ref`, { ...params({ until: to }), pfrom: from, ...coverParams(coverBounds(store)) });
+    const groups = new Map(base.map(row => [`${row.way}\\u0000${row.ref}`, { ...row }]));
+    const add = (key, way, ref, row, sign) => {
+      const group = groups.get(key) || { way, ref, opening: 0, debit: 0, credit: 0, n: 0 };
+      group.opening += sign * row.opening;
+      group.debit += sign * row.debit;
+      group.credit += sign * row.credit;
+      group.n += sign * row.n;
+      groups.set(key, group);
+    };
+    for (const row of covered) {
+      add(`${row.way}\\u0000${row.ref}`, row.way, row.ref, row, -1);
+      add(`opening\\u0000${row.ref}`, "opening", row.ref, row, 1);
+    }
+    const bytes = value => Buffer.from(String(value ?? ""), "utf8");
+    return [...groups.values()]
+      .filter(group => group.n > 0)
+      .sort((a, b) => Buffer.compare(bytes(a.way), bytes(b.way)) || Buffer.compare(bytes(a.ref), bytes(b.ref)))
+      .map(({ way, ref, opening, debit, credit }) => ({ way, ref, opening, debit, credit }));
+  }
+'''
+s = s.replace(old, new)
+open(p, 'w').write(s)

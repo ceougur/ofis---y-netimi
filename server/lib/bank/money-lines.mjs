@@ -532,8 +532,62 @@ export function createMoneyLines(store, { verify = false } = {}) {
     const row = store.get(`SELECT COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, unbound: true, cover: true })}) w WHERE ${COVER_SQL}`, coverParams(coverBounds(store)));
     return { cents: Number(row?.cents) || 0, count: Number(row?.count) || 0 };
   }
-  /** Yol bazında bakiye (kuruş): { cash, bank, card, ccard, loan, unknown, all }. */
-  function balances(list = rawGroups()) {
+  /**
+   * 2.5.0 tek aday düzeltme turu (G1 hız; ders 47, 53 (a)): "açılışta sayılmış" hesabı atanmamış satırların YOL bazında işaretli toplamı (kuruş; giriş +, çıkış −) —
+   * { [yol]: { cents, before } }; before: verilen günden ÖNCEKİ satırların payı. coveredTotal ile AYNI küme (COVER_SQL, bağsız kısmi indeks), TEK okuma; unassignedWays gibi veri
+   * damgasıyla saklanır (Banka ve POS Hareketleri'nin Tüm Hesaplar seçimi: devir, dönem sonu ve "(tüm hareketler)" satırları bu payı düşer).
+   */
+  // G1 hız 3 (tek aday düzeltme turu, ders 47, 53 (a)): coveredWays artık AYRI bir tarama yapmaz — Kasa'nın balances()'ının da okuduğu saklı okumadan (coverGroups) türer. Önceden
+  // Banka ve POS Hareketleri'nin Tüm Hesaplar seçimi Kasa raporunun (cash().report → balances) taramasına ek olarak bütün para satırlarını bir kez daha tarıyordu (bağsız
+  // satırların kısmi indeksi veride yok; 100 bin satırda ~170 ms, her yazımdan sonraki ilk açılışta). Sonuç birebir aynı (eşdeğerlik: test/hesapsiz-tumu-250 'G1 hız 3').
+  function coveredWays({ before = "" } = {}) {
+    const ways = {};
+    for (const group of coverGroups()) {
+      if (!group.covered) continue;
+      const item = (ways[group.way] ||= { cents: 0, before: 0 });
+      item.cents += group.cents;
+      // SQL'in "w.date < :cfrom" karşılaştırmasıyla aynı: boş gün (NULL) öncesine sayılmaz; '' sınır hiçbir günü kapsamaz.
+      if (group.day !== null && group.day < before) item.before += group.cents;
+    }
+    return ways;
+  }
+  /**
+   * G1 hız 3: yol × hesap bazında HAM toplam — "açılışta sayılmış" (COVER_SQL; yalnız hesabı atanmamış banka / POS satırı) satırlar GÜN başına ayrı grupta — TEK okumada:
+   * [{ way, ref, covered: 0 | 1, day (sayılmış satırın günü; öbüründe null), cents, count }]. balances() (Kasa raporu, Banka ve POS Hareketleri) yol toplamını, coveredWays sayılmış
+   * payı (ve verilen günden öncekini) buradan okur: aynı istekte tek tarama. Veri damgasıyla saklanır (işlemin içinde saklanmaz — totals'ın kuralı; sınırlar anahtarda).
+   */
+  // saved: yalnız saklı (geçerli damgalı) değer — yoksa null, okuma yapılmaz (balances: Kasa penceresi kendi başına eski okumasıyla, rawGroups).
+  function coverGroups({ saved = false } = {}) {
+    const stamp = stampOf();
+    const cover = coverBounds(store);
+    const key = `|cover-groups|${cover.bank}|${cover.card}|${cover.pos}|${cover.carry}|${cover.off ? 1 : 0}`;
+    const hit = stamp ? totals.get(key) : null;
+    if (hit && hit.stamp === stamp) return hit.list;
+    if (saved) return null;
+    const list = store
+      .all(
+        // İç sorgu (LIMIT -1: düzleştirilmez) yolu ve sayılmış işaretini satır başına BİR kez hesaplar — COVER_SQL yolu (w.way, hesabın türüne bakan CASE) dört kez anar; düz
+        // yazımda her anışta yeniden hesaplanıyordu. Ön koşul w.method IN ('bank', 'card') COVER_SQL'in gereğidir (yol bank / card ⇒ yöntem bank / card; fiş satırında rolden):
+        // nakit satırında koşul hiç hesaplanmaz. Sonuç düz yazımla birebir (eşdeğerlik testi).
+        `SELECT v.way AS way, v.ref AS ref, v.covered AS covered, CASE WHEN v.covered = 1 THEN v.date END AS day,
+                COALESCE(SUM(CASE WHEN v.kind = 'in' THEN v.cents ELSE -v.cents END), 0) AS cents, COUNT(*) AS count
+         FROM (SELECT w.way AS way, w.ref AS ref, w.kind AS kind, w.cents AS cents, w.date AS date, CASE WHEN w.method IN ('bank', 'card') AND ${COVER_SQL} THEN 1 ELSE 0 END AS covered
+               FROM (${waySql({ light: true, cover: true })} LIMIT -1) w LIMIT -1) v
+         GROUP BY 1, 2, 3, 4`,
+        coverParams(cover),
+      )
+      .map(group => ({ way: group.way, ref: group.ref, covered: Number(group.covered) || 0, day: group.day ?? null, cents: Number(group.cents) || 0, count: Number(group.count) || 0 }));
+    if (stamp && keep()) {
+      if (totals.size > 200) totals.clear();
+      totals.set(key, { stamp, list });
+    }
+    return list;
+  }
+  /**
+   * Yol bazında bakiye (kuruş): { cash, bank, card, ccard, loan, unknown, all }. G1 hız 3: varsayılan okuma coverGroups'un SAKLI değeri varsa ondan (rawGroups'la aynı toplamlar;
+   * Banka ve POS Hareketleri Tüm Hesaplar seçimi önce onu okur), yoksa rawGroups — Kasa penceresi / Kasa raporları kendi başına eskisi gibi (daha geniş okumayı ödemez).
+   */
+  function balances(list = coverGroups({ saved: true }) || rawGroups()) {
     const out = Object.fromEntries(WAYS.map(way => [way, 0]));
     for (const group of list) out[group.way] = (out[group.way] || 0) + Number(group.cents);
     out.all = WAYS.reduce((sum, way) => sum + out[way], 0);
@@ -781,7 +835,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
     return out;
   }
 
-  return { lines, rows, shape, classified, classifiedTotals, keyTotals, wayBalance, firstDate, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, rawGroups, coveredTotal, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
+  return { lines, rows, shape, classified, classifiedTotals, keyTotals, wayBalance, firstDate, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, rawGroups, coveredTotal, coveredWays, coverGroups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
     schema = null;
     totals.clear();
   } };

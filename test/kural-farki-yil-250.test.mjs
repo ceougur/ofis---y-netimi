@@ -287,6 +287,17 @@ describe("Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, 
       const v9 = await view();
       same(v9, i9, "yeniden kilit");
       assert.deepEqual(lineText(v9.lines), ["A 500 700", "B 681 700"], "2026'nın fazla düzeltmesi 2027'de önceki yıla ait (M7: borç yönlü 681)");
+      // Tek aday düzeltme turu (dar kontrol t3c7a DÜŞÜK — N11): kilit TAM fişin günündeyse (kilit = 06.10.2026 = fiş 1'in tarihi) fiş de kilitli dönemdedir (kilit günü dahil
+      // kapalı) — ipucu yine ekranda yapılabilen yolu söyler, ters kaydı önermez. Sonra kilit 31.12'ye döner (adım 7 değişmez).
+      await lock("2026-10-06");
+      const iSame = await item();
+      assert.ok(iSame?.correction?.over === true, `kilit = fiş günü: fazla: ${JSON.stringify(iSame)}`);
+      assert.match(iSame.hint, /Fişin tarihi kilitli dönemde olduğu için ters kaydı yazılamaz/, "kilit günü = fiş günü: fiş kilitli sayılır");
+      assert.doesNotMatch(iSame.hint, /ters kaydedin/);
+      const sameDayReverse = await api.post(`/api/admin/ledger/vouchers/${p1.voucher.id}/reverse`, { requestId: rid() });
+      assert.equal(sameDayReverse.status, 409, "kilit günündeki fişin tarihsiz ters kaydı yazılmaz (ipucu doğru yolu söylüyor)");
+      assert.equal(sameDayReverse.data?.code, "period-locked");
+      await lock("2026-12-31");
 
       // 7) BUGÜNKÜ DAVRANIŞ (KODLANMADI — tur 2e raporunda KULLANICIYA SORULMALI): 2026'nın fişi 2027'de TERS kaydedilirse ters kaydın satırları ASIL fişin yılına sayılır ("ters
       // kaydedilmiş fiş sayılmaz" — taban ile aynı); fiş ve tersi birbirini götürür, kural farkı öğesi kalmaz. Defterde ters kayıt 2027'nin 602'sine yazılır. Karar değişirse bu beklenti değişir.

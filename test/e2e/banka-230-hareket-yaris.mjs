@@ -277,6 +277,8 @@ try {
   ok(errors.length === 0, `sayfa hatası yok${errors.length ? `: ${errors.slice(0, 5).join(" | ")}` : ""}`);
   console.log(`\nön koşulu oluşan deneme: ${metAttempts}; ön koşulu oluşmayan (yeniden denenen) deneme: ${noPrecondition}; ${ATTEMPTS} denemede ön koşulu hiç oluşmayan varyant: ${unmetVariants}; başka oturumun masrafı: ${others}; adım: ${stepName}`);
   console.log(`\n${failed ? "✗" : "✓"} banka-230-hareket-yaris: ${passed} geçti, ${failed} kaldı`);
+  // Kapanışta uçuşta kalan yakalanmış istek route.fetch / fulfill sırasında "context disposed" fırlatmasın (CI #1083, ubuntu-24.04 + Node 24; zorla üretildi 20.11).
+  await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
   await browser.close();
   await app.close();
   rmSync(root, { recursive: true, force: true });

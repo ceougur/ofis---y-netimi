@@ -1,0 +1,32 @@
+{
+  "ad": "t3duz-surucu-r2-taban",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/muhasebe-surucu/kos.mjs --senaryo rastgele-2,rastgele-3,s117,s42-,s81-,s105- --program /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/taban --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d3/surucu/r2-taban --veri /dev/shm/t3duz-d3/sv-r2-taban",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T07:07:47.416Z",
+  "sure_sn": 181.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1346,
+    "gecen": 1092,
+    "basarisiz": 230,
+    "iptal": 0,
+    "atlanan": 24
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 230 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../k/2026-11-20/t3duz-surucu-r2-taban.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d3/s4c",
+  "ham_cikti_sha256": "4338e6303a98fca61923164bf0225ae1ce5f3df41b779f5ef5a42abdc97eb364",
+  "ham_cikti_bayt": 31754
+}

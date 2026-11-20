@@ -87,6 +87,13 @@ export const EXCEPTIONS = new Map([
   // 2.5.0 Ç7b tur 2d — BEKLENTİ BİLEREK DEĞİŞTİ (tur 2c kararı (2), BAŞ MİMAR KARARI 19.11 06:39; C7B-FATURA-TASARIM §14.6): mahsubun kural sürümü (vat_offsets.rule_version) artık KİLİT
   // İZİNDE (lib/integrity.mjs vat_offsets_rule_lock, since 2.5.2) — tur 2c'nin istisnası kaldırıldı. Geçiş günü ayarı (settings 'ledger.ruleShiftThrough') da izde (rule_shift_lock);
   // settings.value satırı (yukarıda) Ç7a KG-6'nın Banka Ayarları değeri için kalır.
+  // 2.5.0 tek aday düzeltme turu B1 (ders 31; lib/doubtful-gl.mjs by ↔ lib/bank/doubtful.mjs doubtfulCredits at / seq): şüpheli ayırıcısı aynı gün AYNI sınıftaki alacakları yazım
+  // sırasıyla işler — satırın yazım anı (faturada kesilme anı) → rowid. vat_offsets.created_at ve bütün rowid'lerle AYNI aile (yalnız aynı tarihli sıra; tutar / hesap / tarih değil):
+  // yazım anı satır yazılınca konur, programın hiçbir yolu değiştirmez; dış değişikliği kilitli dönemde donmuş defter (ledger:snapshot) ve Kural Değişikliği Farkı görür. SINIF 3 (§16.3).
+  ["account_entries.created_at", "SINIF 3 — B1: aynı gün alacak sırası (yazım anı; §16.3, ders 31)"],
+  ["plan_entries.created_at", "SINIF 3 — B1: aynı gün alacak sırası (yazım anı; §16.3, ders 31)"],
+  ["invoices.created_at", "SINIF 3 — B1: aynı gün alacak sırası (iade / alış faturasının yazım anı; §16.3, ders 31)"],
+  ["invoices.issued_at", "SINIF 3 — B1: aynı gün alacak sırası (iade / alış faturasının kesilme anı; §16.3, ders 31)"],
 ]);
 // Bütün tabloların rowid'i: aynı tarihli satır sırası (SINIF 3, §16.3) — ayrı kural (aşağıda).
 // Satırları tetikleyiciyle değiştirilemeyen tablolar (değiştirme girişimi ABORT): donmuş defter (C3 §3; kaynak / satır bozukluğu ledger:snapshot) ve saklanan fiş (Ç2; ledger_vouchers_lock).

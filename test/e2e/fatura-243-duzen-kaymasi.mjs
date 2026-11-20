@@ -120,6 +120,8 @@ try {
 } finally {
   ok(errors.length === 0, `sayfa hatası yok${errors.length ? `: ${errors.slice(0, 5).join(" | ")}` : ""}`);
   console.log(`\n${failed ? "✗" : "✓"} fatura-243-duzen-kaymasi: ${passed} geçti, ${failed} kaldı`);
+  // Kapanışta uçuşta kalan yakalanmış istek route.fetch / fulfill sırasında "context disposed" fırlatmasın (CI #1083, ubuntu-24.04 + Node 24; zorla üretildi 20.11).
+  await context.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
   await browser.close();
   await app.close();
   rmSync(root, { recursive: true, force: true });

@@ -1,0 +1,548 @@
+// TEK ADAY DÜZELTME TURU (t3duz-uc) EKRAN YÜRÜYÜŞÜ — G1 (S214 = A: 'Banka ve POS Hareketleri' Tüm Hesaplar 'Açılışta Sayıldı'), S212 = A (önceden kapanmış faturaya
+// sonradan bağlı tahsilat; cari kartı + Şüpheli Alacaklar), S181 = B çek yolu iletisi. Kullanıcı gözüyle, arayüzden; ön koşullar API'den (nedeni yazılır). Sahte saat (ders 13).
+// Her bölümde BEKLENEN önce (girdilerden elle / karar metninden), sonra EKRAN ve DEFTER / VERİ TABANI. Pencere seçicisi TOP (ders 39). Ürün kodu değişmez.
+// Yardımcılar ana oturumun önceki tek aday yürüyüşünden (scratchpad/t3yy-yuruyus/yuruyus-t3c7a.mjs satır 7–278) AYNEN.
+// Kullanım: ROOT=<kod kökü> OUT=<klasör> HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=<…> node yuruyus-t3duz.mjs (tabanda da koşar).
+import fs from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const OUT = process.env.OUT;
+if (!ROOT || !OUT) throw new Error("ROOT ve OUT gerekli");
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { chromium } = await import(pathToFileURL(path.join(ROOT, "node_modules/playwright/index.mjs")).href);
+const { installPageClock, ADMIN_PASSWORD } = await imp("test/helpers.mjs");
+const { CURRENT, bootVersion } = await imp("test/guvenilirlik/surumler.mjs");
+const { escClose } = await imp("test/e2e/esc-kapat.mjs");
+fs.mkdirSync(OUT, { recursive: true });
+const MODAL = ".hof-modal-backdrop.is-visible";
+const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`; // ders 39
+const bankWin = ".hof-bank-modal";
+const accWin = ".hof-accounts-modal";
+const note = (...a) => console.log(...a);
+const UCLU = []; // [bölüm, ne, beklenen, ekran, defter/vt]
+const uclu = (bolum, ne, beklenen, ekran, vt) => {
+  UCLU.push([bolum, ne, String(beklenen), String(ekran), String(vt)]);
+  note(`  ▶ ÜÇLÜ [${bolum}] ${ne}: BEKLENEN ${beklenen} · EKRAN ${ekran} · DEFTER/VT ${vt}`);
+};
+const YARIDA = [];
+const YAZIM = new Set();
+const D_OZET = [];
+const browser = await chromium.launch();
+const roots = [];
+let page = null;
+let n = 0;
+let bolum = "";
+const shot = async name => {
+  n += 1;
+  const f = path.join(OUT, `${String(n).padStart(2, "0")}-${bolum}-${name}.png`);
+  await page?.screenshot({ path: f, fullPage: false }).catch(() => null);
+  note(`  [görüntü ${path.basename(f)}]`);
+  return f;
+};
+const closeAll = async () => {
+  for (let i = 0; i < 6 && page && (await page.$(MODAL)); i += 1) {
+    await escClose(page).catch(() => null);
+    await page.waitForTimeout(250);
+  }
+};
+const step = async (title, fn) => {
+  note(`\n■ [${bolum}] ${title}`);
+  try {
+    await fn();
+  } catch (e) {
+    const msg = String(e?.message || e).split("\n")[0];
+    note(`  ✗ ADIM YARIDA: ${msg}`);
+    YARIDA.push(`[${bolum}] ${title}: ${msg}`);
+    await shot("hata");
+    await closeAll().catch(() => null);
+  }
+};
+const flat = s => String(s || "").replace(/[ \t ]+/g, " ").replace(/\n+/g, " ¦ ").trim();
+const metin = async (sel, lim = 900) => flat(await page.locator(sel).first().innerText({ timeout: 3000 }).catch(() => "(yok)")).slice(0, lim);
+const var_ = async sel => Boolean(await page.$(sel));
+const tl = text => {
+  const m = /(−|-)?₺?\s?((?:\d{1,3}(?:\.\d{3})+|\d+),\d{2})/.exec(String(text || ""));
+  return m ? Number(m[2].replace(/\./g, "").replace(",", ".")) * (m[1] ? -1 : 1) : null;
+};
+const fmt = v => (v === null || v === undefined ? "?" : Number(v).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+// Yazım düzeni (CLAUDE.md): ekrandaki başlık / düğme / kolon adlarında küçük harfle başlayan sözcük (bağlaç dışı) — aday olarak yazılır, elle bakılır.
+const BAGLAC = new Set(["ve", "ile", "veya", "ya", "da", "de", "ki", "ta", "te", "mi", "için", "gün", "satır", "cari", "kalem"]);
+const yazimTara = async yer => {
+  const items = await page.$$eval(`${MODAL} th, ${MODAL} button, ${MODAL} h2, ${MODAL} h3, ${MODAL} h4, ${MODAL} .hof-field > span, .adm-card h2, .adm-card button`, ns => ns.map(x => (x.childNodes[0]?.textContent || x.textContent || "").replace(/\s+/g, " ").trim()).filter(t => t && t.length < 60 && !/[?.!:]$/.test(t))).catch(() => []);
+  for (const t of items) {
+    const bad = t.replace(/\([^)]*\)/g, "").split(/[\s/·–-]+/).filter(w => /^[a-zçğıöşü]/.test(w) && w.length > 1 && !BAGLAC.has(w) && !/^\d/.test(w));
+    if (bad.length) YAZIM.add(`${yer}: "${t}" (küçük harfli: ${bad.join(", ")})`);
+  }
+};
+
+// ---------- bölüm açılışı ----------
+async function bolumAc(ad, now, { dataDir = null, version = CURRENT } = {}) {
+  bolum = ad;
+  const root = fs.mkdtempSync(path.join(tmpdir(), `t3duz-yur-${ad}-`));
+  roots.push(root);
+  const server = await bootVersion(version, { dataDir: dataDir || path.join(root, "data"), backupDir: path.join(root, "backups"), now });
+  const app = server.app;
+  const api = await server.login();
+  const context = await browser.newContext({ viewport: { width: 1440, height: 950 }, locale: "tr-TR", timezoneId: "Europe/Istanbul" });
+  await context.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
+  page = await context.newPage();
+  page.setDefaultTimeout(15000);
+  page.on("pageerror", e => note(`  ! sayfa hatası: ${String(e.message).split("\n")[0]}`));
+  await installPageClock(page, app.config.now);
+  await page.goto(`${server.base}/`);
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", ADMIN_PASSWORD);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+  await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+  await page.waitForTimeout(1200);
+  return { server, app, api, base: server.base, context, root };
+}
+async function bolumKapat(S) {
+  await S.context.close().catch(() => null);
+  await S.server.close().catch(() => null);
+}
+const must = async (label, p) => {
+  const r = await p;
+  if (r.status !== 200) throw new Error(`${label}: ${r.status} ${JSON.stringify(r.data).slice(0, 300)}`);
+  return r.data;
+};
+const saatAl = async (S, iso) => {
+  S.app.config.now.set(iso);
+  await page.clock.setFixedTime(S.app.config.now.ms()).catch(() => null);
+  await page.reload({ waitUntil: "load" });
+  await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+  await page.waitForTimeout(1200);
+};
+// Defter (veri tabanı tarafı): programın canlı türetmesi (ledger.build) — satırlar kuruş.
+const defter = S => {
+  try {
+    return S.app.ledger.build();
+  } catch {
+    return S.app.ledger.book({});
+  }
+};
+const satir = l => `${l.account}${l.sub ? `/${l.sub}` : ""} ${l.debit ? `B ${fmt(l.debit / 100)}` : `A ${fmt(l.credit / 100)}`}`;
+const maddeler = (S, filt) => defter(S).filter(filt).map(e => `${e.date} ${e.id.split(":")[0]} [${e.lines.map(satir).join(" · ")}]`);
+const hesapBakiye = (S, code, { sub = null, to = null, from = null } = {}) => {
+  let d = 0;
+  for (const e of defter(S)) {
+    if ((to && e.date > to) || (from && e.date < from)) continue;
+    for (const l of e.lines) if (String(l.account) === code && (!sub || l.sub === sub)) d += (l.debit || 0) - (l.credit || 0);
+  }
+  return Math.round(d) / 100;
+};
+const mizan = async (S, from = "", to = "") => {
+  const d = await must("mizan", S.api.get(`/api/workspace/ledger?${new URLSearchParams({ ...(from ? { from } : {}), ...(to ? { to } : {}) })}`));
+  return Object.fromEntries(d.trial.accounts.map(r => [r.code, r.balance]));
+};
+const mutabakat = async S => {
+  const r = await S.api.get("/api/workspace/ledger/integrity");
+  const d = r.data;
+  const bad = (d?.failures || []).map(f => `${f.code}${f.notice ? "(uyarı)" : ""}`);
+  return `${r.status} ok=${d?.ok} ${bad.length ? `bulgu: ${bad.join(", ")}` : "bulgusuz"}`;
+};
+const anaEkran = async S => {
+  await closeAll();
+  await page.goto(`${S.base}/`, { waitUntil: "load" });
+  await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+  await page.waitForTimeout(1200);
+};
+const openReport = async (S, match) => {
+  await anaEkran(S);
+  await page.click('#hof-sidecard [data-action="analytics"]');
+  await page.waitForSelector(`${MODAL} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
+  await page.click(`${MODAL} .hof-rep-tab[data-tab="all"]`);
+  await page.waitForSelector(`${MODAL} [data-rc-list] [data-report]`, { timeout: 15000 });
+  const id = await page.$$eval(`${MODAL} [data-rc-list] [data-report]`, (ns, m) => ns.find(x => x.textContent.replace(/\s+/g, " ").trim().startsWith(m))?.getAttribute("data-report") || null, match);
+  if (!id) throw new Error(`rapor listede yok: ${match}`);
+  await page.click(`${MODAL} [data-rc-list] [data-report="${id}"]`);
+  await page.waitForFunction(sel => { const main = document.querySelector(`${sel} [data-rc-main]`); return main && main.getAttribute("aria-busy") !== "true" && main.querySelector(".hof-rc-table, .hof-rc-summary, .hof-empty") && !/Rapor hazırlanıyor/.test(main.innerText); }, MODAL, { timeout: 60000 });
+  await page.waitForTimeout(500);
+  return id;
+};
+const raporSatir = () => page.$$eval(`${MODAL} [data-rc-main] tr`, rows => rows.map(tr => [...tr.querySelectorAll("th,td")].map(td => td.textContent.replace(/\s+/g, " ").trim()).join(" | ")));
+const raporApi = async (S, id, q = {}) => must(`rapor ${id}`, S.api.get(`/api/workspace/report-center/${id}?${new URLSearchParams(q)}`));
+const sistem = async S => {
+  await closeAll();
+  await page.goto(`${S.base}/admin.html#system`, { waitUntil: "load" });
+  await page.click('.adm-tabs [data-tab="system"]').catch(() => null);
+  await page.waitForFunction(() => (document.querySelector("#adm-integrity-status")?.textContent || "").length > 10, null, { timeout: 90000 });
+  await page.waitForTimeout(700);
+  const kilit = await metin("#adm-period-status", 300);
+  const mut = await metin("#adm-integrity-status", 700);
+  note(`  Yönetim › Sistem · Dönem Kilidi: ${kilit}`);
+  note(`  Yönetim › Sistem · Mutabakat satırı: ${mut}`);
+  return { kilit, mut };
+};
+const kilitBekle = async (S, label) => {
+  for (let i = 0; i < 240; i += 1) {
+    const r = await S.api.get("/api/workspace/ledger/lock");
+    const f = r.data?.freeze;
+    if (!f?.active && !f?.pending && !f?.cleanup?.running) return note(`  dondurma bitti (${label}; ${i / 2} sn) · kilit ${r.data?.lockedUntil || "yok"} · donmuş ${r.data?.frozenThrough || "—"}`);
+    await new Promise(res => setTimeout(res, 500));
+  }
+  note(`  ! dondurma 120 sn'de bitmedi (${label})`);
+};
+const kilitEkrandan = async (S, value) => {
+  await sistem(S);
+  if (value) {
+    await page.fill("#adm-period-date", value);
+    await page.click("#adm-period-save");
+  } else {
+    await page.click("#adm-period-clear");
+    await page.waitForSelector(`${TOP} [data-answer="yes"]`, { timeout: 8000 });
+    note(`  SORU (kilidi kaldır): ${await metin(TOP, 300)}`);
+    await page.click(`${TOP} [data-answer="yes"]`);
+  }
+  await page.waitForTimeout(1500);
+  await kilitBekle(S, `kilit ${value || "kaldırıldı"}`);
+  const r = await S.api.get("/api/workspace/ledger/lock");
+  note(`  kilit (veri tabanı / API): ${r.data?.lockedUntil || "yok"}`);
+};
+// Formdaki soruyu (Benzer kayıt vb.) yanıtlayan yardımcı: her soru nedeniyle yazılır (ders 34).
+const soruYanitla = async (etiket, beklenen = "soru beklenmiyor") => {
+  let sayi = 0;
+  for (let i = 0; i < 3; i += 1) {
+    const s = await page.waitForSelector(`${TOP} [data-answer="yes"]`, { timeout: 2500 }).catch(() => null);
+    if (!s) break;
+    sayi += 1;
+    note(`  SORU (${etiket}; ${beklenen}): ${await metin(TOP, 400)} → Evet`);
+    await page.click(`${TOP} [data-answer="yes"]`);
+    await page.waitForTimeout(900);
+  }
+  if (!sayi) note(`  soru yok (${etiket}; ${beklenen})`);
+};
+const cariKart = async (S, id) => {
+  await anaEkran(S);
+  await page.click('#hof-sidecard [data-action="accounts"]');
+  await page.waitForSelector(`${accWin} tr[data-account="${id}"]`, { timeout: 20000 });
+  await page.click(`${accWin} tr[data-account="${id}"]`);
+  await page.waitForSelector(`${accWin} .hof-plan-head`, { timeout: 15000 });
+  await page.waitForTimeout(700);
+};
+// Cari kartından tahsilat: klavye (Tab) + insan hızı (ders 12).
+const tahsilatFormu = async ({ tutar, yol = null, tarih = null, fatura = null, pos = null }) => {
+  await page.click(`${accWin} [data-entry="in"]`);
+  await page.waitForSelector(`${TOP} .hof-form input[name="amount"]`);
+  await page.click(`${TOP} input[name="amount"]`);
+  await page.keyboard.type(tutar, { delay: 110 });
+  await page.keyboard.press("Tab");
+  note(`  Tab sonrası odak: ${await page.evaluate(() => document.activeElement?.getAttribute("name") || document.activeElement?.tagName)}`);
+  if (yol) {
+    await page.selectOption(`${TOP} select[name="method"]`, yol);
+    await page.waitForTimeout(400);
+  }
+  if (pos) {
+    // Tek POS varsa form onu kendiliğinden seçer (seçici çıkmaz; yardım metni "… POS'una yazılır"); birden çoksa seçilir.
+    const sec = await page.waitForSelector(`${TOP} select[name="posId"]`, { timeout: 2500 }).catch(() => null);
+    if (sec) await page.selectOption(`${TOP} select[name="posId"]`, pos);
+    else note("  POS seçicisi yok: tek POS kendiliğinden seçili");
+    await page.waitForTimeout(800);
+  }
+  if (tarih) {
+    await page.fill(`${TOP} input[name="date"]`, tarih);
+    await page.keyboard.press("Tab");
+  }
+  if (fatura) {
+    await page.selectOption(`${TOP} select[name="invoiceId"]`, fatura);
+    await page.focus(`${TOP} select[name="invoiceId"]`);
+    await page.keyboard.press("Tab");
+  }
+  await page.waitForTimeout(400);
+};
+const formGonder = async etiket => {
+  await page.click(`${TOP} .hof-form button[type="submit"]`);
+  await page.waitForTimeout(1200);
+  await soruYanitla(etiket);
+  const acik = await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible .hof-form input[name="amount"]'), null, { timeout: 8000 }).then(() => false).catch(() => true);
+  if (acik) {
+    const msg = await metin(TOP, 600);
+    note(`  FORM KAPANMADI (kayıt REDDEDİLDİ ya da hata): ${msg}`);
+    return { ok: false, msg };
+  }
+  return { ok: true };
+};
+const NOW_A = { time: "2026-10-08T12:00:00+03:00", fixed: true }; // Perşembe
+const gun = (base, off) => {
+  const d = new Date(`${base}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + off);
+  return d.toISOString().slice(0, 10);
+};
+
+note(`KOD KÖKÜ: ${ROOT}`);
+note(`ÇIKTI: ${OUT}`);
+
+// =====================================================================================================================================================
+// A — G1 (S214 = A): 'Banka ve POS Hareketleri' Hesap = Tüm Hesaplar — 'Açılışta Sayıldı' satırları işaretli, toplam = defter = kova
+// =====================================================================================================================================================
+const rcBekle = async () => {
+  await page.waitForTimeout(400);
+  await page.waitForFunction(sel => {
+    const main = document.querySelector(`${sel} [data-rc-main]`);
+    return main && main.getAttribute("aria-busy") !== "true" && main.querySelector(".hof-rc-table, .hof-rc-summary, .hof-empty") && !/Rapor hazırlanıyor/.test(main.textContent);
+  }, MODAL, { timeout: 30000 });
+  await page.waitForTimeout(600);
+};
+const rcSec = async (param, value) => {
+  await page.selectOption(`${MODAL} select[data-param="${param}"]`, value);
+  await rcBekle();
+};
+const rcOku = async etiket => {
+  const rows = await raporSatir();
+  const sayildi = rows.filter(r => /Açılışta Sayıldı/.test(r));
+  const toplam = rows.filter(r => /^(TOPLAM|Toplam|Dönem Sonu|Devir)/.test(r) || /Dönem Sonu|TOPLAM/.test(r));
+  note(`  [${etiket}] satır ${rows.length} · 'Açılışta Sayıldı' satırı ${sayildi.length}`);
+  for (const r of rows.slice(0, 16)) note(`    ${r.slice(0, 240)}`);
+  const ozet = await metin(`${MODAL} [data-rc-main] .hof-rc-summary`, 600);
+  note(`  özet: ${ozet}`);
+  return { rows, sayildi, toplam, ozet };
+};
+{
+  const S = await bolumAc("A", NOW_A);
+  const ids = {};
+  try {
+    note("\nBEKLENEN (A; S214 = A örneği, girdilerden elle; sahte saat 08.10.2026):");
+    note("  Hesap yokken ABC Ltd.: 20.09 havale giriş 5.000 (EKRANDAN), 25.09 havale çıkış 1.000, 22.09 POS giriş 3.000, 03.10 havale giriş 2.000 (API); Ziraat açılışı 01.10, 100.000.");
+    note("  20.09 ve 25.09 açılıştan önce → 'Açılışta Sayıldı' (net 4.000, defterde 519; toplama girmez). 22.09 POS (108; banka açılışı kapsamaz) ve 03.10 havale Hesabı Atanmamış'ta kalır.");
+    note("  Defter: 102 = 100.000 + 2.000 = 102.000; 108 = 3.000. Kova: Ziraat 100.000 + Hesabı Atanmamış 5.000 = 105.000.");
+    note("  'Banka ve POS Hareketleri' Tüm Hesaplar, Bu Yıl: Yol = Banka ve POS (Tümü) → Dönem Sonu 105.000, işaretli satır 2; Yol = Banka (Havale / EFT) → 102.000, işaretli 2; Yol = POS / Kredi Kartı → 3.000, işaretli 0.");
+    note("  TABANDA (düzeltme öncesi; dar kontrolün G1'i): Tümü 109.000 ve Havale 106.000, işaretli satır 0.");
+    await must("banka sihirbazını kapat", S.api.post("/api/workspace/bank/setup/dismiss", {}));
+    const abc = await must("ABC (ön koşul API)", S.api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-09-01" }));
+    ids.abc = abc.id;
+    await step("A1 Hesap yokken cari kartından + Tahsilat: 5.000, Tab, Havale / EFT, tarih 20.09 (klavye, insan hızı)", async () => {
+      await cariKart(S, abc.id);
+      await tahsilatFormu({ tutar: "5000", yol: "bank", tarih: "2026-09-20" });
+      await shot("hesapsiz-havale-formu");
+      const g = await formGonder("hesapsız havale");
+      uclu("A", "A1 hesapsız havale kaydı", "kabul", g.ok ? "form kapandı" : `RED: ${g.msg}`, JSON.stringify(S.app.store.get("SELECT amount, method, date FROM account_entries WHERE account_id = ? ORDER BY rowid DESC LIMIT 1", abc.id)));
+    });
+    await step("A2 Diğer hesapsız hareketler (API; geçmiş tarihli seri) + Ziraat açılışı 01.10 (API: hesap açma formu bu düzeltmenin konusu değil)", async () => {
+      const add = (label, body) => must(label, S.api.post(`/api/workspace/accounts/${abc.id}/entries`, { similarOk: true, ...body }));
+      await add("25.09 havale ödeme 1.000", { kind: "out", amount: "1.000", method: "bank", date: "2026-09-25" });
+      await add("22.09 POS 3.000", { kind: "in", amount: "3.000", method: "card", date: "2026-09-22" });
+      await add("03.10 havale 2.000", { kind: "in", amount: "2.000", method: "bank", date: "2026-10-03" });
+      const z = await must("Ziraat", S.api.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", opening: { date: "2026-10-01", amount: "100.000", confirmed: true } }));
+      ids.ziraat = z.id;
+      const sum = await must("özet", S.api.get("/api/workspace/bank/summary"));
+      note(`  kova (API): ${JSON.stringify(sum.unassigned || {})}`);
+      uclu("A", "A2 defter 102 · 108", "102.000 · 3.000", "—", `${fmt(hesapBakiye(S, "102"))} · ${fmt(hesapBakiye(S, "108"))} · 519 = ${fmt(hesapBakiye(S, "519"))}`);
+    });
+    const defterToplam = () => `102 + 108 = ${fmt(hesapBakiye(S, "102") + hesapBakiye(S, "108"))}`;
+    let rid;
+    await step("A3 Raporlar › Banka ve POS Hareketleri (açılışta: Hesap = Tüm Hesaplar, Yol = Banka ve POS (Tümü), Bu Yıl)", async () => {
+      rid = await openReport(S, "Banka ve POS Hareketleri");
+      const hesap = await page.$eval(`${MODAL} select[data-param="anyAccount"]`, x => x.options[x.selectedIndex]?.textContent.trim()).catch(() => "?");
+      const yol = await page.$eval(`${MODAL} select[data-param="payMethod"]`, x => x.options[x.selectedIndex]?.textContent.trim()).catch(() => "?");
+      note(`  süzgeç: Hesap = ${hesap} · Yol = ${yol}`);
+      const r = await rcOku("Tümü");
+      await shot("tum-hesaplar-tumu");
+      await yazimTara("A3 Banka ve POS Hareketleri");
+      const d = await raporApi(S, rid, { payMethod: "noncash", preset: "thisYear" });
+      note(`  API özet: ${JSON.stringify(d.summary || d.totals || {}).slice(0, 500)}`);
+      uclu("A", "A3 Tümü: işaretli satır · özet", "2 · Dönem Sonu 105.000", `${r.sayildi.length} · ${r.ozet.slice(0, 300)}`, defterToplam());
+    });
+    await step("A4 Yol = Banka (Havale / EFT)", async () => {
+      await rcSec("payMethod", "bank");
+      const r = await rcOku("Havale");
+      await shot("tum-hesaplar-havale");
+      uclu("A", "A4 Havale: işaretli satır · özet", "2 · Dönem Sonu 102.000", `${r.sayildi.length} · ${r.ozet.slice(0, 300)}`, `102 = ${fmt(hesapBakiye(S, "102"))}`);
+    });
+    await step("A5 Yol = POS / Kredi Kartı", async () => {
+      await rcSec("payMethod", "card");
+      const r = await rcOku("POS");
+      await shot("tum-hesaplar-pos");
+      uclu("A", "A5 POS: işaretli satır · özet", "0 · Dönem Sonu 3.000", `${r.sayildi.length} · ${r.ozet.slice(0, 300)}`, `108 = ${fmt(hesapBakiye(S, "108"))}`);
+    });
+    await step("A6 Hesap = Hesabı Atanmamış, Yol = Banka ve POS (Tümü) (düzeltmeden önce de doğruydu — tutarlılık)", async () => {
+      await rcSec("payMethod", "noncash");
+      const v = await page.$$eval(`${MODAL} select[data-param="anyAccount"] option`, ns => ns.map(o => [o.value, o.textContent.trim()]));
+      const un = v.find(([, l]) => /Atanmamış/.test(l));
+      note(`  Hesap seçenekleri: ${v.map(x => x[1]).join(" | ")}`);
+      if (!un) throw new Error("Hesabı Atanmamış seçeneği yok");
+      await rcSec("anyAccount", un[0]);
+      const r = await rcOku("Atanmamış");
+      await shot("atanmamis-tumu");
+      uclu("A", "A6 Atanmamış: işaretli satır · özet", "2 · Dönem Sonu 5.000", `${r.sayildi.length} · ${r.ozet.slice(0, 300)}`, "kova (A2 satırı)");
+    });
+    await step("A7 Mutabakat Testi", async () => {
+      uclu("A", "A7 Mutabakat Testi", "bulgusuz", "—", await mutabakat(S));
+    });
+  } catch (e) {
+    note(`HATA (A): ${e.stack || e}`);
+    YARIDA.push(`[A] bölüm: ${String(e.message).split("\n")[0]}`);
+  } finally {
+    await bolumKapat(S);
+  }
+}
+
+// =====================================================================================================================================================
+// B — S212 = A: şüpheliye almadan ÖNCE bağsız ödemeyle kapanmış faturaya, şüpheliye almadan SONRA bağlı tahsilat
+// =====================================================================================================================================================
+const NOW_B = { time: "2026-08-15T12:00:00+03:00", fixed: true }; // Cumartesi
+const gl = (S, id) => {
+  const b = { 120: 0, 128: 0 };
+  for (const e of defter(S)) for (const l of e.lines || []) if ((l.account === "120" || l.account === "128") && l.party === id) b[l.account] += l.debit - l.credit;
+  return `120 = ${fmt(b[120] / 100)}, 128 = ${fmt(b[128] / 100)}`;
+};
+const sale = async (S, acc, date, amount) => (await must("fatura", S.api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc, issueDate: date, lines: [{ name: "Hizmet", qty: 1, unitPrice: String(amount), vatRate: 0 }], payment: { rest: "open" } }))).id;
+{
+  const S = await bolumAc("B", NOW_B);
+  try {
+    note("\nBEKLENEN (B; S212 örneğinin aynısı, tarihler bu yıla taşındı; sahte saat 15.08.2026):");
+    note("  F1 1.000 (01.07), F2 1.000 (05.07), F3 2.000 (08.07); P1 bağsız nakit 1.000 (15.07; en eski F1'i kapatır); Şüpheliye Al 1.000 (01.08) → önce: 120 = 2.000, 128 = 1.000.");
+    note("  EKRANDAN P2 1.000 F1'e bağlı (10.08): S212 = A — bağ F1'i kapatır, P1 serbest kalır ve 15.07'de F2'yi kapatır; F1 şüpheliye alma gününde açık → P2 128'den düşer ⇒ 120 = 2.000, 128 = 0; şüpheli kaydı KAPANIR.");
+    note("  TABANDA (düzeltme öncesi, S212'nin B'si): 120 = 1.000, 128 = 1.000; şüpheli kaydı 1.000 açık.");
+    await must("banka sihirbazını kapat", S.api.post("/api/workspace/bank/setup/dismiss", {}));
+    const c = await must("cari", S.api.post("/api/workspace/accounts", { name: "S212 Müşteri", type: "customer", registeredOn: "2026-01-02" }));
+    const f = {};
+    await step("B0 Kurulum (API: fatura / bağsız tahsilat / şüpheliye alma — konu bağlı tahsilatın dağılımı)", async () => {
+      f.f1 = await sale(S, c.id, "2026-07-01", 1000);
+      f.f2 = await sale(S, c.id, "2026-07-05", 1000);
+      f.f3 = await sale(S, c.id, "2026-07-08", 2000);
+      await must("P1 bağsız 1.000", S.api.post(`/api/workspace/accounts/${c.id}/entries`, { kind: "in", amount: "1.000", date: "2026-07-15", method: "cash", cashForce: true, similarOk: true }));
+      await must("şüpheliye al", S.api.post(`/api/workspace/accounts/${c.id}/doubtful`, { amount: "1000", date: "2026-08-01", reason: "lawsuit", note: "dava" }));
+      uclu("B", "B0 kurulum", "120 = 2.000, 128 = 1.000", "—", gl(S, c.id));
+    });
+    await step("B1 Cari kartı → + Tahsilat 1.000, Tab, tarih 10.08, Kapatılacak Fatura = F1 (klavye, insan hızı)", async () => {
+      await cariKart(S, c.id);
+      await shot("s212-kart-once");
+      note(`  şüpheli bölümü (önce): ${await metin(`${accWin} [data-doubtful-list]`, 400)}`);
+      await page.click(`${accWin} [data-entry="in"]`);
+      await page.waitForSelector(`${TOP} select[name="invoiceId"]`);
+      const opts = await page.$$eval(`${TOP} select[name="invoiceId"] option`, ns => ns.map(o => [o.value, o.textContent.trim()]));
+      note(`  Kapatılacak Fatura seçenekleri: ${opts.map(o => o[1]).join(" | ")}`);
+      await closeAll();
+      await cariKart(S, c.id);
+      if (opts.some(o => o[0] === f.f1)) {
+        await tahsilatFormu({ tutar: "1000", tarih: "2026-08-10", fatura: f.f1 });
+        await shot("s212-bagli-formu");
+        await yazimTara("B1 tahsilat formu");
+        const g = await formGonder("F1'e bağlı 1.000");
+        if (!g.ok) await closeAll();
+        uclu("B", "B1 F1'e bağlı 1.000 (ekrandan)", "kabul · 120 = 2.000, 128 = 0", g.ok ? "form kapandı" : `RED: ${g.msg.slice(0, 200)}`, gl(S, c.id));
+      } else {
+        note("  ! F1 (önceden kapanmış) Kapatılacak Fatura seçeneklerinde YOK — bağ API'den (ekran yolu yok; bulgu adayı değil: kapalı fatura seçilemez, S212'nin örneği API / içe aktarma / sonradan kapanma yoluyla oluşur)");
+        const r = await S.api.post(`/api/workspace/accounts/${c.id}/entries`, { kind: "in", amount: "1.000", date: "2026-08-10", method: "cash", cashForce: true, similarOk: true, invoiceId: f.f1 });
+        uclu("B", "B1 F1'e bağlı 1.000 (API)", "kabul · 120 = 2.000, 128 = 0", `${r.status} ${JSON.stringify(r.data).slice(0, 200)}`, gl(S, c.id));
+      }
+    });
+    await step("B2 Cari kartı (KPI, şüpheli bölümü, hareketler) + Şüpheli Alacaklar raporu + mizan", async () => {
+      await cariKart(S, c.id);
+      note(`  kart KPI: ${await metin(`${accWin} .hof-plans-kpis`, 400)}`);
+      const sb = await metin(`${accWin} [data-doubtful-list]`, 500);
+      note(`  şüpheli bölümü: ${sb}`);
+      await page.$eval(`${accWin} .hof-plans-entries`, x => x.scrollIntoView({ block: "center" })).catch(() => null);
+      await shot("s212-kart-sonra");
+      await yazimTara("B2 cari kartı");
+      const kayit = S.app.store.all("SELECT date, amount_minor, status, closed_date FROM doubtful_receivables WHERE account_id = ?", c.id);
+      uclu("B", "B2 şüpheli kaydı", "kapalı (açık şüpheli 0)", sb.slice(0, 200), JSON.stringify(kayit).slice(0, 300));
+      const id = await openReport(S, "Şüpheli Alacaklar");
+      const rows = await raporSatir();
+      for (const r of rows.slice(0, 8)) note(`    ${r.slice(0, 240)}`);
+      await shot("supheli-alacaklar");
+      const d = await raporApi(S, id);
+      uclu("B", "B2 Şüpheli Alacaklar (S212 Müşteri)", "kalan 0", rows.find(r => r.includes("S212")) || "SATIR YOK", JSON.stringify((d.rows || []).find(r => String(r[0] || "").includes("S212") || JSON.stringify(r).includes("S212")) || null).slice(0, 300));
+      const mz = await mizan(S);
+      uclu("B", "B2 mizan 120 · 128", "2.000 · 0", "—", `${mz["120"]} · ${mz["128"]}`);
+      uclu("B", "B2 Mutabakat Testi", "bulgusuz", "—", await mutabakat(S));
+    });
+  } catch (e) {
+    note(`HATA (B): ${e.stack || e}`);
+    YARIDA.push(`[B] bölüm: ${String(e.message).split("\n")[0]}`);
+  } finally {
+    await bolumKapat(S);
+  }
+}
+
+// =====================================================================================================================================================
+// C — S181 = B çek yolu iletisi: faturaya bağlı evrakın 120'ye düşen kısmı şüpheli dışı borcu aşınca ret + nakit yolundaki gibi yol gösteren ileti
+// =====================================================================================================================================================
+{
+  const T = "2026-10-08";
+  const S = await bolumAc("C", NOW_A);
+  try {
+    note("\nBEKLENEN (C; S181 örneği, girdilerden elle; bugün 08.10.2026):");
+    note(`  F1 1.000 (${gun(T, -60)}) → Şüpheliye Al 1.000 (${gun(T, -40)}) → F2 500 (${gun(T, -30)}; şüpheli payı 0) ⇒ 120 = 500, 128 = 1.000.`);
+    note("  F2'ye bağlı 900 (nakit ve çek): 900'ün tamamı 120'ye → 120 = −400 → S181 = B: RET (409), hiçbir satır yazılmaz.");
+    note("  İLETİ (yeni): çek yolu da nakit yolu gibi yolu söyler — aşan ₺400,00 (kayıttan sonra borç ₺600,00, açık şüpheli ₺1.000,00), önerilen tutar ₺500,00 / bağı kaldırın.");
+    note("  TABANDA: çek reddi 'kaydı şüpheliye alma tarihinden sonraya girin…' iletisiyle (yol göstermiyor). Çek 500 (önerilen) → kabul: 120 = 0, 128 = 1.000.");
+    await must("banka sihirbazını kapat", S.api.post("/api/workspace/bank/setup/dismiss", {}));
+    const c = await must("cari", S.api.post("/api/workspace/accounts", { name: "S181 Müşteri", type: "customer", registeredOn: gun(T, -400) }));
+    let f2;
+    await step("C0 Kurulum (API)", async () => {
+      await sale(S, c.id, gun(T, -60), 1000);
+      await must("şüpheliye al", S.api.post(`/api/workspace/accounts/${c.id}/doubtful`, { amount: "1000", date: gun(T, -40), reason: "lawsuit", note: "dava" }));
+      f2 = await sale(S, c.id, gun(T, -30), 500);
+      uclu("C", "C0 kurulum", "120 = 500, 128 = 1.000", "—", gl(S, c.id));
+    });
+    await step("C1 Cari kartı → + Tahsilat 900, Kapatılacak Fatura = F2, Nakit (karşılaştırma: nakit yolunun iletisi)", async () => {
+      await cariKart(S, c.id);
+      await tahsilatFormu({ tutar: "900", fatura: f2 });
+      const g = await formGonder("nakit F2'ye bağlı 900");
+      await shot("s181-nakit-ret");
+      if (!g.ok) await closeAll();
+      uclu("C", "C1 nakit 900 F2'ye bağlı", "RET · 'Tutarı ₺500,00'e indirin / bağı kaldırın' türü ileti", g.ok ? "form kapandı (KABUL!)" : `RED: ${g.msg.slice(0, 400)}`, gl(S, c.id));
+    });
+    const cekSay = () => S.app.store.get("SELECT COUNT(*) AS n FROM cheques WHERE serial_no LIKE 'S181%'")?.n;
+    const cekFormu = async (tutar, seri) => {
+      await cariKart(S, c.id);
+      await page.click(`${accWin} [data-entry="in"]`);
+      await page.waitForSelector(`${TOP} select[name="invoiceId"]`);
+      await page.click(`${TOP} input[name="amount"]`);
+      await page.keyboard.type(tutar, { delay: 110 });
+      await page.keyboard.press("Tab");
+      await page.selectOption(`${TOP} select[name="method"]`, "cheque");
+      await page.selectOption(`${TOP} select[name="invoiceId"]`, f2);
+      await page.click(`${TOP} button[type="submit"]`);
+      await page.waitForSelector(`${TOP} input[name="serialNo"]`, { timeout: 8000 });
+      const bond = await page.$eval(`${TOP} select[name="invoiceId"]`, x => x.value).catch(() => "?");
+      const amount = await page.$eval(`${TOP} input[name="amount"]`, x => x.value).catch(() => "?");
+      note(`  evrak formu: başlık ${await metin(`${TOP} .hof-modal-title`, 80)} · tutar ${amount} · Kapatılacak Fatura ${bond === f2 ? "F2" : bond}`);
+      await page.click(`${TOP} input[name="serialNo"]`);
+      await page.keyboard.type(seri, { delay: 110 });
+      await page.keyboard.press("Tab");
+      await page.fill(`${TOP} input[name="dueDate"]`, gun(T, 45));
+      await shot(`s181-cek-formu-${tutar}`);
+      await yazimTara("C evrak formu");
+      await page.click(`${TOP} button[type="submit"]`);
+      await page.waitForTimeout(1500);
+      await soruYanitla(`çek ${tutar}`);
+      const acik = await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible input[name="serialNo"]'), null, { timeout: 8000 }).then(() => false).catch(() => true);
+      const msg = acik ? await metin(TOP, 700) : "";
+      await shot(`s181-cek-sonuc-${tutar}`);
+      if (acik) await closeAll();
+      return { ok: !acik, msg };
+    };
+    await step("C2 Cari kartı → + Tahsilat 900 → Tahsilat Yolu = Çek / Senet, Kapatılacak Fatura = F2 → evrak formu (seri, vade) → Kaydet", async () => {
+      const g = await cekFormu("900", "S181C1");
+      uclu("C", "C2 çek 900 F2'ye bağlı", "RET · ileti nakit yoluyla aynı öneri (aşan ₺400,00; önerilen ₺500,00 / bağı kaldırın)", g.ok ? "form kapandı (KABUL!)" : `RED: ${g.msg.slice(0, 500)}`, `${gl(S, c.id)} · S181 çek satırı ${cekSay()}`);
+    });
+    await step("C3 Önerilen tutarla: çek 500 F2'ye bağlı → kabul", async () => {
+      const g = await cekFormu("500", "S181C2");
+      uclu("C", "C3 çek 500 F2'ye bağlı", "kabul · 120 = 0, 128 = 1.000", g.ok ? "form kapandı" : `RED: ${g.msg.slice(0, 300)}`, `${gl(S, c.id)} · S181 çek satırı ${cekSay()}`);
+      uclu("C", "C3 Mutabakat Testi", "bulgusuz", "—", await mutabakat(S));
+    });
+  } catch (e) {
+    note(`HATA (C): ${e.stack || e}`);
+    YARIDA.push(`[C] bölüm: ${String(e.message).split("\n")[0]}`);
+  } finally {
+    await bolumKapat(S);
+  }
+}
+
+
+await browser.close();
+for (const r of roots) if (r.startsWith(tmpdir())) fs.rmSync(r, { recursive: true, force: true });
+fs.writeFileSync(path.join(OUT, "d-ozet.txt"), `${D_OZET.join("\n")}\n`);
+fs.writeFileSync(path.join(OUT, "uclu.tsv"), `${UCLU.map(r => r.join("\t")).join("\n")}\n`);
+note("\n==================== ÖZET ====================");
+note(`ÜÇLÜ satırı: ${UCLU.length} (uclu.tsv) · D özeti: ${D_OZET.length} satır (d-ozet.txt)`);
+note(`ADIM YARIDA (${YARIDA.length}):`);
+for (const y of YARIDA) note(`  - ${y}`);
+note(`YAZIM DÜZENİ ADAYLARI (${YAZIM.size}; elle bakılır):`);
+for (const y of YAZIM) note(`  - ${y}`);
+process.exitCode = YARIDA.length ? 2 : 0;

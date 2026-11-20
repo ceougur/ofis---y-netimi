@@ -1,0 +1,61 @@
+s110-s179-hesapsiz-sinir-en-gec-acilis [TZ=Europe/Istanbul]: 11 olay · yapıldı 9 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 26 ms
+    s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] öz denetim TAMAM · AYNI 34 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 4 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 2 (sınıfsız 0)  (1 sn + 0 sn)
+s110-s179-hesapsiz-sinir-en-gec-acilis [TZ=UTC]: 11 olay · yapıldı 9 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 27 ms
+    s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] öz denetim TAMAM · AYNI 34 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 4 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 2 (sınıfsız 0)  (1 sn + 0 sn)
+s111-s174-s180-kural-farki-kendi-yilinda [TZ=UTC]: 22 olay · yapıldı 13 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 135 ms
+    s111-s174-s180-kural-farki-kendi-yilinda [UTC] öz denetim TAMAM · AYNI 15 · U 0 · P 0 · K 0 · R 6 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 1 (sınıfsız 0)  (2 sn + 0 sn)
+s111-s174-s180-kural-farki-kendi-yilinda [TZ=Europe/Istanbul]: 22 olay · yapıldı 13 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 134 ms
+    s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] öz denetim TAMAM · AYNI 15 · U 0 · P 0 · K 0 · R 6 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 1 (sınıfsız 0)  (2 sn + 0 sn)
+s113-s87-r8-geri-alma [TZ=UTC]: 11 olay · yapıldı 7 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 24 ms
+    s113-s87-r8-geri-alma [UTC] öz denetim TAMAM · AYNI 8 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s113-s87-r8-geri-alma [TZ=Europe/Istanbul]: 11 olay · yapıldı 7 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 21 ms
+    s113-s87-r8-geri-alma [Europe/Istanbul] öz denetim TAMAM · AYNI 8 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s30-kilit-kural-farki-kg15 [TZ=Europe/Istanbul]: 22 olay · yapıldı 15 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 147 ms
+    s30-kilit-kural-farki-kg15 [Europe/Istanbul] öz denetim TAMAM · AYNI 43 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s30-kilit-kural-farki-kg15 [TZ=UTC]: 22 olay · yapıldı 15 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 141 ms
+    s30-kilit-kural-farki-kg15 [UTC] öz denetim TAMAM · AYNI 43 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s68-s14-supheli-caride-bagli-cek [TZ=UTC]: 46 olay · yapıldı 37 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 31 ms
+    s68-s14-supheli-caride-bagli-cek [UTC] öz denetim TAMAM · AYNI 25 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 1 (adım 2, ara 0) · red farkı 0 · adım farkı 2 (sınıfsız 0)  (2 sn + 0 sn)
+s68-s14-supheli-caride-bagli-cek [TZ=Europe/Istanbul]: 46 olay · yapıldı 37 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 30 ms
+    s68-s14-supheli-caride-bagli-cek [Europe/Istanbul] öz denetim TAMAM · AYNI 25 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 1 (adım 2, ara 0) · red farkı 0 · adım farkı 2 (sınıfsız 0)  (2 sn + 0 sn)
+
+AYNI 250 · U 4 · P 0 · K 0 · R 14 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 8 · SUSMA 2 (adım 4, ara adım 0) · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 0 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+Ölçüm (olay döngüsü en çok, ms): s30-kilit-kural-farki-kg15 [Europe/Istanbul] 147 (koşu 2 sn; GET ledger ort 4 / en çok 6 ms) · s30-kilit-kural-farki-kg15 [UTC] 141 (koşu 2 sn; GET ledger ort 4 / en çok 7 ms) · s111-s174-s180-kural-farki-kendi-yilinda [UTC] 135 (koşu 2 sn; GET ledger ort 4 / en çok 13 ms) · s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] 134 (koşu 2 sn; GET ledger ort 5 / en çok 10 ms) · s68-s14-supheli-caride-bagli-cek [UTC] 31 (koşu 2 sn; GET ledger ort 6 / en çok 14 ms)
+BEKLEYEN KURAL FARKLARI (kimlik: senaryo / denetim [UTC]): Ç5-C 1/2
+SUSMA (2 satır; kâhin susar — karşılaştırılmadı):
+  s68-s14-supheli-caride-bagli-cek [Europe/Istanbul] g2 gecikmis:C2 program - · kâhin - (kâhin susar (S168; kâhin bakımı 12 `susmalar`): C2 P4 2026-04-20)
+  s68-s14-supheli-caride-bagli-cek [UTC] g2 gecikmis:C2 program - · kâhin - (kâhin susar (S168; kâhin bakımı 12 `susmalar`): C2 P4 2026-04-20)
+ÖLÇÜLEMEDİ (8; sürücü sınırı — geçmiş günlü rapor (program as-of okumaz) ya da siniflama.json'daki eşleme sınırı):
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] mz1 ana:108 program -30000 · kâhin 0 · bugün 0 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] mz1 ana:309 program 0 · kâhin -30000 · bugün -30000 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] mz1 alt:108.00 program -30000 · kâhin 0 · bugün 0 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] mz1 alt:309.KK1 program 0 · kâhin -30000 · bugün -30000 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] mz1 ana:108 program -30000 · kâhin 0 · bugün 0 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] mz1 ana:309 program 0 · kâhin -30000 · bugün -30000 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] mz1 alt:108.00 program -30000 · kâhin 0 · bugün 0 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] mz1 alt:309.KK1 program 0 · kâhin -30000 · bugün -30000 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+U etiketleri: 
+
+FARKLAR (14; ilk 200):
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] RED #14 kural_farki_duzelt: kâhin KURAL_FARKI_YOK · program kabul → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] fark3 kural_farki:500 program 70000 · kâhin 0 · bugün — → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] fark3 kural_farki:602 program -70000 · kâhin 0 · bugün — → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz27b ana:500 program 0 · kâhin -70000 · bugün -70000 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz27b ana:671 program -70000 · kâhin 0 · bugün 0 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] son ana:500 program 0 · kâhin -70000 · bugün -70000 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] son ana:671 program -70000 · kâhin 0 · bugün 0 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] RED #14 kural_farki_duzelt: kâhin KURAL_FARKI_YOK · program kabul → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] fark3 kural_farki:500 program 70000 · kâhin 0 · bugün — → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] fark3 kural_farki:602 program -70000 · kâhin 0 · bugün — → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz27b ana:500 program 0 · kâhin -70000 · bugün -70000 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz27b ana:671 program -70000 · kâhin 0 · bugün 0 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] son ana:500 program 0 · kâhin -70000 · bugün -70000 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] son ana:671 program -70000 · kâhin 0 · bugün 0 → R
+
+# tests 278
+# pass 254
+# fail 14
+# cancelled 0
+# skipped 10
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-surucu3/cikti-UTC

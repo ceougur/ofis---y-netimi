@@ -1,0 +1,32 @@
+{
+  "ad": "t3duz-e2e-senaryo-supheli-kuyruk-250-ist",
+  "komut": "npm run test:senaryo-supheli-kuyruk-250",
+  "commit": "8bde2ef1bed8bb9f005964b85eb28ea1dd336737",
+  "dal": "worktree-agent-a1804bd47c97d3000",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T08:10:03.900Z",
+  "sure_sn": 10.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 15,
+    "gecen": 15,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d4/k/2026-11-20/t3duz-e2e-senaryo-supheli-kuyruk-250-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1804bd47c97d3000",
+  "ham_cikti_sha256": "80d45c61a0506d5aceae07d0484200813a87dd9fdf7f3c7c68a04e2cea54ae93",
+  "ham_cikti_bayt": 1915
+}

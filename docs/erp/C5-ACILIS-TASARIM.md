@@ -1659,3 +1659,78 @@ bırak, kesiti satırın kendisini dahil ederek al, kayıt kalanını final duru
 - GÖZLEM (kapsam dışı — defter kuralı, DOKUNULMADI): aynı gün iki bağlı tahsilatta ayırıcı alacakları `tie: credit.key` (account:<UUID>) ile sıralar → HANGİ satırın kısmi olduğu kimliğe bağlı
   (ekranda 300'lük satır "Kısmen" çıktı, önceden etiketsizdi; 200'lük etiketsiz). Toplam 120 / 128 ve etiket kümesi bu örnekte sıradan bağımsız; satır başına dağılım ders 31'e aykırı
   olabilir → ana oturuma / dar kontrole (lib/doubtful-gl.mjs `by`; kayıtlar için `seq` var, alacaklar için yok).
+
+### 19.9 Hız — TEK ADAY HIZ DÜZELTMESİ (t3hiz; BAŞ MİMAR KARARI 19.11 05:15 UTC; ders 15, 47, 52, 53 (a)); taban `t3hiz-taban` 9c09f18d — KODDAN ÖNCE yazıldı, sonuç (6)'da
+DAVRANIŞ AYNEN, yalnız süre. Kararın KÖTÜ / eşikteki yolları, ana dal kodu (542a85d5 = c53a757a; sunucu / istemci farkı yok) ↔ sınama ucu.
+
+**(1) Ayrıştırma (iş 1; aynı veri kaynağının TAZE kopyası, her durum bir blok, 3 tekrar, `flock -x`; en iyi / ortanca ms; ham çıktı docs/kanit/2026-11-19/t3hiz-ayr-*).**
+Durumlar: ana = c53a757a · t0 = 9b543ae4 (tur 3'ün tabanı) · t1 = bac4b267 (3a) · t2 = 06dde4aa (3b) · c1 = 8d10b8c4 (3c İş 1, defter kuralı) · c2 = c0c8d1fc (3c İş 2, sınır) · t3 = 4ecbee10 (3c ucu) ·
+t4 = 1ef58e5e (+ tur 2e) · s1 = 15048d8d (tur 3 birleşimi, 3d dahil) · a1 / a2 / a3 = Ç7a D-07 / tur 2 / tur 2b · s2 = e9cbb50c (+ Ç7a) · s3 = 9c09f18d. d1 verisinde t3 … s3 blokları yük > 2 ile başladı
+(GEÇERSİZ — başka oturumun yükü); farklar o blokların gürültüsünden büyük, yalnız AYRIŞTIRMA için okundu.
+
+| Yol (veri) | ana | t2 (3b) | c1 (3c İş 1) | c2 (3c İş 2) | s1 (3d) | s3 | gerileten |
+|---|---|---|---|---|---|---|---|
+| cari kartı, şüpheli + bağlı (d1) | 160 / 163 | 159 / 163 | 330 / 358 | 340 / 341 | 454 / 471 | 454 / 458 | c1 (+170), 3d 41f38493 (+100) |
+| YAZIM bağlı tahsilat, şüpheli (d1) | 300 / 341 | 301 / 304 | 865 / 889 | 1230 / 1232 | 1353 / 1358 | 1336 / 1355 | c1 (+565), c2 (+365), 3d (+120) |
+| YAZIM tahsilat, şüphelisiz (d1) | 264 / 302 | 279 / 286 | 381 / 412 | 391 / 400 | 393 / 400 | 394 / 395 | c1 |
+| Mizan / Hesap Planı Mizanı / Mutabakat Testi / Defter Mutabakatı (d1) | 3068 / 3113 / 6636 / 10758 | 3078 / 3037 / 6822 / 11024 | 3464 / 3530 / 7394 / 11890 | ≈ c1 | ≈ c1 | ≈ c1 | c1 |
+| Alacak Yaşlandırma / Cari Listesi (d1) | 1837 / 762 | 1954 / 765 | 2238 / 872 | ≈ | ≈ | 2207 / 903 | c1 |
+| YAZIM evrak / fatura / fatura iptali / Borç Yaz (d2 temiz) | 46 / 160 / 85 / 249 | 43 / 153 / 82 / 238 | 74 / 186 / 109 / 262 | ≈ c1 | ≈ c1 | 73 / 189 / 114 / 270 | c1 |
+| YAZIM Borç Yaz kapı, kilitli (d3 POS tohumu) | 244 / 269 | — | — | — | 294 / 303 | 301 / 302 | a3 cdd7e586 (+25; a2 249 → a3 274) ve c1 (+20) |
+| Hesabı Atanmamış listesi, kilitli (d3) | 1094 / 1107 | — | — | — | 1128 / 1156 | 1115 / 1137 | yeniden üretilemedi (+2 %; kararın ölçümündeki 1124 → 1299 bu ayrıştırmada görülmedi) |
+Taşıma turları (3a, 3b) iş miktarını değiştirmedi (t0 ≈ t1 ≈ t2 ≈ ana). Tur 2f ve sürücü (s2 → s3) ürün yoluna dokunmuyor.
+
+**(2) Kök nedenler (dosya:satır; 9c09f18d).**
+- K1 — lib/bank/doubtful.mjs:128 `linkedShares` ön denetiminin evrak sorgusu: `EXISTS (… cheque_events ev JOIN cheques c … WHERE ev.invoice_id <> '' AND (c.account_id = j.value OR c.endorse_account_id = j.value OR
+  ev.account_id = j.value))` — VEYA'lı koşul dizin kullanamaz, CARİ BAŞINA bütün evrak olaylarını evrakıyla dolaşır (100 bin satırda ~13 ms / cari). Şüpheli kaydı olan HER şirkette her
+  `doubtfulRows` / `doubtfulState` çağrısında (temiz 100 bin satırda 21 kayıt, 2 cari → her yazımın yanıtında / kapısında +27 ms: evrak, fatura, iptal, Borç Yaz).
+- K2 — bağlı alacaklı carinin kuyruk girdisi her `doubtfulState` çağrısında BAŞTAN (linkedShares `baseOf`): lib/obligation-input.mjs:221 peşin sorgusu (`account_id = ? AND source = 'invoice'` — dizinsiz
+  planlayıcı idx_account_entries_source'u seçip bütün fatura peşinlerini dolaşır, ~40 ms), :230 evrak olayları (aynı VEYA taraması, ~17 ms), :152 tek cari Vade sorgusu (`source = ''` için aynı plan,
+  ~18 ms) — kurulum ~75 ms. (Bu üç sorgu ana dalda da fatura servisinin tek cari yolundadır — cari kartı / obligationsFor; taşınırken (tur 3a) bayt bayt korundu.)
+- K3 — aynı istekte aynı carinin ayırıcısı birkaç kez: cari kartı 3 (özet, etiket — 3d, kuyruğun şüpheli kalanı), Mizan 3 (yevmiye + beklenen + liste), yazım ~9 (liste, sınır, allocatedMinor — c2,
+  kapı, yanıt). Her biri K1 + K2 + kesitler (bağlı alacak başına bir kuyruk koşusu, ~25 × 0,3 ms).
+- K4 — routes/accounts.mjs:334 cari servisinin ids'li listesi (yazımın sınırı / yanıtı) `openByAccount()` ile BÜTÜN şirketin ayırıcısını koşturur (yalnız istenen carilerin satırı okunur).
+- Ç7a (a3): Borç Yaz kapısı +25 ms (tek ölçüm; kapının süzgeçli kurulumuna giren POS komisyonu sorguları — d3'te 25 POS kaydı; ayrıştırması (5)'te).
+
+**(3) Düzeltme (en küçük; davranış AYNEN; yeni veri yapısı / göç YOK).**
+- H1 (K1): ön denetim koşulu AYNI, kollar ayrı `UNION` — evrakın carisi idx_cheques_account'tan, ciro edilen ve olayın carisi tek tarama (cari sayısından bağımsız): `LINKED_CHEQUE_PARTIES_SQL`.
+- H2 (K2): tek cari yolunda `+source` (dizin seçimi; satır kümesi aynı) ve eski planın sırası `ORDER BY source_id, rowid` (haritalar yalnız get ile okunur — yine de aynı); evrak olaylarının VEYA'sı
+  üç kolun `rowid IN (… UNION …)`'u, `ORDER BY ev.rowid` (evrak kimliği tekil → olay kümesi ve sırası aynı). Bütün cariler yolu değişmez.
+- H3 (K3): linkedShares'in cari başına kurulumu + kesit sonuçları + aday kümesi, veri tabanı İŞLEMİNİN DIŞINDA aynı veri durumunda (store · total_changes · data_version — returnCuts / lockResolver ile
+  AYNI kural) çağrılar arasında paylaşılır. Kesit belleği SAF işlevin belleğidir: anahtar = kurulumun kendisi (bellek girdisi) + kesit satırı + aynı gün satırlarının include değerleri + açık kayıtların o
+  anki kalanı (`view.open`) — iki yükleyicinin görünümleri farklıysa ayrı hesaplanır (kapının iki yükleyici karşılaştırması dişini korur). İşlem içinde her çağrı kendi kurar (geri alınan işlemde
+  total_changes azalmaz — GG2). Önbellek değil: geçersizleşme veri durumunun kendisi.
+- H4 (K4): ids'li listede `openByAccount({ parties: ids })` — ayırıcı cari başına bağımsız koşar (kayıt, alacak, bağ, kart haritası cari başına; `allocateDoubtful` byParty), her carinin satırı bütün
+  şirket okumasındakiyle aynı.
+Bilerek DEĞİŞMEYEN: ayırıcının kuralı, kuyruk, sınır, defter, Ç7a'nın türetmesi, iletiler. İşlem içindeki tekrar (yazımın kapısı) H1 + H2 ile ucuzlar, ortadan kalkmaz (işlem içinde geçersizleşmesi
+kanıtlanabilir bir bellek yok — store.tx'in işlem kimliği dışarı verilmez; db.mjs yazılmaz).
+
+**(4) Eşdeğerlik ve diş.** test/t3hiz-esdegerlik-250.test.mjs (sınıf listesi dosya başında; iki şirket; kilitli / açık; yazım, kapı reddi, store dışı yazım, başka bağlantı): H1 eski sorgu = yeni (bütün cariler
+listesinde de), H2 eski gövde = yeni (her cari, harita SIRASI dahil), H3 bellekli soğuk = ılık = belleksiz, ve her aşama düzeltmeden önceki kodun hakemiyle (test/fixtures/t3hiz-esdegerlik-250-hakem.json,
+9c09f18d kopyasında HAKEM_YAZ ile; iki saat diliminde bayt bayt aynı) — ortak mantığa konan hata bellekli = belleksiz olsa da hakemde DEĞERLE ölür. Mutasyon test/t3hiz-esdegerlik-250-mutasyon.mjs.
+100 bin satırda tam çıktı: dışa açık yüz dökümü (tur 3b'nin dok.mjs'i) + ayırıcı dökümü taban ↔ yeni.
+
+**(5) Kodlama sırasında eklenen (aynı ilke, davranış aynen).** H1b: ön denetimin evrak sorgusu yalnız HENÜZ aday olmayan carilere (küme birleşimdir; bağlı tahsilatı olan cari zaten aday) — yazımın kapısında
+tek bağlı carisi için sorgu hiç koşmaz. H3b: aday kümesi de işlem dışı bellekte (aynı veri durumu + aynı cari listesi). Ç7a'nın Borç Yaz +25 ms'si (1)'deki tek ölçümdü: önce / sonra ölçümünde
+Borç Yaz (kapı, d3) ana 259 / 275 → uç 161 / 177 (H1 + H4 + H2) — Ç7a'ya ayrı düzeltme GEREKMEDİ. Temiz veride Mutabakat Testi / Yevmiye bütün zaman ayrıştırması (ana · a3 Ç7a · s1 tur 3 · uç;
+iki tur, 5 tekrar, `flock -x`, yük ≤ 1,8): Mutabakat Testi ana 7.091–7.313 / uç 7.272–7.323 (en iyi), Yevmiye bütün zaman ana 2.989–3.047 / uç 3.020–3.071 — fark %3'ün altında, gerileme YOK.
+
+**(6) Sonuç (kanıt docs/kanit/2026-11-19/t3hiz-*; ölçüm ana c53a757a · taban 9c09f18d · uç 0e252c6c ürün kodu, sıra ana → taban → uç × 2, her blok taze kopya, 5 tekrar, `flock -x`).**
+- Kilitsiz: kararın KÖTÜ yollarının hiçbiri uç ↔ ana %10'u en iyi VE ortancada aşmıyor; çoğu ANA DALDAN HIZLI (H2 / H4 ana dalda da koşan yolları hızlandırdı): cari kartı (şüpheli + bağlı) 185 / 215 → 123 / 149,
+  YAZIM bağlı tahsilat 367 / 394 → 325 / 382, YAZIM tahsilat (şüphelisiz) 306 / 321 → 168 / 188, evrak 49 / 55 → 12 / 17, fatura 187 / 214 → 69 / 89, iptal 97 / 105 → 59 / 69, Borç Yaz 284 / 323 → 179 / 228,
+  fatura kaydı 182 / 197 → 78 / 84; Mizan, Yevmiye, Hesap Planı Mizanı, Defter Mutabakatı, Mutabakat Testi, Alacak Yaşlandırma, Cari Listesi %0–9. Eşikte (tek ölçüt): Alt Hesap Mizanı (ortanca +8–15 %, en iyi
+  +3–7 %; uç ↔ taban 0,98–1,09 — bu düzeltmenin dokunmadığı yol), Cari Listesi (ılık) (+9 / +11 %; taban da +7 / +7 %). t2 betiğinde Yevmiye bütün zaman 1,11 / 1,11 (uç ↔ taban 1,00) — (5)'teki hedefli
+  ölçümde yeniden üretilmedi (gürültü; ana oturumun yeniden ölçümünde bakılmalı).
+- Kilitli (geçersiz blok yok; c7a + t2 ikinci koşuda — ilk koşu iş süre sınırında c7a'nın son bloğunda kesildi, kesik dosya t3hiz-hiz3-c7a-kilitli-kesik.txt): KÖTÜ yol YOK. cari kartı (şüpheli + bağlı)
+  172 / 179 → 121 / 126, YAZIM bağlı tahsilat 341 / 365 → 315 / 341, YAZIM tahsilat (şüphelisiz) 287 / 301 → 167 / 180, Borç Yaz (kapı, d3) 290 / 312 → 161 / 183, Mizan / Hesap Planı Mizanı / Defter Mutabakatı /
+  Mutabakat Testi / Alacak Yaşlandırma / Cari Listesi / Hesabı Atanmamış listesi %−3…+5. Alt Hesap Mizanı 1,09 / 1,10 (sınırda; uç ↔ taban 1,02 — Ç7a'nın yolu, bu düzeltmenin dokunmadığı; ayrıştırması
+  t3hiz-ahm-d2.txt). Eşikte (tek ölçüt): Açılış Olabilir listesi (sayfasız) 74 / 77 → 73 / 86 (en iyi aynı; ortanca tek blokta).
+- Alt Hesap Mizanı ayrıştırması (temiz veri, kilitsiz, iki tur × 7 tekrar, `flock -x`; t3hiz-ahm-d2.txt): ana 252 / 265 · a1 (Ç7a D-07) 245–259 · a2 (Ç7a tur 2, 5ba59cbc) 286 / 289 · a3 285–294 ·
+  s1 (tur 3) 249–259 · s2 285–304 · uç 284 / 293 → +%13 / +%11, GERİLETEN Ç7a tur 2 (K-14 / K-15): lib/bank/money-lines.mjs periodGroups'un satır başına `CASE WHEN COVER_SQL THEN 'opening'` yol ifadesi ve
+  ifadeyle gruplama (100 bin satırda periodGroups 231 → 270 ms; ölçüm t3hiz-parca6 / deney: işaret kolonu ~6 ms, CASE + ifadeyle gruplama ~30 ms). Sonucu AYNI dört yeniden yazım denendi (yol ön süzgeci;
+  kapsam bayrağıyla gruplayıp JS'te birleştirme; ham gruplar + açılışta sayılmış satırlar ayrı sorgu — 114 dönem karşılaştırmasında bayt bayt aynı AMA 428 ms, bağsız satırların kısmi dizini bu veride
+  büyük küme): hiçbiri hızlandırmadı → kod GERİ ALINDI, değişiklik yok. BAŞ MİMAR KARARI GEREKİYOR (rapor): kalıcı çözüm satıra yazılan "açılışta sayılmış" bayrağı ya da önceden hesaplanmış dönem
+  tablosu (göç / yeni alan — bu turun dışında) ya da BİLİNEN SINIR (~+35 ms / 100 bin satır; önce / sonra ölçümlerinde en iyi +%3–10, ortanca +%7–15 — sınırda).
+- Eşdeğerlik: 100 bin satırda dışa açık yüz + ayırıcı dökümü taban ↔ uç BAYT BAYT aynı (hazir3c 1.897 satır / 503.880.829 bayt; temiz 1.896 satır / 503.640.858 bayt; şüpheli satırları dahil); kalıcı test
+  4 / 4 iki TZ (tabanda 4 / 4 KIRMIZI — beklenen nedenle); mutasyon 14 / 14 değerle (ilk taramada 8 / 14, sonra 13 / 14: eşdeğer çıkan M7 değiştirildi, sınıf verisi ayırt edici yapıldı, geri alınan
+  işlem vakası eklendi).

@@ -1,0 +1,27 @@
+import re, sys
+# Kullanım: python3 -I tablo.py <hiz-kip.txt>  → yol başına taban / yeni (iki blok): ortanca (en iyi), olay döngüsü en çok; oran = yeni ortanca / taban ortanca (iki bloğun küçüğü)
+t = open(sys.argv[1], encoding='utf-8').read()
+blocks = re.split(r'^=== ', t, flags=re.M)[1:]
+data = {}
+bad = 0
+for b in blocks:
+    head = b.split('\n', 1)[0]
+    who = head.split(' ')[0]
+    if 'GEÇERSİZ' in b:
+        bad += 1
+    for m in re.finditer(r'^  (İLK )?(.+?): durum ([\d/]+) · (?:en iyi ([\d.]+) ms · ortanca ([\d.]+) ms|([\d.]+) ms) · olay döngüsü en çok ([\d.]+) ms', b, flags=re.M):
+        first, label, status, best, med, single, loop = m.groups()
+        key = ('İLK ' if first else '') + label
+        val = float(med if med else single)
+        data.setdefault(key, {}).setdefault(who, []).append((val, float(best) if best else val, float(loop), status))
+print(f'geçersiz blok: {bad}')
+print(f'{"yol":<62} {"taban ort. (iki blok)":>22} {"yeni ort. (iki blok)":>22} {"oran":>6} {"olay döngüsü t/y":>18} durum')
+for key, row in data.items():
+    tb = row.get('taban', []); yn = row.get('yeni', [])
+    if not tb or not yn:
+        continue
+    tmin = min(v[0] for v in tb); ymin = min(v[0] for v in yn)
+    ratio = ymin / tmin if tmin else float('nan')
+    tl = max(v[2] for v in tb); yl = max(v[2] for v in yn)
+    st = '/'.join(sorted({v[3] for v in tb + yn}))
+    print(f'{key[:62]:<62} {" / ".join(f"{v[0]:.1f}" for v in tb):>22} {" / ".join(f"{v[0]:.1f}" for v in yn):>22} {ratio:>6.2f} {f"{tl:.0f} / {yl:.0f}":>18} {st}')

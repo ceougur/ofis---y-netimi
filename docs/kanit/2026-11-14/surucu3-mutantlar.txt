@@ -1,0 +1,13 @@
+Sürücü bakımı 3 — testin dişi: sınama ağacının (9c09f18d) iki ayrı kopyasında birer bilinçli hata; kos.mjs --program <kopya> --senaryo s08,s23,s72,s75,s77,s110,s11 (iki TZ). MUTANT 1 = KG-6 komisyonu valör gününe geri (pos-commission.mjs SCOPE AND 1 = 0); MUTANT 2 = hesapsız hareket sınırı en ERKEN banka açılışı (opening-cover.mjs MAX → MIN).
+21c21
+< const SCOPE = "s.status NOT IN ('void', 'repair') AND s.tax_kind <> 'vat' AND i.status IN ('pending', 'settled') AND i.role IN ('sale', 'refund')";
+---
+> const SCOPE = "s.status NOT IN ('void', 'repair') AND s.tax_kind <> 'vat' AND i.status IN ('pending', 'settled') AND i.role IN ('sale', 'refund') AND 1 = 0"; // MUTANT 1 (sürücü dişi): KG-6 komisyonu valör gününe geri
+41c41
+<             ${accounts ? `(SELECT MAX(opening_date) FROM bank_accounts WHERE deleted_at IS NULL AND currency = 'TRY' AND kind IN (${BANK_KINDS_SQL}))` : "NULL"} AS bank,
+---
+>             ${accounts ? `(SELECT MIN(opening_date) FROM bank_accounts WHERE deleted_at IS NULL AND currency = 'TRY' AND kind IN (${BANK_KINDS_SQL})) /* MUTANT 2: en erken açılış */` : "NULL"} AS bank,
+AYNI 318 · U 20 · P 0 · K 0 · R 14 · SINIFLANMADI 16 · ÖLÇÜLEMEDİ 8 · SUSMA 0 (adım 0, ara adım 4) · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 48 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+# fail 78
+AYNI 320 · U 20 · P 0 · K 0 · R 14 · SINIFLANMADI 18 · ÖLÇÜLEMEDİ 8 · SUSMA 0 (adım 0, ara adım 4) · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 2 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+# fail 34

@@ -1,0 +1,59 @@
+ATILAN (GEÇERSİZ) BLOKLAR: yok
+yol | ana en iyi / ort.ortanca / döngü | taban | uç | uç/ana en iyi | uç/ana ortanca | uç/taban ortanca | hüküm (uç ↔ ana)
+karttan tahsilat yazımı | 1190 / 1223 / 1270 | 1205 / 1272 / 1378 | 1029 / 1062 / 1284 | 0.86 | 0.87 | 0.83 | tamam
+Cari Listesi (yazımdan sonra ilk) | 1674 / 1736 / 1824 | 1650 / 1747 / 1885 | 1665 / 1704 / 1841 | 0.99 | 0.98 | 0.98 | tamam
+Cari Listesi (ılık) | 1610 / 1690 / 1882 | 1659 / 1771 / 1815 | 1660 / 1714 / 1842 | 1.03 | 1.01 | 0.97 | tamam
+cari kartı (kalabalık) | 240 / 252 / 286 | 246 / 255 / 279 | 180 / 185 / 194 | 0.75 | 0.74 | 0.73 | tamam
+Taksitler listesi | 1736 / 1775 / 1872 | 1729 / 1784 / 1797 | 1715 / 1783 / 1815 | 0.99 | 1.00 | 1.00 | tamam
+Vade Takip | 2446 / 2522 / 2733 | 2467 / 2572 / 2726 | 2394 / 2537 / 2825 | 0.98 | 1.01 | 0.99 | tamam
+zil / takvim | 2981 / 3007 / 2754 | 2817 / 2974 / 2928 | 2918 / 3038 / 2884 | 0.98 | 1.01 | 1.02 | tamam
+fatura kaydı | 184 / 207 / 234 | 213 / 228 / 272 | 83 / 90 / 131 | 0.45 | 0.44 | 0.40 | tamam
+Cari Listesi (fatura yazımından sonra ilk) | 1810 / 1893 / 1932 | 1896 / 1929 / 1924 | 1780 / 1831 / 1841 | 0.98 | 0.97 | 0.95 | tamam
+Mizan + mutabakat (GET ledger) | 3162 / 3501 / 4312 | 3186 / 3657 / 4886 | 3147 / 3625 / 4345 | 1.00 | 1.04 | 0.99 | tamam
+Yevmiye Defteri (rapor) | 2372 / 2570 / 0 | 2358 / 2642 / 2642 | 2376 / 2704 / 2873 | 1.00 | 1.05 | 1.02 | tamam
+Hesap Planı Mizanı (rapor) | 3052 / 3332 / 0 | 3206 / 3505 / 0 | 3045 / 3390 / 4226 | 1.00 | 1.02 | 0.97 | tamam
+Alt Hesap Mizanı (rapor) | 432 / 466 / 0 | 472 / 500 / 0 | 471 / 512 / 567 | 1.09 | 1.10 | 1.02 | tamam
+Defter Mutabakatı (rapor) | 17274 / 18362 / 0 | 17548 / 19056 / 0 | 17296 / 18614 / 0 | 1.00 | 1.01 | 0.98 | tamam
+Mutabakat Testi (GET ledger/integrity) | 10020 / 10550 / 10897 | 10258 / 11049 / 10930 | 10069 / 10864 / 11937 | 1.00 | 1.03 | 0.98 | tamam
+Alacak Yaşlandırma (rapor) | 2027 / 2155 / 0 | 2340 / 2476 / 2508 | 2102 / 2262 / 0 | 1.04 | 1.05 | 0.91 | tamam
+Cari Listesi | 766 / 858 / 0 | 891 / 974 / 0 | 791 / 832 / 0 | 1.03 | 0.97 | 0.85 | tamam
+zil (dues) | 1858 / 2004 / 1684 | 1844 / 2087 / 1701 | 1910 / 2037 / 1773 | 1.03 | 1.02 | 0.98 | tamam
+cari kartı (şüpheli + bağlı) | 172 / 179 / 212 | 472 / 514 / 633 | 121 / 126 / 144 | 0.70 | 0.70 | 0.24 | tamam
+cari kartı (şüphelisiz, en kalabalık) | 222 / 261 / 0 | 206 / 226 / 0 | 150 / 159 / 0 | 0.68 | 0.61 | 0.70 | tamam
+YAZIM bağlı tahsilat (şüpheli cari; kapı) | 341 / 365 / 0 | 1400 / 1474 / 0 | 315 / 341 / 346 | 0.92 | 0.94 | 0.23 | tamam
+YAZIM tahsilat (şüphelisiz cari; kapı) | 287 / 301 / 0 | 414 / 426 / 0 | 167 / 180 / 196 | 0.58 | 0.60 | 0.42 | tamam
+Kural Farkı Düzeltme ön izlemesi | 4602 / 4844 / 0 | 5101 / 5254 / 5427 | 4951 / 5222 / 5256 | 1.08 | 1.08 | 0.99 | tamam
+AÇILIŞ (göç dahil) | 24512 / 26287 / 0 | 25958 / 27381 / 0 | 24573 / 26254 / 0 | 1.00 | 1.00 | 0.96 | tamam
+DONMA (bekleyen koşu) | 8724 / 9135 / 0 | 8791 / 9127 / 0 | 8264 / 8617 / 0 | 0.95 | 0.94 | 0.94 | tamam
+Yevmiye Defteri (rapor, yıl) | 2304 / 2729 / 0 | 2447 / 2551 / 0 | 2348 / 2532 / 0 | 1.02 | 0.93 | 0.99 | tamam
+Alt Hesap Mizanı (rapor, yıl) | 434 / 466 / 0 | 476 / 499 / 0 | 476 / 499 / 0 | 1.10 | 1.07 | 1.00 | tamam
+Alt Hesap Mizanı (Banka, tüm zamanlar) | 352 / 390 / 0 | 365 / 381 / 0 | 368 / 388 / 0 | 1.04 | 1.00 | 1.02 | tamam
+Banka Bakiye Raporu (Tümü, tüm zamanlar) | 343 / 367 / 7 | 336 / 348 / 20 | 344 / 367 / 16 | 1.00 | 1.00 | 1.05 | tamam
+Banka Bazında Bakiye | 340 / 401 / 8 | 325 / 339 / 7 | 330 / 344 / 8 | 0.97 | 0.86 | 1.01 | tamam
+Banka Hareket Raporu (Gerçek Banka, yıl) | 107 / 122 / 7 | 109 / 115 / 6 | 110 / 116 / 6 | 1.03 | 0.95 | 1.01 | tamam
+Banka Hareket Raporu (Hesabı Atanmamış, tüm za | 1244 / 1383 / 10 | 1309 / 1364 / 18 | 1285 / 1433 / 9 | 1.03 | 1.04 | 1.05 | tamam
+Günlük Banka Raporu (yıl) | 128 / 137 / 6 | 122 / 130 / 6 | 125 / 131 / 11 | 0.98 | 0.96 | 1.01 | tamam
+Cari Banka Hareketleri (yıl) | 338 / 385 / 10 | 350 / 371 / 10 | 354 / 377 / 10 | 1.05 | 0.98 | 1.01 | tamam
+Banka ve POS Hareketleri (Hesabı Atanmamış) | 1048 / 1166 / 1247 | 1069 / 1189 / 1247 | 1058 / 1164 / 1280 | 1.01 | 1.00 | 0.98 | tamam
+Banka Masraf Raporu (yıl) | 97 / 110 / 6 | 100 / 108 / 6 | 100 / 107 / 6 | 1.03 | 0.98 | 0.99 | tamam
+POS Komisyon Raporu (yıl) | 94 / 112 / 6 | 96 / 104 / 6 | 96 / 112 / 8 | 1.03 | 1.00 | 1.08 | tamam
+POS Satış Raporu (yıl) | 98 / 111 / 6 | 96 / 104 / 7 | 96 / 112 / 6 | 0.98 | 1.01 | 1.07 | tamam
+POS Ödeme Takvimi | 2 / 3 / 0 | 2 / 3 / 0 | 3 / 3 / 0 | 1.04 | 0.97 | 0.97 | küçük (<20 ms)
+Hesabı Atanmamış listesi | 1229 / 1327 / 1477 | 1232 / 1291 / 1297 | 1223 / 1329 / 1397 | 1.00 | 1.00 | 1.03 | tamam
+Banka Genel Bakış (özet) | 50 / 61 / 75 | 51 / 57 / 70 | 51 / 62 / 87 | 1.01 | 1.02 | 1.08 | tamam
+POS İşlemleri listesi | 7 / 11 / 13 | 8 / 8 / 0 | 7 / 9 / 0 | 1.01 | 0.83 | 1.08 | küçük (<20 ms)
+YAZIM POS çekimi (kapı) | 9577 / 10175 / 0 | 9431 / 9825 / 0 | 9572 / 10023 / 0 | 1.00 | 0.99 | 1.02 | tamam
+YAZIM Borç Yaz (kapı) | 290 / 312 / 345 | 296 / 324 / 332 | 161 / 183 / 207 | 0.56 | 0.59 | 0.56 | tamam
+Yevmiye Defteri bütün zaman (rapor) | 4557 / 4961 / 4844 | 4693 / 4853 / 0 | 4807 / 5102 / 5075 | 1.05 | 1.03 | 1.05 | tamam
+YAZIM Borç Yaz | 286 / 321 / 0 | 320 / 349 / 359 | 174 / 201 / 248 | 0.61 | 0.63 | 0.58 | tamam
+YAZIM evrak (alınan çek, carili) | 52 / 57 / 78 | 84 / 90 / 94 | 17 / 19 / 23 | 0.34 | 0.32 | 0.21 | tamam
+YAZIM fatura (satış, açık hesap) | 192 / 206 / 0 | 215 / 229 / 0 | 73 / 90 / 74 | 0.38 | 0.44 | 0.39 | tamam
+YAZIM fatura iptali | 105 / 111 / 176 | 136 / 140 / 0 | 66 / 73 / 79 | 0.63 | 0.66 | 0.53 | tamam
+cari kartı | 237 / 249 / 253 | 222 / 236 / 0 | 155 / 169 / 0 | 0.65 | 0.68 | 0.71 | tamam
+Açılış Olabilir listesi (sayfasız) | 74 / 77 / 75 | 73 / 76 / 88 | 73 / 86 / 89 | 0.99 | 1.11 | 1.13 | eşikte (tek ölçüt)
+Açılış Olabilir listesi sayfalı (yeni; tabanda | 118 / 131 / 0 | 116 / 140 / 146 | 117 / 129 / 0 | 0.99 | 0.98 | 0.92 | tamam
+Zil sayısı (yeni; tabanda tam liste) | 38 / 41 / 0 | 38 / 39 / 37 | 38 / 40 / 0 | 0.99 | 0.99 | 1.03 | tamam
+Kural Farkı Düzeltme ön izlemesi (yeni; taband | 4703 / 5069 / 0 | 4923 / 5196 / 0 | 5157 / 5563 / 0 | 1.10 | 1.10 | 1.07 | tamam
+Açılış Eşleştirme GET (yeni; tabanda 404) | 3959 / 4200 / 0 | 3752 / 4172 / 4714 | 3747 / 4031 / 4129 | 0.95 | 0.96 | 0.97 | tamam
+Açılış Eşleştirme ön izleme (yeni; tabanda 404 | 3800 / 4109 / 4593 | 3773 / 4017 / 4205 | 3906 / 4071 / 4387 | 1.03 | 0.99 | 1.01 | tamam DURUM {409}
+KÖTÜLEŞEN YOL SAYISI (uç ↔ ana) 0

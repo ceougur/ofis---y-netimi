@@ -1,0 +1,32 @@
+{
+  "ad": "t3hiz-e2e-senaryo-supheli-kuyruk-250-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-supheli-kuyruk-250.mjs",
+  "commit": "d7ccb034024843032b57383c40db87369e9e9f0b",
+  "dal": "worktree-agent-af7c4e455433c3703",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T11:32:46.376Z",
+  "sure_sn": 11,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 15,
+    "gecen": 15,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3hiz-a/kanit/2026-11-19/t3hiz-e2e-senaryo-supheli-kuyruk-250-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af7c4e455433c3703",
+  "ham_cikti_sha256": "5da3a7c3432268b8712b15742e24f38fb06d59df3f6b1b89c31c23c1aeef86aa",
+  "ham_cikti_bayt": 1777
+}

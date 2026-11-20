@@ -1,0 +1,66 @@
+TAP version 13
+# Subtest: 2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön denetimi, kuyruk girdisinin sorgu planları ve işlem dışı belleği — davranış AYNEN
+    # Subtest: H1 + H2: aday cari kümesi ve kuyruk girdisi (her cari) ESKİ sorgu / gövdeyle aynı — harita sırası dahil, iki şirkette
+    ok 1 - H1 + H2: aday cari kümesi ve kuyruk girdisi (her cari) ESKİ sorgu / gövdeyle aynı — harita sırası dahil, iki şirkette
+      ---
+      duration_ms: 2504.446216
+      type: 'test'
+      ...
+    # Subtest: H3: bellekli ↔ belleksiz ↔ hakem — ilk durum, kilitli dönem, yazım, kapı reddi, store dışı yazım, başka bağlantı, kilit kalkınca; iki şirket
+    ok 2 - H3: bellekli ↔ belleksiz ↔ hakem — ilk durum, kilitli dönem, yazım, kapı reddi, store dışı yazım, başka bağlantı, kilit kalkınca; iki şirket
+      ---
+      duration_ms: 1363.623998
+      type: 'test'
+      ...
+    # Subtest: H3: kesit belleğinin anahtarı görünümü taşır — aynı satır, farklı açık kalan / aynı gün işlenen → belleksiz sonuçla aynı
+    not ok 3 - H3: kesit belleğinin anahtarı görünümü taşır — aynı satır, farklı açık kalan / aynı gün işlenen → belleksiz sonuçla aynı
+      ---
+      duration_ms: 2.911464
+      type: 'test'
+      location: '/dev/shm/t3hiz/k-uc4/test/t3hiz-esdegerlik-250.test.mjs:341:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesit belleği görünümü ayırt etmeli: aentry-b8cb6d88-4ebf-45c7-8e84-f6be0f3d277f []
+        + actual - expected
+        
+        + '[{"recordId":"dbt-e02ab86a-94fe-486d-a74c-7ef1878e23f5","minor":40000}]'
+        - '[]'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '[]'
+      actual: '[{"recordId":"dbt-e02ab86a-94fe-486d-a74c-7ef1878e23f5","minor":40000}]'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/t3hiz/k-uc4/test/t3hiz-esdegerlik-250.test.mjs:368:16)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: H3: geri alınan işlemin İÇİNDE okunan durum bellekte kalmaz (geri alma total_changes'ı azaltmaz — aynı anahtar)
+    ok 4 - H3: geri alınan işlemin İÇİNDE okunan durum bellekte kalmaz (geri alma total_changes'ı azaltmaz — aynı anahtar)
+      ---
+      duration_ms: 4.029717
+      type: 'test'
+      ...
+    1..4
+not ok 1 - 2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön denetimi, kuyruk girdisinin sorgu planları ve işlem dışı belleği — davranış AYNEN
+  ---
+  duration_ms: 4470.963653
+  type: 'suite'
+  location: '/dev/shm/t3hiz/k-uc4/test/t3hiz-esdegerlik-250.test.mjs:110:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4908.021968
+

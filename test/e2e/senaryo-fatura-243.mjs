@@ -468,6 +468,8 @@ try {
     await page2.waitForSelector(`${pageInv} select[data-filter="profile"]`);
     const on = await page2.$$eval(`${pageInv} select[data-filter="profile"] option`, nodes => nodes.map(node => node.value));
     ok(metaRouted > 0 && on.includes("ESMM"), `UX25 e-SMM açıkken seçenek var (${on.join(", ")}; meta ${metaRouted} kez)`);
+    // Kapanışta uçuşta kalan yakalanmış istek route.fetch / fulfill sırasında "context disposed" fırlatmasın (CI #1083, ubuntu-24.04 + Node 24; zorla üretildi 20.11).
+    await page2.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
     await page2.close();
   });
   ok(!errors.length, `sayfa hatası yok${errors.length ? `: ${errors.join(" | ")}` : ""}`);

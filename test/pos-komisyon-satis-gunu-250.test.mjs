@@ -205,4 +205,29 @@ describe("Ç7a KG-6 — POS komisyonu satış (çekim) günü; valörde net (KG-
       await w.ctx.server.close();
     }
   });
+
+  // Tek aday düzeltme turu (dar kontrol t3c7a DÜŞÜK — N7): Banka Ayarları'ndaki komisyon hesabı OKUNUR. S187 = A (KULLANICI KURALIYLA ÖNERİ, 14.11 12:13): "POS komisyon hesabı sonradan
+  // değiştirilirse, bankaya henüz geçmemiş (bekleyen) POS kaleminin satış günü komisyon maddesi YENİ hesaba geçer …; bankaya geçmiş kalem eski hesabında kalır."
+  it("9. komisyon hesabı ayarı (S187 = A): bankaya geçmiş satış 653'te kalır; bekleyen ve yeni satışların satış günü maddesi yeni hesapta (770)", async () => {
+    const w = await world();
+    try {
+      await collect(w, { amount: "10.000" });
+      setClock(w, "2026-10-12");
+      assert.equal((await settle(w.api)).settled, 1, "08.10 satışı 12.10'da bankaya geçti");
+      await collect(w, { amount: "4.000", date: "2026-10-12" });
+      await must("komisyon hesabı 770", w.api.put(`${BANK}/settings`, { values: { gl: { commission: "770" } } }));
+      await collect(w, { amount: "2.000", date: "2026-10-12" });
+      assert.deepEqual(commissionEntries(w).map(entry => `${entry.date} ${entry.lines.join(" ")}`).sort(), [
+        "2026-10-08 108/108.01:0:25000 653:25000:0",
+        "2026-10-12 108/108.01:0:10000 770:10000:0",
+        "2026-10-12 108/108.01:0:5000 770:5000:0",
+      ], "geçmiş 250 653'te; bekleyen 100 (ayar değişmeden önce girilmiş) ve yeni 50 770'te");
+      assert.equal(await gl(w, "653"), 25_000);
+      assert.equal(await gl(w, "770"), 15_000);
+      assert.equal(await sub(w, "108.01"), 585_000, "bekleyen net: 4.000 − 100 + 2.000 − 50");
+      await integrityOk(w.api, "komisyon hesabı değişti");
+    } finally {
+      await w.ctx.server.close();
+    }
+  });
 });

@@ -1,0 +1,23 @@
+ATILAN (GEÇERSİZ) BLOKLAR: yok
+yol | ana en iyi / ort.ortanca / döngü | taban | uç | uç/ana en iyi | uç/ana ortanca | uç/taban ortanca | hüküm (uç ↔ ana)
+AÇILIŞ (göç dahil) | 26312 / 27740 / 0 | 26656 / 28247 / 0 | 25246 / 27029 / 0 | 0.96 | 0.97 | 0.96 | tamam
+DONMA (bekleyen koşu) | 8996 / 9018 / 0 | 8791 / 9118 / 0 | 8448 / 8810 / 0 | 0.94 | 0.98 | 0.97 | tamam
+Mizan + mutabakat (GET ledger) | 3170 / 3514 / 4312 | 3221 / 3564 / 4328 | 3348 / 3718 / 4345 | 1.06 | 1.06 | 1.04 | tamam
+Yevmiye Defteri (rapor) | 2473 / 2670 / 0 | 2358 / 2641 / 2642 | 2392 / 2739 / 2873 | 0.97 | 1.03 | 1.04 | tamam
+Hesap Planı Mizanı (rapor) | 3143 / 3500 / 0 | 3280 / 3473 / 0 | 3413 / 3534 / 4226 | 1.09 | 1.01 | 1.02 | tamam
+Alt Hesap Mizanı (rapor) | 446 / 484 / 0 | 482 / 513 / 0 | 479 / 518 / 567 | 1.07 | 1.07 | 1.01 | tamam
+Defter Mutabakatı (rapor) | 17858 / 19050 / 0 | 18153 / 18707 / 0 | 18242 / 18795 / 0 | 1.02 | 0.99 | 1.00 | tamam
+Mutabakat Testi (GET ledger/integrity) | 10365 / 10702 / 10897 | 10474 / 11230 / 0 | 10611 / 11034 / 11937 | 1.02 | 1.03 | 0.98 | tamam
+Yevmiye Defteri bütün zaman (rapor) | 4557 / 4961 / 4844 | 4693 / 4853 / 0 | 4807 / 5102 / 5075 | 1.05 | 1.03 | 1.05 | tamam
+YAZIM Borç Yaz | 286 / 321 / 0 | 320 / 349 / 359 | 174 / 201 / 248 | 0.61 | 0.63 | 0.58 | tamam
+YAZIM evrak (alınan çek, carili) | 52 / 57 / 78 | 84 / 90 / 94 | 17 / 19 / 23 | 0.34 | 0.32 | 0.21 | tamam
+YAZIM fatura (satış, açık hesap) | 192 / 206 / 0 | 215 / 229 / 0 | 73 / 90 / 74 | 0.38 | 0.44 | 0.39 | tamam
+YAZIM fatura iptali | 105 / 111 / 176 | 136 / 140 / 0 | 66 / 73 / 79 | 0.63 | 0.66 | 0.53 | tamam
+cari kartı | 237 / 249 / 253 | 222 / 236 / 0 | 155 / 169 / 0 | 0.65 | 0.68 | 0.71 | tamam
+Açılış Olabilir listesi (sayfasız) | 74 / 77 / 75 | 73 / 76 / 88 | 73 / 86 / 89 | 0.99 | 1.11 | 1.13 | eşikte (tek ölçüt)
+Açılış Olabilir listesi sayfalı (yeni; tabanda | 118 / 131 / 0 | 116 / 140 / 146 | 117 / 129 / 0 | 0.99 | 0.98 | 0.92 | tamam
+Zil sayısı (yeni; tabanda tam liste) | 38 / 41 / 0 | 38 / 39 / 37 | 38 / 40 / 0 | 0.99 | 0.99 | 1.03 | tamam
+Kural Farkı Düzeltme ön izlemesi (yeni; taband | 4703 / 5069 / 0 | 4923 / 5196 / 0 | 5157 / 5563 / 0 | 1.10 | 1.10 | 1.07 | tamam
+Açılış Eşleştirme GET (yeni; tabanda 404) | 3959 / 4200 / 0 | 3752 / 4172 / 4714 | 3747 / 4031 / 4129 | 0.95 | 0.96 | 0.97 | tamam
+Açılış Eşleştirme ön izleme (yeni; tabanda 404 | 3800 / 4109 / 4593 | 3773 / 4017 / 4205 | 3906 / 4071 / 4387 | 1.03 | 0.99 | 1.01 | tamam DURUM {409}
+KÖTÜLEŞEN YOL SAYISI (uç ↔ ana) 0

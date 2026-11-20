@@ -1,0 +1,10 @@
+#!/bin/bash
+cd /dev/shm/ana-t3duz/yeni || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+exec 9>/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock; flock -s -w 1800 9 || { echo KİLİT; exit 3; }
+for tz in UTC Europe/Istanbul; do n=$(echo $tz | tr / -)
+  TZ=$tz timeout -k 5 1500 npm run -s test:kahin-defter > /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-t3duz/kahin-defter-$n.out 2>&1; echo "kahin-defter $n çıkış $? · $(grep -E '^# (tests|pass|fail)' /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-t3duz/kahin-defter-$n.out | tr '\n' ' ')"
+  TZ=$tz timeout -k 5 2400 npm run -s test:kahin-cari > /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-t3duz/kahin-cari-$n.out 2>&1; echo "kahin-cari $n çıkış $? · $(grep -E '^# (tests|pass|fail)' /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-t3duz/kahin-cari-$n.out | tr '\n' ' ')"
+  for i in 1 2 3; do TZ=$tz timeout -k 5 900 node test/supheli-kuyruk-defter-250-mutasyon.mjs --kopya /dev/shm/ana-t3duz/mut --yalniz 12 > /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-t3duz/m12-$n-$i.out 2>&1; echo "M12 $n $i çıkış $? · $(grep -iE 'SONUÇ|yakalan' /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-t3duz/m12-$n-$i.out | tail -2 | tr '\n' ' ')"; done
+done
+echo bitti

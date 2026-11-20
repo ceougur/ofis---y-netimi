@@ -20,6 +20,8 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { after, before, describe, it } from "node:test";
 import { gunzipSync } from "node:zlib";
+import crypto from "node:crypto";
+import { syncBuiltinESMExports } from "node:module";
 import { loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -38,7 +40,7 @@ describe("Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168
   let server;
   let api;
   let n = 0;
-  let base = -900; // senaryonun taban günü (her senaryo +30)
+  let base = -990; // senaryonun taban günü (her senaryo +30; S181'in üç senaryosu için −900'den −990'a — tarihler göreli, dosyanın sonu bugünden önce kalır)
   before(async () => {
     server = await startTestServer({ now: { time: `${TODAY}T12:00:00+03:00`, fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
     const client = await loginAdmin(server);
@@ -156,6 +158,78 @@ describe("Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168
     // İşaretli + bağlı: işaret kazanır (tamamı 120) — 100 sığar.
     await must("işaretli + bağlı 100", cash(s.acc, s.at(-10), 100, { doubtfulSkip: true, invoiceId: s.f2 }));
     assert.deepEqual(gl(s.acc.id), { b120: 0, b128: 1000 });
+    clean();
+  });
+
+  // 2.5.0 tek aday düzeltme turu (dar kontrol t3c7a DÜŞÜK; S181 = B — KULLANICI KURALIYLA ÖNERİ, 14.11 09:00, iş listesi C AYNEN: "B: fazla 120'ye; 120 eksiye düşerse işlem reddedilir
+  // (S155 = A'nın açık sözü; kullanıcı evrakı bağsız girer ya da tutarı böler) — örnekte ret"; görev metni: "çek yolunun ret iletisi nakit yolundaki gibi 'tutarı … indirin / bağı
+  // kaldırın' önerisini versin"). Örnek (S181'in kendisi): F1 1.000 → şüpheliye alma 1.000 → F2 500 → F2'ye bağlı çek 900. Beklenen sayılar karar metninden (ders 5): F2'nin kuyrukta
+  // şüpheli payı yok → 900'ün tamamı 120'ye, şüpheli dışı borç 500 → 400 aşar → RET (kod AYNEN 409 ledger-integrity, hiçbir satır yazılmaz); önerilen tutar 900 − 400 = 500 (120 = 0).
+  const evrakCount = acc => Number(server.app.store.get("SELECT COUNT(*) AS n FROM cheques WHERE account_id = ?", acc.id).n);
+  const S181_ADVICE = /Tutarı 500,00 TL'ye indirin ya da Kapatılacak Fatura bağını kaldırın\./;
+  it("S181 = B — F2'ye bağlı 900 ÇEK: RET (409 ledger-integrity, hiçbir şey yazılmaz); ileti nakit yolundaki gibi 'Tutarı 500,00 TL'ye indirin ya da … bağını kaldırın'", async () => {
+    const s = await scenario("S181 Çek 900", { normal: 0 });
+    assert.deepEqual(gl(s.acc.id), { b120: 500, b128: 1000 }, "ön durum (F1 1.000 + F2 500; şüpheli 1.000)");
+    const before = evrakCount(s.acc);
+    const res = await cheque(s.acc, s.at(-10), 900, s.f2);
+    assert.deepEqual([res.status, codeOf(res)], [409, "ledger-integrity"], JSON.stringify(res.data).slice(0, 400));
+    const text = messageOf(res);
+    assert.match(text, /^Evrakın normal cari hesaba işlenecek kısmı carinin şüpheli dışı borç bakiyesini 400,00 TL aşıyor \(kayıttan sonra borç 600,00 TL, açık şüpheli 1\.000,00 TL\); fazlası şüpheli alacaktan düşmek zorunda\./, text);
+    assert.match(text, S181_ADVICE, text);
+    assert.equal(res.data?.error?.suggestedMinor ?? res.data?.suggestedMinor, 50000, "önerilen tutar alanda da (kuruş)");
+    assert.equal(evrakCount(s.acc), before, "evrak yazılmadı (işlem geri alındı)");
+    assert.deepEqual(gl(s.acc.id), { b120: 500, b128: 1000 });
+    // İletinin önerdiği tutar KABUL edilir (önerinin kendisi doğru): 500'ün tamamı 120'den → 120 = 0.
+    await must("önerilen tutar", cheque(s.acc, s.at(-10), 500, s.f2));
+    assert.deepEqual(gl(s.acc.id), { b120: 0, b128: 1000 });
+    clean();
+  });
+  it("S181 = B — bağlı SENET ve DÜZELTME (PUT) aynı ileti; bağsız 900 çek KABUL (en eski kayıttan 128 900 — S181'in ikinci yolu)", async () => {
+    const s = await scenario("S181 Senet Düzeltme", { normal: 0 });
+    const senet = await api.post("/api/workspace/cheques", { direction: "in", instrument: "note", bank: "", drawer: "X", serialNo: `SKS${(n += 1)}`, amount: "900", accountId: s.acc.id, issueDate: s.at(-10), dueDate: day(60), invoiceId: s.f2 });
+    assert.deepEqual([senet.status, codeOf(senet)], [409, "ledger-integrity"], JSON.stringify(senet.data).slice(0, 400));
+    assert.match(messageOf(senet), S181_ADVICE, messageOf(senet));
+    // Düzeltme: F2'ye bağlı 300 çek (KABUL, 120 = 200) → tutar 900'e → RET, önerilen tutar yine 500 (yeni hâlin ölçüsü; eski evrakın etkisi geri alınmış hâlde).
+    const created = await must("çek 300", cheque(s.acc, s.at(-10), 300, s.f2));
+    assert.deepEqual(gl(s.acc.id), { b120: 200, b128: 1000 });
+    const id = created.id || created.cheque?.id;
+    assert.ok(id, JSON.stringify(created).slice(0, 200));
+    const put = await api.put(`/api/workspace/cheques/${id}`, { amount: "900" });
+    assert.deepEqual([put.status, codeOf(put)], [409, "ledger-integrity"], JSON.stringify(put.data).slice(0, 400));
+    assert.match(messageOf(put), S181_ADVICE, messageOf(put));
+    assert.deepEqual(gl(s.acc.id), { b120: 200, b128: 1000 }, "düzeltme geri alındı");
+    await must("düzeltme önerilen tutarla", api.put(`/api/workspace/cheques/${id}`, { amount: "500" }));
+    assert.deepEqual(gl(s.acc.id), { b120: 0, b128: 1000 });
+    // Bağsız evrak bağın dışında: aynı ölçüde KABUL, en eski açık kayıttan (kural değişmedi).
+    await must("bağsız çek 900", cheque(s.acc, s.at(-9), 900));
+    assert.deepEqual(gl(s.acc.id), { b120: 0, b128: 100 });
+    clean();
+  });
+  it("S181 kontrol — bağsız evrakın reddi (şüpheliye alma tarihinden ÖNCEYE tarihli) S155 iletisinde kalır: öneri 'tarihten sonraya girin', bağ cümlesi YOK", async () => {
+    const s = await scenario("S181 Bağsız Geriye", { normal: 0, f2: 0 });
+    assert.deepEqual(gl(s.acc.id), { b120: 0, b128: 1000 }, "ön durum (şüpheli dışı borç 0)");
+    const res = await cheque(s.acc, s.at(-55), 300);
+    assert.deepEqual([res.status, codeOf(res)], [409, "ledger-integrity"], JSON.stringify(res.data).slice(0, 400));
+    assert.match(messageOf(res), /kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin\./, messageOf(res));
+    assert.doesNotMatch(messageOf(res), /bağını kaldırın/);
+    assert.deepEqual(gl(s.acc.id), { b120: 0, b128: 1000 });
+  });
+
+  // Kesitin aynı gün kuralı (tasarım notu §19.1 K-1 (a), AYNEN: "kuyruğun kesitine aynı günün AYIRICI alacakları ayırıcının o ana kadar İŞLEDİĞİ kadarıyla girer (kayıt kalanıyla tutarlı
+  // olsun diye), öbür aynı gün satırları kuyruğun anahtarıyla"). B1'den sonra aynı sınıftaki iki tahsilatta ayırıcının sırası kuyruğunkiyle aynı (yazım sırası) — kuralın ayırt edici hâli
+  // ayırıcının SINIF sırası: aynı gün Değersiz Alacak (hedefli alacak) bağlı tahsilattan SONRA yazılsa da ayırıcıda önce işlenir. Beklenen elle (ders 5): S168 düzeni (120 = 100, 128 = 1.000;
+  // şüpheli dağılımı F1 600 + F2 400) → aynı gün F2'ye bağlı 300 nakit, sonra Değersiz Alacak 200. Ayırıcı: Değersiz 200 (kalan 800), sonra bağlı 300 — kesitte Değersiz VAR (bağsız alacak
+  // olarak F1'i 600 → 400 kapatır), kalan 800'ün dağılımı F1 400 + F2 400 → F2'nin payı 400 ≥ 300 → 300'ün tamamı 128'den: 128 = 500, 120 = 100. (Kural kalkarsa kesitte Değersiz yok:
+  // F1 600 + F2 200 → 128'den 200, 120'den 100 → 128 = 600, 120 = 0 — mutasyon M12.)
+  it("kesitin aynı gün kuralı: bağlı tahsilattan SONRA yazılan aynı gün Değersiz Alacak ayırıcıda önce işlenir, kesite girer — F2'ye bağlı 300'ün tamamı 128'den (128 = 500, 120 = 100)", async () => {
+    const s = await scenario("Aynı Gün Değersiz");
+    assert.deepEqual(gl(s.acc.id), { b120: 100, b128: 1000 }, "ön durum");
+    await must("F2'ye bağlı 300", cash(s.acc, s.at(-10), 300, { invoiceId: s.f2 }));
+    const linkedId = (await lastEntry(s.acc)).id;
+    const did = s.record.record?.id || s.record.id;
+    await must("Değersiz Alacak 200 (aynı gün, sonra)", api.post(`/api/workspace/accounts/${s.acc.id}/doubtful/${did}/write-off`, { amount: "200", date: s.at(-10), note: "kesin kayıp" }));
+    assert.deepEqual(gl(s.acc.id), { b120: 100, b128: 500 });
+    assert.deepEqual(creditsOf(linkedId), ["A 128 300"]);
     clean();
   });
 
@@ -304,6 +378,121 @@ describe("Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168
       assert.equal(res.status, 0, `${first} önce: ${res.stderr}`);
       assert.match(res.stdout, /^ok true/);
     }
+  });
+
+  // ——— Tek aday düzeltme turu (dar kontrol t3c7a): taban günü bu dosyanın öbür senaryolarından SONRA ilerlesin diye dosyanın sonunda. ———
+  // 2.5.0 tek aday düzeltme turu S212 = A (19.11 23:50; 05.11 (2) 24 = A "bağ (Mahsup Et, Kapatılacak Fatura, iade, kart tahsilatı) hedefini her durumda kapatır; hedefi önceden kapatmış
+  // bağsız ödeme serbest kalır ve kendi tarihinde yeniden dağılır" + S192 = A tek kuyruk): şüpheliye almadan ÖNCE bağsız ödemeyle kapanmış faturaya şüpheliye almadan SONRA bağlı tahsilat.
+  // Karar metninin örneği (göreli günlerle; dosyanın sonunda taban adımı 15 gün): F1 1.000 (vade B−12), F2 1.000 (vade B−10), F3 2.000 (vade B+30); P1 bağsız 1.000 (B−11 — F1'in vadesinden
+  // sonra, F2'ninkinden önce: örnekteki 15.01 gibi); Şüpheliye Al 1.000 (B−8); P2 1.000 F1'e bağlı (B−5)
+  // → F1 şüpheliye alma gününde açık sayılır, tahsilat 128'den düşer: 120 = 2.000, 128 = 0, şüpheli kaydı kapanır (bugün 120 = 1.000, 128 = 1.000, kayıt 1.000 açık).
+  const s212 = async (label, last) => {
+    base += 15;
+    const B = base;
+    const acc = await must("cari", api.post("/api/workspace/accounts", { name: `S212 ${label}`, type: "customer", registeredOn: day(-1200), phone: `0500 317 ${String(10 + Math.floor((n += 1) / 100)).padStart(2, "0")} ${String(n % 100).padStart(2, "0")}` }));
+    const bill = async (amount, due) => (await must("fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: day(B - 14), lines: [{ name: "Hizmet", qty: 1, unitPrice: String(amount), vatRate: 0 }], payment: { rest: "open", dueDate: due } }))).id;
+    const f1 = await bill(1000, day(B - 12));
+    await bill(1000, day(B - 10));
+    await bill(2000, day(B + 30));
+    await must("P1 bağsız", cash(acc, day(B - 11), 1000));
+    const record = await must("şüpheliye al", api.post(`/api/workspace/accounts/${acc.id}/doubtful`, { amount: "1000", date: day(B - 8), reason: "lawsuit", note: "S212" }));
+    assert.deepEqual(gl(acc.id), { b120: 2000, b128: 1000 }, `${label}: ön durum`);
+    await must("P2", last(acc, day(B - 5), f1));
+    const { state: map } = await state();
+    return { acc, remaining: map.get(record.record?.id || record.id)?.remaining / 100 };
+  };
+  it("S212 = A — şüpheliye almadan önce bağsız ödemeyle kapanmış F1'e sonradan bağlı 1.000 NAKİT: 128'den düşer (120 = 2.000, 128 = 0, kayıt kapanır)", async () => {
+    const { acc, remaining } = await s212("Nakit", (a, date, f1) => cash(a, date, 1000, { invoiceId: f1 }));
+    assert.deepEqual(gl(acc.id), { b120: 2000, b128: 0 });
+    assert.deepEqual(creditsOf((await lastEntry(acc)).id), ["A 128 1000"]);
+    assert.equal(remaining, 0, "şüpheli kaydı kapandı (kalan 0)");
+    clean();
+  });
+  it("S212 = A — aynı örnek F1'e bağlı 1.000 ÇEK (S14): 128'den düşer (120 = 2.000, 128 = 0)", async () => {
+    const { acc, remaining } = await s212("Çek", (a, date, f1) => cheque(a, date, 1000, f1));
+    assert.deepEqual(gl(acc.id), { b120: 2000, b128: 0 });
+    assert.equal(remaining, 0);
+    clean();
+  });
+  // Kısmi bağ (kuyruğun aynı kuralı — bağ kendi tutarı kadar kapatır, P1'in o kadarı F2'ye kayar; S168 = B "defterin 120 / 128 ayrımı kuyruğun dağılımını izler"): P2 400 F1'e bağlı →
+  // şüpheliye almada açık F1 400 + F2 600 (vade sırası) → P2'nin tamamı 128'den: 120 = 2.000, 128 = 600.
+  it("S212 = A kısmi bağ — F1'e bağlı 400: F1'in şüpheli payı 400 → 128'den 400 (120 = 2.000, 128 = 600)", async () => {
+    const { acc, remaining } = await s212("Kısmi", (a, date, f1) => cash(a, date, 400, { invoiceId: f1 }));
+    assert.deepEqual(gl(acc.id), { b120: 2000, b128: 600 });
+    assert.deepEqual(creditsOf((await lastEntry(acc)).id), ["A 128 400"]);
+    assert.equal(remaining, 600);
+    clean();
+  });
+
+  // 2.5.0 tek aday düzeltme turu B1 (dar kontrol t3c7a; ders 31): aynı gün, aynı sınıfta bağsız (U) + Fatura 2'ye bağlı (L) tahsilat — sonuç YALNIZ YAZIM SIRASINA bağlı, kimliğe (UUID)
+  // değil. Kimlik sırasını test KURAR (iki satırın kimliği yazımdan sonra sabit önekli değerlere çevrilir; ders 20 — ön koşul zorla). 2 yazım sırası × 2 kimlik sırası.
+  // Senaryo (karar metinlerinden elle; ders 5; taban adımı 15 gün): Fatura 1 1.000 (B−12, vade hep ileride) → Şüpheliye Al 1.000 (B−10) → 'Normal Cari Hesaba İşle' 400 (B−9; Fatura 1'e
+  // sayılır) → Fatura 2 500 (B−8, vade B−8).
+  // Ön durum 120 = 100, 128 = 1.000; kalem görünümünde şüpheli = Fatura 1 600 + Fatura 2 400 (S168 = B'nin örneğiyle aynı düzen). Aynı gün (B−3):
+  //   U → L: U bağsız 200 en eski açık kayıttan (128 800); kuyrukta U vadesi gelmiş Fatura 2'yi öder (300 kalır, şüpheli payı 200) → L 300'ün 200'ü 128'den, 100'ü 120'den:
+  //          120 = 0, 128 = 600; sonraki 'Normal Cari' 100 → RET (şüpheli dışı borç 0).
+  //   L → U: L 300 Fatura 2'nin şüpheli payından (400) 128'den → 128 700; U 200 en eski kayıttan → 128 500; 120 = 100; sonraki 'Normal Cari' 100 → KABUL.
+  it("B1 (ders 31): aynı gün bağsız + bağlı tahsilat — 120 / 128, satırların payı, kart, sonraki işlemin kabul / reddi YALNIZ yazım sırasına bağlı (2 yazım × 2 kimlik sırası)", async () => {
+    let uuidSeq = 0;
+    const realUUID = crypto.randomUUID;
+    const withIds = async (high, fn) => {
+      crypto.randomUUID = () => `${high ? "ffffffff-ffff-4fff-bfff-" : "00000000-0000-4000-8000-"}${(uuidSeq += 1).toString(16).padStart(12, "0")}`;
+      syncBuiltinESMExports();
+      try {
+        return await fn();
+      } finally {
+        crypto.randomUUID = realUUID;
+        syncBuiltinESMExports();
+      }
+    };
+    const run = async (label, order, lowFirst) => {
+      base += 15;
+      const B = base;
+      const acc = await must("cari", api.post("/api/workspace/accounts", { name: `Aynı Gün Sıra ${label}`, type: "customer", registeredOn: day(-1200), phone: `0500 318 ${String(10 + Math.floor((n += 1) / 100)).padStart(2, "0")} ${String(n % 100).padStart(2, "0")}` }));
+      const bill = async (date, amount, due) => (await must("fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: date, lines: [{ name: "Hizmet", qty: 1, unitPrice: String(amount), vatRate: 0 }], payment: { rest: "open", dueDate: due } }))).id;
+      await bill(day(B - 12), 1000, day(800));
+      await must("şüpheliye al", api.post(`/api/workspace/accounts/${acc.id}/doubtful`, { amount: "1000", date: day(B - 10), reason: "lawsuit", note: "B1" }));
+      const f2 = await bill(day(B - 8), 500, day(B - 8));
+      await must("Normal Cari Hesaba İşle", cash(acc, day(B - 9), 400, { doubtfulSkip: true }));
+      assert.deepEqual(gl(acc.id), { b120: 100, b128: 1000 }, `${label}: ön durum`);
+      // Kimlik sırasını kur (ders 20 — ön koşul zorla): satırın kimliğini üreten randomUUID yazım sırasında önekli değer döndürür; "küçük" kimlik lowFirst'ün satırına.
+      for (const step of order) await withIds(step !== lowFirst, () => must(step, step === "U" ? cash(acc, day(B - 3), 200) : cash(acc, day(B - 3), 300, { invoiceId: f2 })));
+      const rows = server.app.store.all("SELECT rowid AS seq, id, invoice_id AS inv FROM account_entries WHERE account_id = ? AND kind = 'in' AND date = ? ORDER BY rowid", acc.id, day(B - 3));
+      assert.equal(rows.length, 2);
+      const U = rows.find(row => !row.inv);
+      const L = rows.find(row => row.inv);
+      const ids = { U: U.id, L: L.id };
+      assert.equal(`account:${ids.U}` < `account:${ids.L}`, lowFirst === "U", `${label}: kimlik sırası kuruldu`);
+      assert.equal(rows[0].inv ? "L" : "U", order[0], `${label}: yazım sırası`);
+      const card = await must("kart", api.get(`/api/workspace/accounts/${acc.id}`));
+      const { state: map } = await state();
+      const out = {
+        gl: gl(acc.id),
+        U: creditsOf(ids.U),
+        L: creditsOf(ids.L),
+        kart: { bakiye: card.totals.balance, gecikmis: card.totals.overdueDebt, kuyruk: card.totals.doubtfulQueue },
+        // İkinci yükleyici (SQL; doubtfulState) birinciyle (yevmiye) aynı: kaydın kalanı = 128.
+        kalan: server.app.store.all("SELECT id FROM doubtful_receivables WHERE account_id = ?", acc.id).map(row => map.get(row.id)?.remaining / 100),
+      };
+      clean();
+      const next = await cash(acc, day(B - 1), 100, { doubtfulSkip: true });
+      out.next = next.status === 200 ? "KABUL" : `${next.status} ${codeOf(next)}`;
+      return out;
+    };
+    const UL = { gl: { b120: 0, b128: 600 }, U: ["A 128 200"], L: ["A 120 100", "A 128 200"], kalan: [600], next: "409 doubtful-normal-exceeds" };
+    const LU = { gl: { b120: 100, b128: 500 }, U: ["A 128 200"], L: ["A 128 300"], kalan: [500], next: "KABUL" };
+    const results = {};
+    for (const [label, order, lowFirst] of [["UL-U", "UL", "U"], ["UL-L", "UL", "L"], ["LU-U", "LU", "U"], ["LU-L", "LU", "L"]]) {
+      const got = await run(label, order, lowFirst);
+      const want = order === "UL" ? UL : LU;
+      assert.deepEqual({ gl: got.gl, U: got.U, L: got.L, kalan: got.kalan, next: got.next }, want, `${label} (yazım ${order}, kimlikte önce ${lowFirst})`);
+      results[label] = got.kart;
+    }
+    // Kart (kuyruk görünümü: bakiye, gecikmiş, şüpheli kuyruk) kimlik sırasından bağımsız; bakiye iki yazım sırasında da 600.
+    assert.deepEqual(results["UL-U"], results["UL-L"], "UL: kart kimlikten bağımsız");
+    assert.deepEqual(results["LU-U"], results["LU-L"], "LU: kart kimlikten bağımsız");
+    assert.equal(results["UL-U"].bakiye, 600);
+    assert.equal(results["LU-U"].bakiye, 600);
   });
 });
 
