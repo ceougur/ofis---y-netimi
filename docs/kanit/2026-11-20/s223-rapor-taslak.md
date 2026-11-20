@@ -69,3 +69,23 @@ Taban: c7b-aday = df7e93ca. Karar: S223 = A, S228 = A (görev metni docs/devir/2
 ## BULGU (kapsam dışı, yeniden üretildi) — grup adı
 - Taksit Excel: 'Elif Su' (telefonsuz, grup 'Işık Servisi') → kart; sonra 'ELİF SU' (telefonsuz, grup 'IŞIK SERVİSİ') → YENİ grup 'IŞIK SERVİSİ' + YENİ cari + kart (çift grup, çift cari, çift borç).
   Neden: grup bulma (plans.mjs ensureGroup; plan-transfer groupExisting / groupId) NOCASE — kişi adı düzelse de telefonsuz eşleşme 'aynı grup' ister. 'ŞUBE A' ↔ 'Şube A' NOCASE'te eşit (Ş ikisinde büyük) — yalnız I/ı, İ/i ve küçük-büyük Türkçe harf farkı bozar.
+
+## MUTANTLAR (commit'li kodun ayrı kopyası; s223 + c7bt testleri, UTC)
+| Mutant | Kırmızı test(ler) |
+|---|---|
+| M1 katlama İngilizceye (foldPersonName yalnız A–Z) | s223 (0) (1) (2) (4) (5) (6) (8) (9) (10) (11), c7bt (11) |
+| M2 çek / senette Türkçe katlama yok (matchName index'siz) | s223 (10) |
+| M3 S228 sırası ters (Türkçe önce) | s223 (6) |
+| M4 aynı yüklemede açılan cari haritaya eklenmez | s223 (8) |
+| M5 boşluk düzeltmesi yok | s223 (0) (6) (8) |
+| M6 yinelenen kart anahtarı eski katlamada | s223 (4) (5) (6) (8), c7bt (11) |
+| M7 silinmiş cari aday | s223 (12) |
+
+## D. ESKİ SÜRÜM (test/s223-eski-surum-sinif-250.test.mjs; v2.4.9 gerçek kodu surumler.mjs bootVersion)
+- v2.4.9'da hata: cari Excel büyük harf → 1 yeni cari (ŞÜKRÜ 2 cari), taksit Excel → 1 yeni cari + kart (ZEYNEP 2 cari), çek bağlı 0.
+- Yeni kod aynı veride: 4/4 (UTC, İstanbul). Sınıf tablosu test başlığında (C1–C10).
+
+## G. EKRAN (test/e2e/senaryo-s223-250.mjs; gerçek tıklama, Tab + Enter, slowMo)
+- Yeni kod 26 geçti / 0 kaldı; taban 16 / 10 (beklenen nedenlerle: "3 cari açıldı." — çift cari 6; Hasan Işık kartı yok; ikinci yükleme "1 kart oluşturuldu"; çek "bağlandı" yok).
+- Ekran görüntüleri s223-ekran-yeni/ (05: Cari listesinde Hasan Işık 3.000 borç, HASAN IŞIK 0532 300 00 99 ayrı kişi; 03: "0 kart oluşturuldu. 2 satır atlandı (Aynı adla açık kart var).").
+- Tablodan Aktar ürün varsayılanında KAPALI (2.4.5; uç 410) — ekranda yolu yok; API testi (11) anahtar açık test sunucusunda.
