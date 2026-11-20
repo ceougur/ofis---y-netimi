@@ -66,6 +66,22 @@ describe("Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211,
     await integrity("küçülme");
   });
 
+  it("(4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 = A / S151 = B)", async () => {
+    // Elle Borç 500 (vade 20.06 — bugünden önce değil, sahte saat 08.10: geçmiş) + stoktan taksitli satış 1.500 (3 × 500; 01.06 / 01.07 / 01.08 — geçmiş tarihli) + faturasız stok iadesi 800 (10.06):
+    // bakiye 1.200; kartın fazlası 300. Kuyrukta iade 01.06'yı kapatır → en önce gelen AÇIK taksit 01.07: kart 01.06 500 (iadeyle kapalı) · 01.07 200 · 01.08 500 → kart Kalan 700,
+    // elle borç 500 açık (700 + 500 = bakiye). Tabanda (son taksitten) 01.08 200; önceki uçta (kartın kendi hesabıyla) 01.06 kesilir, kart Kalan 1.000 ve iade elle borca kayar.
+    const A = (await must("cari", api.post(`${W}/accounts`, { name: `Tur3 Stok ${(n += 1)}`, type: "customer", registeredOn: "2026-05-01" }))).id;
+    await must("Borç Yaz", api.post(`${W}/accounts/${A}/entries`, { kind: "debt", amount: "500", date: "2026-05-01", dueDate: "2026-06-20", note: "Elle borç" }));
+    const mal = (await must("mal", api.post(`${W}/stock`, { kind: "goods", code: `TUR3-MAL-${n}`, name: "Tur3 Malı", unit: "Adet", openingQty: "1000", salePrice: "100" }))).id;
+    await must("taksitli stok satışı", api.post(`${W}/stock/${mal}/moves`, { kind: "out", qty: "1", unitPrice: "1500", pay: "account", accountId: A, date: "2026-05-01", installments: { count: "3", firstDue: "2026-06-01", everyMonths: 1 } }));
+    const p = ctx.store.get("SELECT id FROM plans WHERE account_id = ? AND deleted_at IS NULL", A).id;
+    await must("faturasız stok iadesi", api.post(`${W}/stock/${mal}/moves`, { kind: "in", reason: "return", qty: "1", unitPrice: "800", pay: "account", accountId: A, date: "2026-06-10" }));
+    assert.deepEqual(await items(p), ["2026-06-01:500/0", "2026-07-01:200/200", "2026-08-01:500/500"], "küçülme kuyrukta açık kalan en önce gelen taksitten (01.07)");
+    assert.equal((await must("kart", api.get(`${W}/plans/${p}`))).totals.remaining, 700);
+    assert.equal((await totals(A)).balance, 1200);
+    await integrity("faturasız stok iadesi");
+  });
+
   it("S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı geri gelir", async () => {
     const A = await acc();
     const f = await goods(A, "2026-10-06", 3, installments);

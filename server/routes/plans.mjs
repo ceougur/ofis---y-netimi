@@ -616,9 +616,15 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // dokunulmaz (açık kısım kart ekranının kendi hesabıyla — lib/plans.mjs allocate; bağlı tahsilat önce kendi taksitine). Açık kısım yetmezse artanı eski yönle (sondan) —
   // çağıranlar keseni kartın kalanıyla sınırladığından olmaz. Önceden taksitler SONDAN geriye kesiliyordu (vadesi uzak taksit önce gidiyordu).
   // Dönüş: [{ item, take }] — kesilecek taksitler sırasıyla (açılış onarımının kilit denetimi de bunu okur: cutTargets).
-  function cutTargets(planId, cut) {
+  // open (2.5.0 Ç7b tur 3 devamı — kabul B'nin d42 farkı, ders 6): verilirse taksitin AÇIK kısmı Tek Yükümlülük Kuyruğu'ndan okunur (kart ekranının gösterdiği Kalan — S129;
+  // itemId → kuyruk satırı). Yalnız trimCovers verir: orada küçülen tutar kuyruğun dağıtamadığı FAZLADIR — bağsız alacak (faturasız stok iadesi, Alacak Yaz) en önce gelen taksiti
+  // kuyrukta ZATEN kapatmıştır; kartın kendi hesabıyla (allocate) "açık" sayılan o taksit kesilirse alacak carinin öbür borcuna kayar (d42 T1: kart Kalan 500 · elle borç 200;
+  // kararın ve kâhinin beklediği kart 200 · elle borç 500 — S140 = A / S151 = B). İade faturası / iptal yolları (shrinkPlan, closeForInvoice) kartın kendi hesabını okur (karar (4)).
+  function cutTargets(planId, cut, open = null) {
     const items = itemsOf(planId);
-    const shaped = new Map(allocate({ total: 0 }, items, entriesOf(planId), { today: today() }).items.map(item => [item.id, item.remaining]));
+    const shaped = open
+      ? new Map(items.map(item => [item.id, roundMoney(Math.max(0, Math.min(Number(item.amount) || 0, Number(open.get(item.id)?.remaining) || 0)))]))
+      : new Map(allocate({ total: 0 }, items, entriesOf(planId), { today: today() }).items.map(item => [item.id, item.remaining]));
     const out = [];
     const left = new Map(items.map(item => [item.id, Number(item.amount) || 0]));
     let rest = roundMoney(Number(cut) || 0);
@@ -643,8 +649,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return out;
   }
   // Kartı karar (4) sırasıyla küçültür (tahsilat bağlı taksit satırı silinmez, sıfırlanır). Yeni toplamı döndürür.
-  function cutPlan(plan, cut, user, { accountId = "", reason = "" } = {}) {
-    for (const { item, take } of cutTargets(plan.id, cut)) {
+  function cutPlan(plan, cut, user, { accountId = "", reason = "", open = null } = {}) {
+    for (const { item, take } of cutTargets(plan.id, cut, open)) {
       const amount = roundMoney((Number(item.amount) || 0) - take);
       const linked = store.get("SELECT 1 AS found FROM plan_entries WHERE item_id = ?", item.id);
       if (amount <= 0.005 && !linked) store.run("DELETE FROM plan_items WHERE id = ?", item.id);
@@ -676,6 +682,17 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const row = store.get("SELECT total FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
     return row ? roundMoney((Number(row.total) || 0) - Math.max(0, netPaid(planId))) : 0;
   }
+  // 2.5.0 Ç7b tur 3 devamı: carinin kart taksitlerinin kuyruktaki kalanı (planId → itemId → kuyruk satırı; TL) — trimCovers'ın küçülme sırası (cutTargets open). İşlem içinde de
+  // kurulur (obligationsOf'un işlem yolu — önbelleğe yazmaz). Eski kapama görünümünde (legacyView) ya da kuyruk kurulamazsa null → kartın kendi hesabı.
+  function openByQueue(accountId, ledger) {
+    const module = invoices();
+    if (!accountId || !ledger || !module?.obligationsOf || module.legacyView) return null;
+    try {
+      return module.obligationsOf(accountId, () => ledger)?.installments || null;
+    } catch {
+      return null;
+    }
+  }
   // v2.0.13 (simülasyon bulgusu "iade taksitten düşmüyor"): cariye alacak yazılınca (müşteri iadesi) borç, mevcut borcu
   // taksitlendiren kartların kalanından küçük kalabilir. Kartlar borçtan büyük kalmasın: fazlası en yeni karttan
   // başlayarak, son taksitten geriye doğru düşülür (ödenmiş taksitlere dokunulmaz). Aynı işlemin içinde çalışır.
@@ -691,12 +708,15 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     }
     const covered = covering.reduce((sum, plan) => roundMoney(sum + plan.left), 0);
     let excess = roundMoney(covered - Math.max(0, Number(account.totals?.balance) || 0));
+    let queue;
     const changedPlans = [];
     for (const plan of covering.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))) {
       if (!(excess > 0.005)) break;
       const cut = roundMoney(Math.min(excess, plan.left));
       if (!(cut > 0.005)) continue;
-      const total = cutPlan(plan, cut, user, { accountId, reason: note || "İade / alacak" });
+      // Kuyruk (in-tx, carinin defterinden — invoices.obligationsOf) yalnız gerçekten kesilecek kart varsa bir kez kurulur (ders 47).
+      if (queue === undefined) queue = openByQueue(accountId, account.ledger);
+      const total = cutPlan(plan, cut, user, { accountId, reason: note || "İade / alacak", open: queue?.get(plan.id) || null });
       changedPlans.push({ id: plan.id, name: plan.name, from: plan.total, to: total, cut });
       excess = roundMoney(excess - cut);
     }
