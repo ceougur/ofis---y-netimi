@@ -1598,6 +1598,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
             summary: [["Hesap", choice.title], ["Devir", cents(opening)], ["Dönem Giriş", cents(period.in)], ["Dönem Çıkış", cents(period.out)], ["Dönem Net", cents(period.in - period.out)], ...(period.transfers ? [["Transfer Giriş", cents(period.trIn)], ["Transfer Çıkış", cents(period.trOut)]] : []), ...(period.adjusted ? [["Açılış ve Devir Düzeltmeleri", cents(period.adjust)]] : []), ["Dönem Sonu", cents(balance)]],
           };
         }
+        const bounds = coverBounds(store);
+        const covering = Boolean(bounds.bank || bounds.card || bounds.pos || bounds.carry);
+        // G1 hız 3 (ders 47, 53 (a)): sayılmış satır olabilecekse yol × hesap toplamı + sayılmış pay TEK okumada saklanır (moneyLines.coverGroups) — Kasa raporunun balances()'ı
+        // (cash().report) ve aşağıdaki coveredWays aynı saklı okumayı kullanır: ikinci tarama yok. Sınır yoksa okuma eskisi gibi (Kasa'nın rawGroups'u).
+        if (covering) moneyLines()?.coverGroups?.();
         const data = cash().report(admin, range.from, range.to, method);
         // v2.1.0 Aşama 14 (§3.4, K10; Aşama 9 bilinen sınırı): iç hareket (Kasa ↔ Banka, bankalar arası transfer, kredi, kart borcu ve ters kayıtları)
         // Giriş / Çıkış kolonuna yazılmaz — tutarı açıklamada "(Transfer Giriş / Çıkış: …)", bakiyede; özetin "Transfer Giriş / Çıkış" satırlarında.
@@ -1608,10 +1613,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         // koşul lib/bank/opening-cover.mjs — Ana Defter'in 519'u ve kovanınki) raporda KALIR, "Açılışta Sayıldı" işaretiyle; tutarı devre, dönem giriş / çıkışına, yürüyen
         // bakiyeye, Dönem Sonu'na ve "(tüm hareketler)" satırlarına girmez — rapor = defter (102 + 108) = hesaplar + Hesabı Atanmamış kovası. Sınır yoksa (banka hesabı ve
         // Devir Kapanışı yok) hiçbir satır sayılmamıştır: ek okuma yapılmaz, rapor eskisiyle birebir. Kasa penceresi ve Kasa raporları (cash().report) DEĞİŞMEZ.
-        const bounds = coverBounds(store);
-        const covering = Boolean(bounds.bank || bounds.card || bounds.pos || bounds.carry);
-        // Açılışta sayılmış hesabı atanmamış satırların yol bazında toplamı (kuruş; moneyLines.coveredWays — Ana Defter'in 519 payıyla AYNI küme, COVER_SQL; TEK okuma, veri damgasıyla
-        // saklı). Hız (ders 47, 53 (a); tek aday düzeltme turu ölçümü): ilk yazım keyTotals'ı dört kez çağırıyor, ikincisi bağsız ~32.000 satırı JS'e çekiyordu (100 bin satırda raporu
+        // Açılışta sayılmış hesabı atanmamış satırların yol bazında toplamı (kuruş; moneyLines.coveredWays — Ana Defter'in 519 payıyla AYNI küme, COVER_SQL; yukarıdaki saklı okumadan). Hız (ders 47, 53 (a); tek aday düzeltme turu ölçümü): ilk yazım keyTotals'ı dört kez çağırıyor, ikincisi bağsız ~32.000 satırı JS'e çekiyordu (100 bin satırda raporu
         // ~400–600 ms yavaşlattı).
         const covered = covering && moneyLines()?.coveredWays ? moneyLines().coveredWays({ before: range.from || "" }) : {};
         const coveredBefore = range.from ? [...new Set(waysFor(method) || ["bank", "card"])].reduce((sum, way) => sum + (covered[way]?.before || 0), 0) : 0;

@@ -537,7 +537,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
    * { [yol]: { cents, before } }; before: verilen günden ÖNCEKİ satırların payı. coveredTotal ile AYNI küme (COVER_SQL, bağsız kısmi indeks), TEK okuma; unassignedWays gibi veri
    * damgasıyla saklanır (Banka ve POS Hareketleri'nin Tüm Hesaplar seçimi: devir, dönem sonu ve "(tüm hareketler)" satırları bu payı düşer).
    */
-  // G1 hız 3 (tek aday düzeltme turu, ders 47, 53 (a)): coveredWays artık AYRI bir tarama yapmaz — Kasa'nın balances()'ıyla AYNI okumadan (coverGroups) türer. Önceden
+  // G1 hız 3 (tek aday düzeltme turu, ders 47, 53 (a)): coveredWays artık AYRI bir tarama yapmaz — Kasa'nın balances()'ının da okuduğu saklı okumadan (coverGroups) türer. Önceden
   // Banka ve POS Hareketleri'nin Tüm Hesaplar seçimi Kasa raporunun (cash().report → balances) taramasına ek olarak bütün para satırlarını bir kez daha tarıyordu (bağsız
   // satırların kısmi indeksi veride yok; 100 bin satırda ~170 ms, her yazımdan sonraki ilk açılışta). Sonuç birebir aynı (eşdeğerlik: test/hesapsiz-tumu-250 'G1 hız 3').
   function coveredWays({ before = "" } = {}) {
@@ -556,12 +556,14 @@ export function createMoneyLines(store, { verify = false } = {}) {
    * [{ way, ref, covered: 0 | 1, day (sayılmış satırın günü; öbüründe null), cents, count }]. balances() (Kasa raporu, Banka ve POS Hareketleri) yol toplamını, coveredWays sayılmış
    * payı (ve verilen günden öncekini) buradan okur: aynı istekte tek tarama. Veri damgasıyla saklanır (işlemin içinde saklanmaz — totals'ın kuralı; sınırlar anahtarda).
    */
-  function coverGroups() {
+  // saved: yalnız saklı (geçerli damgalı) değer — yoksa null, okuma yapılmaz (balances: Kasa penceresi kendi başına eski okumasıyla, rawGroups).
+  function coverGroups({ saved = false } = {}) {
     const stamp = stampOf();
     const cover = coverBounds(store);
     const key = `|cover-groups|${cover.bank}|${cover.card}|${cover.pos}|${cover.carry}|${cover.off ? 1 : 0}`;
     const hit = stamp ? totals.get(key) : null;
     if (hit && hit.stamp === stamp) return hit.list;
+    if (saved) return null;
     const list = store
       .all(
         // İç sorgu (LIMIT -1: düzleştirilmez) yolu ve sayılmış işaretini satır başına BİR kez hesaplar — COVER_SQL yolu (w.way, hesabın türüne bakan CASE) dört kez anar; düz
@@ -581,8 +583,11 @@ export function createMoneyLines(store, { verify = false } = {}) {
     }
     return list;
   }
-  /** Yol bazında bakiye (kuruş): { cash, bank, card, ccard, loan, unknown, all }. G1 hız 3: varsayılan okuma coverGroups (rawGroups'la aynı toplamlar; saklı, tek tarama). */
-  function balances(list = coverGroups()) {
+  /**
+   * Yol bazında bakiye (kuruş): { cash, bank, card, ccard, loan, unknown, all }. G1 hız 3: varsayılan okuma coverGroups'un SAKLI değeri varsa ondan (rawGroups'la aynı toplamlar;
+   * Banka ve POS Hareketleri Tüm Hesaplar seçimi önce onu okur), yoksa rawGroups — Kasa penceresi / Kasa raporları kendi başına eskisi gibi (daha geniş okumayı ödemez).
+   */
+  function balances(list = coverGroups({ saved: true }) || rawGroups()) {
     const out = Object.fromEntries(WAYS.map(way => [way, 0]));
     for (const group of list) out[group.way] = (out[group.way] || 0) + Number(group.cents);
     out.all = WAYS.reduce((sum, way) => sum + out[way], 0);
@@ -830,7 +835,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
     return out;
   }
 
-  return { lines, rows, shape, classified, classifiedTotals, keyTotals, wayBalance, firstDate, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, rawGroups, coveredTotal, coveredWays, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
+  return { lines, rows, shape, classified, classifiedTotals, keyTotals, wayBalance, firstDate, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, rawGroups, coveredTotal, coveredWays, coverGroups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
     schema = null;
     totals.clear();
   } };
