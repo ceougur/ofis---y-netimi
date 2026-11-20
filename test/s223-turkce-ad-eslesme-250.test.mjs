@@ -299,4 +299,18 @@ describe("S223 = A / S228 = A — içe aktarmalarda Türkçe harf katlamalı ki�
     const chq = await loadCheques([["S223-12", "Ziraat", "bora ünsal", "300", "01.12.2026"]], "bora-cek.xlsx");
     assert.notEqual(ctx.store.get("SELECT account_id AS a FROM cheques WHERE serial_no = 'S223-12'").a, gone);
   });
+
+  it("(13) S228 = A 'bugünkü karşılaştırma bulamazsa' EŞLEŞME düzeyinde: NOCASE aynı adı bulur ama telefonu tutmazsa (başka kişi) Türkçe katlamadaki aynı telefonlu cari seçilir", async () => {
+    const other = await account("AHMET ÇAKIR", "0544 113 00 01");
+    const own = await account("Ahmet Çakır", "0544 113 00 02");
+    const accountsBefore = liveAccounts();
+    const plan = await loadPlans([planRow("AHMET ÇAKIR", "0544 113 00 02", "800")], "kara.xlsx");
+    assert.deepEqual(reasons(plan), []);
+    assert.equal(plan.linked, 1, "telefonu tutan 'Ahmet Çakır' carisine");
+    assert.deepEqual(cards(own), [800]);
+    assert.deepEqual(cards(other), []);
+    assert.equal(liveAccounts(), accountsBefore);
+    const acc = await loadAccounts([["", "AHMET ÇAKIR", "0544 113 00 02"]], "kara-cari.xlsx");
+    assert.deepEqual(reasons(acc), [EXISTS]);
+  });
 });
