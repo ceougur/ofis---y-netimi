@@ -1,0 +1,65 @@
+TABAN sınıf × kimlik:
+   ('KAHIN_REDDETTI', '') 6
+   ('OLCULEMEDI', '') 92
+   ('OLCULEMEDI', 'SÜRÜCÜ-YOLU (açık cariye açılış)') 14
+   ('P', '') 12
+   ('PROGRAM_REDDETTI', "['EKSİK YOL (atanmamış)']") 2
+   ('PROGRAM_REDDETTI', "['Ç7b (S15 = A)']") 4
+   ('PROGRAM_REDDETTI', '') 4
+   ('R', '') 54
+   ('SUSMA', '') 26
+   ('U', '2.5.1-Ç7b-B1 (F-06 finansman 780)') 72
+   ('U', 'D4-(7)') 2
+   ('U', 'GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)') 148
+   ('U', 'GÖRÜNÜM-YOK (kilit bağ notu: programda okunacak uç yok)') 2
+   ('U', 'Ç5-B1|Ç7b-(4)') 2
+   ('U', 'Ç5-C') 252
+   ('U', 'Ç7b (S15 = A)') 2
+   ('U', 'Ç7b-(4)') 4
+   ('U', 'Ç7b-(6)') 12
+YENİ sınıf × kimlik:
+   ('KAHIN_REDDETTI', '') 6
+   ('OLCULEMEDI', '') 92
+   ('OLCULEMEDI', 'SÜRÜCÜ-YOLU (açık cariye açılış)') 14
+   ('P', '') 12
+   ('PROGRAM_REDDETTI', "['EKSİK YOL (atanmamış)']") 2
+   ('PROGRAM_REDDETTI', '') 4
+   ('R', '') 54
+   ('SUSMA', '') 26
+   ('U', '2.5.1-Ç7b-B1 (F-06 finansman 780)') 72
+   ('U', 'D4-(7)') 2
+   ('U', 'GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)') 146
+   ('U', 'GÖRÜNÜM-YOK (kilit bağ notu: programda okunacak uç yok)') 2
+   ('U', 'Ç5-C') 252
+   ('U', 'Ç7b-(4)') 2
+   ('U', 'Ç7b-(6)') 12
+
+KALKAN (tabanda var, yenide yok): 12
+   ('s57-r4-kart-kucultme', 'Europe-Istanbul', 'rapor', 'g1', 'gecikmis', 'C1') ('U', 'Ç5-B1|Ç7b-(4)', '6000', '3000')
+   ('s57-r4-kart-kucultme', 'Europe-Istanbul', 'rapor', 'kt1', 'kart', 'TK1') ('U', 'Ç7b-(4)', 'Açık 2026-02-01 3000/3000; 2026-03-01 3000/3000', 'Açık 2026-03-01 3000/3000; 2026-04-01 3000/3000')
+   ('s57-r4-kart-kucultme', 'UTC', 'rapor', 'g1', 'gecikmis', 'C1') ('U', 'Ç5-B1|Ç7b-(4)', '6000', '3000')
+   ('s57-r4-kart-kucultme', 'UTC', 'rapor', 'kt1', 'kart', 'TK1') ('U', 'Ç7b-(4)', 'Açık 2026-02-01 3000/3000; 2026-03-01 3000/3000', 'Açık 2026-03-01 3000/3000; 2026-04-01 3000/3000')
+   ('s58-r9-kartli-fatura-sil-iptal', 'Europe-Istanbul', 'red', '11', 'iptal', '') ('PROGRAM_REDDETTI', "['Ç7b (S15 = A)']", '{"ileti": "Faturanın taksit kartında (“Kaya Market”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.", "kod": "plan-has-payments", "status": 409}', 'null')
+   ('s58-r9-kartli-fatura-sil-iptal', 'UTC', 'red', '11', 'iptal', '') ('PROGRAM_REDDETTI', "['Ç7b (S15 = A)']", '{"ileti": "Faturanın taksit kartında (“Kaya Market”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.", "kod": "plan-has-payments", "status": 409}', 'null')
+   ('s69-s15-kartli-fatura-iptal', 'Europe-Istanbul', 'rapor', 'ak1b', 'acik_kalem', 'C1') ('U', 'GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)', 'None', '[{"k": "fatura:F0", "kalan": 4000, "tarih": "2026-01-05", "tur": "fatura", "vade": "2026-01-31"}, {"k": "kart:TK1", "kalan": 2000, "tarih": "2026-01-10", "tur":')
+   ('s69-s15-kartli-fatura-iptal', 'Europe-Istanbul', 'rapor', 'durum_F1', 'durum', 'F1') ('U', 'Ç7b (S15 = A)', 'aktif', 'iptal')
+   ('s69-s15-kartli-fatura-iptal', 'Europe-Istanbul', 'red', '12', 'iptal', '') ('PROGRAM_REDDETTI', "['Ç7b (S15 = A)']", '{"ileti": "Faturanın taksit kartında (“Ahmet Yılmaz”) 2 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.", "kod": "plan-has-payments", "status": 409}', 'null')
+   ('s69-s15-kartli-fatura-iptal', 'UTC', 'rapor', 'ak1b', 'acik_kalem', 'C1') ('U', 'GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)', 'None', '[{"k": "fatura:F0", "kalan": 4000, "tarih": "2026-01-05", "tur": "fatura", "vade": "2026-01-31"}, {"k": "kart:TK1", "kalan": 2000, "tarih": "2026-01-10", "tur":')
+   ('s69-s15-kartli-fatura-iptal', 'UTC', 'rapor', 'durum_F1', 'durum', 'F1') ('U', 'Ç7b (S15 = A)', 'aktif', 'iptal')
+   ('s69-s15-kartli-fatura-iptal', 'UTC', 'red', '12', 'iptal', '') ('PROGRAM_REDDETTI', "['Ç7b (S15 = A)']", '{"ileti": "Faturanın taksit kartında (“Ahmet Yılmaz”) 2 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.", "kod": "plan-has-payments", "status": 409}', 'null')
+
+YENİ (yenide var, tabanda yok): 0
+
+DEĞİŞEN (iki yanda da AYNI değil, değer / sınıf farklı): 4
+   ('s58-r9-kartli-fatura-sil-iptal', 'Europe-Istanbul', 'rapor', 'ak3', 'acik_kalem', 'C3') 
+     taban ('U', 'GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)', 'None', '[{"k": "kart:TK2", "kalan": 3000, "tarih": "2026-01-15", "tur": "taksit", "vade": "2026-03-15"}]') 
+     yeni  ('U', 'GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)', 'None', '[{"k": "tahsilat:P2", "kalan": -3000, "tarih": "2026-02-15", "tur": "tahsilat", "vade": "2026-02-15"}]')
+   ('s58-r9-kartli-fatura-sil-iptal', 'Europe-Istanbul', 'rapor', 'kt2', 'kart', 'TK3') 
+     taban ('U', 'Ç7b-(4)', 'Açık 2026-03-01 3000/2000', 'Açık 2026-04-01 2000/2000') 
+     yeni  ('U', 'Ç7b-(4)', 'Kapalı ', 'Açık 2026-04-01 2000/2000')
+   ('s58-r9-kartli-fatura-sil-iptal', 'UTC', 'rapor', 'ak3', 'acik_kalem', 'C3') 
+     taban ('U', 'GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)', 'None', '[{"k": "kart:TK2", "kalan": 3000, "tarih": "2026-01-15", "tur": "taksit", "vade": "2026-03-15"}]') 
+     yeni  ('U', 'GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)', 'None', '[{"k": "tahsilat:P2", "kalan": -3000, "tarih": "2026-02-15", "tur": "tahsilat", "vade": "2026-02-15"}]')
+   ('s58-r9-kartli-fatura-sil-iptal', 'UTC', 'rapor', 'kt2', 'kart', 'TK3') 
+     taban ('U', 'Ç7b-(4)', 'Açık 2026-03-01 3000/2000', 'Açık 2026-04-01 2000/2000') 
+     yeni  ('U', 'Ç7b-(4)', 'Kapalı ', 'Açık 2026-04-01 2000/2000')

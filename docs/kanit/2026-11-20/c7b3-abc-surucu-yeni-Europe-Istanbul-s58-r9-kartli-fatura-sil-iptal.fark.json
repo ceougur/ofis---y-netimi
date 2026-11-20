@@ -1,0 +1,353 @@
+{
+ "adim_farklari": [],
+ "bugun_dal": "A",
+ "dal": "A",
+ "degismezler": {
+  "kahin_mizan_toplam_sifir": true,
+  "program_her_adimda_dengeli": true,
+  "program_her_adimda_mutabakat": true,
+  "program_mizan_toplam_sifir": true,
+  "program_mutabakat_testi": true
+ },
+ "etiketler": {
+  "C7b6-KAPAT": {
+   "dayanak": "kullanıcı kararı 05.11 21:30 (6) 'Kartı Kapat yalnız ödeme planını bitirir; kalan carinin borcunda kalır … BUGÜNKÜ DAVRANIŞ DEĞİŞİR (kalan 689'la borçtan düşüyordu)'; kâhin README R6 `eski` = 2.4.9 davranışı B 689 / A CH",
+   "is": "Ç7b (iş listesi D İŞ ATAMASI (4)(6) → Ç7b)"
+  },
+  "F06-FINANSMAN-251": {
+   "dayanak": "kitap F-06 / M14 'finansman türü 780'; Ç7b tasarım notu §9 B-1 (BAŞ MİMAR KARARI 19.11 04:03) B-1 = B: '780 türü ve tanınmayan türün 770.90'ı 2.5.1' — programın gider türü listesinde finansman yok, 770'e düşer",
+   "is": "2.5.1 (Ç7b B-1; iş listesi B)"
+  },
+  "SURUCU-CARI-ACILIS-YOLU": {
+   "dayanak": "SÜRÜCÜ YOLU (karar değil): programda cari açılışı yalnız cari açılırken (routes/accounts.mjs POST openingBalance); sürücü cariyi açılış olayından ÖNCE başka olayla açmak zorunda kaldıysa açılış Borç / Alacak Yaz satırıdır (602.90 / 770.90)",
+   "is": "sürücü sınırı (eşleme)"
+  }
+ },
+ "olay_durumlari": {
+  "faturada": 2,
+  "rapor": 9,
+  "red": 1,
+  "yapildi": 18
+ },
+ "oz_denetim": {
+  "raporlar_ayni": true,
+  "redler_ayni": true
+ },
+ "ozet": {
+  "AYNI": 14,
+  "K": 0,
+  "OLCULEMEDI": 1,
+  "P": 0,
+  "R": 0,
+  "SINIFLANMADI": 0,
+  "SUSMA": 0,
+  "U": 2,
+  "adim_sinifsiz": 0,
+  "adim_susma": 0,
+  "ara_susma": 0
+ },
+ "raporlar": {
+  "ak3": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 0,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 1
+   },
+   "satirlar": [
+    {
+     "aciklama": "programda bu görünüm yok (planlı iş)",
+     "alan": "acik_kalem",
+     "anahtar": "C3",
+     "bugun": null,
+     "kahin": "[{\"k\": \"tahsilat:P2\", \"kalan\": -3000, \"tarih\": \"2026-02-15\", \"tur\": \"tahsilat\", \"vade\": \"2026-02-15\"}]",
+     "kimlik": [
+      "GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)"
+     ],
+     "program": null,
+     "sinif": "U"
+    }
+   ],
+   "tur": "acik_kalemler"
+  },
+  "g1": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C1",
+     "bugun": 0,
+     "kahin": 0,
+     "program": 0,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "g2a": {
+   "dosya": "canli",
+   "gecmis_gunlu": "2026-03-20",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 0,
+    "K": 0,
+    "OLCULEMEDI": 1,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "aciklama": "geçmiş günlü rapor: program 2026-03-20 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok)",
+     "alan": "gecikmis",
+     "anahtar": "C2",
+     "bugun": 3000,
+     "kahin": 0,
+     "program": 2000,
+     "sinif": "OLCULEMEDI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "g2b": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C2",
+     "bugun": 6000,
+     "kahin": 2000,
+     "program": 2000,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "g3": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C3",
+     "bugun": 0,
+     "kahin": 0,
+     "program": 0,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "kt1": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 0,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [],
+   "tur": "kartlar"
+  },
+  "kt2": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 0,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 1
+   },
+   "satirlar": [
+    {
+     "aciklama": "Mevcut Borç kartı (TK3) alttaki faturanın (F3 40,00) iptaliyle küçülürken program bugünkü kuralla SON taksitten geriye küçültür (2.1.0 shrinkPlan: 01.04 taksidi 0, 01.03'ün 10,00'ı); kâhin karar (4) ile vadesi EN ÖNCE gelen açık taksitten (kullanıcı kararı 05.11 21:30 (4); İŞ ATAMASI (4)(6) → Ç7b). Kalan toplam ikisinde 20,00. Sürücünün BUGÜN kart modeli Mevcut Borç kartının küçülmesini kurmadığından U otomatik çıkmadı.",
+     "alan": "kart",
+     "anahtar": "TK3",
+     "bugun": "Açık 2026-03-01 3000/3000; 2026-04-01 3000/3000",
+     "kahin": "Açık 2026-04-01 2000/2000",
+     "kimlik": [
+      "Ç7b-(4)"
+     ],
+     "program": "Kapalı ",
+     "sinif": "U"
+    }
+   ],
+   "tur": "kartlar"
+  },
+  "kt3": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "kart",
+     "anahtar": "TK2",
+     "bugun": null,
+     "kahin": "Kapalı ",
+     "program": "Kapalı ",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "kartlar"
+  },
+  "mz": {
+   "brut": {
+    "kahin": {
+     "alacak": 5000,
+     "borc": 5000
+    },
+    "program": {
+     "alacak": 5000,
+     "borc": 5000
+    }
+   },
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 5,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "program_dengeli": true,
+   "program_mutabakat": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "100",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "120",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "602",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C2",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C3",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "mizan"
+  }
+ },
+ "redler": [
+  {
+   "id": "",
+   "kahin": {
+    "kod": "FATURA_SIL_TAHSILATLI_KART",
+    "neden": "F2"
+   },
+   "no": 10,
+   "program": {
+    "ileti": "Faturanın taksit kartında tahsilat var; silinmez. İptal Et ile iptal edin (tahsilat carinin avansı olur), tahsilatları silin ya da iade faturası kaydedin.",
+    "kod": "invoice-locked",
+    "status": 409
+   },
+   "sonuc": "AYNI",
+   "tur": "sil"
+  }
+ ],
+ "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+ "son": [
+  {
+   "alan": "ana",
+   "anahtar": "100",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "120",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "602",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "C2",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "C3",
+   "sinif": "AYNI"
+  }
+ ],
+ "tz": "Europe/Istanbul",
+ "uyarilar": [],
+ "uygulanamayan": []
+}

@@ -38,3 +38,13 @@ Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
 | 15 | trimCovers'ta kuyruğun açık kısmı yok sayılır (7b6ec843 öncesi) | 8 / 9 ('küçülme kuyrukta açık kalan en önce gelen taksitten (01.07)') | 5 / 5 | YAKALANDI |
 | 16 | cutTargets kuyruktan gelen açık kısmı okumaz | 8 / 9 (aynı) | 5 / 5 | YAKALANDI |
 16 / 16 mutant yakalandı; her biri 2 koşu × 2 TZ'de aynı sayıyla kırmızı. Görev metnindeki 'kalanı sil' / 'gecikmeyi kalem vadesinden başlat' mutantları Borçta Kalsın'ındır (tur 3b; bu turda kod yok) — uygulanmadı.
+
+## 4. Kabul C — muhasebe sürücüsü (DEĞİŞTİRİLMEDİ) taban ↔ yeni, aynı anda iki koşu (c7b3-abc-surucu-*; karşılaştırıcı c7b3-abc-surucu-fark.py)
+- Taban (b85d9e27): 7.780 denetim, 7.578 geçti, 62 başarısız, 140 atlanan · AYNI 7.054 · U 524 · P 34 · K 0 · R 28 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 118 · SUSMA 22.
+- Yeni (7b6ec843): 7.770 denetim, 7.568 geçti, 62 başarısız, 140 atlanan · AYNI 7.052 · U 516 · P 34 · K 0 · R 28 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 118 · SUSMA 22.
+- Senaryo özetinde değişen YALNIZ s57, s58, s69 (öbür satır farkları yalnız yazılış sırası). Yeni fark 0 (yenide olup tabanda olmayan AYNI-dışı satır yok); SINIFLANMADI 0.
+- KALKAN (12 satır = 6 × iki TZ): 'Ç7b-(4)' s57 TK1 kart (program artık kâhinle aynı: 01.03 / 01.04 açık) ve s57 C1 gecikmiş ('Ç5-B1|Ç7b-(4)': 6000 → kâhinle aynı 3000); 'Ç7b (S15 = A)' s58 red 11 (iptal reddi), s69 red 12 (iptal reddi), s69 durum_F1 (artık iptal = kâhin), s69 ak1b açık kalem satırı (artık AYNI). → 'Ç7b-(4)' (s57) ve 'Ç7b (S15 = A)' farklarının HEPSİ KALKTI.
+- KALAN 'Ç7b-(4)' kimlikli 2 satır = s58 kt2 TK3 (iki TZ) — NİTELİĞİ DEĞİŞTİ: taban 'Açık 2026-03-01 3000/2000' (sondan küçülme), yeni 'Kapalı' ↔ kâhin 'Açık 2026-04-01 2000/2000'. Bu **S210 = A — kâhin bakımı bekliyor** farkıdır (faturayı içine almış çok kalemli Mevcut Borç kartı iptalde KAPANIR; kâhin karar (4)'ün genel metniyle küçülüp açık kalmayı bekliyor). Sınıflamadaki kimlik ana oturumca güncellenecek.
+- s58 ak3 C3 (GÖRÜNÜM-YOK, kâhin tarafı) değişti: kâhin artık iptali de uyguluyor (program reddetmediği için) → 'tahsilat:P2 kalan −3000' (S15: tahsilat avans) — programda okunacak uç yok, sınıf aynı (U GÖRÜNÜM-YOK).
+- Denetim sayısının 10 azalması: s58'de 2 / TZ (mizan 600 satırı ve red 11 satırı artık yok — iptal uygulandı), s69'da 3 / TZ (af1b F0, mz C1, red 12 — iptal uygulandı). AYNI → AYNI değer değişenler: s58 g3 C3 gecikmiş 3000 → 0 (program = kâhin), kt3 TK2 Açık → Kapalı (program = kâhin); s69 g1b 6000 → 0, kt1b Kapalı (program = kâhin).
+- 'Ç7b-(6)' 12 satır KALDI (Borçta Kalsın — tur 3b; beklenen).
