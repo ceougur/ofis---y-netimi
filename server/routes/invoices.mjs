@@ -2697,7 +2697,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // 2.5.0 Ç7b tur 3 — S206 / S210 / S211 = A: faturayı içine almış Mevcut Borç kartları iptalden ÖNCE kart / bağ defterinden okunur (coverState — iadedeki okumanın aynısı);
       // carinin açık Mevcut Borç kartı yoksa okunmaz (ders 47).
       const saleKind = invoice.kind === "sale" || invoice.kind === "smm";
-      const coverIds = saleKind && plans()?.hasOpenCover?.(invoice.accountId) ? Object.entries(coverState(invoice.id)?.coveredBy || {}).filter(([, value]) => Number(value) > 0.005).map(([planId]) => planId) : [];
+      const coverIds = saleKind && plans()?.hasOpenCover?.(invoice.accountId) && mayBeCovered(invoice) ? Object.entries(coverState(invoice.id)?.coveredBy || {}).filter(([, value]) => Number(value) > 0.005).map(([planId]) => planId) : [];
       reverseEffects(user, invoice, touched, { force, paidCard });
       const stamp = now();
       store.run("UPDATE invoices SET status = 'cancelled', cancelled_by = ?, cancelled_at = ?, cancel_reason = ?, updated_by = ?, updated_at = ? WHERE id = ?", user.id, stamp, limited(reason, 300, "İptal nedeni"), user.id, stamp, invoice.id);
@@ -3491,6 +3491,19 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       })
       .filter(row => row.normalMinor > 0);
   }
+  // Hız (ders 47, 53 (a); 2.5.0 Ç7b tur 3 devam 3 — kabul E): Mevcut Borç kartı yalnız AÇILDIĞI ANA kadar doğmuş borcu kapsar (lib/invoice-settle.mjs: kapsam yalnız
+  // born <= plan.at satırlara; plan.at = kartın created_at, faturanın born'u = COALESCE(NULLIF(issued_at, ''), created_at); karttan sonra doğan borç kapsanmaz). Faturadan
+  // SONRA (ya da aynı anda) açılmış etkin Mevcut Borç kartı yoksa fatura hiçbir etkin kartın kapsamında değildir → kapsam okuması (coverState: carinin bütün defteri + kapama)
+  // yapılmaz. Biri ISO-UTC (toISOString) biçiminde değilse okumaya düşer (koruyucu). Eşdeğerlik: test/c7b-tur3-hiz-250.test.mjs.
+  const ISO_UTC = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?Z$/;
+  function mayBeCovered(row) {
+    if (!row?.id || !row.accountId) return false;
+    const latest = store.get("SELECT MAX(created_at) AS at FROM plans WHERE account_id = ? AND deleted_at IS NULL AND status = 'active' AND covers_balance = 1 AND invoice_id = ''", row.accountId)?.at || "";
+    if (!latest) return false;
+    const born = store.get("SELECT COALESCE(NULLIF(issued_at, ''), created_at) AS born FROM invoices WHERE id = ?", row.id)?.born || "";
+    if (!ISO_UTC.test(born) || !ISO_UTC.test(latest)) return true;
+    return born <= latest;
+  }
   // 2.5.0 Ç7b tur 3 — S15 = A: İptal Et penceresi taksit kartının ne olacağını söyler (tahsilatlı kart kapanır, tahsilat carinin avansı olur).
   function planCancelText(planId) {
     if (!planId) return "";
@@ -3502,7 +3515,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // 2.5.0 Ç7b tur 3 — S206 / S210 / S211 = A: faturayı içine almış Mevcut Borç kartı iptalde kapanır; pencere bunu söyler (iptalin okuduğu kart / bağ defterinden — coverState).
   // Carinin açık Mevcut Borç kartı yoksa okunmaz (ders 47).
   function coverCancelText(row) {
-    if (!(row.kind === "sale" || row.kind === "smm") || !plans()?.hasOpenCover?.(row.accountId)) return "";
+    if (!(row.kind === "sale" || row.kind === "smm") || !plans()?.hasOpenCover?.(row.accountId) || !mayBeCovered(row)) return "";
     const shares = Object.entries(coverState(row.id)?.coveredBy || {}).filter(([, value]) => Number(value) > 0.005);
     return shares
       .map(([planId, share]) => {

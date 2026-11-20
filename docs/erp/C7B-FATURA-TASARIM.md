@@ -575,3 +575,14 @@ kilit izi / kapı (`integrity*.mjs`: kapalı kartın `waived` = 0), şüpheli al
 - Kod: `routes/plans.mjs cutTargets(planId, cut, open, { order })` — `order: "tail"` eski döngünün birebiri (ziyaret edilen her taksit, kesilen 0 olsa da; tutarı 0'a inen bağsız taksit silinir);
   `cutPlan` / `shrinkPlan` `order`'ı geçirir (varsayılan "due" = karar (4)). `routes/invoices.mjs repairOwnCards`: kilit aynası `cutTargets(..., { order: "tail" })`, kesim `shrinkPlan(..., { order: "tail" })`
   — ayna ile kesim yine TEK yardımcıdan ((6) KABUL korunur). Başka çağıran `order` vermez.
+
+### 16.10 Tur 3 devamı 3 — kabul E'nin hız bulgusu ve düzeltmesi (ders 47, 53 (a); KODLA BİRLİKTE)
+- Bulgu (devam 2 ajanının kilitsiz ölçümü da458f89 ↔ c7b3-taban, temiz 100 bin satır; ölçülen cari 4 açık Mevcut Borç kartlı): fatura kartı (GET, İptal Et notu) 91 → 144 ms, satış yazımı
+  (yanıt fatura kartını döndürür) 171 → 229 ms, fatura iptali / silme 102 → 322 ms. Kök neden (CPU profili, ana kopyada yeniden üretildi): (a) `coverCancelText` ve iptalin `coverIds`'i her
+  faturada kapsam okumasını (`coverState` → `settledFor`: carinin bütün defteri + kapama, ~100 ms) yapıyordu; (b) iptalin `settleCoverOnCancel` → `trimCovers`'ı `accounts().detail`'i
+  kuyruklu (Tek Yükümlülük Kuyruğu + Kalan eki) okuyordu (~230 ms). Ölçümdeki 'Taksitler Geciken listesi' farkı kod değil, VERİ ayrışmasıdır (yeni kodda döngünün iptalleri kartları
+  kapatıp küçültüyor; tanı betiğinde aynı veride iki kod aynı).
+- Düzeltme (davranış AYNEN): (1) `routes/invoices.mjs mayBeCovered`: Mevcut Borç kartı yalnız açıldığı ANA kadar doğmuş borcu kapsar (`lib/invoice-settle.mjs`: kapsam yalnız
+  `born <= plan.at`; plan.at = kartın created_at, faturanın born'u = COALESCE(NULLIF(issued_at, ''), created_at)) → faturadan sonra açılmış etkin Mevcut Borç kartı yoksa kapsam okunmaz
+  (eşitlikte ve ISO-UTC dışı biçimde okunur — koruyucu); (2) `routes/plans.mjs trimCovers` `accounts().detail(..., { withRemaining: false })` (okuduğu bakiye, kart özetinin kendi
+  toplamları ve defter satırları iki yolda aynı; kuyruk gerekirse `openByQueue` kurar). Eşdeğerlik + dişi: `test/c7b-tur3-hiz-250.test.mjs`.

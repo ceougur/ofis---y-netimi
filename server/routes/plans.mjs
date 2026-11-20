@@ -710,8 +710,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // v2.0.13 (simülasyon bulgusu "iade taksitten düşmüyor"): cariye alacak yazılınca (müşteri iadesi) borç, mevcut borcu
   // taksitlendiren kartların kalanından küçük kalabilir. Kartlar borçtan büyük kalmasın: fazlası en yeni karttan
   // başlayarak, son taksitten geriye doğru düşülür (ödenmiş taksitlere dokunulmaz). Aynı işlemin içinde çalışır.
+  // Hız (ders 47; 2.5.0 Ç7b tur 3 devam 3 — kabul E): yalnız defter (bakiye), kart özetinin KENDİ toplamları ve defter satırları okunur → withRemaining: false (Tek Yükümlülük
+  // Kuyruğu ve Kalan eki kurulmaz; shown olmadan özet ve bakiye iki yolda aynı — eşdeğerlik test/c7b-tur3-hiz-250.test.mjs). Kuyruk gerekirse openByQueue kendisi kurar.
   function trimCovers(accountId, user, note = "") {
-    const account = accounts()?.detail ? accounts().detail(accountId, user) : null;
+    const account = accounts()?.detail ? accounts().detail(accountId, user, { withRemaining: false }) : null;
     if (!account) return [];
     const covering = [];
     for (const plan of account.plans || []) {
