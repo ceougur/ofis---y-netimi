@@ -612,17 +612,43 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     }
     return roundMoney(Math.max(0, (Number(account.totals?.balance) || 0) - covered));
   }
-  // Kartı sondaki taksitlerden geriye doğru küçültür (tahsilat bağlı taksit satırı silinmez, sıfırlanır). Yeni toplamı döndürür.
-  function cutPlan(plan, cut, user, { accountId = "", reason = "" } = {}) {
-    let rest = cut;
-    for (const item of itemsOf(plan.id).reverse()) {
+  // 2.5.0 Ç7b tur 3 — karar (4) / 2B-S3 = A (docs/erp/C7B-FATURA-TASARIM.md §16.3): kart küçülmesi vadesi EN ÖNCE gelen taksitin AÇIK kısmından başlar; ödenmiş kısma
+  // dokunulmaz (açık kısım kart ekranının kendi hesabıyla — lib/plans.mjs allocate; bağlı tahsilat önce kendi taksitine). Açık kısım yetmezse artanı eski yönle (sondan) —
+  // çağıranlar keseni kartın kalanıyla sınırladığından olmaz. Önceden taksitler SONDAN geriye kesiliyordu (vadesi uzak taksit önce gidiyordu).
+  // Dönüş: [{ item, take }] — kesilecek taksitler sırasıyla (açılış onarımının kilit denetimi de bunu okur: cutTargets).
+  function cutTargets(planId, cut) {
+    const items = itemsOf(planId);
+    const shaped = new Map(allocate({ total: 0 }, items, entriesOf(planId), { today: today() }).items.map(item => [item.id, item.remaining]));
+    const out = [];
+    const left = new Map(items.map(item => [item.id, Number(item.amount) || 0]));
+    let rest = roundMoney(Number(cut) || 0);
+    for (const item of items) {
       if (!(rest > 0.005)) break;
-      const take = roundMoney(Math.min(rest, Number(item.amount) || 0));
+      const take = roundMoney(Math.min(rest, shaped.get(item.id) || 0));
+      if (!(take > 0.005)) continue;
+      out.push({ item, take });
+      left.set(item.id, roundMoney(left.get(item.id) - take));
+      rest = roundMoney(rest - take);
+    }
+    for (const item of [...items].reverse()) {
+      if (!(rest > 0.005)) break;
+      const take = roundMoney(Math.min(rest, left.get(item.id)));
+      if (!(take > 0.005)) continue;
+      const found = out.find(row => row.item.id === item.id);
+      if (found) found.take = roundMoney(found.take + take);
+      else out.push({ item, take });
+      left.set(item.id, roundMoney(left.get(item.id) - take));
+      rest = roundMoney(rest - take);
+    }
+    return out;
+  }
+  // Kartı karar (4) sırasıyla küçültür (tahsilat bağlı taksit satırı silinmez, sıfırlanır). Yeni toplamı döndürür.
+  function cutPlan(plan, cut, user, { accountId = "", reason = "" } = {}) {
+    for (const { item, take } of cutTargets(plan.id, cut)) {
       const amount = roundMoney((Number(item.amount) || 0) - take);
       const linked = store.get("SELECT 1 AS found FROM plan_entries WHERE item_id = ?", item.id);
       if (amount <= 0.005 && !linked) store.run("DELETE FROM plan_items WHERE id = ?", item.id);
       else store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", amount, now(), item.id);
-      rest = roundMoney(rest - take);
     }
     const total = roundMoney(plan.total - cut);
     store.run(`UPDATE plans SET ${FREEZE_CLOSE}, total = ?, updated_by = ?, updated_at = ? WHERE id = ?`, total, user.id, now(), plan.id);
@@ -1702,20 +1728,58 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     audit(user, "plan.grown", plan.id, { from: plan.total, to: roundMoney((Number(plan.total) || 0) + grow), reason: note || "İade iptali" });
     return { id: plan.id, grow };
   }
-  // Fatura iptalinde faturanın kartı: tahsilatı yoksa kaldırılır (Silinenler'e gitmez; fatura iptalle geri gelmez).
-  // Tahsilat varsa iptal durur: para alınmıştır; borcu düşürmek için iade faturası kesilir (kart kalana göre küçülür).
-  function removeForInvoice(user, invoiceId) {
+  // Fatura iptalinde faturanın kartı: tahsilatı yoksa kaldırılır (Silinenler'e gitmez; fatura iptalle geri gelmez — EK-2B 35).
+  // 2.5.0 Ç7b tur 3 — S15 = A (docs/erp/C7B-FATURA-TASARIM.md §16.4): tahsilatı varsa iptal KABUL — kartın kalanı karar (4) sırasıyla kesilir (kart tutarı = net tahsilat), kart
+  // kapanır; kartın tahsilatları carinin alacağı olarak kalır (fatura borcu kalkınca avans; yeni madde yok, kalan 0 olduğundan "kalan düşüldü" satırı / 689 yazılmaz).
+  // paid: "reject" — Düzenle ve Sil yolları (eski etkiler geri alınırken) tahsilatlı kartta bugünkü gibi 409 (muhasebe kâhini s58: tahsilatlı kartta silme red).
+  function removeForInvoice(user, invoiceId, { paid: paidRule = "reject" } = {}) {
     const ids = [];
     for (const plan of store.all("SELECT id, name FROM plans WHERE invoice_id = ? AND deleted_at IS NULL", invoiceId)) {
       const paid = store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", plan.id).n;
-      if (paid) throw new HttpError(409, `Faturanın taksit kartında (“${plan.name}”) ${paid} tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.`, { code: "plan-has-payments", planId: plan.id });
+      if (paid && paidRule !== "close") throw new HttpError(409, `Faturanın taksit kartında (“${plan.name}”) ${paid} tahsilat var; fatura bu yoldan kaldırılamaz. Faturayı İptal Et ile iptal edin (kartın tahsilatları carinin avansı olur) ya da borcu düşürmek için iade faturası kesin.`, { code: "plan-has-payments", planId: plan.id });
       const linked = cheques()?.countForPlan ? cheques().countForPlan(plan.id) : 0;
       if (linked) throw new HttpError(409, `Faturanın taksit kartına sayılmış ${linked} çek/senet var; önce evrakı karttan ayırın.`, { code: "plan-has-cheques", planId: plan.id });
+      if (paid) {
+        // Kartı Kapat'la önceden kapatılmış kart (kalanı düşülmüş — "Kart kapatıldı · kalan düşüldü"): iptal kalanı ikinci kez düşerdi (bakiye −tutar) → bugünkü gibi 409.
+        if (store.get("SELECT status FROM plans WHERE id = ?", plan.id)?.status === "closed") throw new HttpError(409, `Faturanın taksit kartı (“${plan.name}”) kapatılmış ve ${paid} tahsilatı var; fatura iptal edilemez. Önce kartı Yeniden Aç ile açın, sonra faturayı iptal edin.`, { code: "plan-has-payments", planId: plan.id });
+        closeForInvoice(user, plan.id, { reason: "invoice-cancelled", invoiceId });
+        ids.push(plan.id);
+        continue;
+      }
       store.run("UPDATE plans SET deleted_by = ?, deleted_at = ?, updated_at = ? WHERE id = ?", user.id, now(), now(), plan.id);
       audit(user, "plan.deleted", plan.id, { name: plan.name, invoiceId, reason: "invoice-cancelled" });
       ids.push(plan.id);
     }
     return ids;
+  }
+  // 2.5.0 Ç7b tur 3 — S15 = A / S206 = A / S211 = A (§16.4): borcu kalkan kart kapanır. Kalanı varsa karar (4) sırasıyla kesilir (kart tutarı = net tahsilat; fazlası zaten carinin
+  // alacağıdır — avans), kart kapanır (kapatma günü bugün; kilitliyse 409 — Kartı Kapat'la aynı kural). Kalan 0 olduğundan kapanış maddesi / "kalan düşüldü" satırı yazılmaz.
+  // Aynı işlemin içinde çağrılır. Kapanmış ya da silinmiş kart değişmez.
+  function closeForInvoice(user, planId, { reason = "invoice-cancelled", invoiceId = "", note = "" } = {}) {
+    const row = store.get("SELECT id, name, total, status, account_id AS accountId, invoice_id AS invoiceId FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
+    if (!row || row.status === "closed") return false;
+    period?.assertOpen(today(), "Kartın kapatılma günü");
+    // Faturanın KENDİ kartı (S15): iptal edilen faturanın kartı faturadan AYRILIR (invoice_id boşalır — kapının "faturayla açılan kart yalnız kesilmiş faturada yaşar" kuralı;
+    // iz audit'te) ve tutarı 0'a iner — kart artık borç taşımaz; tahsilatlarının tamamı kartın fazlasıdır: carinin bağsız alacağı (avans; Tek Yükümlülük Kuyruğu "Taksit kartından
+    // artan ödeme" — kartın son tahsilat gününde). Mevcut Borç kartı (S206 / S211): kalanı kadar kesilir (tutar = net tahsilat).
+    const own = Boolean(row.invoiceId);
+    const cut = own ? roundMoney(Number(row.total) || 0) : leftOf(row.id);
+    if (cut > 0.005) cutPlan({ id: row.id, name: row.name, total: Number(row.total) || 0 }, cut, user, { accountId: row.accountId, reason: note || "Fatura iptali" });
+    store.run(`UPDATE plans SET status = 'closed', closed_at = ?, ${own ? "invoice_id = '', " : ""}updated_by = ?, updated_at = ? WHERE id = ?`, today(), user.id, now(), row.id);
+    audit(user, "plan.updated", row.id, { previous: { status: row.status, total: row.total, invoiceId: row.invoiceId || "" }, status: "closed", reason, invoiceId: invoiceId || row.invoiceId || "", total: roundMoney((Number(row.total) || 0) - (cut > 0.005 ? cut : 0)) });
+    return true;
+  }
+  // 2.5.0 Ç7b tur 3 — S206 = A / S211 = A (+ karar (4); §16.4): fatura iptal edilince carinin borcu düşer; borçtan büyük kalan Mevcut Borç kartları iade / alacaktaki kuralla
+  // (trimCovers — en yeni karttan, karar (4) sırasıyla; kartın kalanıyla sınırlı, fazlası carinin avansı) küçülür; bu küçülmeyle kalanı 0'a inen kart KAPANIR (borcu kalkan kart
+  // kalmaz — S206 tahsilatlı, S211 tahsilatsız). Kartta başka borç da varsa kart küçülür, açık kalır (karar (4) — §16.6 K-3a). Dönüş: değişen kartlar.
+  function settleCoverOnCancel(user, accountId, note = "") {
+    const changedIds = [];
+    if (!accountId) return changedIds;
+    for (const plan of trimCovers(accountId, user, note || "Fatura iptali")) {
+      changedIds.push(plan.id);
+      if (leftOf(plan.id) <= 0.005) closeForInvoice(user, plan.id, { reason: "cover-invoice-cancelled", note });
+    }
+    return changedIds;
   }
   // Cari adı/telefonu değişince, adı/telefonu eski cariyle aynı olan kartlar da güncellenir (farklı adlı kart dokunulmaz).
   function followAccount(accountId, previous, next) {
@@ -1805,5 +1869,5 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { shownTotalsOf, queueSummaryOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
+  return { shownTotalsOf, queueSummaryOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, cutTargets, settleCoverOnCancel, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
 }

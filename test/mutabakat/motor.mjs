@@ -917,7 +917,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     if (inv.status === "cancelled") return ["invoice-cancelled"];
     if (!open(inv.date)) return ["period-locked"];
     if (issuedInvoices(x => x.originalId === inv.id).length) return ["invoice-has-returns"];
-    if (inv.planId && M.planEntries.some(e => e.planId === inv.planId)) return ["plan-has-payments"];
+    // 2.5.0 Ç7b tur 3 — S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i KABUL (kart kapanır, tahsilat avans); yalnız Kartı Kapat'la önceden kapatılmış tahsilatlı kart 409.
+    if (inv.planId && M.plans.get(inv.planId)?.status === "closed" && M.planEntries.some(e => e.planId === inv.planId)) return ["plan-has-payments"];
     for (const id of inv.endorsed) if (M.cheques.get(id).status !== "endorsed") return ["cheque-moved"];
     // Bankaya Tahsile Ver (plan §3.14): faturanın evrakı bankada tahsildeyse iptal 409 cheque-deposited (evrak sırası programınki; ikisi
     // birlikteyse ikisinden biri).
@@ -944,7 +945,19 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const m of inv.moves) { M.stok.set(m.itemId, M.stok.get(m.itemId) - (m.kind === "in" ? m.qty : -m.qty)); M.moves.splice(M.moves.indexOf(m), 1); }
     for (const id of inv.chequesCreated) M.cheques.delete(id);
     for (const id of inv.endorsed) { const c = M.cheques.get(id); c.status = "portfolio"; c.events -= 1; c.endorseTo = ""; }
-    if (inv.planId) M.plans.delete(inv.planId);
+    // 2.5.0 Ç7b tur 3 — S15 = A: tahsilatlı kendi kart faturadan ayrılır, tutarı 0'a iner (tahsilatları avans) ve kapanır; tahsilatsız kart kalkar (EK-2B 35).
+    if (inv.planId) {
+      const own = M.plans.get(inv.planId);
+      if (own && M.planEntries.some(e => e.planId === inv.planId)) {
+        own.total = 0;
+        own.status = "closed";
+        own.invoiceId = "";
+      } else M.plans.delete(inv.planId);
+    }
+    // 2.5.0 Ç7b tur 3 — S206 = A / S211 = A (+ karar (4)): carinin borcundan büyük kalan Mevcut Borç kartları küçülür (trimCovers); kalanı 0'a inen kapanır.
+    if (inv.kind === "sale" || inv.kind === "smm") {
+      for (const [pl] of trimCovers(inv.accountId)) if (planLeft(pl) === 0) pl.status = "closed";
+    }
     // İade iptali: iadenin küçülttüğü Mevcut Borç kartları aynı tutarda geri büyür (kapatılmış ya da silinmiş kart değişmez).
     // Not (2.1.0 dilim 4): model bunu önceden yapmıyordu; banka işlemleri rastgele sırayı değiştirince tohum 2'de ortaya çıktı.
     if (inv.kind === "sale_return" && inv.coverCuts) {

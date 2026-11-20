@@ -1,0 +1,149 @@
+// 2.5.0 Ç7b tur 3 (docs/erp/C7B-FATURA-TASARIM.md §16) — kart küçülmesi (karar (4) / 2B-S3 = A), S15 = A, S206 = A (+ S211 = A), S210 ↔ karar (4) (§16.6 K-3a: bu turda karar (4)).
+// Sahte saat 08.10.2026. Beklenenler kararların sözünden ELLE (kod koşulmadan):
+//  (4) taksitli fatura 900 (3 × 300; 06.10 / 06.11 / 06.12), 06.10 tahsilat 300, 07.10 iade 300 → kart 06.10 300 (ödendi), 06.12 300 açık; 06.11 silinir (en önce gelen AÇIK taksitten).
+//      Kısmen ödenmiş ilk taksit (100), iade 300 → 06.10 100 (ödendi), 06.11 200, 06.12 300 (yalnız açık kısım kesilir). İade 900 (kalan 600) → kart kalanı 0, bakiye −300 (fazlası avans).
+//      Parası geri verilen iade (nakit 300) → kart DEĞİŞMEZ.
+//  S15 taksitli fatura 900, kendi kartına 06.10 tahsilat 300, İptal Et → 200; kart kapalı, faturadan ayrılmış, tutar 0 (300 kartın fazlası); bakiye −300; 689 yok; Kasa 300; sonra 06.10 fatura 500 → açık 200, bakiye 200.
+//      Aynı faturanın SİLİNMESİ (Sil) → 409 "taksit kartında tahsilat var; silinmez" (bugünkü gibi; muhasebe kâhini s58). Tahsilatsız kendi kart iptalde silinir (bugünkü gibi).
+//  S206 fatura 900, Mevcut Borç kartı 900 (3 × 300), kart tahsilatı 300, fatura İptal Et → kart KAPALI, tutar 300; bakiye −300; sonra fatura 500 → açık 200, bakiye 200.
+//  S211 aynı, tahsilatsız → kart KAPALI, tutar 0; bakiye 0.
+//  K-3a (karar (4)) elle Borç 400 + fatura 500 → kart 900 → tahsilat 300 → fatura iptal → kart AÇIK, tutar 400, kalan 100; bakiye 100.
+// NASIL BOZARIM (mutantlar): küçülmeyi son taksitten yapmak; ödenmiş kısmı kesmek; S15'te iptali yine reddetmek; iptalde kartın tahsilatını silmek / kalanı düşmek (689); Sil'i kabul
+// etmek; kapsayan kartı açık bırakmak; kapsayan kartı küçültmeden kapatmak (kalan düşülür → bakiye değişir).
+import assert from "node:assert/strict";
+import { after, before, describe, it } from "node:test";
+import { must } from "./banka-210-ortak.mjs";
+import { bootBank } from "./banka-210-hesap-ortak.mjs";
+
+const W = "/api/workspace";
+describe("Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S211", () => {
+  let ctx;
+  let api;
+  let n = 0;
+  const acc = async () => (await must("cari", api.post(`${W}/accounts`, { name: `Tur3 Müşteri ${(n += 1)}`, type: "customer", registeredOn: "2026-08-01" }))).id;
+  const totals = async id => (await must("cari kartı", api.get(`${W}/accounts/${id}`))).totals;
+  const items = async id => (await must("kart", api.get(`${W}/plans/${id}`))).items.map(i => `${i.dueDate}:${i.amount}/${i.remaining}`);
+  const planRow = id => ({ ...ctx.store.get("SELECT status, total, deleted_at AS deletedAt FROM plans WHERE id = ?", id) });
+  const planOf = id => ctx.store.get("SELECT plan_id AS p FROM invoices WHERE id = ?", id).p;
+  const invoiceStatus = id => ctx.store.get("SELECT status FROM invoices WHERE id = ?", id).status;
+  const trial = async () => Object.fromEntries((await must("mizan", api.get(`${W}/ledger`))).trial.accounts.map(r => [r.code, r.balance]));
+  const pay = (planId, amount, date) => must("taksit tahsilatı", api.post(`${W}/plans/${planId}/entries`, { kind: "in", amount: String(amount), date, method: "cash" }));
+  const goods = async (accountId, date, qty, payment) => (await must("satış", api.post(`${W}/invoices`, { scenario: "goods_sale", accountId, issueDate: date, lines: [{ name: "Mal", qty, unitPrice: 250, vatRate: 20 }], payment }))).id;
+  const service = async (accountId, date, gross, payment) => (await must("satış", api.post(`${W}/invoices`, { scenario: "service_sale", accountId, issueDate: date, lines: [{ name: "Hizmet", qty: 1, unitPrice: gross / 1.2, vatRate: 20 }], payment }))).id;
+  const returnOf = async (accountId, invoiceId, qty, payment = { cash: [] }) => {
+    const line = (await must("fatura", api.get(`${W}/invoices/${invoiceId}`))).lines[0].id;
+    return must("iade", api.post(`${W}/invoices`, { kind: "sale_return", accountId, originalId: invoiceId, issueDate: "2026-10-07", lines: [{ originLineId: line, qty }], payment, force: true }));
+  };
+  const integrity = async label => {
+    const result = await must("Mutabakat Testi", api.get(`${W}/ledger/integrity`));
+    assert.equal(result.ok, true, `${label}: ${JSON.stringify(result.failures || result.checks?.filter(c => !c.ok)).slice(0, 600)}`);
+  };
+  const installments = { rest: "installments", installments: { count: 3, firstDue: "2026-10-06" } };
+  before(async () => {
+    ctx = await bootBank();
+    api = ctx.api;
+  });
+  after(() => ctx?.server.close());
+
+  it("(4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz", async () => {
+    const A = await acc();
+    const f = await goods(A, "2026-10-06", 3, installments);
+    const p = planOf(f);
+    await pay(p, 300, "2026-10-06");
+    await returnOf(A, f, 1);
+    assert.deepEqual(await items(p), ["2026-10-06:300/0", "2026-12-06:300/300"], "06.11 kesilir (en önce gelen açık), 06.12 kalır");
+    assert.equal((await totals(A)).balance, 300);
+    const B = await acc();
+    const g = await goods(B, "2026-10-06", 3, installments);
+    const q = planOf(g);
+    await pay(q, 100, "2026-10-06");
+    await returnOf(B, g, 1);
+    assert.deepEqual(await items(q), ["2026-10-06:100/0", "2026-11-06:200/200", "2026-12-06:300/300"], "ilk taksitin yalnız açık kısmı (200) + ikinciden 100");
+    await integrity("küçülme");
+  });
+
+  it("(4) iade kalanı aşarsa fazlası avans; parası geri verilen iade kartı küçültmez", async () => {
+    const A = await acc();
+    const f = await goods(A, "2026-10-06", 3, installments);
+    const p = planOf(f);
+    await pay(p, 300, "2026-10-06");
+    await returnOf(A, f, 3);
+    assert.equal((await must("kart", api.get(`${W}/plans/${p}`))).totals.remaining, 0, "kartın kalanı 0");
+    assert.equal((await totals(A)).balance, -300, "300 avans");
+    const B = await acc();
+    const g = await goods(B, "2026-10-06", 3, installments);
+    const q = planOf(g);
+    await pay(q, 300, "2026-10-06");
+    const before = await items(q);
+    await returnOf(B, g, 1, { cash: [{ amount: 300, method: "cash" }] });
+    assert.deepEqual(await items(q), before, "parası geri verilen iade kartı değiştirmez");
+    await integrity("avans / geri ödeme");
+  });
+
+  it("S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409", async () => {
+    const A = await acc();
+    const before = await trial();
+    const f = await service(A, "2026-10-06", 900, installments);
+    const p = planOf(f);
+    await pay(p, 300, "2026-10-06");
+    const del = await api.del(`${W}/invoices/${f}`);
+    assert.equal(del.status, 409, `Sil: ${JSON.stringify(del.data).slice(0, 300)}`);
+    assert.match(String(del.data?.error || ""), /taksit kartında tahsilat var; silinmez/, "silme engeli kartın tahsilatından (deleteBlock)");
+    assert.equal(invoiceStatus(f), "issued", "reddedilen silme faturayı değiştirmedi");
+    const res = await api.post(`${W}/invoices/${f}/cancel`, { reason: "S15" });
+    assert.equal(res.status, 200, `İptal Et: ${JSON.stringify(res.data).slice(0, 400)}`);
+    assert.equal(invoiceStatus(f), "cancelled");
+    assert.deepEqual(planRow(p), { status: "closed", total: 0, deletedAt: null }, "kart kapalı, borç taşımaz (tutar 0; tahsilat kartın fazlası)");
+    assert.equal(ctx.store.get("SELECT invoice_id AS i FROM plans WHERE id = ?", p).i, "", "kart iptal edilen faturadan ayrıldı");
+    assert.equal((await totals(A)).balance, -300, "tahsilat carinin avansı");
+    const after = await trial();
+    assert.equal(after["689"] || 0, before["689"] || 0, "kalan düşülmedi (689 yok)");
+    assert.equal(roundTo(after["100"] - (before["100"] || 0)), 300, "Kasa'daki tahsilat aynen");
+    const g = await service(A, "2026-10-07", 500, { rest: "open" });
+    assert.equal((await must("fatura", api.get(`${W}/invoices/${g}`))).open, 200, "sonraki fatura avanstan kapanır");
+    assert.equal((await totals(A)).balance, 200);
+    const B = await acc();
+    const h = await service(B, "2026-10-07", 600, { rest: "installments", installments: { count: 3, firstDue: "2026-10-07" } });
+    const r = planOf(h);
+    await must("tahsilatsız iptal", api.post(`${W}/invoices/${h}/cancel`, { reason: "tahsilatsız" }));
+    assert.ok(planRow(r).deletedAt, "tahsilatsız kendi kart bugünkü gibi kaldırılır");
+    await integrity("S15");
+  });
+
+  it("S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır", async () => {
+    const A = await acc();
+    const f = await service(A, "2026-10-07", 900, { rest: "open" });
+    const p = (await must("kart", api.post(`${W}/plans`, { accountId: A, name: "Mevcut A", total: "900", registeredOn: "2026-10-07", mode: "auto", count: 3, firstDue: "2026-10-10", coversBalance: true }))).id;
+    await pay(p, 300, "2026-10-07");
+    await must("iptal", api.post(`${W}/invoices/${f}/cancel`, { reason: "S206" }));
+    assert.deepEqual(planRow(p), { status: "closed", total: 300, deletedAt: null }, "S206: kart kapalı, tutar = tahsilat");
+    assert.equal((await totals(A)).balance, -300);
+    const g = await service(A, "2026-10-07", 500, { rest: "open" });
+    assert.equal((await must("fatura", api.get(`${W}/invoices/${g}`))).open, 200, "S206 örneği: 500'lük fatura 200 açık");
+    assert.equal((await totals(A)).balance, 200);
+    const B = await acc();
+    const h = await service(B, "2026-10-07", 900, { rest: "open" });
+    const q = (await must("kart", api.post(`${W}/plans`, { accountId: B, name: "Mevcut B", total: "900", registeredOn: "2026-10-07", mode: "auto", count: 3, firstDue: "2026-10-10", coversBalance: true }))).id;
+    await must("iptal", api.post(`${W}/invoices/${h}/cancel`, { reason: "S211" }));
+    assert.deepEqual(planRow(q), { status: "closed", total: 0, deletedAt: null }, "S211: tahsilatsız kart kapalı, tutar 0");
+    assert.equal((await totals(B)).balance, 0);
+    await integrity("S206 / S211");
+  });
+
+  it("K-3a (bu turda karar (4)): kartta başka borç da varsa kart faturanın payı kadar küçülür, açık kalır", async () => {
+    const A = await acc();
+    await must("Borç Yaz", api.post(`${W}/accounts/${A}/entries`, { kind: "debt", amount: "400", date: "2026-10-07", note: "Elle borç" }));
+    const f = await service(A, "2026-10-07", 500, { rest: "open" });
+    const p = (await must("kart", api.post(`${W}/plans`, { accountId: A, name: "Mevcut K", total: "900", registeredOn: "2026-10-07", mode: "auto", count: 3, firstDue: "2026-10-10", coversBalance: true }))).id;
+    await pay(p, 300, "2026-10-07");
+    await must("iptal", api.post(`${W}/invoices/${f}/cancel`, { reason: "K-3a" }));
+    assert.deepEqual(planRow(p), { status: "active", total: 400, deletedAt: null }, "kart 500 küçüldü, açık");
+    assert.equal((await must("kart", api.get(`${W}/plans/${p}`))).totals.remaining, 100);
+    assert.equal((await totals(A)).balance, 100);
+    await integrity("K-3a");
+  });
+});
+
+function roundTo(value) {
+  return Math.round((Number(value) || 0) * 100) / 100;
+}

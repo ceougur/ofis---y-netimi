@@ -509,8 +509,11 @@ kayda taşımak (madde yok) — okuyucular kapalı kartı 0 sayar. Öneri A (tek
 - Büyüme (iade iptali, `growForInvoice`) SON taksite ekler — karar (4) büyümeyi söylemiyor; iade → iade iptali gidiş-dönüşünde takvim ilk hâline dönmez → KULLANICIYA SORULMALI (§16.6 K-3b).
 
 ### 16.4 S15 = A, S206 = A (+ S211) — `routes/plans.mjs removeForInvoice` / `closeForInvoice`, `routes/invoices.mjs cancel`
-- Faturanın KENDİ kartı (invoice_id): tahsilatsızsa bugünkü gibi kaldırılır (EK-2B 35). Tahsilatlıysa (S15) iptal KABUL: kartın kalanı karar (4) ile kesilir (kart tutarı = net tahsilat; kalan 0),
-  kart kapanır (closed_at = iptal günü). Kalan 0 olduğundan "Kart kapatıldı · kalan düşüldü" satırı / 689 YAZILMAZ (bugünkü formül max(0, tutar − tahsilat) = 0) — (6)'nın dosya sınırına
+- Faturanın KENDİ kartı (invoice_id): tahsilatsızsa bugünkü gibi kaldırılır (EK-2B 35). Tahsilatlıysa (S15) iptal KABUL: kart kapanır (closed_at = iptal günü). KOD SÜRERKEN DEĞİŞTİ (koddan önceki
+  tasarım 'kart tutarı = net tahsilat' idi): kapının 'Fatura ↔ taksit kartı bağı' denetimi (lib/integrity.mjs — dosya sınırı dışı) faturayla açılan kartın YALNIZ kesilmiş faturada yaşamasını
+  ister → iptal 409 ledger-integrity ile geri alındı (yoklama). Uygulanan: kart faturadan AYRILIR (invoice_id = '', iz audit'te) ve tutarı 0'a iner; kart borç taşımaz, tahsilatlarının tamamı kartın
+  fazlasıdır → kuyrukta 'Taksit kartından artan ödeme' (kartın son tahsilat gününde bağsız alacak). Tutar = net tahsilat bırakılsaydı faturasız Mevcut Borç kartı açılış anındaki öbür açık
+  borçları tüketirdi. BAŞ MİMAR KARARI GEREKİYOR B-12 (§16.6). Kalan 0 olduğundan "Kart kapatıldı · kalan düşüldü" satırı / 689 YAZILMAZ (bugünkü formül max(0, tutar − tahsilat) = 0) — (6)'nın dosya sınırına
   takılmaz. Kartın tahsilatları carinin defterinde alacak olarak kalır → fatura borcu kalkınca carinin avansı (kitap §7.3: avans CH'de alacaklı bakiye — yeni madde YOK; tahsilatın B 100 / A 120
   maddesi aynen). Karta çek / senet sayılmışsa bugünkü 409 `plan-has-cheques` aynen. Kapatma günü kilitliyse 409 (Kartı Kapat'la aynı kural).
 - Düzenle (eski etkileri geri alır) ve SİLME tahsilatlı kartın faturasında BUGÜNKÜ gibi 409 (muhasebe kâhini s58 "tahsilatlı kartta silme red"; silme önce iptali çağırır — silmeden gelen
@@ -531,6 +534,11 @@ kilit izi / kapı (`integrity*.mjs`: kapalı kartın `waived` = 0), şüpheli al
   ('Tahsil Edilen 300 · Kalan 100'); muhasebe kâhini s58 (TK3 2.000, kapalı değil) bunu bekliyor. (C) uç durum böyle kalsın (BİLİNEN SINIR). Bu turda B kodlandı (bakiye iki okumada aynı).
 - **K-3b — iade iptalinde kartın büyümesi (karar (4) yalnız küçülmeyi söylüyor):** (A) büyüme küçülmenin tersi (kesilen taksitlere geri — takvim ilk hâline döner); (B) bugünkü gibi son taksite.
   (C) uç durum böyle kalsın (BİLİNEN SINIR). Bu turda B (bugünkü).
+
+- **B-12 (BAŞ MİMAR KARARI GEREKİYOR) — S15'te kendi kartın faturadan ayrılması:** (A) bu turdaki gibi: kart faturadan ayrılır, tutarı 0, tahsilatı kartın fazlası (avans kartın SON tahsilat gününde
+  — çok tahsilatlı kartta her tahsilatın kendi günü değil); (B) integrity.mjs / integrity-scope.mjs'e 'iptal edilmiş faturanın kapalı kartı' istisnası (dosya izni) — kart faturaya bağlı kalır.
+  Öneri A (kapı kuralı değişmez; kart ekranında fatura bağı görünmez — iz audit'te).
+- **Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası:** iptal bugünkü gibi 409 (kalan ikinci kez düşülürdü); ileti 'Önce kartı Yeniden Aç ile açın'. Kararlarda yok — BİLİNEN SINIR önerisi.
 
 ### 16.7 Nasıl bozulur? (önce yazıldı; testler buradan)
 1. Sıra: tahsilat → iade ↔ iade → tahsilat; bağlı tahsilatlı ('Hangi Taksite') kartta küçülme bağlı taksitin ödenmiş kısmını kesmez.

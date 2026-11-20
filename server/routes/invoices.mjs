@@ -1236,7 +1236,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // TEK kural (localCancelKind; E7).
       canLocalCancel: manage && canUser(user, "invoices.settings") && activeReturns === 0 && !bankFee && localCancelKind(row),
       // K4: iptal penceresinde söylenir (şüpheli carinin "Normal Cariye İşlendi" tahsilatı iptalle şüpheliden düşmeye başlar).
-      cancelNotice: manage && row.status === "issued" ? doubtfulRelinkText(doubtfulRelinks(row.id)) : "",
+      cancelNotice: manage && row.status === "issued" ? [doubtfulRelinkText(doubtfulRelinks(row.id)), planCancelText(row.planId)].filter(Boolean).join(" ") : "",
       cancelBlock: row.status === "issued" && bankFee ? bankFeeText(bankFee) : row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : cancelLimit?.late && !cancelRecheck ? cancelLateText(cancelLimit) : "",
       // 31d E4: süre dolmuş ama önceki iptal isteğinin sonucu kaydedilmemiş — İptal Et önce EDM'ye sorar.
       cancelRecheck,
@@ -2127,7 +2127,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Açılış onarımı (v2.1.0, Canlı Hata 2; plan §10.6 düzeni): 2.0.24–2.0.26 eski kuralla (hedef = açık + geri ödenen) yanlış
   // büyümüş ya da küçülmemiş faturaya ait kartlar, dokunulmadıkça yanlış kalırdı. Sessiz, tek işlem, idempotent: yalnız paralı iadesi
   // olan taksitli faturanın etkin kartı; kalan yeni hedeften büyük ve eski kuralın hedefini aşmıyorsa (yani fark bu hatadan) kalan
-  // hedefe indirilir (shrinkPlan: yalnız ödenmemiş kısım, son taksitten geriye). Küçülecek taksitlerden biri kilitli dönemdeyse kart
+  // hedefe indirilir (shrinkPlan: yalnız ödenmemiş kısım, karar (4) sırasıyla — 2.5.0 Ç7b tur 3). Küçülecek taksitlerden biri kilitli dönemdeyse kart
   // değişmez (kilitli döneme yazılmaz), yalnız sonuçta listelenir. Her değişiklik audit'e (plan.repaired, previous) yazılır.
   //
   // 2.5.0 AH (ders 47; Ç3 ölçümü 06.11: 100.000 satırda açılış 101,7 sn, 1.000.000'da 22 dk'da bitmedi, olay döngüsü boyunca kilitli): aday kart başına
@@ -2233,14 +2233,20 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const cut = roundMoney(left - target);
       const plan = store.get("SELECT total FROM plans WHERE id = ?", row.planId);
       const items = store.all("SELECT id, due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", row.planId);
-      // shrinkPlan'ın keseceği taksitler (son taksitten geriye).
-      let rest = cut;
-      const touchedItems = [];
-      for (const item of [...items].reverse()) {
-        if (!(rest > 0.005)) break;
-        touchedItems.push(item);
-        rest = roundMoney(rest - Math.min(rest, Number(item.amount) || 0));
-      }
+      // shrinkPlan'ın keseceği taksitler — kartın KENDİ küçülme sırasından (2.5.0 Ç7b tur 3, karar (4): vadesi en önce gelen açık taksitten; önceden burada ayrıca
+      // "son taksitten geriye" hesaplanıyordu — yön değişince ayna ayrışmasın diye tek yardımcı).
+      const touchedItems = p.cutTargets
+        ? p.cutTargets(row.planId, cut).map(({ item }) => item)
+        : (() => {
+            let rest = cut;
+            const list = [];
+            for (const item of [...items].reverse()) {
+              if (!(rest > 0.005)) break;
+              list.push(item);
+              rest = roundMoney(rest - Math.min(rest, Number(item.amount) || 0));
+            }
+            return list;
+          })();
       if (lock && touchedItems.some(item => item.dueDate <= lock)) {
         locked.push({ invoiceId: row.id, number: row.number, planId: row.planId, left, target });
         continue;
@@ -2615,9 +2621,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // ---------- Etkileri geri alma (iptal ve düzenleme) ----------
   // Taksit kartı, çek/senet (ve ciro), Kasa, stok hareketleri ve cari kaydı birebir geri alınır. Düzenlemede (edit) ara
   // durum denetlenmez (Kasa/stok eksi): yeni etkiler yazıldıktan sonra son durum denetlenir (editInvoice).
-  function reverseEffects(user, invoice, touched, { force = {}, edit = false } = {}) {
+  // paidCard (2.5.0 Ç7b tur 3 — S15 = A): "close" yalnız İptal Et'te — tahsilatlı kendi kart kapanır, tahsilatları avans; Düzenle ve Sil'de "reject" (bugünkü 409).
+  function reverseEffects(user, invoice, touched, { force = {}, edit = false, paidCard = "reject" } = {}) {
     touched.accounts.add(invoice.accountId);
-    for (const planId of plans()?.removeForInvoice ? plans().removeForInvoice(user, invoice.id) : []) touched.plans.add(planId);
+    for (const planId of plans()?.removeForInvoice ? plans().removeForInvoice(user, invoice.id, { paid: edit ? "reject" : paidCard }) : []) touched.plans.add(planId);
     if (cheques()?.invoiceCheques) {
       const voided = cheques().invoiceCheques.voidFor(user, invoice.id);
       touched.cheques.accountIds.push(...voided.accountIds);
@@ -2640,7 +2647,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // fromBank (v2.1.0 Aşama 4): Banka → Ters Kaydet'in KDV'li masraf faturasını iptali (masraf başlığı aynı işlemde iptal edilir); başka yol 409.
   // posOutcome (2.2.0, plan §3.8 / §4.6): POS peşinli faturada "refunded" (Müşteriye İade Edildi; varsayılan: provizyon içinde ve valörden önce
   // void, değilse İptal İadesi) ya da "entry-error" (Kayıt Hatası: valörden önce void; bankaya geçtiyse yeniden planlama ya da 409 pos-settled).
-  function cancel(user, id, { reason = "", force = {}, confirmExternal = false, dryRun = false, fromBank = false, posOutcome = "refunded" } = {}) {
+  // paidCard (2.5.0 Ç7b tur 3 — S15 = A): "close" (İptal Et — varsayılan) / "reject" (Sil: tahsilatlı kartın faturası silinmez, bugünkü 409).
+  function cancel(user, id, { reason = "", force = {}, confirmExternal = false, dryRun = false, fromBank = false, posOutcome = "refunded", paidCard = "close" } = {}) {
     const touched = { accounts: new Set(), items: new Set(), cash: false, cheques: { accountIds: [], chequeIds: [] }, plans: new Set() };
     let row;
     try {
@@ -2685,9 +2693,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // İz 7.3: e-Fatura taslağı EDM'den programla silinemez (EDM'de iptal yalnız e-Arşiv'de); kullanıcı portaldan siler, burada onaylar.
       if (invoice.eStatus === "draft" && invoice.profile !== "EARSIVFATURA" && !confirmExternal) throw new HttpError(409, "Bu e-Fatura EDM portalında taslak olarak duruyor. Önce EDM portalında taslağı silin, sonra burada onaylayın (yoksa taslak portaldan gönderilebilir).", { code: "einvoice-draft" });
       if (["sent", "accepted"].includes(invoice.eStatus) && !confirmExternal) throw new HttpError(409, `Bu belge ${E_STATES[invoice.eStatus].toLocaleLowerCase("tr-TR")}. Önce GİB / entegratör tarafında iptal edin (e-Arşiv iptali ya da e-Fatura iade/itiraz), sonra burada onaylayın.`, { code: "einvoice-sent" });
-      reverseEffects(user, invoice, touched, { force });
+      reverseEffects(user, invoice, touched, { force, paidCard });
       const stamp = now();
       store.run("UPDATE invoices SET status = 'cancelled', cancelled_by = ?, cancelled_at = ?, cancel_reason = ?, updated_by = ?, updated_at = ? WHERE id = ?", user.id, stamp, limited(reason, 300, "İptal nedeni"), user.id, stamp, invoice.id);
+      // 2.5.0 Ç7b tur 3 — S206 = A / S211 = A (+ karar (4); docs/erp/C7B-FATURA-TASARIM.md §16.4): borçtan büyük kalan Mevcut Borç kartları küçülür (fazlası avans); borcu kalmayan
+      // kart kapanır; başka borcu olan kart açık kalır.
+      if ((invoice.kind === "sale" || invoice.kind === "smm") && plans()?.settleCoverOnCancel) for (const planId of plans().settleCoverOnCancel(user, invoice.accountId, `Fatura iptali ${invoice.number || ""}`.trim())) touched.plans.add(planId);
       // İade iptali: asıl faturanın taksit kartı iadeyle küçüldüyse geri büyür (müşteri borcu yine taksitlerde izlenir).
       if (invoice.kind === "sale_return" && invoice.originalId && plans()?.shrinkPlan) {
         restoreCuts(user, { id: invoice.id }, touched, `İade iptali ${invoice.number}`);
@@ -3308,7 +3319,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (block) throw new HttpError(409, block, { code: "invoice-locked" });
       if (invoice.status === "issued") {
         // Etkiler iptaldeki gibi geri alınır (çeki işlem görmüş, taksitinden tahsilat alınmış belge burada 409 verir).
-        cancel(user, invoice.id, { reason: reason || "Silindi", force, posOutcome });
+        cancel(user, invoice.id, { reason: reason || "Silindi", force, posOutcome, paidCard: "reject" });
         invoice = invoiceRow(id);
       }
       const raw = store.get("SELECT * FROM invoices WHERE id = ?", invoice.id);
@@ -3474,6 +3485,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         return { ...row, normalMinor: amountMinor - shareMinor, shareMinor };
       })
       .filter(row => row.normalMinor > 0);
+  }
+  // 2.5.0 Ç7b tur 3 — S15 = A: İptal Et penceresi taksit kartının ne olacağını söyler (tahsilatlı kart kapanır, tahsilat carinin avansı olur).
+  function planCancelText(planId) {
+    if (!planId) return "";
+    const plan = store.get("SELECT status, (SELECT COALESCE(SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END), 0) FROM plan_entries e WHERE e.plan_id = p.id) AS paid, (SELECT COUNT(*) FROM plan_entries e WHERE e.plan_id = p.id) AS n FROM plans p WHERE p.id = ? AND p.deleted_at IS NULL", planId);
+    if (!plan || !plan.n || plan.status === "closed") return "";
+    const paid = roundMoney(Number(plan.paid) || 0);
+    return paid > 0.005 ? `Taksit kartına alınan ${tl(paid)} tahsilat iptalden sonra carinin avansı olur (sonraki borcu kapatır); kart kapanır.` : "Taksit kartında tahsilat hareketi var; iptalde kart kapanır.";
   }
   function doubtfulRelinkText(list, { done = false } = {}) {
     if (!list.length) return "";
