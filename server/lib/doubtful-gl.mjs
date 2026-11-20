@@ -63,7 +63,23 @@ export const doubtfulStatusLabel = (record, state) => DOUBTFUL_STATUS_LABELS[dou
 // ayrı sınıftadır (15.10.2026, Uzun Doğrulama #199: aynı sınıfta anahtara — rastgele UUID; kapı 'account:<id>', yevmiye '<id>#<satır>' — göre
 // sıralanınca sıra rastgele ve iki yükleyicide farklıydı; tahsilat önce gelince değersiz satırı kalanı aşıp kayıt dışına düşüyordu).
 const ORDER = { take: 0, provision: 1, writeoff: 2, credit: 3, release: 4 };
-const by = (a, b) => (a.date === b.date ? (a.order === b.order ? (a.tie < b.tie ? -1 : a.tie > b.tie ? 1 : 0) : a.order - b.order) : a.date < b.date ? -1 : 1);
+// 2.5.0 tek aday düzeltme turu B1 (ders 31; dar kontrol t3c7a): aynı gün AYNI sınıftaki alacak satırları YAZIM SIRASIYLA — satırın yazım anı (at: created_at; faturada kesilme anı)
+// → kaynak tablonun rowid'i (seq) → anahtar (yalnız ikisi de eşitse; belirlenimci son anahtar). Önceden anahtara (rastgele UUID) göre sıralanıyordu: Ç5-A tur 3'ten beri bağlı satırın
+// payı (`linked` — kesitin aynı gün kuralı `done`) o ana kadar işlenen alacaklara bağlı olduğundan 120 / 128 dağılımı, kuyruk, gecikmiş ve sonraki işlemin kabul / reddi kimliğe
+// bağlıydı. İKİ yükleyici AYNI bilgiyi taşır: SQL yükleyicisi (lib/bank/doubtful.mjs doubtfulCredits) satırın at / seq kolonlarını okur; yevmiye yükleyicisi (applyDoubtfulToJournal)
+// aynı SQL'den kurulan writeOrder(ref) ile (yalnız eşitlik çıkınca, tembel). Sıra kuyruğunkiyle (lib/obligation-queue.mjs: gün → sınıf → at → giriş sırası) aynı ölçü.
+const LAST = "\uffff";
+const by = (a, b) => {
+  if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+  if (a.order !== b.order) return a.order - b.order;
+  if (a.write && b.write) {
+    const x = a.write();
+    const y = b.write();
+    if (x.at !== y.at) return x.at < y.at ? -1 : 1;
+    if (x.seq !== y.seq) return x.seq < y.seq ? -1 : 1;
+  }
+  return a.tie < b.tie ? -1 : a.tie > b.tie ? 1 : 0;
+};
 const fresh = record => ({ taken: record.amountMinor, collected: 0, writtenOff: 0, released: 0, remaining: record.amountMinor, provision: 0, provisionAdded: 0, provisionReleased: 0, provisionUsed: 0, lost: 0, closedOn: "", lastCreditDate: "", collectedSameDay: 0, collectedOnCloseDay: 0 });
 
 /**
@@ -80,7 +96,7 @@ const fresh = record => ({ taken: record.amountMinor, collected: 0, writtenOff: 
 // kuyruğun BAĞI olan satır): null → bağsız, bugünkü kural (en eski açık kayıttan); dizi [{ recordId, minor }] → faturanın kuyrukta (satırdan önceki anda) şüpheli sayılan kısmı — 128 =
 // min(tutar, Σ pay) o kayıtlardan (sırayla, kalan kadar), KALAN 120 (S25 (b) fazlası dahil; pay yoksa tamamı 120). view: { open: [{ id, date, remainingMinor }] (alınmış, kapanmamış, kalanı
 // > 0; tarih sırası), done: Set (bu carinin şimdiye kadar işlenen alacaklarının ref'i) } — kuyruğun kesiti ayırıcının o anki durumuyla tutarlı kurulur.
-export function allocateDoubtful({ records = [], provisions = [], credits = [], linked = null } = {}) {
+export function allocateDoubtful({ records = [], provisions = [], credits = [], linked = null, writeOrder = null } = {}) {
   const state = new Map();
   const allocations = new Map();
   const extras = [];
@@ -92,6 +108,17 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [], 
     state.set(record.id, fresh(record));
   }
   const recordById = new Map(records.map(record => [record.id, record]));
+  // B1: alacak satırının yazım sırası { at, seq } — satırın kendi alanlarından (SQL yükleyicisi) ya da writeOrder(ref)'ten (yevmiye yükleyicisi); bilinmeyen sona. Yalnız aynı gün
+  // aynı sınıfta iki alacak karşılaşınca okunur (çağrı başına bir kez).
+  const writeOf = credit => {
+    let known = null;
+    return () => {
+      if (known) return known;
+      const own = credit.at !== undefined || credit.seq !== undefined ? credit : writeOrder ? writeOrder(credit.ref ?? credit.key) || {} : {};
+      known = { at: own.at ? String(own.at) : LAST, seq: Number.isFinite(Number(own.seq)) && own.seq !== "" && own.seq !== null ? Number(own.seq) : Infinity };
+      return known;
+    };
+  };
   for (const item of provisions) {
     const record = recordById.get(item.recordId);
     if (!record || !byParty.has(record.party)) continue;
@@ -109,7 +136,7 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [], 
       // (kâhin sürüm 4 tohum 4, 15.10.2026: aynı gün iki kayıt, tahsilat yanlış kayıttan düştü). seq yoksa kimlik.
       ...group.records.map(record => ({ kind: "take", date: record.date, order: ORDER.take, tie: record.seq ?? record.id, record })),
       ...group.provisions.map(item => ({ kind: "provision", date: item.date, order: ORDER.provision, tie: item.id, item })),
-      ...group.credits.map(credit => ({ kind: "credit", date: credit.date, order: credit.target ? ORDER.writeoff : ORDER.credit, tie: credit.key, credit })),
+      ...group.credits.map(credit => ({ kind: "credit", date: credit.date, order: credit.target ? ORDER.writeoff : ORDER.credit, tie: credit.key, credit, write: writeOf(credit) })),
       ...group.records.filter(record => record.status === "released" && record.closedDate).map(record => ({ kind: "release", date: record.closedDate, order: ORDER.release, tie: record.id, record })),
     ].sort(by);
     // Açık (alınmış, kapanmamış) kayıtlar en eskiden yeniye; aynı tarihte açılış (rowid) sırası.
@@ -273,7 +300,8 @@ export function applyDoubtfulToJournal(entries, doubtful) {
     });
   }
   // Ç5-A tur 3c: şüpheli ↔ kuyruk kuralının geri çağrısı yükleyiciden (lib/bank/doubtful.mjs doubtfulRows → linked; ikinci yükleyici doubtfulState aynısını verir).
-  const { allocations, extras, state } = allocateDoubtful({ records, provisions: doubtful?.provisions || [], credits, linked: typeof doubtful?.linked === "function" ? doubtful.linked : null });
+  // B1: aynı gün aynı sınıftaki alacakların yazım sırası yükleyiciden (lib/bank/doubtful.mjs doubtfulRows → writeOrder; SQL yükleyicisinin kolonlarıyla aynı kaynak).
+  const { allocations, extras, state } = allocateDoubtful({ records, provisions: doubtful?.provisions || [], credits, linked: typeof doubtful?.linked === "function" ? doubtful.linked : null, writeOrder: typeof doubtful?.writeOrder === "function" ? doubtful.writeOrder : null });
   for (const [key, hit] of allocations) {
     const ref = lineRefs.get(key);
     if (!ref) continue;
