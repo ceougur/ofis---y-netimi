@@ -385,11 +385,15 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
   const cells = new Map();
   const unknown = new Map();
   const activeYears = new Set();
+  const byYear = new Map(); // yıl → o yılın maddeleri (Gelir Tablosu çağrıları yalnız kendi yılını okur — sonuç aynı, geçiş sayısı yıl başına bir)
   let unbalanced = 0;
   let firstYear = Infinity;
   for (const entry of upto) {
     let own = 0;
     const entryYear = Number(entry.date.slice(0, 4));
+    let bucket = byYear.get(entryYear);
+    if (!bucket) byYear.set(entryYear, (bucket = []));
+    bucket.push(entry);
     if (entryYear < firstYear) firstYear = entryYear;
     for (const line of entry.lines) {
       const net = (Number(line.debit) || 0) - (Number(line.credit) || 0);
@@ -410,10 +414,10 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
   const closedYear = closedYearOf(upto, date, closedOn);
   const currentOpen = year > closedYear;
   // Hesaplanmış satırlar — Gelir Tablosu'nun KENDİSİ (iki formül YOK; kitap §8, YÜKSEK-1): t'nin yılı 1 Ocak–t; kapanmamış önceki yıllar yıl yıl (KG-12 A).
-  const current = currentOpen ? incomeStatement({ entries: upto, valuation, from: `${year}-01-01`, to: date, bookType, ruleDiff }) : null;
+  const current = currentOpen ? incomeStatement({ entries: byYear.get(year) || [], valuation, from: `${year}-01-01`, to: date, bookType, ruleDiff }) : null;
   const priorYears = [];
   for (let y = Math.max(closedYear + 1, Number.isFinite(firstYear) ? firstYear : year); y < year; y += 1) {
-    const out = incomeStatement({ entries: upto, valuation, from: `${y}-01-01`, to: yearEndOf(y), bookType, ruleDiff });
+    const out = incomeStatement({ entries: byYear.get(y) || [], valuation, from: `${y}-01-01`, to: yearEndOf(y), bookType, ruleDiff });
     if (activeYears.has(y) || out.smm.estimated || out.subtotals.donemNetKari !== 0) priorYears.push({ yil: y, out });
   }
   // 153: t'nin yılının satışların maliyeti kesin değilse DSS_t (tahmini değerleme — kitap §5.3), kesinse (yıl kapanmış ya da N-01 yazılmış) defter.
