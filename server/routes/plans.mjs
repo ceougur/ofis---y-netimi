@@ -11,6 +11,7 @@ import { posMetaOf } from "../lib/bank/pos.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { allocate, dayText, daysUntil, distribute, isoDay, mapHeaders, parseDay } from "../lib/plans.mjs";
 import { createAccountLines } from "../lib/account-lines.mjs";
+import { waivesRemaining, waivesSql } from "../lib/accounts.mjs";
 import { extractSchedules, spreadPaid } from "../lib/insight/schedules.mjs";
 import { tabContext } from "../lib/insight/dues.mjs";
 import { planStatementPdf, receiptPdf } from "../lib/plan-report.mjs";
@@ -173,7 +174,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   });
 
   // ---------- Kart okuma ----------
-  const PLAN_SQL = `SELECT p.id, p.account_id AS accountId, p.ref_no AS refNo, p.registered_on AS registeredOn, p.case_key AS caseKey, p.case_source AS caseSource, p.case_title AS caseTitle, p.group_id AS groupId, p.subgroup_id AS subgroupId, p.name, p.note, p.phone, p.total, p.status, p.covers_balance AS coversBalance, p.closed_at AS closedAt,
+  const PLAN_SQL = `SELECT p.id, p.account_id AS accountId, p.ref_no AS refNo, p.registered_on AS registeredOn, p.case_key AS caseKey, p.case_source AS caseSource, p.case_title AS caseTitle, p.group_id AS groupId, p.subgroup_id AS subgroupId, p.name, p.note, p.phone, p.total, p.status, p.covers_balance AS coversBalance, p.closed_at AS closedAt, p.close_rule AS closeRule,
       p.invoice_id AS invoiceId, COALESCE((SELECT i.number FROM invoices i WHERE i.id = p.invoice_id), '') AS invoiceNumber,
       p.created_by AS createdBy, p.created_at AS createdAt, p.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName,
       COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName, COALESCE(ac.name, '') AS accountName, COALESCE(ac.ref_no, '') AS accountRef
@@ -227,12 +228,18 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const map = plan.accountId && all ? all.get(plan.accountId)?.installments.get(plan.id) : null;
     if (!map) return ledger;
     const closed = plan.status === "closed";
+    // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın", S205 = A): kalanı düşülmüş (eski kural) kapalı kart bugünkü gibi kartın kendi hesabıyla ve "Kapalı" kalemlerle gösterilir (frozen);
+    // Borçta Kalsın ile kapatılmış kartın kalanı carinin borcunda durur → kuyruktan AÇIK kart gibi gösterilir (Ödenen / Kalan / durum), kalemin günü kuyruğun vadesi (kapanışın
+    // ertesi günü; kapanıştan önce vadesi geçmiş kalem kendi vadesinde — lib/accounts.mjs keptDueSql, Tek Yükümlülük Kuyruğu'nun girdisi). Kartın durumu "Kapalı" kalır.
+    const frozen = closed && waivesRemaining(plan);
+    const kept = closed && !frozen;
     const items = ledger.items.map(item => {
       const row = map.get(item.id);
       const remaining = roundMoney(Math.min(item.amount, row ? row.remaining : 0));
       const accountPaid = row ? roundMoney(row.byAccount) : 0;
-      const days = item.days;
-      const state = remaining <= 0.005 ? "paid" : closed ? "closed" : days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
+      const dueDate = kept && row?.vade ? row.vade : item.dueDate;
+      const days = kept && row?.vade ? daysUntil(row.vade, day) : item.days;
+      const state = remaining <= 0.005 ? "paid" : frozen ? "closed" : days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
       // held: kalanın şüpheli kuyruğundaki kısmı (M13) — takvim / zil / Vade Takip kalemine girmez (S3; Vade Takip'te şüpheli ayrı satır).
       const held = row ? roundMoney(Math.min(remaining, row.doubtful || 0)) : 0;
       // ownRemaining: kartın KENDİ hesabıyla kalan (allocate) — S118 = B (tur 2b-2): tahsilat formunun önerdiği tutar bundan (sınır ve soru da kartın kendi kalanından).
@@ -240,9 +247,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       // satırın Ödenen'i = taksitin kuyrukta TAHSİL EDİLEN kısmı (lib/obligation-queue.mjs `collected`: kart tahsilatı + kart seçilmeden alınan tahsilatın / avansın payı);
       // kartın kendi tahsilatı ownPaid'de. Kapatılmış kartta bugünkü gösterim AYNEN (kural yazılmadı — kapanış dar kontrolünün kapsam dışı gözlemi).
       // returned (birleşik tur 8, S151 = B / S158 = A): satırın faturasız iade / Değersiz Alacak ile kapanan kısmı — tahsilat değildir, Ödenen'e girmez, ayrı gösterilir.
-      const paid = closed ? item.paid : roundMoney(Math.min(item.amount, row ? row.collected || 0 : 0));
-      const returned = closed || !row ? 0 : roundMoney(Math.max(0, Math.min(item.amount - paid, row.returned || 0)));
-      return { ...item, remaining, ownRemaining: item.remaining, paid, returned, ownPaid: item.paid, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
+      const paid = frozen ? item.paid : roundMoney(Math.min(item.amount, row ? row.collected || 0 : 0));
+      const returned = frozen || !row ? 0 : roundMoney(Math.max(0, Math.min(item.amount - paid, row.returned || 0)));
+      return { ...item, ...(kept ? { dueDate, days, planDueDate: item.dueDate } : {}), remaining, ownRemaining: item.remaining, paid, returned, ownPaid: item.paid, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
     });
     // Ç5-B tur 2a (O-3): taksitlere bölünmemiş kalan ("rest") ve Taksit İadesi ("back") kuyruk kalanındadır (kalemleri queueExtras: takvim / zil / Vade Takip / nakit akışı).
     // Ç5-B tur 2b-2 (ekran yürüyüşü 1 Y2; BAŞ MİMAR KARARI 11.11 05:48 — sunum, S91 = A'nın sonucu): bu kalemin günü geçmişse kart da "Gecikti" sayılır (Taksitler'in Geciken
@@ -270,7 +277,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     // satırının 'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı: örnekte kart 900, bağsız tahsilat 500 → Tahsil Edilen 500 · Kalan 400; kart 600, bağsız tahsilat
     // 800 → Kalan 0 · Tamamlandı); tahsilat formunun sınırı / sorusu / önerilen tutarı S118 = B'deki gibi kartın KENDİ kalanından kalır"): totals.paid / totals.remaining
     // GÖSTERİLEN sayılardır (shownTotals); kartın kendi hesabı totals.ownPaid / ownRemaining (lib/plans.mjs allocate) — sınır, Mutabakat Testi, mutabakat motoru bunları okur.
-    const shown = closed ? { paid: ledger.totals.paid, remaining: ledger.totals.remaining, returned: 0 } : shownTotals(plan, ledger.totals, collectedOf(map), returnedOf(map));
+    const shown = frozen ? { paid: ledger.totals.paid, remaining: ledger.totals.remaining, returned: 0 } : shownTotals(plan, ledger.totals, collectedOf(map), returnedOf(map));
     return {
       ...ledger,
       items,
@@ -314,7 +321,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // Cari kartı / Cari Listesi (routes/accounts.mjs): kartın özetine (kartın kendi hesabı) aynı gösterilen sayıları verir. tyk: carinin kuyruğu (obligationsFor / allObligations
   // öğesi); yoksa ya da kart kapalıysa null (özet değişmez). Dönüş { paid, remaining }.
   function shownTotalsOf(plan, tyk) {
-    const map = tyk && plan.status !== "closed" ? tyk.installments?.get(plan.id) : null;
+    const map = tyk && !waivesRemaining(plan) ? tyk.installments?.get(plan.id) : null;
     if (!map || !plan.totals) return null;
     return shownTotals(plan, plan.totals, collectedOf(map), returnedOf(map));
   }
@@ -331,7 +338,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // nakit akışı kalemidir. Önceden gecikmişte sayılıyor, bu listelerde görünmüyordu (dar kontrol DK-C5B O-3). Kapatılmış kartta yok (kalan Kartı Kapat ile kapanır).
   const QUEUE_EXTRAS = [["rest", "Taksitlendirilmemiş Kalan"], ["back", "Taksit İadesi"]];
   function queueExtras(plan, all, day) {
-    const map = plan.accountId && all && plan.status !== "closed" ? all.get(plan.accountId)?.installments.get(plan.id) : null;
+    // 2.5.0 Ç7b tur 3b: Borçta Kalsın ile kapatılmış kartın kalemleri de (kalan borçta); kalanı düşülmüş eski kapalı kartta yok.
+    const map = plan.accountId && all && !waivesRemaining(plan) ? all.get(plan.accountId)?.installments.get(plan.id) : null;
     if (!map) return [];
     const out = [];
     for (const [key, label] of QUEUE_EXTRAS) {
@@ -606,7 +614,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (!account) return 0;
     let covered = 0;
     for (const plan of account.plans || []) {
-      if (plan.id === exceptPlanId || plan.status === "closed") continue;
+      // 2.5.0 Ç7b tur 3b: Borçta Kalsın ile kapatılmış Mevcut Borç kartı borcu taşımayı sürdürür (Tek Yükümlülük Kuyruğu'nda kalemleri kapanış ertesinden vadeli) — aynı borç yeni
+      // kartla ikinci kez taksitlendirilmez (kart Yeniden Aç ile açılır); kalanı düşülmüş eski kart sayılmaz (bugünkü gibi).
+      if (plan.id === exceptPlanId || waivesRemaining(plan)) continue;
       const row = store.get("SELECT covers_balance AS c FROM plans WHERE id = ?", plan.id);
       if (row?.c) covered = roundMoney(covered + Math.max(0, (Number(plan.totals?.total) || 0) - (Number(plan.totals?.paid) || 0)));
     }
@@ -764,9 +774,11 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // closed_at, 2.0.13 öncesi kapatılmışta son güncelleme günü; Kayıt Tarihi'nden önce değil). O gün kapanmış dönemdeyse kart yeniden
   // açılmaz, silinmez, geri yüklenmez; tutarı, carisi, tahsilatı ve iadesi değişmez (vazgeçilen tutar kilitli mizandadır; kilit izi
   // integrity.mjs "plans_close_lock"). Önceden yalnız Kayıt Tarihi ve ilk tahsilat soruluyor, kilitli mizan sessizce değişiyordu.
+  // 2.5.0 Ç7b tur 3b (§17.1): YALNIZ kalanı düşülmüş (eski kural, göç 53 '2.4.9') kartta — Borçta Kalsın kartının kapanışı defter olayı değildir (689 yok; lib/accounts.mjs
+  // waivesRemaining), kilitli günde kapanmış olsa da Yeniden Aç / tahsilat / silme kapanış gününe takılmaz (Kayıt Tarihi ve tahsilat günlerinin kendi kilitleri aynen).
   const closeDayOf = planId => {
-    const row = store.get("SELECT status, COALESCE(closed_at, substr(updated_at, 1, 10)) AS closedOn, COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS startOn FROM plans WHERE id = ?", planId);
-    if (!row || row.status !== "closed") return "";
+    const row = store.get("SELECT status, close_rule AS closeRule, COALESCE(closed_at, substr(updated_at, 1, 10)) AS closedOn, COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS startOn FROM plans WHERE id = ?", planId);
+    if (!row || !waivesRemaining(row)) return "";
     return row.closedOn && row.closedOn > row.startOn ? row.closedOn : row.startOn;
   };
   function assertCloseOpen(planId, what) {
@@ -895,7 +907,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         accountId, input.refNo, input.registeredOn, input.caseKey, input.caseSource, input.caseTitle, input.groupId, input.subgroupId, input.name, input.note, input.phone, input.total, status, user.id, now(), previous.id,
       );
       // Kapatma tarihi (v2.0.13): vazgeçilen kalan ana defterde bu tarihte yazılır; yeniden açılınca silinir.
-      if (status !== previous.status) store.run("UPDATE plans SET closed_at = ? WHERE id = ?", status === "closed" ? today() : null, previous.id);
+      // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın"; §17.1): kapatma kuralı işareti durum değişince '' (Borçta Kalsın) — Yeniden Aç → yeniden Kapat YENİ kuralla (eski kurallı kart
+      // yeniden açılınca düşülen kalan bugünkü gibi geri gelir; yeni kapatma kalanı borçta bırakır).
+      if (status !== previous.status) store.run("UPDATE plans SET closed_at = ?, close_rule = '' WHERE id = ?", status === "closed" ? today() : null, previous.id);
       // v2.1.0 (§3.11 bank:event): tahsilatların işlem başlığı kopyasındaki cari (party_id) kartın carisinden gelir; cari değişince
       // kopyalar aynı işlemde yenilenir (bank.post "assign"; para satırı değişmez).
       if (accountId !== previous.accountId && bank) {
@@ -1548,7 +1562,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   }
   function dueItems(day = today()) {
     const out = [];
-    const plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.status = 'active'`);
+    // 2.5.0 Ç7b tur 3b (karar (6) "… ertesi günden gecikmiş, hatırlatma gider"): Borçta Kalsın ile kapatılmış kartın kalanı da zile / takvime girer (kalanı düşülmüş eski kart girmez).
+    const plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND NOT ${waivesSql("p")}`);
     if (!plans.length) return out;
     const queue = queueOf();
     const items = new Map();
@@ -1600,7 +1615,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   function openItems(day = today(), { withoutDoubtful = false } = {}) {
     const out = [];
     const plans = store.all(
-      "SELECT p.id, p.name, p.phone, p.ref_no AS refNo, p.total, p.status, p.account_id AS accountId, COALESCE(a.name, '') AS accountName FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND p.status = 'active'",
+      // 2.5.0 Ç7b tur 3b: Borçta Kalsın ile kapatılmış kartın kalanı da açık alacaktır (Vade Takip, nakit akışı, yaşlandırma); kalanı düşülmüş eski kart girmez.
+      `SELECT p.id, p.name, p.phone, p.ref_no AS refNo, p.total, p.status, p.close_rule AS closeRule, p.account_id AS accountId, COALESCE(a.name, '') AS accountName FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND NOT ${waivesSql("p")}`,
     );
     if (!plans.length) return out;
     const queue = queueOf();
@@ -1703,7 +1719,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
       const view = queue ? queueBrief(plan, ledger, queue) : null;
       if (!out.has(plan.accountId)) out.set(plan.accountId, []);
-      out.get(plan.accountId).push({ id: plan.id, name: plan.name, total: plan.total, coversBalance: Boolean(plan.coversBalance), status: plan.status, state: ledger.state, totals: ledger.totals, next: ledger.next, itemCount: ledger.items.length, ...(view ? { view } : {}) });
+      out.get(plan.accountId).push({ id: plan.id, name: plan.name, total: plan.total, coversBalance: Boolean(plan.coversBalance), status: plan.status, closeRule: plan.closeRule, state: ledger.state, totals: ledger.totals, next: ledger.next, itemCount: ledger.items.length, ...(view ? { view } : {}) });
     }
     return out;
   }
@@ -1802,7 +1818,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const own = Boolean(row.invoiceId);
     const cut = own ? roundMoney(Number(row.total) || 0) : leftOf(row.id);
     if (cut > 0.005) cutPlan({ id: row.id, name: row.name, total: Number(row.total) || 0 }, cut, user, { accountId: row.accountId, reason: note || "Fatura iptali" });
-    store.run(`UPDATE plans SET status = 'closed', closed_at = ?, ${own ? "invoice_id = '', " : ""}updated_by = ?, updated_at = ? WHERE id = ?`, today(), user.id, now(), row.id);
+    store.run(`UPDATE plans SET status = 'closed', closed_at = ?, close_rule = '', ${own ? "invoice_id = '', " : ""}updated_by = ?, updated_at = ? WHERE id = ?`, today(), user.id, now(), row.id);
     audit(user, "plan.updated", row.id, { previous: { status: row.status, total: row.total, invoiceId: row.invoiceId || "" }, status: "closed", reason, invoiceId: invoiceId || row.invoiceId || "", total: roundMoney((Number(row.total) || 0) - (cut > 0.005 ? cut : 0)) });
     return true;
   }

@@ -9,6 +9,7 @@ import { lockAtOf, lockHistory } from "./obligation-queue.mjs";
 import { doubtfulState } from "./bank/doubtful.mjs";
 import { dayText } from "./plans.mjs";
 import { createAccountLines } from "./account-lines.mjs";
+import { keptDueSql } from "./accounts.mjs";
 
 export function createObligationInput({ store }) {
   // v2.0.17: mahsup fişinin karşı belgesinin adı ("Mahsup · ALS2026…" / "Mahsup · Alacak Yaz 15.09.2026").
@@ -92,7 +93,9 @@ export function createObligationInput({ store }) {
     }
     const offsetsOf = groupBy(store.all("SELECT id, account_id AS accountId, invoice_id AS invoiceId, counter_type AS counterType, counter_id AS counterId, amount, date, note, created_at AS createdAt FROM invoice_offsets ORDER BY date, created_at"), "accountId");
     const planTotals = new Map(store.all("SELECT id, total FROM plans WHERE deleted_at IS NULL").map(row => [row.id, Number(row.total) || 0]));
-    const scheduleOf = groupBy(store.all("SELECT plan_id AS planId, due_date AS dueDate, amount FROM plan_items ORDER BY due_date"), "planId");
+    // 2.5.0 Ç7b tur 3b (S205 = A): Borçta Kalsın ile kapatılmış kartın kalemleri kapanışın ertesi günü vadeli (lib/accounts.mjs keptDueSql — üç sorguda aynı ifade). Sıra kalemin
+    // kendi vadesiyle (değişmedi).
+    const scheduleOf = groupBy(store.all(`SELECT i.plan_id AS planId, ${keptDueSql("p", "i.due_date")} AS dueDate, i.amount FROM plan_items i LEFT JOIN plans p ON p.id = i.plan_id ORDER BY i.due_date`), "planId");
     return { invoicesOf, baseLinks, planned, eventsOf, offsetsOf, planTotals, scheduleOf };
   }
   function batchSettleInput(accountId, lines, tables, day) {
@@ -146,7 +149,8 @@ export function createObligationInput({ store }) {
     const only = accountId ? " AND p.account_id = ?" : "";
     const args = accountId ? [accountId] : [];
     const schedules = new Map();
-    for (const row of store.all(`SELECT i.id, i.plan_id AS planId, i.seq, i.due_date AS dueDate, i.amount FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE 1 = 1${only} ORDER BY i.due_date, i.seq`, ...args)) groupInto(schedules, row.planId, { id: row.id, seq: row.seq, dueDate: row.dueDate, amount: row.amount });
+    // S205 = A (2.5.0 Ç7b tur 3b): Borçta Kalsın ile kapatılmış kartın kalemi kapanışın ertesi günü vadeli (keptDueSql); sıra kalemin kendi vadesiyle (değişmedi).
+    for (const row of store.all(`SELECT i.id, i.plan_id AS planId, i.seq, ${keptDueSql("p", "i.due_date")} AS dueDate, i.amount FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE 1 = 1${only} ORDER BY i.due_date, i.seq`, ...args)) groupInto(schedules, row.planId, { id: row.id, seq: row.seq, dueDate: row.dueDate, amount: row.amount });
     const dueDates = new Map();
     const promises = new Map();
     // 2.5.0 TEK ADAY HIZ (t3hiz; ders 47): tek cari yolunda `+source` — dizinsiz planlayıcı `source = ''` için idx_account_entries_source'u seçip BÜTÜN elle satırları dolaşıyordu (100 bin
@@ -244,7 +248,7 @@ export function createObligationInput({ store }) {
     const plansById = new Map();
     for (const invoice of all.filter(item => item.planId)) {
       const plan = store.get("SELECT total FROM plans WHERE id = ? AND deleted_at IS NULL", invoice.planId);
-      const schedule = store.all("SELECT due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date", invoice.planId);
+      const schedule = store.all(`SELECT ${keptDueSql("p", "i.due_date")} AS dueDate, i.amount FROM plan_items i LEFT JOIN plans p ON p.id = i.plan_id WHERE i.plan_id = ? ORDER BY i.due_date`, invoice.planId);
       plansById.set(invoice.id, { planTotal: Number(plan?.total) || 0, schedule });
     }
     return { lines: ledger, invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, chequeEvents, reversals, offsets, today: day };

@@ -15,6 +15,7 @@ import { leanAll } from "../lib/lean-rows.mjs";
 import { coverBounds } from "../lib/bank/opening-cover.mjs";
 import { commissionGlOf, commissionReady, salesSql as commissionSalesSql, settledSql as commissionSettledSql } from "../lib/bank/pos-commission.mjs";
 import { roundMoney } from "../lib/money.mjs";
+import { CLOSE_RULE_WAIVE, waivedOf, waivesSql } from "../lib/accounts.mjs";
 import { oldCollectionSql, oldReturnVatSql, ruleShiftOf } from "../lib/ledger-rule-shift.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -145,8 +146,10 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       // 2.5.0 Ç5-A (KG-5; B5): yüklenen kart (import_id) — yükleme damgası (plan_imports.created_at; yerel günü journal()'da) ve açılış satırlarının toplamı (P). Eski dosyada: yok.
       const imported = hasColumn("plans", "import_id") && has("plan_imports");
       const planKeys = [[set?.parties, "SELECT id FROM plans WHERE account_id IN $"], [set?.plans, own("plans")]];
+      // 2.5.0 Ç7b tur 3b: kapatma kuralı (göç 53; lib/accounts.mjs waivedOf) — sütun yoksa (göç öncesi depo) eski veri = eski kural.
+      const closeRule = hasColumn("plans", "close_rule") ? "p.close_rule" : `'${CLOSE_RULE_WAIVE}'`;
       out.plans = all(
-        `SELECT p.id, p.rowid AS seq, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
+        `SELECT p.id, p.rowid AS seq, p.total, p.status, ${closeRule} AS closeRule, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
                 COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE ${X}p.deleted_at IS NULL${where("p", planKeys, "AND")}`,
@@ -373,14 +376,15 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     // kartın kalanı vazgeçilen alacaktır (sıfırlanır). Carili kartların alacağı cari bakiyesinin içindedir (120/320/336).
     if (has("plans")) {
       let open = 0;
+      // 2.5.0 Ç7b tur 3b: düşülen kalan TEK yardımcıdan (lib/accounts.mjs waivedOf; Borçta Kalsın kartında 0 — kalan 127'de kalır).
+      const closeRule = hasColumn("plans", "close_rule") ? "p.close_rule" : `'${CLOSE_RULE_WAIVE}'`;
       for (const plan of store.all(
-        `SELECT p.total, p.status, p.covers_balance AS coversBalance,
+        `SELECT p.total, p.status, ${closeRule} AS closeRule, p.covers_balance AS coversBalance,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND a.id IS NULL`,
       )) {
         const total = plan.coversBalance ? 0 : Number(plan.total) || 0;
-        const left = roundMoney((Number(plan.total) || 0) - (Number(plan.paid) || 0));
-        open = roundMoney(open + total - (Number(plan.paid) || 0) - (plan.status === "closed" ? Math.max(0, left) : 0));
+        open = roundMoney(open + total - (Number(plan.paid) || 0) - waivedOf(plan, plan.paid));
       }
       out[127] = open;
     }
@@ -803,7 +807,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
           WHEN e.kind IN ('credit', 'in') THEN -${c("e.amount")}
           ELSE 0 END) FROM account_entries e WHERE e.account_id = a.id), 0)` : "0",
       has("plans") ? `COALESCE((SELECT SUM(CASE WHEN p.covers_balance THEN 0 ELSE ${c("p.total")} END
-          - CASE WHEN p.status = 'closed' THEN MAX(0, ${c(`(p.total - COALESCE((SELECT SUM(CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) FROM plan_entries x WHERE x.plan_id = p.id), 0))`)}) ELSE 0 END)
+          - CASE WHEN ${waivesSql("p", { column: hasColumn("plans", "close_rule") })} THEN MAX(0, ${c(`(p.total - COALESCE((SELECT SUM(CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) FROM plan_entries x WHERE x.plan_id = p.id), 0))`)}) ELSE 0 END)
           FROM plans p WHERE p.account_id = a.id AND +p.deleted_at IS NULL), 0)` : "0",
       has("plans") && has("plan_entries") ? `COALESCE((SELECT SUM(CASE WHEN pe.kind = 'in' THEN -${c("pe.amount")} ELSE ${c("pe.amount")} END) FROM plans p CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE p.account_id = a.id AND +p.deleted_at IS NULL), 0)` : "0",
       has("invoices") ? `COALESCE((SELECT SUM(CASE WHEN ${c("i.try_payable")} <= 0 THEN 0 WHEN i.kind IN ('sale', 'smm', 'purchase_return') THEN ${c("i.try_payable")} WHEN i.kind IN ('sale_return', 'purchase') THEN -${c("i.try_payable")} ELSE 0 END) FROM invoices i WHERE i.account_id = a.id AND +i.status = 'issued'), 0)` : "0",

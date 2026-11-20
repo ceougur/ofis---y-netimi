@@ -10,7 +10,7 @@ import { doubtfulKeepOf, doubtfulSkipOf } from "../lib/doubtful-gl.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
 import { doubtfulState } from "../lib/bank/doubtful.mjs";
-import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
+import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, closeDaySql, isAccountType, mapAccountHeaders, waivedOf, waivesSql } from "../lib/accounts.mjs";
 import { createAccountLines } from "../lib/account-lines.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
@@ -355,7 +355,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         const total = roundMoney(Number(plan.total) || 0);
         const paid = roundMoney(Number(plan.totals.paid) || 0);
         planDebit += plan.coversBalance ? 0 : total;
-        planCredit += plan.status === "closed" ? Math.max(total, paid) : paid;
+        // 2.5.0 Ç7b tur 3b: kapalı kartın düşülen kalanı TEK yardımcıdan (eski kuralda paid + max(0, tutar − paid) = bugünkü max(tutar, paid); Borçta Kalsın'da 0).
+        planCredit += paid + waivedOf(plan, paid);
         if (plan.status !== "closed") {
           // S129 = A: "Taksitten Kalan" (liste, PDF, Excel) kart penceresinin Kalan'ıyla aynı — kullanıcı isteğinde kuyruktan; iç çağıranlarda (kuyruk okunmaz) kartın kendi hesabı.
           const view = tykAll && plans()?.shownTotalsOf ? plans().shownTotalsOf(plan, tykAll.get(row.id)) : null;
@@ -775,7 +776,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
                        AND ((p.covers_balance = 0 AND p.registered_on <> '' AND p.registered_on <= ?2)
                             OR EXISTS (SELECT 1 FROM plan_entries pe WHERE pe.plan_id = p.id AND pe.date <= ?2)
                             -- gözden geçirme G1: kapanmış dönemde kapatılmış kartın vazgeçilen kalanı (689) carinin türüne göre yazılır
-                            OR (p.status = 'closed' AND MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))) <= ?2)))`,
+                            -- 2.5.0 Ç7b tur 3b: yalnız kalanı düşülen (eski kural) kart — Borçta Kalsın kartının kapanışı defter olayı değil (lib/accounts.mjs waivesSql)
+                            OR (${waivesSql("p")} AND ${closeDaySql("p")} <= ?2)))`,
       accountId, lock,
     );
     return hit ? lock : "";

@@ -1682,6 +1682,22 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 53,
+    name: "v2.5.0 Ç7b Kartı Kapat kuralının kart başına işareti (plans.close_rule; var olan kapalı kartlar eski kural; para dışı)",
+    up(store) {
+      // 2.5.0 Ç7b tur 3b (karar (6) 2B-S5 / S10 = A "Borçta Kalsın", KG-23 = A, B-11 = A; docs/erp/C7B-FATURA-TASARIM.md §17.1): Kartı Kapat artık kalanı carinin borcundan DÜŞMEZ
+      // (madde yok); "önceden kapatılmış kartlar olduğu gibi kalır" → sütun BU göçte eklendiyse var olan kapalı kartlar (silinmişler dahil — Silinenler'den dönen kart da eski kuralla)
+      // '2.4.9' = eski kural (kalan düşülmüş; cari ekstresinde "kalan düşüldü", defterde 689). '' = Borçta Kalsın (sütunun varsayılanı; Kartı Kapat / Yeniden Aç yazar). YALNIZ İŞARET —
+      // tutar, tarih, durum DEĞİŞMEZ. Okuyucular TEK yardımcıdan (lib/accounts.mjs waivesRemaining / waivedOf / waivesSql). Kilit izine girer (lib/integrity.mjs plans_close_rule_lock).
+      // Eşgüçlü: yeniden koşuda (sütun var) dokunulmaz — sonradan Borçta Kalsın ile kapatılmış kart eski sayılmaz.
+      store.raw("migration.v53", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'plans'") || columnExists(store, "plans", "close_rule")) return;
+        addColumn(store, "plans", "close_rule", "TEXT NOT NULL DEFAULT ''");
+        store.run("UPDATE plans SET close_rule = '2.4.9' WHERE status = 'closed'");
+      });
+    },
+  },
 ];
 /** Excel / Sheets "Açılış portföyü" evrakının ilk olay notu (routes/cheques.mjs OPENING_PORTFOLIO_NOTE ile AYNI metin; göç 49). */
 const OPENING_PORTFOLIO_NOTE = "Açılış portföyü (Excel/Sheets)";

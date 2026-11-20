@@ -11,6 +11,7 @@
 import { DOCUMENT_GL, documentGl, mainOfSub } from "./cheque-gl.mjs";
 import { DOUBTFUL_CHART, DOUBTFUL_GL, applyDoubtfulToJournal, doubtfulKeepOf } from "./doubtful-gl.mjs";
 import { roundMoney } from "./money.mjs";
+import { waivedOf, waivesRemaining } from "./accounts.mjs";
 import { OPENING_ROLES, effectiveGl } from "./bank/voucher.mjs";
 import { isCovered } from "./bank/opening-cover.mjs";
 import { NO_SHIFT, oldCollection, oldReturnVat } from "./ledger-rule-shift.mjs";
@@ -574,9 +575,11 @@ export function journal(rows) {
       opened(n);
       // 2.5.0 Ç7b (KG-2 = A; H-03): Yeni Borç kartı belgesiz gelirdir — B CH / A 600.90, kart toplamı, KDV ayrılmaz (Ç7b öncesi: 602).
     } else if (!plan.coversBalance) post(`plan:${plan.id}`, plan.date, "Taksit kartı", "Taksitli satış / hizmet", control, UNCLASSIFIED_GL.sale, plan.total);
-    if (plan.status === "closed") {
+    // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın", KG-23 = A "Alacak CH'de kalır (madde yok)"): 689 YALNIZ eski kuralla kapatılmış kartta (göç 53 '2.4.9'; lib/accounts.mjs waivedOf —
+    // cari defteriyle aynı yardımcı); yeni kapatılan kartın kalanı CH'de kalır, madde yazılmaz. rows.plans closeRule taşır (routes/ledger.mjs rows()).
+    if (waivesRemaining(plan)) {
       const n = out.length;
-      post(`plan-close:${plan.id}`, plan.closedOn && plan.closedOn > plan.date ? plan.closedOn : plan.date, "Taksit kartı kapatıldı", "Kalan alacaktan vazgeçildi", "689", control, Math.max(0, roundMoney((Number(plan.total) || 0) - (Number(plan.paid) || 0))));
+      post(`plan-close:${plan.id}`, plan.closedOn && plan.closedOn > plan.date ? plan.closedOn : plan.date, "Taksit kartı kapatıldı", "Kalan alacaktan vazgeçildi", "689", control, waivedOf(plan, plan.paid));
       // Karar 15.10.2026 (plan §3.11b/2): kartın açılış tarihi — şüpheli kaydından SONRA açılan kartın satırı o kayıttan düşmez (doubtful-gl openedOn).
       // Kontrol turu 2 K1: "Mevcut borcu taksitlendir" (coversBalance) kartı yeni alacak değildir → tarih kapısı yok (lib/bank/doubtful.mjs SQL ikizi).
       if (out.length > n && plan.date && !plan.coversBalance) out[out.length - 1].doubtful = { openedOn: plan.date };

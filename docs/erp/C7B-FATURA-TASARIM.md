@@ -612,8 +612,9 @@ ertesi günden gecikmiş, hatırlatma gider; vazgeçme ayrı ve görünür işle
   eski kuralı sessizce taşımasın: testler bunu yakalar); `waivedOf(plan, paid)` = waivesRemaining ? max(0, tutar − net tahsilat) : 0 (yuvarlanmış TL).
 - SQL ikizi: `waivesSql(alias, { column = true } = {})` = `(alias.status = 'closed' AND alias.close_rule = '2.4.9')` — sütun yoksa (`column: false`, göç öncesi depo) `alias.status = 'closed'`
   (eski veri = eski kural). `closeDaySql(alias)` = kapanış günü (689'un tarihi; bugünkü ifade aynen: MAX(COALESCE(closed_at, substr(updated_at, 1, 10)), Kayıt Tarihi)).
-- S205 vadesi: `keptDueOf(dueDate, closeDay)` = min(kalemin vadesi, kapanış gününün ertesi günü) ve SQL ikizi `keptDueSql(planAlias, dueColumn)` = Borçta Kalsın ile kapatılmış kartta
-  `MIN(due, date(<kapanış günü>, '+1 day'))`, öbür kartlarda `due`. "Kalemin kendi vadesine bakılmaz" görev metninin S205 açıklamasıdır (soru vadesi GELMEMİŞ kalemi soruyordu);
+- S205 vadesi: `keptDueOf(dueDate, closeDay)` = min(kalemin vadesi, KAPANIŞ GÜNÜ) ve SQL ikizi `keptDueSql(planAlias, dueColumn)` = Borçta Kalsın ile kapatılmış kartta
+  `MIN(due, <kapanış günü>)`, öbür kartlarda `due`. Kuyruğun kuralı "vade < gün" → kalem kapanışın ERTESİ gününden gecikmiş (S205 örneği: kapanış 10.04 → 11.04'ten; §16.1: 08.10 →
+  09.10'dan; "bugün açılan taksitsiz kart ertesi günden gecikir" S1 ile aynı). KOD SÜRERKEN DÜZELTİLDİ: ilk taslak vadeyi kapanış ertesi yazıyordu (gecikmiş bir gün geç başlardı). "Kalemin kendi vadesine bakılmaz" görev metninin S205 açıklamasıdır (soru vadesi GELMEMİŞ kalemi soruyordu);
   vadesi kapanıştan ÖNCE geçmiş kalem KENDİ vadesiyle gecikmiş kalır (MIN) — harfiyen okuma (hepsi kapanış ertesi) kapatma günü gecikmişi 0'a indirir ve gecikme yaşını küçültürdü; gecikmiş
   TUTARI kapanış ertesinden itibaren iki okumada aynı (rapor: KULLANICIYA SORULMALI).
 
@@ -631,7 +632,7 @@ ertesi günden gecikmiş, hatırlatma gider; vazgeçme ayrı ve görünür işle
 | cari "tarihli" kilit (lockedSince — silme / geri yükleme / tür) | `routes/accounts.mjs` lockedSince | `waivesSql('p')` |
 | Cari Listesi bakiye (planCredit) | `routes/accounts.mjs` list | `paid + waivedOf(plan, paid)` (= bugünkü max(tutar, ödenen) eski kuralda) |
 | şüpheli ayırıcısının "plan-close" kalemi | `lib/bank/doubtful.mjs` doubtfulCredits | `WHERE waivesSql('p')` |
-| Tek Yükümlülük Kuyruğu girdisi: kart takvimi (S205) | `lib/obligation-input.mjs` obligationExtras / settleTables / accountSettleInput | `keptDueSql('p', 'i.due_date')` (üç sorgu aynı ifade) |
+| Tek Yükümlülük Kuyruğu girdisi: kart takvimi (S205; vade = min(kalem, kapanış günü)) | `lib/obligation-input.mjs` obligationExtras / settleTables / accountSettleInput | `keptDueSql('p', 'i.due_date')` (üç sorgu aynı ifade) |
 | kart penceresi / Taksitler / cari kartı özeti / zil / Vade Takip / nakit akışı / yaşlandırma (kuyruk görünümü) | `routes/plans.mjs` withQueue, shownTotalsOf, queueExtras, summariesByAccount, dueItems, openItems | Borçta Kalsın kapalı kart AÇIK kart gibi kuyruktan gösterilir (durumu "Kapalı" kalır); kalemin günü `keptDueOf`; dueItems / openItems kalanı düşülmemiş kapalı kartı da alır |
 | Kartı Kapat onay penceresi | `client/assets/hof-plans.js` closePlan | metin sonucu söyler |
 `lib/obligation-queue.mjs` DEĞİŞMEZ (vade girdiden). `lib/ledger-rule-249/**` DEĞİŞMEZ (2.4.9 kopyası: her kapalı kartta 689 — yalnız eski kuralla donan dönemi türetir; Borçta Kalsın kartı
