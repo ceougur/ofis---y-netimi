@@ -1,0 +1,89 @@
+TAP version 13
+# (node:27092) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27092) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27092) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [dondurma yarışı] kip gozlem · 0 örnek (yok): ön koşul GERÇEKLEŞMEDİ
+# Subtest: Ç6-HESAP tur 3 — B-g (b): donmuş toplamlarla okuma ↔ eski okuma BİREBİR (Bilanço, Gelir Tablosu; kilitli / kilitsiz, kapanış fişi, kural farkı)
+    # Subtest: kilitsiz → boş donmuş dönem → kilit 31.03.2026 (kural farkıyla) → kilit kaldır + Kapanış Fişi 31.12.2025 + yeniden kilit → kilit 30.06.2026: her aşamada BİREBİR
+    not ok 1 - kilitsiz → boş donmuş dönem → kilit 31.03.2026 (kural farkıyla) → kilit kaldır + Kapanış Fişi 31.12.2025 + yeniden kilit → kilit 30.06.2026: her aşamada BİREBİR
+      ---
+      duration_ms: 120001.416729
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ab54e5fc492a09964/test/c6h-esdegerlik.test.mjs:113:3'
+      failureType: 'testTimeoutFailure'
+      error: 'test timed out after 120000ms'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        async Promise.all (index 0)
+      ...
+# (node:27092) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27092) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [dondurma yarışı] kip gozlem · 0 örnek (yok): ön koşul GERÇEKLEŞMEDİ
+# (node:27092) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [dondurma yarışı] kip gozlem · 0 örnek (yok): ön koşul GERÇEKLEŞMEDİ
+# (node:27092) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [dondurma yarışı] kip gozlem · 0 örnek (yok): ön koşul GERÇEKLEŞMEDİ
+    # Subtest: uç (iş parçacığı) = iş parçacığısız yeni okuma = eski okuma — kilitli t (30.06.2026 kilidiyle)
+    ok 2 - uç (iş parçacığı) = iş parçacığısız yeni okuma = eski okuma — kilitli t (30.06.2026 kilidiyle)
+      ---
+      duration_ms: 1579.303415
+      type: 'test'
+      ...
+    1..2
+not ok 1 - Ç6-HESAP tur 3 — B-g (b): donmuş toplamlarla okuma ↔ eski okuma BİREBİR (Bilanço, Gelir Tablosu; kilitli / kilitsiz, kapanış fişi, kural farkı)
+  ---
+  duration_ms: 122896.831921
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ab54e5fc492a09964/test/c6h-esdegerlik.test.mjs:53:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç6-HESAP tur 3 — B-g (b) saf işlevler: donmuş toplam ↔ madde madde (elle maddeler; sınıf, sıra, dengesiz madde)
+    # Subtest: kapsam 2025-06-01: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+    ok 1 - kapsam 2025-06-01: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+      ---
+      duration_ms: 11.397598
+      type: 'test'
+      ...
+    # Subtest: kapsam 2025-12-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+    ok 2 - kapsam 2025-12-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+      ---
+      duration_ms: 12.273306
+      type: 'test'
+      ...
+    # Subtest: kapsam 2026-03-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+    ok 3 - kapsam 2026-03-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+      ---
+      duration_ms: 7.395257
+      type: 'test'
+      ...
+    # Subtest: ön koşul: elle maddelerde ayrıntı sırası ilk görünüş sırası (197, 196 ve 695, 690 — sıralı değil), dengesiz madde sayılır
+    ok 4 - ön koşul: elle maddelerde ayrıntı sırası ilk görünüş sırası (197, 196 ve 695, 690 — sıralı değil), dengesiz madde sayılır
+      ---
+      duration_ms: 1.295293
+      type: 'test'
+      ...
+    1..4
+ok 2 - Ç6-HESAP tur 3 — B-g (b) saf işlevler: donmuş toplam ↔ madde madde (elle maddeler; sınıf, sıra, dengesiz madde)
+  ---
+  duration_ms: 33.061621
+  type: 'suite'
+  ...
+# [dondurma yarışı] kip gozlem · 1 örnek (açılışta bekliyor false · ilk adım yok · ilk adımda bekliyor null · ilk adımda kanca tutuyordu null · bırakma adımla false · kanca tuttu true · sonra bitti false · listen'dan önce bitti false): ön koşul GERÇEKLEŞMEDİ
+1..2
+# tests 6
+# suites 2
+# pass 5
+# fail 0
+# cancelled 1
+# skipped 0
+# todo 0
+# duration_ms 123744.042301

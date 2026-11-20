@@ -1,0 +1,816 @@
+TAP version 13
+# (node:24350) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:24350) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç6-HESAP tur 3 — B-g (b): donmuş toplamlarla okuma ↔ eski okuma BİREBİR (Bilanço, Gelir Tablosu; kilitli / kilitsiz, kapanış fişi, kural farkı)
+    # Subtest: kilitsiz → boş donmuş dönem → kilit 31.03.2026 (kural farkıyla) → kilit kaldır + Kapanış Fişi 31.12.2025 + yeniden kilit → kilit 30.06.2026: her aşamada BİREBİR
+    not ok 1 - kilitsiz → boş donmuş dönem → kilit 31.03.2026 (kural farkıyla) → kilit kaldır + Kapanış Fişi 31.12.2025 + yeniden kilit → kilit 30.06.2026: her aşamada BİREBİR
+      ---
+      duration_ms: 682.173047
+      type: 'test'
+      location: '/dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:113:3'
+      failureType: 'testCodeFailure'
+      error: 'boş donmuş dönem: Bilanço 2025-03-01 donmuş satırları madde madde okumadı ([{"to":"2025-03-01"}])'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        compare (file:///dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:100:25)
+        TestContext.<anonymous> (file:///dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:119:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+# (node:24350) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: uç (iş parçacığı) = iş parçacığısız yeni okuma = eski okuma — kilitli t (30.06.2026 kilidiyle)
+    ok 2 - uç (iş parçacığı) = iş parçacığısız yeni okuma = eski okuma — kilitli t (30.06.2026 kilidiyle)
+      ---
+      duration_ms: 1177.083036
+      type: 'test'
+      ...
+    1..2
+not ok 1 - Ç6-HESAP tur 3 — B-g (b): donmuş toplamlarla okuma ↔ eski okuma BİREBİR (Bilanço, Gelir Tablosu; kilitli / kilitsiz, kapanış fişi, kural farkı)
+  ---
+  duration_ms: 2940.994739
+  type: 'suite'
+  location: '/dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:53:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç6-HESAP tur 3 — B-g (b) saf işlevler: donmuş toplam ↔ madde madde (elle maddeler; sınıf, sıra, dengesiz madde)
+    # Subtest: kapsam 2025-06-01: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+    not ok 1 - kapsam 2025-06-01: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+      ---
+      duration_ms: 9.804522
+      type: 'test'
+      location: '/dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:233:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kural farkı 2025-05-31
+        + actual - expected
+        
+          {
+        +   balances: [],
+        -   balances: [
+        -     {
+        -       account: '100',
+        -       differenceMinor: -80000,
+        -       frozenMinor: 80000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '120',
+        -       differenceMinor: -300000,
+        -       frozenMinor: 300000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '153',
+        -       differenceMinor: -50000,
+        -       frozenMinor: 50000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '196',
+        -       differenceMinor: 1000,
+        -       frozenMinor: -1000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '197',
+        -       differenceMinor: 3000,
+        -       frozenMinor: -3000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '391',
+        -       differenceMinor: 50000,
+        -       frozenMinor: -50000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '519',
+        -       differenceMinor: 50000,
+        -       frozenMinor: -50000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '600',
+        -       differenceMinor: 250000,
+        -       frozenMinor: -250000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '649',
+        -       differenceMinor: 100000,
+        -       frozenMinor: -100000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '690',
+        -       differenceMinor: -1000,
+        -       frozenMinor: 1000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '695',
+        -       differenceMinor: -3000,
+        -       frozenMinor: 3000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '770',
+        -       differenceMinor: -20000,
+        -       frozenMinor: 20000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     }
+        -   ],
+            through: '2025-05-31'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2025-05-31'
+        balances:
+          0:
+            year: 2025
+            account: '100'
+            sub: ''
+            party: ''
+            frozenMinor: 80000
+            liveMinor: 0
+            differenceMinor: -80000
+          1:
+            year: 2025
+            account: '120'
+            sub: ''
+            party: ''
+            frozenMinor: 300000
+            liveMinor: 0
+            differenceMinor: -300000
+          2:
+            year: 2025
+            account: '153'
+            sub: ''
+            party: ''
+            frozenMinor: 50000
+            liveMinor: 0
+            differenceMinor: -50000
+          3:
+            year: 2025
+            account: '196'
+            sub: ''
+            party: ''
+            frozenMinor: -1000
+            liveMinor: 0
+            differenceMinor: 1000
+          4:
+            year: 2025
+            account: '197'
+            sub: ''
+            party: ''
+            frozenMinor: -3000
+            liveMinor: 0
+            differenceMinor: 3000
+          5:
+            year: 2025
+            account: '391'
+            sub: ''
+            party: ''
+            frozenMinor: -50000
+            liveMinor: 0
+            differenceMinor: 50000
+          6:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: -50000
+            liveMinor: 0
+            differenceMinor: 50000
+          7:
+            year: 2025
+            account: '600'
+            sub: ''
+            party: ''
+            frozenMinor: -250000
+            liveMinor: 0
+            differenceMinor: 250000
+          8:
+            year: 2025
+            account: '649'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          9:
+            year: 2025
+            account: '690'
+            sub: ''
+            party: ''
+            frozenMinor: 1000
+            liveMinor: 0
+            differenceMinor: -1000
+          10:
+            year: 2025
+            account: '695'
+            sub: ''
+            party: ''
+            frozenMinor: 3000
+            liveMinor: 0
+            differenceMinor: -3000
+          11:
+            year: 2025
+            account: '770'
+            sub: ''
+            party: ''
+            frozenMinor: 20000
+            liveMinor: 0
+            differenceMinor: -20000
+      actual:
+        through: '2025-05-31'
+        balances:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:241:16)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: kapsam 2025-12-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+    not ok 2 - kapsam 2025-12-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+      ---
+      duration_ms: 3.289208
+      type: 'test'
+      location: '/dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:233:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kural farkı 2025-05-31
+        + actual - expected
+        
+          {
+        +   balances: [],
+        -   balances: [
+        -     {
+        -       account: '100',
+        -       differenceMinor: -80000,
+        -       frozenMinor: 80000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '120',
+        -       differenceMinor: -300000,
+        -       frozenMinor: 300000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '153',
+        -       differenceMinor: -50000,
+        -       frozenMinor: 50000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '196',
+        -       differenceMinor: 1000,
+        -       frozenMinor: -1000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '197',
+        -       differenceMinor: 3000,
+        -       frozenMinor: -3000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '391',
+        -       differenceMinor: 50000,
+        -       frozenMinor: -50000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '519',
+        -       differenceMinor: 50000,
+        -       frozenMinor: -50000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '600',
+        -       differenceMinor: 250000,
+        -       frozenMinor: -250000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '649',
+        -       differenceMinor: 100000,
+        -       frozenMinor: -100000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '690',
+        -       differenceMinor: -1000,
+        -       frozenMinor: 1000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '695',
+        -       differenceMinor: -3000,
+        -       frozenMinor: 3000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '770',
+        -       differenceMinor: -20000,
+        -       frozenMinor: 20000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     }
+        -   ],
+            through: '2025-05-31'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2025-05-31'
+        balances:
+          0:
+            year: 2025
+            account: '100'
+            sub: ''
+            party: ''
+            frozenMinor: 80000
+            liveMinor: 0
+            differenceMinor: -80000
+          1:
+            year: 2025
+            account: '120'
+            sub: ''
+            party: ''
+            frozenMinor: 300000
+            liveMinor: 0
+            differenceMinor: -300000
+          2:
+            year: 2025
+            account: '153'
+            sub: ''
+            party: ''
+            frozenMinor: 50000
+            liveMinor: 0
+            differenceMinor: -50000
+          3:
+            year: 2025
+            account: '196'
+            sub: ''
+            party: ''
+            frozenMinor: -1000
+            liveMinor: 0
+            differenceMinor: 1000
+          4:
+            year: 2025
+            account: '197'
+            sub: ''
+            party: ''
+            frozenMinor: -3000
+            liveMinor: 0
+            differenceMinor: 3000
+          5:
+            year: 2025
+            account: '391'
+            sub: ''
+            party: ''
+            frozenMinor: -50000
+            liveMinor: 0
+            differenceMinor: 50000
+          6:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: -50000
+            liveMinor: 0
+            differenceMinor: 50000
+          7:
+            year: 2025
+            account: '600'
+            sub: ''
+            party: ''
+            frozenMinor: -250000
+            liveMinor: 0
+            differenceMinor: 250000
+          8:
+            year: 2025
+            account: '649'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          9:
+            year: 2025
+            account: '690'
+            sub: ''
+            party: ''
+            frozenMinor: 1000
+            liveMinor: 0
+            differenceMinor: -1000
+          10:
+            year: 2025
+            account: '695'
+            sub: ''
+            party: ''
+            frozenMinor: 3000
+            liveMinor: 0
+            differenceMinor: -3000
+          11:
+            year: 2025
+            account: '770'
+            sub: ''
+            party: ''
+            frozenMinor: 20000
+            liveMinor: 0
+            differenceMinor: -20000
+      actual:
+        through: '2025-05-31'
+        balances:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:241:16)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kapsam 2026-03-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+    not ok 3 - kapsam 2026-03-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+      ---
+      duration_ms: 1.387846
+      type: 'test'
+      location: '/dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:233:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kural farkı 2025-05-31
+        + actual - expected
+        
+          {
+        +   balances: [],
+        -   balances: [
+        -     {
+        -       account: '100',
+        -       differenceMinor: -80000,
+        -       frozenMinor: 80000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '120',
+        -       differenceMinor: -300000,
+        -       frozenMinor: 300000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '153',
+        -       differenceMinor: -50000,
+        -       frozenMinor: 50000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '196',
+        -       differenceMinor: 1000,
+        -       frozenMinor: -1000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '197',
+        -       differenceMinor: 3000,
+        -       frozenMinor: -3000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '391',
+        -       differenceMinor: 50000,
+        -       frozenMinor: -50000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '519',
+        -       differenceMinor: 50000,
+        -       frozenMinor: -50000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '600',
+        -       differenceMinor: 250000,
+        -       frozenMinor: -250000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '649',
+        -       differenceMinor: 100000,
+        -       frozenMinor: -100000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '690',
+        -       differenceMinor: -1000,
+        -       frozenMinor: 1000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '695',
+        -       differenceMinor: -3000,
+        -       frozenMinor: 3000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     },
+        -     {
+        -       account: '770',
+        -       differenceMinor: -20000,
+        -       frozenMinor: 20000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2025
+        -     }
+        -   ],
+            through: '2025-05-31'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2025-05-31'
+        balances:
+          0:
+            year: 2025
+            account: '100'
+            sub: ''
+            party: ''
+            frozenMinor: 80000
+            liveMinor: 0
+            differenceMinor: -80000
+          1:
+            year: 2025
+            account: '120'
+            sub: ''
+            party: ''
+            frozenMinor: 300000
+            liveMinor: 0
+            differenceMinor: -300000
+          2:
+            year: 2025
+            account: '153'
+            sub: ''
+            party: ''
+            frozenMinor: 50000
+            liveMinor: 0
+            differenceMinor: -50000
+          3:
+            year: 2025
+            account: '196'
+            sub: ''
+            party: ''
+            frozenMinor: -1000
+            liveMinor: 0
+            differenceMinor: 1000
+          4:
+            year: 2025
+            account: '197'
+            sub: ''
+            party: ''
+            frozenMinor: -3000
+            liveMinor: 0
+            differenceMinor: 3000
+          5:
+            year: 2025
+            account: '391'
+            sub: ''
+            party: ''
+            frozenMinor: -50000
+            liveMinor: 0
+            differenceMinor: 50000
+          6:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: -50000
+            liveMinor: 0
+            differenceMinor: 50000
+          7:
+            year: 2025
+            account: '600'
+            sub: ''
+            party: ''
+            frozenMinor: -250000
+            liveMinor: 0
+            differenceMinor: 250000
+          8:
+            year: 2025
+            account: '649'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          9:
+            year: 2025
+            account: '690'
+            sub: ''
+            party: ''
+            frozenMinor: 1000
+            liveMinor: 0
+            differenceMinor: -1000
+          10:
+            year: 2025
+            account: '695'
+            sub: ''
+            party: ''
+            frozenMinor: 3000
+            liveMinor: 0
+            differenceMinor: -3000
+          11:
+            year: 2025
+            account: '770'
+            sub: ''
+            party: ''
+            frozenMinor: 20000
+            liveMinor: 0
+            differenceMinor: -20000
+      actual:
+        through: '2025-05-31'
+        balances:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:241:16)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ön koşul: elle maddelerde ayrıntı sırası ilk görünüş sırası (197, 196 ve 695, 690 — sıralı değil), dengesiz madde sayılır
+    not ok 4 - ön koşul: elle maddelerde ayrıntı sırası ilk görünüş sırası (197, 196 ve 695, 690 — sıralı değil), dengesiz madde sayılır
+      ---
+      duration_ms: 1.690154
+      type: 'test'
+      location: '/dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:259:3'
+      failureType: 'testCodeFailure'
+      error: '[]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:262:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - Ç6-HESAP tur 3 — B-g (b) saf işlevler: donmuş toplam ↔ madde madde (elle maddeler; sınıf, sıra, dengesiz madde)
+  ---
+  duration_ms: 16.91743
+  type: 'suite'
+  location: '/dev/shm/c6h3-kirmizi/test/c6h-esdegerlik.test.mjs:179:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3521.605291
