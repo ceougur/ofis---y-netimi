@@ -1,0 +1,465 @@
+▶ GG2 — kart borcu ve kredi varlık göstergelerine karışmaz
+  ✔ yalnız Ziraat 100.000: beş gösterge 100.000 (33.266493ms)
+  ✔ kurumsal kart açılış borcu 5.000: göstergeler değişmez; POS görünümünde kart borcu yok (35.048275ms)
+  ✔ kredi kullanımı 30.000 ve kart borcu ödemesi 2.000: varlık 128.000, borç 33.000 (71.724764ms)
+✔ GG2 — kart borcu ve kredi varlık göstergelerine karışmaz (551.191004ms)
+▶ GG2 — Banka ve POS Hareketleri: açılış ve Devir Kapanışı para hareketi değildir; kaynak ve açıklama
+  ✖ sihirbaz → Geri Al → açılış 0 → hesap sil döngüsünden sonra dönem giriş/çıkış değişmez (5.000 / 0) (25.134351ms)
+  ✔ Banka Fişi satırında Kaynak 'Banka Fişi', açıklamasız fişte işlem türü ve İşlem No (36.922155ms)
+✖ GG2 — Banka ve POS Hareketleri: açılış ve Devir Kapanışı para hareketi değildir; kaynak ve açıklama (339.658663ms)
+▶ 2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel)
+  ✔ katalog: Banka grubu dört rapor; süzgeçleri ve hesap seçenekleri (bakiye dönmez) (7.257833ms)
+  ✔ Banka Bakiye Raporu: her grup × her dönem — Gerçek Banka, Kart ve Kredi Borcu, Hesabı Atanmamış ayrı; Giriş/Çıkış yalnız dış hareket (284.092632ms)
+  ✔ Banka Hareket Raporu: her hesap × her hareket süzgeci × her dönem — satır satır, yürüyen bakiye, İşlem No (533.784504ms)
+  ✔ Banka Masraf Raporu: transfer ücreti dahil, BSMV ve KDV ayrı kolonlarda; her hesap × her dönem; 770 ile tutar (150.353987ms)
+  ✔ Alt Hesap Mizanı: her dönem; alt hesaplar = bağımsız defter; ana hesaplar = Hesap Planı Mizanı (102, 108, 300, 309) (45.411878ms)
+  ✔ R1/R8: her süzgeç parametresi rapora ulaşır (queryOf) ve geçersiz değer 400/404 (sessizce tümü değil) (51.953619ms)
+  ✔ R5: ileri tarihli hareket girilemez; raporlar değişmez (14.695133ms)
+  ✔ R2/K10: ANLIK DURUM Banka kutusu = Gerçek Banka; Kart ve Kredi Borcu ve Hesabı Atanmamış ayrı; Bugün Giriş/Çıkış dış, Transfer ayrı; Banka Genel Bakış ile aynı (17.888821ms)
+  ✖ R2: Banka ve POS Hareketleri — Kasa ↔ Banka ve bankalar arası transfer Dönem Giriş/Çıkış'ı şişirmez; Transfer satırında; dönem sonu aynı (6.915003ms)
+  ✔ R9: Birleşik Rapor banka sütunları ANLIK DURUM'la aynı adlar ve aynı sayılar; PDF ve Excel aynı adlar; yetkisize boş (101.637702ms)
+  ✔ R10: açık ANLIK DURUM yeni sayıyı gösterir (önbellek); banka ve fatura yazımı overview.changed yayımlar (319.262192ms)
+  ✔ R6: yetki — personel 403 (dosya sızmaz); muhasebe yalnız Banka grubu; Banka Raporları kaldırılınca 403; Finans Raporları rolü Banka grubunu görmez (316.226011ms)
+  ✔ R4/R7: 002 boş — raporlar boş, ANLIK DURUM "Banka Hesabı Tanımlanmadı"; ?hofCompany= ile 001'in hesabı 404; 001'in verisi 002'de görünmez (170.807445ms)
+[banka-210-raporlar] ekran birleşimi 220, TOPLAM kolonu 419, PDF/Excel dosyası 106
+  ✖ son: mutabakat tutarlı; denenen birleşim sayısı (10.938828ms)
+✖ 2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) (3111.392961ms)
+▶ Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)
+  ✖ türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor) (378.966731ms)
+  ✔ kilit izinin önbelleği: aynı durumda aynı iz; bu bağlantının yazımı, başka bağlantının yazımı ve geri alınan işlem sonrası baştan hesaplanan izle aynı (31.216168ms)
+✖ Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16) (1685.621307ms)
+▶ G1 hız 3 — coveredWays / balances tek saklı okumadan: eski okumalarla ve JS koşuluyla birebir
+  ✖ 1. hesap yok: sayılmış satır yok; balances = rawGroups
+  ✖ 2. Ziraat (havale) ve Şirket Kartı (kart) 01.10'da açıldı: havale ve kart ÇIKIŞI sayılır, POS girişi sayılmaz
+  ✖ 2b. sınırlar aynıyken sayılmış satır silinir (25.09 ödeme): saklı değer kullanılmaz
+  ✖ 3. Devir Kapanışı (D = 01.10): POS girişi de ve kapanış satırları sayılır
+  ✖ 4. Geri Al: ters kaydın satırları (bugünün tarihinde) tarihinden bağımsız sayılır; her gün sınırında birebir
+✖ G1 hız 3 — coveredWays / balances tek saklı okumadan: eski okumalarla ve JS koşuluyla birebir (332.673489ms)
+▶ Ç7a K-14 / K-15 — açılıştan önceki hesapsız hareketin karşılığı 519 (S179 = A)
+  ✔ 1. açılıştan önceki havale 519'da, açılış günü ve sonrası 102.00'da; POS yalnız Devir Kapanışı'yla; kova ve 519 dökümü aynı satırları düşer (48.846759ms)
+  ✔ 2. sınır yolun EN GEÇ açılışı; hesabın pasifliği sınırı değiştirmez; silinen hesabın açılışı sayılmaz (89.178623ms)
+  ✔ 3. Devir Kapanışı: D'den önceki POS da 519'a; kapanış maddesi yevmiyede yok; Geri Al birebir (102.198912ms)
+  ✔ 4. K-15: kart hesabından önceki kurumsal kart ödemesi 519'da; Kart Borcuna Aktar havuzu boş; sonraki ödeme kart hesabına (113.794349ms)
+  ✔ 5. kapı: hesap varken 'Hesapsız (Açılıştan Önce)' ile girilen satır yazılır (süzgeçli kapı 409 vermez), 519'a düşer; silinince geri gelir (78.06759ms)
+✔ Ç7a K-14 / K-15 — açılıştan önceki hesapsız hareketin karşılığı 519 (S179 = A) (941.580283ms)
+▶ G1 — Banka ve POS Hareketleri (Tüm Hesaplar): 'Açılışta Sayıldı' uygulanır, rapor = defter = hesaplar + kova
+  ✔ ön koşul: defter ve kova elle hesapla (102 = 113.500, 108 = 3.000; 102.00 2.000, 108.00 3.000; Ziraat'e bağlı satır hesapta) (10.114531ms)
+  ✖ Tüm Hesaplar × üç Yol: işaretli satırlar kalır, toplama girmez; Dönem Sonu = defter; '(tüm hareketler)' = defter (8.246458ms)
+  ✖ dönem ortasından: devir açılışta sayılmış satırları düşer; yürüyen bakiye = Dönem Sonu (4.308573ms)
+  ✖ PDF ve Excel: aynı sayılar (Devir, Dönem Sonu, '(tüm hareketler)'; işaretli satırlar) (31.76097ms)
+✖ G1 — Banka ve POS Hareketleri (Tüm Hesaplar): 'Açılışta Sayıldı' uygulanır, rapor = defter = hesaplar + kova (544.134768ms)
+▶ Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan)
+  ✔ [y1] eşleme yılı tek tanım: ilk açık günün (kilit + 1) yılı; 30.12 / 31.12 sınırı; kilit yoksa donmuş dönem, o da yoksa bugün (0.898884ms)
+  ✔ [y2] S174 = A: 2026'da yazılmış fiş (B 500 / A 602) kilit 31.12.2026'yı aşınca kendi yılında düzeltilmiş sayılır — 2027'de fiş önerilmez (1.207569ms)
+  ✔ [y3] eski yıldan DÜZELTİLMEMİŞ fark + aynı yıl düzeltilmiş fark birlikte: yeni fiş yalnız düzeltilmemiş kısmı, 671'e (0.798174ms)
+  ✔ [y4] eski biçim (yıl ayrımsız toplam) ve tek yıl fişi: sonuç expected − posted (bugünkü hesap AYNEN) (0.260035ms)
+  ✔ [y5] fazla düzeltme yıl sonundan sonra: tutar doğru (700); fişin yılı eşleme yılından SONRA ise (kilit geri alındı) satırlar fişin tersi (0.433352ms)
+  ✔ [y8] S185 = A iki yönde: fişin yılı > eşleme yılı — 2027 fişi 2026'nın farkını KENDİ yılında (671) düzeltmiş sayılır; yalnız düzeltilmemiş fark 2026'ya (602), fazla fiş kendi yılında (0.476396ms)
+  ✔ [y9] DÜŞÜK-3 (P3): önceki yılın fazla düzeltmesinde 671 / 681 yönü KALAN farkın yönünden (EK-1 M7) — ham farkın yönünden değil (0.350069ms)
+  ✔ [y6] N1: alt defter dışlaması kararlı noktaya kadar yinelenir — birinci maddenin dışlanması ikinci maddenin alt defter hesabını sıfırdan çıkarır (0.427548ms)
+✔ Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan) (5.89208ms)
+﹣ Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi) (0.1451ms) # v2.4.9 etiketi yok
+▶ Ç7a KG-6 — POS komisyonu satış (çekim) günü; valörde net (KG-6 = A, S177 = A, S178 = A)
+  ✔ 1. tek çekim: satış günü B 653 / A 108.01; valöre kadar 108.01 = net; gün fişi net (653 satırı yok) (541.461994ms)
+  ✔ 2. taksitli satış: BÜTÜN taksitlerin kesintisi satış gününde; İade Edilmez iade komisyon maddesi doğurmaz (402.427183ms)
+  ✔ 3. Oransal iade: iade edilen kesinti iade gününde ters (B 108.01 / A 653); gün fişi net (400.055598ms)
+  ✔ 4. Elle Onay: Komisyon Farkı valörün (onayın) gününde (S177 = A); satış günü maddesi değişmez (410.617635ms)
+  ✔ 5. BSMV Hariç (kesinti = komisyon + BSMV) ve sabit işlem ücreti satış gününde (721.400568ms)
+  ✔ 6. KDV kipi (Ödeme Kuruluşu): satış günü maddesi yok; kesinti valörde sağlayıcıya (bugünkü gibi — S178 = A) (381.618821ms)
+  ✔ 7. bankaya geçmiş satış düzeltilir (yeniden planlama): eski maddeler kalkar, yeni satışın komisyonu satış gününde (433.743637ms)
+  ✔ 8. yıl dönümü: 30.12 satışın komisyonu 2026'da; 2027'deki gün fişinde 653 yok (484.126623ms)
+  ✔ 9. komisyon hesabı ayarı (S187 = A): bankaya geçmiş satış 653'te kalır; bekleyen ve yeni satışların satış günü maddesi yeni hesapta (770) (459.209959ms)
+✔ Ç7a KG-6 — POS komisyonu satış (çekim) günü; valörde net (KG-6 = A, S177 = A, S178 = A) (4236.260396ms)
+▶ 2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel)
+  ✔ katalog: Banka grubunda on yeni rapor, başlıkları ve süzgeçleri; anyAccount seçenekleri (bakiye dönmez) (10.558989ms)
+  ✔ Günlük Banka Raporu: her hesap × her dönem — gün gün dış giriş/çıkış, transfer ayrı, Net = bakiye değişimi, Gün Sonu Bakiye yürür; devir dönem öncesi (146.822074ms)
+  ✔ Aylık Banka Raporu: her hesap × her dönem — Ay Başı/Ay Sonu Bakiye, hareketsiz ay devirle; boş dönemde satır yok (125.676412ms)
+  ✔ Banka Bazında Bakiye ve Para Birimi Bazında Bakiye: her dönem — banka (hesapları birlikte) ve TL satırı; Gerçek Banka / Borç / Net; Hesabı Atanmamış özette (50.770137ms)
+  ✔ Bankalar Arası Transfer Raporu: her hesap × her dönem — ücretli transfer, ters kaydedilen asıl + eksi Ters Kayıt; TOPLAM net; kanal ve durum (63.445323ms)
+  ✔ Kasa ve Banka Transfer Raporu: her hesap × her dönem — iki yön ayrı kolon, Net (Bankaya); hesabı atanmamış süzgeci boş (62.270461ms)
+  ✔ Cari ve Banka Hareketleri: her hesap × cari × dönem — yalnız carili satırlar (cari, fatura peşini, taksit, eski havale); masraf, transfer, kart borcu girmez (217.890569ms)
+  ✔ Fatura ve Banka Hareketleri: bağ türü Peşin / Kapatılacak Fatura / Otomatik (En Eski); fatura no; taksit ve masraf girmez; özet bağ türüne göre (81.184294ms)
+  ✔ Taksit ve Banka Hareketleri: her hesap × her dönem — yalnız taksit kartı tahsilatı; kart adı ve cari (82.966903ms)
+  ✔ Banka Nakit Akış Raporu: başlangıç Gerçek Banka (Hesabı Atanmamış girmez); planlı masraf/gelir, kart borcu son ödeme günü, tahsildeki çek; Planlanan Transfer ayrı kolon (bakiye değişmez); gecikmiş planlı girmez, özette (50.805127ms)
+  ✖ Banka ve POS Hareketleri: Yol Kredi Kartı (309) ve Kredi (300) + Hesap süzgeci — her seçenek satırları değiştirir; eski üç seçim aynen; tanınmayan hesap 404 (46.86857ms)
+  ✔ Nakit Akış, Vade Takip ve Zil: planlı banka işlemleri ve kart borcu son ödeme günü kalemleri; planlı transfer genel Nakit Akış'a girmez (toplam 0), Vade Takip'te tutarsız (134.012361ms)
+  ✔ yetki: personel 403 (ekran, PDF, Excel; dosya sızmaz); muhasebe yeni raporları görür; Finans Raporları rolü görmez (307.328852ms)
+  ✔ iki şirket: 002 boş — yeni raporlar boş (500 yok), Banka Nakit Akış 'Banka Hesabı Tanımlanmadı'; ?hofCompany= ile 001'in hesabı 404; ileri tarihli hareket 400 (221.525381ms)
+✖ 2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) (2644.1804ms)
+▶ Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168 = B) ve 'Normal Cari Hesaba İşle' sınırı
+  ✔ S168 örneği — Fatura 2'ye bağlı 300 NAKİT: KABUL (bugün 409), 128 = 700, 120 = 100; satır A 128 300 (161.155029ms)
+  ✔ S168 örneği — Fatura 2'ye bağlı 300 ÇEK: KABUL, 128 = 700, 120 = 100 (kuyruğun Fatura 2 payından) (103.466888ms)
+  ✔ Fatura 2'ye bağlı 100 nakit → 128'den 100 (Fatura 2'nin şüpheli payı 400 ≥ 100): 128 = 900, 120 = 100 (bugün A 120 100) (125.035435ms)
+  ✔ Fatura 1'e bağlı 300 nakit → KABUL (bugün 409), 128'den 300: 128 = 700, 120 = 100 (119.226893ms)
+  ✔ bağsız işaretsiz 300 nakit → DEĞİŞMEZ (en eski açık kayıttan 128 300) (110.640525ms)
+  ✔ Fatura 2'ye bağlı 500 nakit → 400'ü 128'den, 100'ü 120'den (S25 (a)): 128 = 600, 120 = 0 (114.352088ms)
+  ✔ Fatura 2'ye bağlı 500 ÇEK → 400 128'den, 100 120'den (S25 (a); bugün en eski kayıttan 128 500) (108.861094ms)
+  ✔ SINIR: Fatura 2'ye bağlı 700 nakit → 120'ye düşecek 300 > şüpheli dışı borç 100: RET AYNEN, ileti iki tutarı söyler, hiçbir şey yazılmaz (151.372359ms)
+  ✔ SINIR: 'Normal Cari Hesaba İşle' işaretli tahsilat bugünkü gibi (tamamı 120): 300 > 100 → RET, ileti 'tahsilat (300,00 TL)' (128.124828ms)
+  ✖ S181 = B — F2'ye bağlı 900 ÇEK: RET (409 ledger-integrity, hiçbir şey yazılmaz); ileti nakit yolundaki gibi 'Tutarı 500,00 TL'ye indirin ya da … bağını kaldırın' (141.160015ms)
+  ✖ S181 = B — bağlı SENET ve DÜZELTME (PUT) aynı ileti; bağsız 900 çek KABUL (en eski kayıttan 128 900 — S181'in ikinci yolu) (116.768562ms)
+  ✔ S181 kontrol — bağsız evrakın reddi (şüpheliye alma tarihinden ÖNCEYE tarihli) S155 iletisinde kalır: öneri 'tarihten sonraya girin', bağ cümlesi YOK (82.223249ms)
+  ✔ kesitin aynı gün kuralı: bağlı tahsilattan SONRA yazılan aynı gün Değersiz Alacak ayırıcıda önce işlenir, kesite girer — F2'ye bağlı 300'ün tamamı 128'den (128 = 500, 120 = 100) (189.067624ms)
+  ✔ sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı nakit (S25 (c)) (176.162633ms)
+  ✔ sınıf: kayıttan ÖNCE kesilmiş faturaya bağlı çek (S14) (166.803336ms)
+  ✔ sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı nakit (S14'ün sözü) (188.792357ms)
+  ✔ sınıf: kayıttan SONRA kesilmiş, kuyrukta şüpheli payı olmayan faturaya bağlı çek (S14; bugün 128) (191.970565ms)
+  ✔ sınıf: bağsız nakit (değişmez) (170.511657ms)
+  ✔ sınıf: bağsız çek (değişmez) (155.016781ms)
+  ✔ sınıf: kısmen şüpheli faturaya bağlı 700 nakit (S25 (a): 600 128, 100 120) (162.422779ms)
+  ✔ iki kayıt (K-1 (b)): Fatura 2'ye bağlı çek Fatura 2'yi tutan İKİNCİ kayıttan düşer (en eski kayıttan değil) (175.743451ms)
+  ✔ aynı gün bağlı + bağsız iki tahsilat: toplam ayırıcının sırasından bağımsız (ders 31) — iki cari, ters yazım sırası, aynı 120 / 128 (903.582756ms)
+  ✔ düzeltme: bağ kaldırılır / yeniden kurulur, tutar sınırı düzeltmede de; sil + bağsız yeniden gir (454.654241ms)
+  ✔ K-1 (a) + (b): doubtfulBefore — satırdan ÖNCEKİ anki dağılım, kalem başına kayıt kimliğiyle; kuyruğun bugünkü çıktısına alan eklenmez (204.77621ms)
+  ✔ kart haritası (ledgerPlansOf) cari kümesiyle = bütün harita (ledgerPlansByAccount) — her cari (370.447687ms)
+  ✔ kilit: kilitli dönemin 120 / 128'i donmuş = canlı (aynı kural); kilitten sonra bağlı tahsilat o anki dağılımdan (661.206072ms)
+  ✔ ESM döngüsü (lib/bank/doubtful.mjs ↔ lib/obligation-input.mjs): hangisi önce yüklenirse yüklensin çalışır (224.922364ms)
+  ✖ S212 = A — şüpheliye almadan önce bağsız ödemeyle kapanmış F1'e sonradan bağlı 1.000 NAKİT: 128'den düşer (120 = 2.000, 128 = 0, kayıt kapanır) (292.125905ms)
+  ✖ S212 = A — aynı örnek F1'e bağlı 1.000 ÇEK (S14): 128'den düşer (120 = 2.000, 128 = 0) (374.880688ms)
+  ✖ S212 = A kısmi bağ — F1'e bağlı 400: F1'in şüpheli payı 400 → 128'den 400 (120 = 2.000, 128 = 600) (306.504434ms)
+  ✖ B1 (ders 31): aynı gün bağsız + bağlı tahsilat — 120 / 128, satırların payı, kart, sonraki işlemin kabul / reddi YALNIZ yazım sırasına bağlı (2 yazım × 2 kimlik sırası) (746.090809ms)
+✖ Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168 = B) ve 'Normal Cari Hesaba İşle' sınırı (7948.282811ms)
+▶ Ç5-A tur 3c — v2.4.9 gerçek verisi (kilitli + kilitsiz; sınıf sınıf)
+  ✔ donmuş 2.4.9 ↔ canlı yeni kural; fark kaynağıyla ön izlemede, fiş satırı yok; açık dönemde yeni kural (416.263735ms)
+✔ Ç5-A tur 3c — v2.4.9 gerçek verisi (kilitli + kilitsiz; sınıf sınıf) (416.456084ms)
+ℹ tests 98
+ℹ suites 13
+ℹ pass 79
+ℹ fail 14
+ℹ cancelled 5
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 25973.17781
+
+✖ failing tests:
+
+test at test/banka-210-gg2-gosterge.test.mjs:105:3
+✖ sihirbaz → Geri Al → açılış 0 → hesap sil döngüsünden sonra dönem giriş/çıkış değişmez (5.000 / 0) (25.134351ms)
+  AssertionError [ERR_ASSERTION]: açılış bakiyesi dönem girişi değildir; açılışta sayılmış havale de
+  
+  5000 !== 0
+  
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/banka-210-gg2-gosterge.test.mjs:113:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 5000,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/banka-210-raporlar.test.mjs:518:3
+✖ R2: Banka ve POS Hareketleri — Kasa ↔ Banka ve bankalar arası transfer Dönem Giriş/Çıkış'ı şişirmez; Transfer satırında; dönem sonu aynı (6.915003ms)
+  AssertionError [ERR_ASSERTION]: banka-pos noncash varsayılan (Bu Yıl): açılışta sayılmış satırlar işaretli
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/banka-210-raporlar.test.mjs:528:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/banka-210-raporlar.test.mjs:650:3
+✖ son: mutabakat tutarlı; denenen birleşim sayısı (10.938828ms)
+  AssertionError [ERR_ASSERTION]: {"combos":220,"footer":419,"files":106}
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/banka-210-raporlar.test.mjs:653:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/defter-kaynak-iz-250.test.mjs:290:3
+✖ türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor) (378.966731ms)
+  AssertionError [ERR_ASSERTION]: istisna listesinde türetmenin artık okumadığı sütun: account_entries.created_at, plan_entries.created_at, invoices.created_at, invoices.issued_at
+  + actual - expected
+  
+  + [
+  +   'account_entries.created_at',
+  +   'plan_entries.created_at',
+  +   'invoices.created_at',
+  +   'invoices.issued_at'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/defter-kaynak-iz-250.test.mjs:310:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'account_entries.created_at', 'plan_entries.created_at', 'invoices.created_at', 'invoices.issued_at' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/g1-hiz-esdegerlik-250.test.mjs:80:3
+✖ 1. hesap yok: sayılmış satır yok; balances = rawGroups
+  'test did not finish before its parent and was cancelled'
+
+test at test/g1-hiz-esdegerlik-250.test.mjs:84:3
+✖ 2. Ziraat (havale) ve Şirket Kartı (kart) 01.10'da açıldı: havale ve kart ÇIKIŞI sayılır, POS girişi sayılmaz
+  'test did not finish before its parent and was cancelled'
+
+test at test/g1-hiz-esdegerlik-250.test.mjs:92:3
+✖ 2b. sınırlar aynıyken sayılmış satır silinir (25.09 ödeme): saklı değer kullanılmaz
+  'test did not finish before its parent and was cancelled'
+
+test at test/g1-hiz-esdegerlik-250.test.mjs:99:3
+✖ 3. Devir Kapanışı (D = 01.10): POS girişi de ve kapanış satırları sayılır
+  'test did not finish before its parent and was cancelled'
+
+test at test/g1-hiz-esdegerlik-250.test.mjs:105:3
+✖ 4. Geri Al: ters kaydın satırları (bugünün tarihinde) tarihinden bağımsız sayılır; her gün sınırında birebir
+  'test did not finish before its parent and was cancelled'
+
+test at test/g1-hiz-esdegerlik-250.test.mjs:20:1
+✖ G1 hız 3 — coveredWays / balances tek saklı okumadan: eski okumalarla ve JS koşuluyla birebir (332.673489ms)
+  AssertionError [ERR_ASSERTION]: moneyLines bağlamda
+      at SuiteContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/g1-hiz-esdegerlik-250.test.mjs:66:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async TestHook.run (node:internal/test_runner/test:1054:7)
+      at async Suite.runHook (node:internal/test_runner/test:965:9)
+      at async Suite.run (node:internal/test_runner/test:1436:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/hesapsiz-tumu-250.test.mjs:66:3
+✖ Tüm Hesaplar × üç Yol: işaretli satırlar kalır, toplama girmez; Dönem Sonu = defter; '(tüm hareketler)' = defter (8.246458ms)
+  AssertionError [ERR_ASSERTION]: iki işaretli satır (20.09, 25.09)
+  
+  0 !== 2
+  
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/hesapsiz-tumu-250.test.mjs:69:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/hesapsiz-tumu-250.test.mjs:102:3
+✖ dönem ortasından: devir açılışta sayılmış satırları düşer; yürüyen bakiye = Dönem Sonu (4.308573ms)
+  AssertionError [ERR_ASSERTION]: devir yalnız 22.09 POS
+  
+  700000 !== 300000
+  
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/hesapsiz-tumu-250.test.mjs:104:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 700000,
+    expected: 300000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/hesapsiz-tumu-250.test.mjs:114:3
+✖ PDF ve Excel: aynı sayılar (Devir, Dönem Sonu, '(tüm hareketler)'; işaretli satırlar) (31.76097ms)
+  AssertionError [ERR_ASSERTION]: PDF'te işaretli satır
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/hesapsiz-tumu-250.test.mjs:122:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/raporlar-230-banka.test.mjs:588:3
+✖ Banka ve POS Hareketleri: Yol Kredi Kartı (309) ve Kredi (300) + Hesap süzgeci — her seçenek satırları değiştirir; eski üç seçim aynen; tanınmayan hesap 404 (46.86857ms)
+  AssertionError [ERR_ASSERTION]: Banka ve POS (Tümü): Dönem Giriş (açılışta sayılmış eski havale hariç)
+  + actual - expected
+  
+  + 3350000
+  - 2850000
+  
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/raporlar-230-banka.test.mjs:637:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 3350000,
+    expected: 2850000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:170:3
+✖ S181 = B — F2'ye bağlı 900 ÇEK: RET (409 ledger-integrity, hiçbir şey yazılmaz); ileti nakit yolundaki gibi 'Tutarı 500,00 TL'ye indirin ya da … bağını kaldırın' (141.160015ms)
+  AssertionError [ERR_ASSERTION]: Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç 600,00 TL, açık şüpheli 1.000,00 TL); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin.
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/supheli-kuyruk-defter-250.test.mjs:177:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç 600,00 TL, açık şüpheli 1.000,00 TL); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin.',
+    expected: /^Evrakın normal cari hesaba işlenecek kısmı carinin şüpheli dışı borç bakiyesini 400,00 TL aşıyor \(kayıttan sonra borç 600,00 TL, açık şüpheli 1\.000,00 TL\); fazlası şüpheli alacaktan düşmek zorunda\./,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:187:3
+✖ S181 = B — bağlı SENET ve DÜZELTME (PUT) aynı ileti; bağsız 900 çek KABUL (en eski kayıttan 128 900 — S181'in ikinci yolu) (116.768562ms)
+  AssertionError [ERR_ASSERTION]: Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç 600,00 TL, açık şüpheli 1.000,00 TL); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin.
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/supheli-kuyruk-defter-250.test.mjs:191:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç 600,00 TL, açık şüpheli 1.000,00 TL); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin.',
+    expected: /Tutarı 500,00 TL'ye indirin ya da Kapatılacak Fatura bağını kaldırın\./,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:404:3
+✖ S212 = A — şüpheliye almadan önce bağsız ödemeyle kapanmış F1'e sonradan bağlı 1.000 NAKİT: 128'den düşer (120 = 2.000, 128 = 0, kayıt kapanır) (292.125905ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   b120: 1000,
+  +   b128: 1000
+  -   b120: 2000,
+  -   b128: 0
+    }
+  
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/supheli-kuyruk-defter-250.test.mjs:406:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { b120: 1000, b128: 1000 },
+    expected: { b120: 2000, b128: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:411:3
+✖ S212 = A — aynı örnek F1'e bağlı 1.000 ÇEK (S14): 128'den düşer (120 = 2.000, 128 = 0) (374.880688ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   b120: 1000,
+  +   b128: 1000
+  -   b120: 2000,
+  -   b128: 0
+    }
+  
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/supheli-kuyruk-defter-250.test.mjs:413:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { b120: 1000, b128: 1000 },
+    expected: { b120: 2000, b128: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:419:3
+✖ S212 = A kısmi bağ — F1'e bağlı 400: F1'in şüpheli payı 400 → 128'den 400 (120 = 2.000, 128 = 600) (306.504434ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   b120: 1600,
+  +   b128: 1000
+  -   b120: 2000,
+  -   b128: 600
+    }
+  
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/supheli-kuyruk-defter-250.test.mjs:421:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { b120: 1600, b128: 1000 },
+    expected: { b120: 2000, b128: 600 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/supheli-kuyruk-defter-250.test.mjs:435:3
+✖ B1 (ders 31): aynı gün bağsız + bağlı tahsilat — 120 / 128, satırların payı, kart, sonraki işlemin kabul / reddi YALNIZ yazım sırasına bağlı (2 yazım × 2 kimlik sırası) (746.090809ms)
+  AssertionError [ERR_ASSERTION]: UL-L (yazım UL, kimlikte önce L)
+  + actual - expected
+  
+    {
+      L: [
+  +     'A 128 300'
+  -     'A 120 100',
+  -     'A 128 200'
+      ],
+      U: [
+        'A 128 200'
+      ],
+      gl: {
+  +     b120: 100,
+  +     b128: 500
+  -     b120: 0,
+  -     b128: 600
+      },
+      kalan: [
+  +     500
+  -     600
+      ],
+  +   next: 'KABUL'
+  -   next: '409 doubtful-normal-exceeds'
+    }
+  
+      at TestContext.<anonymous> (file:///dev/shm/t3duz-d3/taban-k/test/supheli-kuyruk-defter-250.test.mjs:488:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { gl: { b120: 100, b128: 500 }, U: [ 'A 128 200' ], L: [ 'A 128 300' ], kalan: [ 500 ], next: 'KABUL' },
+    expected: { gl: { b120: 0, b128: 600 }, U: [ 'A 128 200' ], L: [ 'A 120 100', 'A 128 200' ], kalan: [ 600 ], next: '409 doubtful-normal-exceeds' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
