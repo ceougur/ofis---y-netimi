@@ -1,0 +1,69 @@
+s103-s79-olagan-bag-cari [UTC] (2)
+  OLAY 21 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 25 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s118-a1-s200-elle-once-sonra-fatura [UTC] (1)
+  af1 fatura:F1 program 50000 · kâhin 20000 · bugün "—" → SINIFLANMADI 
+s121-a5-s220-kart-kapat-onceden-gecikmis [UTC] (2)
+  ADIM 5 taksit_kapat  {"ana": {"120": 60000, "689": -60000}, "cari": {"C2": 60000}} → SINIFLANMADI 
+  ADIM 8 taksit_kapat  {"ana": {"120": 60000, "689": -60000}, "cari": {"C1": 60000}} → SINIFLANMADI 
+s14-kdv-mahsup-360 [UTC] (1)
+  OLAY 18 gecikme_zammi api_yok → P gecikme zammı (V-03) tek başına girilemiyor: Vergi Ödemesi'nde vergi tutarı sıfırdan büyük olmalı (gecikme zammı yalnız vergiyle birlikte)
+s40-s1-vadesiz-gecikmis [UTC] (1)
+  ADIM 18 taksit_kapat  {"ana": {"120": 30000, "689": -30000}, "cari": {"C2": 30000}} → SINIFLANMADI 
+s60-r6-kart-kapat-borcta-kalir [UTC] (10)
+  ADIM 5 taksit_kapat  {"ana": {"120": 5000, "689": -5000}, "cari": {"C1": 5000}} → SINIFLANMADI 
+  ADIM 6 taksit_kapat  {"ana": {"120": 5000, "689": -5000}, "cari": {"C2": 5000}} → SINIFLANMADI 
+  g2 gecikmis:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+  gt ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI ['Ç7b-(6)']
+  mz ana:120 program 10000 · kâhin 5000 · bugün 0 → SINIFLANMADI ['Ç7b-(6)']
+  mz ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI ['Ç7b-(6)']
+  mz cari:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+  son ana:120 program 10000 · kâhin 5000 · bugün 0 → SINIFLANMADI ['Ç7b-(6)']
+  son ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI ['Ç7b-(6)']
+  son cari:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [UTC] (3)
+  OLAY 31 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 32 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 36 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s82-s45-bagli-geri-yuklenen-kayit-cari [UTC] (2)
+  RED 36 duzenle  kâhin None program {'ileti': 'taksit kartı tahsilatının Düzenle formunda Cari alanı yok (istek gönderilmedi)', 'kod': 'plan-entry-no-party', 'status': 'ekran'} → P
+  OLAY 30 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s91-b5-kg5-yukleme-yerel-gunu [UTC] (4)
+  mz0 ana:120 program 3200 · kâhin 1200 · bugün 1200 → SINIFLANMADI 
+  mz0 ana:519 program -3200 · kâhin -1200 · bugün -1200 → SINIFLANMADI 
+  mz1 ana:120 program 1200 · kâhin 500 · bugün 500 → R 
+  mz1 ana:519 program -1200 · kâhin -500 · bugün -500 → R 
+s94-s54-ayni-duzeltmede-bag-cari [UTC] (1)
+  OLAY 13 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s103-s79-olagan-bag-cari [Europe-Istanbul] (2)
+  OLAY 21 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 25 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s118-a1-s200-elle-once-sonra-fatura [Europe-Istanbul] (1)
+  af1 fatura:F1 program 50000 · kâhin 20000 · bugün "—" → SINIFLANMADI 
+s121-a5-s220-kart-kapat-onceden-gecikmis [Europe-Istanbul] (2)
+  ADIM 5 taksit_kapat  {"ana": {"120": 60000, "689": -60000}, "cari": {"C2": 60000}} → SINIFLANMADI 
+  ADIM 8 taksit_kapat  {"ana": {"120": 60000, "689": -60000}, "cari": {"C1": 60000}} → SINIFLANMADI 
+s14-kdv-mahsup-360 [Europe-Istanbul] (1)
+  OLAY 18 gecikme_zammi api_yok → P gecikme zammı (V-03) tek başına girilemiyor: Vergi Ödemesi'nde vergi tutarı sıfırdan büyük olmalı (gecikme zammı yalnız vergiyle birlikte)
+s40-s1-vadesiz-gecikmis [Europe-Istanbul] (1)
+  ADIM 18 taksit_kapat  {"ana": {"120": 30000, "689": -30000}, "cari": {"C2": 30000}} → SINIFLANMADI 
+s60-r6-kart-kapat-borcta-kalir [Europe-Istanbul] (10)
+  ADIM 5 taksit_kapat  {"ana": {"120": 5000, "689": -5000}, "cari": {"C1": 5000}} → SINIFLANMADI 
+  ADIM 6 taksit_kapat  {"ana": {"120": 5000, "689": -5000}, "cari": {"C2": 5000}} → SINIFLANMADI 
+  g2 gecikmis:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+  gt ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI ['Ç7b-(6)']
+  mz ana:120 program 10000 · kâhin 5000 · bugün 0 → SINIFLANMADI ['Ç7b-(6)']
+  mz ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI ['Ç7b-(6)']
+  mz cari:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+  son ana:120 program 10000 · kâhin 5000 · bugün 0 → SINIFLANMADI ['Ç7b-(6)']
+  son ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI ['Ç7b-(6)']
+  son cari:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [Europe-Istanbul] (3)
+  OLAY 31 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 32 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 36 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s82-s45-bagli-geri-yuklenen-kayit-cari [Europe-Istanbul] (2)
+  RED 36 duzenle  kâhin None program {'ileti': 'taksit kartı tahsilatının Düzenle formunda Cari alanı yok (istek gönderilmedi)', 'kod': 'plan-entry-no-party', 'status': 'ekran'} → P
+  OLAY 30 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s94-s54-ayni-duzeltmede-bag-cari [Europe-Istanbul] (1)
+  OLAY 13 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
