@@ -99,3 +99,17 @@ Not: `e2e-senaryo-banka-210-s214` (429 / 429) önceki ajanın COMMIT'SİZ uyarla
 - M1–M9: UTC 9 / 9 yakalandı (`mut-t3-1a2-UTC`; ilk koşu `mut-t3-1a-UTC` çıkış 1 — M4'ün deseni B1'den sonra 0 kez bulundu, araç 'YAKALANDI SAYILMAZ' diye durdu; 62f94abe deseni uyarladı), İstanbul 9 / 9 (`mut-t3-1a-Europe-Istanbul`).
 - M10–M18: UTC 9 / 9 (`mut-t3-1b-UTC`), İstanbul 9 / 9 (`mut-t3-1b-Europe-Istanbul`).
 - M12 (+ M16, M17, M18): 5 ayrı koşu UTC + 5 ayrı koşu İstanbul, HER koşuda 4 / 4 yakalandı → M12, 1b koşularıyla birlikte 12 / 12 koşuda öldü (B1'den önce ara sıra yaşıyordu).
+
+## Devam 4 (beşinci ajan; taban `t3duz-devam4` = 7ce23130, doğrulandı; not defteri scratchpad/t3duz-d4)
+
+### (1) senaryo-banka-210 adım 46 — BEKLENTİ BİLEREK DEĞİŞTİ (G1, S214 = A) — commit 78d5aaab
+Önceki ajanın commit'siz uyarlaması (scratchpad/t3duz-d3-kayip-banka210.diff) uygulandı ve doğrulandı: Dönem Giriş 26.500 → 21.500, Dönem Sonu 165.484,25 → 160.484,25,
+'Banka (tüm hareketler)' 160.484,25; TOPLAM Giriş 21.500; 20.09'daki hesapsız eski havale satırı KALIR, 'Açılışta Sayıldı' işaretli, tutar hücreleri boş.
+Dayanak aynı koşunun kendi adımları (programın defteri): adım 41 Gerçek Banka (102) 160.484,25 + kova 0, adım 42 Banka Bakiye Raporu TOPLAM Giriş 21.500 / Dönem Sonu 160.484,25,
+adım 45 Alt Hesap Mizanı'nda 102.00 YOK (5.000 Ziraat'in 01.10 açılışında sayıldı) → rapor = defter (102 + 108 = 160.484,25 + 0).
+| Koşu | Kod | Çıkış | Denetim | Neden |
+|---|---|---|---|---|
+| `e2e-senaryo-banka-210-g1` | yeni (78d5aaab) | 0 | 429 / 429 | — |
+| `e2e-senaryo-banka-210-g1-taban` | taban 780972cf (/dev/shm kopyası, server + client `git archive t3duz-taban` ile BİREBİR denetlendi) + YENİ test | 1 | 426 / 429 | adım 46'nın üç yeni denetimi: özet Dönem Giriş 26.500 / Dönem Sonu 165.484,25, TOPLAM Giriş 26.500, işaretli satır YOK — G1'den önceki davranış (BEKLENEN neden, ders 38) |
+| (önceki ajan) `e2e-senaryo-banka-210` | yeni + ESKİ test | 1 | 426 / 428 | eski beklenti 26.500 ↔ program 21.500 |
+Not: önceki ajanın 'taban' adlı commit'siz koşusunun çıktısı (scratchpad/t3duz-d3/e2e-senaryo-banka-210-s214-taban.out, yarıda kesilmiş) adım 46'yı yeni beklentiyle YEŞİL gösteriyor — o koşu taban kodunda değildi ya da yanlış kopyadaydı; kanıt sayılmadı, yukarıdaki iki koşu yerini aldı.
