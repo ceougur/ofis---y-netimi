@@ -1,0 +1,3 @@
+UTC çıkış 1
+Europe/Istanbul çıkış 1
+BITTI

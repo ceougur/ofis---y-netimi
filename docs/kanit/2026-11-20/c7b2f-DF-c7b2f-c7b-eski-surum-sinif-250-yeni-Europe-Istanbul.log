@@ -1,0 +1,63 @@
+TAP version 13
+# (node:11870) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11870) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b tur 2f — kabul D: v2.4.9 gerçek verisinde sınıf sınıf (kilitli / açık × iade / iptal / düzeltme; B-6, B-8, KG-7)
+    # Subtest: 1. ön koşullar: v2.4.9 mahsupları elle (Eylül H 1.800 / İ 500 / 1.300; Ekim H 400 / İ 200 / 200); geçiş günü = kilit; iki eski mahsup '2.4.9' işaretli
+    ok 1 - 1. ön koşullar: v2.4.9 mahsupları elle (Eylül H 1.800 / İ 500 / 1.300; Ekim H 400 / İ 200 / 200); geçiş günü = kilit; iki eski mahsup '2.4.9' işaretli
+      ---
+      duration_ms: 1.591268
+      type: 'test'
+      ...
+    # Subtest: 2. güncelle → donmuş defter DEĞİŞMEDİ: kilitli dönemin her maddesi v2.4.9'un kendi türettiğiyle birebir
+    ok 2 - 2. güncelle → donmuş defter DEĞİŞMEDİ: kilitli dönemin her maddesi v2.4.9'un kendi türettiğiyle birebir
+      ---
+      duration_ms: 1.162987
+      type: 'test'
+      ...
+    # Subtest: 3. kural farkı TAM: 11 madde (Kasa ±, Borç / Alacak Yaz, stok ×4, Yeni Borç, iki ihracat); B-8'in üç kuralı (kayıt tahsilatı, iki iade KDV'si) ve M14 farksız; hesap farkları elle
+    ok 3 - 3. kural farkı TAM: 11 madde (Kasa ±, Borç / Alacak Yaz, stok ×4, Yeni Borç, iki ihracat); B-8'in üç kuralı (kayıt tahsilatı, iki iade KDV'si) ve M14 farksız; hesap farkları elle
+      ---
+      duration_ms: 52.359494
+      type: 'test'
+      ...
+    # Subtest: 4. Kural Farkı Düzeltme Fişi (01.10.2026; aynı yıl → eski hesabın tersi) → 'Düzeltildi'; donmuş defter yine aynı
+    ok 4 - 4. Kural Farkı Düzeltme Fişi (01.10.2026; aynı yıl → eski hesabın tersi) → 'Düzeltildi'; donmuş defter yine aynı
+      ---
+      duration_ms: 64.603214
+      type: 'test'
+      ...
+    # Subtest: 5. açık dönem (v2.4.9'un Ekim verisi) YENİ kuralla; B-6: Ekim mahsuplu → iade KDV'si ESKİ yön, ters kayıt → YENİ yön, yeniden mahsup H 700 / İ 500 / 200
+    ok 5 - 5. açık dönem (v2.4.9'un Ekim verisi) YENİ kuralla; B-6: Ekim mahsuplu → iade KDV'si ESKİ yön, ters kayıt → YENİ yön, yeniden mahsup H 700 / İ 500 / 200
+      ---
+      duration_ms: 58.774933
+      type: 'test'
+      ...
+    # Subtest: 6. Kasım (güncel kod): yeni kayıtlar yeni kuralla; iptal maddesiz; açık düzeltme (E3 2.000 → 2.500, 601); KG-7 kilitli Düzenle 409, açık Düzenle ile dönem; Kasım H 300 / İ 200 / 100
+    ok 6 - 6. Kasım (güncel kod): yeni kayıtlar yeni kuralla; iptal maddesiz; açık düzeltme (E3 2.000 → 2.500, 601); KG-7 kilitli Düzenle 409, açık Düzenle ile dönem; Kasım H 300 / İ 200 / 100
+      ---
+      duration_ms: 421.084149
+      type: 'test'
+      ...
+    # Subtest: 7. sonda karma defter (elle): .90 alt hesapları, 601, 336.90 = geçiş sonrası kayıt tahsilatları, 600.90 / 610.90 = belgesiz satış / iade; ay sonu 191 / 391
+    ok 7 - 7. sonda karma defter (elle): .90 alt hesapları, 601, 336.90 = geçiş sonrası kayıt tahsilatları, 600.90 / 610.90 = belgesiz satış / iade; ay sonu 191 / 391
+      ---
+      duration_ms: 5.451544
+      type: 'test'
+      ...
+    1..7
+ok 1 - Ç7b tur 2f — kabul D: v2.4.9 gerçek verisinde sınıf sınıf (kilitli / açık × iade / iptal / düzeltme; B-6, B-8, KG-7)
+  ---
+  duration_ms: 2051.381655
+  type: 'suite'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2423.893044

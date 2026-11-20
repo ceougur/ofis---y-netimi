@@ -1,0 +1,43 @@
+{
+  "ad": "c7b2f-c7b-degismez-250-taban-UTC",
+  "komut": "node --test test/c7b-degismez-250.test.mjs",
+  "commit": "fc0d1999468ed9afafd57ca12d6d9c0f44188bb6",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T00:19:33.696Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç7b tur 2f — kabul F: değişmezler (tohum 11) › her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391",
+      "konum": "test/c7b-degismez-250.test.mjs:32:5",
+      "hata": "tohum 11 adım 5 (cashSale 2026-10-11): 600.90 = belgesiz satış · 0 !== -100 (beklenen -100, gelen 0)"
+    },
+    {
+      "ad": "Ç7b tur 2f — kabul F: değişmezler (tohum 23) › her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391",
+      "konum": "test/c7b-degismez-250.test.mjs:32:5",
+      "hata": "tohum 23 adım 2 (cashSale 2026-09-13): 600.90 = belgesiz satış · 0 !== -400 (beklenen -400, gelen 0)"
+    }
+  ],
+  "ham_cikti": "../df/2026-11-20/c7b2f-c7b-degismez-250-taban-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt",
+  "ham_cikti_sha256": "55babc0725365d5e5d3c71b6ac1de1eef48877429c359a88a0354926945e05b2",
+  "ham_cikti_bayt": 4370
+}
