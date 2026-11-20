@@ -10,6 +10,7 @@
 //  S210 = A (D 20.11 04:15 (3); önceki K-3a 'karar (4)' okumasının yerine) elle Borç 400 (07.10) + fatura 500 → kart 900 (10.10 / 10.11 / 10.12) → tahsilat 300 → fatura iptal →
 //      kart KAPALI, tutar 300 (= tahsilat; kalan 0); elle borç kartın dışına çıkar, kendi vadesiyle (07.10) carinin borcunda: bakiye 100, 08.10'da gecikmiş 100 (önceki kodda kart
 //      açık 400 / kalan 100, borç kartın 10.10 taksitinde — gecikmiş 0). İptal penceresi kartın kapanacağını söyler.
+//  S216 = C (D 20.11 04:15 (4)) iade 300 → kart 06.10 300 (ödendi) · 06.12 300; iade İptal Et → 300 SON taksite: 06.12 600 (bugünkü kod; takvim ilk hâline dönmez — BİLİNEN SINIR).
 //  S217 = A (D 20.11 04:15 (5)) Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası: İptal Et 409, ileti 'Önce kartı Yeniden Aç ile açın.'
 // NASIL BOZARIM (mutantlar): S210'da kartı açık bırakmak; küçülmeyi son taksitten yapmak; ödenmiş kısmı kesmek; S15'te iptali yine reddetmek; iptalde kartın tahsilatını silmek / kalanı düşmek (689); Sil'i kabul
 // etmek; kapsayan kartı açık bırakmak; kapsayan kartı küçültmeden kapatmak (kalan düşülür → bakiye değişir).
@@ -63,6 +64,20 @@ describe("Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211,
     await returnOf(B, g, 1);
     assert.deepEqual(await items(q), ["2026-10-06:100/0", "2026-11-06:200/200", "2026-12-06:300/300"], "ilk taksitin yalnız açık kısmı (200) + ikinciden 100");
     await integrity("küçülme");
+  });
+
+  it("S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı geri gelir", async () => {
+    const A = await acc();
+    const f = await goods(A, "2026-10-06", 3, installments);
+    const p = planOf(f);
+    await pay(p, 300, "2026-10-06");
+    const iade = await returnOf(A, f, 1);
+    assert.deepEqual(await items(p), ["2026-10-06:300/0", "2026-12-06:300/300"], "iade: karar (4) — 06.11 kesildi");
+    await must("iade İptal Et", api.post(`${W}/invoices/${iade.id}/cancel`, { reason: "S216" }));
+    assert.deepEqual(await items(p), ["2026-10-06:300/0", "2026-12-06:600/600"], "iade iptali: 300 SON taksite eklenir (S216 = C — bugünkü kod)");
+    assert.equal((await must("kart", api.get(`${W}/plans/${p}`))).totals.remaining, 600);
+    assert.equal((await totals(A)).balance, 600);
+    await integrity("S216");
   });
 
   it("(4) iade kalanı aşarsa fazlası avans; parası geri verilen iade kartı küçültmez", async () => {
