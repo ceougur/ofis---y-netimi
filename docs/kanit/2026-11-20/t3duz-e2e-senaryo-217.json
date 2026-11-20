@@ -1,0 +1,32 @@
+{
+  "ad": "t3duz-e2e-senaryo-217",
+  "komut": "npm run test:senaryo-217",
+  "commit": "3e75db1c93624037fcb7c868386c5a2e2fd317e7",
+  "dal": "worktree-agent-a1e6310bec4c916cb",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T07:42:34.725Z",
+  "sure_sn": 71.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 65,
+    "gecen": 65,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d3/k/2026-11-20/t3duz-e2e-senaryo-217.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1e6310bec4c916cb",
+  "ham_cikti_sha256": "7537e2c088fba1164d5c910e0bcdd6c5e84e248581dcc7030825d0eebc83e256",
+  "ham_cikti_bayt": 6822
+}
