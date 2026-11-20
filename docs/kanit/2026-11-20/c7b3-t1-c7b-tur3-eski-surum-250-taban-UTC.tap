@@ -1,0 +1,122 @@
+TAP version 13
+# (node:1479) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen
+    # Subtest: v2.4.9'un kendi değerleri elle beklenenle aynı (üreticinin doğruluğu)
+    ok 1 - v2.4.9'un kendi değerleri elle beklenenle aynı (üreticinin doğruluğu)
+      ---
+      duration_ms: 1.168352
+      type: 'test'
+      ...
+    # Subtest: güncellemeden sonra kartlar, bakiyeler ve 689 aynen; Mutabakat Testi temiz
+    ok 2 - güncellemeden sonra kartlar, bakiyeler ve 689 aynen; Mutabakat Testi temiz
+      ---
+      duration_ms: 59.935178
+      type: 'test'
+      ...
+    # Subtest: eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+    not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+      ---
+      duration_ms: 6.464124
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-eski-surum-250.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        S15 iptal: 409 {"ok":false,"error":"Faturanın taksit kartında (“Eski Tahsilatlı”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.","code":"plan-has-payments","planId":"plan-d8907779-736f-48fb-94c9-d4ce3635ab2e"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-eski-surum-250.test.mjs:25:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-eski-surum-250.test.mjs:101:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle borç kendi vadesiyle
+    not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle borç kendi vadesiyle
+      ---
+      duration_ms: 26.759275
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-eski-surum-250.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart kapalı, tutar = tahsilat
+        + actual - expected
+        
+          {
+        +   status: 'active',
+        +   total: 900
+        -   status: 'closed',
+        -   total: 300
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        status: 'closed'
+        total: 300
+      actual:
+        status: 'active'
+        total: 900
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-eski-surum-250.test.mjs:114:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeniden Aç → İptal Et → kalan bir kez düşülür
+    not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeniden Aç → İptal Et → kalan bir kez düşülür
+      ---
+      duration_ms: 3.974254
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-eski-surum-250.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /Önce kartı Yeniden Aç ile açın\.$/. Input:
+        
+        'Faturanın taksit kartında (“Eski Kapalı Faturalı”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Faturanın taksit kartında (“Eski Kapalı Faturalı”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-eski-surum-250.test.mjs:126:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen
+  ---
+  duration_ms: 1048.06868
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-eski-surum-250.test.mjs:35:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 2
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1374.230532
+
+[kanit] başarısız testler (3):
+  ✖ Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen › eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır [test/c7b-tur3-eski-surum-250.test.mjs:100:3] — S15 iptal: 409 {"ok":false,"error":"Faturanın taksit kartında (“Eski Tahsilatlı”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.","code":"plan-has-payments","planId":"plan-d8907779-736f-48fb-94c9-d4ce3635ab2e"} · 409 !== 200 (beklenen 200, gelen 409)
+  ✖ Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen › S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle borç kendi vadesiyle [test/c7b-tur3-eski-surum-250.test.mjs:112:3] — kart kapalı, tutar = tahsilat · + actual - expected · { (beklenen , gelen )
+  ✖ Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen › S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeniden Aç → İptal Et → kalan bir kez düşülür [test/c7b-tur3-eski-surum-250.test.mjs:123:3] — The input did not match the regular expression /Önce kartı Yeniden Aç ile açın\.$/. Input: · 'Faturanın taksit kartında (“Eski Kapalı Faturalı”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.' (beklenen , gelen Faturanın taksit kartında (“Eski Kapalı Faturalı”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.)
+
+[kanit] c7b3-c7b-tur3-eski-surum-250-taban-UTC: BAŞARISIZ (çıkış 1; 3 başarısız, 0 iptal) · çıkış 1 · 2/5 geçti, 3 başarısız, 0 iptal, 0 atlanan · commit b85d9e2 +4 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4

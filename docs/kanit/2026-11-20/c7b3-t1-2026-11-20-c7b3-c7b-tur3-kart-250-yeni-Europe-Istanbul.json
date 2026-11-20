@@ -1,0 +1,32 @@
+{
+  "ad": "c7b3-c7b-tur3-kart-250-yeni-Europe-Istanbul",
+  "komut": "node --test --test-reporter=tap test/c7b-tur3-kart-250.test.mjs",
+  "commit": "7b6ec84304db57f896dc674952e7c025994b76e5",
+  "dal": "worktree-agent-a16e6df818485d98e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T06:36:46.102Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 9,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/t1/2026-11-20/c7b3-c7b-tur3-kart-250-yeni-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a16e6df818485d98e",
+  "ham_cikti_sha256": "adc784cab58489ef8306eb3c9b8d6bd725389ab28cea8db5b8a3f87862e1a8c9",
+  "ham_cikti_bayt": 3656
+}
