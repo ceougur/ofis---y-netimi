@@ -1920,3 +1920,11 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
 - A4: değişen yok (kâhin susmaya devam eder). A5: Excel kartında / devirle gelen kartta Kartı Kapat (kural aynı, senaryo yok); eski sürümde kapatılmış kart (689 — aynen).
 - A6: Excel'den kişi eşleştirmeli kart yükleme bütünüyle (dilde yok).
 - Dinî bayram tarihleri (Z12 aynen).
+
+### Kanıt (`docs/kanit/2026-11-20/kahintoplu14-*`; koşu betiği `kahintoplu14-arac/kos.sh` (temel / mut1 / mut2 — ≤ 40 dk parçalar), çıktılar `kahintoplu14-kos-<utc|ist>-<parça>.txt`; ölçülen commit'ler 39aa0612 (UTC temel), 320a86dd (IST temel), d05bcb6d (UTC mutasyon), 135092a2 (IST mutasyon) — aralarındaki commit'ler yalnız kanıt dosyası; kâhin kodu 39aa0612'den beri aynı; "+1 izlenmeyen" çalışma ağacındaki `node_modules` bağlantısı)
+- `kahintoplu14-muh-test-utc / -ist`: 223/223 (çıkış 0).
+- `kahintoplu14-muh-eski-kirmizi-*`: eski kâhin (bakım 13 kopyası) + yeni `senaryolar_elle.py` / `test_model.py`: 223 testten 12 kırmızı, hepsi beklenen nedenle (yazılış sırası bölümü; iletiler günlükte).
+- `kahintoplu14-muh-g3-*`: 63.204/63.204, BEKLENMEYEN 0 (A2-S210-S211 19, YENI 8); döküm `kahintoplu14-muh-g3-dokum-*.json` iki saat diliminde bayt bayt aynı.
+- `kahintoplu14-muh-yeni-mutantlar-*`: bakım 14'ün 13 yeni + 3 taşınan mutantı 16/16 ÖLDÜ (öldürenler günlükte).
+- `kahintoplu14-muh-mutasyon1-* / -mutasyon2-*` (MUTASYON_ARALIK 0:165 ve 165:330; `flock -s` ölçüm kilidi): UTC 165/165 + 165/165 = 330/330; Europe/Istanbul 165/165 + 165/165 = 330/330 (çıkış 0; sağ kalan yok).
+- UTC ve Europe/Istanbul özet satırları aynı.

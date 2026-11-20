@@ -5051,3 +5051,19 @@ YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / elle beklenen, kural ko
   (bugünkü susma aynen); şüpheli caride kartın kapanması (senaryo yok — muhasebe kâhininde SUS, KULLANICIYA SORULMALI 2).
 - S220: Kartı Kapat bütünüyle (dilde yok). S219 / S221 / S222: kişi eşleştirmeli Excel kart yükleme (dilde yok).
 - Defter kâhini ve mobil yazma kâhini bu bakımda KOŞULMADI / AÇILMADI (S210 / S211 mizanı değiştirmez — kart maddesiz, iptal maddesiz).
+
+### C0aa Değişen eski beklentiler (G3; bakım 21b (`kahin-toplu14-taban`) ↔ bakım 22 kâhin çıktısı, `2.5.0`; eski kopyanın 104 elle senaryosu + d51 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+- Üretici 20/20 aynı dizi; eski elle senaryoların adımları DEĞİŞMEDİ (d50'nin yalnız elle tablosu, açıklaması ve dayanağı — elle fark 104/104, izinli yalnız d50 I2 / KI2 / I3 / KI3); `--kural 2.4.9` / 2.4.6 / 2.4.5 /
+  `--legacy`: **500/500 bayt bayt aynı**.
+- 2.5.0 G3: eski 50.903 denetim · yeni 50.932 · değişen / kalkan / yeni **59** · **BEKLENMEYEN 0** · yalnız etiketi değişen 0. **S210-S211** (Y22-1 / Y22-2): KALKAN 15 — d50 `k1:kart:KI2:var` / `toplam` / `mevcutBorc`,
+  `k1:kart:KI3:var` / `toplam` / `mevcutBorc` (6; bakım 21b'de 900 / true — kapanmış kartın göstergeleri SUS), d51 KJ1–KJ3'ün aynı üç anahtarı (9; eski modelde yazılıyordu); YENİ 40 — d50 I2'nin `gecikmis` 10.000,
+  `acikToplam` 10.000, `acikEsitBakiye` true, elle Borç i2b'nin `hareket` kalan 10.000 / vade / beklenen, `takvim:hareket:i2b` (10.000, 01.03, gecikmiş), `vadeTakip` / `projeksiyon:hareket:i2b`, `takvim:fatura:FI2` / `FI3`
+  "yok"; I3'ün `gecikmis` 0, `acikToplam` 0, `acikEsitBakiye` true (14); d51'in J1–J3 karşılıkları (26). **GENEL** yeni 4 — d50 / d51 `k1:projeksiyon:cari` ve `k1:takvim:cariKalemSayisi` (carinin kuyruğu artık tanımlı
+  olduğu için sayılıyor; S210 / S211'in sonucu). Carinin bakiyesi, Kasa ve adım durumları İKİ modelde AYNI (S210 / S211 bakiyeyi değiştirmez — sayıyla: d50 I2 100, I3 0; d51 J1 100, J2 500, J3 200, Kasa 300).
+  Rastgele 0 fark. SUS'a dönen kart anahtarı 15; SUS'tan çıkan cari / hareket / görünüm anahtarı 40 (+ GENEL 4).
+
+### Kanıt (bakım 22; iki saat dilimi — UTC ve Europe/Istanbul; ölçülen commit 39aa0612 (UTC) / 320a86dd (IST) — kâhin kodu aynı; `docs/kanit/2026-11-20/kahintoplu14-cari-*`, araçlar ve koşu betiği `kahintoplu14-arac/`)
+- oz-test **6.936/6.936** · mutasyon taraması (kos.mjs düzeni) **295/295** · G3 **625/625** (BEKLENMEYEN 0; döküm iki TZ'de bayt bayt aynı) · yeni / değişen elle tablo **105/105** (d51 40 + d50 65) · ESKİ kâhinde
+  (bakım 21b) **36 kırmızı** / 105 (beklenen nedenle — hepsi SK-41 alanında: gecikmiş / açık toplamı / eşitlik / FJ2b açık ANAHTAR YOK, kart göstergeleri yazılıyor, `belirsiz` "S210 = A" / "S211 = A" yok; bakiyeler ve
+  Kasa eski kâhinde de yeşil) · eski elle tablo farkı **104/104** izinli · G1 taraması **105/105** · mutant ↔ senaryo **1.224/1.224** (d30 … d51 × 261–328) · geniş tarama **2.201/2.201** · özet taraması yazıldı (iki TZ'de
+  bayt bayt aynı). Mutantlar 326 / 327 / 328 DEĞERLE yakalandı (d50 + d51), 324 (SUS) d49 / d50 / d51'de. Defter kâhini ve mobil yazma kâhini KOŞULMADI (okuma kapsamı dışında).

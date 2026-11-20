@@ -13,3 +13,4 @@
   g1-tara 105/105; mutant-senaryo 1.224/1.224; genis-tarama geçti; ozet-tara yazıldı. Sırada: IST temel, mut1 / mut2 × iki TZ.
 - Adım 6 (IST temel, commit 320a86dd): bütün sayılar UTC ile aynı (muh 223/223, eski kırmızı 12, G3 63.204, yeni mutant 16/16; cari oz 6.936, mutasyon 295, G3 625, elle 105, eski kırmızı 36, fark 104, g1 105, mutant ↔ senaryo 1.224, geniş tarama 2.201/2.201); G3 dökümleri ve özet taraması iki TZ'de bayt bayt aynı.
 - Adım 7 (UTC mutasyon, commit d05bcb6d): mut1 (0:165) 165/165 öldü, mut2 (165:330) 165/165 öldü → 330/330 (temel 217 test yeşil).
+- Adım 8 (IST mutasyon, commit 135092a2): mut1 165/165, mut2 165/165 → 330/330. README / KARARLAR kanıt bölümleri yazıldı. Bakım BİTTİ; rapor SubagentHandback ile.
