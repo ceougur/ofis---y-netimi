@@ -1,0 +1,265 @@
+rastgele-2 [TZ=Europe/Istanbul]: 1126 olay · yapıldı 1115 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 205 ms
+    rastgele-2 [Europe/Istanbul] öz denetim TAMAM · AYNI 226 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 30 · ÖLÇÜLEMEDİ 2 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 34 (sınıfsız 31)  (63 sn + 44 sn)
+rastgele-2 [TZ=UTC]: 1126 olay · yapıldı 1115 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 244 ms
+    rastgele-2 [UTC] öz denetim TAMAM · AYNI 226 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 30 · ÖLÇÜLEMEDİ 2 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 34 (sınıfsız 31)  (65 sn + 45 sn)
+rastgele-3 [TZ=Europe/Istanbul]: 1087 olay · yapıldı 1076 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 159 ms
+    rastgele-3 [Europe/Istanbul] öz denetim TAMAM · AYNI 229 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 24 · ÖLÇÜLEMEDİ 5 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 29 (sınıfsız 29)  (58 sn + 8 sn)
+rastgele-3 [TZ=UTC]: 1087 olay · yapıldı 1076 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 186 ms
+    rastgele-3 [UTC] öz denetim TAMAM · AYNI 229 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 24 · ÖLÇÜLEMEDİ 5 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 29 (sınıfsız 29)  (61 sn + 9 sn)
+s105-s81-olagan-normal-cari-siniri [TZ=UTC]: 34 olay · yapıldı 22 · red 5 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 32 ms
+    s105-s81-olagan-normal-cari-siniri [UTC] öz denetim TAMAM · AYNI 34 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s105-s81-olagan-normal-cari-siniri [TZ=Europe/Istanbul]: 34 olay · yapıldı 22 · red 5 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+    s105-s81-olagan-normal-cari-siniri [Europe/Istanbul] öz denetim TAMAM · AYNI 34 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s117-a5-s192-tek-kuyruk-payi [TZ=Europe/Istanbul]: 21 olay · yapıldı 17 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 46 ms
+    s117-a5-s192-tek-kuyruk-payi [Europe/Istanbul] öz denetim TAMAM · AYNI 16 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s117-a5-s192-tek-kuyruk-payi [TZ=UTC]: 21 olay · yapıldı 17 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 40 ms
+    s117-a5-s192-tek-kuyruk-payi [UTC] öz denetim TAMAM · AYNI 16 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s42-s3-supheli-hatirlatma [TZ=UTC]: 20 olay · yapıldı 13 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 41 ms
+    s42-s3-supheli-hatirlatma [UTC] öz denetim TAMAM · AYNI 12 · U 5 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 5 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s42-s3-supheli-hatirlatma [TZ=Europe/Istanbul]: 20 olay · yapıldı 13 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 26 ms
+    s42-s3-supheli-hatirlatma [Europe/Istanbul] öz denetim TAMAM · AYNI 12 · U 5 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 5 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+Node.js v22.23.4
+    program koşusu düştü, karşılaştırma yapılmadı  (0 sn + NaN sn)
+Node.js v22.23.4
+    program koşusu düştü, karşılaştırma yapılmadı  (0 sn + NaN sn)
+
+AYNI 1034 · U 58 · P 0 · K 0 · R 0 · SINIFLANMADI 108 · ÖLÇÜLEMEDİ 14 · SUSMA 10 (adım 0, ara adım 0) · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 120 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 2
+Ölçüm (olay döngüsü en çok, ms): rastgele-2 [UTC] 244 (koşu 65 sn; GET ledger ort 15 / en çok 118 ms) · rastgele-2 [Europe/Istanbul] 205 (koşu 63 sn; GET ledger ort 15 / en çok 82 ms) · rastgele-3 [UTC] 186 (koşu 61 sn; GET ledger ort 14 / en çok 149 ms) · rastgele-3 [Europe/Istanbul] 159 (koşu 58 sn; GET ledger ort 14 / en çok 117 ms) · s117-a5-s192-tek-kuyruk-payi [Europe/Istanbul] 46 (koşu 1 sn; GET ledger ort 5 / en çok 11 ms)
+BEKLEYEN KURAL FARKLARI (kimlik: senaryo / denetim [UTC]): 2.5.1-Ç7b-B1 (F-06 finansman 780) 2/24 · D2–D4 2/2 · Ç5-C 1/5
+SUSMA (10 satır; kâhin susar — karşılaştırılmadı):
+  s42-s3-supheli-hatirlatma [Europe/Istanbul] acik fatura:F1 program - · kâhin - (kâhin susar (S192; kâhin bakımı 13 `susmalar`): C1 acik 2026-05-01 — kalem / vade dağılımı karşılaştırılmaz)
+  s42-s3-supheli-hatirlatma [Europe/Istanbul] acik fatura:F2 program - · kâhin - (kâhin susar (S192; kâhin bakımı 13 `susmalar`): C1 acik 2026-05-01 — kalem / vade dağılımı karşılaştırılmaz)
+  s42-s3-supheli-hatirlatma [Europe/Istanbul] g2 gecikmis:C1 program - · kâhin - (kâhin susar (S192; kâhin bakımı 13 `susmalar`): C1 g2 2026-04-11 — kalem / vade dağılımı karşılaştırılmaz)
+  s42-s3-supheli-hatirlatma [Europe/Istanbul] g3 gecikmis:C1 program - · kâhin - (kâhin susar (S192; kâhin bakımı 13 `susmalar`): C1 g3 2026-05-01 — kalem / vade dağılımı karşılaştırılmaz)
+  s42-s3-supheli-hatirlatma [Europe/Istanbul] h3 otomatik:C1 program - · kâhin - (kâhin susar (S192; kâhin bakımı 13 `susmalar`): C1 h3 2026-05-01 — kalem / vade dağılımı karşılaştırılmaz)
+  s42-s3-supheli-hatirlatma [UTC] acik fatura:F1 program - · kâhin - (kâhin susar (S192; kâhin bakımı 13 `susmalar`): C1 acik 2026-05-01 — kalem / vade dağılımı karşılaştırılmaz)
+  s42-s3-supheli-hatirlatma [UTC] acik fatura:F2 program - · kâhin - (kâhin susar (S192; kâhin bakımı 13 `susmalar`): C1 acik 2026-05-01 — kalem / vade dağılımı karşılaştırılmaz)
+  s42-s3-supheli-hatirlatma [UTC] g2 gecikmis:C1 program - · kâhin - (kâhin susar (S192; kâhin bakımı 13 `susmalar`): C1 g2 2026-04-11 — kalem / vade dağılımı karşılaştırılmaz)
+  s42-s3-supheli-hatirlatma [UTC] g3 gecikmis:C1 program - · kâhin - (kâhin susar (S192; kâhin bakımı 13 `susmalar`): C1 g3 2026-05-01 — kalem / vade dağılımı karşılaştırılmaz)
+  s42-s3-supheli-hatirlatma [UTC] h3 otomatik:C1 program - · kâhin - (kâhin susar (S192; kâhin bakımı 13 `susmalar`): C1 h3 2026-05-01 — kalem / vade dağılımı karşılaştırılmaz)
+ÖLÇÜLEMEDİ (14; sürücü sınırı — geçmiş günlü rapor (program as-of okumaz) ya da siniflama.json'daki eşleme sınırı):
+  rastgele-2 [Europe/Istanbul] gec_ocak gecikmis:C3 program 1206560 · kâhin 1752640 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-2 [Europe/Istanbul] gec_ocak gecikmis:C4 program 0 · kâhin 189900 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-2 [UTC] gec_ocak gecikmis:C3 program 1206560 · kâhin 1752640 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-2 [UTC] gec_ocak gecikmis:C4 program 0 · kâhin 189900 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-3 [Europe/Istanbul] gec_ocak gecikmis:C1 program 1147610 · kâhin 1593910 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-3 [Europe/Istanbul] gec_ocak gecikmis:C2 program 759310 · kâhin 987210 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-3 [Europe/Istanbul] gec_ocak gecikmis:C3 program 442325 · kâhin 513605 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-3 [Europe/Istanbul] gec_ocak gecikmis:C4 program 472952 · kâhin 766252 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-3 [Europe/Istanbul] gec_ocak gecikmis:T1 program 2344146 · kâhin 2411466 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-3 [UTC] gec_ocak gecikmis:C1 program 1147610 · kâhin 1593910 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-3 [UTC] gec_ocak gecikmis:C2 program 759310 · kâhin 987210 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-3 [UTC] gec_ocak gecikmis:C3 program 442325 · kâhin 513605 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-3 [UTC] gec_ocak gecikmis:C4 program 472952 · kâhin 766252 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+  rastgele-3 [UTC] gec_ocak gecikmis:T1 program 2344146 · kâhin 2411466 · bugün — (geçmiş günlü rapor: program 2027-02-28 gününe kadar girilmiş kayıtları da görür (as-of gecikmiş okuması yok))
+U etiketleri: F06-FINANSMAN-251 48
+
+FARKLAR (230; ilk 200):
+  rastgele-2 [Europe/Istanbul] ADIM 67 satis_iade_faturasi I35 {"ana":{"191":-168,"391":168}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 76 taksit_karti TK40 {"ana":{"600":77100,"602":-77100}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 84 taksit_karti TK45 {"ana":{"600":70000,"602":-70000}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 89 satis_iade_faturasi I47 {"ana":{"191":-13030,"391":13030}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 95 satis_iade_faturasi I53 {"ana":{"191":-663,"391":663}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 110 kdv_mahsup  {"ana":{"191":13861,"391":-13861}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 212 satis_iade_faturasi I127 {"ana":{"191":-8095,"391":8095}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 229 kdv_mahsup  {"ana":{"191":8095,"391":-8095}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 277 satis_iade_faturasi I166 {"ana":{"191":-7698,"391":7698}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 317 satis_iade_faturasi I193 {"ana":{"191":-8095,"391":8095}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 336 kdv_mahsup  {"ana":{"191":15793,"391":-15793}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 351 taksit_karti TK207 {"ana":{"600":59200,"602":-59200}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 404 satis_faturasi F247 {"ana":{"600":-253600,"601":253600}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 531 satis_iade_faturasi I318 {"ana":{"191":-6728,"391":6728}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 534 kdv_mahsup  {"ana":{"191":6728,"391":-6728}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 548 satis_faturasi F328 {"ana":{"600":-104900,"601":104900}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 599 satis_faturasi F361 {"ana":{"600":-138200,"601":138200}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 608 satis_iade_faturasi I367 {"ana":{"191":-882,"391":882}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 610 kdv_mahsup  {"ana":{"191":882,"391":-882}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 618 satis_faturasi F372 {"ana":{"600":-363500,"601":363500}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 662 satis_iade_faturasi I403 {"ana":{"191":-13860,"391":13860}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 668 kdv_mahsup  {"ana":{"191":13860,"391":-13860}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 678 taksit_karti TK413 {"ana":{"600":70600,"602":-70600}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 725 satis_iade_faturasi I448 {"ana":{"191":-6030,"391":6030}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 730 kdv_mahsup  {"ana":{"191":-2748,"360":8778,"391":-6030}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 742 satis_faturasi F459 {"ana":{"600":-23700,"601":23700}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 797 taksit_karti TK489 {"ana":{"600":96100,"602":-96100}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 804 kdv_mahsup  {"ana":{"191":8778,"360":-8778}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 822 taksit_karti TK504 {"ana":{"600":33700,"602":-33700}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 829 kdv_mahsup_geri_al  {"ana":{"191":-8778,"360":8778}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] ADIM 830 kdv_mahsup  {"ana":{"191":16778,"360":-16778}} → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] bil_arsiv ana:191 program 0 · kâhin 8778 · bugün 8778 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] bil_arsiv ana:360 program -2318404 · kâhin -2327182 · bugün -2327182 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] bil_canli_K ana:191 program 0 · kâhin 8778 · bugün 8778 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] bil_canli_K ana:360 program -2318404 · kâhin -2327182 · bugün -2327182 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] bil_yeni ana:191 program 8000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] bil_yeni ana:360 program -2509313 · kâhin -2501313 · bugün -2501313 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] gt_arsiv ana:600 program -27911590 · kâhin -27328290 · bugün -27328290 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] gt_arsiv ana:601 program 0 · kâhin -860200 · bugün -860200 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] gt_arsiv ana:602 program -359500 · kâhin -82600 · bugün -82600 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] gt_canli ana:600 program -27911590 · kâhin -27328290 · bugün -27328290 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] gt_canli ana:601 program 0 · kâhin -860200 · bugün -860200 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] gt_canli ana:602 program -359500 · kâhin -82600 · bugün -82600 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] gt_yeni ana:600 program -4020510 · kâhin -4126610 · bugün -4126610 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] gt_yeni ana:601 program 0 · kâhin -23700 · bugün -23700 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] gt_yeni ana:602 program -137600 · kâhin -7800 · bugün -7800 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] mz_arsiv ana:191 program 0 · kâhin 8778 · bugün 8778 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] mz_arsiv ana:360 program -2318404 · kâhin -2327182 · bugün -2327182 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] mz_arsiv ana:600 program -27911590 · kâhin -27328290 · bugün -27328290 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] mz_arsiv ana:601 program 0 · kâhin -860200 · bugün -860200 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] mz_arsiv ana:602 program -359500 · kâhin -82600 · bugün -82600 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] mz_yeni ana:191 program 8000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] mz_yeni ana:360 program -2509313 · kâhin -2501313 · bugün -2501313 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] mz_yeni ana:600 program -31957100 · kâhin -31479900 · bugün -31479900 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] mz_yeni ana:601 program 0 · kâhin -883900 · bugün -883900 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] mz_yeni ana:602 program -497100 · kâhin -90400 · bugün -90400 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] son ana:191 program 8000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] son ana:360 program -2509313 · kâhin -2501313 · bugün -2501313 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] son ana:600 program -31957100 · kâhin -31479900 · bugün -31479900 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] son ana:601 program 0 · kâhin -883900 · bugün -883900 → SINIFLANMADI
+  rastgele-2 [Europe/Istanbul] son ana:602 program -497100 · kâhin -90400 · bugün -90400 → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 67 satis_iade_faturasi I35 {"ana":{"191":-168,"391":168}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 76 taksit_karti TK40 {"ana":{"600":77100,"602":-77100}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 84 taksit_karti TK45 {"ana":{"600":70000,"602":-70000}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 89 satis_iade_faturasi I47 {"ana":{"191":-13030,"391":13030}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 95 satis_iade_faturasi I53 {"ana":{"191":-663,"391":663}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 110 kdv_mahsup  {"ana":{"191":13861,"391":-13861}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 212 satis_iade_faturasi I127 {"ana":{"191":-8095,"391":8095}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 229 kdv_mahsup  {"ana":{"191":8095,"391":-8095}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 277 satis_iade_faturasi I166 {"ana":{"191":-7698,"391":7698}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 317 satis_iade_faturasi I193 {"ana":{"191":-8095,"391":8095}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 336 kdv_mahsup  {"ana":{"191":15793,"391":-15793}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 351 taksit_karti TK207 {"ana":{"600":59200,"602":-59200}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 404 satis_faturasi F247 {"ana":{"600":-253600,"601":253600}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 531 satis_iade_faturasi I318 {"ana":{"191":-6728,"391":6728}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 534 kdv_mahsup  {"ana":{"191":6728,"391":-6728}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 548 satis_faturasi F328 {"ana":{"600":-104900,"601":104900}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 599 satis_faturasi F361 {"ana":{"600":-138200,"601":138200}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 608 satis_iade_faturasi I367 {"ana":{"191":-882,"391":882}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 610 kdv_mahsup  {"ana":{"191":882,"391":-882}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 618 satis_faturasi F372 {"ana":{"600":-363500,"601":363500}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 662 satis_iade_faturasi I403 {"ana":{"191":-13860,"391":13860}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 668 kdv_mahsup  {"ana":{"191":13860,"391":-13860}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 678 taksit_karti TK413 {"ana":{"600":70600,"602":-70600}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 725 satis_iade_faturasi I448 {"ana":{"191":-6030,"391":6030}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 730 kdv_mahsup  {"ana":{"191":-2748,"360":8778,"391":-6030}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 742 satis_faturasi F459 {"ana":{"600":-23700,"601":23700}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 797 taksit_karti TK489 {"ana":{"600":96100,"602":-96100}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 804 kdv_mahsup  {"ana":{"191":8778,"360":-8778}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 822 taksit_karti TK504 {"ana":{"600":33700,"602":-33700}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 829 kdv_mahsup_geri_al  {"ana":{"191":-8778,"360":8778}} → SINIFLANMADI
+  rastgele-2 [UTC] ADIM 830 kdv_mahsup  {"ana":{"191":16778,"360":-16778}} → SINIFLANMADI
+  rastgele-2 [UTC] bil_arsiv ana:191 program 0 · kâhin 8778 · bugün 8778 → SINIFLANMADI
+  rastgele-2 [UTC] bil_arsiv ana:360 program -2318404 · kâhin -2327182 · bugün -2327182 → SINIFLANMADI
+  rastgele-2 [UTC] bil_canli_K ana:191 program 0 · kâhin 8778 · bugün 8778 → SINIFLANMADI
+  rastgele-2 [UTC] bil_canli_K ana:360 program -2318404 · kâhin -2327182 · bugün -2327182 → SINIFLANMADI
+  rastgele-2 [UTC] bil_yeni ana:191 program 8000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  rastgele-2 [UTC] bil_yeni ana:360 program -2509313 · kâhin -2501313 · bugün -2501313 → SINIFLANMADI
+  rastgele-2 [UTC] gt_arsiv ana:600 program -27911590 · kâhin -27328290 · bugün -27328290 → SINIFLANMADI
+  rastgele-2 [UTC] gt_arsiv ana:601 program 0 · kâhin -860200 · bugün -860200 → SINIFLANMADI
+  rastgele-2 [UTC] gt_arsiv ana:602 program -359500 · kâhin -82600 · bugün -82600 → SINIFLANMADI
+  rastgele-2 [UTC] gt_canli ana:600 program -27911590 · kâhin -27328290 · bugün -27328290 → SINIFLANMADI
+  rastgele-2 [UTC] gt_canli ana:601 program 0 · kâhin -860200 · bugün -860200 → SINIFLANMADI
+  rastgele-2 [UTC] gt_canli ana:602 program -359500 · kâhin -82600 · bugün -82600 → SINIFLANMADI
+  rastgele-2 [UTC] gt_yeni ana:600 program -4020510 · kâhin -4126610 · bugün -4126610 → SINIFLANMADI
+  rastgele-2 [UTC] gt_yeni ana:601 program 0 · kâhin -23700 · bugün -23700 → SINIFLANMADI
+  rastgele-2 [UTC] gt_yeni ana:602 program -137600 · kâhin -7800 · bugün -7800 → SINIFLANMADI
+  rastgele-2 [UTC] mz_arsiv ana:191 program 0 · kâhin 8778 · bugün 8778 → SINIFLANMADI
+  rastgele-2 [UTC] mz_arsiv ana:360 program -2318404 · kâhin -2327182 · bugün -2327182 → SINIFLANMADI
+  rastgele-2 [UTC] mz_arsiv ana:600 program -27911590 · kâhin -27328290 · bugün -27328290 → SINIFLANMADI
+  rastgele-2 [UTC] mz_arsiv ana:601 program 0 · kâhin -860200 · bugün -860200 → SINIFLANMADI
+  rastgele-2 [UTC] mz_arsiv ana:602 program -359500 · kâhin -82600 · bugün -82600 → SINIFLANMADI
+  rastgele-2 [UTC] mz_yeni ana:191 program 8000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  rastgele-2 [UTC] mz_yeni ana:360 program -2509313 · kâhin -2501313 · bugün -2501313 → SINIFLANMADI
+  rastgele-2 [UTC] mz_yeni ana:600 program -31957100 · kâhin -31479900 · bugün -31479900 → SINIFLANMADI
+  rastgele-2 [UTC] mz_yeni ana:601 program 0 · kâhin -883900 · bugün -883900 → SINIFLANMADI
+  rastgele-2 [UTC] mz_yeni ana:602 program -497100 · kâhin -90400 · bugün -90400 → SINIFLANMADI
+  rastgele-2 [UTC] son ana:191 program 8000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  rastgele-2 [UTC] son ana:360 program -2509313 · kâhin -2501313 · bugün -2501313 → SINIFLANMADI
+  rastgele-2 [UTC] son ana:600 program -31957100 · kâhin -31479900 · bugün -31479900 → SINIFLANMADI
+  rastgele-2 [UTC] son ana:601 program 0 · kâhin -883900 · bugün -883900 → SINIFLANMADI
+  rastgele-2 [UTC] son ana:602 program -497100 · kâhin -90400 · bugün -90400 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 22 satis_faturasi F9 {"ana":{"600":-319800,"601":319800}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 46 taksit_karti TK25 {"ana":{"600":66000,"602":-66000}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 50 satis_faturasi F28 {"ana":{"600":-322500,"601":322500}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 110 satis_faturasi F61 {"ana":{"600":-170100,"601":170100}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 147 satis_iade_faturasi I85 {"ana":{"191":-16715,"391":16715}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 150 taksit_karti TK89 {"ana":{"600":43400,"602":-43400}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 151 satis_faturasi F90 {"ana":{"600":-72800,"601":72800}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 174 satis_faturasi F106 {"ana":{"600":-182400,"601":182400}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 177 taksit_karti TK108 {"ana":{"600":78400,"602":-78400}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 182 kdv_mahsup  {"ana":{"191":16715,"391":-16715}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 190 taksit_karti TK116 {"ana":{"600":64200,"602":-64200}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 197 satis_faturasi F121 {"ana":{"600":-5000,"601":5000}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 231 satis_iade_faturasi I143 {"ana":{"191":-2605,"391":2605}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 250 satis_faturasi F155 {"ana":{"600":-37700,"601":37700}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 258 kdv_mahsup  {"ana":{"191":2605,"391":-2605}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 260 satis_iade_faturasi I159 {"ana":{"191":-10725,"391":10725}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 318 kdv_mahsup  {"ana":{"191":10725,"391":-10725}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 319 taksit_karti TK196 {"ana":{"600":40200,"602":-40200}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 337 satis_faturasi F207 {"ana":{"600":-176600,"601":176600}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 385 satis_faturasi F237 {"ana":{"600":-111100,"601":111100}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 393 satis_faturasi F241 {"ana":{"600":-261900,"601":261900}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 395 taksit_karti TK242 {"ana":{"600":38000,"602":-38000}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 437 satis_iade_faturasi I269 {"ana":{"191":-11280,"391":11280}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 486 kdv_mahsup  {"ana":{"191":11280,"391":-11280}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 655 satis_iade_faturasi I399 {"ana":{"191":-2605,"391":2605}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 695 kdv_mahsup  {"ana":{"191":2605,"391":-2605}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 765 satis_faturasi F464 {"ana":{"600":-280300,"601":280300}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 788 taksit_karti TK477 {"ana":{"600":64000,"602":-64000}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] ADIM 794 kdv_mahsup  {"ana":{"191":8000,"360":-8000}} → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] bil_yeni ana:191 program 19220 · kâhin 11220 · bugün 11220 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] bil_yeni ana:360 program -2325610 · kâhin -2317610 · bugün -2317610 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] gt_arsiv ana:600 program -27208710 · kâhin -25879010 · bugün -25879010 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] gt_arsiv ana:601 program 0 · kâhin -1659900 · bugün -1659900 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] gt_arsiv ana:602 program -463900 · kâhin -133700 · bugün -133700 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] gt_canli ana:600 program -27208710 · kâhin -25879010 · bugün -25879010 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] gt_canli ana:601 program 0 · kâhin -1659900 · bugün -1659900 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] gt_canli ana:602 program -463900 · kâhin -133700 · bugün -133700 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] gt_yeni ana:600 program -3022800 · kâhin -2806500 · bugün -2806500 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] gt_yeni ana:601 program 0 · kâhin -280300 · bugün -280300 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] gt_yeni ana:602 program -71100 · kâhin -7100 · bugün -7100 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] mz_arsiv ana:600 program -27208710 · kâhin -25879010 · bugün -25879010 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] mz_arsiv ana:601 program 0 · kâhin -1659900 · bugün -1659900 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] mz_arsiv ana:602 program -463900 · kâhin -133700 · bugün -133700 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] mz_yeni ana:191 program 19220 · kâhin 11220 · bugün 11220 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] mz_yeni ana:360 program -2325610 · kâhin -2317610 · bugün -2317610 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] mz_yeni ana:600 program -30256510 · kâhin -28710510 · bugün -28710510 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] mz_yeni ana:601 program 0 · kâhin -1940200 · bugün -1940200 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] mz_yeni ana:602 program -535000 · kâhin -140800 · bugün -140800 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] son ana:191 program 19220 · kâhin 11220 · bugün 11220 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] son ana:360 program -2325610 · kâhin -2317610 · bugün -2317610 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] son ana:600 program -30256510 · kâhin -28710510 · bugün -28710510 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] son ana:601 program 0 · kâhin -1940200 · bugün -1940200 → SINIFLANMADI
+  rastgele-3 [Europe/Istanbul] son ana:602 program -535000 · kâhin -140800 · bugün -140800 → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 22 satis_faturasi F9 {"ana":{"600":-319800,"601":319800}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 46 taksit_karti TK25 {"ana":{"600":66000,"602":-66000}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 50 satis_faturasi F28 {"ana":{"600":-322500,"601":322500}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 110 satis_faturasi F61 {"ana":{"600":-170100,"601":170100}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 147 satis_iade_faturasi I85 {"ana":{"191":-16715,"391":16715}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 150 taksit_karti TK89 {"ana":{"600":43400,"602":-43400}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 151 satis_faturasi F90 {"ana":{"600":-72800,"601":72800}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 174 satis_faturasi F106 {"ana":{"600":-182400,"601":182400}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 177 taksit_karti TK108 {"ana":{"600":78400,"602":-78400}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 182 kdv_mahsup  {"ana":{"191":16715,"391":-16715}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 190 taksit_karti TK116 {"ana":{"600":64200,"602":-64200}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 197 satis_faturasi F121 {"ana":{"600":-5000,"601":5000}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 231 satis_iade_faturasi I143 {"ana":{"191":-2605,"391":2605}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 250 satis_faturasi F155 {"ana":{"600":-37700,"601":37700}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 258 kdv_mahsup  {"ana":{"191":2605,"391":-2605}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 260 satis_iade_faturasi I159 {"ana":{"191":-10725,"391":10725}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 318 kdv_mahsup  {"ana":{"191":10725,"391":-10725}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 319 taksit_karti TK196 {"ana":{"600":40200,"602":-40200}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 337 satis_faturasi F207 {"ana":{"600":-176600,"601":176600}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 385 satis_faturasi F237 {"ana":{"600":-111100,"601":111100}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 393 satis_faturasi F241 {"ana":{"600":-261900,"601":261900}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 395 taksit_karti TK242 {"ana":{"600":38000,"602":-38000}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 437 satis_iade_faturasi I269 {"ana":{"191":-11280,"391":11280}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 486 kdv_mahsup  {"ana":{"191":11280,"391":-11280}} → SINIFLANMADI
+  rastgele-3 [UTC] ADIM 655 satis_iade_faturasi I399 {"ana":{"191":-2605,"391":2605}} → SINIFLANMADI
+
+# tests 1346
+# pass 1092
+# fail 230
+# cancelled 0
+# skipped 24
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d3/surucu/r2-taban
