@@ -1,0 +1,6 @@
+H1 YAKALANDI — sayılmış satırın günü okunmaz (before = toplam) (çıkış 1; değer true; çökme false; beklenen neden true; 4 kırmızı)
+H2 YAKALANDI — saklı değer damgasız (yazımdan sonra eski toplam) (çıkış 1; değer true; çökme false; beklenen neden true; 2 kırmızı)
+H3 YAKALANDI — COVER_SQL yerine yalnız hesapsız (bütün hesapsız havale / POS sayılır) (çıkış 1; değer true; çökme false; beklenen neden true; 5 kırmızı)
+H4 YAKALANDI — Kasa toplamı sayılmış satırları düşer (çıkış 1; değer true; çökme false; beklenen neden true; 3 kırmızı)
+H5 YAKALANDI — ön koşul yalnız havale (kart çıkışı / POS sayılmaz) (çıkış 1; değer true; çökme false; beklenen neden true; 4 kırmızı)
+SONUÇ: 5 / 5 yakalandı
