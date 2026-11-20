@@ -92,13 +92,15 @@ function stockFlow(entries, from, to) {
 
 /**
  * Satışların maliyeti (tahmini) — KG-11 A, EK-1 M6: T_Y(t) = DSS_(Y−1) + 153 defter hareketi [1 Ocak Y, t] − DSS_t (t = 31 Aralık'ta T = N-01); [a, b] için T(b) − T(a − 1), a = 1 Ocak ise
- * T(a − 1) = 0. Yılda 621 hareketi (N-01 yazılmış) varsa o yıl kesindir: tahmin YOK, defterdeki 621 (incomeStatement D kaleminde) geçerli. a ve b aynı mali yıl (çapraz yıl tanımsız —
- * tasarım §10 S-b; çağıran reddeder). Dönüş: { estimated, minor, stockFlowMinor, stockMovesMinor, differenceMinor, negative, warnings, at: { b, a1 } }.
+ * T(a − 1) = 0. B-a (BAŞ MİMAR KARARI 19.11 22:45; tasarım §7): N-01'in 621'i (yılda 621 hareketi) YALNIZ 31.12'yi içeren parçada geçerli — o parçada tahmin T(a − 1)'in eksisidir
+ * (a = 1 Ocak ise 0 → yıllık kesin), 31.12'yi içermeyen parça her zaman T(b) − T(a − 1); aylar toplamı = çeyrek = yıl = 621. a ve b aynı mali yıl (çapraz yıl tanımsız — tasarım §10 S-b;
+ * çağıran reddeder). Dönüş: { estimated, posted, minor, stockFlowMinor, stockMovesMinor, differenceMinor, negative, warnings }.
  */
 export function estimatedCost({ entries, valuation, from, to }) {
   const start = yearStart(to);
   const year = Number(to.slice(0, 4));
-  const posted621 = entries.some(entry => entry.date >= start && entry.date <= `${year}-12-31` && entryClass(entry) !== CLOSING_CLASS && entry.lines.some(line => line.account === "621"));
+  const yearEnd = `${year}-12-31`;
+  const posted621 = to === yearEnd && entries.some(entry => entry.date >= start && entry.date <= yearEnd && entryClass(entry) !== CLOSING_CLASS && entry.lines.some(line => line.account === "621"));
   const prev = valuation.yearEnd(year - 1);
   const atB = valuation.at(to);
   const T = (day, at) => prev.totals.dssMinor + stockFlow(entries, start, day) - at.totals.dssMinor;
@@ -106,14 +108,15 @@ export function estimatedCost({ entries, valuation, from, to }) {
   const atA = first ? null : valuation.at(dayBefore(from));
   // Stok biçimiyle karşılaştırma (tasarım §4): 153 defter hareketi ↔ stok hareketlerinin tutarı (açılış + alış − alış iadesi), [1 Ocak, b].
   const flow = stockFlow(entries, start, to);
-  const minor = posted621 ? 0 : prev.totals.dssMinor + flow - atB.totals.dssMinor - (first ? 0 : T(dayBefore(from), atA));
+  const tBefore = first ? 0 : T(dayBefore(from), atA);
+  const minor = posted621 ? -tBefore : prev.totals.dssMinor + flow - atB.totals.dssMinor - tBefore;
   const moves = atB.totals.openingMinor + atB.totals.purchaseMinor - atB.totals.returnMinor;
   const negative = new Map();
   for (const row of [...atB.negative, ...(atA ? atA.negative : [])]) if (!negative.has(row.id)) negative.set(row.id, row);
   // Stoksuz dönemde (önceki yıl sonu stoku, dönem 153 hareketi ve t stoku 0) tahmin yoktur: maliyet kesin 0 (hizmet işletmesi "Satışların Maliyeti Tahminidir" uyarısı görmez).
   const involved = prev.totals.dssMinor !== 0 || atB.totals.dssMinor !== 0 || flow !== 0 || negative.size > 0 || (atA ? atA.totals.dssMinor !== 0 || stockFlow(entries, start, dayBefore(from)) !== 0 : false);
   return {
-    estimated: !posted621 && involved,
+    estimated: posted621 ? !first && involved : involved,
     posted: posted621,
     minor,
     dssPrevMinor: prev.totals.dssMinor,
@@ -226,7 +229,8 @@ export function incomeStatement({ entries, valuation, from, to, bookType = "unse
         return { hesap: row.hesap, ad: accountName(row.hesap), tutarMinor: altlar.reduce((sum, part) => sum + part.tutarMinor, 0), altlar };
       })
       .filter(row => row.altlar.length);
-    if (item.kod === "D" && cost.estimated && cost.minor !== 0) hesaplar.push({ hesap: "621", ad: "Satışların Maliyeti (Tahmini)", tahmini: true, tutarMinor: cost.minor, altlar: [] });
+    // B-a: 621 yazılmış yılın 31.12 parçasında (a > 1 Ocak) tahmin, önceki parçalara dağıtılan maliyetin eksisidir.
+    if (item.kod === "D" && cost.estimated && cost.minor !== 0) hesaplar.push({ hesap: "621", ad: cost.posted ? "Önceki Dönemlere Dağıtılan Maliyet (Tahmini)" : "Satışların Maliyeti (Tahmini)", tahmini: true, tutarMinor: cost.minor, altlar: [] });
     const out = { kod: item.kod, ad: item.ad, gelir: item.gelir, tutarMinor: hesaplar.reduce((sum, row) => sum + row.tutarMinor, 0), hesaplar };
     if (item.kod === "D" && cost.estimated) out.tahmini = true;
     if (item.kod === "K") out.aciklama = "Program dönem kârı vergi karşılığı ayırmaz; Dönem Net Kârı vergi öncesidir.";
@@ -270,7 +274,7 @@ export function incomeStatement({ entries, valuation, from, to, bookType = "unse
     entryCount: count,
     items,
     subtotals,
-    smm: { estimated: cost.estimated, posted: cost.posted, minor: cost.estimated ? cost.minor : of("D"), dssPrevMinor: cost.dssPrevMinor, dssMinor: cost.dssMinor, stockFlowMinor: cost.stockFlowMinor, stockMovesMinor: cost.stockMovesMinor, differenceMinor: cost.differenceMinor },
+    smm: { estimated: cost.estimated, posted: cost.posted, minor: cost.estimated && !cost.posted ? cost.minor : of("D"), dssPrevMinor: cost.dssPrevMinor, dssMinor: cost.dssMinor, stockFlowMinor: cost.stockFlowMinor, stockMovesMinor: cost.stockMovesMinor, differenceMinor: cost.differenceMinor },
     kesinDegil: notFinalReasons(facts),
     footnotes: footnotes({ cashExpenseMinor, unclassifiedIncomeMinor, unclassifiedCostMinor, bookType }),
     warnings,
