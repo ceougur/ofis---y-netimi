@@ -184,6 +184,8 @@ export function createStockValuation({ items = [], moves = [] } = {}) {
     return ends.get(year).state;
   }
 
+  // Ayrıntısız sonuçlar gün başına saklanır (Bilanço ile aynı çağrıdaki Gelir Tablosu at(t)'yi bir kez hesaplatır; girdi değişmez — nesne salt okunur kullanılır).
+  const days = new Map();
   function at(day, options = {}) {
     const year = yearOf(day);
     if (!Number.isFinite(year)) throw new Error(`Geçersiz tarih: ${day}`);
@@ -191,7 +193,9 @@ export function createStockValuation({ items = [], moves = [] } = {}) {
       endOf(year);
       return ends.get(year).out;
     }
-    return stateAt(year, day, options).out;
+    if (options.detail) return stateAt(year, day, options).out;
+    if (!days.has(day)) days.set(day, stateAt(year, day).out);
+    return days.get(day);
   }
 
   return { at, yearEnd: (year, options = {}) => at(yearEndDay(year), options), firstYear: Number.isFinite(firstYear) ? firstYear : null };

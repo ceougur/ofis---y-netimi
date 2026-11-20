@@ -6,8 +6,11 @@ import { createClock } from "./clock.mjs";
 import { createStore, openDatabase } from "./db.mjs";
 import { createPeriod } from "./period.mjs";
 import { createRouter } from "./router.mjs";
-import { incomeStatementOf, stockValuationOf } from "./financial-statements.mjs";
+import { createMoneyLines } from "./bank/money-lines.mjs";
+import { balanceSheetOf, incomeStatementOf, stockValuationOf } from "./financial-statements.mjs";
+import { registerAccountRoutes } from "../routes/accounts.mjs";
 import { registerLedgerRoutes } from "../routes/ledger.mjs";
+import { registerPlanRoutes } from "../routes/plans.mjs";
 
 const { dbPath, time, job } = workerData || {};
 let db = null;
@@ -19,7 +22,18 @@ try {
   db.exec("BEGIN");
   try {
     if (job?.kind === "valuation") reply = { ok: true, data: stockValuationOf({ store, date: job.date }) };
-    else {
+    else if (job?.kind === "balance") {
+      // Bilanço (tur 2): Defter Mutabakatı'nın beklenenleri cari listesini (taksit kartlarıyla) ve tek kaynağı ister — kurulum integrity-scan-worker'ınkinin aynısı (yalnız okuma).
+      const router = createRouter();
+      const context = { store, now, audit: () => {}, events: null, trash: null, auth: null, bank: null, config: {} };
+      const services = {};
+      services.period = createPeriod({ store, now });
+      services.money = createMoneyLines(store);
+      services.plans = registerPlanRoutes(router, { ...context, period: services.period, accounts: () => services.accounts, cheques: () => null, invoices: () => null });
+      services.accounts = registerAccountRoutes(router, { ...context, period: services.period, plans: () => services.plans, cheques: () => null });
+      const ledger = registerLedgerRoutes(router, { ...context, period: services.period, accounts: () => services.accounts, integrity: () => null, money: services.money });
+      reply = { ok: true, data: balanceSheetOf({ store, ledger, date: job.date }) };
+    } else {
       const ledger = registerLedgerRoutes(createRouter(), { store, now, auth: null, audit: () => {}, events: null, period: createPeriod({ store, now }), integrity: () => null, money: null, config: {} });
       reply = { ok: true, data: incomeStatementOf({ store, ledger, from: job?.from, to: job?.to }) };
     }

@@ -1,5 +1,6 @@
 // Mali tablolar okuma ucu (2.5.0 Ç6-HESAP tur 1; docs/erp/C6-HESAP-TASARIM.md §8). JSON — ekranlar, PDF / Excel ve Rapor Merkezi kaydı Ç6-EKRAN'ın işi.
 //   GET /api/workspace/financial-statements/income-statement?from=YYYY-MM-DD&to=YYYY-MM-DD   (ikisi de yoksa Bu Yıl; aynı mali yıl — çapraz yıl 400 gelir-tablosu-tek-yil)
+//   GET /api/workspace/financial-statements/balance-sheet?date=YYYY-MM-DD                     (yoksa bugün; tur 2 — Bilanço, asOf)
 //   GET /api/workspace/financial-statements/stock-valuation?date=YYYY-MM-DD                   (yoksa bugün)
 // Yetki Ana Defter raporlarıyla AYNI: overview.view (Yönetici + Muhasebe; Personel / Avukat 403). Hesap rapor iş parçacığında (salt okunur bağlantı, tek okuma işlemi); veri tabanı yolu yoksa ya
 // da açık bir işlemin içindeyse aynı ortak işlev iş parçacığısız. Veri değişmedikçe sonuç saklanır (bağlantının değişiklik sayaçları + bugün + kilit + parametreler; en çok 8).
@@ -7,7 +8,7 @@ import { Worker } from "node:worker_threads";
 import { HttpError, ok, text } from "../lib/http.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { presetRange } from "../lib/finance-report.mjs";
-import { incomeStatementOf, stockValuationOf } from "../lib/financial-statements.mjs";
+import { balanceSheetOf, incomeStatementOf, stockValuationOf } from "../lib/financial-statements.mjs";
 
 const BASE = "/api/workspace/financial-statements";
 const ENTRY = new URL("../lib/financial-statements-worker.mjs", import.meta.url);
@@ -53,7 +54,12 @@ export function registerFinancialStatementRoutes(router, { store, auth, ledger, 
     return counters ? JSON.stringify([counters.version, counters.total, today(), period?.lockedUntil?.() || "", job]) : "";
   };
   const asHttp = error => (error instanceof HttpError ? error : error?.status && error.status < 500 ? new HttpError(error.status, error.message, { code: error.code }) : error);
-  const inline = job => (job.kind === "valuation" ? stockValuationOf({ store, date: job.date }) : incomeStatementOf({ store, ledger: ledger(), from: job.from, to: job.to }));
+  const inline = job =>
+    job.kind === "valuation"
+      ? stockValuationOf({ store, date: job.date })
+      : job.kind === "balance"
+        ? balanceSheetOf({ store, ledger: ledger(), date: job.date })
+        : incomeStatementOf({ store, ledger: ledger(), from: job.from, to: job.to });
   async function compute(job) {
     const key = keyOf(job);
     if (key && cache.has(key)) return cache.get(key);
@@ -77,6 +83,11 @@ export function registerFinancialStatementRoutes(router, { store, auth, ledger, 
     let to = text(url.searchParams.get("to"));
     if (!from && !to) ({ from, to } = presetRange("thisYear", today()));
     ok(res, await compute({ kind: "income", from, to }));
+  });
+  router.get(`${BASE}/balance-sheet`, async ({ req, res, url }) => {
+    auth.requirePermission(req, "overview.view");
+    const date = text(url.searchParams.get("date")) || today();
+    ok(res, await compute({ kind: "balance", date }));
   });
   router.get(`${BASE}/stock-valuation`, async ({ req, res, url }) => {
     auth.requirePermission(req, "overview.view");
