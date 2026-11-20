@@ -1,0 +1,4 @@
+komşu UTC başladı 08:17:02 · 1.06 2.15 2.48 4/220 15439 · 82c4ca0a · 55 dosya
+komşu UTC çıkış 0 · # tests 730 # pass 730 # fail 0 # cancelled 0 # skipped 0  · 08:21:00 · 3.41 2.97 2.75 1/123 16579
+komşu Europe/Istanbul başladı 08:21:00 · 3.41 2.97 2.75 1/122 16584 · 82c4ca0a · 55 dosya
+komşu Europe/Istanbul çıkış 0 · # tests 730 # pass 730 # fail 0 # cancelled 0 # skipped 0  · 08:25:01 · 4.25 3.57 3.03 2/217 18648

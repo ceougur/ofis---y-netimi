@@ -1,0 +1,24 @@
+import json, sys, collections
+# Kullanım: python3 -I prof.py <.cpuprofile> — seçili işlevlerin kapsayıcı (inclusive) süresi (ms; özyinelemede bir kez sayılır)
+p = json.load(open(sys.argv[1]))
+nodes = {n['id']: n for n in p['nodes']}
+parent = {}
+for n in p['nodes']:
+    for c in n.get('children', []):
+        parent[c] = n['id']
+dt = collections.Counter()
+samples, deltas = p['samples'], p['timeDeltas']
+for i, s in enumerate(samples):
+    dt[s] += deltas[i] if i < len(deltas) else 0
+want = set(sys.argv[2].split(',')) if len(sys.argv) > 2 else {'settledFor', 'coverState', 'trimCovers', 'settleCoverOnCancel', 'coverCancelText', 'planCancelText', 'paymentStates', 'detail', 'cancel', 'reverseEffects', 'closeForInvoice', 'openByQueue', 'removeForInvoice', 'hasOpenCover', 'createInvoice', 'issue'}
+incl = collections.Counter()
+for nid, t in dt.items():
+    seen = set(); cur = nid
+    while cur is not None:
+        f = nodes[cur]['callFrame']
+        key = f"{f['functionName']} ({f['url'].split('/')[-1]}:{f['lineNumber']+1})"
+        if f['functionName'] in want and key not in seen:
+            seen.add(key); incl[key] += t
+        cur = parent.get(cur)
+for k, v in incl.most_common(40):
+    print(f"{v/1000:9.1f} ms  {k}")

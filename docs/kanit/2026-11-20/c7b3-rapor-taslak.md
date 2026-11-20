@@ -111,3 +111,18 @@ Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
   (iade-210-onarim, banka-210-altin) = 54 dosya (c7b3-d4-komsu-liste.txt). UTC 727 / 727, Europe/Istanbul 727 / 727 — kırmızı YOK (önceki uçta tek kırmızı acilis-onarimi-hiz-250 idi; S218 = B ile kapandı).
 - Kabul A / C'nin onarım yolundan etkilenmesi: defter kâhini ve muhasebe sürücüsü senaryoları açılış onarımını tetiklemez (onarım yalnız 2.0.24–2.0.26'da paralı iadeyle büyümüş kartta, açılışta
   çalışır; kâhin / sürücü verisi bugünkü kodla üretilir, böyle kart oluşmaz) → ETKİLENMEZ; kabul A / C yeniden koşulmadı. Eski sürüm (v2.4.9) testi c7b-tur3-eski-surum-250 iki TZ 5 / 5 (bölüm 8).
+
+## 10. Kabul E'nin hız BULGUSU ve düzeltmesi (82c4ca0a) — kanıt c7b3-d4-hiz-bulgu-*, c7b3-d4-t2-hiz-*, c7b3-d4-komsu2-*
+- Bulgu: devam 2 ajanının commit'siz bıraktığı kilitsiz ölçüm (scratchpad/c7b3-d3/hiz/hiz-kilitsiz.txt, da458f89 ↔ c7b3-taban; yük ≤ 1,4 — GEÇERLİ; c7b3-d4-hiz-bulgu-*) KÖTÜLEŞEN
+  yollar gösterdi: fatura kartı 91 → 144, satış yazımı 171 → 229, tahsilatsız taksitli fatura iptali 102 → 322, kapsayan kartlı caride iptal 91 → 284, silme 105 → 310, Geciken listesi
+  552 → 1.291 ms (en iyi).
+- Tanı (ana kopyada, aynı veri, yazımdan önce / sonra tek tek; c7b3-d4-hiz-bulgu-tani-1.txt — yük 2–4, yalnız TANI): Geciken listesi YAZIMDAN ÖNCE iki kodda aynı (taban ~870–910, yeni
+  ~810–1.070) → ölçümdeki fark kod değil VERİ ayrışması (yeni kodda döngünün iptalleri kartları kapatıp küçültüyor). Satış yazımı / fatura kartı / iptal ise gerçekten yavaş. CPU profili
+  (c7b3-d4-hiz-bulgu-prof.txt): `coverCancelText` → `coverState` → `settledFor` (~104 ms / çağrı; satış yanıtı ve fatura kartı), iptalde `coverState` (~107 ms) + `trimCovers` (~229 ms,
+  kuyruklu `accounts.detail`).
+- Düzeltme (davranış AYNEN; tasarım §16.10): kapsam okuması yalnız faturadan SONRA (ya da aynı anda) açılmış etkin Mevcut Borç kartı varken (karttan sonra doğan borç kapsanmaz —
+  lib/invoice-settle.mjs born <= plan.at); trimCovers defteri withRemaining: false ile okur.
+- Yeni test test/c7b-tur3-hiz-250: yeni kodda iki TZ 3 / 3; eski kodda (4b568420, ayrı kopya) iki TZ 2 / 3 — beklenen nedenle: fatura kartı iki defter okuması
+  [{withRemaining:false},{withRemaining:false}], iptal iki okuma biri kuyruklu [{false},{true}]. Eşdeğerlik sınamaları (kapsam kuralı; trimCovers girdisi her caride iki yolda aynı) eski kodda
+  da yeşil (özellik testi).
+- G2 komşu (55 dosya: 54 + yeni test) son kodda iki TZ 730 / 730.

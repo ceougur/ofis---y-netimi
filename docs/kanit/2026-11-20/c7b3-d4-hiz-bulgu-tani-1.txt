@@ -1,0 +1,68 @@
+=== taban · 1.79 3.29 2.64 1/169 10594
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban · acc account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 · açık Mevcut Borç kartı 4 · onarım izi 0
+  Geciken (önce): 200 1879.2 ms
+  Geciken (önce): 200 894.3 ms
+  Geciken (önce): 200 907.3 ms
+  satış taksitli: 200 342.2 ms
+  satış taksitli: 200 258.5 ms
+  satış taksitli: 200 231.5 ms
+  fatura kartı: 200 122.2 ms
+  fatura kartı: 200 126.8 ms
+  fatura kartı: 200 139.5 ms
+  iptal: 200 139.1 ms
+  iptal: 200 133.3 ms
+  iptal: 200 144.3 ms
+  Geciken (sonra): 200 1966.8 ms
+  Geciken (sonra): 200 932.1 ms
+  Geciken (sonra): 200 844.6 ms
+=== yeni · 2.35 3.26 2.65 2/221 10961
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-abcab14e726c6a077 · acc account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 · açık Mevcut Borç kartı 4 · onarım izi 0
+  Geciken (önce): 200 2136.3 ms
+  Geciken (önce): 200 983.5 ms
+  Geciken (önce): 200 1071.8 ms
+  satış taksitli: 200 430.0 ms
+  satış taksitli: 200 448.5 ms
+  satış taksitli: 200 359.2 ms
+  fatura kartı: 200 242.9 ms
+  fatura kartı: 200 261.9 ms
+  fatura kartı: 200 297.9 ms
+  iptal: 200 482.1 ms
+  iptal: 200 606.4 ms
+  iptal: 200 522.9 ms
+  Geciken (sonra): 200 2187.7 ms
+  Geciken (sonra): 200 893.1 ms
+  Geciken (sonra): 200 822.6 ms
+=== taban · 2.91 3.32 2.70 4/233 11062
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban · acc account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 · açık Mevcut Borç kartı 4 · onarım izi 0
+  Geciken (önce): 200 1911.6 ms
+  Geciken (önce): 200 905.3 ms
+  Geciken (önce): 200 872.3 ms
+  satış taksitli: 200 346.4 ms
+  satış taksitli: 200 242.7 ms
+  satış taksitli: 200 265.1 ms
+  fatura kartı: 200 161.6 ms
+  fatura kartı: 200 147.1 ms
+  fatura kartı: 200 125.8 ms
+  iptal: 200 136.6 ms
+  iptal: 200 131.0 ms
+  iptal: 200 159.6 ms
+  Geciken (sonra): 200 1992.2 ms
+  Geciken (sonra): 200 888.0 ms
+  Geciken (sonra): 200 983.3 ms
+=== yeni · 3.86 3.54 2.80 3/261 11470
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-abcab14e726c6a077 · acc account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 · açık Mevcut Borç kartı 4 · onarım izi 0
+  Geciken (önce): 200 1803.8 ms
+  Geciken (önce): 200 815.0 ms
+  Geciken (önce): 200 806.1 ms
+  satış taksitli: 200 371.0 ms
+  satış taksitli: 200 344.0 ms
+  satış taksitli: 200 311.3 ms
+  fatura kartı: 200 211.7 ms
+  fatura kartı: 200 249.0 ms
+  fatura kartı: 200 210.4 ms
+  iptal: 200 462.8 ms
+  iptal: 200 457.5 ms
+  iptal: 200 460.7 ms
+  Geciken (sonra): 200 1870.5 ms
+  Geciken (sonra): 200 821.2 ms
+  Geciken (sonra): 200 860.0 ms
