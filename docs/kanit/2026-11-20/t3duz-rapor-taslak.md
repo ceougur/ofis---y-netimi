@@ -62,3 +62,13 @@ Liste: scratchpad/t3duz-d3/komsu-tam.txt (önceki ajanın taraması; bu ajan de�
 routes/cheques, report-center — `komsu.py` ile yeniden taradı: 135 dosya, hepsi 223'ün içinde). Kapsam: yeni testler (hesapsiz-tumu-250, supheli-kuyruk-defter-250,
 g1-hiz-esdegerlik-250, pos-komisyon-satis-gunu-250, hesapsiz-acilis-250, kural-farki-yil-250, defter-kaynak-iz-250), beklentisi değişen komşular (gg2,
 banka-210-raporlar, raporlar-230-banka) ve şema kapısı / geri yükleme komşuları listede.
+
+### Bu turda değişen 10 test dosyası — yeni kod iki TZ + taban kırmızısı (ders 7, 38, 51; taban = scratchpad/t3duz-d2/taban'ın /dev/shm kopyası + yalnız bu 10 test)
+- Yeni (7aa16bdf): UTC 100 / 100, İstanbul 100 / 100 (fail 0, cancelled 0, skipped 0) — `t3duz-degisen-testler-*`.
+- Taban (780972cf): iki TZ AYNI — 98 test, 79 geçti, 14 kaldı, 5 iptal (`t3duz-taban-kirmizi-*`, nedenler `t3duz-taban-kirmizi-*-nedenler.txt`). Her kırmızının NEDENİ beklenen:
+  G1 — hesapsiz-tumu-250 üç test ('iki işaretli satır 0 !== 2', 'devir yalnız 22.09 POS 700000 !== 300000', 'PDF'te işaretli satır'), gg2 ('açılışta sayılmış havale … 5000 !== 0'),
+  banka-210-raporlar R2 ('işaretli 0 !== 1') + aynı dosyanın son özet testi (R2 düşünce birleşim sayısı tutmuyor — ardıl), raporlar-230-banka ('Dönem Giriş (açılışta sayılmış eski havale hariç)');
+  B1 — supheli-kuyruk-defter-250 'B1' ('UL-L (yazım UL, kimlikte önce L)'), defter-kaynak-iz-250 (B1'in okuduğu dört created_at / issued_at sütunu istisnada — taban okumuyor);
+  S212 — üç test (nakit / çek / kısmi bağ: deepStrictEqual 120 / 128); S181 — iki test (eski ileti 'kaydı şüpheliye alma tarihinden sonraya girin…');
+  G1 hız 3 eşdeğerliği — g1-hiz-esdegerlik-250 ('moneyLines bağlamda' — tabanda coverGroups yok; 5 alt test iptal).
+  Tabanda YEŞİL kalanlar (var olan davranışın eksik testleri; dişleri mutasyonla): DÜŞÜK (a) N7 / N8 / N11, M12 testi.
