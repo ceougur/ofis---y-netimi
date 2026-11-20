@@ -58,3 +58,11 @@
 - gerileme.py: 248 koşu, BİREBİR 176, FARKLI 72 (36 senaryo × iki TZ). Atıf aracı 62'sini aileyle açıkladı; kalan 10 koşu (rastgele-1, s121, s28, s58, s69 × iki TZ)
   elle açıklandı (surucu5-gerileme-atif-elle.txt) → AÇIKLANMAYAN 0. s112 farkı yalnız ret iletisi (tek aday düzeltme S181 iletisi 29eb3a5c).
 - Her farklı koşuda eski kodun kırmızısı ≥ yeni kodun kırmızısı; artan tek koşu s91 UTC (3 → 4: TE1 artık açıldığı için mz0'da R-B5 görünür).
+
+## Adım 6 — testin dişi (programın ayrı kopyası: git archive HEAD server client package.json + test/helpers.mjs; arac/mutant.py)
+- mutant1 (Kartı Kapat kalanı yine 689'a: server/routes/plans.mjs Kartı Kapat close_rule '' → '2.4.9'), s40 / s60 / s121, --paralel 1: kanit çıkış 1 · 86/144, # fail 58
+  (iki TZ aynı: SINIFLANMADI 24 + sınıfsız adım 5 her TZ'de) — YAKALANDI.
+- mutant2 (Excel'de aynı adlı açık kart varsa kişiye bakmadan atla: `duplicate === "same" || cards.length`), s91 / s19 / s86: kanit çıkış 1 · 128/140, # fail 4
+  (iki TZ'de s91 OLAY 1 taksit_excel "atlandi" → SINIFLANMADI, neden "Aynı adla açık kart var"; UTC'de ayrıca eski R-B5 mz1 2) — YAKALANDI. Önceki sürücüde bu yol
+  P7 kuralına düşerdi; bakım 5'in "atlandi → uygulanamayan" eşlemesi olmadan mutant SINIFLANMADI'ya düşmezdi.
+- Not: mutant koşusu başlarken yük 6,5 (başka oturumun kâhin mutasyon koşusu); ölçüm değil, sonuç sayıları yükten bağımsız.

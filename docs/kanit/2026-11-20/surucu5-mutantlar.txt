@@ -1,0 +1,84 @@
+=== mutant1 (mutant1)
+[UTC] AYNI 35 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 24 · OLCULEMEDI 0 · SUSMA 0 · sınıfsız adım 5 · red farkı 0 · uygulanamayan 0 · red/olay P-K-R 0
+  s121-a5-s220-kart-kapat-onceden-gecikmis: AYNI 7 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 12 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 3 · uygulanamayan 0
+  s40-s1-vadesiz-gecikmis: AYNI 19 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 4 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 1 · uygulanamayan 0
+  s60-r6-kart-kapat-borcta-kalir: AYNI 9 · U 1 · P 0 · K 0 · R 0 · SINIFLANMADI 8 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 1 · uygulanamayan 0
+[Europe-Istanbul] AYNI 35 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 24 · OLCULEMEDI 0 · SUSMA 0 · sınıfsız adım 5 · red farkı 0 · uygulanamayan 0 · red/olay P-K-R 0
+  s121-a5-s220-kart-kapat-onceden-gecikmis: AYNI 7 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 12 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 3 · uygulanamayan 0
+  s40-s1-vadesiz-gecikmis: AYNI 19 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 4 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 1 · uygulanamayan 0
+  s60-r6-kart-kapat-borcta-kalir: AYNI 9 · U 1 · P 0 · K 0 · R 0 · SINIFLANMADI 8 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 1 · uygulanamayan 0
+s121-a5-s220-kart-kapat-onceden-gecikmis [UTC] (15)
+  ADIM 5 taksit_kapat  {"ana": {"120": -60000, "689": 60000}, "cari": {"C2": -60000}} → SINIFLANMADI 
+  ADIM 8 taksit_kapat  {"ana": {"120": -60000, "689": 60000}, "cari": {"C1": -60000}} → SINIFLANMADI 
+  ADIM 13 tahsilat P3 {"ana": {"120": 20000, "689": -20000}, "cari": {"C1": 20000}} → SINIFLANMADI 
+  g1a gecikmis:C1 program 0 · kâhin 30000 · bugün "—" → SINIFLANMADI 
+  g1b gecikmis:C1 program 0 · kâhin 60000 · bugün "—" → SINIFLANMADI 
+  g1c gecikmis:C1 program 0 · kâhin 40000 · bugün "—" → SINIFLANMADI 
+  g2 gecikmis:C2 program 0 · kâhin 60000 · bugün "—" → SINIFLANMADI 
+  mz ana:120 program 0 · kâhin 100000 · bugün 100000 → SINIFLANMADI 
+  mz ana:689 program 100000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+  mz cari:C1 program 0 · kâhin 40000 · bugün 40000 → SINIFLANMADI 
+  mz cari:C2 program 0 · kâhin 60000 · bugün 60000 → SINIFLANMADI 
+  son ana:120 program 0 · kâhin 100000 · bugün 100000 → SINIFLANMADI 
+  son ana:689 program 100000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+  son cari:C1 program 0 · kâhin 40000 · bugün 40000 → SINIFLANMADI 
+  son cari:C2 program 0 · kâhin 60000 · bugün 60000 → SINIFLANMADI 
+s40-s1-vadesiz-gecikmis [UTC] (5)
+  ADIM 18 taksit_kapat  {"ana": {"120": -30000, "689": 30000}, "cari": {"C2": -30000}} → SINIFLANMADI 
+  g11 gecikmis:C2 program 0 · kâhin 30000 · bugün "—" → SINIFLANMADI 
+  son ana:120 program 65000 · kâhin 95000 · bugün 95000 → SINIFLANMADI 
+  son ana:689 program 30000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+  son cari:C2 program 0 · kâhin 30000 · bugün 30000 → SINIFLANMADI 
+s60-r6-kart-kapat-borcta-kalir [UTC] (9)
+  ADIM 5 taksit_kapat  {"ana": {"120": -5000, "689": 5000}, "cari": {"C1": -5000}} → SINIFLANMADI 
+  g1 gecikmis:C1 program 0 · kâhin 5000 · bugün "—" → SINIFLANMADI 
+  gt ana:689 program 10000 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  mz ana:120 program 0 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  mz ana:689 program 10000 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  mz cari:C1 program 0 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  son ana:120 program 0 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  son ana:689 program 10000 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  son cari:C1 program 0 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+s121-a5-s220-kart-kapat-onceden-gecikmis [Europe-Istanbul] (15)
+  ADIM 5 taksit_kapat  {"ana": {"120": -60000, "689": 60000}, "cari": {"C2": -60000}} → SINIFLANMADI 
+  ADIM 8 taksit_kapat  {"ana": {"120": -60000, "689": 60000}, "cari": {"C1": -60000}} → SINIFLANMADI 
+  ADIM 13 tahsilat P3 {"ana": {"120": 20000, "689": -20000}, "cari": {"C1": 20000}} → SINIFLANMADI 
+  g1a gecikmis:C1 program 0 · kâhin 30000 · bugün "—" → SINIFLANMADI 
+  g1b gecikmis:C1 program 0 · kâhin 60000 · bugün "—" → SINIFLANMADI 
+  g1c gecikmis:C1 program 0 · kâhin 40000 · bugün "—" → SINIFLANMADI 
+  g2 gecikmis:C2 program 0 · kâhin 60000 · bugün "—" → SINIFLANMADI 
+  mz ana:120 program 0 · kâhin 100000 · bugün 100000 → SINIFLANMADI 
+  mz ana:689 program 100000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+  mz cari:C1 program 0 · kâhin 40000 · bugün 40000 → SINIFLANMADI 
+  mz cari:C2 program 0 · kâhin 60000 · bugün 60000 → SINIFLANMADI 
+  son ana:120 program 0 · kâhin 100000 · bugün 100000 → SINIFLANMADI 
+  son ana:689 program 100000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+  son cari:C1 program 0 · kâhin 40000 · bugün 40000 → SINIFLANMADI 
+  son cari:C2 program 0 · kâhin 60000 · bugün 60000 → SINIFLANMADI 
+s40-s1-vadesiz-gecikmis [Europe-Istanbul] (5)
+  ADIM 18 taksit_kapat  {"ana": {"120": -30000, "689": 30000}, "cari": {"C2": -30000}} → SINIFLANMADI 
+  g11 gecikmis:C2 program 0 · kâhin 30000 · bugün "—" → SINIFLANMADI 
+  son ana:120 program 65000 · kâhin 95000 · bugün 95000 → SINIFLANMADI 
+  son ana:689 program 30000 · kâhin 0 · bugün 0 → SINIFLANMADI 
+  son cari:C2 program 0 · kâhin 30000 · bugün 30000 → SINIFLANMADI 
+s60-r6-kart-kapat-borcta-kalir [Europe-Istanbul] (9)
+  ADIM 5 taksit_kapat  {"ana": {"120": -5000, "689": 5000}, "cari": {"C1": -5000}} → SINIFLANMADI 
+  g1 gecikmis:C1 program 0 · kâhin 5000 · bugün "—" → SINIFLANMADI 
+  gt ana:689 program 10000 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  mz ana:120 program 0 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  mz ana:689 program 10000 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  mz cari:C1 program 0 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  son ana:120 program 0 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  son ana:689 program 10000 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+  son cari:C1 program 0 · kâhin 5000 · bugün 5000 → SINIFLANMADI 
+=== mutant2 (mutant2)
+[UTC] AYNI 59 · U 4 · P 0 · K 0 · R 2 · SINIFLANMADI 0 · OLCULEMEDI 4 · SUSMA 0 · sınıfsız adım 0 · red farkı 0 · uygulanamayan 1 · red/olay P-K-R 0
+  s91-b5-kg5-yukleme-yerel-gunu: AYNI 17 · U 0 · P 0 · K 0 · R 2 · SINIFLANMADI 0 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 1
+[Europe-Istanbul] AYNI 61 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · OLCULEMEDI 4 · SUSMA 0 · sınıfsız adım 0 · red farkı 0 · uygulanamayan 1 · red/olay P-K-R 0
+  s91-b5-kg5-yukleme-yerel-gunu: AYNI 19 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 1
+s91-b5-kg5-yukleme-yerel-gunu [UTC] (3)
+  OLAY 1 taksit_excel atlandi → SINIFLANMADI program satırı atladı: [{"row":2,"reason":"Aynı adla açık kart var"}]
+  mz1 ana:120 program 1200 · kâhin 500 · bugün 500 → R 
+  mz1 ana:519 program -1200 · kâhin -500 · bugün -500 → R 
+s91-b5-kg5-yukleme-yerel-gunu [Europe-Istanbul] (1)
+  OLAY 1 taksit_excel atlandi → SINIFLANMADI program satırı atladı: [{"row":2,"reason":"Aynı adla açık kart var"}]
