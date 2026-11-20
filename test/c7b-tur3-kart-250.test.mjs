@@ -130,6 +130,21 @@ describe("Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S211", () =>
     await integrity("S206 / S211");
   });
 
+  it("Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)", async () => {
+    const A = await acc();
+    const f = await service(A, "2026-10-07", 900, { rest: "installments", installments: { count: 3, firstDue: "2026-10-07" } });
+    const p = planOf(f);
+    await pay(p, 300, "2026-10-07");
+    await must("Kartı Kapat", api.put(`${W}/plans/${p}`, { status: "closed", closeRemaining: 600 }));
+    const balance = (await totals(A)).balance;
+    const res = await api.post(`${W}/invoices/${f}/cancel`, { reason: "kapalı kart" });
+    assert.equal(res.status, 409, JSON.stringify(res.data).slice(0, 300));
+    assert.equal(res.data?.code, "plan-has-payments");
+    assert.match(String(res.data?.error || ""), /Yeniden Aç/);
+    assert.equal(invoiceStatus(f), "issued");
+    assert.equal((await totals(A)).balance, balance, "bakiye değişmedi");
+  });
+
   it("K-3a (bu turda karar (4)): kartta başka borç da varsa kart faturanın payı kadar küçülür, açık kalır", async () => {
     const A = await acc();
     await must("Borç Yaz", api.post(`${W}/accounts/${A}/entries`, { kind: "debt", amount: "400", date: "2026-10-07", note: "Elle borç" }));
