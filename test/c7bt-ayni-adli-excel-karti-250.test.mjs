@@ -178,6 +178,19 @@ describe("Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kiş
       assert.equal((await api.put("/api/admin/period-lock", { lockedUntil: "" })).status, 200);
     }
   });
+  it("(11) ad eşleşmesi veri tabanının NOCASE kuralıyla AYNI (hız düzeltmesinin eşdeğerliği): yalnız ASCII harfler katlanır; I / ı, İ / i ayrı ad", async () => {
+    const owner = await account("Irmak İnce", "0544 100 00 01");
+    await load([row("Irmak İnce", "0544 100 00 01", "300")], "irmak.xlsx");
+    assert.deepEqual(cards(owner).map(item => item.total), [300]);
+    for (const variant of ["irmak İnce", "IRMAK İNCE", "ırmak İnce", "Irmak ince"]) {
+      const same = ctx.store.get("SELECT ? = ? COLLATE NOCASE AS x", variant, "Irmak İnce").x === 1;
+      const report = await load([row(variant, "0544 100 00 01", "300")], `irmak-${variant.length}.xlsx`);
+      assert.deepEqual(reasons(report), same ? ["Aynı adla açık kart var"] : [], `${JSON.stringify(variant)} — veri tabanı NOCASE ${same ? "aynı" : "farklı"} ad diyor`);
+      if (!same) await must("geri al", api.post(`/api/workspace/plans/imports/${report.importId}/undo`, {}));
+    }
+    assert.deepEqual(cards(owner).map(item => item.total), [300], "aynı kişiye ikinci kart açılmadı");
+  });
+
   it("(8) carisiz eski kart: kartın kendi telefonu aynıysa aynı kişi (atlanır), 7+ hane ve farklıysa başka kişi (açılır)", async () => {
     const owner = await account("Hakan Arı", "0539 700 00 01");
     await load([row("Hakan Arı", "0539 700 00 01", "500")], "hakan.xlsx");
