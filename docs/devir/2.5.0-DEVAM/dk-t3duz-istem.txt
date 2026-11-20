@@ -1,0 +1,84 @@
+Sen DestekOfis projesinde bağımsız DAR KONTROL incelemecisisin (2.5.0 — TEK ADAY DÜZELTME TURU: önceki dar kontrolün iki ORTA bulgusu G1 / B1, S212, DÜŞÜK'ler ve G1 düzeltmesinin hızı). Yalnız HATA ararsın. Düzeltme, commit ve push YAPMAZSIN. PARA ÇEKİRDEĞİ (defter / şüpheli alacak ayırıcısı) — eforun high. Yanıtın Türkçe. Zamanlanmış görev KURMA.
+
+## Hazırlık
+1. Worktree'de ÖNCE `git reset --hard b55f7b34` (incelenecek birleşim; ilk ebeveyni birleşim öncesi kod = DÜZELTME ÖNCESİ). Kendi commit'in olmayacak.
+2. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK). Tarayıcı: `PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194`.
+3. ÖNCE oku: `CLAUDE.md` (anayasa + dersler 1–54); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md` (tamamı; §3 senin kuralların); muhasebeleştirme kural kitabında K-14, K-15, KG-6 ve şüpheli (128 / 129) satırları (python ile ara); `docs/erp/C5-ACILIS-TASARIM.md` §2–§4 ve §17'nin KURAL cümleleri (§17.x 'ajan yaptı' anlatımları kanıt DEĞİL — kodla karşılaştır).
+   OKUNMAZ (prensip §3 bağımsızlık): `docs/devir/2.5.0-DEVAM/` altındaki *-rapor.md, *-istem.txt, *-ek.txt dosyaları (düzeltme ajanlarının raporları ve görev metinleri; önceki dar kontrolün bulguları aşağıda AYNEN verildi), `docs/2.5.0-IS-LISTESI-KAYIT.md`, `docs/kanit/2026-11-*/` altındaki ajan ve ana oturum çıktıları. Kodu ve testleri farktan oku.
+4. TEMİZ büyük veri (OKUNUR; kendi kopyanı al): `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/` (temiz-100k).
+5. Not defteri: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dk-t3duz-<kısa>` (ders 25). Eski kod kopyası `git -C /home/user/ofis---y-netimi archive b55f7b34^1 ':!docs/kanit' | tar -x -C <klasör>` + node_modules bağı; eski sürüm ETİKETİ isteyen test için `git -C /home/user/ofis---y-netimi worktree add --detach <klasör> <ref>`, bitince `git -C /home/user/ofis---y-netimi worktree remove --force <o tam yol>` (ders 54: `GIT_DIR` / `GIT_WORK_TREE` VERME). Biten kopyanı TAM yoluyla sil; `df -h /` 5 GB'ın altına düşürme; aynı anda en çok BİR eski kopya.
+
+## Kapsam (DURMA KURALI — yalnız bu fark)
+`git diff b55f7b34^1 b55f7b34 -- server client test ':!test/bagimsiz'` — altı ürün dosyası (server/lib/bank/doubtful.mjs, server/lib/bank/money-lines.mjs, server/lib/doubtful-gl.mjs, server/lib/obligation-queue.mjs, server/routes/cheques.mjs, server/routes/report-center.mjs) ve değişen / yeni testler (bir e2e senaryosunun BEKLENTİSİ değişti — test/e2e/senaryo-banka-210.mjs). Dört iş: (1) G1 — 'Banka ve POS Hareketleri' Hesap = Tüm Hesaplar'da 'Açılışta Sayıldı'; (2) B1 — şüpheli ayırıcısında aynı gün aynı sınıftaki alacakların sırası; (3) S212 — şüpheliye almadan önce bağsız ödemeyle kapanmış faturaya sonradan bağlı tahsilat; (4) DÜŞÜK'ler (N5 / N7 / N8 / N11 testleri + S181 çek yolu iletisi) ve G1 düzeltmesinin HIZ değişiklikleri (davranış DEĞİŞTİRMEMELİ). Muhasebe sürücüsü ve kâhinler (test/bagimsiz) KAPSAM DIŞI.
+
+## Düzeltilen bulgular (önceki dar kontrolün raporundan AYNEN; satır numaraları düzeltme ÖNCESİ koda göre; bu metinde 'birleşim öncesi kod' = banka türetme kurallarından (Ç7a) ÖNCEKİ kod, 'yeni kod' = bu düzeltmenin TABANI)
+**G1 — ORTA.** Konu: "Banka ve POS Hareketleri" raporu, Hesap = Tüm Hesaplar. Bu rapor 2.4.3'ten beri Banka grubunda.
+- **Ne oluyor:** Ç7a, açılıştan önceki hesapsız satırları ("Açılışta Sayıldı") defterde 519'a, kovada da toplam dışına aldı. Tüm Hesaplar seçimi ise hâlâ Kasa yolundan geliyor (`server/routes/report-center.mjs:1601` `cash().report`). Bu yolda o satırlar işaretsiz kalıyor ve toplama giriyor.
+- **Betik:** `b/c7a-tumu.mjs`. Veri: hesapsız 20.09 havale +5.000, 25.09 −1.000, 22.09 POS +3.000, 03.10 +2.000; Ziraat açılışı 01.10, 100.000.
+- **Birleşim öncesi kod:** Tüm Hesaplar Dönem Sonu 109.000 = defter (102: 106.000 + 108: 3.000) = Ziraat 100.000 + Atanmamış 9.000. Üçü tutarlı.
+- **Yeni kod, Yol = Banka ve POS (Tümü):** rapor 109.000, işaretli satır 0. Buna karşı defter 102 + 108 = 105.000; Ziraat 100.000 + Atanmamış seçimi 5.000 = 105.000. Fark 4.000.
+- **Yeni kod, Yol = Banka (Havale / EFT):** rapor 106.000, defter 102 = 102.000.
+- **Ne bozuluyor:** anayasanın "her raporda alt TOPLAM" kuralı ve K4'ün "toplam = kova, ekrandan ekrana tek sayı" sözü.
+- **Kök neden:** report-center.mjs:1561 koşulu `markCounted` yolunu yalnız hesap / atanmamış / ccard / loan seçiminde kullanıyor.
+- **En küçük düzeltme:** Tüm Hesaplar için de `scopedLines` + `keyTotals({ uncounted: true })` yolu. Ya da `cash.report` satırlarına `markCounted` uygulanır.
+
+**B1 — ORTA (ders 31; programın kendi yolu, süreç kuralı dışı).**
+- Yer: `server/lib/doubtful-gl.mjs:66` (`by`) ve `:112` (`tie: credit.key`). Anahtar: SQL yükleyicide `server/lib/bank/doubtful.mjs:91` `'account:' || e.id`; yevmiye yükleyicide `doubtful-gl.mjs:271` `${entry.id}#i`.
+- Kök neden: ayırıcı aynı gün, aynı sınıftaki alacakları rastgele UUID'ye göre işliyor. Tur 3'ten beri bağlı satırın payı (`linked`, `doubtfulBefore`) "o ana kadar işlenen" kümeye (`done`) bağlı. Bu yüzden 120/128 dağılımı, kuyruk, gecikmiş ve sonraki işlemin kabul / reddi kimliğe bağlı hâle geldi. Bakiye değişmiyor; iki yükleyici kendi arasında tutarlı.
+- Betik ve çıktılar: `b/aynigun.mjs`, `aynigun.out`.
+- En küçük düzeltme: aynı sınıf içinde sıra yazım sırası olsun (rowid / created_at — kuyruğun `at` / rank'i). İki yükleyici de bu bilgiyi taşımalı. Kalıcı test bu senaryoyla, 2 yazım sırası × 2 kimlik sırası.
+- Kullanıcıya soru değil; kural ders 31'de yazılı.
+
+**DÜŞÜK** (sakınca süzgeci: para / defter / veri kaybı / KVKK yok):
+- Yaşayan yeni mutantlar = eksik test:
+  - N5: rapor işaretinde `if (line.ref) continue` kalkınca test fark etmiyor; test verisinde tek açılış günü var.
+  - N7: komisyon hesabı ayarı (S187 davranışı) test edilmiyor.
+  - N8: Hesabı Atanmamış listesinde kart çıkışı rozeti.
+  - N11: ipucunda kilit = fiş günü eşitliği.
+- S181 = B çek yolu ileti metni: red doğru (409, ledger-integrity, satır yazılmıyor) ama ileti "kaydı şüpheliye alma tarihinden sonraya girin" diyor. Nakit yolundaki "Tutarı 500'e indirin / bağı kaldırın" önerisini vermiyor.
+
+## İLK MADDELER (önce bunlar)
+1. G1: 'Banka ve POS Hareketleri' Tüm Hesaplar — her Yol seçeneği (Banka ve POS (Tümü), Banka (Havale / EFT), POS, kart, kredi) × dönem (açılıştan önce / açılışı kapsayan / sonra) × hesap seçimi: 'Açılışta Sayıldı' satırı işaretli mi, alt TOPLAM = defter (102 / 108) = kova (hesap + Atanmamış) mı; ekran / PDF / Excel aynı sayı mı. Kasa raporları DEĞİŞMEMELİ (kalıcı ürün kararı 03.10.2026: 'Kasa raporları değişmez') — Kasa yolunun bütün çıktıları düzeltme öncesi ↔ sonrası BİREBİR mi; değişen ortak yardımcıları kullanan öbür raporlar (G2 komşu; `server/` taramasıyla) aynı mı.
+2. B1 (ders 31): aynı gün aynı sınıfta birden çok alacak — 2 yazım sırası × 2 kimlik sırası; iki yükleyici (SQL ↔ yevmiye) AYNI dağılımı veriyor mu. YAZIM SIRASI hangi alandan okunuyor? O alan yedek → geri yükleme, şirket kopyalama, VACUUM, eski sürümden göç ve silme → geri alma sonrasında KORUNUYOR mu (her biri betikle; korunmuyorsa dağılım değişiyor mu — sayıyla). Sınıf içi sıranın toplamı / bakiyeyi değiştirmediğini göster.
+3. S212: şüpheliye alma ↔ bağsız ödeme ↔ bağlı tahsilat ↔ Şüpheliden Çıkar ↔ silme / geri alma — farklı sıralarda (ders 17) 120 / 128 / 644 dağılımı ve kuyruk karar metnine uyuyor mu; serbest kalan bağsız ödeme NEREYE dağılıyor (en eski açık fatura mı, kuyruk sırası mı) — karar metniyle karşılaştır; iki yükleyici aynı mı.
+4. Beklentisi DEĞİŞEN e2e (test/e2e/senaryo-banka-210.mjs): eski ve yeni beklenen sayıyı KENDİN hesapla (senaryonun adımlarından, kural kitabı + S214 metninden); yeni beklenti kararla mı geldi, yoksa bir gerilemeyi mi örtüyor? Senaryoyu iki kodda koş (ders 28).
+5. HIZ değişikliklerinin EŞDEĞERLİĞİ: düzeltme öncesi ↔ sonrası çıktılar, G1 / B1 / S212'nin BİLEREK değiştirdiği yerler dışında BİREBİR mi (temiz büyük veri + şüpheli / bağlı tahsilatlı / çek / taksitli / silinmiş kayıtlı / iki şirketli küçük veri; iki TZ). Yeni eşdeğerlik testi (test/g1-hiz-esdegerlik-250.test.mjs) ürünle aynı elden — kâhin sayılmaz (ders 5, 32); kendi karşılaştırmanı yap.
+6. Testin dişi (prensip §3): yeni / değişen testler düzeltme öncesi kodda BEKLENEN NEDENLE kırmızı mı (ders 38, 51); mutasyon aracındaki mevcut mutantlar (test/supheli-kuyruk-defter-250-mutasyon.mjs) birkaç kez — ara sıra yaşayan var mı. YENİ MUTANT YAZMAK ZORUNLU DEĞİL; yaşayan mutant / eksik test aşağıdaki KULLANICI KURALIYLA 'SONRAKİ SÜRÜME (2.5.1)' başlığına yazılır, yeni tur açmaz.
+7. S181 çek yolu: çek VE senet yolunda ileti nakit yoluyla aynı öneriyi veriyor mu (tutar / bağ); red durumunda veri tabanında iz yok mu (ders 3); kabul edilen sınır tutarında (tam eşit) davranış.
+
+## Ne ara (sonra)
+- GERİLEME: raporun EN BAŞINDA ayrı başlıkla. Bu düzeltmenin dokunmadığı bütün defter / cari / banka çıktıları düzeltme öncesi ↔ sonrası BİREBİR mi (temiz büyük veri; v2.4.9 kilitli verisi — eski sürümün GERÇEK koduyla üretilmiş; iki saat dilimi).
+- RASTGELE SIRA (ders 17) ve tarih dönümleri (ders 13; sahte saat): ayın 1'i, yıl dönümü, açılış günü ile aynı gün hareket.
+- EŞZAMANLILIK: iki kullanıcı aynı cariye aynı anda bağlı tahsilat; aynı anda çek girişi ve şüpheliye alma.
+- YETKİ: her rol × değişen uçlar; reddedilen istek veri tabanında iz bırakıyor mu.
+- G2 KOMŞU: değişen işlevlerin BÜTÜN çağıranları (`test/` ve `server/` taramasıyla); değişen ekran yollarının e2e senaryoları.
+
+## BAŞ MİMAR KARARLARI — DEĞERLENDİR (karar metnine / kitaba / derse uyuyor mu; betikle göster)
+- K1 (B1): (2) B1 — aynı sınıf içinde YAZIM SIRASI (kuyruğun at / rank'i; iki yükleyici de) + kalıcı test 2 yazım × 2 kimlik sırası (ders 31; kullanıcıya soru değil);
+- K2 (S212): (3) S212 = A (sürücü bakımı 4'ün R-S192-BAG-SONRA'sı: serbest kalan bağsız ödeme yeniden dağılır, bağlı fatura şüpheli sayılır, tahsilat 128'den düşer) — aynı ayırıcı;
+- K3 (DÜŞÜK'ler): (4) DÜŞÜK'ler BİRLEŞİK TURDA (token tasarrufu (3)): N5 / N7 / N8 / N11 testleri + S181 çek yolu iletisi.
+- K4 (G1): önceki dar kontrol 'K2'yi (14.11 baş mimar okuması: Tüm Hesaplar toplamı) karar metnine uymaz buldu → K2 UYMUYOR → S214 = A (baş mimarın 14.11 okuması yanlıştı — açıkça kabul).
+- K5 (hız): G1 düzeltmesinin yavaşlattığı iki yol (Tüm Hesaplar raporu, bağlı çek yazımı) için yapılan hız değişiklikleri davranışı DEĞİŞTİRMEMELİ; eşdeğerlik düzeltme öncesi ↔ sonrası aynı veride gösterilmeli.
+
+DERS 31 (CLAUDE.md'den AYNEN): 31. AYNI TARİHLİ KAYITLAR KİMLİKLE SIRALANMAZ: aynı tarihte sıra olay sınıfı → yazım sırası (rowid/seq); sınıf içi sıranın toplamı değiştirmediği gösterilir.
+
+## KULLANICI KARARLARI
+İş listesinden AYNEN çekilmiş karar metinleri ayrı dosyada: `/home/user/ofis---y-netimi/docs/devir/2.5.0-DEVAM/dk-t3duz-kararlar.md` — TAMAMINI oku (bu tur: S212, S214, S215; ayırıcı: S136–S138, S141, S155, S160, S161, S167, S168, S181; banka: S175, S177–S179, S182–S184, S187–S192). Kural seçilen seçeneğin metnidir.
+
+SÜREÇ KURALI (kullanıcı kararı — bu dar kontrolde GEÇERLİ; CLAUDE.md'den AYNEN): Ç5-A DAR KONTROL SÜREÇ KURALI (kullanıcı 13.11 17:30 UTC, AYNEN: "c + süreç kuralı uygun" — S164 fren sorusunun yanıtı; D'de AYNEN): Ç5-A'nın kalan dar kontrollerinde 'veri tabanına program dışından (kapı dışı) yazılırsa fark edilmiyor' türü bulgu, programın KENDİ ekranlarından / işlemlerinden / toplu yollarından (içe aktarma, geri yükleme, göç, mobil yazma dahil) üretilemiyorsa DÜŞÜK sayılır ve yeni tur AÇMAZ (BİLİNEN SINIR olarak teslim notuna); programın kendi yolundan üretilen her bozulma eskisi gibi YÜKSEK / ORTA'dır. Dar kontrol görev metnine AYNEN yazılır (bulgu yine raporlanır, yalnız sınıfı değişir). Kural Ç5-A'ya özgüdür; bağımsız doğrulama prensibi belgesi değişmedi. Tur 1f dar kontrolünün ORTA bulgusu bu kararla BİLİNEN SINIR (iş listesi B).
+
+BULGU SINIFI — KULLANICI KURALI (bu dar kontrolde GEÇERLİ; CLAUDE.md'den AYNEN): 2.5.1'E BIRAK (kullanıcı 20.11 09:00 UTC, AYNEN: "yapılan işlerde döngüye girmeyelim detaylara boğulup, programı yada kullanıcıyı etkileyemem hususları 2.5.1 sürümüne bırakalım"; D'de AYNEN): programın davranışını, sayılarını, hızını ya da kullanıcının gördüğünü / yaptığını DEĞİŞTİRMEYEN her husus — yalnız test düzeni, test aracı, kâhin ya da sürücü iç bakımı, belge, ölçüm nüansı, yaşayan mutantın gösterdiği eksik test, doğrulanmamış kuşku, sayıları doğru olan görünüm ayrıntısı — bu sürümde KOVALANMAZ, yeni tur ya da yeni koşu AÇMAZ; iş listesi B'ye '2.5.1'E (20.11 kuralı)' diye yazılır, teslim notunun DENENMEYEN / BİLİNEN SINIRLAR'ına gider. BAŞ MİMAR YORUMU (kullanıcıya gösterildi; değiştirebilir): kalite kapıları AYNEN (her düzeltmeye dar kontrol, ana oturum yeniden koşusu, eski kod kırmızısı, kâhin karşılaştırması, hız kabulü, ekran yürüyüşü, CI) — ama bunlarda yeni tur YALNIZ programı ya da kullanıcıyı etkileyen, yeniden üretilmiş bulgu için açılır; para / defter kuralı soruları (ders 43) programı etkilediği için sorulmaya devam eder; yayın kapısını etkileyen iç iş (CI'nin kırmızısı, yayın adayında boş olması gereken liste) 2.5.0'da kalır. Kural ajan ve dar kontrol görev metinlerine AYNEN girer (raporlarda 'SONRAKİ SÜRÜME (2.5.1)' başlığı); çalışan ajana kapsamı DARALTAN bildirim olarak gönderilir (ders 46 izin verir).
+Bu kurala göre: programın davranışını / sayılarını / hızını ya da kullanıcının gördüğünü DEĞİŞTİRMEYEN husus DÜŞÜK'tür ve raporun 'SONRAKİ SÜRÜME (2.5.1)' başlığına yazılır; programı ya da kullanıcıyı etkileyen her bozulma (yanlış para / bakiye / defter / rapor toplamı, yanlış ileti, gerileme, veri kaybı, KVKK) eskisi gibi YÜKSEK / ORTA. Ayrıntıya boğulma: önce İLK MADDELER, sonra kalan süre kadar genel liste.
+
+## Yöntem (prensip §3)
+- Her bulgu betikle GERÇEK programda üretilir; çıktıda sayı olur. Program başlatırken `HUKUK_LICENSE_URL=http://127.0.0.1:9`. Üretilemeyen kuşku 'DOĞRULANMADI'ya.
+- Eski kod yalnız ayrı kopyada (ders 23, 51).
+- Yük koşuları `flock -s -w 3600 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock …` (tek seferlik bekleme). HER arka plan koşusu açık süre sınırıyla (`timeout -k 5 <sn> …`, en çok 2 saat; içinde bekleme döngüsü YOK — ders 50). Önce `cat /proc/loadavg`; 4'ün üstündeyse yeni koşu başlatma, tek seferlik bekle. Aynı anda en çok BİR yük koşusu.
+- KAPSAYICI SIK YENİLENİYOR: koşuları ≤ 40 dk parçalara böl; her parçanın bulgusunu ve sayılarını not defterindeki `rapor-taslak.md`'ye HEMEN yaz (commit YOK — çıktılar depoya girmez); kesilirsen yeni incelemeci oradan sürdürür.
+- `pkill` / `killall` / joker `rm` YOK; yalnız KENDİ pid'in. Tam `npm test` YOK. Koşular `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos dkt3duz-<ad> -- <komut>`. Çıktılar depoya commit EDİLMEZ.
+- PARA / DEFTER KURALI AYRIŞMASI (ders 43): iki okumaya açık bir kural bulursan düzeltme önerme — KULLANICIYA SORULMALI (iki seçenek + öneri; uç durumsa üçüncü seçenek 'Uç durum böyle kalsın (BİLİNEN SINIR)'). Önce iş listesi C / D'de aynı soru sorulmuş mu ARA (yalnız C ve D; KAYIT okunmaz); sorulmuşsa numarasını yaz. Her alt durumda mizanın iki okumada aynı olup olmadığını SAYIYLA yaz.
+- SAKINCA SÜZGECİ: her DÜŞÜK için yaz — yanlış para / bakiye / defter, veri kaybı, KVKK ya da gerileme mi? Öyleyse ORTA say.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME.
+
+## Rapor (prensip §3 biçimi; SubagentHandback ile)
+EN BAŞTA: GERİLEMELER (varsa). Sonra İLK MADDELER 1–7'nin sonucu tek tek. Sonra her bulgu — sınıf (YÜKSEK / ORTA / DÜŞÜK; SÜREÇ KURALI'na göre), dosya:satır, betik + çıktı (sayılarla), kök neden, en küçük düzeltme önerisi; sıra / eşzamanlılık / yetki tabloları; düzeltme öncesi ↔ sonrası eşdeğerlik; K1–K5 değerlendirmesi; KULLANICIYA SORULMALI; SONRAKİ SÜRÜME (2.5.1); DOĞRULANMADI; DENENMEYEN; not defteri klasörlerin (tam yol). Bulgu yoksa açıkça 'YÜKSEK / ORTA YOK'.
