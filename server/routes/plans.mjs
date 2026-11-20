@@ -620,8 +620,22 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // itemId → kuyruk satırı). Yalnız trimCovers verir: orada küçülen tutar kuyruğun dağıtamadığı FAZLADIR — bağsız alacak (faturasız stok iadesi, Alacak Yaz) en önce gelen taksiti
   // kuyrukta ZATEN kapatmıştır; kartın kendi hesabıyla (allocate) "açık" sayılan o taksit kesilirse alacak carinin öbür borcuna kayar (d42 T1: kart Kalan 500 · elle borç 200;
   // kararın ve kâhinin beklediği kart 200 · elle borç 500 — S140 = A / S151 = B). İade faturası / iptal yolları (shrinkPlan, closeForInvoice) kartın kendi hesabını okur (karar (4)).
-  function cutTargets(planId, cut, open = null) {
+  // order "tail" (2.5.0 Ç7b tur 3 devam 3 — S218 = B; tasarım §16.9): YALNIZ açılış onarımı (2.1.0; 2.0.24–2.0.26'da yanlış büyümüş kartı küçülten) ve onun kilit aynası — ESKİ YÖN:
+  // son taksitten geriye, taksit tutarından (onarım eski bir hatayı geri alır; 2.1.0'dan beri her kurulum bu kartları bu yönle onardı). Karar (4) yalnız YENİ küçülmeler içindir
+  // (iade, iptal / silme, trimCovers). Ziyaret edilen her taksit (kesilen 0 olsa da) döner — eski cutPlan / ayna döngüsüyle birebir.
+  function cutTargets(planId, cut, open = null, { order = "due" } = {}) {
     const items = itemsOf(planId);
+    if (order === "tail") {
+      const tail = [];
+      let rest = roundMoney(Number(cut) || 0);
+      for (const item of [...items].reverse()) {
+        if (!(rest > 0.005)) break;
+        const take = roundMoney(Math.min(rest, Number(item.amount) || 0));
+        tail.push({ item, take });
+        rest = roundMoney(rest - take);
+      }
+      return tail;
+    }
     const shaped = open
       ? new Map(items.map(item => [item.id, roundMoney(Math.max(0, Math.min(Number(item.amount) || 0, Number(open.get(item.id)?.remaining) || 0)))]))
       : new Map(allocate({ total: 0 }, items, entriesOf(planId), { today: today() }).items.map(item => [item.id, item.remaining]));
@@ -649,8 +663,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return out;
   }
   // Kartı karar (4) sırasıyla küçültür (tahsilat bağlı taksit satırı silinmez, sıfırlanır). Yeni toplamı döndürür.
-  function cutPlan(plan, cut, user, { accountId = "", reason = "", open = null } = {}) {
-    for (const { item, take } of cutTargets(plan.id, cut, open)) {
+  function cutPlan(plan, cut, user, { accountId = "", reason = "", open = null, order = "due" } = {}) {
+    for (const { item, take } of cutTargets(plan.id, cut, open, { order })) {
       const amount = roundMoney((Number(item.amount) || 0) - take);
       const linked = store.get("SELECT 1 AS found FROM plan_entries WHERE item_id = ?", item.id);
       if (amount <= 0.005 && !linked) store.run("DELETE FROM plan_items WHERE id = ?", item.id);
@@ -662,15 +676,15 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return total;
   }
   // v2.0.24: iade faturası asıl faturayı taksitlendiren kartı (kendi kartı ya da faturayı kapsayan Mevcut Borç kartı)
-  // küçültür; kalanı (toplam − net tahsilat) aşılmaz. Küçülen tutarı döndürür.
-  function shrinkPlan(user, planId, amount, note = "") {
+  // küçültür; kalanı (toplam − net tahsilat) aşılmaz. Küçülen tutarı döndürür. order "tail" yalnız açılış onarımında (S218 = B — cutTargets).
+  function shrinkPlan(user, planId, amount, note = "", { order = "due" } = {}) {
     const row = store.get("SELECT id, name, total, status, account_id AS accountId FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
     if (!row || row.status === "closed") return 0;
     const plan = { id: row.id, name: row.name, total: Number(row.total) || 0 };
     const left = roundMoney(Math.max(0, plan.total - Math.max(0, netPaid(plan.id))));
     const cut = roundMoney(Math.min(Number(amount) || 0, left));
     if (!(cut > 0.005)) return 0;
-    cutPlan(plan, cut, user, { accountId: row.accountId, reason: note || "İade" });
+    cutPlan(plan, cut, user, { accountId: row.accountId, reason: note || "İade", order });
     return cut;
   }
   function leftOf(planId) {

@@ -565,3 +565,13 @@ kilit izi / kapı (`integrity*.mjs`: kapalı kartın `waived` = 0), şüpheli al
 - (4) S216 = C: iade iptalinde kartın büyümesi bugünkü gibi SON taksite (kod değişmedi; kalıcı testle gösterilir). (5) **S217 = A**: Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturasının
   İptal Et'i 409 (`plan-has-payments`), ileti "Faturanın taksit kartı (“…”) kapatılmış ve N tahsilatı var; fatura iptal edilemez. Önce kartı Yeniden Aç ile açın." (6) Açılış onarımının kilit
   aynasının `cutTargets`'tan okunması KABUL (§16.3).
+
+### 16.9 Tur 3 devamı 3 (20.11.2026; görev metni `docs/devir/2.5.0-DEVAM/c7b3-devam3-istem.txt`) — S218 = B
+- Bulgu (devam 2 ajanının G2 komşusu, ders 6): açılış onarımı (2.1.0; 2.0.24–2.0.26'da iade geri ödemesiyle yanlış büyümüş kartı küçülten) karar (4)'ün yönünü almıştı (`shrinkPlan` → `cutPlan`
+  en önce gelen açık taksitten; kilit aynası `cutTargets`'tan). Küçülecek ilk açık taksit KİLİTLİ dönemdeyse kart onarılmıyordu (`test/acilis-onarimi-hiz-250` kırmızı: FIS2026000000047 kartı
+  kalan 1.300 → hedef 1.250; taksitler 19.09 666,66 · 19.10 683,34, kilit 07.10 — eski kod 50'yi 19.10'dan keserek onarıyordu).
+- **S218 = B** (iş listesi C; kullanıcı kuralıyla öneri uygulandı 20.11 07:49): açılış onarımı ve onun kilit aynası ESKİ YÖNDE (son taksitten geriye, taksit tutarından) keser; karar (4) yalnız YENİ
+  küçülmeler içindir (iade, iptal / silme, `trimCovers` — bunlar DEĞİŞMEDİ).
+- Kod: `routes/plans.mjs cutTargets(planId, cut, open, { order })` — `order: "tail"` eski döngünün birebiri (ziyaret edilen her taksit, kesilen 0 olsa da; tutarı 0'a inen bağsız taksit silinir);
+  `cutPlan` / `shrinkPlan` `order`'ı geçirir (varsayılan "due" = karar (4)). `routes/invoices.mjs repairOwnCards`: kilit aynası `cutTargets(..., { order: "tail" })`, kesim `shrinkPlan(..., { order: "tail" })`
+  — ayna ile kesim yine TEK yardımcıdan ((6) KABUL korunur). Başka çağıran `order` vermez.

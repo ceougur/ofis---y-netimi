@@ -2127,7 +2127,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Açılış onarımı (v2.1.0, Canlı Hata 2; plan §10.6 düzeni): 2.0.24–2.0.26 eski kuralla (hedef = açık + geri ödenen) yanlış
   // büyümüş ya da küçülmemiş faturaya ait kartlar, dokunulmadıkça yanlış kalırdı. Sessiz, tek işlem, idempotent: yalnız paralı iadesi
   // olan taksitli faturanın etkin kartı; kalan yeni hedeften büyük ve eski kuralın hedefini aşmıyorsa (yani fark bu hatadan) kalan
-  // hedefe indirilir (shrinkPlan: yalnız ödenmemiş kısım, karar (4) sırasıyla — 2.5.0 Ç7b tur 3). Küçülecek taksitlerden biri kilitli dönemdeyse kart
+  // hedefe indirilir (shrinkPlan: yalnız ödenmemiş kısım, son taksitten geriye — 2.5.0 Ç7b tur 3 devam 3, S218 = B: onarım ESKİ YÖNDE keser; karar (4) yalnız yeni küçülmeler
+  // içindir). Küçülecek taksitlerden biri kilitli dönemdeyse kart
   // değişmez (kilitli döneme yazılmaz), yalnız sonuçta listelenir. Her değişiklik audit'e (plan.repaired, previous) yazılır.
   //
   // 2.5.0 AH (ders 47; Ç3 ölçümü 06.11: 100.000 satırda açılış 101,7 sn, 1.000.000'da 22 dk'da bitmedi, olay döngüsü boyunca kilitli): aday kart başına
@@ -2233,10 +2234,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const cut = roundMoney(left - target);
       const plan = store.get("SELECT total FROM plans WHERE id = ?", row.planId);
       const items = store.all("SELECT id, due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", row.planId);
-      // shrinkPlan'ın keseceği taksitler — kartın KENDİ küçülme sırasından (2.5.0 Ç7b tur 3, karar (4): vadesi en önce gelen açık taksitten; önceden burada ayrıca
-      // "son taksitten geriye" hesaplanıyordu — yön değişince ayna ayrışmasın diye tek yardımcı).
+      // shrinkPlan'ın keseceği taksitler — kilit aynası kesimle AYNI yardımcıdan (plans().cutTargets, order "tail": son taksitten geriye — S218 = B; 2.5.0 Ç7b tur 3 (6):
+      // ayna ayrışmasın diye tek yardımcı). Yardımcı yoksa aynı eski döngü.
       const touchedItems = p.cutTargets
-        ? p.cutTargets(row.planId, cut).map(({ item }) => item)
+        ? p.cutTargets(row.planId, cut, null, { order: "tail" }).map(({ item }) => item)
         : (() => {
             let rest = cut;
             const list = [];
@@ -2252,7 +2253,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         continue;
       }
       store.tx(() => {
-        const done = p.shrinkPlan(actor, row.planId, cut, `Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · ${row.number}`);
+        const done = p.shrinkPlan(actor, row.planId, cut, `Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · ${row.number}`, { order: "tail" });
         if (done > 0) {
           audit(actor, "plan.repaired", row.planId, { invoiceId: row.id, number: row.number, reason: "iade-geri-odeme", previous: { total: Number(plan?.total) || 0, left, items: items.map(item => ({ dueDate: item.dueDate, amount: item.amount })) }, total: roundMoney((Number(plan?.total) || 0) - done), left: target, cut: done });
           fixed.push({ invoiceId: row.id, number: row.number, planId: row.planId, from: left, to: target });
