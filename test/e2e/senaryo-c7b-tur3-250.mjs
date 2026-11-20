@@ -12,6 +12,8 @@
 //      ertesi gün (09.10) gecikmiş 100 (elle borç kendi vadesiyle; kart açık kalsaydı borç 10.10 taksitinde — gecikmiş 0).
 //   D) S217 = A: taksitli fatura 900, 08.10 tahsilat 300, kart Kartı Kapat'la kapatılmış → fatura İptal Et ekrandan REDDEDİLİR, pencerede "Önce kartı Yeniden Aç ile açın." görünür, belge
 //      kesilmiş kalır, bakiye değişmez; Taksitler → Kapalı → kart → Yeniden Aç → fatura İptal Et → kabul (S15): bakiye −300.
+//   E) YB-1 + S129 = A (Ç7b aday düzeltme turu): kart 3.000 (3 taksit, ilk vade 08.09), cari kartından 500 → kart penceresi Kalan ₺2.500,00; Kartı Kapat "Kalan ₺2.500,00" diye BİR KEZ
+//      sorar, onayla kart kapanır (TEK PUT, 200); ikinci soru yok; carinin borcu 2.500 kalır (Borçta Kalsın).
 // Çıkış: "N geçti, M kaldı".
 import fs from "node:fs";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -261,6 +263,53 @@ try {
     ok(invStatus(f) === "cancelled", "Yeniden Aç'tan sonra İptal Et kabul (veri tabanı)");
     ok((await totals(D)).balance === -300, "bakiye −300 (tahsilat avans; kalan bir kez düşüldü)");
     await shot("s217-yeniden-ac-iptal");
+  });
+
+  // Ç7b aday düzeltme turu (YB-1; ana oturumun ekran yürüyüşü ORTA bulgusu — docs/devir/2.5.0-DEVAM/c7bfix-istem.txt): cari kartından (Taksit Tahsilatı değil) tahsilat girilmiş kartta
+  // pencere "Kalan ₺2.500,00" (S129 = A tek kuyruk) diye sorar; onayla kart TEK istekte kapanır. Önceden sunucu kartın kendi hesabıyla (3.000) karşılaştırıp 409 veriyor, pencere "Kalan
+  // ₺3.000,00" diye İKİNCİ KEZ soruyordu. Beklenen soru: yalnız ilk "Kartı Kapat" (ders 34) — ikinci soru gelirse yanıtlanmaz, adım kırmızı.
+  await step("E) YB-1 — cari kartından tahsilat 500 → Kartı Kapat 'Kalan ₺2.500,00' TEK soruyla kapanır; carinin borcu 2.500 kalır", async () => {
+    const E = await acc("Ekran Kart Kapat Deneme");
+    const made = await must("kart", api.post(`${W}/plans`, { accountId: E, name: "Ekran Kart Kapat Kartı", total: "3000", registeredOn: "2026-09-01", mode: "auto", count: 3, firstDue: "2026-09-08" }));
+    const p = made.id || made.plan?.id;
+    await must("cari kartından tahsilat", api.post(`${W}/accounts/${E}/entries`, { kind: "in", amount: "500", date: "2026-09-10", method: "cash" }));
+    const b0 = (await totals(E)).balance;
+    ok(b0 === 2500, `carinin borcu 2.500 (${b0})`);
+    await openPlanCard(p);
+    const kpi = await text(".hof-plans .hof-plans-kpis .hof-cash-balance strong");
+    ok(/₺2\.500,00/.test(kpi), `kart penceresi Kalan ₺2.500,00 (S129 = A): ${kpi}`);
+    await shot("yb1-kart-kalan-2500");
+    const puts = [];
+    const onResponse = res => {
+      if (res.request().method() === "PUT" && res.url().includes(`${W}/plans/${encodeURIComponent(p)}`)) puts.push(res.status());
+    };
+    page.on("response", onResponse);
+    try {
+      await page.click('.hof-plans [data-act="close"]');
+      await page.waitForSelector(`${topSel} [data-answer="yes"]`, { timeout: 10000 });
+      const ask = await text(topSel);
+      ok(/Kalan ₺2\.500,00/.test(ask), `soru pencerenin kalanıyla: ${ask.slice(0, 160)}`);
+      await shot("yb1-soru-2500");
+      console.log("    [soru] \"Kartı Kapat\" → Kartı Kapat (beklenen tek soru)");
+      await page.click(`${topSel} [data-answer="yes"]`);
+      let second = "";
+      for (let i = 0; i < 40; i += 1) {
+        await page.waitForTimeout(250);
+        if (await page.$('.hof-plans [data-act="reopen"]')) break;
+        const top = await page.$(`${topSel} [data-answer="yes"]`);
+        if (top) {
+          second = await text(topSel);
+          break;
+        }
+      }
+      ok(!second, `ikinci soru YOK${second ? `: ${second.slice(0, 200)}` : ""}`);
+      ok(planRow(p).status === "closed", "kart kapandı (veri tabanı)");
+      ok(puts.length === 1 && puts[0] === 200, `TEK istek, 200 (gelen: ${JSON.stringify(puts)})`);
+      ok((await totals(E)).balance === 2500, "Borçta Kalsın: carinin borcu 2.500 kalır");
+      await shot("yb1-kapandi");
+    } finally {
+      page.off("response", onResponse);
+    }
   });
 
   const integrity = await must("Mutabakat Testi", api.get(`${W}/ledger/integrity`));
