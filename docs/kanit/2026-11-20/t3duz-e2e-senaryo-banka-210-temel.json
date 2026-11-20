@@ -1,0 +1,32 @@
+{
+  "ad": "t3duz-e2e-senaryo-banka-210-temel",
+  "komut": "npm run test:senaryo-banka-210-temel",
+  "commit": "e1da1b7095b2c332997a13869e716906f48cefcc",
+  "dal": "worktree-agent-a1e6310bec4c916cb",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T07:18:55.695Z",
+  "sure_sn": 65.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 80,
+    "gecen": 80,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d3/k/2026-11-20/t3duz-e2e-senaryo-banka-210-temel.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1e6310bec4c916cb",
+  "ham_cikti_sha256": "d5cb7a61e56b0e19cad789134c5d7424a18e1ed0cb368e30cd8a926dd1c7ffa2",
+  "ham_cikti_bayt": 13081
+}
