@@ -223,76 +223,6 @@ describe("Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168
     clean();
   });
 
-  // 2.5.0 tek aday düzeltme turu B1 (dar kontrol t3c7a; ders 31): aynı gün, aynı sınıfta bağsız (U) + Fatura 2'ye bağlı (L) tahsilat — sonuç YALNIZ YAZIM SIRASINA bağlı, kimliğe (UUID)
-  // değil. Kimlik sırasını test KURAR (iki satırın kimliği yazımdan sonra sabit önekli değerlere çevrilir; ders 20 — ön koşul zorla). 2 yazım sırası × 2 kimlik sırası.
-  // Senaryo (karar metinlerinden elle; ders 5): Fatura 1 1.000 (vade B+60) → Şüpheliye Al 1.000 (B−50) → 'Normal Cari Hesaba İşle' 400 (B−45; Fatura 1'e sayılır) → Fatura 2 500 (B−40,
-  // vade B−40). Ön durum 120 = 100, 128 = 1.000; kalem görünümünde şüpheli = Fatura 1 600 + Fatura 2 400 (S168 = B'nin örneğiyle aynı düzen). Aynı gün (B−10):
-  //   U → L: U bağsız 200 en eski açık kayıttan (128 800); kuyrukta U vadesi gelmiş Fatura 2'yi öder (300 kalır, şüpheli payı 200) → L 300'ün 200'ü 128'den, 100'ü 120'den:
-  //          120 = 0, 128 = 600; sonraki 'Normal Cari' 100 → RET (şüpheli dışı borç 0).
-  //   L → U: L 300 Fatura 2'nin şüpheli payından (400) 128'den → 128 700; U 200 en eski kayıttan → 128 500; 120 = 100; sonraki 'Normal Cari' 100 → KABUL.
-  it("B1 (ders 31): aynı gün bağsız + bağlı tahsilat — 120 / 128, satırların payı, kart, sonraki işlemin kabul / reddi YALNIZ yazım sırasına bağlı (2 yazım × 2 kimlik sırası)", async () => {
-    let uuidSeq = 0;
-    const realUUID = crypto.randomUUID;
-    const withIds = async (high, fn) => {
-      crypto.randomUUID = () => `${high ? "ffffffff-ffff-4fff-bfff-" : "00000000-0000-4000-8000-"}${(uuidSeq += 1).toString(16).padStart(12, "0")}`;
-      syncBuiltinESMExports();
-      try {
-        return await fn();
-      } finally {
-        crypto.randomUUID = realUUID;
-        syncBuiltinESMExports();
-      }
-    };
-    const run = async (label, order, lowFirst) => {
-      base += 30;
-      const B = base;
-      const acc = await must("cari", api.post("/api/workspace/accounts", { name: `Aynı Gün Sıra ${label}`, type: "customer", registeredOn: day(-1200), phone: `0500 318 ${String(10 + Math.floor((n += 1) / 100)).padStart(2, "0")} ${String(n % 100).padStart(2, "0")}` }));
-      const bill = async (date, amount, due) => (await must("fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: date, lines: [{ name: "Hizmet", qty: 1, unitPrice: String(amount), vatRate: 0 }], payment: { rest: "open", dueDate: due } }))).id;
-      await bill(day(B - 60), 1000, day(B + 60));
-      await must("şüpheliye al", api.post(`/api/workspace/accounts/${acc.id}/doubtful`, { amount: "1000", date: day(B - 50), reason: "lawsuit", note: "B1" }));
-      const f2 = await bill(day(B - 40), 500, day(B - 40));
-      await must("Normal Cari Hesaba İşle", cash(acc, day(B - 45), 400, { doubtfulSkip: true }));
-      assert.deepEqual(gl(acc.id), { b120: 100, b128: 1000 }, `${label}: ön durum`);
-      // Kimlik sırasını kur (ders 20 — ön koşul zorla): satırın kimliğini üreten randomUUID yazım sırasında önekli değer döndürür; "küçük" kimlik lowFirst'ün satırına.
-      for (const step of order) await withIds(step !== lowFirst, () => must(step, step === "U" ? cash(acc, day(B - 10), 200) : cash(acc, day(B - 10), 300, { invoiceId: f2 })));
-      const rows = server.app.store.all("SELECT rowid AS seq, id, invoice_id AS inv FROM account_entries WHERE account_id = ? AND kind = 'in' AND date = ? ORDER BY rowid", acc.id, day(B - 10));
-      assert.equal(rows.length, 2);
-      const U = rows.find(row => !row.inv);
-      const L = rows.find(row => row.inv);
-      const ids = { U: U.id, L: L.id };
-      assert.equal(`account:${ids.U}` < `account:${ids.L}`, lowFirst === "U", `${label}: kimlik sırası kuruldu`);
-      assert.equal(rows[0].inv ? "L" : "U", order[0], `${label}: yazım sırası`);
-      const card = await must("kart", api.get(`/api/workspace/accounts/${acc.id}`));
-      const { state: map } = await state();
-      const out = {
-        gl: gl(acc.id),
-        U: creditsOf(ids.U),
-        L: creditsOf(ids.L),
-        kart: { bakiye: card.totals.balance, gecikmis: card.totals.overdueDebt, kuyruk: card.totals.doubtfulQueue },
-        // İkinci yükleyici (SQL; doubtfulState) birinciyle (yevmiye) aynı: kaydın kalanı = 128.
-        kalan: server.app.store.all("SELECT id FROM doubtful_receivables WHERE account_id = ?", acc.id).map(row => map.get(row.id)?.remaining / 100),
-      };
-      clean();
-      const next = await cash(acc, day(B - 5), 100, { doubtfulSkip: true });
-      out.next = next.status === 200 ? "KABUL" : `${next.status} ${codeOf(next)}`;
-      return out;
-    };
-    const UL = { gl: { b120: 0, b128: 600 }, U: ["A 128 200"], L: ["A 120 100", "A 128 200"], kalan: [600], next: "409 doubtful-normal-exceeds" };
-    const LU = { gl: { b120: 100, b128: 500 }, U: ["A 128 200"], L: ["A 128 300"], kalan: [500], next: "KABUL" };
-    const results = {};
-    for (const [label, order, lowFirst] of [["UL-U", "UL", "U"], ["UL-L", "UL", "L"], ["LU-U", "LU", "U"], ["LU-L", "LU", "L"]]) {
-      const got = await run(label, order, lowFirst);
-      const want = order === "UL" ? UL : LU;
-      assert.deepEqual({ gl: got.gl, U: got.U, L: got.L, kalan: got.kalan, next: got.next }, want, `${label} (yazım ${order}, kimlikte önce ${lowFirst})`);
-      results[label] = got.kart;
-    }
-    // Kart (kuyruk görünümü: bakiye, gecikmiş, şüpheli kuyruk) kimlik sırasından bağımsız; bakiye iki yazım sırasında da 600.
-    assert.deepEqual(results["UL-U"], results["UL-L"], "UL: kart kimlikten bağımsız");
-    assert.deepEqual(results["LU-U"], results["LU-L"], "LU: kart kimlikten bağımsız");
-    assert.equal(results["UL-U"].bakiye, 600);
-    assert.equal(results["LU-U"].bakiye, 600);
-  });
-
   it("düzeltme: bağ kaldırılır / yeniden kurulur, tutar sınırı düzeltmede de; sil + bağsız yeniden gir", async () => {
     const s = await scenario("Düzeltme");
     await must("bağlı 300", cash(s.acc, s.at(-10), 300, { invoiceId: s.f2 }));
@@ -376,6 +306,121 @@ describe("Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168
       assert.equal(res.status, 0, `${first} önce: ${res.stderr}`);
       assert.match(res.stdout, /^ok true/);
     }
+  });
+
+  // ——— Tek aday düzeltme turu (dar kontrol t3c7a): taban günü bu dosyanın öbür senaryolarından SONRA ilerlesin diye dosyanın sonunda. ———
+  // 2.5.0 tek aday düzeltme turu S212 = A (19.11 23:50; 05.11 (2) 24 = A "bağ (Mahsup Et, Kapatılacak Fatura, iade, kart tahsilatı) hedefini her durumda kapatır; hedefi önceden kapatmış
+  // bağsız ödeme serbest kalır ve kendi tarihinde yeniden dağılır" + S192 = A tek kuyruk): şüpheliye almadan ÖNCE bağsız ödemeyle kapanmış faturaya şüpheliye almadan SONRA bağlı tahsilat.
+  // Karar metninin örneği (göreli günlerle; dosyanın sonunda taban adımı 15 gün): F1 1.000 (vade B−12), F2 1.000 (vade B−10), F3 2.000 (vade B+30); P1 bağsız 1.000 (B−11 — F1'in vadesinden
+  // sonra, F2'ninkinden önce: örnekteki 15.01 gibi); Şüpheliye Al 1.000 (B−8); P2 1.000 F1'e bağlı (B−5)
+  // → F1 şüpheliye alma gününde açık sayılır, tahsilat 128'den düşer: 120 = 2.000, 128 = 0, şüpheli kaydı kapanır (bugün 120 = 1.000, 128 = 1.000, kayıt 1.000 açık).
+  const s212 = async (label, last) => {
+    base += 15;
+    const B = base;
+    const acc = await must("cari", api.post("/api/workspace/accounts", { name: `S212 ${label}`, type: "customer", registeredOn: day(-1200), phone: `0500 317 ${String(10 + Math.floor((n += 1) / 100)).padStart(2, "0")} ${String(n % 100).padStart(2, "0")}` }));
+    const bill = async (amount, due) => (await must("fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: day(B - 14), lines: [{ name: "Hizmet", qty: 1, unitPrice: String(amount), vatRate: 0 }], payment: { rest: "open", dueDate: due } }))).id;
+    const f1 = await bill(1000, day(B - 12));
+    await bill(1000, day(B - 10));
+    await bill(2000, day(B + 30));
+    await must("P1 bağsız", cash(acc, day(B - 11), 1000));
+    const record = await must("şüpheliye al", api.post(`/api/workspace/accounts/${acc.id}/doubtful`, { amount: "1000", date: day(B - 8), reason: "lawsuit", note: "S212" }));
+    assert.deepEqual(gl(acc.id), { b120: 2000, b128: 1000 }, `${label}: ön durum`);
+    await must("P2", last(acc, day(B - 5), f1));
+    const { state: map } = await state();
+    return { acc, remaining: map.get(record.record?.id || record.id)?.remaining / 100 };
+  };
+  it("S212 = A — şüpheliye almadan önce bağsız ödemeyle kapanmış F1'e sonradan bağlı 1.000 NAKİT: 128'den düşer (120 = 2.000, 128 = 0, kayıt kapanır)", async () => {
+    const { acc, remaining } = await s212("Nakit", (a, date, f1) => cash(a, date, 1000, { invoiceId: f1 }));
+    assert.deepEqual(gl(acc.id), { b120: 2000, b128: 0 });
+    assert.deepEqual(creditsOf((await lastEntry(acc)).id), ["A 128 1000"]);
+    assert.equal(remaining, 0, "şüpheli kaydı kapandı (kalan 0)");
+    clean();
+  });
+  it("S212 = A — aynı örnek F1'e bağlı 1.000 ÇEK (S14): 128'den düşer (120 = 2.000, 128 = 0)", async () => {
+    const { acc, remaining } = await s212("Çek", (a, date, f1) => cheque(a, date, 1000, f1));
+    assert.deepEqual(gl(acc.id), { b120: 2000, b128: 0 });
+    assert.equal(remaining, 0);
+    clean();
+  });
+  // Kısmi bağ (kuyruğun aynı kuralı — bağ kendi tutarı kadar kapatır, P1'in o kadarı F2'ye kayar; S168 = B "defterin 120 / 128 ayrımı kuyruğun dağılımını izler"): P2 400 F1'e bağlı →
+  // şüpheliye almada açık F1 400 + F2 600 (vade sırası) → P2'nin tamamı 128'den: 120 = 2.000, 128 = 600.
+  it("S212 = A kısmi bağ — F1'e bağlı 400: F1'in şüpheli payı 400 → 128'den 400 (120 = 2.000, 128 = 600)", async () => {
+    const { acc, remaining } = await s212("Kısmi", (a, date, f1) => cash(a, date, 400, { invoiceId: f1 }));
+    assert.deepEqual(gl(acc.id), { b120: 2000, b128: 600 });
+    assert.deepEqual(creditsOf((await lastEntry(acc)).id), ["A 128 400"]);
+    assert.equal(remaining, 600);
+    clean();
+  });
+
+  // 2.5.0 tek aday düzeltme turu B1 (dar kontrol t3c7a; ders 31): aynı gün, aynı sınıfta bağsız (U) + Fatura 2'ye bağlı (L) tahsilat — sonuç YALNIZ YAZIM SIRASINA bağlı, kimliğe (UUID)
+  // değil. Kimlik sırasını test KURAR (iki satırın kimliği yazımdan sonra sabit önekli değerlere çevrilir; ders 20 — ön koşul zorla). 2 yazım sırası × 2 kimlik sırası.
+  // Senaryo (karar metinlerinden elle; ders 5; taban adımı 15 gün): Fatura 1 1.000 (B−12, vade hep ileride) → Şüpheliye Al 1.000 (B−10) → 'Normal Cari Hesaba İşle' 400 (B−9; Fatura 1'e
+  // sayılır) → Fatura 2 500 (B−8, vade B−8).
+  // Ön durum 120 = 100, 128 = 1.000; kalem görünümünde şüpheli = Fatura 1 600 + Fatura 2 400 (S168 = B'nin örneğiyle aynı düzen). Aynı gün (B−3):
+  //   U → L: U bağsız 200 en eski açık kayıttan (128 800); kuyrukta U vadesi gelmiş Fatura 2'yi öder (300 kalır, şüpheli payı 200) → L 300'ün 200'ü 128'den, 100'ü 120'den:
+  //          120 = 0, 128 = 600; sonraki 'Normal Cari' 100 → RET (şüpheli dışı borç 0).
+  //   L → U: L 300 Fatura 2'nin şüpheli payından (400) 128'den → 128 700; U 200 en eski kayıttan → 128 500; 120 = 100; sonraki 'Normal Cari' 100 → KABUL.
+  it("B1 (ders 31): aynı gün bağsız + bağlı tahsilat — 120 / 128, satırların payı, kart, sonraki işlemin kabul / reddi YALNIZ yazım sırasına bağlı (2 yazım × 2 kimlik sırası)", async () => {
+    let uuidSeq = 0;
+    const realUUID = crypto.randomUUID;
+    const withIds = async (high, fn) => {
+      crypto.randomUUID = () => `${high ? "ffffffff-ffff-4fff-bfff-" : "00000000-0000-4000-8000-"}${(uuidSeq += 1).toString(16).padStart(12, "0")}`;
+      syncBuiltinESMExports();
+      try {
+        return await fn();
+      } finally {
+        crypto.randomUUID = realUUID;
+        syncBuiltinESMExports();
+      }
+    };
+    const run = async (label, order, lowFirst) => {
+      base += 15;
+      const B = base;
+      const acc = await must("cari", api.post("/api/workspace/accounts", { name: `Aynı Gün Sıra ${label}`, type: "customer", registeredOn: day(-1200), phone: `0500 318 ${String(10 + Math.floor((n += 1) / 100)).padStart(2, "0")} ${String(n % 100).padStart(2, "0")}` }));
+      const bill = async (date, amount, due) => (await must("fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: date, lines: [{ name: "Hizmet", qty: 1, unitPrice: String(amount), vatRate: 0 }], payment: { rest: "open", dueDate: due } }))).id;
+      await bill(day(B - 12), 1000, day(800));
+      await must("şüpheliye al", api.post(`/api/workspace/accounts/${acc.id}/doubtful`, { amount: "1000", date: day(B - 10), reason: "lawsuit", note: "B1" }));
+      const f2 = await bill(day(B - 8), 500, day(B - 8));
+      await must("Normal Cari Hesaba İşle", cash(acc, day(B - 9), 400, { doubtfulSkip: true }));
+      assert.deepEqual(gl(acc.id), { b120: 100, b128: 1000 }, `${label}: ön durum`);
+      // Kimlik sırasını kur (ders 20 — ön koşul zorla): satırın kimliğini üreten randomUUID yazım sırasında önekli değer döndürür; "küçük" kimlik lowFirst'ün satırına.
+      for (const step of order) await withIds(step !== lowFirst, () => must(step, step === "U" ? cash(acc, day(B - 3), 200) : cash(acc, day(B - 3), 300, { invoiceId: f2 })));
+      const rows = server.app.store.all("SELECT rowid AS seq, id, invoice_id AS inv FROM account_entries WHERE account_id = ? AND kind = 'in' AND date = ? ORDER BY rowid", acc.id, day(B - 3));
+      assert.equal(rows.length, 2);
+      const U = rows.find(row => !row.inv);
+      const L = rows.find(row => row.inv);
+      const ids = { U: U.id, L: L.id };
+      assert.equal(`account:${ids.U}` < `account:${ids.L}`, lowFirst === "U", `${label}: kimlik sırası kuruldu`);
+      assert.equal(rows[0].inv ? "L" : "U", order[0], `${label}: yazım sırası`);
+      const card = await must("kart", api.get(`/api/workspace/accounts/${acc.id}`));
+      const { state: map } = await state();
+      const out = {
+        gl: gl(acc.id),
+        U: creditsOf(ids.U),
+        L: creditsOf(ids.L),
+        kart: { bakiye: card.totals.balance, gecikmis: card.totals.overdueDebt, kuyruk: card.totals.doubtfulQueue },
+        // İkinci yükleyici (SQL; doubtfulState) birinciyle (yevmiye) aynı: kaydın kalanı = 128.
+        kalan: server.app.store.all("SELECT id FROM doubtful_receivables WHERE account_id = ?", acc.id).map(row => map.get(row.id)?.remaining / 100),
+      };
+      clean();
+      const next = await cash(acc, day(B - 1), 100, { doubtfulSkip: true });
+      out.next = next.status === 200 ? "KABUL" : `${next.status} ${codeOf(next)}`;
+      return out;
+    };
+    const UL = { gl: { b120: 0, b128: 600 }, U: ["A 128 200"], L: ["A 120 100", "A 128 200"], kalan: [600], next: "409 doubtful-normal-exceeds" };
+    const LU = { gl: { b120: 100, b128: 500 }, U: ["A 128 200"], L: ["A 128 300"], kalan: [500], next: "KABUL" };
+    const results = {};
+    for (const [label, order, lowFirst] of [["UL-U", "UL", "U"], ["UL-L", "UL", "L"], ["LU-U", "LU", "U"], ["LU-L", "LU", "L"]]) {
+      const got = await run(label, order, lowFirst);
+      const want = order === "UL" ? UL : LU;
+      assert.deepEqual({ gl: got.gl, U: got.U, L: got.L, kalan: got.kalan, next: got.next }, want, `${label} (yazım ${order}, kimlikte önce ${lowFirst})`);
+      results[label] = got.kart;
+    }
+    // Kart (kuyruk görünümü: bakiye, gecikmiş, şüpheli kuyruk) kimlik sırasından bağımsız; bakiye iki yazım sırasında da 600.
+    assert.deepEqual(results["UL-U"], results["UL-L"], "UL: kart kimlikten bağımsız");
+    assert.deepEqual(results["LU-U"], results["LU-L"], "LU: kart kimlikten bağımsız");
+    assert.equal(results["UL-U"].bakiye, 600);
+    assert.equal(results["LU-U"].bakiye, 600);
   });
 });
 
