@@ -194,7 +194,8 @@ async function makeData() {
     const raw = new DatabaseSync(later.app.store.get("PRAGMA database_list").file);
     try {
       raw.exec("PRAGMA busy_timeout = 5000");
-      raw.prepare("UPDATE plans SET registered_on = '', created_at = '2026-09-02T09:00:00.000Z', closed_at = NULL WHERE name = 'Kaynak A Kapalı'").run();
+      // 2.5.0 Ç7b tur 3b (göç 53; karar (6)): eski sürümün kapattığı kart eski kuralda ('2.4.9' — kalan düşülür, 689); türetmenin kapanış sütunlarını (status, closed_at, updated_at) okuduğu yer bu kart.
+      raw.prepare("UPDATE plans SET registered_on = '', created_at = '2026-09-02T09:00:00.000Z', closed_at = NULL, close_rule = '2.4.9' WHERE name = 'Kaynak A Kapalı'").run();
       const c2 = raw.prepare("SELECT id FROM cheques WHERE serial_no = 'K-2'").get().id;
       raw.prepare("INSERT INTO cheque_events (id, cheque_id, kind, date, amount, account_id, from_status, to_status, note, effects_json, created_by, created_at) SELECT 'kaynak-bounce-2', cheque_id, 'bounce', '2026-09-06', amount, account_id, from_status, to_status, note, '[]', created_by, '2026-09-06T09:00:00.000Z' FROM cheque_events WHERE cheque_id = ? AND kind = 'bounce'").run(c2);
       raw.prepare("INSERT INTO payments (id, case_key, amount, date, note, case_title, method, fin_ref, event_id, created_by, created_at) VALUES ('kaynak-pay', 'kayit-1', 50, '2026-09-04', '', '', 'cash', '', '', 'admin', '2026-09-04T09:00:00.000Z')").run();

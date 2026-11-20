@@ -99,6 +99,9 @@ describe("G1 — kilitli günde kapatılmış taksit kartı (kilit bugün)", () 
     const e = await account(api, "G1 Ece", "customer", TODAY);
     cards.named = await newCard(api, e.id, "G1 Adı Düzelecek", "200", TODAY);
     await must("kapat", api.put(`/api/workspace/plans/${cards.named.id}`, { status: "closed" }));
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3b, karar (6) "Borçta Kalsın" / B-11 = A; docs/erp/C7B-FATURA-TASARIM.md §17): kapanışın kilit kuralı (689) artık YALNIZ eski kurallı
+    // (göç 53 '2.4.9' — v2.4.9'da kapatılmış) kartta; bu sınama o kartları anlatır → kapatılan kartlar göçün işaretiyle eski kurala alınır. Borçta Kalsın kartı: test/c7b-tur3b-borcta-kalsin-250 T4.
+    ctx.store.run("UPDATE plans SET close_rule = '2.4.9' WHERE status = 'closed'");
     await setLock(api, TODAY);
     ctx.before = await trialAt(api, TODAY, ["120", "689"]);
   });
@@ -163,6 +166,9 @@ describe("G1 — 01.05.2025'te kapatılmış kart (kilit 30.06.2025): tahsilat, 
     cards.legacy = await newCard(api, h.id, "G1b Eski Sürüm Kartı", "600", "2025-03-02");
     await must("kapat", api.put(`/api/workspace/plans/${cards.legacy.id}`, { status: "closed" }));
     store.run("UPDATE plans SET closed_at = NULL, updated_at = '2025-05-01T09:00:00.000Z' WHERE id = ?", cards.legacy.id);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3b, karar (6) "Borçta Kalsın" / B-11 = A; docs/erp/C7B-FATURA-TASARIM.md §17): kapanışın kilit kuralı (689) artık YALNIZ eski kurallı
+    // (göç 53 '2.4.9' — v2.4.9'da kapatılmış) kartta; bu sınama o kartları anlatır → kapatılan kartlar göçün işaretiyle eski kurala alınır. Borçta Kalsın kartı: test/c7b-tur3b-borcta-kalsin-250 T4.
+    store.run("UPDATE plans SET close_rule = '2.4.9' WHERE status = 'closed'");
     await setLock(api, LOCK);
     ctx.before = await trialAt(api, LOCK, ["120", "689", "101"]);
   });

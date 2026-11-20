@@ -254,6 +254,9 @@ describe("kapı süzgeci — nasıl bozarım: bağlı varlıkta çıkan sapma (�
       ctx.server.clock.set(NOW);
     }
     assert.equal(ctx.store.get("SELECT closed_at AS c FROM plans WHERE id = ?", plan.id).c, day(-20));
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3b, karar (6) "Borçta Kalsın" / B-11 = A; docs/erp/C7B-FATURA-TASARIM.md §17): kapanışın kilit kuralı (689) artık YALNIZ eski kurallı
+    // (göç 53 '2.4.9' — v2.4.9'da kapatılmış) kartta; bu sınama o kartı anlatır → kart göçün işaretiyle eski kurala alınır. Borçta Kalsın kartı: test/c7b-tur3b-borcta-kalsin-250 T4.
+    ctx.store.run("UPDATE plans SET close_rule = '2.4.9' WHERE id = ?", plan.id);
     await must("kilit", ctx.api.put("/api/admin/period-lock", { lockedUntil: day(-10) }));
     try {
       rejected(() => ctx.store.tx(() => ctx.store.run("INSERT INTO plan_entries (id, plan_id, kind, amount, date, note, method, created_by, created_at) VALUES (?, ?, 'in', 50, ?, 'ham', 'cash', 'test', ?)", `pe-${randomUUID()}`, plan.id, TODAY, `${TODAY}T09:00:00Z`)), /Kapanmış dönem|geri alındı/);

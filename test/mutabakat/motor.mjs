@@ -161,7 +161,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const signed = Math.min(left, p.total - Math.max(0, p.paid));
     p.total = open > left ? Math.max(p.total, Math.min(inv.rest, p.total + open - signed)) : p.total - (left - open);
   }
-  const uncovered = accountId => Math.max(0, (M.cari.get(accountId) || 0) - [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && p.status === "active").reduce((s, p) => s + planLeft(p), 0));
+  // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın"; routes/plans.mjs uncoveredDebt): Kartı Kapat'la kapatılmış Mevcut Borç kartı borcu taşımayı sürdürür (kalan borçta) — aynı borç ikinci
+  // kez taksitlendirilmez; motorun bütün kartları güncel kodla kapatılır (eski kurallı '2.4.9' kart yok). İptalle kapanan kartın kalanı 0.
+  const uncovered = accountId => Math.max(0, (M.cari.get(accountId) || 0) - [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && (p.status === "active" || p.status === "closed")).reduce((s, p) => s + planLeft(p), 0));
   // Kasa'ya etkiler (tarihli): nakit eksi korumasının modeli ve işlem zinciri denetimi bunlardan hesaplanır.
   function cashEffects() {
     const out = [];
@@ -1491,7 +1493,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const r = await api("PUT", `/api/workspace/plans/${id}`, { status: "closed" });
         mustOk(r, kind);
         p.status = "closed";
-        cariAdd(p.accountId, -Math.max(0, p.total - p.paid));
+        // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın", KG-23 = A "Alacak CH'de kalır (madde yok)"): kalan carinin borcunda kalır — cari DEĞİŞMEZ (önceden −(tutar − ödenen)).
         return;
       }
       case "tarih-hatasi": {

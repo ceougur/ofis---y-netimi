@@ -34,7 +34,8 @@ describe("cari ve stok hesap kuralları (saf)", () => {
       ],
       [
         { id: "p1", name: "Servis", total: 3000, status: "active", registeredOn: "2026-01-02", totals: { paid: 1000, overdue: 1000, overdueCount: 1 }, entries: [{ id: "e1", kind: "in", amount: 1000, date: "2026-01-10", itemSeq: 1 }] },
-        { id: "p2", name: "Eski", total: 900, status: "closed", registeredOn: "2025-01-01", updatedAt: "2025-06-01T00:00:00Z", totals: { paid: 300 }, entries: [{ id: "e2", kind: "in", amount: 300, date: "2025-02-01" }] },
+        // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3b, karar (6)): kalanı düşülen kart artık YALNIZ eski kurallı (göç 53 '2.4.9') kart; Borçta Kalsın kartı aşağıda ayrı sınamada.
+        { id: "p2", name: "Eski", total: 900, status: "closed", closeRule: "2.4.9", registeredOn: "2025-01-01", updatedAt: "2025-06-01T00:00:00Z", totals: { paid: 300 }, entries: [{ id: "e2", kind: "in", amount: 300, date: "2025-02-01" }] },
       ],
     );
     // Borç: 500 + 20 + 3000 + 900 = 4420; Alacak: 200 + 50 + 1000 + 300 + 600 (kapatılan kalan) = 2150.
@@ -45,6 +46,16 @@ describe("cari ve stok hesap kuralları (saf)", () => {
     assert.equal(ledger.totals.overdueCount, 1);
     assert.equal(ledger.lines.at(-1).balance, 2270, "yürüyen bakiye");
     assert.ok(ledger.lines.some(line => line.kind === "plan-close" && line.credit === 600));
+  });
+  it("defter: Borçta Kalsın ile kapatılan kartın kalanı carinin borcunda kalır, satır yok (2.5.0 Ç7b tur 3b, karar (6) / KG-23); kart toplamlarına girmez", () => {
+    const plans = closeRule => [{ id: "p2", name: "Yeni", total: 900, status: "closed", ...(closeRule === undefined ? {} : { closeRule }), registeredOn: "2026-01-01", closedAt: "2026-03-01", totals: { paid: 300 }, entries: [{ id: "e2", kind: "in", amount: 300, date: "2026-02-01" }] }];
+    for (const rule of ["", undefined]) {
+      const ledger = accountLedger([], plans(rule));
+      assert.equal(ledger.totals.balance, 600, `kural ${JSON.stringify(rule)}: kalan borçta`);
+      assert.equal(ledger.lines.some(line => line.kind === "plan-close"), false, "satır yok");
+      assert.equal(ledger.totals.planRemaining, 0, "plan bitti: kart toplamlarına girmez");
+    }
+    assert.equal(accountLedger([], plans("2.4.9")).totals.balance, 0, "eski kural: kalan düşülür");
   });
   it("stok seviyesi hareketlerden: mevcut, kritik, tükendi", () => {
     assert.deepEqual(stockLevel({ minQty: 5, unitPrice: 10 }, [{ kind: "in", qty: 10 }, { kind: "out", qty: 6 }]).state, "low");

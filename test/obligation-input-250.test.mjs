@@ -374,7 +374,7 @@ describe("2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/accoun
       const fresh = text(inv.obligationsFor(id, ledgerOf(id)));
       assert.equal(single.get(id), fresh, `${state} ${company} ${name}: obligationsOf (soğuk) = obligationsFor`);
       assert.equal(text(all.get(id)), fresh, `${state} ${company} ${name}: allObligations = obligationsFor`);
-      digests[`${state}|${company}|${name}`] = norm(JSON.stringify({ kuyruk: JSON.parse(fresh), defter: plain(ledgerOf(id)), kartListesi: plain(ctx.plans.forAccount(id, AUDIT)), satirlar: plain(lines.get(id)), kartlar: plain(cardsOf(map.get(id))) }).replace(/user-[0-9a-f-]{36}/g, "[kullanıcı]"));
+      digests[`${state}|${company}|${name}`] = norm(JSON.stringify({ kuyruk: JSON.parse(fresh), defter: plain(ledgerOf(id)), kartListesi: plain(ctx.plans.forAccount(id, AUDIT).map(({ closeRule, ...plan }) => (closeRule ? { ...plan, closeRule } : plan))), satirlar: plain(lines.get(id)), kartlar: plain(cardsOf(map.get(id))) }).replace(/user-[0-9a-f-]{36}/g, "[kullanıcı]"));
     }
     // işlem içinde (yazım yanıtı yolu): iade kesimi taranır, satış kaynağı belleğe yazılmaz — sonuç aynı
     const probe = ids.find(row => row.name.endsWith("İadeli Kart")).id;
@@ -444,6 +444,8 @@ describe("2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/accoun
     // açık taksitten kesilir; hakem taşımadan önceki kodla (son taksitten) yazıldı → bu carilerin kuyruğu hakemden FARKLI olmak ZORUNDA (taşıma eşdeğerliği öbür carilerde aynen; aşağıdaki
     // modül = servis denetimi İadeli Kart'ı da kapsar).
     const changedByRule = key => key.endsWith("İadeli Kart");
+    // 2.5.0 Ç7b tur 3b (göç 53): kart listesine YENİ alan closeRule (Kartı Kapat kuralı; açık / Borçta Kalsın kartta '') — hakem taşımadan önce yazıldı; boş değer özetten çıkarılır
+    // (dolu değer — eski kurallı kapalı kart — özette kalır; bu sınıf verisinde kapalı kart yok). Davranış farkı DEĞİL (alanın kendisi test/c7b-tur3b-borcta-kalsin-250'de).
     const differ = Object.keys(digests).filter(key => !changedByRule(key) && digests[key] !== hakem.cariler[key]);
     assert.deepEqual(differ, [], `hakemden farklı çıktı (taşıma davranışı değiştirdi): ${differ.slice(0, 5).join(" · ")}`);
     const ruled = Object.keys(digests).filter(changedByRule);
