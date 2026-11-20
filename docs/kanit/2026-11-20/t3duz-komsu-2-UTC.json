@@ -1,0 +1,32 @@
+{
+  "ad": "t3duz-komsu-2-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/g1-hiz-esdegerlik-250.test.mjs test/goc-246-iade-bagi.test.mjs test/guvenilirlik-221-tatbikat.test.mjs test/hakem-k3-kasa-istek-kimligi.test.mjs test/hakem-k4-yineleme-sirasi.test.mjs test/hakem-k5-banka-eksi-kodu.test.mjs test/hesap-plani-sinif-250.test.mjs test/hesapsiz-isaret-250.test.mjs test/hesapsiz-tumu-250.test.mjs test/hiz-243-hesap-defter.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-geri-odeme-246.test.mjs test/iade-kapama-k1.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/is-akisi.test.mjs test/iz1-excel-sirket.test.mjs test/iz1-kasa-acilis.test.mjs test/kalan-metin-246.test.mjs test/kapali-kart-ekstre-tarihi-250.test.mjs test/kapama-ks7-245.test.mjs test/kapama-rastgele-223.test.mjs test/kapama-tek-gecis-245.test.mjs test/kapi-para-245.test.mjs test/kart-iade-musteri-249.test.mjs test/kasa-acilis-b6-250.test.mjs test/kasa-acilis-iz-250.test.mjs test/kasa-acilis-kimlik-b7-250.test.mjs test/kasa-acilis-mutant-b6-250.test.mjs test/kasa-acilis-once-250.test.mjs test/kasa-acilis-silinenler-ozet-b8-250.test.mjs test/kasa-acilis-uyari-250.test.mjs test/kasa-acilis-uyari-artis-250.test.mjs test/kasa-acilis-vergi-s94-250.test.mjs test/kayit-tahsilat-244.test.mjs test/kilit-izi-alanlar-250.test.mjs test/koruma-taban-ailesi-250.test.mjs test/kullanici-yetki-210.test.mjs test/kural-farki-duzeltme-250.test.mjs test/kural-farki-kapi-disi-250.test.mjs test/mobil-247.test.mjs test/mobil-eslesme-247.test.mjs test/mobil-ozet-247.test.mjs test/mobil-ozet-olcek-247.test.mjs test/mobil-yazma-247.test.mjs test/mutabakat-213.test.mjs test/mutabakat-araci-uyari-250.test.mjs test/nakit-akis-ileri-tarihli-yol.test.mjs test/nakit-akis-kasa-mm6.test.mjs test/obligation-input-250.test.mjs test/odeme-yolu-222.test.mjs test/plan-case-link.test.mjs",
+  "commit": "d2a2efe4129ed5968beac4428af397d3c1efc7a9",
+  "dal": "worktree-agent-a1e6310bec4c916cb",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T07:07:47.492Z",
+  "sure_sn": 338.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 625,
+    "gecen": 625,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d3/k/2026-11-20/t3duz-komsu-2-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1e6310bec4c916cb",
+  "ham_cikti_sha256": "5650db5192986291365b0c737c33470a0b49c55fb14050438c298311a673f06b",
+  "ham_cikti_bayt": 256548
+}
