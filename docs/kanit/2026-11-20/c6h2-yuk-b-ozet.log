@@ -1,0 +1,13 @@
+B başta yük 2.16 1.88 1.61 4/150 13602 · 10:39:29 · uç d3b2da11
+yeni (son uç) UTC çıkış 0 · # tests 71 # pass 71 # fail 0 # cancelled 0 # skipped 0 
+yeni (son uç) Europe/Istanbul çıkış 0 · # tests 71 # pass 71 # fail 0 # cancelled 0 # skipped 0 
+komşu UTC çıkış 0 · # tests 938 # pass 938 # fail 0 # cancelled 0 # skipped 0 
+komşu Europe/Istanbul çıkış 0 · # tests 938 # pass 938 # fail 0 # cancelled 0 # skipped 0 
+zorla bitir çıkış 1 · [zorla özet] test/c6h-bilanco-uc.test.mjs · 1 yineleme · ön koşul gerçekleşti 0 · gerçekleşmedi 1 · ön koşullu yeşil 0 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilinmiyor 0
+zorla gozlem çıkış 1 · [zorla özet] test/c6h-bilanco-uc.test.mjs · 1 yineleme · ön koşul gerçekleşti 0 · gerçekleşmedi 1 · ön koşullu yeşil 0 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilinmiyor 0
+defter çıkış 0
+cari çıkış 0
+BITTI
+B sonda yük 1.03 1.46 1.98 1/130 22430 · 10:57:25
+
+[exited with code 0]

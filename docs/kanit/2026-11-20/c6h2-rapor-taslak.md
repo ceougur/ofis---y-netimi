@@ -18,5 +18,8 @@ mutantlar.py + mutasyon.sh, kirmizi.sh, komsu-bul.sh + komsu.txt, yuk-a.sh, yuk-
   c6h-bilanco 1/1 kırmızı — "does not provide an export named 'balanceSheet'" (uç yok; diş mutantlarda) · c6h-bilanco-uc 8/8 — 404 "Endpoint bulunamadı." · c6h-ba 4/5 — DEĞERLE (aylar: Ocak 0 ≠ 24000,
   Aralık 26667 ≠ 2667; yıllık kesin testi eski kodda da yeşil — beklenen) · c6h-s209 3/3 — DEĞERLE (DSS −5000 ≠ 0; SMM 0 ≠ −5000; Bilanço testi "balanceSheet yok") · c6h-degerleme (yeni beklenti) 1/12 — −8000 ≠ 0.
   MUTASYON 15 mutant × 2 koşu (UTC, Europe/Istanbul) = 30/30 YAKALANDI (c6h2-mutasyon.log).
+- YÜK B (10:39–10:57 UTC, uç d3b2da11; c6h2-yuk-b-ozet.log): yeni testler son uçta UTC 71/71, Europe/Istanbul 71/71 · G2 komşu (80 dosya, komsu-bul.sh) UTC 938/938, Europe/Istanbul 938/938 ·
+  zorla bitir: ön koşul GERÇEKLEŞMEDİ, test YEŞİL 8/8 · zorla gozlem: ön koşul GERÇEKLEŞMEDİ, 7/8 — "dondurma 120000 ms'de bitmedi" (kanca kilit testindeki dondurmayı tutuyor; tur 1'in c6h-uc'si ile
+  AYNI sonuç; açılış dondurmalı kurgu 2.5.1 — KULLANICI 20.11) · kâhin SONRA: defter 187 / 0 fark, cari 17253 / 0 fark (önceyle AYNI).
 - Kâhin ÖNCE (taban, 20.11 ~10:1x): defter 187 denetim 0 fark; cari 17253 denetim 0 fark (7 bilinen sınır), 0 yapım aşaması.
 - Hacim ölçümü ilk denemede başka ajanın paylaşımlı yük kilidi (dk-t3duz eşdeğerlik koşusu) yüzünden başlamadı → yük parçaları önce, ölçüm sonra.
