@@ -7,6 +7,7 @@
 // Tutarlar kuruş tamsayı (…Minor).
 import { bookTypeOf } from "./book-type.mjs";
 import { BALANCE_SHEET_ITEMS, CHART, JOURNAL_CLASS, PLAN_SUBS, balanceSheetItemOf, entryClass, reverseBalanceOf } from "./general-ledger.mjs";
+import { frozenSums } from "./ledger-snapshots.mjs";
 import { createStockValuation, loadValuationInput } from "./stock-valuation.mjs";
 
 const CLOSING_CLASS = JOURNAL_CLASS["voucher-close"];
@@ -67,6 +68,11 @@ const dayBefore = day => {
   date.setUTCDate(date.getUTCDate() - 1);
   return date.toISOString().slice(0, 10);
 };
+const dayAfter = day => {
+  const date = new Date(`${day}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + 1);
+  return date.toISOString().slice(0, 10);
+};
 /** Gelir Tablosu dönemi: geçerli iki gün, a ≤ b, aynı mali yıl (çapraz yıl tanımsız — tasarım §4 / §10 S-b). Hata { status: 400, code }. */
 export function checkRange(from, to) {
   if (!isDay(from) || !isDay(to) || from > to) throw Object.assign(new Error("Geçerli bir tarih aralığı seçin."), { status: 400, code: "gelir-tablosu-aralik" });
@@ -96,18 +102,20 @@ function stockFlow(entries, from, to) {
  * (a = 1 Ocak ise 0 → yıllık kesin), 31.12'yi içermeyen parça her zaman T(b) − T(a − 1); aylar toplamı = çeyrek = yıl = 621. a ve b aynı mali yıl (çapraz yıl tanımsız — tasarım §10 S-b;
  * çağıran reddeder). Dönüş: { estimated, posted, minor, stockFlowMinor, stockMovesMinor, differenceMinor, negative, warnings }.
  */
-export function estimatedCost({ entries, valuation, from, to }) {
+export function estimatedCost({ entries, valuation, from, to, frozen = null }) {
   const start = yearStart(to);
+  // B-g (b): donmuş dönemin yıl toplamı (frozenPartOf; kısım 0 = [1 Ocak, a − 1], kısım 1 = [a, …]) + kapsam sonrası maddeler.
+  const flowOf = (day, list) => stockFlow(list, start, day) + (!frozen ? 0 : day >= frozen.split ? frozen.flow153[0] + frozen.flow153[1] : frozen.flow153[0]);
   const year = Number(to.slice(0, 4));
   const yearEnd = `${year}-12-31`;
-  const posted621 = to === yearEnd && entries.some(entry => entry.date >= start && entry.date <= yearEnd && entryClass(entry) !== CLOSING_CLASS && entry.lines.some(line => line.account === "621"));
+  const posted621 = to === yearEnd && (Boolean(frozen?.has621) || entries.some(entry => entry.date >= start && entry.date <= yearEnd && entryClass(entry) !== CLOSING_CLASS && entry.lines.some(line => line.account === "621")));
   const prev = valuation.yearEnd(year - 1);
   const atB = valuation.at(to);
-  const T = (day, at) => prev.totals.dssMinor + stockFlow(entries, start, day) - at.totals.dssMinor;
+  const T = (day, at) => prev.totals.dssMinor + flowOf(day, entries) - at.totals.dssMinor;
   const first = from <= start;
   const atA = first ? null : valuation.at(dayBefore(from));
   // Stok biçimiyle karşılaştırma (tasarım §4): 153 defter hareketi ↔ stok hareketlerinin tutarı (açılış + alış − alış iadesi), [1 Ocak, b].
-  const flow = stockFlow(entries, start, to);
+  const flow = flowOf(to, entries);
   const tBefore = first ? 0 : T(dayBefore(from), atA);
   const minor = posted621 ? -tBefore : prev.totals.dssMinor + flow - atB.totals.dssMinor - tBefore;
   const moves = atB.totals.openingMinor + atB.totals.purchaseMinor - atB.totals.returnMinor;
@@ -117,7 +125,7 @@ export function estimatedCost({ entries, valuation, from, to }) {
   const clipped = new Map();
   for (const row of [...atB.clipped, ...(atA ? atA.clipped : [])]) if (!clipped.has(row.id)) clipped.set(row.id, row);
   // Stoksuz dönemde (önceki yıl sonu stoku, dönem 153 hareketi ve t stoku 0) tahmin yoktur: maliyet kesin 0 (hizmet işletmesi "Satışların Maliyeti Tahminidir" uyarısı görmez).
-  const involved = prev.totals.dssMinor !== 0 || atB.totals.dssMinor !== 0 || flow !== 0 || negative.size > 0 || clipped.size > 0 || (atA ? atA.totals.dssMinor !== 0 || stockFlow(entries, start, dayBefore(from)) !== 0 : false);
+  const involved = prev.totals.dssMinor !== 0 || atB.totals.dssMinor !== 0 || flow !== 0 || negative.size > 0 || clipped.size > 0 || (atA ? atA.totals.dssMinor !== 0 || flowOf(dayBefore(from), entries) !== 0 : false);
   return {
     estimated: posted621 ? !first && involved : involved,
     posted: posted621,
@@ -194,12 +202,30 @@ export function footnotes(facts = {}) {
  * Gelir Tablosu (kural kitabı §4, §7.1). entries: book({ from: yılın 1 Ocak'ı, to }) maddeleri (fazlası süzülür); valuation: createStockValuation; bookType: Defter Türü kodu;
  * ruleDiff: snapshots.ruleDiff() sonucu (ya da null — kilit kapsamı döneme değmiyorsa). Dönüş: kalemler (hesap → alt satır), ara toplamlar, satışların maliyeti, Kesin Değil, dipnotlar.
  */
-export function incomeStatement({ entries, valuation, from, to, bookType = "unset", ruleDiff = null }) {
+export function incomeStatement({ entries, valuation, from, to, bookType = "unset", ruleDiff = null, frozen = null }) {
   checkRange(from, to);
+  // B-g (b): frozen = donmuş dönemin bu yılının toplamları (frozenPartOf); entries o zaman yalnız kapsam sonrası maddeler. Kısım ayracı a olmalı (a = 1 Ocak'ta "" de olur).
+  if (frozen && frozen.split !== from && !(from === yearStart(from) && frozen.split <= from)) throw new Error(`donmuş toplamın kısım ayracı (${frozen.split}) dönem başı (${from}) değil`);
   const rows = new Map(); // satir hesabı → { kalem, hesap, parts: Map(kaynak → minor) }
   const unclassified = new Map();
-  let unbalanced = 0;
-  let count = 0;
+  let unbalanced = frozen ? frozen.unbalanced : 0;
+  let count = frozen ? frozen.entries : 0;
+  const addLine = (account, sub, net) => {
+    const place = incomeLineOf(account);
+    if (!place) return;
+    if (place === "unclassified") {
+      unclassified.set(account, (unclassified.get(account) || 0) + net);
+      return;
+    }
+    const source = isUnclassifiedSub(sub) ? sub : account;
+    let row = rows.get(place.satir);
+    if (!row) rows.set(place.satir, (row = { kalem: place.kalem, hesap: place.satir, parts: new Map() }));
+    row.parts.set(source, (row.parts.get(source) || 0) + net);
+  };
+  if (frozen) {
+    for (const account of frozen.unclassifiedOrder) unclassified.set(account, 0); // ilk görünüş sırası (eski okumayla aynı ayrıntı sırası)
+    for (const { account, sub, net } of frozen.income) addLine(account, sub, net);
+  }
   for (const entry of entries) {
     if (entry.date < from || entry.date > to) continue;
     count += 1;
@@ -208,21 +234,9 @@ export function incomeStatement({ entries, valuation, from, to, bookType = "unse
     if (own !== 0) unbalanced += 1;
     // Kapanış sınıfı (N-02…N-07, önceki yıl sonucu — EK-2 E13) gelir tablosuna girmez; dönem sonu sınıfı (N-01) girer (kitap §4).
     if (entryClass(entry) === CLOSING_CLASS) continue;
-    for (const line of entry.lines) {
-      const place = incomeLineOf(line.account);
-      if (!place) continue;
-      const net = (Number(line.debit) || 0) - (Number(line.credit) || 0);
-      if (place === "unclassified") {
-        unclassified.set(line.account, (unclassified.get(line.account) || 0) + net);
-        continue;
-      }
-      const source = isUnclassifiedSub(line.sub) ? line.sub : line.account;
-      let row = rows.get(place.satir);
-      if (!row) rows.set(place.satir, (row = { kalem: place.kalem, hesap: place.satir, parts: new Map() }));
-      row.parts.set(source, (row.parts.get(source) || 0) + net);
-    }
+    for (const line of entry.lines) addLine(line.account, line.sub, (Number(line.debit) || 0) - (Number(line.credit) || 0));
   }
-  const cost = estimatedCost({ entries, valuation, from, to });
+  const cost = estimatedCost({ entries, valuation, from, to, frozen });
   const items = INCOME_ITEMS.map(item => {
     const sign = item.gelir ? -1 : 1; // gelir: alacak − borç
     const hesaplar = [...rows.values()]
@@ -295,8 +309,20 @@ export function incomeStatement({ entries, valuation, from, to, bookType = "unse
  * yalnız hesap toplamıdır; bütün kilitli geçmişi karşılaştıran snapshots.ruleDiff 100.000 satırda ~2,7 sn (ölçüm: docs/kanit/2026-11-19/c6h1-hiz-parca) — Mutabakat Testi'nin "ledger:rule-diff"
  * denetimi o işi yapar. Saklanan fişler (voucher-*) iki tarafta da karşılaştırılmaz (snapshots.ruleDiff ile aynı).
  */
-export function periodRuleDiff({ frozen, live, from, to, accounts = account => account === "153" || /^[67]/.test(account) }) {
+export function periodRuleDiff({ frozen, live, from, to, accounts = account => account === "153" || /^[67]/.test(account), frozenSums: summary = null }) {
   const sums = new Map();
+  // B-g (b): donmuş taraf toplamlardan (frozenPartOf — [from, to] aralığının TAMAMI; kimliği "voucher" ile başlayan maddeler hariç); frozen o zaman yalnız kapsam sonrası maddeler (aralık dışı).
+  if (summary) {
+    for (const [year, part] of summary.years) {
+      for (const [account, net] of part.rule) {
+        if (!accounts(account)) continue;
+        const key = `${String(year).padStart(4, "0")}|${account}`;
+        const row = sums.get(key) || { frozen: 0, live: 0 };
+        row.frozen += net;
+        sums.set(key, row);
+      }
+    }
+  }
   const add = (list, side) => {
     for (const entry of list) {
       if (entry.date < from || entry.date > to || String(entry.id).startsWith("voucher")) continue;
@@ -331,13 +357,92 @@ export function incomeStatementOf({ store, ledger, from, to }) {
   const cover = ledger.snapshots?.state?.().coverage || "";
   let entries;
   let ruleDiff = null;
+  let frozen = null;
   if (cover && cover >= start) {
     const live = ledger.build();
-    entries = ledger.book({ from: start, to, live });
-    ruleDiff = periodRuleDiff({ frozen: entries, live, from: start, to: to < cover ? to : cover });
+    // B-g (b) (tasarım §8): dönemin kilitli kısmı [1 Ocak, min(b, kapsam)] donmuş TOPLAMLARDAN (kısım ayracı a), kapsamın sonrası karma yevmiyenin kuyruğundan.
+    const through = to < cover ? to : cover;
+    const part = frozenPartOf(frozenSums(store, { from: start, through, split: from }));
+    entries = to > cover ? ledger.book({ from: dayAfter(cover), to, live }) : [];
+    ruleDiff = periodRuleDiff({ frozen: entries, frozenSums: part, live, from: start, to: through });
+    frozen = part.years.get(Number(start.slice(0, 4))) || emptyFrozenYear(Number(start.slice(0, 4)), from);
   } else entries = ledger.book({ from: start, to });
   const valuation = createStockValuation(loadValuationInput(store));
-  return incomeStatement({ entries, valuation, from, to, bookType: bookTypeOf(store), ruleDiff });
+  return incomeStatement({ entries, valuation, from, to, bookType: bookTypeOf(store), ruleDiff, frozen });
+}
+
+// ---------- B-g (b): donmuş dönemin toplamları (tur 3; tasarım §8 "B-g (b) TASARIMI") ----------
+
+const emptyFrozenYear = (year, split) => ({ year, split, entries: 0, unbalanced: 0, income: [], flow153: [0, 0], has621: false, any67: false, rule: new Map(), unclassifiedOrder: [] });
+
+/**
+ * ledger-snapshots frozenSums() çıktısından raporların girdisi: yıl başına { madde ve dengesiz madde sayısı (kısım 1), Gelir Tablosu satırları (6 / 7, kapanış sınıfı hariç, kısım 1:
+ * hesap × alt hesap), 153 akışı (kapanış ve dönem sonu sınıfı hariç; [kısım 0, kısım 1]), 621 satırı var mı (kapanış hariç), 6 / 7 satırı var mı (her sınıf), Kural Değişikliği Farkı'nın donmuş
+ * tarafı (hesap → net; kimliği "voucher" ile başlayanlar hariç), sınıflandırılmamış 6 / 7 hesaplarının ilk görünüş sırası }, Bilanço hücreleri (hesap × alt hesap × cari → net; bütün yıllar),
+ * kapanış sınıfının en geç günü, planda olmayan 1–5 hesaplarının ilk görünüş sırası. Sınıf = kimlik önekinden (donmuş maddenin entryClass'ı gibi).
+ */
+export function frozenPartOf(sums) {
+  const years = new Map();
+  const yearOf = year => {
+    let part = years.get(year);
+    if (!part) years.set(year, (part = emptyFrozenYear(year, sums.split)));
+    return part;
+  };
+  const cells = new Map();
+  const income = new Map(); // yıl|hesap|alt → { account, sub, net }
+  const candidates = new Set();
+  let closingDay = "";
+  for (const row of sums.groups) {
+    const part = yearOf(row.year);
+    const cls = JOURNAL_CLASS[row.prefix] ?? 90;
+    const key = `${row.account}|${row.sub}|${row.party}`;
+    const cell = cells.get(key);
+    if (cell) cell.net += row.net;
+    else cells.set(key, { account: row.account, sub: row.sub, party: row.party, net: row.net });
+    if (/^[67]/.test(row.account)) part.any67 = true;
+    if (balanceAccount(row.account) && !balanceSheetItemOf(row.account)) candidates.add(row.account);
+    if (!row.voucher) part.rule.set(row.account, (part.rule.get(row.account) || 0) + row.net);
+    if (cls === CLOSING_CLASS) {
+      if (row.last > closingDay) closingDay = row.last;
+      continue;
+    }
+    if (row.account === "621") part.has621 = true;
+    if (cls !== PERIOD_END_CLASS && row.account === "153") part.flow153[row.part === 1 ? 1 : 0] += row.net;
+    if (row.part !== 1) continue;
+    const place = incomeLineOf(row.account);
+    if (!place) continue;
+    if (place === "unclassified") candidates.add(row.account);
+    const incomeKey = `${row.year}|${row.account}|${row.sub}`;
+    const line = income.get(incomeKey);
+    if (line) line.net += row.net;
+    else income.set(incomeKey, { year: row.year, account: row.account, sub: row.sub, net: row.net });
+  }
+  for (const line of income.values()) yearOf(line.year).income.push({ account: line.account, sub: line.sub, net: line.net });
+  for (const row of sums.entries) {
+    if (row.part !== 1) continue;
+    const part = yearOf(row.year);
+    part.entries += row.entries;
+    part.unbalanced += row.unbalanced;
+  }
+  // Sınıflandırılmamış hesapların ilk görünüş sırası (Kesin Değil ayrıntısının sırası eski okumayla aynı; seyrek — çoğu veride sorgu yok).
+  const unknownOrder = [];
+  if (candidates.size) {
+    const seenUnknown = new Set();
+    const seenIncome = new Set();
+    for (const row of sums.firstSeen([...candidates])) {
+      if (balanceAccount(row.account) && !balanceSheetItemOf(row.account) && !seenUnknown.has(row.account)) {
+        seenUnknown.add(row.account);
+        unknownOrder.push(row.account);
+      }
+      const cls = JOURNAL_CLASS[row.prefix] ?? 90;
+      if (row.part !== 1 || cls === CLOSING_CLASS || incomeLineOf(row.account) !== "unclassified") continue;
+      const key = `${row.year}|${row.account}`;
+      if (seenIncome.has(key)) continue;
+      seenIncome.add(key);
+      yearOf(row.year).unclassifiedOrder.push(row.account);
+    }
+  }
+  return { from: sums.from, through: sums.through, split: sums.split, years, cells: [...cells.values()], closingDay, unknownOrder };
 }
 
 // ---------- Bilanço (tur 2; docs/erp/C6-HESAP-TASARIM.md §6; kural kitabı §4, §7.2, §7.3, §7.4, §8; KG-11 A, KG-12 A, KG-14 A; EK-1 M4; EK-2 S. 36) ----------
@@ -364,8 +469,8 @@ const normalDebit = item => (item.taraf === "aktif") !== Boolean(item.duzenleyic
  * Kapanmış son yıl (tasarım §6 "KAPANMIŞ YIL"): closedOn = t'ye kadar ters kaydı yazılmamış kapanış sınıfı fişlerinin en geç tarihi (balanceSheetOf fiş tablosundan okur); verilmezse
  * maddelerin kapanış sınıfından. 31.12.K ise K (ve önceki bütün yıllar — EK-1 M4), değilse K − 1; kapanış yoksa −∞.
  */
-function closedYearOf(entries, date, closedOn) {
-  let day = typeof closedOn === "string" ? closedOn : "";
+function closedYearOf(entries, date, closedOn, frozenDay = "") {
+  let day = typeof closedOn === "string" ? closedOn : frozenDay;
   if (typeof closedOn !== "string") for (const entry of entries) if (entry.date <= date && entryClass(entry) === CLOSING_CLASS && entry.date > day) day = entry.date;
   if (!day || day > date) return -Infinity;
   const year = Number(day.slice(0, 4));
@@ -377,7 +482,7 @@ function closedYearOf(entries, date, closedOn) {
  * ruleDiff: periodRuleDiff sonucu (kilitli dönem varsa) ya da null; reconciliation: ledger.check()'in mutabakatı (reconcile) ya da undefined (denetlenmedi); partyNames: cari kimliği → ad.
  * Dönüş: aktif / pasif (gruplar → kalemler → hesaplar), hesaplanmış iki satır, toplamlar ve fark, hesap başına defter ↔ bilanço tutarı, Kesin Değil, dipnotlar, uyarılar.
  */
-export function balanceSheet({ entries, valuation, date, bookType = "unset", closedOn, ruleDiff = null, reconciliation, partyNames = null }) {
+export function balanceSheet({ entries, valuation, date, bookType = "unset", closedOn, ruleDiff = null, reconciliation, partyNames = null, frozen = null }) {
   if (!isDay(date)) throw Object.assign(new Error("Geçerli bir tarih seçin."), { status: 400, code: "bilanco-tarih" });
   const year = Number(date.slice(0, 4));
   const upto = entries.filter(entry => entry.date <= date);
@@ -388,6 +493,26 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
   const byYear = new Map(); // yıl → o yılın maddeleri (Gelir Tablosu çağrıları yalnız kendi yılını okur — sonuç aynı, geçiş sayısı yıl başına bir)
   let unbalanced = 0;
   let firstYear = Infinity;
+  let frozenEntries = 0;
+  // B-g (b): frozen = donmuş dönemin [başlangıç, min(t, kapsam)] toplamları (frozenPartOf; kısım ayracı ""), entries o zaman yalnız kapsam sonrası maddeler.
+  if (frozen) {
+    for (const account of frozen.unknownOrder) unknown.set(account, 0); // ilk görünüş sırası
+    for (const { account, sub, party, net } of frozen.cells) {
+      if (!balanceAccount(account)) continue;
+      if (!balanceSheetItemOf(account)) {
+        unknown.set(account, (unknown.get(account) || 0) + net);
+        continue;
+      }
+      const key = `${account}|${sub}|${party}`;
+      cells.set(key, (cells.get(key) || 0) + net);
+    }
+    for (const [frozenYear, part] of frozen.years) {
+      if (part.any67) activeYears.add(frozenYear);
+      unbalanced += part.unbalanced;
+      frozenEntries += part.entries;
+      if (frozenYear < firstYear) firstYear = frozenYear;
+    }
+  }
   for (const entry of upto) {
     let own = 0;
     const entryYear = Number(entry.date.slice(0, 4));
@@ -411,13 +536,13 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
     if (own !== 0) unbalanced += 1;
   }
   if (valuation.firstYear !== null && valuation.firstYear !== undefined && valuation.firstYear < firstYear) firstYear = valuation.firstYear;
-  const closedYear = closedYearOf(upto, date, closedOn);
+  const closedYear = closedYearOf(upto, date, closedOn, frozen?.closingDay || "");
   const currentOpen = year > closedYear;
   // Hesaplanmış satırlar — Gelir Tablosu'nun KENDİSİ (iki formül YOK; kitap §8, YÜKSEK-1): t'nin yılı 1 Ocak–t; kapanmamış önceki yıllar yıl yıl (KG-12 A).
-  const current = currentOpen ? incomeStatement({ entries: byYear.get(year) || [], valuation, from: `${year}-01-01`, to: date, bookType, ruleDiff }) : null;
+  const current = currentOpen ? incomeStatement({ entries: byYear.get(year) || [], valuation, from: `${year}-01-01`, to: date, bookType, ruleDiff, frozen: frozen?.years.get(year) || null }) : null;
   const priorYears = [];
   for (let y = Math.max(closedYear + 1, Number.isFinite(firstYear) ? firstYear : year); y < year; y += 1) {
-    const out = incomeStatement({ entries: byYear.get(y) || [], valuation, from: `${y}-01-01`, to: yearEndOf(y), bookType, ruleDiff });
+    const out = incomeStatement({ entries: byYear.get(y) || [], valuation, from: `${y}-01-01`, to: yearEndOf(y), bookType, ruleDiff, frozen: frozen?.years.get(y) || null });
     if (activeYears.has(y) || out.smm.estimated || out.subtotals.donemNetKari !== 0) priorYears.push({ yil: y, out });
   }
   // 153: t'nin yılının satışların maliyeti kesin değilse DSS_t (tahmini değerleme — kitap §5.3), kesinse (yıl kapanmış ya da N-01 yazılmış) defter.
@@ -612,7 +737,7 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
     year,
     bookType,
     bilgiAmacli: bookType !== "balance",
-    entryCount: upto.length,
+    entryCount: frozenEntries + upto.length,
     aktif,
     pasif,
     hesaplanmis,
@@ -647,10 +772,13 @@ export function balanceSheetOf({ store, ledger, date }) {
   if (!isDay(date)) throw Object.assign(new Error("Geçerli bir tarih seçin."), { status: 400, code: "bilanco-tarih" });
   const checked = ledger.check();
   const live = checked.entries;
-  const entries = ledger.book({ to: date, live });
-  // Kural Değişikliği Farkı (Ç3): kilitli kısmın [başlangıç, min(t, kapsam)] donmuş ↔ güncel türetme yıl × hesap toplamı, BÜTÜN hesaplar (Bilanço 1–5'i, hesaplanmış satırlar 6 / 7'yi okur).
   const cover = ledger.snapshots?.state?.().coverage || "";
-  const ruleDiff = cover ? periodRuleDiff({ frozen: entries, live, from: "", to: date < cover ? date : cover, accounts: () => true }) : null;
+  // B-g (b) (tasarım §8): kilitli kısım [başlangıç, min(t, kapsam)] donmuş TOPLAMLARDAN (madde madde okunmaz), kapsamın sonrası karma yevmiyenin kuyruğundan (book; bekleyen koşunun ara dilimi dahil).
+  const through = cover ? (date < cover ? date : cover) : "";
+  const frozen = cover ? frozenPartOf(frozenSums(store, { from: "", through })) : null;
+  const entries = !cover ? ledger.book({ to: date, live }) : date > cover ? ledger.book({ from: dayAfter(cover), to: date, live }) : [];
+  // Kural Değişikliği Farkı (Ç3): kilitli kısmın [başlangıç, min(t, kapsam)] donmuş ↔ güncel türetme yıl × hesap toplamı, BÜTÜN hesaplar (Bilanço 1–5'i, hesaplanmış satırlar 6 / 7'yi okur).
+  const ruleDiff = cover ? periodRuleDiff({ frozen: entries, frozenSums: frozen, live, from: "", to: through, accounts: () => true }) : null;
   const valuation = createStockValuation(loadValuationInput(store));
   const names = new Map();
   const partyNames = {
@@ -659,7 +787,7 @@ export function balanceSheetOf({ store, ledger, date }) {
       return names.get(id);
     },
   };
-  return balanceSheet({ entries, valuation, date, bookType: bookTypeOf(store), closedOn: closingDayOf(store, date), ruleDiff, reconciliation: checked.reconciliation, partyNames });
+  return balanceSheet({ entries, valuation, date, bookType: bookTypeOf(store), closedOn: closingDayOf(store, date), ruleDiff, reconciliation: checked.reconciliation, partyNames, frozen });
 }
 
 /** Değerleme okuma ucu (D3 / D4 / sürücü): t günü sonu, ürün ayrıntısıyla; önceki yıl sonunun toplamları (DBS). */
