@@ -16,3 +16,15 @@ Taban: c7b3b-taban = b3a59f2a. İş: P7 (S219 = A) + S200 okuması. P6 → 2.5.1
 11. Kilitli dönem: kartın başlangıcı kapanmış dönemdeyse satır atlanır (neden kilit), yükleme durmaz; açılan cari geri alınır.
 12. Büyük / küçük harf: 'AHMET YILMAZ' ↔ 'Ahmet Yılmaz' — SQLite NOCASE yalnız ASCII katlar (İ/ı katlanmaz); cari eşleştirmesiyle AYNI kural (tek yardımcı) — değişmez.
 13. Kural iki yerde ayrı yazılırsa (plans ↔ accounts) ileride ayrışır → kişi çözümü accounts.mjs'teki TEK yardımcıdan (createFromPlan aynı yardımcıyı kullanır).
+
+## 1. KOD (commit 3dbe2009)
+- server/routes/accounts.mjs: kişi kuralı TEK yerde — samePerson (7+ hane telefon → aynı telefon; değilse telefonsuz + aynı grup), matchPerson onu kullanır; planPerson (yazmadan kişinin carisi: kayıt bağı → matchPerson, yabancı kayıt bağı) — createFromPlan aynı yardımcıyı kullanır (davranış aynı); planDuplicate(person, cards) → "same" / "unknown" / "".
+- server/routes/plans.mjs (Excel import): aynı ad + aynı gruptaki açık kartlar (carili kartta carinin telefonu, carisiz kartta kartın telefonu) → planDuplicate; "same" → 'Aynı adla açık kart var'; "unknown" → 'Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin'.
+- TARAMA: 'Aynı adla açık kart var' ve ad-yalnız kart sorgusu YALNIZ routes/plans.mjs import'ta (grep server/ client/). Ön izleme (plans/import/preview) yinelenen kart saymaz (yalnız başlık / şekil). Tablodan Aktar (routes/plan-transfer.mjs analyze) kendi kuralıyla telefonu karşılaştırır (bağsız kartı kayda bağlama; ad-yalnız değil) → değişmedi. Toplu Taksitlendir (açık kartı olan cari listeye gelmez) cari kimliğiyle çalışır → ad-yalnız değil.
+
+## 2. TESTLER
+- test/c7bt-ayni-adli-excel-karti-250.test.mjs (10 test). Yeni: UTC 10/10, Europe/Istanbul 10/10. Taban (c7b3b-taban): iki TZ 1/10 (9 kırmızı; nedenler okundu: (1)(5)(7)(9)(8) satır 'Aynı adla açık kart var' ile atlandı; (3)(4)(6) neden 'Aynı adla açık kart var' ≠ yeni neden; (10) kilit yerine 'Aynı adla açık kart var'). (2) tabanda YEŞİL — doğası gereği (eski kod her aynı adlı satırı atlar); dişi mutantlarla (M7).
+- v2.4.9 gerçek kodu (git archive v2.4.9): aynı test iki TZ 1/10, aynı nedenler → bugünkü davranış 2.4.9'dan geliyor (gerileme değil).
+- test/plans.test.mjs 'Excel'den ilk yükleme' beklentisi değişti: telefonsuz 'Ali Veli' (aynı grupta telefonlu Ali Veli'nin kartı var) → yeni neden (kişi kesin değil).
+- G2 (27 Excel taksit / cari eşleştirme komşusu + plan-case-link, accounts-stock, cari-243, is-akisi): UTC 482/483 (tek kırmızı plans.test beklentisi — yukarıda).
+- Mutantlar (7; her biri iki TZ, yeni test + plans.test): hepsi öldü (bkz. c7bt-mutant-sonuc.txt).
