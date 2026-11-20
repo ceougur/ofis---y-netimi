@@ -440,8 +440,14 @@ describe("2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/accoun
     }
     const hakem = JSON.parse(readFileSync(HAKEM_ZINCIR, "utf8"));
     assert.deepEqual(Object.keys(digests).sort(), Object.keys(hakem.cariler).sort(), "aynı sınıf carileri ve durumlar");
-    const differ = Object.keys(digests).filter(key => digests[key] !== hakem.cariler[key]);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3 — karar (4) / 2B-S3 = A, docs/erp/C7B-FATURA-TASARIM.md §16.3): iadeyle küçülen kartın ("İadeli Kart") takvimi artık vadesi EN ÖNCE gelen
+    // açık taksitten kesilir; hakem taşımadan önceki kodla (son taksitten) yazıldı → bu carilerin kuyruğu hakemden FARKLI olmak ZORUNDA (taşıma eşdeğerliği öbür carilerde aynen; aşağıdaki
+    // modül = servis denetimi İadeli Kart'ı da kapsar).
+    const changedByRule = key => key.endsWith("İadeli Kart");
+    const differ = Object.keys(digests).filter(key => !changedByRule(key) && digests[key] !== hakem.cariler[key]);
     assert.deepEqual(differ, [], `hakemden farklı çıktı (taşıma davranışı değiştirdi): ${differ.slice(0, 5).join(" · ")}`);
+    const ruled = Object.keys(digests).filter(changedByRule);
+    assert.ok(ruled.length > 0 && ruled.every(key => digests[key] !== hakem.cariler[key]), `karar (4): İadeli Kart'ın kuyruğu hakemden farklı olmalı (${ruled.length})`);
     // (1) modül (yalnız store, satırları kendisi) = servis yüzü
     assert.deepEqual(problems, [], `modül ≠ servis (${problems.length}): ${problems.slice(0, 3).join(" · ")}`);
   });

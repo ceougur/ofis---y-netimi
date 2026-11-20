@@ -247,7 +247,8 @@ describe("Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla
   it("routes/plans.mjs ve öbür yollar: kartın kendi hesabını (allocate) kuran her yer kuyruk görünümüne bağlı ya da iç çağıran olarak listede", () => {
     const allowed = new Map([
       // assertRoom: K8 sınırı / S118 = B (formun sınırı kartın KENDİ kalanından — yer tablosu 7, 19).
-      ["server/routes/plans.mjs", ["assertRoom", "dueItems", "list", "openItems", "shape", "summariesByAccount"]],
+      // cutTargets (2.5.0 Ç7b tur 3 — karar (4)): kart küçülmesinin İÇ hesabı (kesilecek taksitlerin açık kısmı kartın KENDİ hesabından); gösterim yeri değil.
+      ["server/routes/plans.mjs", ["assertRoom", "cutTargets", "dueItems", "list", "openItems", "shape", "summariesByAccount"]],
     ]);
     // Rapor Merkezi: kartın kendi hesabını kuran HER satır aynı satırda (viewOf) ya da hemen ardından (queueLedger) kuyruk görünümüne geçer.
     const rc = read("server/routes/report-center.mjs").split(/\r?\n/);

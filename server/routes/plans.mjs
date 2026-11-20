@@ -1775,6 +1775,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   function settleCoverOnCancel(user, accountId, note = "") {
     const changedIds = [];
     if (!accountId) return changedIds;
+    // Hız (ders 47): carinin açık Mevcut Borç kartı yoksa (çoğu iptal) cari kartı (trimCovers → accounts.detail) hiç hesaplanmaz.
+    if (!store.get("SELECT 1 AS found FROM plans WHERE account_id = ? AND deleted_at IS NULL AND status = 'active' AND covers_balance = 1 AND invoice_id = '' LIMIT 1", accountId)) return changedIds;
     for (const plan of trimCovers(accountId, user, note || "Fatura iptali")) {
       changedIds.push(plan.id);
       if (leftOf(plan.id) <= 0.005) closeForInvoice(user, plan.id, { reason: "cover-invoice-cancelled", note });
