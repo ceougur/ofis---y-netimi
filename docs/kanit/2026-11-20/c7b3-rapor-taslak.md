@@ -152,3 +152,10 @@ Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
 | Cari kartı, kapsayan kartlı cari kartı, Mizan, Mutabakat Testi, taksit tahsilatı | — | tamam | oran 0,89–0,99 | tamam |
 | S15 iptali (tabanda 409) | 41,1 (409) | — | 164,2 / 172,6 (200) | KARŞILAŞTIRILMAZ (durum farklı) |
 - Kalan iptal / silme farkı (+26–30 ms): iptalin kart yolu `settleCoverOnCancel` → `trimCovers` (kuyruksuz `accounts.detail`, ~25–30 ms; S206 / S211 ailesinin 'borçtan büyük kalan kart küçülür, borcu kalmayan kapanır' kuralının okuması — carinin bakiyesi ve kart kalanları gerekir). Taban bu kuralı hiç uygulamıyordu.
+
+## 13. 'Geciken listesi — yazımlardan sonra' farkının tanısı (c7b3-d4-tani3-*; aynı veri, iki kod, iki tur; yük 1,3–2,5 — yalnız TANI, hüküm değil)
+- Yazımdan ÖNCE iki kodda aynı (ilk çağrı soğuk kurulum ~1,8–1,9 sn, sonrakiler ~0,8–0,9 sn). Döngüde tek fark S15 iptali: tabanda 409 (yazım YOK) → sonraki Geciken önbellekten ~0,8 sn;
+  yeni kodda iptal YAZAR (kart kapanır, faturadan ayrılır) → sonraki İLK Geciken çağrısı tam yeniden kurulum ~2,0 sn, ikincisi yine ~0,8 sn.
+- Kart kaldıran / kapatan her yazımdan sonra ilk Geciken çağrısının tam kurulumu tabanda da aynıdır (bölüm 10 tanısı tani-1: tahsilatsız taksitli fatura iptalinden sonra taban 1.966 / yeni
+  2.187 ms). Yani fark aynı işlemin yavaşlaması DEĞİL, S15 = A'nın getirdiği YENİ yazımın (tabanda reddedilen) bedeli → hüküm: KARŞILAŞTIRILMAZ (durum farklı; S15 satırıyla aynı).
+  'Kart kapanınca Geciken listesinin artımlı yenilenmesi' SONRAKİ SÜRÜME (2.5.1) — hız işi, davranış değişmez.
