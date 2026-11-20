@@ -464,3 +464,82 @@ sahte saat 10.02.2027; Aralık 2026 satış 10.000 + KDV 2.000, alış P1 1.000 
   testinde ön koşul gerçekleşti, yeşil.
 - 'Tümünü Sıfırla' da mahsupları artık siler (aynı hata o kipte de vardı; tek liste). Sıfırlama listelerinin dışında kalan öbür tablolar para tablosu değil (kullanıcı, oturum, mobil, sohbet,
   e-Belge kullanım sayacı, kur, banka tatili, ayarlar; donmuş defter ve fiş defteri ayrı yoldan silinir).
+
+## 16. Tur 3 (20.11.2026; görev metni `docs/devir/2.5.0-DEVAM/c7b3-istem.txt`) — Kartı Kapat 'Borçta Kalsın' (karar (6) / KG-23 / S205), kart küçülmesi (karar (4) / 2B-S3), S15 / S206 — KODDAN ÖNCE yazıldı
+Kaynaklar (iş listesinden AYNEN; görev metni): KG-23 = A, karar (6) 2B-S5 / S10 = A, karar (4) 2B-S3 = A, S15 = A, S205 = A, S206 = A; ayrıca iş listesi C'de bulunan S210 = A / S211 = A (cari kâhini bakımı 21b'nin
+SK-41 (a) / (b); 19.11 23:18 kullanıcı kuralıyla öneri uygulandı — görev metninde YOK, §16.4 / §16.6). Bugünkü davranış programın KENDİSİYLE yeniden üretildi (ders 6): `test/c7b-tur3-yoklama.mjs`
+(taban c7b3-taban = b85d9e27; sahte saat 08.10.2026; kanıt docs/kanit/2026-11-20/c7b3-yoklama-*).
+
+### 16.1 Bugünkü davranış (örnek tutarla)
+| # | Örnek | Bugün (taban) | Kararın istediği |
+|---|---|---|---|
+| (6) | Yeni Borç kartı 900 (3 × 300; 05.10 / 05.11 / 05.12), 05.10 tahsilat 300, 08.10 Kartı Kapat | cari bakiye 600 → **0**; gecikmiş 0 (12.10'da da 0); Mizan 120 600 → 0, **689 0 → 600**; cari ekstresinde "Kart kapatıldı · kalan düşüldü" 600 alacak | bakiye **600** kalır, madde YOK, 12.10'da gecikmiş **600** (S205: kalanın tamamı 09.10'dan), hatırlatma gider |
+| (4) | taksitli fatura 900 (3 × 300; 06.10 / 06.11 / 06.12), 06.10 tahsilat 300, 07.10 iade 300 | kart 06.10 300 (ödendi) · **06.11 300 açık** · 06.12 silindi (son taksitten geriye) | 06.10 300 (ödendi) · 06.11 silinir · **06.12 300 açık** (en önce gelen AÇIK taksitten); kalan toplam aynı (300) |
+| S15 | taksitli fatura 900 (3 × 300), kendi kartına 05.10 tahsilat 300, İptal Et | **409 plan-has-payments** "fatura iptal edilemez. Borcu düşürmek için iade faturası kesin."; bakiye 600, kart açık 900 | iptal KABUL; kart kapanır; 300 carinin avansı (bakiye **−300**) |
+| S206 | fatura 900 açık, Taksitler'den Mevcut Borç kartı 900 (3 × 300), kart tahsilatı 300, fatura İptal Et, 06.10 fatura 500 | iptal 200, bakiye −300; **kart AÇIK** (tutar 900; taksitlerin kalanı 0 — kuyruk kartın tüketemediğini kırpıyor); 500'lük fatura açık 200, bakiye 200, gecikmiş 200 | aynı bakiye / açık; **kart KAPANIR** |
+
+### 16.2 Değişecek yer ve DOSYA SINIRI bulgusu — (6) / S205 KODLANAMAZ (DUR, raporla — B-11)
+Kapatılan kartın kalanını düşen bugünkü kural TEK yerde değil; kapalı kartı `tutar − net tahsilat` kadar alacak sayan her okuyucu (tarama `status === "closed"|p.status = 'closed'` server/**):
+| Okuyucu | Dosya | Görev metninde |
+|---|---|---|
+| cari ekstresi / bakiye ("Kart kapatıldı · kalan düşüldü" satırı) — Tek Yükümlülük Kuyruğu'nun da girdisi (kuyruk bu satırı kart tahsilatı gibi okur) | `server/lib/accounts.mjs` accountLedger | **YAZILMAZ** listesinde |
+| genel defter 689 maddesi | `server/lib/general-ledger.mjs` journal "plan-close" | izinli |
+| Defter Mutabakatı / kapı: carinin bakiye SQL'i (partyTotals) ve carisiz kartın 127 beklenini | `server/routes/ledger.mjs` | listede YOK |
+| cari kartının "Taksit Alacağı" (planCredit) ve tarihli bakiye süzgeci | `server/routes/accounts.mjs` | listede YOK |
+| kilit izi `plans_close_lock` (waived), kart toplamları denetimi | `server/lib/integrity.mjs`, `server/lib/integrity-scope.mjs` | listede YOK |
+| şüpheli alacak ayırıcısının "plan-close" kalemi | `server/lib/bank/doubtful.mjs` | **YAZILMAZ** (`bank/**`) |
+| "önceden kapatılmış kartlar olduğu gibi kalır" için kart başına kural işareti | `server/lib/migrations.mjs` (göç 53) | listede YOK |
+| Tablodan Aktar'ın "kalan alacaktan vazgeçildi" iletisi | `server/routes/plan-transfer.mjs` | listede YOK |
+| kapatılmış kartın kalan kalemlerinin vadesi (S205 — kapatma gününün ertesi günü) | `server/lib/obligation-input.mjs` / `obligation-queue.mjs` | izinli |
+`account-lines.mjs` kapalı kartın kalanını DÜŞMEZ (yalnız kart satırlarını okur); düşen `accounts.mjs`. Yalnız izinli dosyalar değişirse 689 kalkar ama cari bakiyesi / kuyruk / Defter
+Mutabakatı eski kuralda kalır → 120 mutabakatı kırılır (§9 B-4'ün öngördüğü durum). Bu yüzden (6) ve S205 bu turda KODLANMADI; onay metni bugünkü davranışı söylemeye devam eder, kılavuza girmedi.
+**B-11 (BAŞ MİMAR KARARI GEREKİYOR):** (A) sonraki temiz tura yukarıdaki dosyalara YALNIZ kapalı kartın kalanı için izin + kart başına kural işareti (göç 53: `plans.close_rule TEXT NOT NULL DEFAULT ''`;
+göçte var olan kapalı kartlar '2.4.9' = eski kural, yeni Kartı Kapat '' = Borçta Kalsın; kilit izine girer) ve TEK yardımcı (`waivedOf(plan)`) bütün okuyuculara; (B) kart kapatılırken kalanı ayrı bir
+kayda taşımak (madde yok) — okuyucular kapalı kartı 0 sayar. Öneri A (tek kural, eski veri işaretiyle; ders 10 — bütün okuyucular aynı yardımcıdan).
+
+### 16.3 Kart küçülmesi (karar (4)) — `server/routes/plans.mjs cutPlan`
+- Bugün: `cutPlan` taksitleri SONDAN geriye keser (`shrinkPlan` keseni kalanla sınırlar). Çağıranlar: `shrinkPlan` (iade → faturanın kendi kartı `ownCard`, kapsayan Mevcut Borç kartı `retarget`;
+  açılış onarımı), `trimCovers` (carinin borcundan büyük kalan Mevcut Borç kartları).
+- Yeni: kesim vadesi EN ÖNCE gelen taksitin AÇIK kısmından başlar (açık kısım `lib/plans.mjs allocate` ile — kart ekranının kendi hesabı; bağlı tahsilat önce kendi taksitine); ödenmiş kısma
+  dokunulmaz; tutarı 0'a inen bağsız taksit silinir, tahsilat bağlı olan 0 kalır (bugünkü gibi). Açık kısım yetmezse (olmamalı — keseni kalan sınırlar) artanı bugünkü gibi sondan.
+- Fazla avans: `shrinkPlan` keseni kartın kalanıyla sınırlar; iadenin kalanı aşan kısmı carinin bakiyesinde alacak (avans) olarak kalır — bugünkü davranış, kalıcı testle. Parası geri verilen iade
+  kartı küçültmez (`refundOf`, G1) — bugünkü davranış, kalıcı testle.
+- Ayna: `routes/invoices.mjs` açılış onarımı (2.1.0) kesilecek taksitleri KİLİT denetimi için kendisi hesaplıyor ("son taksitten geriye"); yön değişince ayna aynı yardımcıdan okur
+  (`plans().cutTargets`), yoksa onarım kilitli döneme düşen taksiti kesebilir. Görev metninin invoices.mjs iznindeki "iptal / silme" dışında TEK yerlik ayna değişikliği — raporda BAŞ MİMAR KARARI'na.
+- Büyüme (iade iptali, `growForInvoice`) SON taksite ekler — karar (4) büyümeyi söylemiyor; iade → iade iptali gidiş-dönüşünde takvim ilk hâline dönmez → KULLANICIYA SORULMALI (§16.6 K-3b).
+
+### 16.4 S15 = A, S206 = A (+ S211) — `routes/plans.mjs removeForInvoice` / `closeForInvoice`, `routes/invoices.mjs cancel`
+- Faturanın KENDİ kartı (invoice_id): tahsilatsızsa bugünkü gibi kaldırılır (EK-2B 35). Tahsilatlıysa (S15) iptal KABUL: kartın kalanı karar (4) ile kesilir (kart tutarı = net tahsilat; kalan 0),
+  kart kapanır (closed_at = iptal günü). Kalan 0 olduğundan "Kart kapatıldı · kalan düşüldü" satırı / 689 YAZILMAZ (bugünkü formül max(0, tutar − tahsilat) = 0) — (6)'nın dosya sınırına
+  takılmaz. Kartın tahsilatları carinin defterinde alacak olarak kalır → fatura borcu kalkınca carinin avansı (kitap §7.3: avans CH'de alacaklı bakiye — yeni madde YOK; tahsilatın B 100 / A 120
+  maddesi aynen). Karta çek / senet sayılmışsa bugünkü 409 `plan-has-cheques` aynen. Kapatma günü kilitliyse 409 (Kartı Kapat'la aynı kural).
+- Düzenle (eski etkileri geri alır) ve SİLME tahsilatlı kartın faturasında BUGÜNKÜ gibi 409 (muhasebe kâhini s58 "tahsilatlı kartta silme red"; silme önce iptali çağırır — silmeden gelen
+  iptal eski kuralı ister).
+- Kapsayan Mevcut Borç kartı (S206): iptalden ÖNCE faturanın kart payları (`coverState(...).coveredBy`; kapama defteri) okunur; iptalden sonra her kart payı kadar karar (4) ile küçülür
+  (`shrinkPlan`: kalanla sınırlı — payın kalanı aşan kısmı avans); küçülmeden sonra kalanı 0 olan kart KAPANIR (S206: tahsilatlı; S211: tahsilatsız — tutar 0'a iner). Kartta başka borç da varsa
+  (S210 — SK-41 (a)) kart payı kadar küçülür ve AÇIK kalır (karar (4)'ün harfi; muhasebe kâhini s58 bunu bekliyor) → S210 = A ile çelişki KULLANICIYA SORULMALI (§16.6 K-3a).
+- e-Belge iptal kuralları DEĞİŞMEZ (iptal yolunun başındaki denetimler aynen; dryRun aynı işlemde geri alınır).
+
+### 16.5 Okuyucular (tarama `plan_items|cutPlan|shrinkPlan|removeForInvoice|plan-has-payments` server/** + test/**)
+Taksitler ekranı (kart penceresi; liste), cari ekstresi (accountLedger — kart satırları değişmez; kalanı 0 kapalı kartta düşüm satırı yok), Tek Yükümlülük Kuyruğu (gecikmiş, hatırlatma, Vade Takip,
+Takvim — kartın takvimi `obligation-input` scheduleOf; dağılım değişir), WhatsApp Ödeme Hatırlatma seçimi (kuyruğun gecikmişini okur), mobil özet (kart özeti), Taksit raporları (`lib/plan-report.mjs`),
+kilit izi / kapı (`integrity*.mjs`: kapalı kartın `waived` = 0), şüpheli alacak ayırıcısı (`plan-close` kalemi yalnız kalan > 0), mutabakat motoru modeli `test/mutabakat/motor.mjs` (plan-has-payments).
+
+### 16.6 KULLANICIYA SORULMALI (iki seçenek + öneri)
+- **K-3a — S210 = A ↔ karar (4) (kapsayan kartta başka borç da varken faturanın iptali):** örnek elle Borç 400 + fatura 500 → kart 900 → tahsilat 300 → fatura iptal. (A) S210'un harfi: kart kapanır,
+  elle borç kendi vadesiyle kuyruğa döner, 300 avans. (B) karar (4)'ün harfi ("kartın faturası iptal / silinince küçülme … en önce gelen açık taksitten"): kart 400'e küçülür, açık kalır
+  ('Tahsil Edilen 300 · Kalan 100'); muhasebe kâhini s58 (TK3 2.000, kapalı değil) bunu bekliyor. (C) uç durum böyle kalsın (BİLİNEN SINIR). Bu turda B kodlandı (bakiye iki okumada aynı).
+- **K-3b — iade iptalinde kartın büyümesi (karar (4) yalnız küçülmeyi söylüyor):** (A) büyüme küçülmenin tersi (kesilen taksitlere geri — takvim ilk hâline döner); (B) bugünkü gibi son taksite.
+  (C) uç durum böyle kalsın (BİLİNEN SINIR). Bu turda B (bugünkü).
+
+### 16.7 Nasıl bozulur? (önce yazıldı; testler buradan)
+1. Sıra: tahsilat → iade ↔ iade → tahsilat; bağlı tahsilatlı ('Hangi Taksite') kartta küçülme bağlı taksitin ödenmiş kısmını kesmez.
+2. Kısmen ödenmiş ilk taksit: kesim yalnız açık kısmından.
+3. İade kalanı aşar → kart kalanı 0, fazlası avans; parası geri verilen iade kartı küçültmez.
+4. S15: iptal → bakiye −tahsilat; sonraki fatura avanstan kapanır; Kasa / mizan değişmez (yalnız satış maddesi kalkar); 689 YOK; Mutabakat Testi / Defter Mutabakatı temiz.
+5. S15 + kilit: tahsilat kilitli dönemde → bugünkü bağ kilidi (S160) aynen; kapatma günü kilitli → 409.
+6. Silme / Düzenle tahsilatlı kartın faturasında 409 (bugünkü gibi); tahsilatsız kart iptalde kaldırılır (bugünkü gibi).
+7. S206: tahsilatlı / tahsilatsız (S211) kapsayan kart kapanır; başka borçlu kart küçülür, açık kalır (K-3a).
+8. Eski sürüm verisi (v2.4.9 gerçek kodu): taksitli kart, kapatılmış kart, küçülmüş kart → güncellemeden sonra değerler aynen (bu tur yalnız YENİ yazımları değiştirir).
+9. İki kişi aynı anda: iptal ile kart tahsilatı (tek işlem — bank.post / store.tx).
+10. Geri yükleme: iptal edilmiş faturanın kapalı kartı yedekte aynen.
