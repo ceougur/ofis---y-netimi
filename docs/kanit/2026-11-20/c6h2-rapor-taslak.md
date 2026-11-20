@@ -21,5 +21,10 @@ mutantlar.py + mutasyon.sh, kirmizi.sh, komsu-bul.sh + komsu.txt, yuk-a.sh, yuk-
 - YÜK B (10:39–10:57 UTC, uç d3b2da11; c6h2-yuk-b-ozet.log): yeni testler son uçta UTC 71/71, Europe/Istanbul 71/71 · G2 komşu (80 dosya, komsu-bul.sh) UTC 938/938, Europe/Istanbul 938/938 ·
   zorla bitir: ön koşul GERÇEKLEŞMEDİ, test YEŞİL 8/8 · zorla gozlem: ön koşul GERÇEKLEŞMEDİ, 7/8 — "dondurma 120000 ms'de bitmedi" (kanca kilit testindeki dondurmayı tutuyor; tur 1'in c6h-uc'si ile
   AYNI sonuç; açılış dondurmalı kurgu 2.5.1 — KULLANICI 20.11) · kâhin SONRA: defter 187 / 0 fark, cari 17253 / 0 fark (önceyle AYNI).
+- HACİM (ÖZEL kilit; c6h2-hiz-*): geçerli koşu 10:58–11:05 (yük 0,5–1,4): Bilanço kilitsiz ortanca 4,66–4,75 sn, kilitli 6,22–6,81 sn (BÜTÇE AŞILDI → tasarım §10 B-g); olay döngüsü ≤ 27 ms;
+  Gelir Tablosu önce / sonra %10'un altında. Hız düzeltmesi fe693f47 sonrası kilitsiz yinelemesi GEÇERSİZ (başlangıç yükü 4,35 — başka ajanın kilitsiz testleri; dosya adı -GECERSIZ-yuk), kilitli
+  yinelemesi (yük 1,9 → 1,3) 6,50–6,79 sn ortanca, örnek sayılar ilk koşuyla AYNI (eşdeğerlik). Parça: c6h2-hiz-parca-2 (kilitsiz), c6h2-hiz-parca-kilitli (yük 2,0–2,4: tanı amaçlı).
+- YÜK C (11:29–11:31, uç fe693f47): yeni testler iki TZ 71/71; mutasyon son uçta 30/30 YAKALANDI (c6h2-mutasyon-final.log).
+6. [x] Bitiş tamam — rapor SubagentHandback ile.
 - Kâhin ÖNCE (taban, 20.11 ~10:1x): defter 187 denetim 0 fark; cari 17253 denetim 0 fark (7 bilinen sınır), 0 yapım aşaması.
 - Hacim ölçümü ilk denemede başka ajanın paylaşımlı yük kilidi (dk-t3duz eşdeğerlik koşusu) yüzünden başlamadı → yük parçaları önce, ölçüm sonra.

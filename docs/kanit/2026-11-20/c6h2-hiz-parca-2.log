@@ -1,0 +1,8 @@
+başta yük 1.26 2.14 2.16 1/131 30085 · 11:25:58 · kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a7236347e0f8b6e8c
+yük (başta) 1.24 2.07 2.14
+tekrar 1: build 2367 ms · cariListesi 813 ms · beklenen 349 ms · checkTamami 3714 ms · book 10 ms · degerlemeGirdi 407 ms · gtBuYil 137 ms · gtOncekiDortYil 308 ms · balanceSheetSaf 1032 ms · madde 153803, canlı 153803
+tekrar 2: build 2038 ms · cariListesi 719 ms · beklenen 335 ms · checkTamami 3423 ms · book 10 ms · degerlemeGirdi 468 ms · gtBuYil 155 ms · gtOncekiDortYil 456 ms · balanceSheetSaf 852 ms · madde 153803, canlı 153803
+tekrar 3: build 2119 ms · cariListesi 694 ms · beklenen 318 ms · checkTamami 3234 ms · book 5 ms · degerlemeGirdi 381 ms · gtBuYil 92 ms · gtOncekiDortYil 320 ms · balanceSheetSaf 1168 ms · madde 153803, canlı 153803
+yük (sonda) 1.37 2.03 2.12
+çıkış 0
+sonda yük 1.37 2.03 2.12 1/134 30185 · 11:26:51
