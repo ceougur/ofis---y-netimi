@@ -112,4 +112,19 @@ adım 45 Alt Hesap Mizanı'nda 102.00 YOK (5.000 Ziraat'in 01.10 açılışında
 | `e2e-senaryo-banka-210-g1` | yeni (78d5aaab) | 0 | 429 / 429 | — |
 | `e2e-senaryo-banka-210-g1-taban` | taban 780972cf (/dev/shm kopyası, server + client `git archive t3duz-taban` ile BİREBİR denetlendi) + YENİ test | 1 | 426 / 429 | adım 46'nın üç yeni denetimi: özet Dönem Giriş 26.500 / Dönem Sonu 165.484,25, TOPLAM Giriş 26.500, işaretli satır YOK — G1'den önceki davranış (BEKLENEN neden, ders 38) |
 | (önceki ajan) `e2e-senaryo-banka-210` | yeni + ESKİ test | 1 | 426 / 428 | eski beklenti 26.500 ↔ program 21.500 |
-Not: önceki ajanın 'taban' adlı commit'siz koşusunun çıktısı (scratchpad/t3duz-d3/e2e-senaryo-banka-210-s214-taban.out, yarıda kesilmiş) adım 46'yı yeni beklentiyle YEŞİL gösteriyor — o koşu taban kodunda değildi ya da yanlış kopyadaydı; kanıt sayılmadı, yukarıdaki iki koşu yerini aldı.
+Not: önceki ajanın 'taban' adlı commit'siz koşusunun çıktısı (scratchpad/t3duz-d3/e2e-senaryo-banka-210-s214-taban.out, yarıda kesilmiş) adım 46'yı yeni beklentiyle YEŞİL gösteriyor — hangi kodda koşulduğu okunamadı (ders 4: 'bilinmiyor'); kanıt sayılmadı, yukarıdaki iki koşu yerini aldı.
+
+### (3) Mutasyonun koşulmamış kısmı (devam 4; kopyalar /dev/shm/t3duz-d4, kod 78d5aaab = 7aa16bdf + yalnız e2e beklentisi)
+| Koşu | Dosya / mutantlar | UTC | Europe/Istanbul |
+|---|---|---|---|
+| `mut-c7a-a-*` | `test/c7a-banka-250-mutasyon.mjs` 1–12 (D-07, K-14, K-15) | 12 / 12 yakalandı | 12 / 12 |
+| `mut-c7a-b-*` | aynı dosya 13–24 (K-14, KG-6) | 12 / 12 | 12 / 12 |
+| `mut-hiz3-*` | scratchpad/t3duz-d4/mut-hiz3.mjs H1–H5 (G1 hız 3 eşdeğerliği; 7aa16bdf'de yeniden) | 5 / 5 | 5 / 5 |
+| `mut-dusuk-git-*` | scratchpad/t3duz-d4/mut-dusuk.mjs D1–D6 (N11, N7, N8, G1 ×2, S181) — `git worktree add --detach` kopyasında | 6 / 6 | 6 / 6 |
+Ç7a dosyasında kapı reddiyle yakalananlar (neden 'hesap aç …: 500 Kapı eşdeğerlik …' — ürünün yazım kapısı mutantı reddediyor, testin değer denetimine varılmıyor): 6, 7, 12
+(dar kontrolün 'Ç7a'nın beş mutantının kapı reddiyle yakalanması' maddesi için ham çıktı `t3duz-mut-c7a-a-*.log`).
+NOT (ders 4, 14): ilk DÜŞÜK koşusu (`mut-dusuk-UTC`, `mut-dusuk-Europe-Istanbul`, `git archive` kopyası) D1'i (N11) 'YAKALANMADI' verdi — NEDEN okundu: N11'in testi
+(`kural-farki-yil-250` program bölümü) v2.4.9 etiketini ister, git'siz kopyada bölüm ATLANIR ('# v2.4.9 etiketi yok'; düğüm koşucusu atlanan describe'ı 'skipped' sayısına KATMAZ —
+özet 'skipped 0' der). Etiketli `git worktree` kopyasında (ders 54) D1 iki TZ'de YAKALANDI ('kilit günü = fiş günü: fiş kilitli sayılır' iletisiyle). Bu yüzden git'siz kopyada koşulan
+eski kod kırmızısı (`t3duz-taban-kirmizi-*`) bu bölümü İÇERMİYOR (N11 tabanda zaten yeşil beklenen; dişi D1 ile gösterildi). kanit aracı mutasyon betiklerinin çıktısını tanımaz
+('BELİRSİZ / özet yok') — sonuç betiğin kendi 'SONUÇ' satırından okunur.
