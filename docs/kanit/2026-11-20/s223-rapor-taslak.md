@@ -62,3 +62,10 @@ Taban: c7b-aday = df7e93ca. Karar: S223 = A, S228 = A (görev metni docs/devir/2
   (4) 'kart var olan cariye bağlandı 0 !== 1'; (5) 'çift kart: 1'; (6) üçüncü cari + kart açıldı (AMBIGUOUS beklenirdi); (8) 'çift kart: 3';
   (9) Oya Ünlü linked 0 (yeni cari); (10) çek: büyük harfli keşideci bağlanmadı ('', ''), 'Deniz Işık' satırı önbellekten YANLIŞ cariye (DENİZ IŞIK);
   (11) Tablodan Aktar ön izleme 'new' (yeni cari); c7bt (11) "ırmak İnce" ikinci kart açıldı. Ham: s223-taban-utc.log, s223-taban-ist.log.
+
+## G2. KOMŞULAR (git grep: içe aktarma uçları, from-table, lib/names.mjs, nameConflict / resolveUserByName / foldName, matchPerson / createFromPlan / planDuplicate, lib/access.mjs, roller — 57 dosya; liste s223-komsu-listesi.txt)
+- UTC 837/837, Europe/Istanbul 837/837 (fail 0, cancelled 0, skipped 0). Ham: s223-komsu-utc.log.gz, s223-komsu-ist.log.gz.
+
+## BULGU (kapsam dışı, yeniden üretildi) — grup adı
+- Taksit Excel: 'Elif Su' (telefonsuz, grup 'Işık Servisi') → kart; sonra 'ELİF SU' (telefonsuz, grup 'IŞIK SERVİSİ') → YENİ grup 'IŞIK SERVİSİ' + YENİ cari + kart (çift grup, çift cari, çift borç).
+  Neden: grup bulma (plans.mjs ensureGroup; plan-transfer groupExisting / groupId) NOCASE — kişi adı düzelse de telefonsuz eşleşme 'aynı grup' ister. 'ŞUBE A' ↔ 'Şube A' NOCASE'te eşit (Ş ikisinde büyük) — yalnız I/ı, İ/i ve küçük-büyük Türkçe harf farkı bozar.
