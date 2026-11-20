@@ -67,11 +67,15 @@ describe("Ç6-HESAP tur 3 — B-g (b): donmuş toplamlarla okuma ↔ eski okuma 
     const ayse2 = (await must("Ayşe 2", api.post("/api/workspace/accounts", { name: "Ayşe Yılmaz", type: "customer", force: true }))).id;
     const item = (await must("ürün", api.post("/api/workspace/stock", { name: "Ürün P", unit: "Adet", unitPrice: "50", openingQty: "10", openingDate: "2025-01-10" }))).id;
     const pay = { cash: [], cheques: [], endorse: [], rest: "open" };
+    // Alt hesap boyutu (102.NN) donmuş dönemde: banka hesabı açılışı + havale tahsilatı (Bilanço I.A 102'nin alt satırları).
+    await must("banka kurulumu kapat", api.post("/api/workspace/bank/setup/dismiss", {}));
+    const bank = await must("banka hesabı", api.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", opening: { date: "2025-01-05", amount: "2500", confirmed: true } }));
     await must("2025 kasa girişi", api.post("/api/workspace/cash", { kind: "in", amount: "1000", description: "Danışmanlık", date: "2025-02-01" }));
     await must("2025 kasa çıkışı", api.post("/api/workspace/cash", { kind: "out", amount: "200", description: "Kırtasiye", date: "2025-03-01" }));
     await must("2025 alış", api.post("/api/workspace/invoices", { kind: "purchase", accountId: supplier, number: "AL-1", issueDate: "2025-03-05", lines: [{ itemId: item, name: "", qty: 20, unitPrice: 60, discountRate: 0, vatRate: 20 }], payment: pay, force: true }));
     await must("2025 satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: ayse1, issueDate: "2025-05-04", lines: [{ itemId: item, name: "", qty: 25, unitPrice: 100, discountRate: 0, vatRate: 20 }], payment: pay, force: true }));
     await must("2025 Ayşe 2 avans", api.post(`/api/workspace/accounts/${ayse2}/entries`, { kind: "in", amount: "400", date: "2025-06-01", note: "Avans" }));
+    await must("2025 Ayşe 1 havale", api.post(`/api/workspace/accounts/${ayse1}/entries`, { kind: "in", amount: "500", date: "2025-07-01", method: "bank", bankAccountId: bank.id }));
     await must("2026 alış", api.post("/api/workspace/invoices", { kind: "purchase", accountId: supplier, number: "AL-2", issueDate: "2026-01-20", lines: [{ itemId: item, name: "", qty: 10, unitPrice: 70, discountRate: 0, vatRate: 20 }], payment: pay, force: true }));
     await must("2026 satış (Şubat)", api.post("/api/workspace/invoices", { kind: "sale", accountId: ayse1, issueDate: "2026-02-10", lines: [{ itemId: item, name: "", qty: 3, unitPrice: 100, discountRate: 0, vatRate: 20 }], payment: pay, force: true }));
     await must("2026 kasa girişi", api.post("/api/workspace/cash", { kind: "in", amount: "500", description: "Hizmet", date: "2026-02-28" }));
@@ -122,6 +126,7 @@ describe("Ç6-HESAP tur 3 — B-g (b): donmuş toplamlarla okuma ↔ eski okuma 
     assert.equal(ctx.app.ledger.snapshots.state().coverage, "2026-03-31");
     const sums = frozenSums(ctx.app.store, { through: "2026-03-31" });
     assert.ok(sums.groups.some(row => row.account === "692") && sums.groups.some(row => row.account === "690") && sums.groups.some(row => row.party), "ön koşul: donmuş dönemde plan dışı hesap ve cari boyutu var");
+    assert.ok(sums.groups.some(row => row.account === "102" && /^102\.\d+$/.test(row.sub)), `ön koşul: donmuş dönemde alt hesap boyutu (102.NN) var: ${JSON.stringify(sums.groups.filter(row => row.account === "102"))}`);
     compare("kilit 31.03.2026");
     const gt2025 = incomeStatementOf({ store: ctx.app.store, ledger: ctx.app.context.ledger, from: "2025-01-01", to: "2025-12-31" });
     assert.deepEqual(gt2025.kesinDegil.find(row => row.kod === "siniflandirilmamis-hesap")?.ayrinti, ["692: 100,00 TL", "690: 50,00 TL"], "ön koşul: ayrıntı ilk görünüş sırasıyla (sıralı değil)");
