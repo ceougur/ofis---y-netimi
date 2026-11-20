@@ -215,6 +215,24 @@ describe("Ç5-A tur 3c: şüpheli ↔ kuyruk defter kuralı (S14, S25, S39, S168
     assert.deepEqual(gl(s.acc.id), { b120: 0, b128: 1000 });
   });
 
+  // Kesitin aynı gün kuralı (tasarım notu §19.1 K-1 (a), AYNEN: "kuyruğun kesitine aynı günün AYIRICI alacakları ayırıcının o ana kadar İŞLEDİĞİ kadarıyla girer (kayıt kalanıyla tutarlı
+  // olsun diye), öbür aynı gün satırları kuyruğun anahtarıyla"). B1'den sonra aynı sınıftaki iki tahsilatta ayırıcının sırası kuyruğunkiyle aynı (yazım sırası) — kuralın ayırt edici hâli
+  // ayırıcının SINIF sırası: aynı gün Değersiz Alacak (hedefli alacak) bağlı tahsilattan SONRA yazılsa da ayırıcıda önce işlenir. Beklenen elle (ders 5): S168 düzeni (120 = 100, 128 = 1.000;
+  // şüpheli dağılımı F1 600 + F2 400) → aynı gün F2'ye bağlı 300 nakit, sonra Değersiz Alacak 200. Ayırıcı: Değersiz 200 (kalan 800), sonra bağlı 300 — kesitte Değersiz VAR (bağsız alacak
+  // olarak F1'i 600 → 400 kapatır), kalan 800'ün dağılımı F1 400 + F2 400 → F2'nin payı 400 ≥ 300 → 300'ün tamamı 128'den: 128 = 500, 120 = 100. (Kural kalkarsa kesitte Değersiz yok:
+  // F1 600 + F2 200 → 128'den 200, 120'den 100 → 128 = 600, 120 = 0 — mutasyon M12.)
+  it("kesitin aynı gün kuralı: bağlı tahsilattan SONRA yazılan aynı gün Değersiz Alacak ayırıcıda önce işlenir, kesite girer — F2'ye bağlı 300'ün tamamı 128'den (128 = 500, 120 = 100)", async () => {
+    const s = await scenario("Aynı Gün Değersiz");
+    assert.deepEqual(gl(s.acc.id), { b120: 100, b128: 1000 }, "ön durum");
+    await must("F2'ye bağlı 300", cash(s.acc, s.at(-10), 300, { invoiceId: s.f2 }));
+    const linkedId = (await lastEntry(s.acc)).id;
+    const did = s.record.record?.id || s.record.id;
+    await must("Değersiz Alacak 200 (aynı gün, sonra)", api.post(`/api/workspace/accounts/${s.acc.id}/doubtful/${did}/write-off`, { amount: "200", date: s.at(-10), note: "kesin kayıp" }));
+    assert.deepEqual(gl(s.acc.id), { b120: 100, b128: 500 });
+    assert.deepEqual(creditsOf(linkedId), ["A 128 300"]);
+    clean();
+  });
+
   // Sınıf listesi (kabul D'nin kalıcı ayağı; programın kendi API'siyle): kayıt Fatura 1'in 600'ü (kısmi), Fatura 2 kayıttan SONRA, işaretli tahsilat yok. Kuyruk: Fatura 1 600 şüpheli, Fatura 2 0.
   for (const [label, kind, link, amount, want, lines] of [
     ["kayıttan ÖNCE kesilmiş faturaya bağlı nakit (S25 (c))", "cash", "f1", 400, { b120: 900, b128: 200 }, ["A 128 400"]],
