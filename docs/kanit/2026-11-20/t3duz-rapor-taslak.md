@@ -121,7 +121,7 @@ Not: önceki ajanın 'taban' adlı commit'siz koşusunun çıktısı (scratchpad
 | `mut-c7a-b-*` | aynı dosya 13–24 (K-14, KG-6) | 12 / 12 | 12 / 12 |
 | `mut-hiz3-*` | scratchpad/t3duz-d4/mut-hiz3.mjs H1–H5 (G1 hız 3 eşdeğerliği; 7aa16bdf'de yeniden) | 5 / 5 | 5 / 5 |
 | `mut-dusuk-git-*` | scratchpad/t3duz-d4/mut-dusuk.mjs D1–D6 (N11, N7, N8, G1 ×2, S181) — `git worktree add --detach` kopyasında | 6 / 6 | 6 / 6 |
-Ç7a dosyasında kapı reddiyle yakalananlar (neden 'hesap aç …: 500 Kapı eşdeğerlik …' — ürünün yazım kapısı mutantı reddediyor, testin değer denetimine varılmıyor): 6, 7, 12
+Ç7a dosyasında kapı reddiyle yakalananlar (iki TZ aynı): 6, 7, 12, 14 — neden 'hesap aç …: 500 Kapı eşdeğerlik ihlali …' (ürünün yazım kapısı mutantı reddediyor, testin değer denetimine varılmıyor); 13 — neden 'mutabakat bozuk opening:519' (Mutabakat Testi); öbür 19'u değer iletisiyle
 (dar kontrolün 'Ç7a'nın beş mutantının kapı reddiyle yakalanması' maddesi için ham çıktı `t3duz-mut-c7a-a-*.log`).
 NOT (ders 4, 14): ilk DÜŞÜK koşusu (`mut-dusuk-UTC`, `mut-dusuk-Europe-Istanbul`, `git archive` kopyası) D1'i (N11) 'YAKALANMADI' verdi — NEDEN okundu: N11'in testi
 (`kural-farki-yil-250` program bölümü) v2.4.9 etiketini ister, git'siz kopyada bölüm ATLANIR ('# v2.4.9 etiketi yok'; düğüm koşucusu atlanan describe'ı 'skipped' sayısına KATMAZ —
