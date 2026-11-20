@@ -7,7 +7,7 @@
 //   2. coveredWays({ before: g }) ≡ JS koşulu (lib/bank/opening-cover.mjs isCovered — Ana Defter türetmesinin ve rapor işaretinin TEK kaynağı) ile sınıflanmış bağsız satırların
 //      yol başına toplamı ve g'den öncekiler — verideki her gün, ilk günden önce, '' (öncesi yok) ve uzak gelecek için; Σ yol = coveredTotal() (Ana Defter 519'unun SQL'i).
 // Dört durumda (hesap yok · havale + kart hesabı açıldı · Devir Kapanışı · Geri Al — ters kaydın satırları tarihinden bağımsız sayılır, bugünün tarihinde) ve HER DURUMDA önce
-// saklı değer okunup sonra yazılarak (veri damgası değişince saklı değer kullanılmaz; ESKİ değer dönerse 2 kırılır).
+// saklı değer okunup sonra yazılarak (veri damgası değişince saklı değer kullanılmaz; ESKİ değer dönerse 2b kırılır — sınırlar aynıyken sayılmış satır silinir).
 // NASIL BOZARIM: sayılmış satırın günü gruplanmaz (before = toplam); saklı değer damgasız (yazımdan sonra eski toplam); COVER_SQL yerine yalnız 'ref = ""' (hesapsız bütün havale /
 // POS sayılır); Kasa toplamı sayılmış satırları düşer (balances ≠ rawGroups).
 import assert from "node:assert/strict";
@@ -87,6 +87,13 @@ describe("G1 hız 3 — coveredWays / balances tek saklı okumadan: eski okumala
     check("hesaplar", { counted: true });
     const ways = lines.coveredWays({ before: "" });
     assert.deepEqual(ways, { bank: { cents: 400_000, before: 0 }, card: { cents: -40_000, before: 0 } }, "elle: havale 5.000 − 1.000; kart çıkışı −400");
+    warm();
+  });
+  it("2b. sınırlar aynıyken sayılmış satır silinir (25.09 ödeme): saklı değer kullanılmaz", async () => {
+    const id = ctx.server.app.store.get("SELECT id FROM account_entries WHERE account_id = ? AND date = '2026-09-25'", party.id).id;
+    await must("25.09 sil", ctx.api.del(`/api/workspace/accounts/${party.id}/entries/${id}`));
+    check("silme", { counted: true });
+    assert.deepEqual(lines.coveredWays({ before: "" }), { bank: { cents: 500_000, before: 0 }, card: { cents: -40_000, before: 0 } }, "elle: havale 5.000 (ödeme silindi); kart çıkışı −400");
     warm();
   });
   it("3. Devir Kapanışı (D = 01.10): POS girişi de ve kapanış satırları sayılır", async () => {
