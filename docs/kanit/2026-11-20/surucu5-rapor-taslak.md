@@ -66,3 +66,9 @@
   (iki TZ'de s91 OLAY 1 taksit_excel "atlandi" → SINIFLANMADI, neden "Aynı adla açık kart var"; UTC'de ayrıca eski R-B5 mz1 2) — YAKALANDI. Önceki sürücüde bu yol
   P7 kuralına düşerdi; bakım 5'in "atlandi → uygulanamayan" eşlemesi olmadan mutant SINIFLANMADI'ya düşmezdi.
 - Not: mutant koşusu başlarken yük 6,5 (başka oturumun kâhin mutasyon koşusu); ölçüm değil, sonuç sayıları yükten bağımsız.
+
+## Adım 7 — kapanış
+- Değişen yollar (df7e93ca..HEAD): YALNIZ test/bagimsiz/muhasebe-surucu (4 dosya, +64 / −29) ve docs/kanit/2026-11-20/surucu5-*. Kâhin klasörleri ve program kodu değişmedi.
+- Temizlik: /dev/shm/surucu5-a293 ve not defterindeki kod-mutant1 / kod-mutant2 / v249 kopyaları tam yollarıyla silindi; Ç7b öncesi kod kopyası scratchpad/surucu5-a293/eski
+  ana oturumun yeniden koşusu için bırakıldı (88 MB; iş bitince tam yoluyla silinebilir). node_modules bağı ağaçta (ana oturum ağacı kaldırırken siler).
+- Ortam (son): yük 7,9 / 4 çekirdek (başka oturumların koşuları), bellek boş 6 GB, disk boş 7,2 GB.
