@@ -1,0 +1,2 @@
+UTC FARK SAYISI: 0 (BİREBİR) | adım 13 | red 1 | satır {'account_entries': 13, 'plans': 6, 'plan_items': 8, 'plan_entries': 1, 'invoice_offsets': 1, 'doubtful_receivables': 1, 'cash_entries': 0, 'fin_events': 4, 'ledger_vouchers': 0, 'ledger_voucher_lines': 0} | mutabakat True True
+Istanbul FARK SAYISI: 0 (BİREBİR) | adım 13 | red 1 | satır {'account_entries': 13, 'plans': 6, 'plan_items': 8, 'plan_entries': 1, 'invoice_offsets': 1, 'doubtful_receivables': 1, 'cash_entries': 0, 'fin_events': 4, 'ledger_vouchers': 0, 'ledger_voucher_lines': 0} | mutabakat True True
