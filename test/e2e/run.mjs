@@ -601,7 +601,7 @@ try {
     expect(dues.items.some(item => item.source === "plan" && item.state === "overdue" && item.person === "Ayşe Yılmaz"), "geciken taksit takvimde");
     const badge = await admin.$eval('#hof-sidecard [data-badge="plans"]', node => node.textContent);
     expect(badge === "1", `Taksitler rozeti: ${badge}`);
-    // Kart kapatılınca uyarı vermez: şeritteki taksit pilleri kalkar, rozet sıfırlanır.
+    // Kart kapatılınca (Borçta Kalsın — Ç7b tur 3b): kalan şeritte kalır, Taksitler rozeti sıfırlanır.
     await admin.click('#hof-sidecard [data-action="plans"]');
     await admin.waitForSelector(".hof-plans-table tbody tr[data-plan]", { timeout: 10000 });
     await admin.click(".hof-plans-table tbody tr[data-plan]");
@@ -613,7 +613,9 @@ try {
     await closeAsk.click();
     await admin.waitForSelector('.hof-plans [data-act="reopen"]', { timeout: 10000 });
     await admin.click('.hof-plans [data-close]');
-    await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop") && ![...document.querySelectorAll(".hof-payment-pill")].some(pill => pill.textContent.includes("taksit")), null, { timeout: 10000 });
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3b, karar (6) "Borçta Kalsın: … kalan carinin borcunda kalır, ertesi günden gecikmiş, hatırlatma gider"; S205 = A): kart kapanınca
+    // kalan şeritteki taksit pillerinde KALIR (önceden kalkıyordu); kapalı kart Taksitler'in Geciken sayısına girmez — rozet sıfırlanır.
+    await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop") && [...document.querySelectorAll(".hof-payment-pill")].some(pill => pill.textContent.includes("taksit")), null, { timeout: 10000 });
     await admin.waitForFunction(() => document.querySelector('#hof-sidecard [data-badge="plans"]')?.textContent === "", null, { timeout: 10000 });
   });
 

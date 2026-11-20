@@ -112,6 +112,9 @@ try {
   const planAcc = await must("cari", api.post("/api/workspace/accounts", { name: "Kart Müşteri", type: "customer", registeredOn: TODAY }));
   const plan = await must("kart", api.post("/api/workspace/plans", { accountId: planAcc.id, name: "Kart Müşteri", total: "500", registeredOn: TODAY, mode: "auto", count: 1, firstDue: TODAY }));
   await must("kart kapat", api.put(`/api/workspace/plans/${plan.id}`, { status: "closed" }));
+  // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3b, karar (6) "Borçta Kalsın" / B-11 = A): kapanışın kilit kuralı (689) YALNIZ eski kurallı (göç 53 '2.4.9' — v2.4.9'da kapatılmış)
+  // kartta; G1 o kartı anlatır → kart göçün işaretiyle eski kurala alınır (Borçta Kalsın kartı kilitli kapanışta Yeniden Aç'ılır — test/c7b-tur3b-borcta-kalsin-250 T4).
+  app.store.run("UPDATE plans SET close_rule = '2.4.9' WHERE id = ?", plan.id);
   await must("kilit", api.put("/api/admin/period-lock", { lockedUntil: LOCK }));
 
   await page.goto(`${BASE}/`);
