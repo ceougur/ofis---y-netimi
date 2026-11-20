@@ -89,3 +89,16 @@ Taban: c7b-aday = df7e93ca. Karar: S223 = A, S228 = A (görev metni docs/devir/2
 - Yeni kod 26 geçti / 0 kaldı; taban 16 / 10 (beklenen nedenlerle: "3 cari açıldı." — çift cari 6; Hasan Işık kartı yok; ikinci yükleme "1 kart oluşturuldu"; çek "bağlandı" yok).
 - Ekran görüntüleri s223-ekran-yeni/ (05: Cari listesinde Hasan Işık 3.000 borç, HASAN IŞIK 0532 300 00 99 ayrı kişi; 03: "0 kart oluşturuldu. 2 satır atlandı (Aynı adla açık kart var).").
 - Tablodan Aktar ürün varsayılanında KAPALI (2.4.5; uç 410) — ekranda yolu yok; API testi (11) anahtar açık test sunucusunda.
+
+## E. HIZ (s223-hiz/; temiz-100k kopyası her koşuda taze; ÖZEL kilit 20:17–20:24 UTC; dönüşümlü taban / yeni × 3; ms)
+Veri: 1.484 cari, 11.448 kart, 11.660 çek. 'karma' iş yükü veride telefonlu benzersiz adlı cari bulunamadığı için (aday 0) 'yeni' ile aynı oldu — iki iş yükü da
+"her satır yeni ad" (Türkçe yedeğin en kötü durumu: NOCASE boş, harita kurulur). Karma tur 1'in başlangıç yükü 3,46 / 2,52 (> 2, GEÇERSİZ); 'yeni' iş yükünün bütün turları ≤ 1,26.
+| Yol ('yeni' iş yükü, geçerli) | taban en iyi / ortanca | yeni en iyi / ortanca | fark en iyi / ortanca | olay döngüsü en çok taban / yeni |
+|---|---|---|---|---|
+| Cari Excel 2.000 | 313,3 / 330,3 | 314,2 / 316,5 | +0,3 % / −4,2 % | 362,5 / 335,0 |
+| Taksit Excel 2.000 | 6.814,5 / 6.922,3 | 6.580,8 / 7.081,5 | −3,4 % / +2,3 % | 7.327,4 / 7.113,5 |
+| Çek / senet 500 | 84,5 / 93,5 | 91,6 / 96,8 | +8,4 % / +3,5 % | 92,5 / 107,3 |
+| Tablodan Aktar ön izleme (300) | 153,1 / 154,5 | 125,4 / 126,1 | −18,1 % / −18,4 % | 0 / 0 |
+| Tablodan Aktar aktarım (300) | 1.385,8 / 1.423,2 | 1.365,7 / 1.540,8 | −1,5 % / +8,3 % | 1.422,9 / 1.616,9 |
+Ölçüt (en iyi VE ortanca ≤ +%10): bütün yollar GEÇTİ. Not: bu veride cari sayısı küçük; 100.000 caride ad haritası kurulumu ayrı mikro ölçümde ~0,12 sn (katlama + harita;
+SQL okuması hariç) — yükleme başına BİR kez, yalnız NOCASE'in bulamadığı ilk satırda.
