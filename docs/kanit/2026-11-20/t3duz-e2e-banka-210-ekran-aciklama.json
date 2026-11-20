@@ -1,0 +1,32 @@
+{
+  "ad": "t3duz-e2e-banka-210-ekran-aciklama",
+  "komut": "npm run test:banka-210-ekran-aciklama",
+  "commit": "bcca056be59e83e987d7fe8f866b17dbf29bebdd",
+  "dal": "worktree-agent-a1e6310bec4c916cb",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T07:18:20.462Z",
+  "sure_sn": 9.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d3/k/2026-11-20/t3duz-e2e-banka-210-ekran-aciklama.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1e6310bec4c916cb",
+  "ham_cikti_sha256": "46e4b49906fa7ec74b4aa5dcdbc5943101bb604a1317d72f1afeb9ef4e819a86",
+  "ham_cikti_bayt": 2226
+}
