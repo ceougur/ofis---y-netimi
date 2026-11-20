@@ -163,6 +163,22 @@ describe("Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211,
     assert.equal((await totals(A)).balance, balance, "bakiye değişmedi");
   });
 
+  it("S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (borçsuz açık kart kalmaz)", async () => {
+    // Elle Borç 400 → kart 400 (içine alır) → SONRA fatura 500 (kart onu içine almaz) → bağsız tahsilat 400 (bakiye 500) → fatura İptal Et → bakiye 0; kartın kalanı 400 > 0
+    // → kart 400 küçülür (tutar 0), kapanır. Bakiye ve Kasa değişmez.
+    const A = await acc();
+    await must("Borç Yaz", api.post(`${W}/accounts/${A}/entries`, { kind: "debt", amount: "400", date: "2026-10-07", note: "Elle borç" }));
+    const p = (await must("kart", api.post(`${W}/plans`, { accountId: A, name: "Mevcut T", total: "400", registeredOn: "2026-10-07", mode: "auto", count: 2, firstDue: "2026-10-10", coversBalance: true }))).id;
+    const f = await service(A, "2026-10-07", 500, { rest: "open" });
+    await must("bağsız tahsilat", api.post(`${W}/accounts/${A}/entries`, { kind: "in", amount: "400", date: "2026-10-07", method: "cash", note: "nakit", cashForce: true, similarOk: true, force: true }));
+    assert.equal((await totals(A)).balance, 500);
+    assert.deepEqual(planRow(p), { status: "active", total: 400, deletedAt: null }, "tahsilattan sonra kart dokunulmadı (borç 500 ≥ kart 400)");
+    await must("iptal", api.post(`${W}/invoices/${f}/cancel`, { reason: "içine almamış kart" }));
+    assert.deepEqual(planRow(p), { status: "closed", total: 0, deletedAt: null }, "kart 400 küçüldü (tutar 0) ve kapandı");
+    assert.equal((await totals(A)).balance, 0);
+    await integrity("içine almamış kart");
+  });
+
   it("S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner", async () => {
     const A = await acc();
     await must("Borç Yaz", api.post(`${W}/accounts/${A}/entries`, { kind: "debt", amount: "400", date: "2026-10-07", note: "Elle borç" }));
