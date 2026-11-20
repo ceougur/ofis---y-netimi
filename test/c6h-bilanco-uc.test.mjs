@@ -103,8 +103,16 @@ describe("Ç6-HESAP Bilanço okuma ucu — API'den girilen veri, iş parçacığ
       const fs = ctx.app.context.financialStatements;
       const locked = fs.inline({ kind: "balance", date: "2026-06-30" });
       assert.deepEqual([locked.aktif, locked.pasif], [before.aktif, before.pasif], "kilitli t donmuş defterden (canlı türetme +100,00 gösterirdi)");
+      const codes = locked.kesinDegil.map(row => row.kod);
+      assert.ok(codes.includes("kural-farki"), JSON.stringify(codes));
+      assert.deepEqual(locked.kesinDegil.find(row => row.kod === "kural-farki").ayrinti, ["2026 · 120: 100,00 TL", "2026 · 600: −100,00 TL"]);
+      // B-d: güncel türetme 120'yi cari kartından 100,00 fazla gösterir → Defter Mutabakatı'nın 120 denetimi başarısız (check() sonucu okunur).
+      assert.ok(codes.includes("defter-farki"), JSON.stringify(codes));
+      assert.match(locked.kesinDegil.find(row => row.kod === "defter-farki").ayrinti.join(" "), /^120 /);
       const open = fs.inline({ kind: "balance", date: "2026-09-30" });
       assert.equal(open.toplamlar.farkMinor, 0);
+      assert.equal(itemOf(open, "I.C").tutarMinor, 280000, "açık t'de de kilitli dönemin satışı donmuş defterden");
+      assert.ok(open.kesinDegil.some(row => row.kod === "kural-farki") && open.kesinDegil.some(row => row.kod === "defter-farki"));
     } finally {
       rule.on = false;
     }
@@ -131,5 +139,44 @@ describe("Ç6-HESAP Bilanço okuma ucu — API'den girilen veri, iş parçacığ
     assert.deepEqual([restored.aktif, restored.pasif, restored.toplamlar], [saved.aktif, saved.pasif, saved.toplamlar]);
     await must("001 seç", api.post("/api/companies/select", { id: first }));
     assert.deepEqual(await must("001 yeniden", api.get(`${FS}/balance-sheet?date=2026-09-30`)), before);
+  });
+});
+
+// Kapanmış yıl fiş tablosundan (tasarım §6): 2025 Kasa girişi 1.000,00 (649.90) ve çıkışı 200,00 (770.90) → 2025 sonucu 800,00 (elle). Kapanış Fişi 31.12.2025 (kapanış sınıfı):
+// B 649 (649.90) 1.000 / A 770 (770.90) 200, A 590 800. 2026: Kasa girişi 500,00 (02.02). Bilanço 30.06.2026: Kasa 1.300,00 = 590 800,00 + hesaplanmış 2026 500,00.
+// Fiş 05.01.2026'da ters kaydedilince 2025 kapanmamış: 570 kısmı 800,00 + Kesin Değil "Kapanmamış Önceki Yıl" (2025); 04.01.2026 Bilanço'su ters kayıttan önce → kapanmış.
+describe("Ç6-HESAP Bilanço okuma ucu — Kapanış Fişi ve ters kaydı (programın fiş defteri)", () => {
+  let ctx;
+  let api;
+  const USER = { id: "admin", display_name: "Yönetici" };
+  before(async () => {
+    ctx = await boot({ now: { time: "2026-07-10T12:00:00+03:00", fixed: true } });
+    api = ctx.api;
+    await must("2025 kasa girişi", api.post("/api/workspace/cash", { kind: "in", amount: "1000", description: "Danışmanlık", date: "2025-03-01" }));
+    await must("2025 kasa çıkışı", api.post("/api/workspace/cash", { kind: "out", amount: "200", description: "Kırtasiye", date: "2025-04-01" }));
+    await must("2026 kasa girişi", api.post("/api/workspace/cash", { kind: "in", amount: "500", description: "Hizmet", date: "2026-02-02" }));
+  });
+  after(() => ctx?.server.close());
+
+  it("kapanmamış 2025 → Geçmiş Yıllar 570 kısmı; Kapanış Fişi → 590 (V.F), Geçmiş Yıllar boş; ters kayıt → yeniden kapanmamış; her durumda Aktif = Pasif", async () => {
+    const open = await must("kapanmamış", api.get(`${FS}/balance-sheet?date=2026-06-30`));
+    assert.deepEqual(open.hesaplanmis.gecmisYillar, [{ yil: 2025, tutarMinor: 80000, tahmini: false }]);
+    assert.deepEqual([open.hesaplanmis.donemNetKari.tutarMinor, open.toplamlar.aktifMinor, open.toplamlar.farkMinor], [50000, 130000, 0]);
+    assert.deepEqual(open.kesinDegil.find(row => row.kod === "kapanmamis-yil").ayrinti, ["2025"]);
+    const voucher = ctx.app.context.ledger.vouchers.post(USER, { type: "closing", date: "2025-12-31", requestKey: "c6h2-kapanis-2025", description: "2025 kapanışı (sınama)", lines: [
+      { account: "649", sub: "649.90", debit: 100000 }, { account: "770", sub: "770.90", credit: 20000 }, { account: "590", credit: 80000 },
+    ] });
+    const closed = await must("kapanmış", api.get(`${FS}/balance-sheet?date=2026-06-30`));
+    assert.deepEqual(closed.hesaplanmis.gecmisYillar, []);
+    assert.equal(closed.smm.closedYear, 2025);
+    assert.equal(itemOf(closed, "V.F").hesaplar.find(row => row.hesap === "590").tutarMinor, 80000);
+    assert.deepEqual([itemOf(closed, "V.F").tutarMinor, closed.toplamlar.farkMinor], [130000, 0]);
+    assert.ok(!closed.kesinDegil.some(row => row.kod === "kapanmamis-yil"));
+    ctx.app.context.ledger.vouchers.reverse(USER, voucher.id, { date: "2026-01-05", requestKey: "c6h2-kapanis-2025-ters" });
+    const reversed = await must("ters kaydedildi", api.get(`${FS}/balance-sheet?date=2026-06-30`));
+    assert.deepEqual(reversed.hesaplanmis.gecmisYillar, [{ yil: 2025, tutarMinor: 80000, tahmini: false }]);
+    assert.equal(reversed.toplamlar.farkMinor, 0);
+    const beforeReversal = await must("ters kayıttan önce", api.get(`${FS}/balance-sheet?date=2026-01-04`));
+    assert.deepEqual([beforeReversal.hesaplanmis.gecmisYillar, beforeReversal.smm.closedYear, beforeReversal.toplamlar.farkMinor], [[], 2025, 0]);
   });
 });

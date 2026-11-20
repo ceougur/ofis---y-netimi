@@ -136,8 +136,12 @@ export function notFinalReasons(facts = {}) {
   if (facts.openingMinor) add("tamamlanmamis-acilis", "Tamamlanmamış Açılış", "Eşleştirilecek Açılış Bakiyeleri (519) sıfır değil; açılış bakiyeleri öz sermayeye dağıtılmadı.");
   if (facts.costEstimated) add("smm-tahmini", "Satışların Maliyeti Tahminidir", "Dönem sonu stok değerlemesi yapılmadı; satışların maliyeti dönemsel ağırlıklı ortalama alış fiyatıyla tahmin edildi.");
   if (facts.reconciliation === false || facts.unbalanced > 0) {
-    add("defter-farki", "Defter Mutabakatı Farkı ya da Dengesiz Madde", facts.unbalanced > 0 ? `Dönemde borç ve alacak toplamı eşit olmayan ${facts.unbalanced} madde var.` : "Ana defter ile alt defterler arasında fark var.");
+    const parts = [];
+    if (facts.unbalanced > 0) parts.push(`Dönemde borç ve alacak toplamı eşit olmayan ${facts.unbalanced} madde var.`);
+    if (facts.reconciliation === false) parts.push("Ana defter ile alt defterler arasında fark var (Defter Mutabakatı).");
+    add("defter-farki", "Defter Mutabakatı Farkı ya da Dengesiz Madde", parts.join(" "), facts.reconciliationDetail);
   }
+  if (facts.balanceDiffMinor) add("aktif-pasif-farki", "Aktif ile Pasif Eşit Değil", `Aktif toplamı pasif toplamından ${tlText(facts.balanceDiffMinor)} farklı; fark ayrı satırda gösterildi (denkleştirme kaydı yapılmaz).`);
   if (facts.ruleDiff?.length) add("kural-farki", "Kural Değişikliği Farkı", "Kilitli dönemin donmuş defteri güncel kuralla türetilen defterden farklı; tablo donmuş defterdendir.", facts.ruleDiff);
   if (facts.negativeStock?.length) add("eksi-stok", "Eksi Stok", "Eksi miktarlı ürünler dönem sonu stokuna 0 değerle girdi.", facts.negativeStock.map(row => `${row.name} (${row.qty} ${row.unit})`.trim()));
   if (facts.negativeBalances?.length) add("eksi-bakiye", "İmkânsız Ters Bakiye", "Eksi olamayacak hesaplarda eksi bakiye var.", facts.negativeBalances);
@@ -279,13 +283,13 @@ export function incomeStatement({ entries, valuation, from, to, bookType = "unse
  * yalnız hesap toplamıdır; bütün kilitli geçmişi karşılaştıran snapshots.ruleDiff 100.000 satırda ~2,7 sn (ölçüm: docs/kanit/2026-11-19/c6h1-hiz-parca) — Mutabakat Testi'nin "ledger:rule-diff"
  * denetimi o işi yapar. Saklanan fişler (voucher-*) iki tarafta da karşılaştırılmaz (snapshots.ruleDiff ile aynı).
  */
-export function periodRuleDiff({ frozen, live, from, to }) {
+export function periodRuleDiff({ frozen, live, from, to, accounts = account => account === "153" || /^[67]/.test(account) }) {
   const sums = new Map();
   const add = (list, side) => {
     for (const entry of list) {
       if (entry.date < from || entry.date > to || String(entry.id).startsWith("voucher")) continue;
       for (const line of entry.lines) {
-        if (!(line.account === "153" || /^[67]/.test(line.account))) continue;
+        if (!accounts(line.account)) continue;
         const key = `${entry.date.slice(0, 4)}|${line.account}`;
         const row = sums.get(key) || { frozen: 0, live: 0 };
         row[side] += (Number(line.debit) || 0) - (Number(line.credit) || 0);
@@ -561,10 +565,19 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
     if (!out) continue;
     for (const reason of out.kesinDegil) if (reason.kod === "siniflandirilmamis-hesap") for (const text of reason.ayrinti || []) if (!unclassified.includes(text)) unclassified.push(text);
   }
+  const failedChecks = reconciliation ? (reconciliation.checks || []).filter(check => !check.ok) : [];
   const facts = {
     openingMinor: (accounts.get("519")?.minor || 0) !== 0,
     costEstimated: Boolean(current?.smm.estimated) || priorYears.some(row => row.out.smm.estimated),
     unbalanced,
+    // B-d (BAŞ MİMAR 19.11 22:45): Defter Mutabakatı'nın sonucu (ledger.check() → reconcile) okunur; verilmezse denetlenmemiştir (neden yazılmaz).
+    reconciliation: reconciliation ? reconciliation.ok === true : undefined,
+    reconciliationDetail: [
+      ...(reconciliation && reconciliation.balanced === false ? ["Ana defter dengesiz (borç ≠ alacak)."] : []),
+      ...failedChecks.map(check => `${check.code} ${check.name}: defter ${tlText(Math.round(Number(check.ledger) * 100))}, alt defter ${tlText(Math.round(Number(check.subledger) * 100))} (fark ${tlText(Math.round(Number(check.difference) * 100))})`),
+    ],
+    balanceDiffMinor: farkMinor,
+    ruleDiff: (ruleDiff?.balances || []).filter(row => Number(row.year) <= year).map(row => `${row.year} · ${row.account}${row.sub ? ` (${row.sub})` : ""}: ${tlText(row.differenceMinor)}`),
     negativeStock: [...negativeStock.values()],
     negativeBalances: impossible.map(fmt),
     debitTax,
@@ -618,8 +631,18 @@ export function balanceSheetOf({ store, ledger, date }) {
   const checked = ledger.check();
   const live = checked.entries;
   const entries = ledger.book({ to: date, live });
+  // Kural Değişikliği Farkı (Ç3): kilitli kısmın [başlangıç, min(t, kapsam)] donmuş ↔ güncel türetme yıl × hesap toplamı, BÜTÜN hesaplar (Bilanço 1–5'i, hesaplanmış satırlar 6 / 7'yi okur).
+  const cover = ledger.snapshots?.state?.().coverage || "";
+  const ruleDiff = cover ? periodRuleDiff({ frozen: entries, live, from: "", to: date < cover ? date : cover, accounts: () => true }) : null;
   const valuation = createStockValuation(loadValuationInput(store));
-  return balanceSheet({ entries, valuation, date, bookType: bookTypeOf(store), closedOn: closingDayOf(store, date) });
+  const names = new Map();
+  const partyNames = {
+    get(id) {
+      if (!names.has(id)) names.set(id, hasTableIn(store, "accounts") ? store.get("SELECT name FROM accounts WHERE id = ?", id)?.name || "" : "");
+      return names.get(id);
+    },
+  };
+  return balanceSheet({ entries, valuation, date, bookType: bookTypeOf(store), closedOn: closingDayOf(store, date), ruleDiff, reconciliation: checked.reconciliation, partyNames });
 }
 
 /** Değerleme okuma ucu (D3 / D4 / sürücü): t günü sonu, ürün ayrıntısıyla; önceki yıl sonunun toplamları (DBS). */

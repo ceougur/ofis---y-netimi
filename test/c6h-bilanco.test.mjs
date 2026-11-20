@@ -200,3 +200,29 @@ describe("Ç6-HESAP Bilanço — imkânsız ters bakiye, eksi stok, 127", () => 
     assert.equal(out.toplamlar.farkMinor, 0);
   });
 });
+
+describe("Ç6-HESAP Bilanço — Kesin Değil'in tur 2 nedenleri (B-d, Aktif ≠ Pasif, Kural Değişikliği Farkı)", () => {
+  it("dengesiz madde: fark satırı (kayıt değil) + 'Defter Mutabakatı Farkı ya da Dengesiz Madde' + 'Aktif ile Pasif Eşit Değil' (elle: B 100 5,00 / A 600 4,00 → fark 1,00)", () => {
+    const out = balanceSheet({ entries: [...ENTRIES, E("cash:bozuk", "2026-04-01", L("100", 500, 0), L("600", 0, 400))], valuation: VALUATION(), date: "2026-06-30", bookType: "balance", closedOn: "" });
+    assert.deepEqual(out.toplamlar, { aktifMinor: 232500, pasifMinor: 232400, farkMinor: 100 });
+    assert.deepEqual(out.fark, { ad: "Aktif ile Pasif Arasındaki Fark", tutarMinor: 100 });
+    const codes = out.kesinDegil.map(row => row.kod);
+    assert.deepEqual(codes.slice(0, 4), ["tamamlanmamis-acilis", "smm-tahmini", "defter-farki", "aktif-pasif-farki"]);
+    assert.match(out.kesinDegil[2].aciklama, /1 madde/);
+    assert.match(out.kesinDegil[3].aciklama, /1,00 TL/);
+  });
+  it("B-d: Defter Mutabakatı başarısızsa (ledger.check() → reconcile) neden + ayrıntı; verilmezse denetlenmemiş (neden yok); başarılıysa yok", () => {
+    const failed = { ok: false, balanced: true, checks: [{ code: "120", name: "Alıcılar (Müşteri Carileri)", ok: false, ledger: 10, subledger: 12.5, difference: -2.5 }, { code: "100", name: "Kasa", ok: true }] };
+    const out = bs("2026-06-30", { reconciliation: failed });
+    const reason = out.kesinDegil.find(row => row.kod === "defter-farki");
+    assert.match(reason.aciklama, /Defter Mutabakatı/);
+    assert.deepEqual(reason.ayrinti, ["120 Alıcılar (Müşteri Carileri): defter 10,00 TL, alt defter 12,50 TL (fark −2,50 TL)"]);
+    assert.ok(!bs("2026-06-30", { reconciliation: { ok: true, balanced: true, checks: [] } }).kesinDegil.some(row => row.kod === "defter-farki"));
+    assert.ok(!bs("2026-06-30").kesinDegil.some(row => row.kod === "defter-farki"));
+  });
+  it("Kural Değişikliği Farkı (Ç3): t'ye kadarki yılların satırları; t'den sonraki yıl sayılmaz", () => {
+    const ruleDiff = { balances: [{ year: 2025, account: "120", sub: "", party: "", differenceMinor: 100 }, { year: 2027, account: "600", sub: "", party: "", differenceMinor: 5 }] };
+    const out = bs("2026-06-30", { ruleDiff });
+    assert.deepEqual(out.kesinDegil.find(row => row.kod === "kural-farki").ayrinti, ["2025 · 120: 1,00 TL"]);
+  });
+});
