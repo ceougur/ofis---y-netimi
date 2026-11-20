@@ -23,3 +23,14 @@
   Excel kartı = yüklemeden önce olmayan + aynı adlı TEK yeni kart (önceki `.at(-1)` ad araması aynı adlı iki kişide yanlış kartı bulabiliyordu), bağlandığı cari → `esle_cari`,
   açılmadıysa "atlandi"; kartlar raporu Excel kartını eşlenen cariyle süzer.
 - siniflama.json: P7 ×3 KALKTI; R-B5-YEREL-GUN-UTC/RAPOR-MZ0 eklendi (mz1'deki UTC günü kuralının aynısı, s91 mz0).
+- Eşleme commit 4959ab79 (kos.mjs başlık notu dahil). Sınama koşusu (11 senaryo, iki TZ): s40 / s60 / s121 Kartı Kapat AYNI; s60 TK2 göç işareti '2.4.9';
+  s91 TE1 / TE2 / TE3 kâhinin carisine bağlı, kt1 / g1a / g1b AYNI; kalan: s118 af1 (aşağıda), s91 mz0 / mz1 R (UTC).
+- ATEŞLEME TARAMASI (taban koşusu, eski siniflama): ateşlemeyen U-S58, U-S69, U-S15 ×2 (Ç7b tur 3 programda), R-S192-BAG-SONRA ×2 (S212 = A tek aday düzeltme
+  9db9b69d; ek-bag-sonra c7b-aday'da AYNI, c7b2-taban'da eski fark 120 1.000 / 128 1.000 ↔ kâhin 2.000 / 0), OLC-S87/RAPOR → kalktı.
+
+## Adım 3 — s118 af1 (S200 × Açık Faturalar) kök neden
+- En küçük örnek ek-s200-acik-fatura (s118'in C1 kısmı: F1 50.000 vade 10.02, BY1 30.000 vade 15.03, 01.02 Mevcut Borç kartı 60.000, 16.02 gecikmiş + Açık Faturalar):
+  c7b-aday iki TZ: gecikmiş 20.000 AYNI; Açık Faturalar F1 program 50.000 ↔ kâhin 20.000. c7b2-taban aynı 50.000; v2.4.9 aynı 50.000 (gecikmiş 0 — eski kuyruk).
+- Kök: server/routes/invoices.mjs openItems — Açık Faturalar `net` istemez (v2.0.23 Bulgu 2 D yorumu: "Açık Faturalar raporu ve fatura kartı faturanın kendi açığını gösterir");
+  kâhin 'fatura durumu' görünümü kartın tükettiği kısmı kapanmış sayar (README R5 / M1e, bakım 14 İ1). Karar metni (S200 = A) Açık Faturalar'ı söylemiyor → R, kullanıcıya.
+- Sürücü: R-S200-ACIK-FATURALAR-KART-PAYI (s118, af1 + af3 aynı kök).
