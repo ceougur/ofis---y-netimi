@@ -1,0 +1,7 @@
+başta yük 4.82 5.69 4.81 5/132 8134 · uç 66e68067
+T2-M2-120-yerinde · fail 1 · sınıf testi: 13 sınıf × 2 kip; 72 fark; yazılı olmayan 8, değeri değişen 0, kapanmış ama listede duran 0 · ilk:           elle-borc-alacak · kilitsiz · bugün · cari.musteri.borclu: 60000 → 30000
+T1-M3-alis-iadesi-dusulmez · fail 1 · sınıf testi: 13 sınıf × 2 kip; 68 fark; yazılı olmayan 4, değeri değişen 14, kapanmış ama listede duran 0 · ilk:           alis-fatura · kilitsiz · 2026-10-20 · kar: 0 → 217
+T2-M6-153-defterden · fail 1 ·  · ilk:         satis-fatura · kilitsiz · 2025-12-31: Aktif = Pasif
+T1-M8-kilitli-canli-okur' · fail 0 · sınıf testi: 13 sınıf × 2 kip; 64 fark; yazılı olmayan 0, değeri değişen 0, kapanmış ama listede duran 0 · ilk: 
+E4-cari-atla · fail 1 · sınıf testi: 13 sınıf × 2 kip; 91 fark; yazılı olmayan 27, değeri değişen 0, kapanmış ama listede duran 0 · ilk:           satis-fatura · kilitli · bugün · cari.musteri.borclu: 77000 → 99000
+sonda yük 5.23 5.33 4.93 5/130 9378
