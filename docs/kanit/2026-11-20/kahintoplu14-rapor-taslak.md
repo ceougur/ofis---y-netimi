@@ -11,3 +11,4 @@
 - Adım 5 (UTC temel, commit 39aa0612): muh-test 223/223; muh-eski-kirmizi 12/223 kırmızı (beklenen nedenle); muh-g3 63.204/63.204 (A2-S210-S211 19, YENI 8); muh-yeni-mutantlar 16/16 öldü;
   cari-oz 6.936/6.936; cari-mutasyon 295/295; cari-g3 625/625 (59 fark: S210-S211 kalkan 15 / yeni 40, GENEL yeni 4; BEKLENMEYEN 0); elle-yeni 105/105; kirmizi-eski 36 kırmızı (beklenen); elle-fark 104/104;
   g1-tara 105/105; mutant-senaryo 1.224/1.224; genis-tarama geçti; ozet-tara yazıldı. Sırada: IST temel, mut1 / mut2 × iki TZ.
+- Adım 6 (IST temel, commit 320a86dd): bütün sayılar UTC ile aynı (muh 223/223, eski kırmızı 12, G3 63.204, yeni mutant 16/16; cari oz 6.936, mutasyon 295, G3 625, elle 105, eski kırmızı 36, fark 104, g1 105, mutant ↔ senaryo 1.224, geniş tarama 2.201/2.201); G3 dökümleri ve özet taraması iki TZ'de bayt bayt aynı.
