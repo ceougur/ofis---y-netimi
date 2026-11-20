@@ -10,3 +10,18 @@ surucu-yeni başladı 06:37:25 · 1.34 2.07 1.58 3/178 2811 · 7b6ec843
 sürücü yeni çıkış 1
 BİTTİ defter-yeni-UTC defter-taban-UTC defter-yeni-ist defter-taban-ist surucu-yeni 06:44:55 · 4.42 4.15 2.88 6/188 9579
 surucu-taban başladı 06:45:26 · 3.68 3.99 2.87 8/176 9841 · a74dd35e
+sürücü taban çıkış 1
+BİTTİ surucu-taban 06:52:29 · 3.29 3.93 3.36 2/149 16326
+cari-yeni-UTC başladı 06:52:41 · 2.93 3.83 3.34 3/146 16430 · 5351f330
+yeni cari UTC çıkış 1 · [kanit] başarısız testler (2): [kanit] c7b3-yeni-kahin-cari-UTC: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 17580/17582 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 5351f33 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4 
+cari-taban-UTC başladı 06:57:22 · 2.86 3.42 3.28 1/120 18367 · 451f9828
+taban cari UTC çıkış 0 · ÖZET [2.5.0]: 96 senaryo, 17582 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatas
+cari-yeni-ist başladı 07:02:01 · 3.59 2.66 2.93 5/169 19487 · 451f9828
+yeni cari Europe/Istanbul çıkış 1 · [kanit] başarısız testler (2): [kanit] c7b3-yeni-kahin-cari-Europe-Istanbul: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 17580/17582 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 451f982 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4 
+BİTTİ cari-yeni-UTC cari-taban-UTC cari-yeni-ist 07:06:46 · 2.31 2.95 3.03 3/141 21455
+cari-taban-ist başladı 07:07:12 · 1.92 2.81 2.98 3/145 21564 · 451f9828
+taban cari Europe/Istanbul çıkış 0 · ÖZET [2.5.0]: 96 senaryo, 17582 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatas
+yapim başladı 07:13:11 · 3.60 4.73 3.95 2/219 24968 · 99f93bca
+yapım listesi yazımı çıkış 0
+yapım listesi kayıt 2
+BİTTİ cari-taban-ist yapim 07:18:13 · 2.90 4.07 3.93 1/195 27603

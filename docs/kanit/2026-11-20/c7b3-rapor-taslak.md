@@ -77,3 +77,15 @@ Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
   tahsilatsız, FI3 İptal Et) → **S211 = A** (iş listesi C 19.11 23:18: 'kart kapanır') — program kapatıp tutarı 0'a indiriyor; kâhin 900 bekliyor. Kâhin senaryosu bu iki kartı SK-41 (a) / (b)
   'sınırı SUS' diye işaretlemiş (elleYok: odenen / kalan; elleBelirsiz 'cari I2 / I3 tanımsız'), ama kart TOPLAMI denetimi susturulmamış → **S210 = A / S211 = A — cari kâhini bakımı bekliyor**
   (kâhin klasörüne DOKUNULMADI). Bakiye denetimleri (I2 100, I3 0) program = kâhin.
+- Taban İstanbul 17.582 / 17.582, 0 fark (taban iki TZ temiz).
+- YAPIM AŞAMASI LİSTESİ (kendi kopyamda yeniden üretildi; c7b3-abc-YAPIM-ASAMASI-kendi-kopyam.json, c7b3-abc-yapim-yaz.out): depodaki liste 0 kayıt, yeniden üretilen **2 kayıt** — yukarıdaki d50 KI2 / KI3
+  toplam satırları, üretici paketi 'AYRIŞTIRILMADI' ('kural metni paketi göstermiyor'). Adıyla: paketi **Ç7b (S210 = A / S211 = A)** olmalı — ELLE ETİKETLENMEDİ; depodaki liste DEĞİŞMEDİ. Liste BOŞ
+  DEĞİL → kâhin bakımı (S210 / S211) yapılmadan Ç7b aday kapısına girmez.
+
+## 7. Ekran (G) — senaryo-c7b-tur3-250 (önceki ajanın yazdığı; c7b3-e2e-*)
+- Yeni kod: İstanbul 32 / 32, UTC 32 / 32. Taban: İstanbul 16 geçti / 14 kaldı, UTC 16 / 14 — nedenler beklenen (Sil / Düzenle nedeni İptal Et yolunu söylemiyor; iptal penceresi kartın ne olacağını
+  söylemiyor; S15 iptal reddi → 'kart kapalı, tutar 0' / 'bakiye −300'; '08.11 taksiti kesildi (en önce gelen açık)'; S216 adımı; S210 'kart kapalı, tutar 300' (taban: active 900); S217 iletisi).
+- Ekran görüntüleri bakıldı: 05 (S210 kapalı kart: Toplam 300, Tahsil Edilen 300, Kalan 0, Geciken 0) ve 06 (S217 reddi pencerede kırmızı: '… kapatılmış ve 1 tahsilatı var; fatura iptal edilemez.
+  Önce kartı Yeniden Aç ile açın.').
+- DÜŞÜK (gözlem): S217 durumunda İptal Et penceresi reddi ÖNCEDEN söylemiyor — kullanıcı iptal nedenini yazıp İptal Et'e bastıktan sonra 409 iletisi çıkıyor (planCancelText kapalı kartta boş döner;
+  cancelBlock'a girmiyor). Daha iyisi: pencere açılırken nedeni göstermek / düğmeyi nedeniyle pasif yapmak. Karar / sonraki tur.
