@@ -199,6 +199,13 @@ describe("Ç6-HESAP Bilanço — imkânsız ters bakiye, eksi stok, 127", () => 
     assert.deepEqual(rowOf(out, "III.D", "340").kaynaklar.map(row => [row.hesap, row.tutarMinor]), [["127", 2000]]);
     assert.equal(out.toplamlar.farkMinor, 0);
   });
+  it("borçlu 336 cari (iki alt hesaplı satır) TEK grup: I.D 136'ya, kaynak adedi 1, alt hesap kırılımı korunur", () => {
+    const entries = [E("account:d1", "2026-01-05", L("336", 3000, 0, "336.90", "P1"), L("649", 0, 3000)), E("account:d2", "2026-01-06", L("336", 2000, 0, "", "P1"), L("649", 0, 2000))];
+    const out = balanceSheet({ entries, valuation: createStockValuation({}), date: "2026-01-31", bookType: "balance", closedOn: "" });
+    const row = rowOf(out, "I.D", "136");
+    assert.deepEqual([row.tutarMinor, row.cariSayisi, row.kaynaklar.map(source => [source.hesap, source.adet, source.tutarMinor]), row.altlar.map(part => [part.hesap, part.tutarMinor])], [5000, 1, [["336", 1, 5000]], [["336.90", 3000]]]);
+    assert.equal(out.toplamlar.farkMinor, 0);
+  });
 });
 
 describe("Ç6-HESAP Bilanço — Kesin Değil'in tur 2 nedenleri (B-d, Aktif ≠ Pasif, Kural Değişikliği Farkı)", () => {

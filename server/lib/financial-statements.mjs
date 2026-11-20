@@ -459,7 +459,7 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
     if (extra.sub) row.altlar.set(extra.sub, (row.altlar.get(extra.sub) || 0) + value);
     if (hesap !== account) {
       const source = row.kaynaklar.get(account) || { hesap: account, ad: accountName(account), adet: 0, tutarMinor: 0 };
-      source.adet += 1;
+      if (extra.count !== false) source.adet += 1; // grup (cari / alt hesap) başına bir kez
       source.tutarMinor += value;
       row.kaynaklar.set(account, source);
     }
@@ -489,11 +489,11 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
         let rest = group.minor;
         let first = true;
         for (const [sub, minor] of group.subs) {
-          place(account, kalemKod, hesap, minor, { sub, party: first ? party : "" });
+          place(account, kalemKod, hesap, minor, { sub, party: first ? party : "", count: first });
           if (minor) first = false;
           rest -= minor;
         }
-        place(account, kalemKod, hesap, rest, { party: first ? party : "" });
+        place(account, kalemKod, hesap, rest, { party: first ? party : "", count: first });
       }
       continue;
     }
