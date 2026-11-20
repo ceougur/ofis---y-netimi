@@ -285,4 +285,18 @@ describe("S223 = A / S228 = A — içe aktarmalarda Türkçe harf katlamalı ki�
     assert.equal(await gl120(), before120);
     await integrity("(11)");
   });
+
+  it("(12) silinmiş cari aday olmaz: 'Bora Ünsal' silinince 'BORA ÜNSAL' satırı (taksit, cari Excel, çek) silinen cariye bağlanmaz", async () => {
+    const gone = await account("Bora Ünsal", "0543 112 00 01");
+    await must("cari sil", api.del(`/api/workspace/accounts/${gone}`));
+    assert.notEqual(ctx.store.get("SELECT deleted_at AS d FROM accounts WHERE id = ?", gone).d, null);
+    const plan = await loadPlans([planRow("BORA ÜNSAL", "0543 112 00 01", "500")], "bora.xlsx");
+    assert.equal(plan.created, 1);
+    assert.equal(plan.linked, 0, "silinen cariye bağlanmadı");
+    assert.deepEqual(cards(gone), []);
+    const acc = await loadAccounts([["", "BORA ÜNSAL", "0543 112 00 01"]], "bora-cari.xlsx");
+    assert.deepEqual(reasons(acc), [EXISTS], "taksitle açılan yeni cari (silinen değil) var sayıldı");
+    const chq = await loadCheques([["S223-12", "Ziraat", "bora ünsal", "300", "01.12.2026"]], "bora-cek.xlsx");
+    assert.notEqual(ctx.store.get("SELECT account_id AS a FROM cheques WHERE serial_no = 'S223-12'").a, gone);
+  });
 });
