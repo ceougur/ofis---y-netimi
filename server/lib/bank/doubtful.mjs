@@ -117,7 +117,10 @@ export function doubtfulCredits(store, parties) {
        FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL WHERE p.status = 'closed'`,
     );
   }
-  if (has("invoices")) parts.push(`SELECT 'invoice:' || i.id, i.account_id, i.issue_date, ${c("i.try_payable")}, '', '', COALESCE(NULLIF(i.issued_at, ''), i.created_at, ''), i.rowid FROM json_each(?1) j CROSS JOIN invoices i ON i.account_id = j.value WHERE i.status = 'issued' AND i.kind IN ('sale_return', 'purchase')`);
+  // Tek aday düzeltme turu (B1 hız; ders 47, 53 (a)): durum / tür koşulu dizin DIŞINDA (+) — planlayıcı carinin dizinini (idx_invoices_account) kullanır. Önceden idx_invoices_status'u
+  // seçip carinin her satırı için BÜTÜN kesilmiş iade / alış faturalarını dolaşıyordu (100 bin satırda tek cari ~16 ms); B1'in yevmiye yükleyicisi (writeOrder) bu sorguyu bir kez
+  // daha çağırdığından bağlı çek / tahsilat yazımı yavaşladı. Satır kümesi aynı (yalnız sıra / dizin seçimi).
+  if (has("invoices")) parts.push(`SELECT 'invoice:' || i.id, i.account_id, i.issue_date, ${c("i.try_payable")}, '', '', COALESCE(NULLIF(i.issued_at, ''), i.created_at, ''), i.rowid FROM json_each(?1) j CROSS JOIN invoices i ON i.account_id = j.value WHERE +i.status = 'issued' AND +i.kind IN ('sale_return', 'purchase')`);
   // B1 (ders 31): at / seq — satırın yazım sırası (yazım anı, kaynak tablonun rowid'i); ayırıcı aynı gün aynı sınıfta bununla sıralar (lib/doubtful-gl.mjs by).
   return store.all(`SELECT * FROM (${parts.join("\nUNION ALL\n")}) WHERE minor > 0`, list).map(row => ({ key: row.key, party: row.party, date: row.date, minor: Number(row.minor), target: row.target || "", openedOn: row.openedOn || "", at: row.at || "", seq: Number(row.seq) }));
 }
