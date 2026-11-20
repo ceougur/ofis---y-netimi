@@ -1,0 +1,43 @@
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:cari:J1:gecikmis: elle 10000 · kâhin "ANAHTAR YOK"
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:cari:J1:acikToplam: elle 10000 · kâhin "ANAHTAR YOK"
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:cari:J1:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:cari:J2:gecikmis: elle 50000 · kâhin "ANAHTAR YOK"
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:cari:J2:acikToplam: elle 50000 · kâhin "ANAHTAR YOK"
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:cari:J2:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:fatura:FJ2b:acik: elle 50000 · kâhin "ANAHTAR YOK"
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:cari:J3:gecikmis: elle 20000 · kâhin "ANAHTAR YOK"
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:cari:J3:acikToplam: elle 20000 · kâhin "ANAHTAR YOK"
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:cari:J3:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:kart:KJ1:var: elle YOK (tanımsız) · kâhin true
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:kart:KJ1:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:kart:KJ1:mevcutBorc: elle YOK (tanımsız) · kâhin true
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:kart:KJ2:var: elle YOK (tanımsız) · kâhin true
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:kart:KJ2:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:kart:KJ2:mevcutBorc: elle YOK (tanımsız) · kâhin true
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:kart:KJ3:var: elle YOK (tanımsız) · kâhin true
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:kart:KJ3:toplam: elle YOK (tanımsız) · kâhin 60000
+  ✗ d51-c5-s210-s211-kart-kapanir.json k1:kart:KJ3:mevcutBorc: elle YOK (tanımsız) · kâhin true
+  ✗ d51-c5-s210-s211-kart-kapanir.json belirsiz kaydı yok: kart KJ1 + S210 = A
+  ✗ d51-c5-s210-s211-kart-kapanir.json belirsiz kaydı yok: kart KJ2 + S211 = A
+  ✗ d51-c5-s210-s211-kart-kapanir.json belirsiz kaydı yok: kart KJ3 + S210 = A
+d51-c5-s210-s211-kart-kapanir.json: 40 elle denetim, 22 kırmızı
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:cari:I2:gecikmis: elle 10000 · kâhin "ANAHTAR YOK"
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:cari:I2:acikToplam: elle 10000 · kâhin "ANAHTAR YOK"
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:cari:I2:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:cari:I3:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:cari:I3:acikToplam: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:cari:I3:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:kart:KI2:var: elle YOK (tanımsız) · kâhin true
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:kart:KI2:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:kart:KI2:mevcutBorc: elle YOK (tanımsız) · kâhin true
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:kart:KI3:var: elle YOK (tanımsız) · kâhin true
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:kart:KI3:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:kart:KI3:mevcutBorc: elle YOK (tanımsız) · kâhin true
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json belirsiz kaydı yok: kart KI2 + S210 = A
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json belirsiz kaydı yok: kart KI3 + S211 = A
+d50-c5-s206-s25c-b1-iptal-havale.json: 65 elle denetim, 14 kırmızı
+ESKİ KÂHİN KIRMIZISI: 36/105 elle denetim kırmızı, 69 aynı (beklenen: kırmızı > 0; her kırmızının eski değeri yukarıda)
+# tests 36
+# pass 36
+# fail 0
+36/36 denetim geçti
