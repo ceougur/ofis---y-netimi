@@ -1,0 +1,35 @@
+(node:15418) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ Kurulum: yönetici girer, başlangıç tablosu yüklenir
+
+■ 1. Cari → Excel: aynı adlı iki kişi (telefonları farklı)
+  ✓ accounts: eşleme penceresi açıldı (cariler.xlsx)
+  ✓ iki ayrı cari: 0532 100 00 01 · 0532 100 00 02
+
+■ 2. Taksitler → Excel: iki Ahmet Yılmaz, telefonları farklı → iki kart, iki borç
+  ✓ plans: eşleme penceresi açıldı (taksit-iki-kisi.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✗ bildirim: "1 kart oluşturuldu. 1 satır atlandı (Aynı adla açık kart var). Yanlışsa Son Aktarımlar’dan geri alınır." (beklenen "2 kart oluşturuldu", atlanan yok)
+  ✗ kartlar: C1 [3000], C2 [] (beklenen [3000], [2000])
+  ✗ cari bakiyeleri C1 3000, C2 0 (beklenen 3.000, 2.000)
+  ✗ defter 120 +3000 (beklenen +5.000)
+
+■ 3. Taksitler → Excel: telefonsuz Ahmet Yılmaz (kişi seçilemez) + Elif Su
+  ✓ plans: eşleme penceresi açıldı (taksit-telefonsuz.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✗ bildirim: "1 kart oluşturuldu. 1 satır atlandı (Aynı adla açık kart var). Yanlışsa Son Aktarımlar’dan geri alınır." (beklenen 1 kart + 1 satır atlandı, nedeni kişiyi söyler)
+  ✓ Ahmet Yılmaz adlı cari sayısı 2 (beklenen 2; yeni cari açılmadı)
+  ✓ defter 120 +1000 (beklenen +1.000, yalnız Elif Su)
+
+■ 4. Aynı Excel (2) ikinci kez → çift kart / borç yok
+  ✓ plans: eşleme penceresi açıldı (taksit-iki-kisi.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "0 kart oluşturuldu. 2 satır atlandı (Aynı adla açık kart var)." (beklenen 0 kart, 2 satır atlandı — Aynı adla açık kart var)
+  ✓ kart ve cari sayısı değişmedi
+  ✓ defter 120 değişmedi
+  ✗ Taksitler penceresinde 1 Ahmet Yılmaz kartı görünüyor (beklenen 2)
+  ✓ Mutabakat Testi tutarlı
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo Ç7b taksit küçük turu (P7): 15 geçti, 6 kaldı. Ekranlar: ../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-ana/ekran-taban

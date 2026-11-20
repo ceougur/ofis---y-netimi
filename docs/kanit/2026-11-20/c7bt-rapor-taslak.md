@@ -36,3 +36,8 @@ Taban: c7b3b-taban = b3a59f2a. İş: P7 (S219 = A) + S200 okuması. P6 → 2.5.1
 ## 4. G — EKRAN
 - test/e2e/senaryo-c7bt-ayni-ad-250.mjs (yeni; CI listesine eklenecek): yeni 21/21; taban 15/21 (6 kırmızı, nedenleri: '1 kart oluşturuldu. 1 satır atlandı (Aynı adla açık kart var)', C2 kartsız / bakiye 0, 120 +3.000, telefonsuz satırın nedeni eski metin, listede 1 Ahmet Yılmaz kartı). Ekran görüntülerine bakıldı (Taksitler listesinde iki Ahmet Yılmaz kartı, telefonlarıyla; bildirimler).
 - senaryo-219 (Excel yüklemeleri komşusu): 74/74.
+
+## 5. B — kâhin-cari
+- Yeni 17.580 / 17.582, taban 17.580 / 17.582 — AYNI iki fark (d50-c5-s206-s25c-b1-iptal-havale k1:kart:KI2 / KI3:toplam; program 30.000 / 0, kâhin 90.000) iki tarafta da → bu turun farkı DEĞİL (d50 bekleyen toplu kâhin bakımında, S210 / S211).
+- Yapım aşaması kendi kopyada (KAHIN_YAPIM_ASAMASI): 2 kayıt, ikisi de yukarıdaki d50 farkı ('AYRIŞTIRILMADI' — üretici etiketi; paket Ç7b tur 3b / d50 bakımı, bu tur değil); depodaki liste BOŞ, değiştirilmedi. Bu turun yeni kaydı 0.
+- E2E: senaryo-c7bt-ayni-ad-250 kanıtla 21/21; tabanda 15/21 (c7bt-e2e-ayni-ad-taban.log). Ekran görüntüleri c7bt-ekran/.

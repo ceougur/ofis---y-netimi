@@ -1,0 +1,36 @@
+{
+  "ad": "c7bt-kahin-cari-yapim-yaz",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz",
+  "commit": "bc0463df68b8e73cc24553d135e0717cce194d6c",
+  "dal": "worktree-agent-ab1c286758106cc24",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T12:09:28.607Z",
+  "sure_sn": 461.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": null,
+  "hukum": "BELİRSİZ",
+  "neden": "özet satırı tanınmadı",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:kart:KI2:toplam: program 30000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:kart:KI3:toplam: program 0 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-ana/kanit/2026-11-20/c7bt-kahin-cari-yapim-yaz.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab1c286758106cc24",
+  "ham_cikti_sha256": "35ab0ab3a68b4746af2d1bbed80e71ce41776d56bb4fe40fac72a041910f6fd3",
+  "ham_cikti_bayt": 70562
+}
