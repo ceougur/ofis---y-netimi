@@ -691,7 +691,7 @@ def kos(src):
     tm = yukle(src)
     yukleyici = unittest.defaultTestLoader
     suite = unittest.TestSuite()
-    for sinif in (tm.Yardimci, tm.OlayMaddeleri, tm.Bakim12, tm.Bakim13, tm.ElleSenaryolar, tm.Rastgele, tm.DegismezDenetcileri):  # SenaryoHijyeni, Dosyalar hariç (Bakim12 / Bakim13: bakım 12 / 13)
+    for sinif in (tm.Yardimci, tm.OlayMaddeleri, tm.Bakim12, tm.Bakim13, tm.Bakim14, tm.ElleSenaryolar, tm.Rastgele, tm.DegismezDenetcileri):  # SenaryoHijyeni, Dosyalar hariç (Bakim12 / Bakim13 / Bakim14: bakım 12 / 13 / 14)
         suite.addTests(yukleyici.loadTestsFromTestCase(sinif))
     with contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
         r = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(suite)

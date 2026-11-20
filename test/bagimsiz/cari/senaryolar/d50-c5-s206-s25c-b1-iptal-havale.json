@@ -1,8 +1,8 @@
 {
  "dil": "destekofis-cari/3",
  "ad": "d50-c5-s206-s25c-b1-iptal-havale",
- "aciklama": "Bakım 21b (§33): C6 S206 = A — Taksitler'den açılmış Mevcut Borç kartı yalnız bu faturayı içine almışken, karta Taksit Tahsilatı girilmiş faturanın İptal Et'i: kart kapanır, tahsilatı carinin avansı, sonradan kesilen 500'lük fatura 200 açık (I1 — kararın örneği; kapanmış kartın göstergeleri SUS). Sınırı SUS: çok kalemli kart (I2 — SK-41 (a)), tahsilatsız kart (I3 — SK-41 (b)); bakiye değerle. C4 S15'in asıl durumu: taksitli faturanın taksitini kart seçilmeden alınan tahsilat kapatmış, fatura iptal → avans (I4). C1 05.11 (1) B1 gecikmiş kolları tek caride: çekle kapanan fatura sayılmaz, bağsız tahsilat en eski faturaya, taksitli faturada yalnız vadesi geçmiş taksit (G1). C5 S25 (c): şüpheliye aktarılmış faturaya bağlı HAVALE (H1 tam pay, H3 kısmi pay) ve NAKİT (H2 kısmi pay) tahsilat payı kadar şüpheliden düşer; açık şüpheli tutar Değersiz Alacak Yaz'ın kabul / reddiyle (K7) ölçülür.",
- "dayanak": "KARARLAR.md §33 (Y21b-1, Y21b-4, Y21b-5, Y21b-7, Y21b-8), §32 (Y21-4, Y21-5), §31 (Y20-1 … Y20-3), §13 (C13.4, C13.5), §8 (ŞÜPHELİ KALAN K7)",
+ "aciklama": "Bakım 21b (§33): C6 S206 = A — Taksitler'den açılmış Mevcut Borç kartı yalnız bu faturayı içine almışken, karta Taksit Tahsilatı girilmiş faturanın İptal Et'i: kart kapanır, tahsilatı carinin avansı, sonradan kesilen 500'lük fatura 200 açık (I1 — kararın örneği; kapanmış kartın göstergeleri SUS). Bakım 22 (§34): çok kalemli kart (I2 — S210 = A) ve tahsilatsız kart (I3 — S211 = A) da kapanır — elle Borç kendi vadesiyle kuyrukta, tahsilat avans; kapanmış kartların göstergeleri SUS. C4 S15'in asıl durumu: taksitli faturanın taksitini kart seçilmeden alınan tahsilat kapatmış, fatura iptal → avans (I4). C1 05.11 (1) B1 gecikmiş kolları tek caride: çekle kapanan fatura sayılmaz, bağsız tahsilat en eski faturaya, taksitli faturada yalnız vadesi geçmiş taksit (G1). C5 S25 (c): şüpheliye aktarılmış faturaya bağlı HAVALE (H1 tam pay, H3 kısmi pay) ve NAKİT (H2 kısmi pay) tahsilat payı kadar şüpheliden düşer; açık şüpheli tutar Değersiz Alacak Yaz'ın kabul / reddiyle (K7) ölçülür.",
+ "dayanak": "KARARLAR.md §34 (Y22-1, Y22-2), §33 (Y21b-1, Y21b-4, Y21b-5, Y21b-7, Y21b-8), §32 (Y21-4, Y21-5), §31 (Y20-1 … Y20-3), §13 (C13.4, C13.5), §8 (ŞÜPHELİ KALAN K7)",
  "bugun": "2026-06-15",
  "adimlar": [
   {"id": "ci1", "islem": "cari_ac", "ad": "I1", "isim": "İlker Kart Kapanır", "tarih": "2026-03-01"},
@@ -67,8 +67,14 @@
   "adim:kti2:durum": "ok",
   "adim:fii2:durum": "ok",
   "k1:cari:I2:bakiye": 10000,
+  "k1:cari:I2:gecikmis": 10000,
+  "k1:cari:I2:acikToplam": 10000,
+  "k1:cari:I2:acikEsitBakiye": true,
   "adim:fii3:durum": "ok",
   "k1:cari:I3:bakiye": 0,
+  "k1:cari:I3:gecikmis": 0,
+  "k1:cari:I3:acikToplam": 0,
+  "k1:cari:I3:acikEsitBakiye": true,
   "adim:ti4:durum": "ok",
   "adim:fii4:durum": "ok",
   "k1:fatura:FI4:durum": "iptal",
@@ -96,10 +102,10 @@
   "k1:cari:H3:bakiye": 20000,
   "k1:kasa": 130000
  },
- "elleYok": ["k1:kart:KI1:var", "k1:kart:KI1:toplam", "k1:kart:KI1:mevcutBorc", "k1:kart:KI1:odenen", "k1:kart:KI1:kalan", "k1:kart:KI1:taksit1:odenen", "k1:cari:I2:gecikmis", "k1:cari:I2:acikToplam", "k1:kart:KI2:odenen", "k1:kart:KI2:kalan", "k1:cari:I3:gecikmis", "k1:cari:I3:acikToplam", "k1:kart:KI3:odenen", "k1:kart:KI3:kalan"],
+ "elleYok": ["k1:kart:KI1:var", "k1:kart:KI1:toplam", "k1:kart:KI1:mevcutBorc", "k1:kart:KI1:odenen", "k1:kart:KI1:kalan", "k1:kart:KI1:taksit1:odenen", "k1:kart:KI2:odenen", "k1:kart:KI2:kalan", "k1:kart:KI3:odenen", "k1:kart:KI3:kalan", "k1:kart:KI2:var", "k1:kart:KI2:toplam", "k1:kart:KI2:mevcutBorc", "k1:kart:KI3:var", "k1:kart:KI3:toplam", "k1:kart:KI3:mevcutBorc"],
  "elleBelirsiz": [
   ["kart KI1", "S206 = A"],
-  ["cari I2 tanımsız", "SK-41 (a)"],
-  ["cari I3 tanımsız", "SK-41 (b)"]
+  ["kart KI2", "S210 = A"],
+  ["kart KI3", "S211 = A"]
  ]
 }

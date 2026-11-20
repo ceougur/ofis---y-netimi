@@ -1268,13 +1268,139 @@ class Bakim13(unittest.TestCase):
         # açık borç ≤ kart: M1e aynen (hepsi) — F 600 + E 300 = 900
         r = kart([F("2026-01-05", 600), B("E", "2026-01-10", 300)], 900)
         self.assertEqual(self.kalemler(r, "ak"), [("kart:TK", 900)])
-        # SUS: elle borçlar kart tutarından az (KULLANICIYA SORULMALI 1); fatura olmayan başka borç kalemi; karta eşit iki elle kalem (KULLANICIYA SORULMALI 2)
-        for ols, top in (([B("E", "2026-01-05", 300), F("2026-01-10", 600)], 500),
-                         ([o("cari_acilis", "2026-01-01", cari="C1", yon="borc", tutar=400), F("2026-01-10", 600)], 500),
+        # bakım 14 (S200 = A, README İ1): elle borçlar kart tutarından az → önce elle, eksik kısım faturadan (bakım 13'te SUS idi — KULLANICIYA SORULMALI 1)
+        r = kart([B("E", "2026-01-05", 300), F("2026-01-10", 600)], 500)
+        self.assertEqual(self.kalemler(r, "ak"), [("fatura:F", 400), ("kart:TK", 500)])
+        # SUS: fatura olmayan başka borç kalemi; karta eşit iki elle kalem (KULLANICIYA SORULMALI 2)
+        for ols, top in (([o("cari_acilis", "2026-01-01", cari="C1", yon="borc", tutar=400), F("2026-01-10", 600)], 500),
                          ([B("E1", "2026-01-05", 500), B("E2", "2026-01-06", 500), F("2026-01-10", 600)], 500)):
             with self.assertRaises(AssertionError) as c:
                 kart(ols, top)
             self.assertIn("S120", str(c.exception))
+
+
+class Bakim14(unittest.TestCase):
+    """Kâhin bakımı 14 (README İ1–İ9): S200, S210 / S211, S213, S220 — beklenenler kararların sözünden ELLE."""
+
+    @staticmethod
+    def kalemler(r, ad):
+        return sorted((x["k"], x["kalan"]) for x in r["raporlar"][ad])
+
+    def sus(self, ols, metin):
+        with self.assertRaises(AssertionError) as c:
+            M.kos(senaryo(ols + [E.MZ("mz", "2026-01-01", "2026-12-31")]))
+        self.assertIn(metin, str(c.exception))
+
+    @staticmethod
+    def F(i, t, M_, v=None, c="C1"):
+        return o("satis_faturasi", t, id=i, cari=c, M=M_, K=0, **({"vade": v} if v else {}))
+
+    @staticmethod
+    def B(i, t, x, c="C1"):
+        return o("borc_yaz", t, id=i, cari=c, tutar=x, aciklama="Fark")
+
+    def test_S200_elle_once_eksik_faturadan(self):
+        # İ1 (S200 = A): bakım 13'ün SUS'u ("elle borçlar kart tutarından az") artık DEĞER
+        def kart(ols, toplam):
+            return M.kos(senaryo(ols + [o("taksit_karti", "2026-02-01", id="TK", cari="C1", kaynak="mevcut_borc", toplam=toplam,
+                                          taksitler=[{"vade": "2026-03-01", "tutar": toplam}]),
+                                        E.R("ak", "acik_kalemler", cari="C1", tarih="2026-02-02"), E.R("af", "acik_faturalar", cari="C1", tarih="2026-02-02")]))
+        # bakım 13'te susan örnek: E 300 + F 600, kart 500 → E 300 + F'nin 200'ü; açık F 400, kart tutarı 500 aynen
+        r = kart([self.B("E", "2026-01-05", 300), self.F("F", "2026-01-10", 600)], 500)
+        self.assertEqual(self.kalemler(r, "ak"), [("fatura:F", 400), ("kart:TK", 500)])
+        self.assertEqual([(x["fatura"], x["kalan"]) for x in r["raporlar"]["af"]], [("F", 400)])
+        # elle borç hiç yok: F1 600 (belge 05.01, vade 20.03) + F2 400 (belge 10.01, vade 15.02), kart 500 → M1e S2 (vade önce): F2 400 + F1'in 100'ü → açık F1 500
+        r = kart([self.F("F1", "2026-01-05", 600, "2026-03-20"), self.F("F2", "2026-01-10", 400, "2026-02-15")], 500)
+        self.assertEqual(self.kalemler(r, "ak"), [("fatura:F1", 500), ("kart:TK", 500)])
+        # iki elle borç + fatura: E1 100 (12.01), E2 150 (08.01), F 600 (05.01), kart 400 → E2 150 + E1 100 + F'nin 150'si → açık F 450
+        r = kart([self.F("F", "2026-01-05", 600), self.B("E2", "2026-01-08", 150), self.B("E1", "2026-01-12", 100)], 400)
+        self.assertEqual(self.kalemler(r, "ak"), [("fatura:F", 450), ("kart:TK", 400)])
+        # SUS kalır (bakım 13 KS 2 — yinelenmez): fatura / Borç Yaz dışı borç kalemi; karta eşit iki elle kalem
+        for ols, top in (([o("cari_acilis", "2026-01-01", cari="C1", yon="borc", tutar=400), self.F("F", "2026-01-10", 600)], 500),
+                         ([self.B("E1", "2026-01-05", 500), self.B("E2", "2026-01-06", 500), self.F("F", "2026-01-10", 600)], 500)):
+            with self.assertRaises(AssertionError) as c:
+                kart(ols, top)
+            self.assertIn("S120", str(c.exception))
+
+    def _s210(self, son, kartsiz_tahsilat=False):
+        T3 = [{"vade": "2026-05-01", "tutar": 300}, {"vade": "2026-06-01", "tutar": 300}, {"vade": "2026-07-01", "tutar": 300}]
+        ols = [self.B("BY", "2026-03-01", 400), self.F("F", "2026-03-10", 500),
+               o("taksit_karti", "2026-03-15", id="TK", cari="C1", kaynak="mevcut_borc", toplam=900, taksitler=T3)]
+        if not kartsiz_tahsilat:
+            ols.append(o("tahsilat", "2026-04-05", id="P", cari="C1", yol="nakit", tutar=300, taksit_karti="TK"))
+        return ols + son
+
+    def test_S210_S211_kart_kapanir(self):
+        rap = [E.R("ak", "acik_kalemler", cari="C1", tarih="2026-04-20"), E.R("kt", "kartlar", cari="C1", tarih="2026-04-20"),
+               E.R("g", "gecikmis", cari="C1", tarih="2026-04-20"), E.MZ("mz", "2026-01-01", "2026-04-30")]
+        # İ2 (S210'un örneği): kart kapanır, BY kendi vadesiyle, 300 avans → BY açık 100, gecikmiş 100; bakiye 100
+        r = M.kos(senaryo(self._s210([o("iptal", kaynak="F")] + rap)))
+        self.assertEqual(self.kalemler(r, "ak"), [("borc:BY", 100)])
+        self.assertEqual(r["raporlar"]["kt"], {"TK": {"kapali": True, "taksitler": []}})
+        self.assertEqual(r["raporlar"]["g"]["gecikmis"], 100)
+        self.assertEqual(r["raporlar"]["mz"]["satirlar"]["120|C1"]["bakiye"], 100)
+        self.assertTrue(M.tumu_tuttu(r["degismezler"]), r["degismezler"])
+        # İ3 (çok kalemli + tahsilatsız): kart kapanır, BY 400 açık (vade 01.03) → gecikmiş 400
+        r = M.kos(senaryo(self._s210([o("iptal", kaynak="F")] + rap, kartsiz_tahsilat=True)))
+        self.assertEqual(self.kalemler(r, "ak"), [("borc:BY", 400)])
+        self.assertEqual(r["raporlar"]["kt"], {"TK": {"kapali": True, "taksitler": []}})
+        self.assertEqual(r["raporlar"]["g"]["gecikmis"], 400)
+        # S211'in örneği: F 900 → kart 900 → F iptal → kart kapanır, kuyruk boş
+        r = M.kos(senaryo([self.F("F", "2026-03-10", 900),
+                           o("taksit_karti", "2026-03-15", id="TK", cari="C1", kaynak="mevcut_borc", toplam=900, taksitler=[{"vade": "2026-05-01", "tutar": 900}]),
+                           o("iptal", kaynak="F")] + rap))
+        self.assertEqual(r["raporlar"]["ak"], [])
+        self.assertEqual(r["raporlar"]["kt"], {"TK": {"kapali": True, "taksitler": []}})
+        self.assertEqual(r["raporlar"]["g"]["gecikmis"], 0)
+        # iptal edilmeyen faturayı içine almış kart AÇIK kalır (yalnız iptal edilen faturanın kartı kapanır): C1'in kartı F, C3'ün kartı F3; yalnız F iptal
+        r = M.kos(senaryo([self.F("F", "2026-03-10", 900), self.F("F3", "2026-03-11", 600, c="C3"),
+                           o("taksit_karti", "2026-03-15", id="TK", cari="C1", kaynak="mevcut_borc", toplam=900, taksitler=[{"vade": "2026-05-01", "tutar": 900}]),
+                           o("taksit_karti", "2026-03-15", id="TK3", cari="C3", kaynak="mevcut_borc", toplam=600, taksitler=[{"vade": "2026-05-01", "tutar": 600}]),
+                           o("iptal", kaynak="F"), E.R("kt3", "kartlar", cari="C3", tarih="2026-04-20")]))
+        self.assertEqual(r["raporlar"]["kt3"], {"TK3": {"kapali": False, "taksitler": [{"vade": "2026-05-01", "tutar": 600, "kalan": 600}]}})
+
+    def test_S210_silme_karar4_aynen(self):
+        # KULLANICIYA SORULMALI 1: Sil (İptal Et değil) → karar (4) R4 AYNEN: kart BY 400 kadar kalır, 500 en erken taksitlerden küçülür (05.01 300 → 0, 06.01 300 → 100);
+        # kart tahsilatı 300 kartta: 06.01 100 + 07.01'in 200'ü → kart kalanı 100 (07.01)
+        r = M.kos(senaryo(self._s210([o("sil", kaynak="F"), E.R("kt", "kartlar", cari="C1", tarih="2026-04-20"),
+                                      E.R("g", "gecikmis", cari="C1", tarih="2026-04-20")])))
+        self.assertEqual(r["raporlar"]["kt"], {"TK": {"kapali": False, "taksitler": [{"vade": "2026-06-01", "tutar": 100, "kalan": 0},
+                                                                                     {"vade": "2026-07-01", "tutar": 300, "kalan": 100}]}})
+        self.assertEqual(r["raporlar"]["g"]["gecikmis"], 0)
+
+    def test_S210_sinir_susar(self):
+        # KULLANICIYA SORULMALI 2: (a) iptalden önce Kartı Kapat; (b) carinin şüpheli kaydı var; (c) iptalden sonra kapanmış karta tahsilat / Kartı Kapat
+        self.sus(self._s210([o("taksit_kapat", "2026-04-10", kart="TK"), o("iptal", kaynak="F")]), "S210")
+        self.sus(self._s210([o("supheliye_al", "2026-04-06", id="SA", cari="C1", tutar=100), o("iptal", kaynak="F")]), "S210")
+        self.sus(self._s210([o("iptal", kaynak="F"), o("tahsilat", "2026-04-25", cari="C1", yol="nakit", tutar=50, taksit_karti="TK")]), "S210")
+        self.sus(self._s210([o("iptal", kaynak="F"), o("taksit_kapat", "2026-04-25", kart="TK")]), "S210")
+
+    def test_S213_acik_faturalar_supheli_ve_degersiz_susmasi(self):
+        # İ4: şüpheliye alınan kısım Açık Faturalar'da kalır (CH + şüpheli kalanı); karşılık kalanı değiştirmez; Değersiz yazılan carinin raporu `susmalar`'a (S213)
+        ols = [self.F("F1", "2026-02-01", 1000, "2026-03-01"), self.F("F2", "2026-02-10", 500, "2026-04-10"), self.F("F3", "2026-02-15", 400, "2026-03-15", c="C3"),
+               o("supheliye_al", "2026-05-01", id="SA", cari="C1", tutar=1200), o("supheliye_al", "2026-05-01", id="SC", cari="C3", tutar=300),
+               o("karsilik_ayir", "2026-05-02", cari="C1", tutar=500, kayit="SA"),
+               E.R("af1", "acik_faturalar", cari="C1", tarih="2026-05-03"), E.R("af3a", "acik_faturalar", cari="C3", tarih="2026-05-03"),
+               o("karsilik_ayir", "2026-05-03", cari="C3", tutar=300, kayit="SC"), o("degersiz_yaz", "2026-05-04", cari="C3", kayit="SC"),
+               E.R("af3", "acik_faturalar", cari="C3", tarih="2026-05-05")]
+        r = M.kos(senaryo(ols))
+        self.assertEqual([(x["fatura"], x["kalan"]) for x in r["raporlar"]["af1"]], [("F1", 1000), ("F2", 500)])
+        # C3: F3 400 → şüpheliye 300 (F3'ün 300'ü) → Açık Faturalar F3 400 (CH 100 + şüpheli 300)
+        self.assertEqual([(x["fatura"], x["kalan"]) for x in r["raporlar"]["af3a"]], [("F3", 400)])
+        sus = [x for x in r.get("susmalar", []) if x.get("kural") == "S213"]
+        self.assertEqual([(x["rapor"], x["cari"]) for x in sus], [("af3", "C3")])
+
+    def test_S220_kismen_odenmis_ve_ayni_gun_vadeli(self):
+        # İ8: kısmen ödenmiş önceden gecikmiş taksit (kalanıyla kendi vadesinde); vadesi kapanış günü olan taksit kapanış kalemine (o gün gecikmiş değil)
+        T = [{"vade": "2026-03-01", "tutar": 300}, {"vade": "2026-04-01", "tutar": 300}, {"vade": "2026-04-10", "tutar": 300}]
+        r = M.kos(senaryo([o("taksit_karti", "2026-01-15", id="TK", cari="C1", kaynak="yeni_borc", toplam=900, taksitler=T),
+                           o("tahsilat", "2026-03-01", cari="C1", yol="nakit", tutar=400, taksit_karti="TK"),
+                           o("taksit_kapat", "2026-04-10", kart="TK"),
+                           E.R("g0", "gecikmis", cari="C1", tarih="2026-04-10"), E.R("g1", "gecikmis", cari="C1", tarih="2026-04-11")]))
+        self.assertEqual((r["raporlar"]["g0"]["gecikmis"], r["raporlar"]["g0"]["detay"]),
+                         (200, [{"kalem": "kart_kalani:TK", "vade": "2026-04-01", "kalan": 200}]))
+        self.assertEqual((r["raporlar"]["g1"]["gecikmis"], [(x["vade"], x["kalan"]) for x in r["raporlar"]["g1"]["detay"]]),
+                         (500, [("2026-04-01", 200), ("2026-04-10", 300)]))
 
 
 # ------------------------------------------------------------------------------------------------ elle senaryolar
