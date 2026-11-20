@@ -1,0 +1,16 @@
+başta yük 0.75 1.04 1.37 4/112 16235 · 15:11:39 · kip kilitli · kod yeni · Mem:              15           3           8           3           6          11
+kilit ('2026-06-30',)
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-ab54e5fc492a09964 · yük (başta) 1.89 1.48 1.46 · TZ (yerel) · açılış 335730.9 ms
+donma (bekleyen koşu): 101033.4 ms · kapsam 2026-06-30
+veri: {"moves":796824,"entries":1017115,"cash":114886,"invoices":338334,"frozen":3124853} · madde 1527455
+  Bilanço önbellekten (aynı istek): 3 ms · olay döngüsü en çok 0 ms
+  Bilanço 2026-12-31: durum 200 · ilk 60470.4 ms (olay döngüsü 396.4 ms) · en iyi 58390.8 ms · ortanca 59791.8 ms · en kötü 69549.3 ms · olay döngüsü en çok 54 ms (n=5) · özet 1a7ebf0fca4972d7 · örnek {"aktif":567843125277,"fark":0,"dnk":50160785571,"kesinDegil":["smm-tahmini","kural-farki","kapanmamis-yil","bilgi-amacli"]}
+  Bilanço 2026-06-30: durum 200 · ilk 59231.5 ms (olay döngüsü 47.9 ms) · en iyi 56869.8 ms · ortanca 58289.9 ms · en kötü 60920 ms · olay döngüsü en çok 26.9 ms (n=5) · özet 1e4807991a562f08 · örnek {"aktif":529387792609,"fark":0,"dnk":27552536565,"kesinDegil":["smm-tahmini","kural-farki","eksi-bakiye","kapanmamis-yil","bilgi-amacli"]}
+  Gelir Tablosu yıl 2026: durum 200 · ilk 32008.3 ms (olay döngüsü 16.3 ms) · en iyi 31492.8 ms · ortanca 33019.3 ms · en kötü 33471.9 ms · olay döngüsü en çok 28.6 ms (n=5) · özet 6532418db29af1d5 · örnek {"dnk":50160785571,"smm":2653123440,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç3 2026: durum 200 · ilk 33348.4 ms (olay döngüsü 13.6 ms) · en iyi 31160.3 ms · ortanca 32025.6 ms · en kötü 33734.3 ms · olay döngüsü en çok 31.3 ms (n=5) · özet f675a65e0b3f6b6e · örnek {"dnk":20948569108,"smm":-769144992,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Değerleme 2026-12-31: durum 200 · ilk 9163.4 ms (olay döngüsü 173.5 ms) · en iyi 7484.5 ms · ortanca 7729.3 ms · en kötü 8364.4 ms · olay döngüsü en çok 137.8 ms (n=5) · özet 12eebfa7c689ff38 · örnek {"dss":345315725107}
+  Şirket 2 Bilanço (31.12.2026 − i gün): durum 200 · ilk 5639.9 ms (olay döngüsü 18.7 ms) · en iyi 5251.9 ms · ortanca 5476.8 ms · en kötü 5835.9 ms · olay döngüsü en çok 44.2 ms (n=5) · özet be800f970d502313 · örnek {"aktif":66824327926,"fark":0,"dnk":5751994860,"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"]}
+  Şirket 2 Gelir Tablosu (1 Ocak – 31.12.2026 − i gün): durum 200 · ilk 3563.7 ms (olay döngüsü 13.9 ms) · en iyi 3321.1 ms · ortanca 3441.9 ms · en kötü 3630.2 ms · olay döngüsü en çok 16 ms (n=5) · özet 9840b309bb2cea24 · örnek {"dnk":5751994860,"smm":890506944,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+bellek (rss) en çok 5123 MB · yük (sonda) 1.27 1.49 1.75
+çıkış 0
+sonda yük 1.27 1.49 1.75 1/130 19347 · 15:40:58 · Mem:              15           4           7           3           7          11
