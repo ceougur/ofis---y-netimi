@@ -21,3 +21,21 @@ Gösterilen açık = faturanın kendi açığı − kart(lar)ın aldığı kıs�
 15. Kilitli dönem; iki şirket; gün dönümü ve iki TZ (UTC, Europe/Istanbul); boş dönem; ileri tarihli kart / fatura; yetkisiz kullanıcı (Muhasebe rolü).
 16. SINIR: Tahsilat / Mahsup formunun kabul ettiği tutar ve sunucunun kapaması DEĞİŞMEZ (aynı istek → aynı satırlar); Mahsup sunucu sınırı faturanın KENDİ açığı.
 17. Yanlış düzeltme tuzakları (mutant listesi): kart payını düşmeyi unut; net: true'ya geç (karar (5) netleşmesi sızar); tam alınan faturayı listede bırak; iki karttan yalnız birini düş; Tahsilat Ekle önerisinde eski açığı bırak; Anlık Durum'u eski hesapta bırak.
+
+## 1. TARAMA (koddan önce; `git grep openItems( / .open / payState / coveredBy / covered` server + client/assets, mobil, PDF / Excel, paylaşım metinleri)
+| Yol | Bugün (taban) | Kapsamda mı | Yapılan |
+|---|---|---|---|
+| Açık Faturalar raporu (report-center `acik-faturalar` → `openItems(day, { returns: true })`; ekran + PDF + Excel + TOPLAM + özet) | faturanın kendi açığı | S229 | `openItems` net istemeyen yol gösterilen açığı okur (shownState); kartın tamamını aldığı fatura satır vermez |
+| Anlık Durum fatura özeti (overview `openItems(day)`: açık / vadesi geçen satış, alış) — mobil `/api/mobil/overview` aynı uç | kendi açığı | S230 baş mimar yorumu (S229'u izler) | otomatik (openItems) |
+| Fatura kartı: Açık satırı, ödeme durumu, büyük rakam, Tahsilat Ekle görünürlüğü ve önerisi, "Açık tutar" metni | kendi açığı | S230 | shape → shownState; `inPlans` (Taksit Kartında: <kart> · tutar, `data-open-plan`); `inPlan`, `ownOpen` alanları; Kalan büyük rakamı kart payında da |
+| Faturalar listesi: Kalan, Açık Bakiye, Vadesi Geçmiş, Ödeme Durumu süzgeci (sayfalı leanRow + sayfasız), PDF (`liste.pdf`), Excel (`export.xlsx`) | kendi açığı | S230 | leanRow + shape → shownState (LIST_SQL'e plan_id eklendi — taksitli fatura kendi kuralında); kartın tamamını aldığı fatura "Taksitte" ('Açık' süzgecinde, 'Ödenmedi'de değil) |
+| Mahsup Et formu (offsets GET): "Açık tutar", önerilen tutar, karşı fatura etiketi | kendi açığı | S230 | `suggest` (gösterilen) + karşı faturada `shownOpen`; SINIR `open` (kendi açığı) DEĞİŞMEDİ; kartın tamamını aldığı karşı fatura seçenek listesinde görünmez (istemci; taksitli fatura gibi) |
+| Cari kartının fatura sekmesi (hof-accounts, liste ucu `tab=all&account`) | kendi açığı | aynı kalem → aynı kural | otomatik (liste ucu) |
+| Cari tahsilat formu "Kapatılacak Fatura" seçenekleri (hof-accounts, liste ucu `pay=open`) | kendi açığı ("açık X") | aynı kalem → aynı kural | otomatik: kısmi "açık 20.000"; kartın tamamını aldığı fatura seçenek değil (taksitli gibi). Sunucu kabulü değişmedi |
+| Satış / Alış / İade Faturaları raporları (report-center invoiceListReport → `list`): Ödenen, Kalan, Durum | kendi açığı | aynı kalem → aynı kural | otomatik; Ödenecek = Ödenen + Kalan + taksit kartında (sütun yok → 2.5.1) |
+| Fatura e-posta / WhatsApp paylaşım metni (vade satırı `doc.open > 0`) | kendi açığı | aynı kural | otomatik: kartın tamamını aldığı faturada vade satırı yok |
+| payDoc (zil / takvimden Tahsilat) | — | gösterim | kartta olan faturada "taksit kartında; tahsilat kartın taksitlerinden" bildirimi |
+| Birleşik listeler (`openItems(day, { net: true })`: yaşlandırma, nakit akışı, Vade Takip, zil / takvim, `dueItems`) | TYK net (kart payı + karar (5) + şüpheli) | KAPSAM DIŞI | değişmedi (eski kapamanın net yolu da aynı formül) |
+| Kapama, yazma yolları (`coverState`, `ownTarget`, `settledFor`, `repairScreen`), Mahsup sınırı (`addOffset`), editInvoice taksitlendirme reddi (`state.covered`) | kendi açığı | KAPSAM DIŞI | değişmedi (paymentStates çıktısı aynı; gösterim ayrı işlevde) |
+| Kartın kendi kalanı, bakiye, gecikmiş, defter, mutabakat | — | KAPSAM DIŞI | değişmedi (para değişmezi betiği: BİREBİR) |
+| e-Belge (UBL `covered` = ödeme kodu, ilgisiz), WhatsApp çekirdeği, banka | — | ilgisiz | dokunulmadı |
