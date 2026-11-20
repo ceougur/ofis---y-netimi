@@ -48,3 +48,20 @@ Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
 - s58 ak3 C3 (GÖRÜNÜM-YOK, kâhin tarafı) değişti: kâhin artık iptali de uyguluyor (program reddetmediği için) → 'tahsilat:P2 kalan −3000' (S15: tahsilat avans) — programda okunacak uç yok, sınıf aynı (U GÖRÜNÜM-YOK).
 - Denetim sayısının 10 azalması: s58'de 2 / TZ (mizan 600 satırı ve red 11 satırı artık yok — iptal uygulandı), s69'da 3 / TZ (af1b F0, mz C1, red 12 — iptal uygulandı). AYNI → AYNI değer değişenler: s58 g3 C3 gecikmiş 3000 → 0 (program = kâhin), kt3 TK2 Açık → Kapalı (program = kâhin); s69 g1b 6000 → 0, kt1b Kapalı (program = kâhin).
 - 'Ç7b-(6)' 12 satır KALDI (Borçta Kalsın — tur 3b; beklenen).
+
+## 5. G2 komşu — BULGU (ORTA): test/acilis-onarimi-hiz-250 son kodda KIRMIZI (iki TZ), tabanda YEŞİL (c7b3-komsu-*, c7b3-t2-onarim-*)
+- Komşu listesi: önceki ajanın taraması (komsu.py, 44 dosya) + elle eklenen 8 (stok iadesi trimCovers yolu: c7b-eski-surum-sinif-250, defter-kaynak-iz-250, mutabakat-213, tyk-birlesik8-iade-250; açılış
+  onarımı cutTargets yolu: acilis-onarimi-hiz-250, donmus-defter-tur3-250, donmus-defter-tur4-250; yazım düzeni) = 52 dosya. **Önceki taramanın deseni açılış onarımının testlerini yakalamıyordu**
+  (acilis-onarimi-hiz-250 listede yoktu; savunma testi 'shrinkPlan' sözüyle girmişti).
+- UTC: 716 sınama, 714 geçti, 2 kırmızı — YALNIZ acilis-onarimi-hiz-250: (1) 'ikinci koşu: onarılan 0 (beklenen 0), kilitli 4 (beklenen 3)'; (2) eşdeğerlik: repair / izler / kartlar / taksitler /
+  faturaDurumlari / cariler / adayKartlar bölümleri eski dökümden ayrı. Tabanda (b85d9e27) iki TZ 3 / 3; yeni kodda iki TZ 1 / 3.
+- KÖK NEDEN (yeniden üretildi; ders 6): mutant 1 (cutTargets'ı eski yöne — sondan — çevir) uygulanınca test yeni kodda 3 / 3 YEŞİL → fark karar (4)'ün küçülme yönünün açılış onarımına
+  (shrinkPlan + kilit aynası cutTargets — (6) KABUL) girmesinden. Örnek (onarim-fark.mjs; v2.0.26 gerçek kodu fikstürü, bugün 06.11.2026, kilit 07.10.2026): FIS2026000000047'nin kartı
+  kalan 1.300, hedef 1.250, taksitler 19.09.2026 666,66 · 19.10.2026 683,34. Eski kod 50'yi SON taksitten (19.10 — açık dönem) keserek ONARIYORDU (1.300 → 1.250); yeni kod 50'yi en önce gelen açık
+  taksitten (19.09 — KİLİTLİ dönem) keseceği için onarmıyor, kartı 'kilitli' listesine koyuyor → kart 50 TL büyük kalır (cari bakiyesi değişmez; kartın kalanı / gecikmişi 50 fazla).
+- Etki alanı: yalnız 2.0.24–2.0.26 kuralıyla yanlış büyümüş ve 2.1.0+ hiç açılmamış (onarımı hiç koşmamış) veri, ve küçülecek ilk açık taksiti kilitli dönemde olan kart. UÇ DURUM.
+- KULLANICIYA SORULMALI (para / kart kuralı — ders 43): A) açılış onarımı karar (4) sırasıyla keser ama KİLİTLİ dönemdeki taksiti atlar (ilk açık ve kilitsiz taksitten) — kart onarılır;
+  B) açılış onarımı eski yönde (sondan) keser — 2.1.0'dan beri bütün kurulumların aldığı onarımla aynı (davranış aynen); C) Uç durum böyle kalsın (BİLİNEN SINIR) — kart 'kilitli' listesinde kalır,
+  kilit açılınca sonraki açılışta onarılır; testin beklentisi BİLEREK değişir (kilitli 4, onarılan 25). Yaygın programlarda: doğrulanmış kaynak okunmadı (dayanak yazılmadı). ÖNERİ: B — onarım eski bir
+  hatayı geri alır; 2.1.0+ açılmış her kurulum bu kartları zaten eski yönle onardı, 2.5.0'da yalnız gecikmiş kurulumun farklı sonuç alması tutarsız olur; karar (4) yeni küçülmeler içindir.
+  (Bu ajan kodu ve testi DEĞİŞTİRMEDİ — karar gerekiyor; kırmızı açık.)
