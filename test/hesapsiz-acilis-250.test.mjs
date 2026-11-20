@@ -130,6 +130,11 @@ describe("Ç7a K-14 / K-15 — açılıştan önceki hesapsız hareketin karşı
     assert.equal(subs["309.01"], -1000);
     assert.equal(trial["519"], -96000 + 1000 - 400);
     assert.deepEqual(await kova(ctx), { bankMinor: 270_000, cardMinor: 300_000 });
+    // Tek aday düzeltme turu (dar kontrol t3c7a DÜŞÜK — N8): Hesabı Atanmamış listesinin rozeti kart yolunda YÖNE bakar — kart ÇIKIŞI (kurumsal kartla ödeme) kart hesabının açılışından
+    // önceyse "Açılışta Sayıldı"; aynı yolun GİRİŞİ (POS tahsilatı) yalnız Devir Kapanışı'yla sayılır (K-14 / K-15).
+    const listed = Object.fromEntries((await must("eski liste", ctx.api.get(`${BANK}/legacy`))).rows.map(item => [item.date, item.counted]));
+    assert.equal(listed["2026-09-15"], true, "15.09 kart çıkışı: rozet var");
+    assert.equal(listed["2026-09-22"], false, "22.09 POS girişi: rozet yok (Devir Kapanışı yok)");
     expectStatus(await ctx.api.post(`${BANK}/legacy/reclass`, { mode: "card", accountId: card.id, amount: "400" }), 409, "bank-legacy-exceeds", "açılışta sayılmış ödeme aktarılmaz");
     await integrityOk(ctx.api, "K-15");
     // Kartın limiti tanımlı değil: K7 eksi bakiye sorusu BEKLENEN (409 cash-negative) → "Yine de Kaydet" (cashForce; ders 34: soru nedeniyle yanıtlanır).
