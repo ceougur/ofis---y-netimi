@@ -150,3 +150,9 @@ eski kod kırmızısı (`t3duz-taban-kirmizi-*`) bu bölümü İÇERMİYOR (N11 
 | senaryo-pos-kart-249 | İstanbul | 0 | 383 / 383 |
 | senaryo-banka-210 (yeni beklenti) | İstanbul | 0 | 429 / 429 |
 Hepsinde başarısız 0, iptal 0, atlanan 0.
+
+Ek (ders 9 / 10; değişen `server/lib/bank/money-lines.mjs` bütün banka para satırlarının, `server/routes/cheques.mjs` her evrak yazımının yolu — e2e taramasıyla çek / banka
+ekranlarına dokunan, henüz koşulmamış senaryolar), UTC, hepsi çıkış 0, başarısız / iptal / atlanan 0:
+senaryo-banka-210b 90 / 90 · senaryo-banka-220 76 / 76 · senaryo-pos-220 113 / 113 · senaryo-tahsile-ver-220 140 / 140 · senaryo-214 48 / 48 · senaryo-215 73 / 73 ·
+senaryo-219 74 / 74 · senaryo-222 60 / 60 · senaryo-224 69 / 69 · senaryo-226 22 / 22 · senaryo-defter-243 33 / 33 · senaryo-form-izolasyon-243 188 / 188 ·
+senaryo-iz32-230 41 / 41 · senaryo-raporlar (test:senaryo-rapor) 87 / 87 · senaryo-tyk-tur2a-250 51 / 51 · banka-210-kart-onbellek-yaris 49 / 49.
