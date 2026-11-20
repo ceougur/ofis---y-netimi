@@ -83,7 +83,7 @@ const emptyYear = () => ({ openQ: 0, openV: 0, buyQ: 0, buyV: 0, retQ: 0, retV: 
 /**
  * Değerleme. input: loadValuationInput çıktısı (testler elle de verir).
  * at(t, { detail }) → t günü sonu itibarıyla t'nin yılı için (tahmini; t = 31 Aralık'ta kesin değerleme):
- *   { date, year, totals: { dbsMinor, openingMinor, purchaseMinor, returnMinor, dssMinor, smmStockMinor }, negative: [...], warnings: [...], products?: [...] }
+ *   { date, year, totals: { dbsMinor, openingMinor, purchaseMinor, returnMinor, dssMinor, smmStockMinor }, negative: [...], clipped: [{ …ürün, clippedMinor }] (S209 = B), warnings: [...], products?: [...] }
  * yearEnd(Y, opts) = at("Y-12-31", opts).
  */
 export function createStockValuation({ items = [], moves = [] } = {}) {
@@ -119,17 +119,26 @@ export function createStockValuation({ items = [], moves = [] } = {}) {
       unitCost = item.unitPriceE4 / PRICE_SCALE;
     }
     let vMinor = 0;
+    let clippedMinor = 0;
     if (qMilli > 0 && !deleted) {
       if (den > 0n) vMinor = Number(roundDiv(BigInt(qMilli) * num, den));
       else vMinor = Number(roundDiv(BigInt(qMilli) * BigInt(item.unitPriceE4), BigInt(QTY_SCALE * 100)));
     }
-    return { vMinor, unitCost, basis, deleted, negativeUnit: den > 0n && num < 0n };
+    // S209 = B (kullanıcı kuralıyla öneri uygulandı 19.11 22:45; tasarım §7): alış iadesinin değeri alışlardan büyükse (pay < 0, payda > 0) birim maliyet 0'a KIRPILIR, değer 0;
+    // formülün verdiği eksi değer kırpılan tutar olarak döner (Kesin Değil "Eksi Birim Maliyet" ayrıntısı — para gizlenmez).
+    if (den > 0n && num < 0n) {
+      clippedMinor = vMinor;
+      vMinor = 0;
+      unitCost = 0;
+    }
+    return { vMinor, unitCost, basis, deleted, clippedMinor };
   }
 
   function stateAt(year, day, { detail = false } = {}) {
     const prior = year - 1 < firstYear ? base : endOf(year - 1);
     const totals = { dbsMinor: 0, openingMinor: 0, purchaseMinor: 0, returnMinor: 0, dssMinor: 0, smmStockMinor: 0 };
     const negative = [];
+    const clipped = [];
     const warnings = [];
     const products = detail ? [] : null;
     const state = new Map();
@@ -164,16 +173,16 @@ export function createStockValuation({ items = [], moves = [] } = {}) {
       if (qMilli < 0 && !value.deleted) negative.push(name);
       if (active && qMilli > 0 && !value.deleted && value.basis === "kart") warnings.push({ ...name, type: "kart-fiyati" });
       if (active && qMilli > 0 && !value.deleted && value.basis === "yok") warnings.push({ ...name, type: "fiyat-yok" });
-      if (active && qMilli > 0 && value.negativeUnit && !value.deleted) warnings.push({ ...name, type: "eksi-birim-maliyet" });
+      if (value.clippedMinor) clipped.push({ ...name, clippedMinor: value.clippedMinor });
       if (active && qMilli > 0 && value.deleted) warnings.push({ ...name, type: "silinmis-urun", deletedDay: item.deletedDay });
       if (products && active) {
         products.push({ ...name, dbsQty: Math.max(0, before.qMilli) / QTY_SCALE, dbsMinor: before.vMinor, openingQty: acc.openQ / QTY_SCALE, openingMinor: acc.openV, purchaseQty: acc.buyQ / QTY_SCALE,
           purchaseMinor: acc.buyV, returnQty: acc.retQ / QTY_SCALE, returnMinor: acc.retV, unitCost: Math.round(value.unitCost * 10000) / 10000, basis: value.basis, valueMinor: value.vMinor,
-          deleted: value.deleted });
+          deleted: value.deleted, ...(value.clippedMinor ? { kirpilanMinor: value.clippedMinor } : {}) });
       }
     }
     totals.smmStockMinor = totals.dbsMinor + totals.openingMinor + totals.purchaseMinor - totals.returnMinor - totals.dssMinor;
-    return { state, out: { date: day, year, totals, negative, warnings, ...(products ? { products } : {}) } };
+    return { state, out: { date: day, year, totals, negative, clipped, warnings, ...(products ? { products } : {}) } };
   }
 
   function endOf(year) {

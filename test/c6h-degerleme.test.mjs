@@ -102,12 +102,13 @@ describe("Ç6-HESAP değerleme — G-1 yuvarlama, KG-9, KG-10, M5, 29 Şubat, si
     assert.equal(after.totals.smmStockMinor, 2000);
     assert.deepEqual(after.warnings.map(row => row.type), ["silinmis-urun"]);
   });
-  it("alış iadesi alışlardan değerliyse birim maliyet eksi (formül harfiyen) + uyarı (S-c)", () => {
-    // E: alış 10 = 1.000,00; iade 9 = 1.080,00 → birim (1000 − 1080) / (10 − 9) = −80; miktar 1 → −80,00.
+  it("alış iadesi alışlardan değerliyse birim maliyet 0'a kırpılır, kırpılan tutar listede (S209 = B; tur 1'in 'eksi değer + uyarı' beklentisi kararla değişti)", () => {
+    // E: alış 10 = 1.000,00; iade 9 = 1.080,00 → formül birim (1000 − 1080) / (10 − 9) = −80; miktar 1 → −80,00 → değer 0, kırpılan −80,00.
     const valuation = createStockValuation({ items: [item("E")], moves: [mv("E", "2026-01-02", AL, 10, 1000), mv("E", "2026-01-03", IA, -9, 1080)] });
     const at = valuation.at("2026-01-31");
-    assert.equal(at.totals.dssMinor, -8000);
-    assert.deepEqual(at.warnings.map(row => row.type), ["eksi-birim-maliyet"]);
+    assert.equal(at.totals.dssMinor, 0);
+    assert.deepEqual(at.clipped.map(row => [row.id, row.clippedMinor]), [["E", -8000]]);
+    assert.deepEqual(at.warnings.map(row => row.type), []);
   });
   it("alış iadesi birim maliyeti DÜŞÜRÜR / YÜKSELTİR (iade fiyatı ortalamadan farklıysa)", () => {
     // F: alış 10 × 10 = 100,00 ve 10 × 20 = 200,00; iade 5 × 30 = 150,00 → birim (300 − 150) / (20 − 5) = 10,00; satış 5 → miktar 10 → 100,00.

@@ -113,8 +113,11 @@ export function estimatedCost({ entries, valuation, from, to }) {
   const moves = atB.totals.openingMinor + atB.totals.purchaseMinor - atB.totals.returnMinor;
   const negative = new Map();
   for (const row of [...atB.negative, ...(atA ? atA.negative : [])]) if (!negative.has(row.id)) negative.set(row.id, row);
+  // S209 = B: kırpılan ürünler (t = b ve a − 1 — eksi stok gibi); tutar b'nin (yoksa a − 1'in) kırpılan değeri.
+  const clipped = new Map();
+  for (const row of [...atB.clipped, ...(atA ? atA.clipped : [])]) if (!clipped.has(row.id)) clipped.set(row.id, row);
   // Stoksuz dönemde (önceki yıl sonu stoku, dönem 153 hareketi ve t stoku 0) tahmin yoktur: maliyet kesin 0 (hizmet işletmesi "Satışların Maliyeti Tahminidir" uyarısı görmez).
-  const involved = prev.totals.dssMinor !== 0 || atB.totals.dssMinor !== 0 || flow !== 0 || negative.size > 0 || (atA ? atA.totals.dssMinor !== 0 || stockFlow(entries, start, dayBefore(from)) !== 0 : false);
+  const involved = prev.totals.dssMinor !== 0 || atB.totals.dssMinor !== 0 || flow !== 0 || negative.size > 0 || clipped.size > 0 || (atA ? atA.totals.dssMinor !== 0 || stockFlow(entries, start, dayBefore(from)) !== 0 : false);
   return {
     estimated: posted621 ? !first && involved : involved,
     posted: posted621,
@@ -125,6 +128,7 @@ export function estimatedCost({ entries, valuation, from, to }) {
     stockMovesMinor: moves,
     differenceMinor: flow - moves,
     negative: [...negative.values()],
+    clipped: [...clipped.values()],
     warnings: atB.warnings,
   };
 }
@@ -147,6 +151,9 @@ export function notFinalReasons(facts = {}) {
   if (facts.balanceDiffMinor) add("aktif-pasif-farki", "Aktif ile Pasif Eşit Değil", `Aktif toplamı pasif toplamından ${tlText(facts.balanceDiffMinor)} farklı; fark ayrı satırda gösterildi (denkleştirme kaydı yapılmaz).`);
   if (facts.ruleDiff?.length) add("kural-farki", "Kural Değişikliği Farkı", "Kilitli dönemin donmuş defteri güncel kuralla türetilen defterden farklı; tablo donmuş defterdendir.", facts.ruleDiff);
   if (facts.negativeStock?.length) add("eksi-stok", "Eksi Stok", "Eksi miktarlı ürünler dönem sonu stokuna 0 değerle girdi.", facts.negativeStock.map(row => `${row.name} (${row.qty} ${row.unit})`.trim()));
+  if (facts.clippedCost?.length) {
+    add("eksi-birim-maliyet", "Eksi Birim Maliyet", "Alış iadesi alışlarından değerli olan ürünlerin birim maliyeti 0 alındı; formülün verdiği eksi değer (aşağıda) stok değerine katılmadı.", facts.clippedCost.map(row => `${row.name}: ${tlText(row.clippedMinor)}`));
+  }
   if (facts.negativeBalances?.length) add("eksi-bakiye", "İmkânsız Ters Bakiye", "Eksi olamayacak hesaplarda eksi bakiye var.", facts.negativeBalances);
   if (facts.debitTax) add("borclu-360", "Borçlu Ödenecek Vergi", "Ödenecek Vergi ve Fonlar (360) borç bakiyeli; Diğer Çeşitli Dönen Varlıklar'da gösterildi.");
   if (facts.openYears?.length) add("kapanmamis-yil", "Kapanmamış Önceki Yıl", "Devri yapılmamış önceki yılların sonucu kapanış fişi görmedi.", facts.openYears.map(String));
@@ -261,6 +268,7 @@ export function incomeStatement({ entries, valuation, from, to, bookType = "unse
     unbalanced,
     ruleDiff: ruleRows.map(row => `${row.year} · ${row.account}${row.sub ? ` (${row.sub})` : ""}: ${tlText(row.differenceMinor)}`),
     negativeStock: cost.negative,
+    clippedCost: cost.clipped,
     unclassified: [...unclassified.entries()].filter(([, net]) => net !== 0).map(([code, net]) => `${code}: ${tlText(net)}`),
     bookType,
   };
@@ -583,6 +591,7 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
     balanceDiffMinor: farkMinor,
     ruleDiff: (ruleDiff?.balances || []).filter(row => Number(row.year) <= year).map(row => `${row.year} · ${row.account}${row.sub ? ` (${row.sub})` : ""}: ${tlText(row.differenceMinor)}`),
     negativeStock: [...negativeStock.values()],
+    clippedCost: stockAt.clipped,
     negativeBalances: impossible.map(fmt),
     debitTax,
     openYears: priorYears.map(row => row.yil),
