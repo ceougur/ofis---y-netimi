@@ -329,7 +329,9 @@ describe("K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, a
     await h.giveBack(acc, f1, 5, nakit(250));
     const plan = await must("kart", api.get(`/api/workspace/plans/${card.id}`));
     assert.deepEqual([plan.totals.total, plan.totals.remaining], [250, 250], "kart 250 (yalnız mahsup kadar küçüldü)");
-    assert.deepEqual([(await h.doc(f1.id)).open, (await h.doc(f2.id)).open], [250, 1000]);
+    // S229 = A + S230 = A (20.11.2026): F1'in kendi açığı 250 = kartın kalanı; kartın aldığı kısım faturada açık görünmez (gösterilen 0, 'Taksitte').
+    const d1 = await h.doc(f1.id);
+    assert.deepEqual([d1.ownOpen, d1.inPlan, d1.open, d1.payState, (await h.doc(f2.id)).open], [250, 250, 0, "installment", 1000]);
     assert.equal(await h.balance(acc), 1250);
   }));
 

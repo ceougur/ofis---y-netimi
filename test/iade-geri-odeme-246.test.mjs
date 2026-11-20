@@ -556,7 +556,10 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
     const vade = await vadeOf(acc);
     assert.deepEqual(vade, [["plan", 500], ["plan", 500]], "Vade Takip: kartın iki taksiti, fatura kalemi yok (5fa544c / 49c41f9: fatura 300 + kart 1.000 = 1.300)");
     assert.equal((await duesOf(acc)).filter(row => row[0] === "invoice").length, 0, "takvimde fatura kalemi yok");
-    assert.deepEqual(await invoice(sale.id), ["overdue", 1000], "fatura açığı 1.000 (iadenin geri ödemesi) — kartın kapsamında");
+    // S229 = A + S230 = A (20.11.2026): faturanın kendi açığı 1.000 (iadenin geri ödemesi) kartın kapsamında — faturada açık görünmez, 'Taksitte'.
+    assert.deepEqual(await invoice(sale.id), ["installment", 0], "fatura kartın kapsamında: gösterilen açık 0");
+    const own = await must("fatura oku", api.get(`/api/workspace/invoices/${sale.id}`));
+    assert.deepEqual([own.ownOpen, own.inPlan], [1000, 1000], "faturanın kendi açığı 1.000 = kartın payı");
   });
 
   it("B2 F1b (dar kontrol): satış A 1.000, Tahsilat 600 → A, A'nın iadesi 500 (100'ü açık), bağsız Ödeme 300 → A açık 200, iade açığı 0 (açık bağla aynı)", async () => {

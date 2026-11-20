@@ -107,7 +107,10 @@ describe("Ç5-B kapanış — DÜŞÜK-2 gerçek program dişleri (K8, K22)", ()
     const x = view.entries.find(row => row.note === "X");
     assert.equal(view.totals.balance, 900);
     assert.equal(x.remaining, 0, "elle borç X kartın içinde (Kalan 0)");
-    assert.equal((await must("fatura", api.get(`/api/workspace/invoices/${f.id}`))).open, 600, "F açık 600 (S126 okuması olsaydı: F 300, X 300)");
+    // S229 = A + S230 = A (20.11.2026): F'nin KENDİ açığı 600 (kapama kuralı); kart F'nin tamamını aldığı için fatura kartında gösterilen açık 0.
+    const fd = await must("fatura", api.get(`/api/workspace/invoices/${f.id}`));
+    assert.equal(fd.ownOpen ?? fd.open, 600, "F açık 600 (S126 okuması olsaydı: F 300, X 300)");
+    assert.deepEqual([fd.open, fd.payState], [0, "installment"], "S230 = A: gösterilen açık 0, 'Taksitte'");
     assert.equal((await must("fatura B", api.get(`/api/workspace/invoices/${b.id}`))).open, 300, "taksitli fatura kendi kartında");
     assert.deepEqual((await must("taksit kartı", api.get(`/api/workspace/plans/${plan.id}`))).items.map(row => row.remaining), [0, 300, 300]);
   });
