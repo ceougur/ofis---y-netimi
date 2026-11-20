@@ -1,0 +1,140 @@
+TAP version 13
+# Subtest: kılavuz ad denetimi (bütün bölümler)
+    # Subtest: bütün bölümleri tarar (bölüm verilmezse)
+    ok 1 - bütün bölümleri tarar (bölüm verilmezse)
+      ---
+      duration_ms: 2.131018
+      type: 'test'
+      ...
+    # Subtest: ekrandaki ad 'ekranda'; ekranda olmayan ama kaynakta birebir geçen ad 7./8. dışında 'kaynakta'
+    ok 2 - ekrandaki ad 'ekranda'; ekranda olmayan ama kaynakta birebir geçen ad 7./8. dışında 'kaynakta'
+      ---
+      duration_ms: 0.360094
+      type: 'test'
+      ...
+    # Subtest: 7. ve 8. bölümde ekran zorunlu: kaynakta olsa da ekranda yoksa EKSİK
+    ok 3 - 7. ve 8. bölümde ekran zorunlu: kaynakta olsa da ekranda yoksa EKSİK
+      ---
+      duration_ms: 0.18877
+      type: 'test'
+      ...
+    # Subtest: eski / yorumdaki / hiç olmayan ad EKSİK (yorumlar ayıklanır, Inno Setup ';' yorumu dahil)
+    ok 4 - eski / yorumdaki / hiç olmayan ad EKSİK (yorumlar ayıklanır, Inno Setup ';' yorumu dahil)
+      ---
+      duration_ms: 0.227996
+      type: 'test'
+      ...
+    # Subtest: accept="image/*" yorum başlangıcı sayılmaz (arkasındaki kod silinmez); adresteki :// yorum değildir
+    ok 5 - accept="image/*" yorum başlangıcı sayılmaz (arkasındaki kod silinmez); adresteki :// yorum değildir
+      ---
+      duration_ms: 0.193107
+      type: 'test'
+      ...
+    # Subtest: yer tutuculu ad, büyük harfli başlık ve etiketle bölünmüş ad bulunur
+    ok 6 - yer tutuculu ad, büyük harfli başlık ve etiketle bölünmüş ad bulunur
+      ---
+      duration_ms: 0.173578
+      type: 'test'
+      ...
+    # Subtest: madde başı vurgusu ve program dışı ekran adı denetim dışında (ayrı listede)
+    ok 7 - madde başı vurgusu ve program dışı ekran adı denetim dışında (ayrı listede)
+      ---
+      duration_ms: 0.141707
+      type: 'test'
+      ...
+    1..7
+ok 1 - kılavuz ad denetimi (bütün bölümler)
+  ---
+  duration_ms: 18.640999
+  type: 'suite'
+  ...
+# Subtest: Kılavuz PDF sürümü (client/kilavuz)
+    # Subtest: PDF metni okunur (boş değil, bilinen başlık var)
+    ok 1 - PDF metni okunur (boş değil, bilinen başlık var)
+      ---
+      duration_ms: 560.260982
+      type: 'test'
+      ...
+    # Subtest: PDF kapağı ve dip notu = HTML sürümü = program sürümü
+    ok 2 - PDF kapağı ve dip notu = HTML sürümü = program sürümü
+      ---
+      duration_ms: 0.492863
+      type: 'test'
+      ...
+    1..2
+ok 2 - Kılavuz PDF sürümü (client/kilavuz)
+  ---
+  duration_ms: 566.715062
+  type: 'suite'
+  ...
+# Subtest: Kullanım kılavuzu sürümü
+    # Subtest: kapakta “Sürüm <program sürümü>” yazar
+    ok 1 - kapakta “Sürüm <program sürümü>” yazar
+      ---
+      duration_ms: 10.754307
+      type: 'test'
+      ...
+    # Subtest: dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+    ok 2 - dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+      ---
+      duration_ms: 0.47437
+      type: 'test'
+      ...
+    1..2
+ok 3 - Kullanım kılavuzu sürümü
+  ---
+  duration_ms: 12.767663
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 215.410968
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 10.449069
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 4.524751
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 15.783193
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 15.784019
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 96.360762
+      type: 'test'
+      ...
+    1..6
+ok 4 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 360.000825
+  type: 'suite'
+  ...
+1..4
+# tests 17
+# suites 4
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 856.389296

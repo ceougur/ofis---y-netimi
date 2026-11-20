@@ -279,7 +279,9 @@ describe("taksit modülü API (v2.0.4)", () => {
     const result = await admin.post("/api/workspace/plans/import", { matrix, headerAt: 1, roles: preview.data.data.roles, defaultCount: 4, defaultFirstDue: "2026-11-01", fileName: "servis.xlsx" });
     assert.equal(result.status, 200, JSON.stringify(result.data));
     assert.equal(result.data.data.created, 2);
-    assert.deepEqual(result.data.data.skipped.map(item => item.reason), ["Toplam tutar okunamadı", "Aynı adla açık kart var"]);
+    // 2.5.0 Ç7b P7 (S219 = A): telefonsuz "Ali Veli" satırı, aynı gruptaki TELEFONLU Ali Veli'nin (0532 111 22 33) kartıyla aynı kişi mi belli değil →
+    // atlanır, neden artık kişiyi söyler (önceden yalnız ad: "Aynı adla açık kart var").
+    assert.deepEqual(result.data.data.skipped.map(item => item.reason), ["Toplam tutar okunamadı", "Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin"]);
     const list = (await admin.get("/api/workspace/plans?status=all")).data.data;
     const ayse = list.plans.find(item => item.name === "Ayşe Kaya");
     assert.equal(ayse.subgroupName, "15 Temmuz");

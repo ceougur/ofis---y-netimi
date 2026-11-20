@@ -1740,21 +1740,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // outcome (isteğe bağlı): { created, linked } — aktarma geri alınırken yalnız kendi açtığı/bağladığı cariye dokunur.
   function createFromPlan(user, person, outcome = null) {
     const source = person.caseSource || currentSource();
-    if (person.caseKey) {
-      const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ?", person.caseKey, source);
-      if (found) return found.id;
-    }
-    // v2.0.7: aynı ad + aynı telefon (ya da telefonsuz, aynı grupta tek aynı ad) kesin eşleşirse o cari; boşa cari açılmaz.
-    // v2.0.8: kart bir kayda bağlıysa, başka bir kayda bağlı cari kullanılmaz (aynı adlı iki kişinin hesabı karışmaz).
-    const matched = matchPerson({ name: person.name, phone: person.phone, groupId: person.groupId || "" });
-    const owner = matched ? store.get("SELECT case_key AS caseKey, case_source AS caseSource FROM accounts WHERE id = ?", matched) : null;
-    const foreign = Boolean(person.caseKey && owner?.caseKey && (owner.caseKey !== person.caseKey || owner.caseSource !== source));
-    if (matched && !foreign) {
-      if (person.caseKey && !owner?.caseKey) {
-        store.run("UPDATE accounts SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ''", person.caseKey, source, person.caseTitle || person.name, user.id, now(), matched);
+    const found = planPerson(person);
+    if (found.id) {
+      if (found.link) {
+        store.run("UPDATE accounts SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ''", person.caseKey, source, person.caseTitle || person.name, user.id, now(), found.id);
         if (outcome) outcome.linked = true;
       }
-      return matched;
+      return found.id;
     }
     const id = insertAccount(user, { name: person.name, phone: person.phone, note: person.note, registeredOn: person.registeredOn, groupId: person.groupId, subgroupId: person.subgroupId, caseKey: person.caseKey, caseSource: person.caseKey ? source : "", caseTitle: person.caseTitle, type: "customer", fields: [] });
     audit(user, "account.created", id, { name: person.name, from: "plan" });
@@ -1765,9 +1757,49 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // ve bu eşleşme tek olmalı. Şüpheli durumda yeni cari açılır (başka kişinin hesabına yazılmaz).
   function matchPerson(person) {
     const candidates = store.all("SELECT id, phone, group_id AS groupId FROM accounts WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE", person.name);
-    const phone = digits(person.phone);
-    const hits = phone.length >= 7 ? candidates.filter(row => digits(row.phone) === phone) : candidates.filter(row => !digits(row.phone) && (row.groupId || "") === (person.groupId || ""));
+    const hits = candidates.filter(row => samePerson(person, row));
     return hits.length === 1 ? hits[0].id : "";
+  }
+  // Kişi eşleştirme kuralının TEK yeri (matchPerson, planPerson, planDuplicate; aynı ad varsayılır): kişinin telefonu 7+ haneyse aynı telefon;
+  // değilse telefonsuz + aynı grup.
+  const phoneKey = value => (digits(value).length >= 7 ? digits(value) : "");
+  function samePerson(person, row) {
+    const phone = phoneKey(person.phone);
+    return phone ? digits(row.phone) === phone : !digits(row.phone) && (row.groupId || "") === (person.groupId || "");
+  }
+  // Taksit kartı açılırken kişinin carisi (YAZMADAN; createFromPlan da bunu kullanır): tablodaki kayıt bağı (case_key), yoksa matchPerson.
+  // v2.0.7: aynı ad + aynı telefon (ya da telefonsuz, aynı grupta tek aynı ad) kesin eşleşirse o cari; boşa cari açılmaz.
+  // v2.0.8: kart bir kayda bağlıysa, başka bir kayda bağlı cari kullanılmaz (aynı adlı iki kişinin hesabı karışmaz).
+  // { id: "" } → yeni cari açılır; link → bulunan cari kayda bağlanır.
+  function planPerson(person) {
+    const source = person.caseSource || currentSource();
+    if (person.caseKey) {
+      const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ?", person.caseKey, source);
+      if (found) return { id: found.id, link: false };
+    }
+    const matched = matchPerson({ name: person.name, phone: person.phone, groupId: person.groupId || "" });
+    const owner = matched ? store.get("SELECT case_key AS caseKey, case_source AS caseSource FROM accounts WHERE id = ?", matched) : null;
+    const foreign = Boolean(person.caseKey && owner?.caseKey && (owner.caseKey !== person.caseKey || owner.caseSource !== source));
+    if (matched && !foreign) return { id: matched, link: Boolean(person.caseKey && !owner?.caseKey) };
+    return { id: "", link: false };
+  }
+  // 2.5.0 Ç7b P7 (S219 = A): Excel taksit satırının kişisi, aynı adlı (aynı gruptaki) açık kartlardan birinin sahibi mi? Kişi, kartın bağlanacağı
+  // cariyi bulan kuralla (planPerson) belirlenir. cards: [{ accountId, phone }] — carili kartta carinin telefonu, carisiz kartta kartın telefonu.
+  // "same": kişinin kendi kartı var (atlanır); "unknown": kişi kesin seçilemiyor (atlanır; çift kart / borç açılmaz); "": kartlar başka kişilerin (kart açılır).
+  function planDuplicate(person, cards) {
+    if (!cards.length) return "";
+    const own = planPerson(person).id;
+    const phone = phoneKey(person.phone);
+    let unknown = false;
+    for (const card of cards) {
+      const other = phoneKey(card.phone);
+      let relation = "unknown";
+      if (card.accountId && own) relation = card.accountId === own ? "same" : "other";
+      else if (phone && other) relation = other !== phone ? "other" : card.accountId ? "unknown" : "same";
+      if (relation === "same") return "same";
+      if (relation === "unknown") unknown = true;
+    }
+    return unknown ? "unknown" : "";
   }
   // Mizan (v2.0.7): tüm carilerin defter satırları tek geçişte. Her carinin satırları Cari kartındaki defterle aynı
   // kuraldan (accountLedger) gelir; mizan bakiyesi = Cari listesindeki bakiye.
@@ -2183,5 +2215,5 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, waFacts, list, allLedgers, assertUnlocked, invoiceLink, dueItems, openDueItems, dueFingerprint };
+  return { exists, accountRow, createFromPlan, matchPerson, planDuplicate,stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, waFacts, list, allLedgers, assertUnlocked, invoiceLink, dueItems, openDueItems, dueFingerprint };
 }

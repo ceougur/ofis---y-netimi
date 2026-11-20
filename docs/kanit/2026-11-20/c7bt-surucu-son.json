@@ -1,0 +1,32 @@
+{
+  "ad": "c7bt-surucu-son",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/muhasebe-surucu/kos.mjs --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-ana/surucu-son --veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-ana/surucu-veri-son",
+  "commit": "a5aa270644f72fd24a618e16a3f126955f64ffbc",
+  "dal": "worktree-agent-ab1c286758106cc24",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T14:31:23.030Z",
+  "sure_sn": 575.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7760,
+    "gecen": 7594,
+    "basarisiz": 22,
+    "iptal": 0,
+    "atlanan": 144
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 22 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-ana/kanit/2026-11-20/c7bt-surucu-son.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab1c286758106cc24",
+  "ham_cikti_sha256": "eaa99d377854af4f72081bbe74b1760c28b74011b30dba1c3c97a0af5e7cd9ed",
+  "ham_cikti_bayt": 114023
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "c7bt-kahin-defter-taban",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/defter/kos.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T11:54:14.020Z",
+  "sure_sn": 6.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c7bt-ana/kanit/2026-11-20/c7bt-kahin-defter-taban.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban",
+  "ham_cikti_sha256": "cc1a7dd1001a74d8f75f19aff3a8cd2c3e0851fc2027c8baf8908311fd143b4b",
+  "ham_cikti_bayt": 2712
+}
