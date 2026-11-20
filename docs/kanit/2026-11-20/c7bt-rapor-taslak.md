@@ -52,3 +52,8 @@ Taban: c7b3b-taban = b3a59f2a. İş: P7 (S219 = A) + S200 okuması. P6 → 2.5.1
 ## 7. F — değişmezler
 - Rastgele sıra (test/mutabakat/kos.mjs --islem 400 --tohum 11 --tohumlar 2 --her 20): yeni 2/2, taban 2/2 — her doğrulamada Kasa / cari / stok / taksit / fatura / çek / ana defter tutarlı.
 - Mutabakat Testi: yeni test (1)(5)(9) ve ekran senaryosu sonunda tutarlı; kâhin-defter 187/187.
+
+## 8. E — hız (ilk ölçüm, 3dbe2009 kodu) — KÖTÜLEŞTİ, düzeltildi (aşağıda 8b)
+- Karma yük (c7bt-hiz-karma.txt): iş farklı (yeni kod 400 kart fazla açar) → doğrudan kıyas değil.
+- EŞİT İŞ (c7bt-hiz-esit-ilk.txt; 1.000 var olan ad + aynı telefon (iki kodda da atlanır) + 1.000 yeni ad (iki kodda açılır)): taban kilitsiz 4,8 / 6,0* / 6,3 sn, kilitli 5,3 / 7,1* / 6,4 sn (* yük > 2, GEÇERSİZ); yeni kilitsiz 10,8 / 10,6 / 10,1 sn, kilitli 15,4 / 11,9 / 9,5 sn → ~2 kat KÖTÜ. Kök neden: her satırda bütün açık kartlar (11.448) ad + grup için taranıyordu (store.all; eskisi ilk eşleşmede duran store.get) — ders 47 ihlali.
+- S200 YOKLAMASI (s51'in kopyası, depoya girmez; c7bt-s200-yoklama*): program F1 50.000 + BY1 30.000 + Mevcut Borç kartı 60.000 → 16.02 gecikmiş 20.000 (kart 0), 02.03 gecikmiş 50.000 (kart 30.000) — S200 = A ile AYNI. Kâhin bu durumda susuyor (model.py 'S120 — elle borçlar kart tutarından az; kâhin susar', README bakım 13 KULLANICIYA SORULMALI 1) → karşılaştırma yok. GÖZLEM: aynı anda Açık Faturalar raporu F1'i kalan 50.000 gösteriyor (A'nın metni 'açık F1 20.000'); kâhin kurulmadığı için DOĞRULANMADI.

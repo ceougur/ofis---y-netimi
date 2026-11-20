@@ -1,0 +1,50 @@
+HIZ c7bt · nproc 4 · başta 1.58 1.28 1.32 2/114 30939 · 13:23:07
+=== tur 1 · taban · kilitsiz · başta 1.58 1.28 1.32 1/114 30951 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban · kilitsiz · kilit '' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.68 1.33 1.34
+SONUÇ kilitsiz: durum 200 · yanıt 4416 ms · olay döngüsü en çok 4404 ms · satır 2000 · açılan 506 · bağlanan 0 · atlanan {"Aynı adla açık kart var":1494} · yük 1.62 1.32 1.34
+çıkış 0
+=== tur 1 · taban · kilitli · başta 1.62 1.32 1.34 1/121 31143 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban · kilitli · kilit '2026-09-30' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.48 1.32 1.33
+SONUÇ kilitli: durum 200 · yanıt 4137 ms · olay döngüsü en çok 4121 ms · satır 2000 · açılan 506 · bağlanan 0 · atlanan {"Aynı adla açık kart var":1494} · yük 1.52 1.33 1.34
+çıkış 0
+=== tur 1 · yeni · kilitsiz · başta 1.52 1.33 1.34 1/120 31173 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-ab1c286758106cc24 · kilitsiz · kilit '' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.46 1.33 1.34
+SONUÇ kilitsiz: durum 200 · yanıt 11136 ms · olay döngüsü en çok 11132 ms · satır 2000 · açılan 906 · bağlanan 0 · atlanan {"Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yü":1094} · yük 1.39 1.32 1.33
+çıkış 0
+=== tur 1 · yeni · kilitli · başta 1.39 1.32 1.33 1/119 31195 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-ab1c286758106cc24 · kilitli · kilit '2026-09-30' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.29 1.30 1.33
+SONUÇ kilitli: durum 200 · yanıt 13280 ms · olay döngüsü en çok 13262 ms · satır 2000 · açılan 906 · bağlanan 0 · atlanan {"Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yü":1094} · yük 1.25 1.29 1.32
+çıkış 0
+=== tur 2 · taban · kilitsiz · başta 1.23 1.28 1.32 1/124 31226 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban · kilitsiz · kilit '' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.45 1.34 1.34
+SONUÇ kilitsiz: durum 200 · yanıt 4335 ms · olay döngüsü en çok 4324 ms · satır 2000 · açılan 506 · bağlanan 0 · atlanan {"Aynı adla açık kart var":1494} · yük 1.49 1.35 1.34
+çıkış 0
+=== tur 2 · taban · kilitli · başta 1.49 1.35 1.34 1/121 31249 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban · kilitli · kilit '2026-09-30' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.40 1.34 1.34
+SONUÇ kilitli: durum 200 · yanıt 4516 ms · olay döngüsü en çok 4500 ms · satır 2000 · açılan 506 · bağlanan 0 · atlanan {"Aynı adla açık kart var":1494} · yük 1.40 1.34 1.34
+çıkış 0
+=== tur 2 · yeni · kilitsiz · başta 1.45 1.35 1.34 1/120 31273 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-ab1c286758106cc24 · kilitsiz · kilit '' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.30 1.32 1.33
+SONUÇ kilitsiz: durum 200 · yanıt 11846 ms · olay döngüsü en çok 11836 ms · satır 2000 · açılan 906 · bağlanan 0 · atlanan {"Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yü":1094} · yük 1.25 1.31 1.33
+çıkış 0
+=== tur 2 · yeni · kilitli · başta 1.23 1.31 1.33 1/122 31300 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-ab1c286758106cc24 · kilitli · kilit '2026-09-30' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.22 1.29 1.32
+SONUÇ kilitli: durum 200 · yanıt 14940 ms · olay döngüsü en çok 14923 ms · satır 2000 · açılan 906 · bağlanan 0 · atlanan {"Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yü":1094} · yük 1.37 1.33 1.33
+çıkış 0
+=== tur 3 · taban · kilitsiz · başta 1.34 1.32 1.33 1/119 31327 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban · kilitsiz · kilit '' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.23 1.29 1.32
+SONUÇ kilitsiz: durum 200 · yanıt 3936 ms · olay döngüsü en çok 3926 ms · satır 2000 · açılan 506 · bağlanan 0 · atlanan {"Aynı adla açık kart var":1494} · yük 1.53 1.36 1.34
+çıkış 0
+=== tur 3 · taban · kilitli · başta 1.53 1.36 1.34 1/119 31350 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban · kilitli · kilit '2026-09-30' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.37 1.33 1.33
+SONUÇ kilitli: durum 200 · yanıt 4021 ms · olay döngüsü en çok 4010 ms · satır 2000 · açılan 506 · bağlanan 0 · atlanan {"Aynı adla açık kart var":1494} · yük 1.34 1.33 1.33
+çıkış 0
+=== tur 3 · yeni · kilitsiz · başta 1.34 1.33 1.33 1/121 31378 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-ab1c286758106cc24 · kilitsiz · kilit '' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.29 1.32 1.33
+SONUÇ kilitsiz: durum 200 · yanıt 12890 ms · olay döngüsü en çok 12885 ms · satır 2000 · açılan 906 · bağlanan 0 · atlanan {"Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yü":1094} · yük 1.23 1.30 1.32
+çıkış 0
+=== tur 3 · yeni · kilitli · başta 1.23 1.30 1.32 1/118 31402 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-ab1c286758106cc24 · kilitli · kilit '2026-09-30' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.54 1.37 1.35
+SONUÇ kilitli: durum 200 · yanıt 13420 ms · olay döngüsü en çok 13405 ms · satır 2000 · açılan 906 · bağlanan 0 · atlanan {"Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yü":1094} · yük 1.63 1.40 1.36
+çıkış 0
+bitti 13:31:20
