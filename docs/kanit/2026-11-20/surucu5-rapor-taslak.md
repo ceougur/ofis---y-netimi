@@ -34,3 +34,12 @@
 - Kök: server/routes/invoices.mjs openItems — Açık Faturalar `net` istemez (v2.0.23 Bulgu 2 D yorumu: "Açık Faturalar raporu ve fatura kartı faturanın kendi açığını gösterir");
   kâhin 'fatura durumu' görünümü kartın tükettiği kısmı kapanmış sayar (README R5 / M1e, bakım 14 İ1). Karar metni (S200 = A) Açık Faturalar'ı söylemiyor → R, kullanıcıya.
 - Sürücü: R-S200-ACIK-FATURALAR-KART-PAYI (s118, af1 + af3 aynı kök).
+
+## KULLANICIYA SORULMALI (taslak)
+1. Mevcut Borç kartının içine aldığı faturanın Açık Faturalar ve Yaşlandırma raporundaki kalanı (S200 / M1e; rapor kuralı — bakiye ve cari kartının Gecikmiş Borç'u
+   iki okumada AYNI). Örnek: F1 50.000 (vade 10.02) + Borç Yaz 30.000, 01.02'de Mevcut Borç kartı 60.000 (S200 = A: BY 30.000 + F1'in 30.000'i), 16.02.
+   A (kâhin): F1 kalan 20.000 (kartın aldığı kısım kartın taksitlerinde) — cari kartı Gecikmiş Borç 20.000 ile aynı.
+   B (program bugün, v2.0.23'ten beri): F1 kalan 50.000, 6 gün gecikmiş görünür (kartın 30.000'i 01.03 / 01.04 vadeli taksitte de görünür).
+   UÇ DURUM DEĞİL — en küçük örnek 2 (ek-mevcut-borc-tum-fatura: elle borç yok, "Carinin Mevcut Borcu" kartı 50.000 faturanın tamamını alır): program Açık Faturalar'da
+   F1 50.000 (6 gün gecikmiş), cari kartı Gecikmiş Borç 0; kâhin F1'i listelemez. v2.4.9 aynı (gerileme değil). Öneri A (yaşlandırma raporu cari kartının gecikmişiyle ve Vade Takip'le aynı sayıyı göstermeli; kartın kendi faturası
+   zaten rapora girmiyor — "taksitli faturalar taksit kartında izlenir"). Yaygın programlar: doğrulanmış kaynak okunmadı.

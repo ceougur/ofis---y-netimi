@@ -1,0 +1,117 @@
+{
+ "adim_farklari": [],
+ "bugun_dal": "A",
+ "dal": "A",
+ "degismezler": {
+  "kahin_mizan_toplam_sifir": true,
+  "program_her_adimda_dengeli": true,
+  "program_her_adimda_mutabakat": true,
+  "program_mizan_toplam_sifir": true,
+  "program_mutabakat_testi": true
+ },
+ "etiketler": {
+  "F06-FINANSMAN-251": {
+   "dayanak": "kitap F-06 / M14 'finansman türü 780'; Ç7b tasarım notu §9 B-1 (BAŞ MİMAR KARARI 19.11 04:03) B-1 = B: '780 türü ve tanınmayan türün 770.90'ı 2.5.1' — programın gider türü listesinde finansman yok, 770'e düşer",
+   "is": "2.5.1 (Ç7b B-1; iş listesi B)"
+  },
+  "SURUCU-CARI-ACILIS-YOLU": {
+   "dayanak": "SÜRÜCÜ YOLU (karar değil): programda cari açılışı yalnız cari açılırken (routes/accounts.mjs POST openingBalance); sürücü cariyi açılış olayından ÖNCE başka olayla açmak zorunda kaldıysa açılış Borç / Alacak Yaz satırıdır (602.90 / 770.90)",
+   "is": "sürücü sınırı (eşleme)"
+  }
+ },
+ "olay_durumlari": {
+  "rapor": 2,
+  "yapildi": 4
+ },
+ "oz_denetim": {
+  "raporlar_ayni": true,
+  "redler_ayni": true
+ },
+ "ozet": {
+  "AYNI": 4,
+  "K": 0,
+  "OLCULEMEDI": 0,
+  "P": 0,
+  "R": 0,
+  "SINIFLANMADI": 1,
+  "SUSMA": 0,
+  "U": 0,
+  "adim_sinifsiz": 0,
+  "adim_susma": 0,
+  "ara_susma": 0
+ },
+ "raporlar": {
+  "af1": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 0,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 1,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "fatura",
+     "anahtar": "F1",
+     "bugun": "—",
+     "kahin": 0,
+     "program": 50000,
+     "sinif": "SINIFLANMADI"
+    }
+   ],
+   "tur": "acik_faturalar"
+  },
+  "g1": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C1",
+     "bugun": "—",
+     "kahin": 0,
+     "program": 0,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  }
+ },
+ "redler": [],
+ "senaryo": "ek-mevcut-borc-tum-fatura",
+ "son": [
+  {
+   "alan": "ana",
+   "anahtar": "120",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "600",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "C1",
+   "sinif": "AYNI"
+  }
+ ],
+ "tz": "UTC",
+ "uyarilar": [],
+ "uygulanamayan": []
+}
