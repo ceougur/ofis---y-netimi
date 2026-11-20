@@ -1,0 +1,19 @@
+başta yük 1.04 1.22 1.25 2/118 23266 · 16:18:10 · kip kilitsiz · kod eski (/dev/shm/c6h3-eski) · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/temiz-100k
+kod /dev/shm/c6h3-eski · yük (başta) 1.20 1.24 1.26 · TZ (yerel) · açılış 26758.3 ms
+donma: bekleyen koşu yok (kapsam —)
+veri: {"moves":80136,"entries":102295,"cash":11554,"invoices":34026,"frozen":0} · madde 153803
+  Bilanço önbellekten (aynı istek): 7 ms · olay döngüsü en çok 0 ms
+  Bilanço 2026-12-31: durum 200 · ilk 5355.3 ms (olay döngüsü 9.4 ms) · en iyi 5125 ms · ortanca 5298.7 ms · en kötü 5364 ms · olay döngüsü en çok 80.6 ms (n=5) · özet 3fadc671b8bfae3a · örnek {"aktif":60964560341,"fark":0,"dnk":5124820044,"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"]}
+  Bilanço 2026-06-30: durum 200 · ilk 5253.7 ms (olay döngüsü 10 ms) · en iyi 5138.5 ms · ortanca 5336.8 ms · en kötü 5503.6 ms · olay döngüsü en çok 18.6 ms (n=5) · özet 6c36b7e8d4b6bc34 · örnek {"aktif":57023692908,"fark":0,"dnk":2811665034,"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"]}
+  Bilanço 2026-03-31: durum 200 · ilk 5771.2 ms (olay döngüsü 9.9 ms) · en iyi 4869.9 ms · ortanca 5081 ms · en kötü 5290.8 ms · olay döngüsü en çok 17.4 ms (n=5) · özet bdb2d3c95ae940cf · örnek {"aktif":55282197534,"fark":0,"dnk":1728439164,"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"]}
+  Bilanço 2025-12-31: durum 200 · ilk 5346.1 ms (olay döngüsü 20 ms) · en iyi 4842.3 ms · ortanca 5233 ms · en kötü 5389.5 ms · olay döngüsü en çok 15.8 ms (n=5) · özet c64fd91cd7df52a3 · örnek {"aktif":49489089124,"fark":0,"dnk":7054226673,"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","eksi-stok","kapanmamis-yil","bilgi-amacli"]}
+  Gelir Tablosu yıl 2026: durum 200 · ilk 3458 ms (olay döngüsü 10.2 ms) · en iyi 3263.4 ms · ortanca 3525 ms · en kötü 3874.7 ms · olay döngüsü en çok 14.5 ms (n=5) · özet 34a2d9334e0583bc · örnek {"dnk":5124820044,"smm":271342170,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç2 2026: durum 200 · ilk 3756.6 ms (olay döngüsü 12.2 ms) · en iyi 3130.8 ms · ortanca 3356 ms · en kötü 3564.2 ms · olay döngüsü en çok 15.5 ms (n=5) · özet 96d5d4234b3d5266 · örnek {"dnk":1083225870,"smm":-85145418,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç3 2026: durum 200 · ilk 3482.9 ms (olay döngüsü 10.6 ms) · en iyi 3290.5 ms · ortanca 3430.1 ms · en kötü 3651.2 ms · olay döngüsü en çok 14.2 ms (n=5) · özet 1712e8e7a944a1bd · örnek {"dnk":2142620293,"smm":-78662556,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Değerleme 2026-12-31: durum 200 · ilk 1029 ms (olay döngüsü 13.5 ms) · en iyi 711.9 ms · ortanca 799.3 ms · en kötü 855.9 ms · olay döngüsü en çok 14.9 ms (n=5) · özet 9870ed6f88619e0c · örnek {"dss":34729166611}
+  Değerleme 2026-06-30: durum 200 · ilk 821.5 ms (olay döngüsü 11.8 ms) · en iyi 871.6 ms · ortanca 886.4 ms · en kötü 913 ms · olay döngüsü en çok 23.9 ms (n=5) · özet bb5ac2f641abc8df · örnek {"dss":31818712519}
+  Şirket 2 Bilanço (31.12.2026 − i gün): durum 200 · ilk 915.3 ms (olay döngüsü 13.6 ms) · en iyi 806.6 ms · ortanca 822.7 ms · en kötü 907.5 ms · olay döngüsü en çok 15.3 ms (n=5) · özet cacd69c85b864c9f · örnek {"aktif":6782233335,"fark":0,"dnk":636425516,"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"]}
+  Şirket 2 Gelir Tablosu (1 Ocak – 31.12.2026 − i gün): durum 200 · ilk 868.2 ms (olay döngüsü 38.9 ms) · en iyi 569.6 ms · ortanca 700.8 ms · en kötü 796.5 ms · olay döngüsü en çok 13.1 ms (n=5) · özet adeea64e37e2f76d · örnek {"dnk":636425516,"smm":98945216,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+bellek (rss) en çok 1234 MB · yük (sonda) 2.27 1.78 1.47
+çıkış 0
+sonda yük 2.27 1.78 1.47 2/125 23825 · 16:22:17
