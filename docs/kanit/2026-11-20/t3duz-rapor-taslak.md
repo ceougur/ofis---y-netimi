@@ -22,3 +22,13 @@ Ajan: dördüncü (devam 3) — taban `t3duz-devam3` = 7aa16bdf (doğrulandı: `
 
 ## Bu ajanın koşuları (son kod 7aa16bdf)
 (her parça bitince eklenir)
+
+### Kâhinler önce / sonra (ders 5; kâhin dosyaları taban ↔ yeni AYNI — t3duz-taban..HEAD test/bagimsiz'e dokunmadı)
+| Koşu | taban (780972cf kopyası) | yeni (7aa16bdf) |
+|---|---|---|
+| `npm run test:kahin-cari` | çıkış 0 · 17.253 / 17.253 | çıkış 0 · 17.253 / 17.253 |
+| `npm run test:kahin-defter` | çıkış 0 · 187 / 187 | çıkış 0 · 187 / 187 |
+Not: iki kâhin de tabanda yeşil — cari kâhininin (bakım 20) ve defter kâhininin senaryoları S212 / B1 / G1 durumunu içermiyor (KARARLAR.md'lerinde S212 geçmiyor); S212'yi
+bekleyen kâhin muhasebe kâhini bakım 13'tür (Ç7b zincirinde, c7b2f-taban2) → sürücü bölümünde.
+
+### Komşular (ders 10; tarama `komsu.py` + Kasa ucu = 223 dosya, dört parça; iki TZ)
