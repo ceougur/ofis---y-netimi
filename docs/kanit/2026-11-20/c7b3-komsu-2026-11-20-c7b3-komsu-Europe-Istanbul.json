@@ -1,0 +1,43 @@
+{
+  "ad": "c7b3-komsu-Europe-Istanbul",
+  "komut": "node --test --test-reporter=tap --test-concurrency=2 test/acilis-onarimi-hiz-250.test.mjs test/acilis-onarimi-savunma-250.test.mjs test/banka-210-kapi-plan.test.mjs test/banka-210-ters-kayit.test.mjs test/banka-210-yargic.test.mjs test/bulgu-223.test.mjs test/c1-tur1-249.test.mjs test/c7b-eski-surum-sinif-250.test.mjs test/c7b-kitap-turetme-250.test.mjs test/c7b-tur3-eski-surum-250.test.mjs test/c7b-tur3-kart-250.test.mjs test/cari-243.test.mjs test/cari-hareket-249.test.mjs test/cari-vade-245.test.mjs test/defter-213.test.mjs test/defter-kaynak-iz-250.test.mjs test/donmus-defter-tur3-250.test.mjs test/donmus-defter-tur4-250.test.mjs test/ebelge-240-kontrol3.test.mjs test/ebelge-244-gonderim-izi.test.mjs test/einvoice-240-taslak.test.mjs test/ekstre-ayrinti-245.test.mjs test/ertelenen-224.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-geri-odeme-246.test.mjs test/iade-kapama-k1.test.mjs test/iade-kesinti-tarama-249.test.mjs test/inceleme-226.test.mjs test/kapali-kart-ekstre-tarihi-250.test.mjs test/kapama-rastgele-223.test.mjs test/mm-smm-244.test.mjs test/mutabakat-213.test.mjs test/obligation-input-250.test.mjs test/projeksiyon-vade-246.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/supheli-240-k4-iptal.test.mjs test/supheli-etiket-pay-250.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/tyk-birlesik8-iade-250.test.mjs test/tyk-kapanis-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2b1-250.test.mjs test/ui-tur-a-249.test.mjs test/ux18-cek-fatura-244.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "451f982833507047203cea923a577f63429cedcd",
+  "dal": "worktree-agent-a16e6df818485d98e",
+  "kirli": 1,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T07:07:12.569Z",
+  "sure_sn": 265.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 716,
+    "gecen": 714,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir › öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı küçük",
+      "konum": "test/acilis-onarimi-hiz-250.test.mjs:40:3",
+      "hata": "ikinci koşu: onarılan 0 (beklenen 0), kilitli 4 (beklenen 3) · (sayım: {\"statements\":281,\"detail\":4}) · + actual - expected (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir › eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda",
+      "konum": "test/acilis-onarimi-hiz-250.test.mjs:82:3",
+      "hata": "repair: yeni {\"fixed\":[{\"invoiceId\":\"invoice-cadc6573-4215-4ab9-a4c7-25cae959028f\",\"number\":\"FIS2026000000002\",\"planId\":\"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544\",\"from\":800,\"to\":100},{\"invoiceId\":\"invoice-4d829619-0fd4-4d47-88a1-0e94837a583b\",\"number\":\"FIS2026000000003\",\"planId\":\"plan-6e6830e4-6d40-4f68-840d-4 ↔ eski {\"fixed\":[{\"invoiceId\":\"invoice-cadc6573-4215-4ab9-a4c7-25cae959028f\",\"number\":\"FIS2026000000002\",\"planId\":\"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544\",\"from\":800,\"to\":100},{\"invoiceId\":\"invoice-4d829619-0fd4-4d47-88a1-0e94837a583b\",\"number\":\"FIS2026000000003\",\"planId\":\"plan-6e6830e4-6d40-4f68-840d-4 · izler: yeni [{\"type\":\"plan.trimmed\",\"entityId\":\"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544\",\"actorId\":\"user-d7ad762c-5720-47ad-ab29-f8e632323220\",\"payload\":{\"accountId\":\"account-94452b9a-b236-46eb-a28e-336093bb441e\",\"from\":1000,\"to\":900,\"reason\":\"İade IAD2026000000002\"},\"createdAt\":\"2026-11-06T06:04:59.081Z\"},{\" ↔ eski [{\"type\":\"plan.trimmed\",\"entityId\":\"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544\",\"actorId\":\"user-d7ad762c-5720-47ad-ab29-f8e632323220\",\"payload\":{\"accountId\":\"account-94452b9a-b236-46eb-a28e-336093bb441e\",\"from\":1000,\"to\":900,\"reason\":\"İade IAD2026000000002\"},\"createdAt\":\"2026-11-06T06:04:59.081Z\"},{\" · kartlar: yeni [{\"id\":\"plan-0098be65-a415-429b-b0af-af94e9dafdaf\",\"accountId\":\"account-0ba1c225-dc24-4c1d-9805-ac273b2405c1\",\"total\":2000,\"status\":\"active\",\"deletedAt\":null,\"updatedAt\":\"2026-11-06T06:05:07.631Z\"},{\"id\":\"plan-062d0271-7256-40f8-99a8-4a19c0e097e1\",\"accountId\":\"account-f0faabad-d031-4fc5-a975-6c288c3 ↔ eski [{\"id\":\"plan-0098be65-a415-429b-b0af-af94e9dafdaf\",\"accountId\":\"account-0ba1c225-dc24-4c1d-9805-ac273b2405c1\",\"total\":2000,\"status\":\"active\",\"deletedAt\":null,\"updatedAt\":\"2026-11-06T06:05:07.631Z\"},{\"id\":\"plan-062d0271-7256-40f8-99a8-4a19c0e097e1\",\"accountId\":\"account-f0faabad-d031-4fc5-a975-6c288c3 (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/komsu/2026-11-20/c7b3-komsu-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a16e6df818485d98e",
+  "ham_cikti_sha256": "5f966bd6790995a42f8c0a105f885f59668a943e58785e6edb9f55c5ba0743ea",
+  "ham_cikti_bayt": 325822
+}

@@ -65,3 +65,15 @@ Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
   kilit açılınca sonraki açılışta onarılır; testin beklentisi BİLEREK değişir (kilitli 4, onarılan 25). Yaygın programlarda: doğrulanmış kaynak okunmadı (dayanak yazılmadı). ÖNERİ: B — onarım eski bir
   hatayı geri alır; 2.1.0+ açılmış her kurulum bu kartları zaten eski yönle onardı, 2.5.0'da yalnız gecikmiş kurulumun farklı sonuç alması tutarsız olur; karar (4) yeni küçülmeler içindir.
   (Bu ajan kodu ve testi DEĞİŞTİRMEDİ — karar gerekiyor; kırmızı açık.)
+- İstanbul: 716 sınama, 714 geçti, 2 kırmızı — aynı tek dosya (acilis-onarimi-hiz-250), aynı iki alt sınama. Öbür 51 dosya iki TZ yeşil.
+- Ek komşu (taramayla bulunan, açılış onarımının öbür testleri): iade-210-onarim yeni 5 / 5 iki TZ, taban 5 / 5; banka-210-altin yeni 6 / 6 iki TZ, taban 6 / 6 (c7b3-t3-komsu2-*).
+
+## 6. Kabul B — cari kâhini (c7b3-abc-*)
+- Taban (b85d9e27): UTC 17.582 / 17.582, 0 fark; İstanbul (sürüyor — aşağıda).
+- Yeni (7b6ec843): UTC 17.580 / 17.582, İstanbul 17.580 / 17.582 — AYNI 2 fark (d42'nin 13 farkı 7b6ec843 ile kapandı; önceki uçta 15 idi):
+  d50-c5-s206-s25c-b1-iptal-havale `k1:kart:KI2:toplam` program 30000 · kâhin 90000 ve `k1:kart:KI3:toplam` program 0 · kâhin 90000 ('B1.3 kart tutarı = tablodaki kalan'; SINIF DIŞI).
+  KARARLA AÇIKLAMA: KI2 = I2 'İpek Çok Kalemli' (elle Borç 400 + FI2 500 → Mevcut Borç kartı 900, kart tahsilatı 300, FI2 İptal Et) → **S210 = A** (D 20.11 04:15 (3): kart KAPANIR, elle borç kendi
+  vadesiyle, tahsilat avans) — program kartı kapatıp tutarı net tahsilata (300) indiriyor; kâhinin kart tutarı denetimi hâlâ 900 (açık kart) bekliyor. KI3 = I3 'İsmet Tahsilatsız' (FI3 900 → kart 900,
+  tahsilatsız, FI3 İptal Et) → **S211 = A** (iş listesi C 19.11 23:18: 'kart kapanır') — program kapatıp tutarı 0'a indiriyor; kâhin 900 bekliyor. Kâhin senaryosu bu iki kartı SK-41 (a) / (b)
+  'sınırı SUS' diye işaretlemiş (elleYok: odenen / kalan; elleBelirsiz 'cari I2 / I3 tanımsız'), ama kart TOPLAMI denetimi susturulmamış → **S210 = A / S211 = A — cari kâhini bakımı bekliyor**
+  (kâhin klasörüne DOKUNULMADI). Bakiye denetimleri (I2 100, I3 0) program = kâhin.
