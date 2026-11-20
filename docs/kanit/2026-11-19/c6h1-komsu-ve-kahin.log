@@ -1,0 +1,24 @@
+başta yük 1.64 1.32 1.85 2/129 14344 · 22:14:17 · uç 74598387
+# todo 0
+# duration_ms 286930.336541
+
+[kanit] c6h1-komsu-UTC: GEÇTİ · çıkış 0 · 1138/1138 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7459838 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+# todo 0
+# duration_ms 295807.902167
+
+[kanit] c6h1-komsu-Europe-Istanbul: GEÇTİ · çıkış 0 · 1138/1138 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7459838 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+kâhin sonra (uç) 22:24:00
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-wdLmaI
+
+[kanit] c6h1-kahin-defter-sonra: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7459838 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+17253/17253 denetim geçti (7 bilinen sınır dahil)
+
+[kanit] c6h1-kahin-cari-sonra: GEÇTİ · çıkış 0 · 17253/17253 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7459838 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+kâhin önce (taban) 22:30:04
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-u4wjTk
+
+[kanit] c6h1-kahin-defter-once: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+17253/17253 denetim geçti (7 bilinen sınır dahil)
+
+[kanit] c6h1-kahin-cari-once: GEÇTİ · çıkış 0 · 17253/17253 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+sonda yük 2.03 2.04 2.31 2/142 24302 · 22:36:04

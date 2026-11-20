@@ -1,0 +1,17 @@
+başta yük 1.06 2.59 3.50 2/115 7796 · 21:54:39 · kip kilitsiz · uç 0dd3156a
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a91ebf10c57360da7 · yük (başta) 1.12 2.50 3.45 · TZ (yerel) · açılış 22434.5 ms
+donma: bekleyen koşu yok (kapsam —)
+veri: {"moves":80136,"items":1060,"entries":102295,"cash":11554,"invoices":34026}
+  önbellekten (aynı istek): 4.1 ms · olay döngüsü en çok 0 ms
+  Gelir Tablosu yıl 2026 (uç, iş parçacığı): durum 200 · en iyi 2777.2 ms · ortanca 2839.2 ms · en kötü 3001.5 ms · olay döngüsü en çok 12.8 ms (n=5) · örnek {"donemNetKari":5124820044,"smm":271342170,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç1 2026 (uç, iş parçacığı): durum 200 · en iyi 2811.7 ms · ortanca 2856.2 ms · en kötü 2891.1 ms · olay döngüsü en çok 12.6 ms (n=5) · örnek {"donemNetKari":1728439164,"smm":989482257,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç2 2026 (uç, iş parçacığı): durum 200 · en iyi 2850.8 ms · ortanca 2887 ms · en kötü 3166.6 ms · olay döngüsü en çok 12.3 ms (n=5) · örnek {"donemNetKari":1083225870,"smm":-85145418,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç3 2026 (uç, iş parçacığı): durum 200 · en iyi 2919.9 ms · ortanca 2929.9 ms · en kötü 3050.4 ms · olay döngüsü en çok 11.4 ms (n=5) · örnek {"donemNetKari":2142620293,"smm":-78662556,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç4 2026 (uç, iş parçacığı): durum 200 · en iyi 2800.9 ms · ortanca 2914.9 ms · en kötü 2941.2 ms · olay döngüsü en çok 9.4 ms (n=5) · örnek {"donemNetKari":170534717,"smm":-554332113,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu yıl 2025 (uç, iş parçacığı): durum 200 · en iyi 2769.8 ms · ortanca 2951.3 ms · en kötü 3149.3 ms · olay döngüsü en çok 117.9 ms (n=5) · örnek {"donemNetKari":7054226673,"smm":433324944,"kesinDegil":["smm-tahmini","eksi-stok","bilgi-amacli"]}
+  Stok değerlemesi 30.09.2026 (uç, iş parçacığı): durum 200 · en iyi 651.8 ms · ortanca 697.4 ms · en kötü 710 ms · olay döngüsü en çok 12.6 ms (n=5) · örnek {"dss":34156318870,"products":1060,"negative":0,"warnings":0}
+  Gelir Tablosu yıl 2026 (iş parçacığısız — bilgi): durum 200 · en iyi 2471.3 ms · ortanca 2527.9 ms · en kötü 3076.4 ms · olay döngüsü en çok 0 ms (n=5) · örnek 5124820044
+  Stok değerlemesi (iş parçacığısız — bilgi): durum 200 · en iyi 348.8 ms · ortanca 360.7 ms · en kötü 377 ms · olay döngüsü en çok 0 ms (n=5) · örnek 34156318870
+yük (sonda) 1.57 2.30 3.27
+çıkış 0
+sonda yük 1.57 2.30 3.27 1/111 8183 · 21:56:51
