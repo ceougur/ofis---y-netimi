@@ -1,0 +1,40 @@
+== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/muth3-UTC/H1.txt
+ℹ tests 5
+ℹ pass 1
+ℹ fail 4
+== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/muth3-UTC/H2.txt
+ℹ tests 5
+ℹ pass 3
+ℹ fail 2
+== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/muth3-UTC/H3.txt
+ℹ tests 5
+ℹ pass 0
+ℹ fail 5
+== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/muth3-UTC/H4.txt
+ℹ tests 5
+ℹ pass 2
+ℹ fail 3
+== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/muth3-UTC/H5.txt
+ℹ tests 5
+ℹ pass 1
+ℹ fail 4
+== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/muth3-Europe-Istanbul/H1.txt
+ℹ tests 5
+ℹ pass 1
+ℹ fail 4
+== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/muth3-Europe-Istanbul/H2.txt
+ℹ tests 5
+ℹ pass 3
+ℹ fail 2
+== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/muth3-Europe-Istanbul/H3.txt
+ℹ tests 5
+ℹ pass 0
+ℹ fail 5
+== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/muth3-Europe-Istanbul/H4.txt
+ℹ tests 5
+ℹ pass 2
+ℹ fail 3
+== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/muth3-Europe-Istanbul/H5.txt
+ℹ tests 5
+ℹ pass 1
+ℹ fail 4
