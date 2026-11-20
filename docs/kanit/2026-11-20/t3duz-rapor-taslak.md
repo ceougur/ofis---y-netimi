@@ -41,3 +41,13 @@ Sürücü bu dalda (bakım 3) R-S192-BAG-SONRA kuralını taşımıyor; kural s�
   AYNI 219 → 225; P 0 / K 0 iki yanda; SINIFLANMADI kümesi taban ↔ yeni BİREBİR (132 satır); red farkı 0; UTC = İstanbul.
   Gerileme (gerileme.py): 2 / 2 koşu FARKLI (138 fark / TZ) — ilk fark olay 616 (P308, F109'a bağlı 472.560: taban 120'den, yeni 128'den + 129 / 644 çözülme);
   yeni hiçbir karşılaştırılan alanda kâhinden UZAKLAŞMADI (yeni sınıf yok) → farkların tamamı S212 yönünde.
+- rastgele-2, rastgele-3, s105, s117, s42 (`t3duz-surucu-r2-karsilastirma.txt`): rastgele-2'de taban 3 adım R-S192-BAG-SONRA (P253, P263, P284) → yeni 0;
+  öbür sınıflar iki yanda aynı (P 0, K 0, R 0, red 0; SINIFLANMADI kümesi aynı); gerileme 10 koşunun 8'i BİREBİR, 2'si (rastgele-2 × iki TZ) 12 fark — S212 yönünde
+  (olay 552: 120'den 128'e + 129 / 644; 564 / 600'lü olaylar: bağsız ödemenin yeniden dağılması). s117 / s42 / s105 / rastgele-3 program çıktısı BİREBİR (B1 bu
+  senaryolarda sonucu değiştirmiyor).
+- s81 (geri yüklenen kasa, eski sürüm v2.4.9 gerektirir): iki yanda KOŞU HATASI — sürücü eski sürümü git etiketinden açıyor; kopya klasörlerde git / etiket yok.
+  DENENMEYEN (ortam sınırı; taban ve yeni aynı biçimde düşüyor).
+- En küçük örnek ek-bag-sonra (sürücü bakımı 4'ün kanıtından; `t3duz-surucu-enkucuk-*`): taban ADIM 7 P2 {120: −1.000, 128: +1.000} SINIFLANMADI, Mizan 120 = 1.000 /
+  128 = 1.000 (kâhin 2.000 / 0) → yeni ADIM AYNI, Mizan 120 = 2.000 / 128 = 0 AYNI. Kalan tek fark af0205 Açık Faturalar F2 program 1.000 · kâhin 0 — taban ve yenide AYNI;
+  bu S213 = B (kod değişmez; kâhin bakımına — iş listesi D, sürücü bakımı 4 kararı (3)).
+SONUÇ: R-S192-BAG-SONRA kuralı yeni kodda ARTIK ATEŞLEMİYOR (rastgele-1 13 → 0 R / TZ, rastgele-2 3 → 0 adım). Kural sürücü sınıflamasında duruyor (silinmedi; sürücüyü ana oturum günceller).
