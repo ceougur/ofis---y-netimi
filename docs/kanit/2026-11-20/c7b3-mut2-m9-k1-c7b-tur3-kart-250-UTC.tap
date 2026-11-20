@@ -1,0 +1,107 @@
+TAP version 13
+# (node:10064) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217
+    # Subtest: (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+    ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+      ---
+      duration_ms: 211.553087
+      type: 'test'
+      ...
+    # Subtest: (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 = A / S151 = B)
+    ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 = A / S151 = B)
+      ---
+      duration_ms: 79.140439
+      type: 'test'
+      ...
+    # Subtest: S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı geri gelir
+    ok 3 - S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı geri gelir
+      ---
+      duration_ms: 105.898045
+      type: 'test'
+      ...
+    # Subtest: (4) iade kalanı aşarsa fazlası avans; parası geri verilen iade kartı küçültmez
+    ok 4 - (4) iade kalanı aşarsa fazlası avans; parası geri verilen iade kartı küçültmez
+      ---
+      duration_ms: 134.902893
+      type: 'test'
+      ...
+    # Subtest: S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+    ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+      ---
+      duration_ms: 115.329189
+      type: 'test'
+      ...
+    # Subtest: S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+    ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+      ---
+      duration_ms: 133.488135
+      type: 'test'
+      ...
+    # Subtest: Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+    ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+      ---
+      duration_ms: 60.735277
+      type: 'test'
+      ...
+    # Subtest: S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (borçsuz açık kart kalmaz)
+    ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (borçsuz açık kart kalmaz)
+      ---
+      duration_ms: 83.312965
+      type: 'test'
+      ...
+    # Subtest: S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+    not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+      ---
+      duration_ms: 80.315057
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/mut-kopya/test/c7b-tur3-kart-250.test.mjs:198:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        S210: kart kapalı, tutar = tahsilat
+        + actual - expected
+        
+          {
+            deletedAt: null,
+        +   status: 'active',
+        +   total: 400
+        -   status: 'closed',
+        -   total: 300
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        status: 'closed'
+        total: 300
+        deletedAt: ~
+      actual:
+        status: 'active'
+        total: 400
+        deletedAt: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/mut-kopya/test/c7b-tur3-kart-250.test.mjs:210:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..9
+not ok 1 - Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217
+  ---
+  duration_ms: 1626.889133
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/mut-kopya/test/c7b-tur3-kart-250.test.mjs:23:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 8
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2042.680369

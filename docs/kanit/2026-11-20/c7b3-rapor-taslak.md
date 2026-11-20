@@ -29,3 +29,12 @@ Bu ajan ÜRÜN KODUNA DOKUNMADI (yapılmış işler önceki ajanların; burada s
 | 7 | kapsayan kart açık kalır (S206 trim yolu) | 8 / 9 ('kart 400 küçüldü (tutar 0) ve kapandı') | 5 / 5 | YAKALANDI |
 | 8 | iptalde kapsayan kart küçülmez / kapanmaz | 6 / 9 | 4 / 5 | YAKALANDI |
 Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
+| 9 | S210: faturayı içine almış çok kalemli kart açık kalır (küçülür) | 8 / 9 ('S210: kart kapalı, tutar = tahsilat') | 4 / 5 | YAKALANDI |
+| 10 | S210: kart payları iptalden önce okunmaz | 8 / 9 | 4 / 5 | YAKALANDI |
+| 11 | S217: eski ileti | 8 / 9 | 4 / 5 | YAKALANDI |
+| 12 | S216: büyüme ilk taksite | 8 / 9 ('iade iptali: 300 SON taksite eklenir') | 5 / 5 | YAKALANDI |
+| 13 | S210: iptal penceresi kartın kapanacağını söylemez | 8 / 9 (ERR_ASSERTION — cancelNotice metni) | 5 / 5 | YAKALANDI |
+| 14 | S206 / S210: kart kesilmeden kapanır | 7 / 9 | 3 / 5 | YAKALANDI |
+| 15 | trimCovers'ta kuyruğun açık kısmı yok sayılır (7b6ec843 öncesi) | 8 / 9 ('küçülme kuyrukta açık kalan en önce gelen taksitten (01.07)') | 5 / 5 | YAKALANDI |
+| 16 | cutTargets kuyruktan gelen açık kısmı okumaz | 8 / 9 (aynı) | 5 / 5 | YAKALANDI |
+16 / 16 mutant yakalandı; her biri 2 koşu × 2 TZ'de aynı sayıyla kırmızı. Görev metnindeki 'kalanı sil' / 'gecikmeyi kalem vadesinden başlat' mutantları Borçta Kalsın'ındır (tur 3b; bu turda kod yok) — uygulanmadı.
