@@ -1,0 +1,91 @@
+// Ç7b tur 3b HIZ (ders 47, 53 (a)): değişen yollar — Kartı Kapat / Yeniden Aç (yazım + kapı), cari kartı (ekstre), Cari Listesi (gecikmiş süzgeci), Taksitler Geciken, kart GET,
+// zil, Vade Takip, nakit akışı (kuyruk girdisi keptDueSql; dueItems / openItems), Mizan + mutabakat, Defter Mutabakatı, Yevmiye, Mutabakat Testi, Şüpheli Alacaklar, cari tahsilatı (kapı).
+// Kalıp: ana oturumun ana-t3duz/hiz/olc-t3duz.mjs'i (okundu; yollar bu turunkiler). Kullanım: node olc-c7b3b.mjs <kod kökü> <veri kopyası> [tekrar=5]  (özel ölçüm kilidiyle çağrılır)
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { monitorEventLoopDelay } from "node:perf_hooks";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir, repeatText = "5"] = process.argv.slice(2);
+const repeat = Number(repeatText) || 5;
+const load = () => readFileSync("/proc/loadavg", "utf8").trim().split(" ").slice(0, 3).join(" ");
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const t0 = performance.now();
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+const { port } = await app.listen(0, "127.0.0.1");
+const r = v => Math.round(v * 10) / 10;
+console.log(`kod ${root} · yük (başta) ${load()} · TZ ${process.env.TZ || "(yerel)"} · açılış ${r(performance.now() - t0)} ms`);
+{
+  const st = app.ledger.snapshots.state();
+  if (st.pending) { const d0 = performance.now(); await app.ledger.snapshots.runPending(); console.log(`donma (bekleyen koşu) ${r(performance.now() - d0)} ms`); }
+}
+const client = createClient(`http://127.0.0.1:${port}`);
+if ((await client.login("admin", PASS)).status !== 200) throw new Error("giriş");
+const store = app.store;
+// Ölçülen kartlar: carili, açık, Yeni Borç (faturasız, kapsamasız), kalanı olan — en çok satırlı carilerin kartları (iki kodda aynı seçim).
+const cards = store.all(`SELECT p.id, p.account_id AS acc, p.total - COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS left
+  FROM plans p WHERE p.deleted_at IS NULL AND p.status = 'active' AND p.account_id <> '' AND p.covers_balance = 0 AND p.invoice_id = ''
+  ORDER BY (SELECT COUNT(*) FROM account_entries x WHERE x.account_id = p.account_id) DESC, p.id LIMIT 40`).filter(c => c.left > 1).slice(0, 2);
+if (cards.length < 2) throw new Error("ölçülecek açık kart yok");
+const [A, B] = cards;
+const counts = store.get("SELECT (SELECT COUNT(*) FROM account_entries) AS e, (SELECT COUNT(*) FROM plans WHERE deleted_at IS NULL) AS p, (SELECT COUNT(*) FROM plans WHERE status = 'closed') AS c, (SELECT value FROM settings WHERE key = 'ledger.lockedUntil') AS kilit");
+console.log(`veri: ${counts.e} cari satırı, ${counts.p} kart (${counts.c} kapalı), kilit ${counts.kilit || "(yok)"}; kart A ${A.id} (cari ${A.acc}, kalan ${r(A.left)}), kart B ${B.id} (cari ${B.acc})`);
+// Ön durum: A kapatılır (taban: kalan düşülür; yeni: Borçta Kalsın — kapalı kartın kuyruk / zil yolları ölçümde yüklü olsun).
+const pre = await client.put(`/api/workspace/plans/${A.id}`, { status: "closed" });
+if (pre.status !== 200) throw new Error(`ön durum Kartı Kapat ${pre.status}`);
+const h = monitorEventLoopDelay({ resolution: 5 });
+h.enable();
+const results = new Map();
+const timed = async (label, call) => {
+  h.reset();
+  const s = performance.now();
+  const res = await call();
+  const ms = performance.now() - s;
+  if (!results.has(label)) results.set(label, { ms: [], loop: [], status: new Set() });
+  const row = results.get(label);
+  row.ms.push(ms); row.loop.push(h.max / 1e6); row.status.add(res.status);
+  return res;
+};
+const RC = "/api/workspace/report-center";
+const RANGE = "from=2026-01-01&to=2026-12-31";
+const paths = i => [
+  ["YAZIM Kartı Kapat (kart B; kapı)", () => client.put(`/api/workspace/plans/${B.id}`, { status: "closed" })],
+  ["cari kartı (kart B'nin carisi; ekstre)", () => client.get(`/api/workspace/accounts/${B.acc}`)],
+  ["cari kartı (kapalı kart A'nın carisi)", () => client.get(`/api/workspace/accounts/${A.acc}`)],
+  ["kart GET (kapalı kart A)", () => client.get(`/api/workspace/plans/${A.id}`)],
+  ["Cari Listesi · Gecikmiş süzgeci", () => client.get("/api/workspace/accounts?status=all&balance=overdue&limit=50")],
+  ["Cari Listesi · ilk sayfa", () => client.get("/api/workspace/accounts?status=all&limit=50")],
+  ["Taksitler · Geciken", () => client.get("/api/workspace/plans?status=overdue")],
+  ["Taksitler · Kapalı", () => client.get("/api/workspace/plans?status=closed")],
+  ["zil / takvim (dues)", () => client.get("/api/workspace/dues")],
+  ["Vade Takip", () => client.get(`/api/workspace/overview/vade-takip?${RANGE}`)],
+  ["nakit akışı", () => client.get(`/api/workspace/overview/nakit-akisi?${RANGE}`)],
+  ["Mizan + mutabakat (GET ledger)", () => client.get("/api/workspace/ledger")],
+  ["Defter Mutabakatı (rapor)", () => client.get(`${RC}/defter-mutabakati`)],
+  ["Yevmiye Defteri (rapor)", () => client.get(`${RC}/yevmiye?${RANGE}`)],
+  ["Şüpheli Alacaklar raporu", () => client.get(`${RC}/supheli-alacaklar?preset=all`)],
+  ["YAZIM cari tahsilatı (kart B'nin carisi; kapı)", () => client.post(`/api/workspace/accounts/${B.acc}/entries`, { kind: "in", amount: "1", date: "2026-10-08", method: "cash", cashForce: true, similarOk: true, note: `ölçüm ${i}` })],
+  ["YAZIM Yeniden Aç (kart B; kapı)", () => client.put(`/api/workspace/plans/${B.id}`, { status: "active" })],
+  ["Mutabakat Testi (GET ledger/integrity)", () => client.get("/api/workspace/ledger/integrity")],
+];
+const first = new Map();
+for (const [label, call] of paths(-1)) {
+  h.reset();
+  const s = performance.now();
+  const res = await call();
+  first.set(label, { ms: performance.now() - s, loop: h.max / 1e6, status: res.status });
+}
+for (let i = 0; i < repeat; i += 1) for (const [label, call] of paths(i)) await timed(label, call);
+const median = list => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
+for (const [label, row] of first) console.log(`  İLK ${label}: durum ${row.status} · ${r(row.ms)} ms · olay döngüsü en çok ${r(row.loop)} ms`);
+for (const [label, row] of results) console.log(`  ${label}: durum ${[...row.status].join("/")} · en iyi ${r(Math.min(...row.ms))} ms · ortanca ${r(median(row.ms))} ms · olay döngüsü en çok ${r(Math.max(...row.loop))} ms (n=${row.ms.length})`);
+const rowB = store.get("SELECT status FROM plans WHERE id = ?", B.id);
+console.log(`son durum: kart B ${rowB.status} · A cari bakiyesi ${(await client.get(`/api/workspace/accounts/${A.acc}`)).data?.data?.totals?.balance}`);
+console.log(`yük (sonda) ${load()}`);
+await app.close();

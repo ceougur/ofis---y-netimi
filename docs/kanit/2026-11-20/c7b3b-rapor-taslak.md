@@ -34,3 +34,10 @@ Taban: c7b3b-taban = b3a59f2a. Görev metni: docs/devir/2.5.0-DEVAM/c7b3b-istem.
 ## Mutantlar (iki TZ; 7 dosya: c7b-tur3b-borcta-kalsin, c7b-tur3b-eski-surum, inceleme-226, accounts-stock, plans, banka-210-gg-cari, supheli-kuyruk-defter)
 - YAKALANDI 13 / 14: M1 yeni kartı eski kuralla düş, M2 eski kartı yeni kuralla say, M3a genel defter, M3b cari defteri, M3c partyTotals, M3d şüpheli ayırıcısı (T6 ile), M3e Cari Listesi, M3f kapanış günü kilidi, M4 gecikme kalem vadesinden, M5 vade kapanış ertesi, M7 Yeniden Aç'ta işaret sıfırlanmaz, M8 göç işaretlemez, M9 zil kapalı kartı almaz.
 - YAŞIYOR 1: M6 plans_close_rule_lock'u kaldır — EŞDEĞER: işaret plans_close_lock'un üyelik koşulunda (waivesSql) da var; '' ↔ '2.4.9' değişimi kilitli kartı o girdiye sokar / çıkarır → iz yine değişir (T4). Ek girdi fazlalık (2.5.1 sadeleştirme).
+
+## Hız (E; temiz 100 bin, /dev/shm taze kopya, ÖZEL kilit, TZ İstanbul, blok taban → yeni → taban → yeni, tekrar 5)
+- kilitsiz: 0 GEÇERSİZ blok, KÖTÜLEŞEN 0 (c7b3b-hiz-tablo-kilitsiz.txt). kilitli (06.30, açılışta 2.4.9 koşusu donar): 0 GEÇERSİZ, KÖTÜLEŞEN 0 (c7b3b-hiz-tablo-kilitli.txt).
+- Veri doğrulaması: ölçülen kart A kapatılınca carinin bakiyesi taban 149.740,43 / yeni 162.315,82 — fark 12.575,39 = kartın kalanı (Borçta Kalsın, 100 bin satırlık veride).
+
+## Ekran yürüyüşü (G; c7b3b-yuruyus-son.out, ekran görüntüleri c7b3b-ekran-*.png)
+- Taksitler → kart → Kartı Kapat tıklama → onay penceresi (ilk odak Vazgeç; Tab ile Kartı Kapat, Enter) → veri tabanı closed / '' / 08.10 → cari kartı Bakiye 600, ekstrede "kalan düşüldü" yok, Gecikmiş 0 → ertesi gün (sayfa + sunucu saati) Gecikmiş Borç 600 · 2 kalem, zilde 2 kalem "1 gün gecikti", Vade Takip 600 → Alacak Yaz 600 (insan hızı) → bakiye 0, gecikmiş 0; Mutabakat Testi temiz; sayfa hatası yok. SONUÇ: SORUNSUZ (ilk koşudaki tek ✗ betiğin seçicisiydi — görüntüde 600,00 vardı).
