@@ -4934,3 +4934,67 @@ YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / elle beklenen, kural ko
   (d35 … d50 × 261–325) · geniş tarama **2.201/2.201** · özet taraması (madde 4) yazıldı — bakım 21'e göre yeni 3 satır (d50 I1'in açık toplamı / eşitlik / gecikmiş; `belirsiz`'de adı geçen KI1 kartıdır, cari
   tanımlı — TASARIM GEREĞİ: yalnız kapanmış kartın göstergeleri SUS). Not: UTC koşusu başlarken yük 4,58 / 4 çekirdekti (başka işler; önceden bir kez beklendi; koşu zamana bağlı değil — çıktılar Europe/Istanbul
   ile bayt bayt aynı). Defter kâhini ve mobil yazma kâhini KOŞULMADI (okuma kapsamı dışında).
+
+## 34. 2.5.0 Ç5 bakımı 22 — S210 = A / S211 = A (SK-41 (a) / (b): Taksitler kartının içine aldığı faturanın iptali — çok kalemli ve tahsilatsız kart) + S220 = A ve S221 / S222 (yalnız yorum) (20.11.2026; girdi ana oturumun özet dosyası `scratchpad/kahin-toplu14-kararlar.md` — B1 / B2 bu kâhin, A1–A6 muhasebe kâhini; kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + … + §33 + bu bölüm
+
+Bu bakım yalnız girdinin B1–B2'sini işler. §13–§33'ün öbür kuralları DEĞİŞMEZ. `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN (bu bölümün bütün yolları yalnız `k250`). **Bu bölümün ilk commit'i yalnız
+YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'lerde eklenir.** Muhasebe kâhininin aynı toplu bakımı: `test/bagimsiz/muhasebe/README.md`
+"Kâhin bakımı 14".
+
+### C00aa Temiz oda (bakım 22)
+- **Girdi (tek kaynak):** `scratchpad/kahin-toplu14-kararlar.md` — başındaki OKUMA KURALI bağlayıcı: soru metinlerindeki "program bugün" / "koşuldu" / "tur" / "test" / "mutant" / "kod değişmez" / "kodlanan" sözleri ve
+  oradaki program gözlemleri kural kaynağı SAYILMADI; kural yalnız KARAR satırları (seçilen seçeneğin metni ve kararın kendi örneği) ve KAPSAM satırlarıdır. Girdideki BİLGİ satırı ("bakım 21b'den beri yalnız d50'nin
+  KI2 ve KI3 toplam anahtarları ayrışıyor"; programın değerleri VERİLMEDİ — ders 5) yalnız hangi anahtarın yorumlanacağını söyler, beklenen kaynağı değildir. Etiketler girdideki gibi.
+- **Birlikte okunan (kâhinin kendi belgesi):** bu dosyanın §30–§33 (tamamı; §33 Y21b-7 / Y21b-8, SK-41 (a) / (b), C12z), aramayla S15 / S120 / S206 / Kartı Kapat / Excel satırları; `model.py` (`_s206_kartlar`,
+  `fatura_iptal`, `tyk250`'nin kart / SK-41 bloğu, `kontrol` kart bloğu, `aktar`, `cari_bul_kayit`, `MUTASYONLAR`); `oz-test.py` (elle tablo ve mutant denetimi); `senaryolar/d50`; `kos.mjs` YALNIZ eşleme için
+  (bu bakımda açılmadı — adım alanları değişmiyor). Kâhin bu bakımda `docs/erp/**` açmadı.
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), `docs/erp/**`, `YAPIM-ASAMASI.json`,
+  `BILINEN.json`, `test/bagimsiz/muhasebe-surucu/`, cari ve muhasebe kâhini dışındaki `test/**`, başka ajanların `docs/kanit/**` dosyaları (bakım 21b'nin kendi araç klasörü `docs/kanit/2026-11-19/kahincari21b-arac/`
+  dışında), git farkı / geçmiş içeriği. Program koşulmadı. CLAUDE.md "Açık iş" kural / beklenti kaynağı sayılmadı.
+
+### Karar metinleri (girdiden; etiketleri AYNEN)
+- **S210 = A (KULLANICI KURALIYLA ÖNERİ UYGULANDI 19.11 23:18):** "elle Borç 400 + fatura 500 → kart 900 → Taksit Tahsilatı 300 → fatura iptal (bakiye iki okumada 100). A: kart kapanır — elle borç kendi vadesiyle
+  carinin kuyruğuna döner, 300 avans olur (Kalan 100, gecikmiş 100)" · "S206 = A'nın 'kart kapanır' kuralının harfi (kartın kaç kalem içerdiğini ayırmıyor); B kartı sessizce yeniden boyutlandırır".
+- **S211 = A (aynı):** "fatura 900 → kart 900 → fatura iptal (bakiye 0). A: kart kapanır" · "S206'nın gerekçesi ('B kullanıcıyı borçsuz ama açık bir kartla bırakır') aynen".
+- **S220 = A (KULLANICI 20.11 13:39 "önerilerini uygula"):** Kartı Kapat 'Borçta Kalsın' — "kalemin kendi vadesi ile kapanış gününden ERKEN olanı — önceden gecikmiş kalem kendi vadesinde kalır". KAPSAM: "Kartı Kapat
+  cari kâhininin dilinde YOK diye SUS + 'SÜRÜCÜ İÇİN' bırakıldı (§32 C3) — DİL EKİ YAPMA; S220 için yalnız yorum".
+- **S219 = A (SON KARAR 20.11 11:29), S221 = A, S222 = A (KULLANICI 20.11 14:47 "önerilerini yap"):** Excel'den taksit kartı yüklemede "kartı zaten var" yalnız AYNI KİŞİNİN açık kartı (aynı ad + aynı telefon;
+  telefonsuzsa aynı ad + aynı grup, tek eşleşme); kişi kesin seçilemiyorsa satır atlanır, neden yazılır (S221 / S222 alt durumları). KAPSAM: "Excel'den kart yükleme dilde varsa S221 / S222 senaryosu, yoksa yalnız yorum".
+
+### Kâhinin BUGÜNKÜ (bakım 21b, `kahin-toplu14-taban`) okuması — B1 / B2 alanında (açıkça)
+- `_s206_kartlar` iptal edilecek faturayı içine almış Taksitler'den açılmış Mevcut Borç kartlarını üçe ayırır: "s206" (yalnız bu faturayı içine almış + Taksit Tahsilatı var → kart KAPANIR, tahsilat avans — §33 Y21b-7),
+  "SK-41 (a)" (başka kalem de içine almış) ve "SK-41 (b)" (tahsilatsız) → bu ikisinde **kart AÇIK ve DEĞİŞMEDEN kalır** (`_sk41` işareti; tutarı, taksitleri, tahsilat bağı aynen), carinin kuyruğu C13.4 (11) ile
+  tanımsız (gecikmiş / açık toplamı / kart 'Tahsil Edilen' / 'Kalan' yazılmaz), bakiye ve Kasa değerle.
+- **BİLGİ satırındaki d50 KI2 / KI3 `toplam` anahtarlarının dayanağı (girdinin istediği yorum):** kâhinin bugünkü `k1:kart:KI2:toplam` = 900 ve `k1:kart:KI3:toplam` = 900 (ve `var` = true, `mevcutBorc` = true)
+  S210 / S211'in HİÇBİR seçeneğinin okuması DEĞİLDİR: bakım 21b SK-41'i SORDU ve kartı "bugünkü gibi" açık bıraktı — kartın kendi girdisi (tutar 900) aynen yazıldı. S210'un B'si kart "400'e küçülür" der (toplam 400),
+  A'sı "kart kapanır" der (kapanmış kart — §33 Y21b-7 gereği göstergeleri SUS); S211'in B'si "kart borçsuz ve ödemesiz açık kalır" (toplam 900 — yalnız KI3'te B ile rastlantıyla aynı sayı), A'sı "kart kapanır". Yani
+  bugünkü 900'ler bakım 21b'nin geçici SUS düzeninin yan ürünüdür (kart göstergesi yazılmaya devam etmiş); karar A olunca ikisi de SUS'a döner.
+- Kartı Kapat dilde YOK (§26 S144 (d), §32 Y21-3, §33 Y21b-3 / Y21b-6). Excel'den kart yükleme: dilin `tablo_yukle` + `aktar` (Tablodan Aktar) adımı kartı KAYDA bağlı cariyle (`cari_bul_kayit` — kayıt no) ya da
+  yeni cariyle açar, "kartı zaten var" denetimi KAYIT NO ile yapılır (`no in self.kartlar`); ad / telefon / grup ile kişi eşleştirmesi ve "Aynı adla açık kart var" denetimi dilde YOK; Tablodan Aktar varsayılan
+  anahtarla kapalı (madde 2 — 410).
+
+### Yorumlar (ders 40 — kararlardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y22-1 — S210 = A (SK-41 (a) KAPANDI):** Taksitler'den açılmış Mevcut Borç kartı (`kart_ac {mevcut: true}`; stok satışıyla açılan kart DEĞİL) iptal edilen faturayı carinin açık borcundan BAŞKA kalem(ler)le birlikte
+  içine almışsa da fatura İptal Et → iptal KABUL; **kart KAPANIR** (§33 Y21b-7'nin "s206" yolu AYNEN): kartın tükettiği öbür kalemler (elle Borç) artık kartın değildir — carinin kuyruğunda KENDİ vadesiyle (vadesiz
+  kalem belge günü — S1) açık kalem olur; kartın aktif Taksit Tahsilatları carinin bağsız alacağı (avans) olur — KENDİ TARİHİNDE bağsız kaynak (C13.4 (3) / (4); o gün açık borç varsa S2 sırasıyla kapatır, yoksa avans
+  bekler). Kararın örneği (d50 I2): elle Borç 400 (01.03) + FI2 500 (10.03) → KI2 900 → Taksit Tahsilatı 300 (05.04 — o gün açık: elle Borç 400 (v 01.03)) → FI2 İptal Et → **bakiye 100**, elle Borç açık **100**,
+  **gecikmiş 100** (v 01.03 < bugün; min(100, 100)), **açık toplamı 100 = bakiye**. Kapanmış kartın göstergeleri ('Tahsil Edilen', 'Kalan', taksit 'Ödenen', listede görünüp görünmediği, tutar) kararda YOK → SUS (§33
+  Y21b-7 aynen; `belirsiz` "kart … S210 = A ile kapandı"). "Kartın kaç kalem içerdiği ayrılmaz" — kart faturanın yalnız bir kısmını içine almış olsa da kapanır (kararın gerekçesi; §33 C12z'deki "kısmi" notu artık bu
+  kuralla). Bakiye ve Kasa iki okumada aynı (sayıyla: d50 I2 100; Kasa değişmez). Etiket **BAŞ MİMAR** (girdideki gibi: KULLANICI KURALIYLA ÖNERİ UYGULANDI).
+- **Y22-2 — S211 = A (SK-41 (b) KAPANDI):** karta hiç Taksit Tahsilatı girilmemişse de iptalde **kart KAPANIR** (Y22-1'in bütün sonuçları; avans yok). Kararın örneği (d50 I3): FI3 900 → KI3 900 → FI3 İptal Et → **bakiye 0**,
+  **gecikmiş 0**, **açık toplamı 0 = bakiye**; kart göstergeleri SUS. Çok kalemli + tahsilatsız kart iki kararın kesişimidir — ikisi de "kart kapanır" (çelişki yok): elle Borç kendi vadesiyle kuyruğa döner. Etiket
+  **BAŞ MİMAR** (girdideki gibi).
+- **Y22-3 — S210 / S211'in kâhindeki yeri:** §33 Y21b-8'in iki SUS kolu KALKAR; `_s206_kartlar`'ın üç kodu da kartı kapatır (kod adları iz için kalır: "s206" yalnız bu fatura + tahsilat, "s210" çok kalemli, "s211"
+  tahsilatsız). Sınır (kararın söylemediği — SUS sürer): carinin kuyruğu iptalden ÖNCE zaten tanımsızsa (C13.4 (11)) kâhin içine almayı bilemez → bugünkü susma AYNEN (§33 Y21b-8'deki gibi `_s206_kartlar` boş
+  döner); kapanmış karta sonradan Taksit Tahsilatı (kâhin RET okur — "kartı olmayan kayda kart tahsilatı girilemez", senaryo yok — §33 C12z aynen); iptalin geri alınması / faturanın Silinenler'den geri yüklenmesi (dil
+  kaydedilmiş faturayı silmez — `fatura_sil` yalnız taslak). Etiket — (SUS).
+- **Y22-4 — S220 = A (yalnız yorum):** Kartı Kapat dilde YOK → DİL EKİ YAPILMADI; §33 Y21b-6'nın SÜRÜCÜ İÇİN satırı S220 ile tamamlanır: dil eklenince, kapanıştan ÖNCE vadesi geçmiş taksitin kalanı KENDİ vadesinde
+  kalır (kapanış günü gecikmişte; gecikme yaşı küçülmez), vadesi gelmemiş kalanlar kapanış gününe çekilir (ertesi günden gecikmiş — S205). SK-39 örneği (1. taksit ödendi; kalan 01.05 / 01.06 vadeli, 10.04 kapanış)
+  önceden gecikmiş kalem içermediği için §33'ün beklenen'i AYNEN (15.04'te gecikmiş 600). Hiçbir beklenen değişmez. Etiket **KULLANICI**.
+- **Y22-5 — S219 / S221 / S222 (yalnız yorum):** dilin Excel / Tablodan Aktar yolu kişiyi ad / telefon / grupla EŞLEŞTİRMEZ (kayıt no ↔ cari bağı) ve "kartı zaten var"ı kayıt no ile denetler → kararın konusu
+  (aynı ad + telefon ile kişi; aynı adlı ikinci kişinin kartı; telefonsuz satırın atlanması) dilde kurulamaz → **DENENMEYEN + SÜRÜCÜ İÇİN** (dil EKLENMEDİ). Hiçbir beklenen değişmez. Etiket — (DENENMEYEN).
+
+### KULLANICIYA SORULMALI (bakım 22)
+- **SK-41 (a) / (b) KAPANDI** (S210 = A, S211 = A — girdi B1). Yeni soru yok: Y22-3'ün sınırları ya dilde kurulamaz (kaydedilmiş fatura silme, iptal geri alma) ya da kâhinin bugünkü tanım sınırıdır (C13.4 (11)).
+  Toplu listedeki muhasebe kâhini soruları (fatura silme, Kartı Kapat ile kapanmış kart, şüpheli cari, Değersiz yazılmış faturanın Açık Faturalar'daki yeri) bu kâhinin dilinde kurulamaz — muhasebe README bakım 14.
+- Not (yeni soru değil): SK-38 (d) (S181 ↔ S159) — kullanıcı S193 = C ile BİLİNEN SINIR (kâhin susar, §32 / §33 aynen).
