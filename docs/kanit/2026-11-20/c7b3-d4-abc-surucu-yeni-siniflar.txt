@@ -1,0 +1,13 @@
+sınıflama P/R/K kodları: ['P4-GECIKME-ZAMMI-TEK', 'P6-TAKSIT-BAGI-DUZELTME-YOLU', 'P7-AYNI-ADLI-EXCEL-KARTI', 'R-B5-YEREL-GUN-UTC', 'R-S192-BAG-SONRA']
+('P', '?', 'Europe-Istanbul') 17
+('P', '?', 'UTC') 17
+('P', 'P7-AYNI-ADLI-EXCEL-KARTI', 'Europe-Istanbul') 1
+('P', 'P7-AYNI-ADLI-EXCEL-KARTI', 'UTC') 1
+('R', '?', 'Europe-Istanbul') 13
+('R', '?', 'UTC') 15
+('R', 'R-S192-BAG-SONRA', 'Europe-Istanbul') 13
+('R', 'R-S192-BAG-SONRA', 'UTC') 13
+ÖRNEK ('P', '?') s103-s79-olagan-bag-cari.fark.json {'aciklama': 'EKSİK YOL (DÜŞÜK; para kaybı yok — kullanıcı satırı silip kartın / carinin kendi formundan yeniden girer): cari tahsilatının TAKSİT KARTI bağı tek
+ÖRNEK ('P', 'P7-AYNI-ADLI-EXCEL-KARTI') s91-b5-kg5-yukleme-yerel-gunu.fark.json {'degisim': {'ana': {'120': -2000, '519': 2000}, 'cari': {'C1': -2000}}, 'durum': 'yapildi', 'id': 'TE1', 'kod': 'P7-AYNI-ADLI-EXCEL-KARTI', 'no': 1, 'olay_turu
+ÖRNEK ('R', '?') rastgele-1.fark.json {'aciklama': 'kök neden (adım): R-S192-BAG-SONRA/r1', 'alan': 'ana', 'anahtar': '120', 'bugun': 7420563, 'kahin': 7420563, 'program': 7319904, 'sinif': 'R'}
+ÖRNEK ('R', 'R-S192-BAG-SONRA') rastgele-1.fark.json {'degisim': {'ana': {'120': -472560, '128': 472560, '129': -460117, '644': 460117}}, 'durum': 'yapildi', 'id': 'P308', 'kod': 'R-S192-BAG-SONRA/r1', 'no': 461, 

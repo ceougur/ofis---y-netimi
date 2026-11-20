@@ -126,3 +126,11 @@ Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
   [{withRemaining:false},{withRemaining:false}], iptal iki okuma biri kuyruklu [{false},{true}]. Eşdeğerlik sınamaları (kapsam kuralı; trimCovers girdisi her caride iki yolda aynı) eski kodda
   da yeşil (özellik testi).
 - G2 komşu (55 dosya: 54 + yeni test) son kodda iki TZ 730 / 730.
+
+## 11. Son kodda (7645fe0d = S218 + hız düzeltmesi) kâhinler, sürücü ve ekran senaryosu — kanıt c7b3-d4-abc-*, c7b3-d4-e2e-*
+- Kabul A (defter kâhini) iki TZ 187 / 187, 0 fark, 0 yakalanmayan mutasyon (önceki uçla aynı).
+- Kabul B (cari kâhini) iki TZ 17.580 / 17.582 — AYNI iki fark (d50 KI2 / KI3 toplam: S210 = A / S211 = A — cari kâhini bakımı bekliyor; bölüm 6). Yeni fark YOK. Yapım aşaması listesi
+  yeniden üretilmedi (farklar bölüm 6'dakiyle birebir aynı; liste o farklardan üretilir — devam 2'nin kendi kopyasındaki 2 kayıt geçerli).
+- Kabul C (muhasebe sürücüsü, DEĞİŞTİRİLMEDİ) yeni: 7.770 denetim, 7.568 geçti, 62 başarısız — sınıf dağılımı (AYNI 7.052 · U 516 · P 34 · K 0 · R 28 · SINIFLANMADI 0) önceki
+  yeni koşuyla (7b6ec843, bölüm 4) satır satır AYNI (sınıf listesi farkı 0 satır).
+- G: senaryo-c7b-tur3-250 yeni kodda UTC 32 / 32, Europe/Istanbul 32 / 32 (S206 / S210 iptal penceresi notu — kapsamdaki fatura — aynen; kapsamda olmayanın notu kartı anmaz).

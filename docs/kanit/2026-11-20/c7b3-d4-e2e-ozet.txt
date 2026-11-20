@@ -1,0 +1,6 @@
+başta 08:26:07 · 2.70 3.21 2.94 4/307 19735 · yeni 7645fe0d · TZ UTC
+senaryo-c7b-tur3-250 yeni UTC çıkış 0 · ✓ senaryo-c7b-tur3-250: 32 geçti, 0 kaldı
+BİTTİ 08:29:20 · 2.83 3.02 2.92 3/320 20746
+başta 08:29:20 · 2.83 3.02 2.92 3/320 20750 · yeni 7645fe0d · TZ Europe/Istanbul
+senaryo-c7b-tur3-250 yeni Europe/Istanbul çıkış 0 · ✓ senaryo-c7b-tur3-250: 32 geçti, 0 kaldı
+BİTTİ 08:32:33 · 3.09 3.17 2.99 3/227 22461
