@@ -105,3 +105,9 @@ Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
   | B: yalnız kilit aynası karar (4) yönünde | 1 / 3 (aynı) | 6 / 6 | 9 / 9 | YAKALANDI |
   | C: yalnız kesim karar (4) yönünde (ayna eski) | 2 / 3 (eşdeğerlik: 'taksitler' / 'faturaDurumlari' / 'cariler' / 'adayKartlar' eski dökümden ayrı) | 6 / 6 | 9 / 9 | YAKALANDI |
   Savunma testi üç mutantta da yeşil — onarım yönünün koruyucusu acilis-onarimi-hiz-250'dir (savunmanın işi kart kesilemezse onarımın yazmaması).
+
+## 9. G2 komşu son kodda (41d11469 — S218 = B dahil) — kanıt c7b3-d4-komsu-*
+- Liste: devam 2'nin 52 dosyası (taramayla + elle eklenen açılış onarımı / stok iadesi yolları; onarımın ve plans.mjs küçülmesinin bütün testleri içinde) + açılış onarımının öbür iki testi
+  (iade-210-onarim, banka-210-altin) = 54 dosya (c7b3-d4-komsu-liste.txt). UTC 727 / 727, Europe/Istanbul 727 / 727 — kırmızı YOK (önceki uçta tek kırmızı acilis-onarimi-hiz-250 idi; S218 = B ile kapandı).
+- Kabul A / C'nin onarım yolundan etkilenmesi: defter kâhini ve muhasebe sürücüsü senaryoları açılış onarımını tetiklemez (onarım yalnız 2.0.24–2.0.26'da paralı iadeyle büyümüş kartta, açılışta
+  çalışır; kâhin / sürücü verisi bugünkü kodla üretilir, böyle kart oluşmaz) → ETKİLENMEZ; kabul A / C yeniden koşulmadı. Eski sürüm (v2.4.9) testi c7b-tur3-eski-surum-250 iki TZ 5 / 5 (bölüm 8).
