@@ -80,6 +80,13 @@ export const EXCEPTIONS = new Map([
   ["pos_terminals.id", "SINIF 3 — POS alt hesabı BİLİNEN SINIR adayı (§16.3)"],
   ["pos_terminals.gl_sub", "SINIF 3 (§16.3)"],
   ["vat_offsets.created_at", "SINIF 3 — yalnız aynı tarihli sıra (§16.3)"],
+  // 2.5.0 tek aday düzeltme turu B1 (ders 31; lib/doubtful-gl.mjs by ↔ lib/bank/doubtful.mjs doubtfulCredits at / seq): şüpheli ayırıcısı aynı gün AYNI sınıftaki alacakları yazım
+  // sırasıyla işler — satırın yazım anı (faturada kesilme anı) → rowid. vat_offsets.created_at ve bütün rowid'lerle AYNI aile (yalnız aynı tarihli sıra; tutar / hesap / tarih değil):
+  // yazım anı satır yazılınca konur, programın hiçbir yolu değiştirmez; dış değişikliği kilitli dönemde donmuş defter (ledger:snapshot) ve Kural Değişikliği Farkı görür. SINIF 3 (§16.3).
+  ["account_entries.created_at", "SINIF 3 — B1: aynı gün alacak sırası (yazım anı; §16.3, ders 31)"],
+  ["plan_entries.created_at", "SINIF 3 — B1: aynı gün alacak sırası (yazım anı; §16.3, ders 31)"],
+  ["invoices.created_at", "SINIF 3 — B1: aynı gün alacak sırası (iade / alış faturasının yazım anı; §16.3, ders 31)"],
+  ["invoices.issued_at", "SINIF 3 — B1: aynı gün alacak sırası (iade / alış faturasının kesilme anı; §16.3, ders 31)"],
 ]);
 // Bütün tabloların rowid'i: aynı tarihli satır sırası (SINIF 3, §16.3) — ayrı kural (aşağıda).
 // Satırları tetikleyiciyle değiştirilemeyen tablolar (değiştirme girişimi ABORT): donmuş defter (C3 §3; kaynak / satır bozukluğu ledger:snapshot) ve saklanan fiş (Ç2; ledger_vouchers_lock).

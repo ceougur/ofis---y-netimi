@@ -521,7 +521,11 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
         const keys = payMethod === "card" ? ["U108"] : payMethod === "bank" ? ["Z", "G", "U102"] : ["Z", "G", "U102", "U108"];
         const tag = `banka-pos ${payMethod} ${r.label}`;
         const data = await screen("banka-pos-hareketleri", { ...r.q, payMethod }, tag);
-        const f = flows(keys, r);
+        // 2.5.0 tek aday düzeltme turu — BEKLENTİ BİLEREK DEĞİŞTİ (S214 = A, iş listesi C AYNEN: "Tüm Hesaplar seçimi de 'Açılışta Sayıldı' işaretini uygular — rapor = defter = kova"):
+        // açılışta sayılmış satırlar (COUNTED: U102'nin 20.09 havalesi) bu raporda da işaretli KALIR (satır sayısı aynı), devre / dönem giriş-çıkışına / Dönem Sonu'na girmez.
+        const f = flows(keys.filter(key => !COUNTED.has(key)), r);
+        const marked = of(keys.filter(key => COUNTED.has(key))).filter(row => inRange(row.d, r)).length;
+        assert.equal(data.rows.filter(row => /Açılışta Sayıldı/.test(String(row[col(data, "Açıklama")]))).length, marked, `${tag}: açılışta sayılmış satırlar işaretli`);
         assert.deepEqual([summaryOf(data, "Devir"), summaryOf(data, "Dönem Giriş"), summaryOf(data, "Dönem Çıkış"), summaryOf(data, "Dönem Sonu")], [f.opening, f.in, f.out, f.closing], `${tag}: özet`);
         if (f.trIn || f.trOut) assert.deepEqual([summaryOf(data, "Transfer Giriş"), summaryOf(data, "Transfer Çıkış")], [f.trIn, f.trOut], `${tag}: Transfer`);
         else assert.ok(!data.summary.some(([key]) => key.startsWith("Transfer")), `${tag}: iç hareket yokken Transfer satırı yok`);
