@@ -155,7 +155,11 @@ Kaynak: kitap §4, §7.2, §7.3, §7.4, §8; KG-11 A, KG-12 A, KG-14 A; EK-1 M4;
   - ÖLÇÜLDÜ (20.11, tur 3; temiz 100 bin, AYNI kaynak kopya, yük başta 1,0–1,8; kanıt docs/kanit/2026-11-20/c6h3-hiz100k-*): yanıtların sha256 özeti eski ↔ yeni 13 istekte AYNI (iki kip,
     iki şirket). KİLİTLİ (30.06.2026) Bilanço ortanca eski 7,10–7,99 sn → yeni 5,53–6,15 sn (en iyi 6,51–7,42 → 5,15–5,27); Gelir Tablosu ortanca eski 4,11–4,20 → yeni 3,45–3,68 sn.
     KİLİTSİZ yol aynı kod (frozen yok): ilk koşuda Bilanço ortanca eski 5,18–5,49 ↔ yeni 5,45–6,05 (en iyi 4,82–4,97 ↔ 4,89–5,33), Gelir Tablosu 3,23–3,57 ↔ 3,29–3,59 — yeni önce
-    koşmuştu; sıra ters çevrilerek YİNELENDİ (aşağıda). Olay döngüsü istek başına en çok 9,5–56,7 ms (bir ilk istekte 225 ms).
+    koşmuştu; sıra ters çevrilerek YİNELENDİ: eski 5,08–5,34 ↔ yeni 5,48–5,87 (yeninin başı yük 2,27 — GEÇERSİZ); AYNI süreçte A/B (aynı girdi, dönüşümlü) balanceSheetOf ortanca
+    4.793 ↔ 4.846 ms, en iyi 4.527 ↔ 4.527 → kilitsiz kötüleşme YOK (≤ %1).
+  - 1 M (programın yolu: tools/kapi-olcum.mjs --yalniz-kur; 001 818.077 + 002 82.431 para satırı; 1.527.455 madde): KİLİTLİ Bilanço ortanca eski 71,7–72,0 → yeni 58,3–59,8 sn (en kötü
+    69,5), Gelir Tablosu 36,1–37,0 → 32,0–33,0 sn; KİLİTSİZ (yeni) Bilanço 50,5–51,7, Gelir Tablosu 32,1–32,8, değerleme 8,3 sn; plan hedefi ≤ 60 sn (Bilanço kilitli sınırda). Olay
+    döngüsü: istekler 23–54 ms; ilk Bilanço isteği 396–861 ms; değerleme ucu 131–174 ms (iki kodda da; tur 1'in yolu) — bütçe (≤ 50 ms) aşılıyor (raporda). Olay döngüsü istek başına en çok 9,5–56,7 ms (bir ilk istekte 225 ms).
     Bütçe (≤ 3 sn) HÂLÂ aşılıyor. Parça (yeni kod, kilitli, iş parçacığısız): check() 3,45–4,05 sn (canlı türetme 2,26–2,68 + beklenenler) · donmuş toplam SQL 1,16–1,62 sn · biçimlendirme
     11–22 ms · kuyruk 15 ms · kural farkı 0,10–0,13 · değerleme girdisi 0,44–0,48 · Bilanço hesabı 0,12–0,17 sn. Kilitsiz: check() 3,48–4,18 · değerleme 0,42–0,55 · Bilanço hesabı 0,81–0,86 sn.
 
