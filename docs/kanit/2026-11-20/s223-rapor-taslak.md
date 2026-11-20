@@ -102,3 +102,10 @@ Veri: 1.484 cari, 11.448 kart, 11.660 çek. 'karma' iş yükü veride telefonlu 
 | Tablodan Aktar aktarım (300) | 1.385,8 / 1.423,2 | 1.365,7 / 1.540,8 | −1,5 % / +8,3 % | 1.422,9 / 1.616,9 |
 Ölçüt (en iyi VE ortanca ≤ +%10): bütün yollar GEÇTİ. Not: bu veride cari sayısı küçük; 100.000 caride ad haritası kurulumu ayrı mikro ölçümde ~0,12 sn (katlama + harita;
 SQL okuması hariç) — yükleme başına BİR kez, yalnız NOCASE'in bulamadığı ilk satırda.
+
+## A / B / C
+- A kâhin-defter: taban ve yeni, UTC ve İstanbul — 187 denetim, 0 fark, 0 yakalanmayan mutasyon (4 koşuda aynı).
+- B kâhin-cari: taban ve yeni, UTC ve İstanbul — 97 senaryo, 17.648 denetim, 0 fark, 7 bilinen sınır, 0 yapım aşaması (4 koşuda aynı).
+  Yapım aşaması listesi kendi kopyamda (KAHIN_YAPIM_ASAMASI) yeniden üretildi: 0 kayıt; eski listeyle fark yeni 0 / kapanan 0 / değişen 0.
+- C muhasebe sürücüsü: taban (c7b-aday) 7.946 denetim, 7.750 geçti, 50 başarısız, 146 atlanan (BAŞARISIZ — taban kendi hâliyle; sürücü bakımı 5 ana oturumda).
+  Yeni kod koşusu + gerileme.py karşılaştırması: aşağıda.
