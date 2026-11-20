@@ -1,5 +1,5 @@
 {
- "aciklama": "EK-2B 35: faturanın kendi kartı faturayla kalkar; tahsilatlı kartta silme red, iptalde tahsilat avans; Mevcut Borç kartı küçülür.",
+ "aciklama": "EK-2B 35: faturanın kendi kartı faturayla kalkar; tahsilatlı kartta silme red, iptalde tahsilat avans; Mevcut Borç kartının faturası iptal → kart kapanır (S210 / S211).",
  "ad": "s58-r9-kartli-fatura-sil-iptal",
  "bankalar": {
   "B1": {
@@ -50,20 +50,14 @@
     }
    ],
    "g1/gecikmis": 0,
-   "g2a/gecikmis": 0,
+   "g2a/gecikmis": 2000,
    "g2b/gecikmis": 2000,
    "g3/gecikmis": 0,
    "kt1": {},
    "kt2": {
     "TK3": {
-     "kapali": false,
-     "taksitler": [
-      {
-       "kalan": 2000,
-       "tutar": 2000,
-       "vade": "2026-04-01"
-      }
-     ]
+     "kapali": true,
+     "taksitler": []
     }
    },
    "kt3": {

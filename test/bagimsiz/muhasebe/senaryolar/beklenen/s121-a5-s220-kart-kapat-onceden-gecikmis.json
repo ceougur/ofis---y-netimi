@@ -1,0 +1,200 @@
+{
+ "ad": "s121-a5-s220-kart-kapat-onceden-gecikmis",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "ak1b": [
+     {
+      "k": "kart_kalani:TK1",
+      "kalan": 30000,
+      "tarih": "2026-01-15",
+      "tur": "kart_kalani",
+      "vade": "2026-04-01"
+     },
+     {
+      "k": "kart_kalani:TK1",
+      "kalan": 30000,
+      "tarih": "2026-04-10",
+      "tur": "kart_kalani",
+      "vade": "2026-04-10"
+     }
+    ],
+    "ak1c": [
+     {
+      "k": "kart_kalani:TK1",
+      "kalan": 10000,
+      "tarih": "2026-01-15",
+      "tur": "kart_kalani",
+      "vade": "2026-04-01"
+     },
+     {
+      "k": "kart_kalani:TK1",
+      "kalan": 30000,
+      "tarih": "2026-04-10",
+      "tur": "kart_kalani",
+      "vade": "2026-04-10"
+     }
+    ],
+    "g1a": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "kart_kalani:TK1",
+       "vade": "2026-04-01"
+      }
+     ],
+     "gecikmis": 30000,
+     "supheli": 0,
+     "tarih": "2026-04-10"
+    },
+    "g1b": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "kart_kalani:TK1",
+       "vade": "2026-04-01"
+      },
+      {
+       "kalan": 30000,
+       "kalem": "kart_kalani:TK1",
+       "vade": "2026-04-10"
+      }
+     ],
+     "gecikmis": 60000,
+     "supheli": 0,
+     "tarih": "2026-04-11"
+    },
+    "g1c": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "kart_kalani:TK1",
+       "vade": "2026-04-01"
+      },
+      {
+       "kalan": 30000,
+       "kalem": "kart_kalani:TK1",
+       "vade": "2026-04-10"
+      }
+     ],
+     "gecikmis": 40000,
+     "supheli": 0,
+     "tarih": "2026-04-21"
+    },
+    "g1z": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "kart:TK1",
+       "vade": "2026-04-01"
+      }
+     ],
+     "gecikmis": 30000,
+     "supheli": 0,
+     "tarih": "2026-04-09"
+    },
+    "g2": {
+     "cari": "C2",
+     "detay": [
+      {
+       "kalan": 60000,
+       "kalem": "kart_kalani:TK2",
+       "vade": "2026-03-15"
+      }
+     ],
+     "gecikmis": 60000,
+     "supheli": 0,
+     "tarih": "2026-03-16"
+    },
+    "h": {
+     "elle": {},
+     "otomatik": {
+      "C1": 30000,
+      "C2": 60000
+     },
+     "supheli_etiketli": [],
+     "tarih": "2026-04-10"
+    },
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 80000,
+       "borc": 80000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 80000,
+       "bakiye": 100000,
+       "borc": 180000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 180000,
+       "bakiye": -180000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 80000,
+       "borc": 80000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 50000,
+       "bakiye": 40000,
+       "borc": 90000,
+       "devir": 0
+      },
+      "120|C2": {
+       "alacak": 30000,
+       "bakiye": 60000,
+       "borc": 90000,
+       "devir": 0
+      },
+      "600.90": {
+       "alacak": 180000,
+       "bakiye": -180000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-04-30",
+     "toplam": {
+      "alacak": 260000,
+      "bakiye": 0,
+      "borc": 260000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

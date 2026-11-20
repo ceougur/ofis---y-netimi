@@ -191,7 +191,7 @@ MUTANTLAR = [
        'eksik = 0\n        if tuketen and kalan:\n            self.ekle("kart_fark:" + kid, "kart_fark", "a", kalan, tarih, tarih, sira)')]),
     ("B06 R4: paralı iade de kartı küçültür", [('link = "iade_para:" + k.id               # iade kendi', 'link = "fatura:" + v["asil_fatura"]               # iade kendi')]),
     ("B07 R5 karar (5): fatura durumu net kuyruktan (karşı yönlü fatura kendiliğinden kapatır)",
-     [("self.kuyruk(c, t, fg=True).ogeler", "self.kuyruk(c, t).ogeler")]),
+     [("q = self.kuyruk(c, t, fg=True)\n", "q = self.kuyruk(c, t)\n")]),   # bakım 14: metin yeni koda taşındı (anlam aynı)
     ("B08 R5 karar (5) B: alış faturası gecikmişten düşülmez (yalnız Mahsup Et)",
      [('if self.fg and a["tur"] == "fatura" and b["tur"] == "fatura":', 'if a["tur"] == "fatura" and b["tur"] == "fatura":')]),
     ("B09 R6 karar (6): önceden kapatılmış kart da borçta kalır (eski 689 kaybolur)",
@@ -268,16 +268,17 @@ MUTANTLAR = [
     ("B40f Y3 S14: şüpheli kuyruğunda bağlı kalem değil vadesi ilk gelen kapanır",
      [('key=lambda x: (x["k"] != hedef,) + s2_anahtari(x)):', "key=s2_anahtari):")]),
     ("B41 Y8 S15 B: tahsilatlı kartın faturası iptal edilemez",
-     [('k = self._hedef(o, d)\n        k.durum = "iptal"',
+     [('k = self._hedef(o, d)\n        kartlar = self._s210_kartlar(d, k)',   # bakım 14: metin yeni koda taşındı (anlam aynı)
        'k = self._hedef(o, d)\n        if any(y.tur == "tahsilat" and y.durum == "aktif" and y.v.get("taksit_karti") in {x.id for x in d.kaynaklar.values() '
        'if x.tur == "taksit_karti" and x.v.get("kaynak") == "fatura" and x.v.get("fatura") == k.id} for y in d.kaynaklar.values()):\n'
-       '            raise Red("FATURA_IPTAL_TAHSILATLI_KART", k.id)\n        k.durum = "iptal"')]),
+       '            raise Red("FATURA_IPTAL_TAHSILATLI_KART", k.id)\n        kartlar = self._s210_kartlar(d, k)')]),
     ("B41b Y8 S15 / S5 B: kart tahsilatları iptal edilen faturayla düşer (avans olmaz)",
      [("        return False\n\n    def _link",
        '        kk = self.d.kaynaklar.get(v.get("taksit_karti") or "")\n        if kk is not None and kk.v.get("kaynak") == "fatura":\n'
        '            f = self.d.kaynaklar.get(kk.v.get("fatura"))\n            return f is None or f.durum != "aktif"\n        return False\n\n    def _link')]),
     ("B41c Y9 S15: tahsilatlı kart iptalde kapanmaz, kalkar (raporda yok)",
-     [('self.kart_iptal[k.id] = {"cari": v["cari"], "tarih": k.tarih, "seq": k.seq}', "pass")]),
+     [('                                                       for x in self.d.kaynaklar.values()):\n            self.kart_iptal[k.id] = {"cari": v["cari"], "tarih": k.tarih, "seq": k.seq}',
+       '                                                       for x in self.d.kaynaklar.values()):\n            pass')]),   # bakım 14: S210'un aynı satırından ayırmak için bağlamla (anlam aynı)
     ("B42 Y15 S20 B: açılıştan önceye düşen Kasa kaydı Silinenler'den geri yüklenemez",
      [('if k.tur in FATURA_TURLERI and k.durum == "silindi":',
        'self._kasa_acilis_oncesi(d, k.tarih, lambda dd: (setattr(dd.kaynaklar[k.id], "durum", "aktif"), k.id)[1])\n'
@@ -664,6 +665,23 @@ MUTANTLAR = [
      [('and any(r["kalan"] > 0 for r in d.gecis().supheli.get(c, [])) and d.bakiyeler().get((d.cari_hesap(c), c), 0) < 0):', 'and False):')]),
     ("B127 Ü21 S120 B: Mevcut Borç kartı bütün borçları S2 sırasıyla tüketir", [('            if not self.fifo and sum(y["kalan"] for y in acik_b) > T:', '            if False:')]),
     ("B127b Ü21 S110 yok: karta eşit elle borç seçilmez (elle borçlar eskiden yeniye)", [('                if esit:\n                    secim = esit', '                if False:\n                    secim = esit')]),
+    # bakım 14 (README İ1–İ9)
+    ("B128 İ1 S200: kart önce faturaları alır (elle borçlar sonra)", [('secim = secim + [y for y in acik_b if y["tur"] == "fatura"]', 'secim = [y for y in acik_b if y["tur"] == "fatura"] + secim')]),
+    ("B128b İ1 S200 B: kart elle borçların toplamına küçülür (faturalardan almaz)", [('secim = secim + [y for y in acik_b if y["tur"] == "fatura"]', 'pass')]),
+    ("B128c İ1: eksik kısım faturalardan belge sırasıyla (M1e'nin S2'si yerine)", [('secim = secim + [y for y in acik_b if y["tur"] == "fatura"]', 'secim = secim + sorted([y for y in acik_b if y["tur"] == "fatura"], key=lambda y: (y["tarih"], y["sira"]))')]),
+    ("B129 İ2 / İ3 S210 / S211 B: iptalde kart açık kalır, alttaki borç kadar küçülür (karar (4) R4)", [("x.s210 = True", "pass")]),
+    ("B129b İ3 S211 yok: yalnız tahsilatlı Mevcut Borç kartı kapanır", [('        if v["kaynak"] == "mevcut_borc" and k.s210:',
+      '        if v["kaynak"] == "mevcut_borc" and k.s210 and any(x.tur == "tahsilat" and x.durum == "aktif" and x.v.get("taksit_karti") == k.id for x in self.d.kaynaklar.values()):')]),
+    ("B129c İ2: faturanın yalnız bir kısmını içine almış kart kapanmaz", [("                if n:\n                    kids.add(kid)", "                if n and n >= y[\"tutar\"]:\n                    kids.add(kid)")]),
+    ("B129d İ2 susması yok: Kartı Kapat'lı kart da kapanır", [('            if any(y.tur == "taksit_kapat" and y.durum == "aktif" and y.v.get("kart") == kid for y in d.kaynaklar.values()):',
+      '            if False:')]),
+    ("B129e İ2 susması yok: şüpheli kayıtlı caride kart da kapanır", [('            if any(y.tur == "supheliye_al" and y.durum == "aktif" and y.v.get("cari") == c for y in d.kaynaklar.values()):',
+      '            if False:')]),
+    ("B129f İ2 susması yok: kapanmış karta sonradan tahsilat / Kartı Kapat", [("        if kk_ is not None and kk_.s210:", "        if False:")]),
+    ("B130 İ4 S213 A: şüpheliye alınmış fatura Açık Faturalar'dan düşer", [('sup = [dict(x, taraf="b") for x in q.supheli if x["kalan"] > 0 and x["tur"] == "fatura"]', "sup = []")]),
+    ("B130b İ4 susması yok: Değersiz yazılmış şüpheli faturalı cari de karşılaştırılır", [('return any(x.get("degersiz") and x["tur"] == "fatura" for x in self.kuyruk(c, t, fg=True).supheli)', "return False")]),
+    ("B131 İ8 S220 B: önceden gecikmiş kalem de kapanış gününe çekilir", [('                if o["vade"] < tarih:\n                    # bakım 14', '                if False:\n                    # bakım 14')]),
+    ("B131b İ8 S205 B: vadesi gelmemiş kalemler de kendi vadesinde", [('                if o["vade"] < tarih:\n                    # bakım 14', '                if True:\n                    # bakım 14')]),
 ]
 
 
@@ -691,7 +709,7 @@ def kos(src):
     tm = yukle(src)
     yukleyici = unittest.defaultTestLoader
     suite = unittest.TestSuite()
-    for sinif in (tm.Yardimci, tm.OlayMaddeleri, tm.Bakim12, tm.Bakim13, tm.ElleSenaryolar, tm.Rastgele, tm.DegismezDenetcileri):  # SenaryoHijyeni, Dosyalar hariç (Bakim12 / Bakim13: bakım 12 / 13)
+    for sinif in (tm.Yardimci, tm.OlayMaddeleri, tm.Bakim12, tm.Bakim13, tm.Bakim14, tm.ElleSenaryolar, tm.Rastgele, tm.DegismezDenetcileri):  # SenaryoHijyeni, Dosyalar hariç (Bakim12 / Bakim13 / Bakim14: bakım 12 / 13 / 14)
         suite.addTests(yukleyici.loadTestsFromTestCase(sinif))
     with contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
         r = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(suite)
@@ -715,16 +733,21 @@ def main():
         return 1
     for _, degisiklikler in MUTANTLAR:                # parçalar önce denetlenir (tam bir kez geçmeli)
         mutant_kaynak(src, degisiklikler)
+    # bakım 14: MUTASYON_ARALIK="a:b" yalnız MUTANTLAR[a:b] dilimini koşar (kanıt koşusunu ≤ 40 dk parçalara bölmek için; varsayılan hepsi)
+    aralik = os.environ.get("MUTASYON_ARALIK")
+    secili = MUTANTLAR[slice(*[int(x) if x else None for x in aralik.split(":")])] if aralik else MUTANTLAR
+    if aralik:
+        print(f"aralık {aralik}: {len(secili)} / {len(MUTANTLAR)} mutant")
     sag = []
     # her mutant ayrı süreçte (fork) koşar; sonuç sırası korunur. MUTASYON_PARALEL=1 sıralı koşar.
     paralel = int(os.environ.get("MUTASYON_PARALEL", os.cpu_count() or 1))
-    isler = [(src, d) for _, d in MUTANTLAR]
+    isler = [(src, d) for _, d in secili]
     if paralel > 1:
         havuz = multiprocessing.get_context("fork").Pool(paralel)
         sonuclar = havuz.imap(_mutant_kos, isler)
     else:
         havuz, sonuclar = None, map(_mutant_kos, isler)
-    for (ad, degisiklikler), (n, kirmizi) in zip(MUTANTLAR, sonuclar):
+    for (ad, degisiklikler), (n, kirmizi) in zip(secili, sonuclar):
         durum = "ÖLDÜ" if kirmizi else "SAĞ KALDI"
         print(f"{ad:<78} {durum:<10} ({len(kirmizi)}/{n} test kırmızı: {', '.join(kirmizi[:3])}{' …' if len(kirmizi) > 3 else ''})")
         if not kirmizi:
@@ -733,8 +756,8 @@ def main():
         havuz.close()
         havuz.join()
     yukle(src)
-    print(f"# tests {len(MUTANTLAR)}")
-    print(f"# pass {len(MUTANTLAR) - len(sag)}")
+    print(f"# tests {len(secili)}")
+    print(f"# pass {len(secili) - len(sag)}")
     print(f"# fail {len(sag)}")
     if sag:
         print("SAĞ KALAN:", "; ".join(sag))

@@ -1,0 +1,202 @@
+[
+ {
+  "dosya": "senaryo",
+  "senaryo": "s118-a1-s200-elle-once-sonra-fatura",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s119-a2-s210-s211-kart-kapanir",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s120-a3-s213-acik-faturalar-supheli",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s121-a5-s220-kart-kapat-onceden-gecikmis",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "aciklama",
+  "eski": "EK-2B 35: faturanın kendi kartı faturayla kalkar; tahsilatlı kartta silme red, iptalde tahsilat avans; Mevcut Borç kartı küçülür.",
+  "yeni": "EK-2B 35: faturanın kendi kartı faturayla kalkar; tahsilatlı kartta silme red, iptalde tahsilat avans; Mevcut Borç kartının faturası iptal → kart kapanır (S210 / S211)."
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "elle/A/g2a/gecikmis",
+  "eski": 0,
+  "yeni": 2000
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "elle/A/kt2/TK3/kapali",
+  "eski": false,
+  "yeni": true
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "elle/A/kt2/TK3/taksitler",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "elle/A/kt2/TK3/taksitler/0/kalan",
+  "eski": 2000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "elle/A/kt2/TK3/taksitler/0/tutar",
+  "eski": 2000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "senaryo",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "elle/A/kt2/TK3/taksitler/0/vade",
+  "eski": "2026-04-01",
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s118-a1-s200-elle-once-sonra-fatura",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s119-a2-s210-s211-kart-kapanir",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s120-a3-s213-acik-faturalar-supheli",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s121-a5-s220-kart-kapat-onceden-gecikmis",
+  "sinif": "YENI",
+  "anahtar": "(yeni dosya)"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/g2a/detay",
+  "eski": [],
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/g2a/detay/0/kalan",
+  "eski": "∅",
+  "yeni": 2000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/g2a/detay/0/kalem",
+  "eski": "∅",
+  "yeni": "borc:BY"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/g2a/detay/0/vade",
+  "eski": "∅",
+  "yeni": "2026-01-21"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/g2a/gecikmis",
+  "eski": 0,
+  "yeni": 2000
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/g2b/detay/0/kalem",
+  "eski": "kart:TK3",
+  "yeni": "borc:BY"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/g2b/detay/0/vade",
+  "eski": "2026-04-01",
+  "yeni": "2026-01-21"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/kt2/TK3/kapali",
+  "eski": false,
+  "yeni": true
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/kt2/TK3/taksitler",
+  "eski": "∅",
+  "yeni": []
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/kt2/TK3/taksitler/0/kalan",
+  "eski": 2000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/kt2/TK3/taksitler/0/tutar",
+  "eski": 2000,
+  "yeni": "∅"
+ },
+ {
+  "dosya": "beklenen",
+  "senaryo": "s58-r9-kartli-fatura-sil-iptal",
+  "sinif": "A2-S210-S211",
+  "anahtar": "dallar/A/raporlar/kt2/TK3/taksitler/0/vade",
+  "eski": "2026-04-01",
+  "yeni": "∅"
+ }
+]

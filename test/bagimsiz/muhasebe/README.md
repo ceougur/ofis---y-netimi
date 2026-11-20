@@ -20,12 +20,12 @@ Program (JavaScript) ayrı bir sürücü ajanıyla bu senaryolara karşı koşul
 ## Dosyalar
 | Dosya | Ne |
 |---|---|
-| `model.py` | Model: hesap planı (§2 + 671 / 681), olay → madde (§3), mizan, büyük defter, gelir tablosu (MSUGT, 7/A), bilanço (ters bakiye brütleştirme, hesaplanmış satırlar, Kesin Değil), dönem sonu değerleme (§5), **Tek Yükümlülük Kuyruğu** (EK-1 §1: açık kalemler, gecikmiş, hatırlatma, şüpheli kuyruğu), kapanış (Önceki Yıl Sonucu Fişleri + N-01…N-07), devir açılışları (N-09…N-13; M2/M3/M12/M13), Devri Yenile (N-14, M9), Devri Geri Al (N-15), dönem kilidi + 2.4.9 donmuş defter + Kural Farkı Düzeltme Fişi (Ç3, KG-15, M7), KDV dönem etiketi (M8, S4), şüpheli kayıtları (K3), değişmezler; bakım 12: S179 sınırı (`Gecis._s179_sinif`), S168 tek kuyruk görünümü (yalnız susma denetimi — `Dosya.kuyruk(fifo=True)`, çıktı `susmalar`) |
-| `senaryolar_elle.py` | 117 elle doğrulanabilir senaryo (s01…s117, s93 bakım 13'te kalktı; s26 iki seçenekli; bakım 13 itibarıyla); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
+| `model.py` | Model: hesap planı (§2 + 671 / 681), olay → madde (§3), mizan, büyük defter, gelir tablosu (MSUGT, 7/A), bilanço (ters bakiye brütleştirme, hesaplanmış satırlar, Kesin Değil), dönem sonu değerleme (§5), **Tek Yükümlülük Kuyruğu** (EK-1 §1: açık kalemler, gecikmiş, hatırlatma, şüpheli kuyruğu), kapanış (Önceki Yıl Sonucu Fişleri + N-01…N-07), devir açılışları (N-09…N-13; M2/M3/M12/M13), Devri Yenile (N-14, M9), Devri Geri Al (N-15), dönem kilidi + 2.4.9 donmuş defter + Kural Farkı Düzeltme Fişi (Ç3, KG-15, M7), KDV dönem etiketi (M8, S4), şüpheli kayıtları (K3), değişmezler; bakım 12: S179 sınırı (`Gecis._s179_sinif`), S168 tek kuyruk görünümü (yalnız susma denetimi — `Dosya.kuyruk(fifo=True)`, çıktı `susmalar`); bakım 14: S200 (Mevcut Borç kartı önce elle borçlar, eksik kısım faturalardan), S210 / S211 (iptalle kapanan kart — `Kaynak.s210`), S213 (Açık Faturalar + şüpheli kalan), S220 (Kartı Kapat'ta önceden gecikmiş kalem kendi vadesinde) |
+| `senaryolar_elle.py` | 121 elle doğrulanabilir senaryo (s01…s121, s93 bakım 13'te kalktı; s26 iki seçenekli; bakım 14 itibarıyla); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
 | `uretici.py` | Tohumlu rastgele üretici: bir yıl (~800 olay) + K sonrası Ocak (+ zorla S11: K'den önce alınmış evrak 20.01'de karşılıksız) + devir + devirden sonra kayıt + Devri Yenile; tohum 1, 2, 3 |
 | `uret_beklenen.py` | `senaryolar/<ad>.json` (kendi kendine yeten senaryo: tanımlar + olaylar + dallar + elle) ve `senaryolar/beklenen/<ad>.json` (her dal için modelin tam çıktısı) yazar / `--denetle` |
-| `test_model.py` | 213 test (bakım 13 itibarıyla): yardımcılar, olay → madde birim testleri, 110 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü ve belirsiz güne — doğrulanmamış bayram penceresi — düşmez; bakım 4'ten beri sabit resmî tatile düşebilir, model kaydırır; bakım 5'ten beri 28 Ekim yarım gün iş günü), dosya güncelliği |
-| `mutasyon.py` | 317 metin mutantı (bakım 13 itibarıyla; model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
+| `test_model.py` | 223 test (bakım 14 itibarıyla): yardımcılar, olay → madde birim testleri, 110 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü ve belirsiz güne — doğrulanmamış bayram penceresi — düşmez; bakım 4'ten beri sabit resmî tatile düşebilir, model kaydırır; bakım 5'ten beri 28 Ekim yarım gün iş günü), dosya güncelliği |
+| `mutasyon.py` | 330 metin mutantı (bakım 14 itibarıyla; model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
 
 ## Çalıştırma
 ```
@@ -1797,4 +1797,134 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
 - `kahinmuh13-muh-g3-*`: 61.837/61.837, BEKLENMEYEN 0 (sınıflar: A5-S192-pay 192, A5-S192-susma 61, A6-S197 43, A6-S198 32, A7-s104-sira 18, A7-s108-S155 107, A7-s51-S120 44, A7-s78-P1b 317,
   A7-s93-KALKTI 2, YENI 8); döküm `kahinmuh13-muh-g3-dokum-*.json` iki saat diliminde bayt bayt aynı. `kahinmuh13-muh-g3-atif-*`: 3/3 (rastgele farkların tamamı S192 benimsemesinden).
 - Defter kâhini (KARARLAR bakım 4): `kahinmuh13-defter-oz-*` 263/263, `kahinmuh13-defter-eski-kirmizi-*` 257'den 18 kırmızı (yalnız 191 / 391), `kahinmuh13-defter-g3-*` 1.040/1.040.
+- UTC ve Europe/Istanbul özet satırları aynı.
+
+## Kâhin bakımı 14 (20.11.2026; kodu görmeyen ajan; TOPLU KÂHİN BAKIMI — Ç7b paketinin son kâhin bakımı: S200 (S120'nin ölçüsü), S210 / S211 (Mevcut Borç kartının içine aldığı faturanın iptali), S213 (Açık Faturalar ↔ şüpheli), S188 / S191 / S193 (uç durumlar — SUS), S205 / S220 (Kartı Kapat 'Borçta Kalsın'), S219 / S221 / S222 (Excel kartı ↔ aynı adlı kişi); cari kâhini bakımı 22 ile aynı bakım)
+
+### Kaynaklar ve bağımsızlık
+- Tek karar kaynağı: ana oturumun girdi dosyası `scratchpad/kahin-toplu14-kararlar.md` (A1–A6 bu kâhin, B1–B2 cari kâhini). OKUMA KURALI uygulandı: soru metinlerindeki "program bugün", "koşuldu", "tur …", "test",
+  "mutant", "kod değişmez", "kodlanan" sözleri ve oradaki program gözlemleri (ör. S213'teki "göstersin (program bugün)", S219'daki "v2.4.9'da da aynı", S220'deki "ajan uyguladı") KURAL KAYNAĞI SAYILMADI; kural
+  yalnız KARAR satırları (seçilen seçeneğin metni ve kararın kendi örneği) ve girdinin KAPSAM satırlarıdır. Kararın söylemediği alt durumda kâhin SUSAR ve soru aşağıda "KULLANICIYA SORULMALI"dadır (ders 40, 43).
+  Kullanıcının 20.11 09:00 kuralı (2.5.1'e bırak) uygulandı: kâhin iç düzeni (bakiyeyi / sayıları değiştirmeyen) bu bakımda kovalanmaz — "SONRAKİ SÜRÜME (2.5.1)" ajan raporunda.
+- Okunan: `CLAUDE.md` (oturum bağlamında), `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md` (tamamı), girdi dosyası (tamamı), bu README'nin satır 1–247 ve bakım 12 + 13 bölümleri (tamamı), aramayla Kartı Kapat / KG-23 /
+  M1d / S15 / R4 / R6 / R9 / Y8 / Y9 / `acik_faturalar` / `taksit_excel` satırları ve bakım 2'nin R1–R21 tablosu. Kâhin kaynakları: `model.py`, `senaryolar_elle.py`, `test_model.py`, `mutasyon.py` ilgili
+  bölümleri (satır aralıkları ajan raporunda). Kural kitabı bu bakımda AÇILMADI (girdinin kararları kitap satırı gerektirmedi; M1d / M1e kitap okumaları README'de zaten yazılı). Cari kâhininin
+  `KARARLAR.md` §33'ü (bu toplu bakımın öbür yarısı; muhasebe kurallarına kaynak SAYILMADI — yalnız S206'nın cari kâhinindeki karşılığını görmek için). `server/`, `client/`, `bulut/`, `packaging/`,
+  `tools/` (yalnız `node tools/kanit.mjs kos` ÇALIŞTIRILDI), `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md`, `docs/erp/**`, sürücü klasörü ve öbür `test/` klasörleri, başka ajanların `docs/kanit/**` dosyaları,
+  depo geçmişi / farkı OKUNMADI; program çalıştırılmadı.
+
+### Karar metinleri (girdiden; etiketleri AYNEN — tam metin girdide)
+- **A1 — S200 = A (KULLANICI KURALIYLA ÖNERİ UYGULANDI 19.11 20:51):** "örnek F1 50.000 + elle borç BY1 30.000, taksit kartı 60.000. A: önce elle borçlar, eksik kısım faturalardan (16.02'de gecikmiş 20.000)" ·
+  "kart tutarı kullanıcının girdiği tutar olarak kalır (B kartı sessizce değiştirirdi)". S120 = A (KULLANICI KARARI 11.11 06:35): "kart yalnız ELLE borçları eskiden yeniye içine alır, faturalar kendi vadesiyle ayrı kalır".
+- **A2 — S210 = A (KULLANICI KURALIYLA ÖNERİ UYGULANDI 19.11 23:18):** "elle Borç 400 + fatura 500 → kart 900 → Taksit Tahsilatı 300 → fatura iptal (bakiye iki okumada 100). A: kart kapanır — elle borç kendi
+  vadesiyle carinin kuyruğuna döner, 300 avans olur (Kalan 100, gecikmiş 100)" · "S206 = A'nın 'kart kapanır' kuralının harfi (kartın kaç kalem içerdiğini ayırmıyor)". **S211 = A (aynı):** "fatura 900 → kart
+  900 → fatura iptal (bakiye 0). A: kart kapanır" · "S206'nın gerekçesi ('B kullanıcıyı borçsuz ama açık bir kartla bırakır') aynen".
+- **A3 — S213 = B (KULLANICI KURALIYLA ÖNERİ UYGULANDI 19.11 23:50):** "B: göstersin …, şüpheli olduğu ayrıca belirtilir" · "fatura hâlâ ödenmemiş; tahsilat takibi için listede kalmalı" · KAPSAM: "şüpheliye
+  alınmış fatura açık fatura görünümünde KALIR (kalanıyla); kâhinin dilinde satır için 'Şüpheli' işareti yoksa yalnız listeleme kuralı".
+- **A4 — S188 = C, S191 = C, S193 = C (KULLANICI KURALIYLA ÖNERİ UYGULANDI 14.11 13:12):** üçü "uç durum böyle kalsın (BİLİNEN SINIR; kâhin … susar)".
+- **A5 — S205 = A (KULLANICI KURALIYLA ÖNERİ UYGULANDI 19.11 22:31):** "kalan 600'ün tamamı 11.04'ten gecikmiş" ("ertesi günden gecikmiş, hatırlatma gider"). **S220 = A (KULLANICI 20.11 13:39 "önerilerini
+  uygula"):** "kalemin kendi vadesi ile kapanış gününden ERKEN olanı — önceden gecikmiş kalem kendi vadesinde kalır, kapanış günü gecikmiş 0'a inmez, gecikme yaşı küçülmez". KAPSAM: "vadesi gelmemiş kalemler
+  kapanış gününe çekilir (kapanışın ertesi gününden gecikmiş — S205)".
+- **A6 — S219 = A (SON KARAR, KULLANICI 20.11 11:29 "a tamam"), S221 = A, S222 = A (KULLANICI 20.11 14:47 "önerilerini yap"):** Excel'den taksit kartı yüklemede "kartı zaten var" yalnız AYNI KİŞİNİN açık kartı
+  (aynı ad + aynı telefon; telefonsuzsa aynı ad + aynı grup, tek eşleşme); kişi kesin seçilemiyorsa satır atlanır, neden yazılır; S221 telefonsuz satır + aynı grupta tek telefonsuz aynı adlı cari (kartı yok) →
+  kart o cariye; S222 telefonlu satır + aynı adlı telefonsuz carinin açık kartı → satır atlanır.
+
+### Kural başına yorum (önce yorum, sonra kod — ders 40)
+| # | Karar | Kâhin yorumu | Senaryo / test | Mutant |
+|---|---|---|---|---|
+| İ1 | A1 — S200 = A | **Bakım 13'te bu alan KURULMAMIŞTI** (README bakım 13 Ü21 + KULLANICIYA SORULMALI 1: "elle borçlar kart tutarından az" → kâhin SUSUYORDU; kararın "Kâhin bakım 13'te A ile kuruldu" sözü kâhinin kendi belgesine göre doğru DEĞİL — soru bakım 13'te soruldu, kural kurulmadı). Şimdi KURULUR: Mevcut Borç kartı (`taksit_karti {kaynak: mevcut_borc}`) açıldığı anda carinin açık borcu kart tutarından FAZLA, karta eşit tek elle borç yok (S110) ve elle borçların (Borç Yaz — C-01) toplamı kart tutarından AZ ise kart ÖNCE bütün elle borçları eskiden yeniye (belge tarihi → giriş sırası; Ü21 aynen) tüketir, EKSİK kalan kısmı faturalardan tüketir. Faturaların kendi aralarındaki sırası kararda yazılı değil → kitabın Mevcut Borç kuralı (EK-1 M1e: "Carinin Mevcut Borcu → açık borçlar S2 sırasıyla") ile: vadesi ilk gelen → belge tarihi → giriş sırası (kâhin yorumu; BAŞ MİMAR değerlendirir — M1e yazılı kural, kural uydurulmadı). Kart tutarı DEĞİŞMEZ (kararın sözü "kart tutarı kullanıcının girdiği tutar olarak kalır"). Kararın örneği: F1 50.000 (vade 10.02) + BY1 30.000, 01.02'de kart 60.000 → kart BY1 30.000 + F1'in 30.000'i; F1'in kuyruktaki açık kalanı 20.000 (vade 10.02) → 16.02'de gecikmiş 20.000 (kararın sayısı). **Fatura başına kalan (`acik_faturalar`):** kâhinin fatura görünümü bakım 2'den beri kartın tükettiği kısmı faturanın kapanmış kısmı sayar (M1e); kararın "16.02'de gecikmiş 20.000" sayısı F1'in açık kalanının 20.000 olmasından başka türlü çıkamaz (F1 dışında açık kalem yok) → `acik_faturalar` F1 20.000 kararın metninden ÇIKAR → DEĞER (SUS değil). Ü21'in öbür SUS'ları AYNEN: karta eşit birden çok elle kalem (S120 (d)) ve açık borçta fatura / Borç Yaz dışında kalem (bakım 13 KULLANICIYA SORULMALI 2) — yinelenmez. **SUS'tan çıkan:** bakım 13'ün "elle borçlar kart tutarından az" susması (s51'in eski hâli sınıfı) | s118, birim | B128, B128b |
+| İ2 | A2 — S210 = A | Kâhinin dili kartı ve fatura iptalini TAŞIYOR (`taksit_karti {kaynak: mevcut_borc}`, `iptal {kaynak}`) → kural kurulur. **Bugünkü kâhin (bakım 2 R4 / karar (4) "kartın faturası iptal-silinince kart küçülür"):** Mevcut Borç kartının tükettiği fatura iptal edilince kart alttaki borç kadar KALIR, fark en erken taksitlerden küçülür (s58 C2) — S210'un B'sine yakın okuma. **Yeni (S210 = A):** fatura İPTAL edildiğinde, iptalden önceki dosyada o faturanın (herhangi bir kısmını) tüketmiş her Mevcut Borç kartı **KAPANIR** — kart hiçbir kalemi tüketmemiş sayılır, taksitleri kuyruktan kalkar (kart kapalı, taksitsiz; `kartlar` raporu S15'in düzeniyle `{kapali: true, taksitler: []}` — bakım 4 Y9), kartın tükettiği öbür kalemler (elle borç) KENDİ vade / belge / sırasıyla carinin kuyruğuna döner, kartın Taksit Tahsilatları (`tahsilat {taksit_karti}`) hedefsiz kalır → bağsız alacak, TYK'da KENDİ TARİHİNDE dağılır (S15 / Y8 düzeni; "300 avans olur"). Defter DEĞİŞMEZ (Mevcut Borç kartı maddesiz; iptal edilen fatura ETKİSİZ; tahsilat B 100 / A 120 aynen) → yalnız kuyruk (gecikmiş, açık kalemler, hatırlatma, kartlar raporu) değişir. Kararın örneği: BY 400 (01.03) + F 500 (10.03) → kart 900 (15.03) → kart tahsilatı 300 (05.04) → F iptal → bakiye 100, elle borç açık 100 (vade 01.03), gecikmiş 100. "Kart kapanır" kartın kaç kalem içerdiğine bakmaz (kararın gerekçesi) → kart faturanın yalnız bir kısmını tüketmiş olsa da kapanır. Silme bu kararın konusu DEĞİL: Silinenler'e giden faturada karar (4) (R4 küçülme) AYNEN — KULLANICIYA SORULMALI 1. SUS (kararın söylemediği; senaryo hatası): kart iptalden önce Kartı Kapat ile kapatılmış; carinin şüpheli kaydı var (K3 / M13 dağılımının kapanan kartla birlikte yeniden kurulması kararda yok); iptalden SONRA kapanmış karta tahsilat / Kartı Kapat (dil kabul / ret bilmez) — KULLANICIYA SORULMALI 2 | s119 (C1, C3), s58 C2 (G3), birim | B129, B129b |
+| İ3 | A2 — S211 = A | Tahsilatsız kartta aynı kural: kart KAPANIR (İ2'nin bütün sonuçları; tahsilat yoksa avans da yok). Bugünkü kâhin (R4): kart borçsuz ama AÇIK kalır (tükettiği faturanın tamamı küçülmeyle 0'a iner — "borçsuz ve ödemesiz açık kart", S211'in B'si). Kararın örneği: F 900 → kart 900 → F iptal → bakiye 0, gecikmiş 0, kart `{kapali: true, taksitler: []}`. Çok kalemli + tahsilatsız kart (s58 C2: F3 4.000 + BY 2.000 → kart 6.000 → F3 iptal) iki kararın kesişimi: ikisi de "kart kapanır" → çelişki yok; BY kendi vadesiyle (belge günü 21.01) kuyruğa döner → 02.03'te gecikmiş 2.000 | s119 (C2), s58 C2, birim | B129 |
+| İ4 | A3 — S213 = B | Açık Faturalar (`acik_faturalar`, fatura durumu görünümü — karar (5) R5) şüpheliye alınmış faturayı KALANIYLA gösterir: satır kalanı = faturanın CH kuyruğundaki açık kalanı + şüpheli kuyruğundaki (M13) açık kalanı (şüpheliden düşen tahsilat — K3 / S14 — şüpheli kalanı azaltır; karşılık ayırma kalanı değiştirmez). Bugünkü kâhin: J-01 kalemi CH kuyruğundan TÜKETTİĞİ için şüpheliye alınan kısım listede YOKTU (= S213'ün A'sı) — kural DEĞİŞİR. Kâhinin dilinde satırda "Şüpheli" işareti YOK (`acik_faturalar` satırı {fatura, kalan, vade, tarih}) → yalnız listeleme kuralı; işaret DENENMEYEN + SÜRÜCÜ İÇİN (dil EKLENMEDİ). Satırın vade / tarihi faturanınki (kalemin kendi vadesi; M13 J-06 "kendi vadeleriyle"). SUS: şüpheli kalemin bir kısmı DEĞERSİZ yazılmışsa (J-05) o fatura satırının listede kalıp kalmayacağı kararda yok (S213'ün gerekçesi "hâlâ ödenmemiş; tahsilat takibi" değersiz yazılan alacak için iki okumalı) → o carinin Açık Faturalar raporu `susmalar`'a `{kural: "S213", rapor, cari, tarih, dosya}` (S192 düzeni; sürücü karşılaştırmaz) — KULLANICIYA SORULMALI 3. S192 (Ü14) kalem raporu susması AYNEN | s120, birim | B130, B130b |
+| İ5 | A4 — S188 = C | Kâhin ZATEN susuyor (bakım 12 Ş4: K-15 hareketinde bütün kartların en geç açılışı ile hareketin kendi kartının açılışı ayrışınca senaryo hatası — `_s179_sinif`, mutant B111c). Doğrulandı; değişen yok | (birim bakım 12) | (B111c) |
+| İ6 | A4 — S191 = C | Kâhin ZATEN susuyor (bakım 12 Ş13 + bakım 13 Ü20: faturaya bağlı tahsilatta ve taksit tahsilatında kaydın günündeki 120 ile S155'in toplam ölçüsü ayrı sonuç verirse senaryo hatası — `_s181_sinir`, mutant B114c / B126b). Doğrulandı; değişen yok | (birim bakım 12 / 13) | (B114c, B126b) |
+| İ7 | A4 — S193 = C | Kâhin ZATEN susuyor (bakım 12 Ş15: bağlı tahsilatın payı açık şüphelinin tamamını kapatıp 120'yi eksiye indiriyorsa senaryo hatası — `_s181_sinir`, mutant B114d). Doğrulandı; değişen yok | (birim bakım 12) | (B114d) |
+| İ8 | A5 — S205 = A + S220 = A | Kâhinin dili Kartı Kapat'ı (`taksit_kapat`) ve gecikmişi / gecikme yaşını (gecikmiş raporunun `detay` satırları {kalem, vade, kalan}; açık kalemler ve `kartlar` raporunda vade) TAŞIYOR → kural kurulur. **Bugünkü kâhin (bakım 2 R6, EK-1 M1d):** Kartı Kapat kalanı "kapatma tarihli TEK kalem" (vade = kapanış günü) — vadesi zaten geçmiş taksit de kapanış gününe çekiliyordu (kapanış günü gecikmiş 0'a iniyor, gecikme yaşı küçülüyordu) = S220'nin B'si. **Yeni:** kapanıştan ÖNCE vadesi geçmiş (vade < kapanış günü) her açık taksit kalanı KENDİ vadesinde (ve kendi belge / giriş sırasıyla) kart kalanı kalemi olur; vadesi gelmemiş (vade ≥ kapanış günü) kalanlar M1d gibi kapanış tarihli TEK kalem (vade = kapanış günü → ertesi günden gecikmiş — S205). Kapanış günü: gecikmiş = önceden gecikmiş kalemler (0'a inmez); ertesi gün: kalanın tamamı (iki okumada AYNI — kararın sözü). Tutar, bakiye, defter (madde yok), hatırlatma kuralı DEĞİŞMEZ. Eski sürümde kapatılmış kart (`eski: true`) ve donmuş 2.4.9 türetmesi (689) AYNEN. Kartı Kapat'ın kalanına sonradan bağlanan tahsilat kalan kalemlerine S2 sırasıyla (önce önceden gecikmiş olanlar) | s121, s60 (G3), birim | B131, B131b |
+| İ9 | A6 — S219 / S221 / S222 | Kâhinin dilinde Excel kartı (`taksit_excel`) CARİSİYLE gelir (`cari` alanı açık kimlik); kişi eşleştirmesi (ad, telefon, grup), "Aynı adla açık kart var" denetimi ve satır atlama dilde YOK → yeni alan / olay EKLENMEDİ: yalnız yorum + DENENMEYEN + SÜRÜCÜ İÇİN (kart açılırsa madde KG-5 A aynen B CH (T − P) / A 519, atlanırsa hiç madde yok — iki durumda da kâhinin bugünkü `taksit_excel` kuralı; sürücü programın atladığı satırı kâhinde olay olarak vermez) | — | — |
+
+### KULLANICIYA SORULMALI / KÂHİN SUSUYOR (kodlanmadı; SORU DÜZENİ 06.11 09:01: uç durumda üçüncü seçenek)
+1. **S210 / S211 × fatura SİLME (İ2; UÇ) — kâhin SUSMAZ, karar (4) ile değer yazar:** Mevcut Borç kartının içine aldığı fatura İptal Et yerine Sil ile Silinenler'e gönderilirse (örnek: BY 400 + F 500 → kart 900 → kart
+   tahsilatı 300 → F silinir; bakiye iki okumada 100). (a) Karar (4) AYNEN (kâhinin bugünkü kuralı, kartın faturası "iptal-silinince" küçülür): kart 400'e küçülür (en erken taksitlerden), 300 kartta kalır → kart
+   kalanı 100, gecikmiş kartın taksit vadesine göre. (b) S210 gibi: kart kapanır, BY kendi vadesiyle döner, 300 avans → BY açık 100, gecikmiş 100. Öneri (b) (faturası kalkan kart için tek kural; kullanıcının iki
+   yolu ayırmasına neden yok). C: Uç durum böyle kalsın (BİLİNEN SINIR; kâhin karar (4) ile kalır).
+2. **S210 / S211'in sınırı (İ2; UÇ):** (a) kart iptalden ÖNCE Kartı Kapat ile kapatılmışsa (kalan borçta, M1d / S220) faturanın iptali kartın kalanını da kaldırır mı; (b) carinin açık şüpheli kaydı varken kart
+   kapanırsa elle borcun şüpheli kuyruğuna (M13) dönüşü kartın taksitleri gibi mi; (c) iptalden SONRA kapanmış karta tahsilat / Kartı Kapat. Kâhin üçünde SUSAR (senaryo hatası). Öneri: (a) kalan kalem de kalkar
+   (kart hiç yokmuş gibi — S210'un "elle borç kendi vadesiyle döner"i), (b) şüpheli kuyruğu kartsız dosyadaki gibi yeniden kurulur, (c) reddedilir. C: Uç durum böyle kalsın (BİLİNEN SINIR; kâhin susar).
+3. **S213 × Değersiz Alacak (İ4; UÇ):** şüpheliye alınmış faturanın şüpheli kısmı (bir kısmı ya da tamamı) Değersiz yazıldıktan (J-05) sonra Açık Faturalar'da fatura: (a) değersiz yazılan kısım düşer, yalnız
+   kalan (varsa) görünür — alacak defterden silindi; (b) değersiz kısım da görünür (fatura hâlâ ödenmemiş). Bakiye ikisinde aynı (değersiz yazılan carinin borcundan düşmüştür). Öneri (a). C: Uç durum böyle kalsın
+   (BİLİNEN SINIR; kâhin o carinin Açık Faturalar raporunda susar).
+4. Sürer (yinelenmez): bakım 13'ün KS 2 (S120 "elle borç" kapsamı / karta eşit birden çok kalem), KS 3–5 (S192 kalem raporları ve özel sınıflar); bakım 12'nin KS 1 / 4 / 6 artık KULLANICI KARARIYLA BİLİNEN SINIR
+   (S188 / S191 / S193 = C — kâhin susar, aynen).
+- BAŞ MİMAR değerlendirir (kâhin yorumu, kodlanacak): İ1 (eksik kısmın faturalar arasındaki sırası M1e'nin S2'si; `acik_faturalar` F1 20.000 kararın sayısından), İ2 (içine alma = iptalden önceki dosyada tüketim;
+  kısmi tüketim de kapanır; S15'in `kartlar` düzeni; silme karar (4)'te), İ4 (kalan = CH + şüpheli kalan; işaret dilde yok), İ8 (vade < kapanış günü "önceden gecikmiş"; aynı gün vadeli kalem kapanış kalemine).
+
+### Yorumun kod sırasında düzeltilen / netleşen yerleri (yorum commit'inden SONRA — açıkça)
+- **İ4 (S213) susmasının ölçüsü:** Değersiz Alacak Yaz (J-05) şüpheli kalemi kalanıyla kapatır — kâhinin kuyruğunda kalem 0'a iner; değersiz yazılan kısım kuyrukta ayrıca İZLENİR (`degersiz` izi; yalnız susma
+  denetimi için, sonucu değiştirmez) ve fatura satırı o izi taşıyorsa carinin Açık Faturalar raporu `susmalar`'a yazılır. Okuma aynı.
+- **İ2 (S210) "içine alma"nın ölçüsü:** iptalden ÖNCEKİ dosyada carinin kuyruğu kurulur (`kuyruk(c, 9999-12-31)`), faturanın CH kalemini tüketen (`tuketen`) Mevcut Borç kartları kapanır; kapanış iptal anında
+  bir kez kaynak üzerinde işaretlenir (`Kaynak.s210`) — sonraki türetmeler (devir, düzeltme kopyaları) aynı işareti taşır. Okuma aynı.
+- İlk koşuda (model commit'i) yeni ve değişen senaryoların elle değerlerinin HİÇBİRİ değişmedi (223 testten yalnız `Dosyalar` kırmızıydı — beklenen dosyaları yeniden yazılmadan önce).
+
+### Önceki beklentilerle çelişen yerler (eski → yeni, nedeni; G3 — `docs/kanit/2026-11-20/kahintoplu14-muh-g3-*`, betiği `kahintoplu14-arac/g3-muh.py`)
+- Karşılaştırma: eski kâhinin (bakım 13, `kahin-toplu14-taban` kopyası) `senaryolar/` ↔ yeni kâhininki, anahtar anahtar; BEKLENMEYEN 0.
+- **A2 (İ2 / İ3, S210 / S211) — s58, 19 anahtar:** C2'nin Mevcut Borç kartı (F3 4.000 + BY 2.000, tahsilatsız) F3'ün iptalinde artık KAPANIR: `g2a/gecikmis` 0 → 2000 (BY, vade 21.01), `g2b/detay` kalemi kart:TK3 (vade 01.04)
+  → borc:BY (vade 21.01; tutar aynı 2000), `kt2/TK3` {kapali: false, taksitler [01.04 2000]} → {kapali: true, taksitler: []}; senaryo dosyasında aynı elle değerler + açıklama. Bakiye (`120|C2` 2000) ve defter AYNI.
+  **SUS'a dönen anahtar yok; kural değişen alan** (eski beklenti karar (4) R4'ün küçülme okumasıydı — İ2).
+- **A1 (İ1, S200):** eski elle / beklenen değerlerin HİÇBİRİ değişmedi (bakım 13'te bu alan SUS'tu — senaryosu yoktu; s51 bakım 13'te karar (a) düzenine çevrilmişti). **SUS'tan çıkan:** "elle borçlar kart tutarından az"
+  sınıfı (birim `test_A7_S120_elle_borclar`'ın susan örneği artık değer: açık F 400, kart 500).
+- **A3 (İ4, S213), A5 (İ8, S220):** eski beklenenlerde şüpheli caride Açık Faturalar raporu ve önceden gecikmiş taksitli Kartı Kapat YOKTU → değişen anahtar 0 (s60'ın Kartı Kapat'ında önceden gecikmiş taksit yok — aynen).
+  Rastgele tohum 1 / 2 / 3 AYNI (üretici bu dört alanı üretmiyor ya da sonucu değişmiyor).
+- **A4 (İ5–İ7):** değişen yok. **A6 (İ9):** değişen yok.
+- **YENİ:** s118–s121 (senaryo + beklenen).
+
+### Elle beklenenlerin yazılış sırası (bakım 14)
+- e75937dc: yorum İ1–İ9 + KULLANICIYA SORULMALI 1–3 — kod, senaryo ve testten önce, AYRI commit (ders 40).
+- cccba81f: s118–s121, s58 C2'nin yeni değerleri, `Bakim14` birim testleri (6) ve bakım 13 `test_A7_S120_elle_borclar`'ın susan örneğinin değere çevrilmesi — model DEĞİŞTİRİLMEDEN ÖNCE. Eski kâhinle (bakım 13 kopyası
+  + yeni `senaryolar_elle.py` / `test_model.py` / `mutasyon.py`) 223 testten 12 kırmızı, hepsi beklenen nedenle: S120 susması (`test_A7_S120`, `test_S200_…`, s118, `Dosyalar` — "elle borçlar kart tutarından az; kâhin
+  susar"), S210 yok (`test_S210_S211_…` [kart:TK 100] ≠ [borc:BY 100]; s119 g1 0 ≠ 10000; s58 g2a 0 ≠ 2000), S210 susmaları yok (`test_S210_sinir_susar` — AssertionError yok), S213 yok (`test_S213_…`, s120 af1a yalnız F2
+  30000), S220 yok (`test_S220_…` (0, []); s121 g1a 0 ≠ 30000). `test_S210_silme_karar4_aynen` eski kâhinde YEŞİL (kural değişmedi — karar (4) silmede aynen; KULLANICIYA SORULMALI 1).
+- Model commit'i: ilk koşuda elle değerlerin hiçbiri değişmedi (yukarıda).
+
+### Yeni senaryolar, testler ve mutasyonlar
+- Elle senaryolar (4 yeni → 121): s118 (A1: kararın örneği C1 — F1 50.000 + BY1 30.000, kart 60.000 → F1 açık 20.000, 16.02'de gecikmiş 20.000, kart tutarı aynen; C3 — eksik kısım faturalar arasında M1e S2 sırasıyla),
+  s119 (A2: S210'un örneği C1 — BY 400 + F 500 → kart 900 → tahsilat 300 → F iptal → BY açık 100, gecikmiş 100, kart kapalı; S211'in örneği C2 + sonradan kesilen fatura; C3 çok kalemli tahsilatsız ve faturanın yalnız
+  bir kısmını almış kart), s120 (A3: şüpheliye alınan fatura Açık Faturalar'da CH + şüpheli kalanıyla; şüpheliden düşen nakit kalanı azaltır), s121 (A5: S205 kontrolü C2; S220 C1 — kapanış günü gecikmiş 30.000
+  (0'a inmez), ertesi gün 60.000, gecikme yaşı / vade 01.04 korunur; kapalı karta sonradan tahsilat önce önceden gecikmiş kaleme).
+- Birim (`Bakim14`, 6 test; toplam 223): `test_S200_elle_once_eksik_faturadan`, `test_S210_S211_kart_kapanir`, `test_S210_silme_karar4_aynen`, `test_S210_sinir_susar`, `test_S213_acik_faturalar_supheli_ve_degersiz_susmasi`,
+  `test_S220_kismen_odenmis_ve_ayni_gun_vadeli`; değişen: `Bakim13.test_A7_S120_elle_borclar` (susan örnek → değer).
+- Mutantlar: 13 yeni → 330. B128 (S200: önce faturalar), B128b (S200 B: kart elle borçlara küçülür), B128c (eksik kısım belge sırasıyla) · B129 (S210 / S211 B: karar (4) küçülme), B129b (S211 yok: yalnız
+  tahsilatlı kart kapanır), B129c (kısmi tüketen kart kapanmaz), B129d / B129e / B129f (İ2 susmaları yok) · B130 (S213 A: şüpheli fatura listeden düşer), B130b (değersiz susması yok) · B131 (S220 B: önceden gecikmiş de
+  kapanış gününe), B131b (S205 B: vadesi gelmemiş de kendi vadesinde). Metni yeni koda taşınan (anlam aynı): B07, B41, B41c. Kalkan mutant yok.
+
+### Sürücü için (programla karşılaştırmadan önce)
+- **A1 — S200 (`taksit_karti {kaynak: mevcut_borc}`; ALAN DEĞİŞMEDİ):** açık borç kart tutarından fazla, karta eşit tek elle borç yok, elle borçlar (Borç Yaz) kart tutarından AZ → kâhin artık DEĞER yazar (önce
+  elle borçlar eskiden yeniye, eksik kısım faturalardan vade sırasıyla; kart tutarı aynen). Eskiden bu sınıf senaryo hatasıydı (sürücü kurmuyordu). s118.
+- **A2 — S210 / S211 (`iptal {kaynak: <satış faturası>}`; ALAN DEĞİŞMEDİ, SONUCU DEĞİŞTİ):** faturanın herhangi bir kısmını içine almış Mevcut Borç kartı iptalde KAPANIR — `kartlar` raporunda `{kapali: true,
+  taksitler: []}`, kartın tükettiği öbür kalemler kendi vadesiyle `acik_kalemler` / `gecikmis`'te, kart tahsilatı bağsız alacak. Silme (`sil`) karar (4) ile AYNEN (küçülme). Kâhinin sustuğu (senaryo hatası): iptalden
+  önce Kartı Kapat'lı kart, şüpheli kayıtlı cari, iptalden sonra kapanmış karta tahsilat / Kartı Kapat. s119, s58.
+- **A3 — S213 (`rapor {rapor: acik_faturalar}`; ALANIN ANLAMI DEĞİŞTİ):** satır kalanı artık CH kalanı + şüpheli kuyruğundaki kalan (şüpheliye alınmış fatura listede kalır). "Şüpheli" işareti kâhin çıktısında YOK —
+  sürücü programın işaretini karşılaştırmaz. YENİ `susmalar` kaydı `{kural: "S213", rapor, cari, tarih, dosya}` (S192 kaydıyla aynı biçim): o carinin o Açık Faturalar raporu karşılaştırılmaz (Değersiz yazılmış
+  şüpheli fatura). s120.
+- **A5 — S220 (`taksit_kapat`; ALANIN ANLAMI DEĞİŞTİ):** Kartı Kapat'ın kalanı artık tek kalem DEĞİL — kapanıştan önce vadesi geçmiş her taksit kalanı kendi vadesi ve belge tarihiyle (kart tarihi) ayrı `kart_kalani:<kart>`
+  kalemi, vadesi gelmemişlerin toplamı kapanış tarihli tek kalem. `gecikmis.detay`, `acik_kalemler`, `kartlar.taksitler` bu kalemleri ayrı satırlarla gösterir. s121.
+- **A6 — S219 / S221 / S222:** kâhinin `taksit_excel`'i carisiyle gelir; programın Excel'den kişi eşleştirmesi / satır atlaması kâhinde YOK — sürücü programın atladığı satırı kâhine olay olarak vermez, açtığı kartı
+  `taksit_excel {cari: <programın eşlediği cari>}` olarak verir (o carinin seçimi kâhinde denetlenmez — DENENMEYEN).
+- Değişmedi: öbür bütün olay alanları ve çıktı anahtarları.
+
+### DENENMEYEN (bu bakım)
+- Programla karşılaştırma (sürücü güncellemesi ana oturumun işi).
+- A1: elle borç dışı borç kalemi / karta eşit birden çok elle kalem (bakım 13 KS 2 — SUS sürer).
+- A2: Sil ile kalkan faturanın kartı (karar (4) aynen — KULLANICIYA SORULMALI 1); iptalden önce Kartı Kapat'lı kart, şüpheli cari, iptalden sonra kapanmış karta tahsilat / Kartı Kapat (SUS — KULLANICIYA SORULMALI 2);
+  alış faturası / tedarikçi tarafı (Mevcut Borç kartı yalnız borç kalemlerini tüketir).
+- A3: satırdaki "Şüpheli" işareti (dilde yok); Değersiz yazılmış şüpheli faturalı cari (SUS — KULLANICIYA SORULMALI 3); Şüpheliden Çıkar'dan sonraki görünüm (M13 J-06 aynen — senaryo yok).
+- A4: değişen yok (kâhin susmaya devam eder). A5: Excel kartında / devirle gelen kartta Kartı Kapat (kural aynı, senaryo yok); eski sürümde kapatılmış kart (689 — aynen).
+- A6: Excel'den kişi eşleştirmeli kart yükleme bütünüyle (dilde yok).
+- Dinî bayram tarihleri (Z12 aynen).
+
+### Kanıt (`docs/kanit/2026-11-20/kahintoplu14-*`; koşu betiği `kahintoplu14-arac/kos.sh` (temel / mut1 / mut2 — ≤ 40 dk parçalar), çıktılar `kahintoplu14-kos-<utc|ist>-<parça>.txt`; ölçülen commit'ler 39aa0612 (UTC temel), 320a86dd (IST temel), d05bcb6d (UTC mutasyon), 135092a2 (IST mutasyon) — aralarındaki commit'ler yalnız kanıt dosyası; kâhin kodu 39aa0612'den beri aynı; "+1 izlenmeyen" çalışma ağacındaki `node_modules` bağlantısı)
+- `kahintoplu14-muh-test-utc / -ist`: 223/223 (çıkış 0).
+- `kahintoplu14-muh-eski-kirmizi-*`: eski kâhin (bakım 13 kopyası) + yeni `senaryolar_elle.py` / `test_model.py`: 223 testten 12 kırmızı, hepsi beklenen nedenle (yazılış sırası bölümü; iletiler günlükte).
+- `kahintoplu14-muh-g3-*`: 63.204/63.204, BEKLENMEYEN 0 (A2-S210-S211 19, YENI 8); döküm `kahintoplu14-muh-g3-dokum-*.json` iki saat diliminde bayt bayt aynı.
+- `kahintoplu14-muh-yeni-mutantlar-*`: bakım 14'ün 13 yeni + 3 taşınan mutantı 16/16 ÖLDÜ (öldürenler günlükte).
+- `kahintoplu14-muh-mutasyon1-* / -mutasyon2-*` (MUTASYON_ARALIK 0:165 ve 165:330; `flock -s` ölçüm kilidi): UTC 165/165 + 165/165 = 330/330; Europe/Istanbul 165/165 + 165/165 = 330/330 (çıkış 0; sağ kalan yok).
 - UTC ve Europe/Istanbul özet satırları aynı.

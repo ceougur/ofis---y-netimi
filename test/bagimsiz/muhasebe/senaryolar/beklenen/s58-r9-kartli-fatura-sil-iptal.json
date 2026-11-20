@@ -38,8 +38,14 @@
     },
     "g2a": {
      "cari": "C2",
-     "detay": [],
-     "gecikmis": 0,
+     "detay": [
+      {
+       "kalan": 2000,
+       "kalem": "borc:BY",
+       "vade": "2026-01-21"
+      }
+     ],
+     "gecikmis": 2000,
      "supheli": 0,
      "tarih": "2026-03-02"
     },
@@ -48,8 +54,8 @@
      "detay": [
       {
        "kalan": 2000,
-       "kalem": "kart:TK3",
-       "vade": "2026-04-01"
+       "kalem": "borc:BY",
+       "vade": "2026-01-21"
       }
      ],
      "gecikmis": 2000,
@@ -66,14 +72,8 @@
     "kt1": {},
     "kt2": {
      "TK3": {
-      "kapali": false,
-      "taksitler": [
-       {
-        "kalan": 2000,
-        "tutar": 2000,
-        "vade": "2026-04-01"
-       }
-      ]
+      "kapali": true,
+      "taksitler": []
      }
     },
     "kt3": {

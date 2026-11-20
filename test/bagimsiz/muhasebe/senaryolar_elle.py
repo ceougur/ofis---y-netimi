@@ -1490,12 +1490,13 @@ S("s58-r9-kartli-fatura-sil-iptal", ["EK-2B 35", "karar (4)", "F-15", "R-04", "H
     # KAPALI görünür, açık taksiti yok (eski beklenti kt3 {} — kart kalkar)
     "ak3": [{"k": "tahsilat:P2", "tur": "tahsilat", "kalan": -3000, "vade": "2026-02-15", "tarih": "2026-02-15"}],
     "g3/gecikmis": 0, "kt3": {"TK2": {"kapali": True, "taksitler": []}}, "mz/satirlar/120|C3/bakiye": -3000,
-    # C2: Mevcut Borç kartının tükettiği F3 iptal → kart alttaki borç (BY 2000) kadar kalır, 4000 en erken taksitten küçülür
-    # (01.03 3000 → 0, 01.04 3000 → 2000)
-    "g2a/gecikmis": 0, "g2b/gecikmis": 2000,
-    "kt2": {"TK3": {"kapali": False, "taksitler": [{"vade": "2026-04-01", "tutar": 2000, "kalan": 2000}]}},
+    # C2: Mevcut Borç kartının tükettiği F3 iptal. Bakım 14 (S210 = A, S211 = A; README İ2 / İ3 — eski beklenti karar (4) R4: kart BY kadar kalır,
+    # 4000 en erken taksitten küçülür, g2a 0, kt2 açık 01.04 taksiti 2000): kart KAPANIR (çok kalemli + tahsilatsız — iki kararın kesişimi), BY 2000 kendi
+    # vadesiyle (belge günü 21.01) carinin kuyruğuna döner → 02.03'te ve 02.04'te gecikmiş 2000; kart kapalı, taksitsiz (S15 düzeni — bakım 4 Y9)
+    "g2a/gecikmis": 2000, "g2b/gecikmis": 2000,
+    "kt2": {"TK3": {"kapali": True, "taksitler": []}},
     "mz/satirlar/120|C2/bakiye": 2000,
-}}, aciklama="EK-2B 35: faturanın kendi kartı faturayla kalkar; tahsilatlı kartta silme red, iptalde tahsilat avans; Mevcut Borç kartı küçülür.")
+}}, aciklama="EK-2B 35: faturanın kendi kartı faturayla kalkar; tahsilatlı kartta silme red, iptalde tahsilat avans; Mevcut Borç kartının faturası iptal → kart kapanır (S210 / S211).")
 
 # ------------------------------------------------------------------------------------------------ S59
 S("s59-r5-ayni-kisi-alis-satis", ["karar (5)", "EK-2B K-2", "F-16", "S9"], [
@@ -3982,3 +3983,144 @@ S("s117-a5-s192-tek-kuyruk-payi", ["S192", "S168", "S181", "S14", "K3", "J-01", 
     "mz/satirlar/128|C1/bakiye": 700, "mz/satirlar/120|C1/bakiye": 100, "mz/satirlar/128|C3/bakiye": 700, "mz/satirlar/120|C3/bakiye": 100,
     "mz/satirlar/101.01/bakiye": 300, "mz/satirlar/100/bakiye": 1100, "mz/satirlar/600/bakiye": -3000,
 }}, aciklama="S192 A: S168 = B'nin örneği — faturaya bağlı tahsilatın şüpheli payı tek kuyruk görünümünden; KABUL, 128 700, 120 100 (çek ve nakit).")
+
+# ------------------------------------------------------------------------------------------------ S118: bakım 14 A1 — S200 = A (S120'nin ölçüsü)
+S("s118-a1-s200-elle-once-sonra-fatura", ["S200", "S120", "S110", "M1e", "H-02", "C-01", "S2", "İ1"], [
+    o("satis_faturasi", "2026-01-05", id="F2", cari="C3", M=40000, K=0, vade="2026-03-31"),
+    o("satis_faturasi", "2026-01-10", id="F1", cari="C1", M=50000, K=0, vade="2026-02-10"),
+    o("satis_faturasi", "2026-01-12", id="F3", cari="C3", M=20000, K=0, vade="2026-02-15"),
+    o("borc_yaz", "2026-01-15", id="BY2", cari="C3", tutar=10000, aciklama="Fark"),
+    o("borc_yaz", "2026-01-20", id="BY1", cari="C1", tutar=30000, aciklama="Fark", vade="2026-03-15"),
+    o("taksit_karti", "2026-02-01", id="TK1", cari="C1", kaynak="mevcut_borc", toplam=60000,
+      taksitler=[{"vade": "2026-03-01", "tutar": 30000}, {"vade": "2026-04-01", "tutar": 30000}]),
+    o("taksit_karti", "2026-02-01", id="TK2", cari="C3", kaynak="mevcut_borc", toplam=40000, taksitler=[{"vade": "2026-03-10", "tutar": 40000}]),
+    R("ak1", "acik_kalemler", cari="C1", tarih="2026-02-02"), R("kt1", "kartlar", cari="C1", tarih="2026-02-02"),
+    R("g1", "gecikmis", cari="C1", tarih="2026-02-16"), R("af1", "acik_faturalar", cari="C1", tarih="2026-02-16"),
+    R("g1b", "gecikmis", cari="C1", tarih="2026-03-02"),
+    R("af3", "acik_faturalar", cari="C3", tarih="2026-02-20"), R("g3", "gecikmis", cari="C3", tarih="2026-02-20"),
+    R("g3b", "gecikmis", cari="C3", tarih="2026-03-11"),
+    MZ("mz", "2026-01-01", "2026-03-31"),
+], {"A": {
+    # C1 (kararın örneği): açık borç F1 50000 + BY1 30000 = 80000 > kart 60000; karta eşit tek elle borç yok; elle borçlar 30000 < 60000 → kart ÖNCE BY1 30000,
+    # eksik 30000 F1'den; F1 açık 20000 (vade 10.02) → 16.02'de gecikmiş 20000 (kararın sayısı); 02.03'te F1 20000 + 01.03 taksiti 30000 = 50000.
+    # Kart tutarı değişmez (60000 = 2 × 30000). Açık Faturalar: F1 20000 (kartın tükettiği kısım kapanmış — M1e)
+    "ak1": [{"k": "fatura:F1", "tur": "fatura", "kalan": 20000, "vade": "2026-02-10", "tarih": "2026-01-10"},
+            {"k": "kart:TK1", "tur": "taksit", "kalan": 30000, "vade": "2026-03-01", "tarih": "2026-02-01"},
+            {"k": "kart:TK1", "tur": "taksit", "kalan": 30000, "vade": "2026-04-01", "tarih": "2026-02-01"}],
+    "kt1": {"TK1": {"kapali": False, "taksitler": [{"vade": "2026-03-01", "tutar": 30000, "kalan": 30000},
+                                                   {"vade": "2026-04-01", "tutar": 30000, "kalan": 30000}]}},
+    "g1/gecikmis": 20000, "g1b/gecikmis": 50000,
+    "af1": [{"fatura": "F1", "kalan": 20000, "vade": "2026-02-10", "tarih": "2026-01-10"}],
+    # C3: açık F2 40000 (vade 31.03) + F3 20000 (vade 15.02) + BY2 10000 = 70000 > kart 40000; elle 10000 < 40000 → kart BY2 10000, eksik 30000 faturalardan
+    # M1e'nin S2 sırasıyla (vadesi ilk gelen): F3 20000 (tamamı), F2 10000 → açık F2 30000 (vade 31.03). 20.02'de gecikmiş 0 (belge sırasıyla F2 önce alınsaydı F3 20000
+    # açık kalır, gecikmiş 20000 olurdu — İ1 BAŞ MİMAR değerlendirir); 11.03'te 10.03 taksiti 40000
+    "af3": [{"fatura": "F2", "kalan": 30000, "vade": "2026-03-31", "tarih": "2026-01-05"}],
+    "g3/gecikmis": 0, "g3b/gecikmis": 40000,
+    # bakiyeler kartla değişmez (Mevcut Borç kartı maddesiz): 120|C1 50000 + 30000; 120|C3 40000 + 20000 + 10000
+    "mz/satirlar/120|C1/bakiye": 80000, "mz/satirlar/120|C3/bakiye": 70000,
+}}, aciklama="S200 A: Mevcut Borç kartı önce elle borçları eskiden yeniye, eksik kısmı faturalardan (M1e S2 sırası) içine alır; kart tutarı değişmez; F1 açık 20000, 16.02'de gecikmiş 20000.")
+
+# ------------------------------------------------------------------------------------------------ S119: bakım 14 A2 — S210 = A, S211 = A (kartın içine aldığı faturanın iptali)
+_TK3x30 = [{"vade": "2026-05-01", "tutar": 30000}, {"vade": "2026-06-01", "tutar": 30000}, {"vade": "2026-07-01", "tutar": 30000}]
+S("s119-a2-s210-s211-kart-kapanir", ["S210", "S211", "S206", "S15", "F-15", "H-02", "M1e", "İ2", "İ3"], [
+    o("borc_yaz", "2026-03-01", id="BY1", cari="C1", tutar=40000, aciklama="Fark"),
+    o("satis_faturasi", "2026-03-10", id="F1", cari="C1", M=50000, K=0),
+    o("satis_faturasi", "2026-03-11", id="F3", cari="C3", M=60000, K=0),
+    o("satis_faturasi", "2026-03-12", id="F2", cari="C2", M=90000, K=0),
+    o("borc_yaz", "2026-03-13", id="BY3", cari="C3", tutar=20000, aciklama="Fark"),
+    o("taksit_karti", "2026-03-15", id="TK1", cari="C1", kaynak="mevcut_borc", toplam=90000, taksitler=_TK3x30),
+    o("taksit_karti", "2026-03-15", id="TK2", cari="C2", kaynak="mevcut_borc", toplam=90000, taksitler=_TK3x30),
+    o("taksit_karti", "2026-03-15", id="TK3", cari="C3", kaynak="mevcut_borc", toplam=50000,
+      taksitler=[{"vade": "2026-05-01", "tutar": 25000}, {"vade": "2026-06-01", "tutar": 25000}]),
+    o("tahsilat", "2026-04-05", id="P1", cari="C1", yol="nakit", tutar=30000, taksit_karti="TK1"),
+    o("satis_faturasi", "2026-04-10", id="F2b", cari="C2", M=20000, K=0),
+    o("iptal", kaynak="F1"),
+    o("iptal", kaynak="F2"),
+    o("iptal", kaynak="F3"),
+    R("g1", "gecikmis", cari="C1", tarih="2026-04-20"), R("ak1", "acik_kalemler", cari="C1", tarih="2026-04-20"),
+    R("kt1", "kartlar", cari="C1", tarih="2026-04-20"),
+    R("g2", "gecikmis", cari="C2", tarih="2026-04-20"), R("af2", "acik_faturalar", cari="C2", tarih="2026-04-20"),
+    R("kt2", "kartlar", cari="C2", tarih="2026-04-20"),
+    R("g3", "gecikmis", cari="C3", tarih="2026-04-20"), R("kt3", "kartlar", cari="C3", tarih="2026-04-20"),
+    R("h", "hatirlatma", tarih="2026-04-20"),
+    MZ("mz", "2026-01-01", "2026-04-30"),
+], {"A": {
+    # C1 (S210'un örneği): BY1 400 + F1 500 → kart 900 (açık borç = kart: M1e, ikisini de) → kart tahsilatı 300 → F1 iptal → kart KAPANIR; BY1 kendi vadesiyle
+    # (belge günü 01.03) kuyrukta, kartın 300'ü bağsız alacak (05.04 — o gün açık BY1) → BY1 açık 100; bakiye 100, gecikmiş 100 (kararın sayıları)
+    "g1/gecikmis": 10000,
+    "ak1": [{"k": "borc:BY1", "tur": "borc_yaz", "kalan": 10000, "vade": "2026-03-01", "tarih": "2026-03-01"}],
+    "kt1": {"TK1": {"kapali": True, "taksitler": []}},
+    # C2 (S211'in örneği): F2 900 → kart 900 → F2 iptal (tahsilatsız) → kart KAPANIR (borçsuz açık kart kalmaz); sonra kesilen F2b 200 kendi başına açık (vade 10.04)
+    "g2/gecikmis": 20000, "af2": [{"fatura": "F2b", "kalan": 20000, "vade": "2026-04-10", "tarih": "2026-04-10"}],
+    "kt2": {"TK2": {"kapali": True, "taksitler": []}},
+    # C3 (çok kalemli + tahsilatsız, kart faturanın YALNIZ bir kısmını almış): açık 80000 > kart 50000 → S200: BY3 20000 + F3'ün 30000'i; F3 iptal → kart KAPANIR,
+    # BY3 kendi vadesiyle (13.03) → 20.04'te gecikmiş 20000
+    "g3/gecikmis": 20000, "kt3": {"TK3": {"kapali": True, "taksitler": []}},
+    "h/otomatik": {"C1": 10000, "C2": 20000, "C3": 20000},
+    # defter değişmez (kart maddesiz, iptal edilen fatura ETKİSİZ): 120|C1 40000 − 30000; 120|C2 20000; 120|C3 20000; Kasa 30000
+    "mz/satirlar/120|C1/bakiye": 10000, "mz/satirlar/120|C2/bakiye": 20000, "mz/satirlar/120|C3/bakiye": 20000, "mz/satirlar/100/bakiye": 30000,
+}}, aciklama="S210 / S211 A: Mevcut Borç kartının içine aldığı fatura iptal edilince kart kapanır — elle borç kendi vadesiyle kuyruğa döner, kartın tahsilatı avans; tahsilatsız kart da kapanır.")
+
+# ------------------------------------------------------------------------------------------------ S120: bakım 14 A3 — S213 = B (Açık Faturalar şüpheliye alınmış faturayı kalanıyla gösterir)
+S("s120-a3-s213-acik-faturalar-supheli", ["S213", "J-01", "K3", "T-13", "M13", "karar (5)", "İ4"], [
+    o("satis_faturasi", "2026-02-01", id="F1", cari="C1", M=100000, K=0, vade="2026-03-01"),
+    o("satis_faturasi", "2026-02-10", id="F2", cari="C1", M=50000, K=0, vade="2026-04-10"),
+    o("satis_faturasi", "2026-02-15", id="F3", cari="C3", M=40000, K=0, vade="2026-03-15"),
+    o("supheliye_al", "2026-05-01", id="SA1", cari="C1", tutar=120000),
+    o("supheliye_al", "2026-05-01", id="SC3", cari="C3", tutar=40000),
+    R("af1a", "acik_faturalar", cari="C1", tarih="2026-05-02"),
+    o("karsilik_ayir", "2026-05-02", cari="C3", tutar=40000, kayit="SC3"),
+    o("degersiz_yaz", "2026-05-03", cari="C3", kayit="SC3"),
+    o("tahsilat", "2026-05-10", id="P1", cari="C1", yol="nakit", tutar=30000),
+    R("af1b", "acik_faturalar", cari="C1", tarih="2026-05-11"), R("g1", "gecikmis", cari="C1", tarih="2026-05-11"),
+    MZ("mz", "2026-01-01", "2026-05-31"),
+], {"A": {
+    # J-01 120000: açık borçlardan vade sırasıyla F1 100000 + F2 20000 şüpheliye; CH'de F2 30000. Açık Faturalar şüpheli kısmı da gösterir (S213 = B):
+    # F1 0 + 100000, F2 30000 + 20000 (eski kâhin: yalnız F2 30000)
+    "af1a": [{"fatura": "F1", "kalan": 100000, "vade": "2026-03-01", "tarih": "2026-02-01"},
+             {"fatura": "F2", "kalan": 50000, "vade": "2026-04-10", "tarih": "2026-02-10"}],
+    # serbest nakit 30000 (K3): önce şüpheliden (B 100 / A 128), en eski şüpheli kalem F1 → F1 şüpheli 70000
+    "af1b": [{"fatura": "F1", "kalan": 70000, "vade": "2026-03-01", "tarih": "2026-02-01"},
+             {"fatura": "F2", "kalan": 50000, "vade": "2026-04-10", "tarih": "2026-02-10"}],
+    "g1/gecikmis": 30000, "g1/supheli": 90000,
+    "mz/satirlar/120|C1/bakiye": 30000, "mz/satirlar/128|C1/bakiye": 90000, "mz/satirlar/100/bakiye": 30000,
+    # C3: karşılık 40000 → Değersiz → 128 = 129 = 0 (Açık Faturalar'ı İ4 SUS — birim testte `susmalar`)
+    "mz/satirlar/128|C3/bakiye": 0, "mz/satirlar/120|C3/bakiye": 0,
+}}, aciklama="S213 B: Açık Faturalar şüpheliye alınmış faturayı kalanıyla (CH + şüpheli kuyruğu) gösterir; şüpheliden düşen tahsilat kalanı azaltır.")
+
+# ------------------------------------------------------------------------------------------------ S121: bakım 14 A5 — S205 = A + S220 = A (Kartı Kapat: önceden gecikmiş kalem kendi vadesinde)
+_TK3x30b = [{"vade": "2026-03-01", "tutar": 30000}, {"vade": "2026-04-01", "tutar": 30000}, {"vade": "2026-05-01", "tutar": 30000}]
+S("s121-a5-s220-kart-kapat-onceden-gecikmis", ["S220", "S205", "KG-23", "H-07", "M1d", "karar (6)", "İ8"], [
+    o("taksit_karti", "2026-01-15", id="TK1", cari="C1", kaynak="yeni_borc", toplam=90000, taksitler=_TK3x30b),
+    o("taksit_karti", "2026-01-15", id="TK2", cari="C2", kaynak="yeni_borc", toplam=90000, taksitler=_TK3x30b),
+    o("tahsilat", "2026-03-01", id="P1", cari="C1", yol="nakit", tutar=30000, taksit_karti="TK1"),
+    o("tahsilat", "2026-03-01", id="P2", cari="C2", yol="nakit", tutar=30000, taksit_karti="TK2"),
+    o("taksit_kapat", "2026-03-15", kart="TK2"),
+    R("g2", "gecikmis", cari="C2", tarih="2026-03-16"),
+    R("g1z", "gecikmis", cari="C1", tarih="2026-04-09"),
+    o("taksit_kapat", "2026-04-10", kart="TK1"),
+    R("g1a", "gecikmis", cari="C1", tarih="2026-04-10"), R("h", "hatirlatma", tarih="2026-04-10"),
+    R("g1b", "gecikmis", cari="C1", tarih="2026-04-11"), R("ak1b", "acik_kalemler", cari="C1", tarih="2026-04-11"),
+    o("tahsilat", "2026-04-20", id="P3", cari="C1", yol="nakit", tutar=20000, taksit_karti="TK1"),
+    R("g1c", "gecikmis", cari="C1", tarih="2026-04-21"), R("ak1c", "acik_kalemler", cari="C1", tarih="2026-04-21"),
+    MZ("mz", "2026-01-01", "2026-04-30"),
+], {"A": {
+    # C2 (S205; önceden gecikmiş kalem yok): 15.03'te kapanış, kalan 01.04 + 01.05 = 60000 kapanış tarihli tek kalem → 16.03'te gecikmiş 60000
+    "g2/gecikmis": 60000, "g2/detay": [{"kalem": "kart_kalani:TK2", "vade": "2026-03-15", "kalan": 60000}],
+    # C1: 1. taksit ödendi; 09.04'te 01.04 taksiti gecikmiş 30000
+    "g1z/gecikmis": 30000, "g1z/detay": [{"kalem": "kart:TK1", "vade": "2026-04-01", "kalan": 30000}],
+    # 10.04 Kartı Kapat (S220 = A): 01.04 taksiti kapanıştan ÖNCE gecikmiş → kendi vadesinde (kapanış günü gecikmiş 0'a inmez); 01.05 taksiti kapanış gününe (10.04)
+    "g1a/gecikmis": 30000, "g1a/detay": [{"kalem": "kart_kalani:TK1", "vade": "2026-04-01", "kalan": 30000}],
+    "h/otomatik": {"C1": 30000, "C2": 60000},
+    # ertesi gün kalanın tamamı (S205 — iki okumada aynı tutar; gecikme yaşı 01.04 kalemi için küçülmez)
+    "g1b/gecikmis": 60000, "g1b/detay": [{"kalem": "kart_kalani:TK1", "vade": "2026-04-01", "kalan": 30000},
+                                          {"kalem": "kart_kalani:TK1", "vade": "2026-04-10", "kalan": 30000}],
+    "ak1b": [{"k": "kart_kalani:TK1", "tur": "kart_kalani", "kalan": 30000, "vade": "2026-04-01", "tarih": "2026-01-15"},
+             {"k": "kart_kalani:TK1", "tur": "kart_kalani", "kalan": 30000, "vade": "2026-04-10", "tarih": "2026-04-10"}],
+    # kapalı karta sonradan tahsilat 20000: kalan kalemlerine S2 sırasıyla — önce 01.04 kalemi → 10000
+    "g1c/gecikmis": 40000,
+    "ak1c": [{"k": "kart_kalani:TK1", "tur": "kart_kalani", "kalan": 10000, "vade": "2026-04-01", "tarih": "2026-01-15"},
+             {"k": "kart_kalani:TK1", "tur": "kart_kalani", "kalan": 30000, "vade": "2026-04-10", "tarih": "2026-04-10"}],
+    # defter: madde yok (Kartı Kapat); 120|C1 90000 − 30000 − 20000; 120|C2 90000 − 30000; Kasa 80000
+    "mz/satirlar/120|C1/bakiye": 40000, "mz/satirlar/120|C2/bakiye": 60000, "mz/satirlar/100/bakiye": 80000,
+}}, aciklama="S220 A: Kartı Kapat'ta önceden gecikmiş taksit kendi vadesinde kalır (kapanış günü gecikmiş 0'a inmez); vadesi gelmemişler kapanış gününe (S205: ertesi günden gecikmiş).")

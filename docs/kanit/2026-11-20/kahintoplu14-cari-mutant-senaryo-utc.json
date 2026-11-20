@@ -1,0 +1,32 @@
+{
+  "ad": "kahintoplu14-cari-mutant-senaryo-utc",
+  "komut": "python3 -I -B docs/kanit/2026-11-20/kahintoplu14-arac/mutant-senaryo.py --model test/bagimsiz/cari",
+  "commit": "39aa0612a21654e62a741542a5d09912c827f3e2",
+  "dal": "worktree-agent-aa6366f4d4126b97f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T15:45:42.850Z",
+  "sure_sn": 31.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1224,
+    "gecen": 1224,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kanit/2026-11-20/kahintoplu14-cari-mutant-senaryo-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa6366f4d4126b97f",
+  "ham_cikti_sha256": "d0bcc598b4b6ed502337b396cfdb5b6cc71027e5de40fc72fdb8463360746ada",
+  "ham_cikti_bayt": 94220
+}
