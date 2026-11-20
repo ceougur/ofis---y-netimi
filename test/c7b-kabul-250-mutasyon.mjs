@@ -24,9 +24,10 @@ const DIFF = /madde sayısı|fark doğuran maddeler/;
 // [no, ad, dosya, eski, yeni, test, beklenen neden]
 const MUTASYONLAR = [
   [1, "gider türünü yok say → hep 770 (M14 / F-06)", "server/lib/invoice-math.mjs", 'return EXPENSES[expenseCode]?.account || "770";', 'return "770";', KITAP, /F-06: 770 \/ 760 \/ 255/],
-  [2, "belgesizde KDV ayır (veresiye satışın 1/6'sı 391'e; KG-2 'KDV ayrılmaz')", GL, 'post(id, row.date, "Stok (veresiye satış)", row.note, control, UNCLASSIFIED_GL.sale, row.amount);', 'post(id, row.date, "Stok (veresiye satış)", row.note, control, UNCLASSIFIED_GL.sale, row.amount - Math.round(row.amount / 6)); post(`${id}:kdv`, row.date, "Stok (veresiye satış)", row.note, control, "391", Math.round(row.amount / 6));', F, /600\.90 = belgesiz satış/],
+  [2, "belgesizde KDV ayır (veresiye satışın 1/6'sı 391'e; KG-2 'KDV ayrılmaz')", GL, 'post(id, row.date, "Stok (veresiye satış)", row.note, control, UNCLASSIFIED_GL.sale, row.amount);', '(post(id, row.date, "Stok (veresiye satış)", row.note, control, UNCLASSIFIED_GL.sale, row.amount - Math.round(row.amount / 6)), post(`${id}:kdv`, row.date, "Stok (veresiye satış)", row.note, control, "391", Math.round(row.amount / 6)));', F, /600\.90 = belgesiz satış|Kapı eşdeğerlik ihlali.*gl:391/],
   [3, "belgesiz satışın .90 alt hesabı düşer (KG-2)", GL, 'sale: Object.freeze({ account: "600", sub: "600.90" }),', 'sale: "600",', D, DIFF],
-  [4, "kayıt tahsilatını 649'a yaz (KG-3)", GL, "UNCLASSIFIED_GL.collection, row.amount);", '"649", row.amount);', F, /336\.90 = kayıt tahsilatları/],
+  // 4: yazım yolunda programın kendi kapısı (gateVerify) reddeder — fark DEĞERLE (gl:336, beklenen −tutar ↔ defter 0); kapı geçseydi 336.90 denetimi yakalardı.
+  [4, "kayıt tahsilatını 649'a yaz (KG-3)", GL, "UNCLASSIFIED_GL.collection, row.amount);", '"649", row.amount);', F, /336\.90 = kayıt tahsilatları|Kapı eşdeğerlik ihlali.*\(gl:336\).*"ledger":0,"subledger":-/],
   [5, "601 ↔ 600 (KG-24 ihracat ana hesapta)", GL, 'export const EXPORT_SALES_GL = "601";', 'export const EXPORT_SALES_GL = "600";', D, DIFF],
   [6, "satıştan iade KDV'si hep 391 (KG-8 yok)", GL, '{ account: oldReturnVat(shift, row.date) ? "391" : "191", side: "debit"', '{ account: "391", side: "debit"', D, /ters kayıttan sonra SR3 B 191/],
   [7, "alıştan iade KDV'si hep 191 (F-08 yok)", GL, '{ account: oldReturnVat(shift, row.date) ? "191" : "391", side: "credit"', '{ account: "191", side: "credit"', D, /PR3 A 391 \(F-08\)/],
