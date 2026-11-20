@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Muhasebe kâhini bakımı 13 — G3: eski kâhinin (bakım 12, `kahin-muh13-taban`) senaryo + beklenen dosyaları ↔ yeni kâhinin dosyaları, anahtar anahtar.
-Program AÇILMAZ; yalnız iki kopyanın `senaryolar/` klasörleri okunur.
+"""Muhasebe kâhini bakımı 14 (toplu kâhin bakımı 14) — G3: eski kâhinin (bakım 13, `kahin-toplu14-taban`) senaryo + beklenen dosyaları ↔ yeni kâhinin dosyaları, anahtar anahtar.
+Bakım 13 aracının (`docs/kanit/2026-11-19/kahinmuh13-arac/g3-muh.py`) uyarlaması — sınıflar bu bakımın girdi maddeleri. Program AÇILMAZ; yalnız iki kopyanın `senaryolar/` klasörleri okunur.
 
   python3 -I g3-muh.py --eski <eski test/bagimsiz/muhasebe> --yeni <yeni test/bagimsiz/muhasebe> [--dokum <json>]
 
-Sınıflar (girdinin maddeleri): A5-S192-pay (rastgele tohumlar; atıf g3-atif.py), A5-S192-susma (`susmalar` anahtarı), A6-S197 (s111), A6-S198 (s62), A7-s51-S120, A7-s78-P1b, A7-s104-sira, A7-s108-S155,
-A7-s93-KALKTI (s93 dosyaları), YENI (s114–s117), BEKLENMEYEN (0 olmalı). Son satır "N/M denetim geçti" (tools/kanit.mjs).
+Sınıflar: A2-S210-S211 (s58 — C2'nin kartı kapanır), YENI (s118–s121), BEKLENMEYEN (0 olmalı). Son satır "N/M denetim geçti" (tools/kanit.mjs).
 """
 import json
 import os
@@ -40,10 +39,8 @@ def oku(kok, alt):
     return {f[:-5]: json.load(open(os.path.join(d, f), encoding="utf-8")) for f in sorted(os.listdir(d)) if f.endswith(".json")}
 
 
-YENI_SEN = {"s114-a2-kural-gecis-gunu", "s115-a3-kg7-kdv-indirim-donemi", "s116-a4-s189-s190-sinir", "s117-a5-s192-tek-kuyruk-payi"}
-SENARYO_SINIFI = {"s51-m1e-mevcut-borc-karti": "A7-s51-S120", "s78-s39-kart-iade-supheli": "A7-s78-P1b", "s104-s80-formdaki-pesin-cari": "A7-s104-sira",
-                  "s108-s85-normal-cari-tutar-tarih": "A7-s108-S155", "s111-s174-s180-kural-farki-kendi-yilinda": "A6-S197",
-                  "s62-r16-127-ters-bakiye": "A6-S198"}
+YENI_SEN = {"s118-a1-s200-elle-once-sonra-fatura", "s119-a2-s210-s211-kart-kapanir", "s120-a3-s213-acik-faturalar-supheli", "s121-a5-s220-kart-kapat-onceden-gecikmis"}
+SENARYO_SINIFI = {"s58-r9-kartli-fatura-sil-iptal": "A2-S210-S211"}
 
 
 def sinif(ad, k):
@@ -51,10 +48,6 @@ def sinif(ad, k):
         return "YENI"
     if ad in SENARYO_SINIFI:
         return SENARYO_SINIFI[ad]
-    if k.split("/")[2:3] == ["susmalar"] or "/susmalar/" in k:
-        return "A5-S192-susma"
-    if ad.startswith("rastgele-"):
-        return "A5-S192-pay"        # atıf: g3-atif.py — S192 benimsemesi kapalıyken rastgele çıktısı eski beklenenle AYNI
     return "BEKLENMEYEN"
 
 
@@ -68,7 +61,7 @@ def main():
                 dokum.append({"dosya": alt or "senaryo", "senaryo": ad, "sinif": "YENI", "anahtar": "(yeni dosya)"})
                 continue
             if ad not in y:
-                c = "A7-s93-KALKTI" if ad == "s93-b14-alt-defter-kural-farki" else "BEKLENMEYEN"
+                c = "BEKLENMEYEN"
                 dokum.append({"dosya": alt or "senaryo", "senaryo": ad, "sinif": c, "anahtar": "(dosya kalktı)"})
                 sayac[c] = sayac.get(c, 0) + 1
                 continue

@@ -412,8 +412,12 @@ MUTASYONLAR = {
     322: "Ç5 C32 (S15 iptalde kart tahsilatı kaybolur): faturayı içine alan kartın tahsilatları fatura iptalinde carinin alacağından düşer",
     # bakım 21b (KARARLAR.md §33 — C6 S206 = A, S25 (c))
     323: "Ç5 C33 (S206 B — bakım 21 davranışı): Mevcut Borç kartının içine aldığı faturanın iptalinde kart açık kalır (tahsilatı kartta; carinin kuyruğu C13.4 (11) tanımsız)",
-    324: "Ç5 C33 (S206 susması yok): çok kalemli / tahsilatsız kart da kapanır (SK-41) ve kapanmış kartın göstergesi yazılır (var = false)",
+    324: "Ç5 C33 / C34 (kapanmış kartın göstergesi SUS değil): S206 / S210 / S211 ile kapanan kartın göstergesi yazılır (var = false) — bakım 22'den beri yalnız bu",
     325: "Ç5 C33 (S25 (c) havale): şüpheliye aktarılmış faturaya bağlı HAVALE tahsilatı şüpheliden düşmez (yalnız nakit / çek payı kadar düşer)",
+    # bakım 22 (KARARLAR.md §34 — S210 = A, S211 = A)
+    326: "Ç5 C34 (S210 B / bakım 21b davranışı): çok kalemli kartın içine aldığı faturanın iptalinde kart açık kalır (SK-41 (a) susması; carinin kuyruğu tanımsız)",
+    327: "Ç5 C34 (S211 B / bakım 21b davranışı): tahsilatsız kartın içine aldığı faturanın iptalinde kart borçsuz açık kalır (SK-41 (b) susması)",
+    328: "Ç5 C34 (S210: kapanan kartın tahsilatı avans olmaz): çok kalemli / tahsilatsız kart kapanır ama kartın Taksit Tahsilatları carinin alacağından düşer",
 }
 # 2.4.9 C1.6: silinmiş cariye yazılamayan para adımları (hedef cari adımın `cari`'si) ve carisi silinmişken yapılamayan Silinenler geri yüklemeleri (hedef kaydın carisi)
 # bakım 15 (§26 Y15-6) S145: denetlenmeyen adımlar (durumu kendi kuralıyla kuran / para satırı yazmayan) ve geri alma kopyasının dışında kalan alanlar (yedek_al ile aynı)
@@ -4529,20 +4533,27 @@ class Model:
             # bakım 21b (§33 Y21b-7) [KULLANICI KURALIYLA ÖNERİ UYGULANDI S206 = A; S15 = A]: kart KAPANIR, kartın Taksit Tahsilatları carinin bağsız alacağı (kendi tarihinde — C13.4 (3) / (4)).
             # Y21b-8: çok kalemli (SK-41 (a)) / tahsilatsız (SK-41 (b)) kart kararda yok — kart açık kalır, carinin kuyruğu bugünkü C13.4 (11) susmasıyla (nedeni SK-41). Mutantlar 323 (S206 B: kart açık
             # kalır), 324 (sınır yok: SK-41 kartı da kapanır).
+            # bakım 22 (§34 Y22-1 / Y22-2) [KULLANICI KURALIYLA ÖNERİ UYGULANDI S210 = A, S211 = A]: çok kalemli (SK-41 (a)) ve tahsilatsız (SK-41 (b)) kart da KAPANIR — kartın tükettiği
+            # öbür kalemler (elle Borç) kendi vadesiyle carinin kuyruğunda, tahsilatları avans (bakım 21b'nin SK-41 susması kalktı). Mutantlar 326 / 327 (bakım 21b davranışı: açık kalır),
+            # 328 (kapanan kartın tahsilatı düşer).
             kt = self.kartlar[no]
             if kod == "s206" and self.mut == 323:
                 continue
-            if kod != "s206" and self.mut != 324:
+            if (kod == "SK-41 (a)" and self.mut == 326) or (kod == "SK-41 (b)" and self.mut == 327):
                 kt["_sk41"] = kod
                 self._iz15[f["cari"]].add("sk41")
                 continue
             kt["aktif"] = False
             kt["s206"] = True
+            kt["s206kod"] = {"s206": "S206 = A", "SK-41 (a)": "S210 = A", "SK-41 (b)": "S211 = A"}[kod]
             for t in kt["tasinan"]:
                 if t["aktif"] and t.get("kart") == no:
+                    if kod != "s206" and self.mut == 328:
+                        t["aktif"] = False  # mutant 328: kapanan kartın tahsilatı carinin alacağından düşer
+                        continue
                     t["kart"] = None
                     t["s206kart"] = no
-            self._iz15[f["cari"]].add("s206")
+            self._iz15[f["cari"]].add("s206" if kod == "s206" else "s210")
         if s206:
             self._onbellek = {}
         if any(e["fatura"] == a["fatura"] and e["durum"] != "silindi" for e in self.evraklar.values()):
@@ -5457,7 +5468,8 @@ class Model:
             if not kt["aktif"]:
                 if kt.get("s206") and self.mut != 324:
                     # bakım 21b (§33 Y21b-7): S206 = A ile kapanan kartın göstergeleri (listede mi, Tahsil Edilen / Kalan / taksitler) kararda yok — SUS (mutant 324: B1.6 gibi var = false)
-                    self.belirsiz.append("%s: kart %s S206 = A ile kapandı (içine aldığı fatura iptal edildi; tahsilatı carinin avansı) — kapanmış kartın göstergeleri kararda yok (§33 Y21b-7; SÜRÜCÜ İÇİN)" % (k, no))
+                    self.belirsiz.append("%s: kart %s %s ile kapandı (içine aldığı fatura iptal edildi; tahsilatı carinin avansı) — kapanmış kartın göstergeleri kararda yok (§33 Y21b-7, §34 Y22-1 / Y22-2; "
+                                         "SÜRÜCÜ İÇİN)" % (k, no, kt.get("s206kod", "S206 = A")))
                     continue
                 if kt.get("silindi"):
                     self.d("%s:kart:%s:var" % (k, no), False, "YAYGIN", "C1.4 dil eki: silinen taksit kartı listede yok (Silinenler'de)")

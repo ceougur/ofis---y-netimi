@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Kâhin bakımı 21b (cari; C6 S206 = A + kesik girdinin tam metni; KARARLAR.md §33) — bakım 21 aracının uyarlaması (sınıf bakım 21b'ye göre) — eski kâhin
+"""Toplu kâhin bakımı 14 / cari bakım 22 (bakım 21b aracının uyarlaması — sınıf S210-S211; iz `s210`). Eski not: Kâhin bakımı 21b (cari; C6 S206 = A + kesik girdinin tam metni; KARARLAR.md §33) — bakım 21 aracının uyarlaması (sınıf bakım 21b'ye göre) — eski kâhin
 (bakım 21, `c7b2f-kc21` = 301c0e29) ↔ yeni kâhin. Program AÇILMAZ; yalnız iki model.py koşar. (Bakım 19'un kahineski19-arac/karsilastir.py düzeni; G3 sınıfı bakım 20'ye göre — İKİ modelin `_iz15` izinden.)
 
   python3 -I karsilastir.py --eski <eski test/bagimsiz/cari> --yeni <yeni test/bagimsiz/cari> [--dokum <json>] [--tohum 10] [--islem 120]
@@ -35,7 +35,7 @@ def yukle_modul(klasor, ad):
     return m
 
 
-ME, MY = yukle_modul(ESKI, "kahin_cari_eski21b"), yukle_modul(YENI, "kahin_cari_yeni21b")
+ME, MY = yukle_modul(ESKI, "kahin_cari_eski22"), yukle_modul(YENI, "kahin_cari_yeni22")
 S110_IZ = set()  # (cari, "alan" | "sus") — yeni modelin s130 izinden
 ORNEKLER = []    # İKİ modelin bu senaryoda kurulan bütün örnekleri (iki dünya — S145 / S155 / SK-18 — dahil): _iz15 izleri birleşir
 _orij_s130, _orij_init, _orij_init_e = MY.Model.s130, MY.Model.__init__, ME.Model.__init__
@@ -211,8 +211,8 @@ etiket_degisen = 0
 def sinif15(anahtar, c, t, supheli):
     """Bakım 21b sınıfı (None → BEKLENMEYEN): yalnız C6 S206 = A — kartı S206 ile kapanan carinin (iz `s206`) denetimleri."""
     p = anahtar.split(":")
-    if "s206" in t and (p[0] != "adim"):
-        return "S206"
+    if "s210" in t and (p[0] != "adim"):
+        return "S210-S211"  # bakım 22 (§34 Y22-1 / Y22-2): SK-41 (a) / (b) kartı kapanan carinin denetimleri
     return None
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bakım 21b (bakım 21 aracının uyarlaması; izin listesi bakım 21b kararlarına göre): eski kopyanın (bakım 21) elle tabloları ↔ yeni kopyanın elle tabloları — DEĞİŞEN her eski beklenti tek tek
+"""Toplu kâhin bakımı 14 / cari bakım 22 (bakım 21b aracının uyarlaması; izin listesi bakım 22 kararlarına göre — d50 I2 / KI2 / I3 / KI3). Eski not: Bakım 21b: eski kopyanın (bakım 21) elle tabloları ↔ yeni kopyanın elle tabloları — DEĞİŞEN her eski beklenti tek tek
 (elleBeklenen değer / elleYok / elleBelirsiz). Program AÇILMAZ; yalnız senaryo dosyaları okunur. Bakım 21b'de izinli değişiklik YALNIZ d49 A1 / KA1 (S206 = A — C13.4 (11) susması kalktı, kapanmış kartın
 göstergeleri SUS); adımı değişen senaryo YOK; açıklama metni (`aciklama`) karşılaştırılmaz.
   python3 -I elle-fark.py --eski <eski test/bagimsiz/cari> --yeni <yeni test/bagimsiz/cari>
@@ -10,7 +10,7 @@ import sys
 
 ESKI = os.path.join(os.path.abspath(sys.argv[sys.argv.index("--eski") + 1]), "senaryolar")
 YENI = os.path.join(os.path.abspath(sys.argv[sys.argv.index("--yeni") + 1]), "senaryolar")
-IZINLI = {"d49-c5-s15-s25-iptal-ve-fazla.json": ("A1", "KA1")}  # bakım 21b (§33 Y21b-7): S206 = A
+IZINLI = {"d50-c5-s206-s25c-b1-iptal-havale.json": (":I2:", ":KI2:", ":I3:", ":KI3:", "KI2", "KI3", "I2 ", "I3 ")}  # bakım 22 (§34 Y22-1 / Y22-2): S210 / S211 = A
 ADIM_IZIN = set()  # bakım 21b: adımı değişen senaryo yok
 SECENEK = {}
 
