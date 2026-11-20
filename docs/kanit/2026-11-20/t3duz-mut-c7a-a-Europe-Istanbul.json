@@ -1,0 +1,32 @@
+{
+  "ad": "t3duz-mut-c7a-a-Europe-Istanbul",
+  "komut": "node test/c7a-banka-250-mutasyon.mjs --kopya /dev/shm/t3duz-d4/yeni-c7a --yalniz 1,2,3,4,5,6,7,8,9,10,11,12",
+  "commit": "6d3d010f127d09cf9998bfe67302708e0fb85776",
+  "dal": "worktree-agent-a1804bd47c97d3000",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T08:04:51.562Z",
+  "sure_sn": 18.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d4/k/2026-11-20/t3duz-mut-c7a-a-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1804bd47c97d3000",
+  "ham_cikti_sha256": "e278062d479a92453c3d5ff1441ce7ba8de6e24c7a01c95e2de17e29edb747a7",
+  "ham_cikti_bayt": 3103
+}

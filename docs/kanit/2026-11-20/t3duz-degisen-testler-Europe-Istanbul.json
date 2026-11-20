@@ -1,0 +1,32 @@
+{
+  "ad": "t3duz-degisen-testler-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-gg2-gosterge.test.mjs test/banka-210-raporlar.test.mjs test/defter-kaynak-iz-250.test.mjs test/g1-hiz-esdegerlik-250.test.mjs test/hesapsiz-acilis-250.test.mjs test/hesapsiz-tumu-250.test.mjs test/kural-farki-yil-250.test.mjs test/pos-komisyon-satis-gunu-250.test.mjs test/raporlar-230-banka.test.mjs test/supheli-kuyruk-defter-250.test.mjs",
+  "commit": "1d33f8c24411b31c574a3f209b0a25bc5f2878fc",
+  "dal": "worktree-agent-a1e6310bec4c916cb",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T07:25:40.059Z",
+  "sure_sn": 40.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 100,
+    "gecen": 100,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d3/k/2026-11-20/t3duz-degisen-testler-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1e6310bec4c916cb",
+  "ham_cikti_sha256": "00be5177ad454e7e53b5dfb49f20429ab09d62b479191046a6fd1266e5c6f78a",
+  "ham_cikti_bayt": 38564
+}

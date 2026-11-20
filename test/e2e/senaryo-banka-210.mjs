@@ -2562,13 +2562,18 @@ try {
     await shot(admin, "rapor-alt-hesap-mizani");
   });
 
-  await step("46. Banka ve POS Hareketleri: Dönem Giriş 26.500 (eski havale 5.000 dahil), Çıkış 15,75; Transfer Giriş 21.000 / Çıkış 32.000 ayrı (giriş-çıkış şişmez)", async () => {
+  await step("46. Banka ve POS Hareketleri: Dönem Giriş 21.500 (eski havale 5.000 açılışta sayıldı — satırı işaretli, toplama girmez), Çıkış 15,75; Transfer Giriş 21.000 / Çıkış 32.000 ayrı (giriş-çıkış şişmez); Dönem Sonu 160.484,25 = defter 102", async () => {
     await admin.click(`${modal} [data-rc-list] [data-report="banka-pos-hareketleri"]`);
     const data = await waitPreview(admin, view => view.summary["Transfer Giriş"]);
     // Banka ve POS Hareketleri havale + POS yoludur: kurumsal kart (309) varlık değildir, kart borcu ödemesinin banka bacağı Transfer Çıkış'tadır.
-    ok(data.summary["Dönem Giriş"] === "26.500,00 TL" && data.summary["Dönem Çıkış"] === "15,75 TL" && data.summary["Transfer Giriş"] === "21.000,00 TL" && data.summary["Transfer Çıkış"] === "32.000,00 TL" && data.summary["Dönem Sonu"] === "165.484,25 TL", `özet: ${JSON.stringify(data.summary)}`);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 tek aday düzeltme turu — G1, KULLANICI KURALIYLA ÖNERİ S214 = A): Tüm Hesaplar seçimi de 'Açılışta Sayıldı' işaretini uygular —
+    // rapor = defter (102 + 108) = hesaplar + Hesabı Atanmamış kovası. 20.09'daki hesapsız eski havale (5.000) Ziraat'in 01.10 açılışında sayıldı (adım 41 / 45: kova 0,
+    // 102.00 yok): satır raporda KALIR, işaretli; Dönem Giriş'e / Dönem Sonu'na girmez (önceden 26.500 / 165.484,25 — defterden 5.000 fazla).
+    ok(data.summary["Dönem Giriş"] === "21.500,00 TL" && data.summary["Dönem Çıkış"] === "15,75 TL" && data.summary["Transfer Giriş"] === "21.000,00 TL" && data.summary["Transfer Çıkış"] === "32.000,00 TL" && data.summary["Dönem Sonu"] === "160.484,25 TL" && data.summary["Banka (tüm hareketler)"] === "160.484,25 TL", `özet: ${JSON.stringify(data.summary)}`);
     const col = header => data.heads.indexOf(header);
-    ok(data.footer?.[col("Giriş")] === "26.500,00 TL" && data.footer?.[col("Çıkış")] === "15,75 TL", `TOPLAM = dış giriş/çıkış (${data.footer?.join(" | ")})`);
+    ok(data.footer?.[col("Giriş")] === "21.500,00 TL" && data.footer?.[col("Çıkış")] === "15,75 TL", `TOPLAM = dış giriş/çıkış (${data.footer?.join(" | ")})`);
+    const counted = data.rows.filter(cells => cells.some(cell => /Açılışta Sayıldı/.test(cell)));
+    ok(counted.length === 1 && counted[0][0] === "20.09.2026" && counted[0][col("Giriş")] === "" && counted[0][col("Çıkış")] === "", `eski havale satırı kalır, 'Açılışta Sayıldı' işaretli, tutar hücreleri boş (${counted.map(cells => cells.join(" | ")).join(" · ")})`);
     ok(data.rows.some(cells => /\(Transfer Çıkış: 20\.000,00 TL\)/.test(cells[col("Açıklama")]) && cells[col("Çıkış")] === "5,25 TL"), "ücretli transfer satırı: Çıkış 5,25, transfer tutarı açıklamada");
     await shot(admin, "rapor-banka-pos-transfer-ayri");
   });

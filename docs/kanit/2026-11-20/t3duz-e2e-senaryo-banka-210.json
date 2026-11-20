@@ -1,0 +1,43 @@
+{
+  "ad": "t3duz-e2e-senaryo-banka-210",
+  "komut": "npm run test:senaryo-banka-210",
+  "commit": "7deafec4384c8be09351231390ac92ec76733a7b",
+  "dal": "worktree-agent-a1e6310bec4c916cb",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T07:20:01.310Z",
+  "sure_sn": 305.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 428,
+    "gecen": 426,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "özet: {\"Devir\":\"0,00 TL\",\"Dönem Giriş\":\"21.500,00 TL\",\"Dönem Çıkış\":\"15,75 TL\",\"Dönem Net\":\"21.484,25 TL\",\"Transfer Giriş\":\"21.000,00 TL\",\"Transfer Çıkış\":\"32.000,00 TL\",\"Açılış ve Devir Düzeltmeleri\":\"150.000,00 TL\",\"Dönem Sonu\":\"160.484,25 TL\",\"Banka (tüm hareketler)\":\"160.484,25 TL\",\"POS / Kredi ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TOPLAM = dış giriş/çıkış (TOPLAM |  |  |  | 21.500,00 TL | 15,75 TL |  | )",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d3/k/2026-11-20/t3duz-e2e-senaryo-banka-210.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1e6310bec4c916cb",
+  "ham_cikti_sha256": "f07185671c530f27b9db90c7476055aed1e903bd7447f1ae3f5e22d992cb4844",
+  "ham_cikti_bayt": 48162
+}

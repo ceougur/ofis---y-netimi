@@ -1,0 +1,11 @@
+taban: 32 geçti / 0 kaldı (çıkış 0)
+M1 YAKALANDI — 128 ↔ 120 dağılımı eski sabite: bağlı tahsilat her zaman 120 (iki yükleyicide) (16 geçti / 16 kaldı; değer iletisi var; çökme yok) düşen: 
+M2 YAKALANDI — 128 ↔ 120 dağılımı eski sabite: bağlı evrak en eski kayıttan (kuyruk payı okunmaz — geri çağrı yok) (20 geçti / 12 kaldı; değer iletisi var; çökme yok) düşen: 
+M3 YAKALANDI — ikinci yükleyici (doubtfulState) eski kuralda kalır (21 geçti / 11 kaldı; değer iletisi var; çökme yok) düşen: 
+M4 YAKALANDI — yevmiye yükleyicisi (doubtfulRows) eski kuralda kalır (21 geçti / 11 kaldı; değer iletisi var; çökme yok) düşen: 
+M5 YAKALANDI — kesit satırın KENDİ ödemesi de şüpheli dağılımına girer (geri ekleme yok; < yerine <=) (16 geçti / 16 kaldı; değer iletisi var; çökme yok) düşen: 
+M6 YAKALANDI — kesit yok — kuyruğun son durumu okunur (sonraki satırlar dahil) (30 geçti / 2 kaldı; değer iletisi var; çökme yok) düşen: 
+M7 YAKALANDI — pay kayıt kimliği yerine en eski açık kayda yazılır (31 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M8 YAKALANDI — kalem başına kayıt kimliği boş (K-1 (b) yok) (11 geçti / 21 kaldı; değer iletisi var; çökme yok) düşen: 
+M9 YAKALANDI — sınır tutarın TAMAMINA uygulanır (128 payı düşülmez) (23 geçti / 9 kaldı; değer iletisi var; çökme yok) düşen: 
+SONUÇ: 9 geçti, 0 kaldı (9 mutasyonun 9'i yakalandı)

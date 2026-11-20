@@ -1,0 +1,17 @@
+taban: 8 geçti / 0 kaldı (çıkış 0)
+ok 1 - D-07: kart hesabı Faiz Gideri'nde yine reddedilir (kabul geri alınır): çıkış 1, 0 geçti / 3 kaldı — neden: 400 !== 200
+ok 2 - D-07: kart faizinin para satırı 309 yerine 102 (kart ↔ banka): çıkış 1, 1 geçti / 2 kaldı — neden: fiş interest_out: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Alt Hesap Mutabakatı (102.00 Hesabı Atanmamış Eski Hareketler): 210,00 TL fark). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.
+ok 3 - D-07: BSMV / KKDF satırı düşer (yalnız faiz yazılır): çıkış 1, 1 geçti / 2 kaldı — neden: D-07: B 780 faiz + BSMV / A 309.k
+ok 4 - D-07: kart faizi Planlı İşlem'de de kabul edilir (planMain yok sayılır): çıkış 1, 2 geçti / 1 kaldı — neden: kart faizi planlanmaz: 200 {"id":"bplan-7cc55b28-d18b-4caa-84bc-b85b506014ad","kind":"interest_out","typeLabel":"Faiz Gideri","accountId":"bacc-2b5e030c-523e-4f46-8934-40dcd1ed02c5","accountLabel":"Ziraat Bankası · Şirket Kartı","toAccountI
+ok 5 - D-07: faiz gideri hesabı 780 yerine 770 (hesap eşlemesi): çıkış 1, 1 geçti / 2 kaldı — neden: D-07: B 780 faiz + BSMV / A 309.k
+ok 6 - K-14: açılıştan önceki hesapsız satır banka tarafına yazılır (defterde 519'a geçmez): çıkış 1, 0 geçti / 0 kaldı — neden: hesap aç Ziraat Bankası Ana TL Hesabı: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (gl:102, bank:sub:102.00).","code":"gate-equivalence","failures":[{"code":"gl:102","name":"102 Ba
+ok 7 - K-14: açılış günü sınırı '<' yerine '≤' (açılış günündeki satır da 519'a): çıkış 1, 0 geçti / 0 kaldı — neden: hesap aç Ziraat Bankası Ana TL Hesabı: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (gl:102, bank:sub:102.00).","code":"gate-equivalence","failures":[{"code":"gl:102","name":"102 Ba
+ok 8 - K-14: EN GEÇ yerine EN ERKEN açılış tarihi: çıkış 1, 2 geçti / 3 kaldı — neden: 01.10 ve 03.10 Garanti'nin açılışından (05.10) önce
+ok 9 - K-14: kovanın ekran bakiyesi açılışta sayılmış satırları düşmez: çıkış 1, 1 geçti / 4 kaldı — neden: actual: 6700
+ok 10 - K-14: pasif hesabın açılışı sınırdan düşer (durum fark etmez kuralı bozulur): çıkış 1, 2 geçti / 3 kaldı — neden: pasif hesabın açılışı sınırda kalır
+ok 11 - K-14: Devir Kapanışı maddesi netlenmez (B 519 / A 519 yevmiyede kalır): çıkış 1, 4 geçti / 1 kaldı — neden: B 519 / A 519 netlenir, madde yazılmaz
+ok 12 - K-15: kart yolunda yön ayrımı kalkar (kart ödemesi de POS sınırına — yalnız Devir Kapanışı): çıkış 1, 4 geçti / 1 kaldı — neden: hesap aç Ziraat Bankası Şirket Kartı: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (gl:108, bank:sub:108.00).","code":"gate-equivalence","failures":[{"code":"gl:108","name":"108 Kre
+
+# tests 12
+# pass 12
+# fail 0

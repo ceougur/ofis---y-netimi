@@ -1,0 +1,174 @@
+HIZ t3duz · kilitli · tekrar 5 · kilit 09:26:33 · başta 1.72 1.53 1.57 2/115 32593 · nproc 4 · yeni t3duz-uc 46217d81 (ürün = 7aa16bdf)
+kilit ('2026-06-30',)
+=== taban · başta 1.45 1.48 1.56 1/117 32617 
+kod /dev/shm/ana-t3duz/taban · yük (başta) 1.27 1.43 1.54 · TZ Europe/Istanbul · açılış 28997 ms
+donma (bekleyen koşu) 8982.1 ms
+veri: 102365 cari satırı, 3 banka hesabı, 22 şüpheli kaydı, kilit 2026-06-30
+  İLK G1 Banka ve POS (Tümü) · Tüm Hesaplar · tüm zamanlar: durum 200 · 2232.3 ms · olay döngüsü en çok 2227.2 ms
+  İLK G1 Banka ve POS (Tümü) · Tüm Hesaplar · yıl: durum 200 · 1382 ms · olay döngüsü en çok 1379.9 ms
+  İLK G1 Banka (Havale / EFT) · Tüm Hesaplar · yıl: durum 200 · 880.1 ms · olay döngüsü en çok 0 ms
+  İLK G1 POS / Kart · Tüm Hesaplar · yıl: durum 200 · 752.2 ms · olay döngüsü en çok 0 ms
+  İLK G1 PDF · Tüm Hesaplar · yıl: durum 200 · 2234.7 ms · olay döngüsü en çok 0 ms
+  İLK G1 Excel · Tüm Hesaplar · yıl: durum 200 · 1598.2 ms · olay döngüsü en çok 1587.5 ms
+  İLK G1 denetim · Hesabı Atanmamış · tüm zamanlar: durum 200 · 1233 ms · olay döngüsü en çok 1231 ms
+  İLK Kasa penceresi (GET cash): durum 200 · 1294.4 ms · olay döngüsü en çok 8.3 ms
+  İLK Kasa Hareketleri (rapor) · yıl: durum 200 · 1042.3 ms · olay döngüsü en çok 1040.2 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 4096.5 ms · olay döngüsü en çok 0 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 2601.4 ms · olay döngüsü en çok 0 ms
+  İLK Hesap Planı Mizanı (rapor): durum 200 · 4233 ms · olay döngüsü en çok 0 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 18270.2 ms · olay döngüsü en çok 0 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 11875.5 ms · olay döngüsü en çok 0 ms
+  İLK Şüpheli Alacaklar raporu: durum 200 · 58 ms · olay döngüsü en çok 0 ms
+  İLK cari kartı (şüpheli + bağlı): durum 200 · 130.7 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · 391.4 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM bağlı çek (şüpheli cari; kapı): durum 200 · 127.7 ms · olay döngüsü en çok 0 ms
+  G1 Banka ve POS (Tümü) · Tüm Hesaplar · tüm zamanlar: durum 200 · en iyi 2067.9 ms · ortanca 2520.3 ms · olay döngüsü en çok 0 ms (n=5)
+  G1 Banka ve POS (Tümü) · Tüm Hesaplar · yıl: durum 200 · en iyi 1270.6 ms · ortanca 1330.1 ms · olay döngüsü en çok 0 ms (n=5)
+  G1 Banka (Havale / EFT) · Tüm Hesaplar · yıl: durum 200 · en iyi 884.9 ms · ortanca 1084.9 ms · olay döngüsü en çok 0 ms (n=5)
+  G1 POS / Kart · Tüm Hesaplar · yıl: durum 200 · en iyi 765.2 ms · ortanca 798.5 ms · olay döngüsü en çok 797.4 ms (n=5)
+  G1 PDF · Tüm Hesaplar · yıl: durum 200 · en iyi 2038.7 ms · ortanca 2190.7 ms · olay döngüsü en çok 2111.8 ms (n=5)
+  G1 Excel · Tüm Hesaplar · yıl: durum 200 · en iyi 1771.1 ms · ortanca 1801.8 ms · olay döngüsü en çok 2254.4 ms (n=5)
+  G1 denetim · Hesabı Atanmamış · tüm zamanlar: durum 200 · en iyi 1139.8 ms · ortanca 1208.4 ms · olay döngüsü en çok 1589.6 ms (n=5)
+  Kasa penceresi (GET cash): durum 200 · en iyi 1183.6 ms · ortanca 1271.1 ms · olay döngüsü en çok 1019.2 ms (n=5)
+  Kasa Hareketleri (rapor) · yıl: durum 200 · en iyi 881.5 ms · ortanca 1106.8 ms · olay döngüsü en çok 1191.2 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3453.7 ms · ortanca 3722.7 ms · olay döngüsü en çok 0 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2567.2 ms · ortanca 2773.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3462.8 ms · ortanca 3662.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 18588.3 ms · ortanca 19381.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 11083.7 ms · ortanca 11343.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Şüpheli Alacaklar raporu: durum 200 · en iyi 56 ms · ortanca 58.6 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (şüpheli + bağlı): durum 200 · en iyi 124.8 ms · ortanca 125.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · en iyi 329 ms · ortanca 359.8 ms · olay döngüsü en çok 448.8 ms (n=5)
+  YAZIM bağlı çek (şüpheli cari; kapı): durum 200 · en iyi 119.7 ms · ortanca 130.4 ms · olay döngüsü en çok 0 ms (n=5)
+yük (sonda) 1.31 1.30 1.44
+çıkış 0 · sonda 1.31 1.30 1.44 1/118 32744 
+kilit ('2026-06-30',)
+=== yeni · başta 1.31 1.30 1.44 1/118 32754 
+kod /dev/shm/ana-t3duz/yeni · yük (başta) 1.27 1.29 1.43 · TZ Europe/Istanbul · açılış 25514.5 ms
+donma (bekleyen koşu) 9297.7 ms
+veri: 102365 cari satırı, 3 banka hesabı, 22 şüpheli kaydı, kilit 2026-06-30
+  İLK G1 Banka ve POS (Tümü) · Tüm Hesaplar · tüm zamanlar: durum 200 · 2336.7 ms · olay döngüsü en çok 2334.1 ms
+  İLK G1 Banka ve POS (Tümü) · Tüm Hesaplar · yıl: durum 200 · 1198.6 ms · olay döngüsü en çok 0 ms
+  İLK G1 Banka (Havale / EFT) · Tüm Hesaplar · yıl: durum 200 · 705.2 ms · olay döngüsü en çok 0 ms
+  İLK G1 POS / Kart · Tüm Hesaplar · yıl: durum 200 · 569.8 ms · olay döngüsü en çok 0 ms
+  İLK G1 PDF · Tüm Hesaplar · yıl: durum 200 · 1913.2 ms · olay döngüsü en çok 1895.8 ms
+  İLK G1 Excel · Tüm Hesaplar · yıl: durum 200 · 1710.6 ms · olay döngüsü en çok 1700.8 ms
+  İLK G1 denetim · Hesabı Atanmamış · tüm zamanlar: durum 200 · 1268.2 ms · olay döngüsü en çok 1266.7 ms
+  İLK Kasa penceresi (GET cash): durum 200 · 1298.6 ms · olay döngüsü en çok 8.7 ms
+  İLK Kasa Hareketleri (rapor) · yıl: durum 200 · 1023.7 ms · olay döngüsü en çok 1021.3 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 4578.3 ms · olay döngüsü en çok 0 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 2856.8 ms · olay döngüsü en çok 0 ms
+  İLK Hesap Planı Mizanı (rapor): durum 200 · 3810.7 ms · olay döngüsü en çok 0 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 18604.1 ms · olay döngüsü en çok 0 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 11448.4 ms · olay döngüsü en çok 0 ms
+  İLK Şüpheli Alacaklar raporu: durum 200 · 5.4 ms · olay döngüsü en çok 0 ms
+  İLK cari kartı (şüpheli + bağlı): durum 200 · 83.3 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · 205.8 ms · olay döngüsü en çok 203.7 ms
+  İLK YAZIM bağlı çek (şüpheli cari; kapı): durum 200 · 77.2 ms · olay döngüsü en çok 0 ms
+  G1 Banka ve POS (Tümü) · Tüm Hesaplar · tüm zamanlar: durum 200 · en iyi 2287 ms · ortanca 2413.4 ms · olay döngüsü en çok 0 ms (n=5)
+  G1 Banka ve POS (Tümü) · Tüm Hesaplar · yıl: durum 200 · en iyi 1078.8 ms · ortanca 1126.4 ms · olay döngüsü en çok 1417.7 ms (n=5)
+  G1 Banka (Havale / EFT) · Tüm Hesaplar · yıl: durum 200 · en iyi 674.8 ms · ortanca 699.9 ms · olay döngüsü en çok 694.7 ms (n=5)
+  G1 POS / Kart · Tüm Hesaplar · yıl: durum 200 · en iyi 522.6 ms · ortanca 568.7 ms · olay döngüsü en çok 567.8 ms (n=5)
+  G1 PDF · Tüm Hesaplar · yıl: durum 200 · en iyi 1760.9 ms · ortanca 1997.6 ms · olay döngüsü en çok 1745.9 ms (n=5)
+  G1 Excel · Tüm Hesaplar · yıl: durum 200 · en iyi 1676.1 ms · ortanca 1812.6 ms · olay döngüsü en çok 2117.1 ms (n=5)
+  G1 denetim · Hesabı Atanmamış · tüm zamanlar: durum 200 · en iyi 1096.7 ms · ortanca 1201.9 ms · olay döngüsü en çok 1296 ms (n=5)
+  Kasa penceresi (GET cash): durum 200 · en iyi 1249.3 ms · ortanca 1384.5 ms · olay döngüsü en çok 1217.4 ms (n=5)
+  Kasa Hareketleri (rapor) · yıl: durum 200 · en iyi 924.4 ms · ortanca 997.5 ms · olay döngüsü en çok 1175.5 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3343.8 ms · ortanca 3371.7 ms · olay döngüsü en çok 0 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2542.3 ms · ortanca 2637 ms · olay döngüsü en çok 0 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3269.6 ms · ortanca 3460.1 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 18516.7 ms · ortanca 18812.1 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 10854.3 ms · ortanca 10976.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Şüpheli Alacaklar raporu: durum 200 · en iyi 4.1 ms · ortanca 4.7 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (şüpheli + bağlı): durum 200 · en iyi 70.3 ms · ortanca 75.1 ms · olay döngüsü en çok 107.1 ms (n=5)
+  YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · en iyi 190.1 ms · ortanca 208.7 ms · olay döngüsü en çok 250.7 ms (n=5)
+  YAZIM bağlı çek (şüpheli cari; kapı): durum 200 · en iyi 68.2 ms · ortanca 72 ms · olay döngüsü en çok 0 ms (n=5)
+yük (sonda) 1.11 1.18 1.34
+çıkış 0 · sonda 1.10 1.18 1.33 1/122 564 
+kilit ('2026-06-30',)
+=== taban · başta 1.10 1.18 1.33 1/122 574 
+kod /dev/shm/ana-t3duz/taban · yük (başta) 1.13 1.18 1.33 · TZ Europe/Istanbul · açılış 29120.6 ms
+donma (bekleyen koşu) 9937.7 ms
+veri: 102365 cari satırı, 3 banka hesabı, 22 şüpheli kaydı, kilit 2026-06-30
+  İLK G1 Banka ve POS (Tümü) · Tüm Hesaplar · tüm zamanlar: durum 200 · 2415.4 ms · olay döngüsü en çok 2411.7 ms
+  İLK G1 Banka ve POS (Tümü) · Tüm Hesaplar · yıl: durum 200 · 1433.5 ms · olay döngüsü en çok 0 ms
+  İLK G1 Banka (Havale / EFT) · Tüm Hesaplar · yıl: durum 200 · 943.4 ms · olay döngüsü en çok 0 ms
+  İLK G1 POS / Kart · Tüm Hesaplar · yıl: durum 200 · 1011.4 ms · olay döngüsü en çok 0 ms
+  İLK G1 PDF · Tüm Hesaplar · yıl: durum 200 · 2714.1 ms · olay döngüsü en çok 0 ms
+  İLK G1 Excel · Tüm Hesaplar · yıl: durum 200 · 1862.5 ms · olay döngüsü en çok 1853.9 ms
+  İLK G1 denetim · Hesabı Atanmamış · tüm zamanlar: durum 200 · 1182.1 ms · olay döngüsü en çok 1180.7 ms
+  İLK Kasa penceresi (GET cash): durum 200 · 1470.8 ms · olay döngüsü en çok 9.1 ms
+  İLK Kasa Hareketleri (rapor) · yıl: durum 200 · 1027.4 ms · olay döngüsü en çok 1022.9 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 4475.1 ms · olay döngüsü en çok 4475.3 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 3134.2 ms · olay döngüsü en çok 0 ms
+  İLK Hesap Planı Mizanı (rapor): durum 200 · 4554.8 ms · olay döngüsü en çok 0 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 22010.2 ms · olay döngüsü en çok 0 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 13999.5 ms · olay döngüsü en çok 0 ms
+  İLK Şüpheli Alacaklar raporu: durum 200 · 80 ms · olay döngüsü en çok 78.4 ms
+  İLK cari kartı (şüpheli + bağlı): durum 200 · 197.8 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · 507.7 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM bağlı çek (şüpheli cari; kapı): durum 200 · 148.9 ms · olay döngüsü en çok 0 ms
+  G1 Banka ve POS (Tümü) · Tüm Hesaplar · tüm zamanlar: durum 200 · en iyi 2388.4 ms · ortanca 2679 ms · olay döngüsü en çok 0 ms (n=5)
+  G1 Banka ve POS (Tümü) · Tüm Hesaplar · yıl: durum 200 · en iyi 1460.9 ms · ortanca 1629.1 ms · olay döngüsü en çok 1834 ms (n=5)
+  G1 Banka (Havale / EFT) · Tüm Hesaplar · yıl: durum 200 · en iyi 892.4 ms · ortanca 1002.4 ms · olay döngüsü en çok 0 ms (n=5)
+  G1 POS / Kart · Tüm Hesaplar · yıl: durum 200 · en iyi 771.4 ms · ortanca 883.8 ms · olay döngüsü en çok 845.7 ms (n=5)
+  G1 PDF · Tüm Hesaplar · yıl: durum 200 · en iyi 2139 ms · ortanca 2415.5 ms · olay döngüsü en çok 2428.5 ms (n=5)
+  G1 Excel · Tüm Hesaplar · yıl: durum 200 · en iyi 1795.3 ms · ortanca 1947.8 ms · olay döngüsü en çok 2072 ms (n=5)
+  G1 denetim · Hesabı Atanmamış · tüm zamanlar: durum 200 · en iyi 1200.5 ms · ortanca 1262.4 ms · olay döngüsü en çok 1340.1 ms (n=5)
+  Kasa penceresi (GET cash): durum 200 · en iyi 1217 ms · ortanca 1523.1 ms · olay döngüsü en çok 1359 ms (n=5)
+  Kasa Hareketleri (rapor) · yıl: durum 200 · en iyi 949.4 ms · ortanca 1211.9 ms · olay döngüsü en çok 1266.7 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3662.2 ms · ortanca 3832.2 ms · olay döngüsü en çok 4211.1 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2573.2 ms · ortanca 2862.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3602.6 ms · ortanca 3759 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 19786.3 ms · ortanca 20255.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 10926 ms · ortanca 12353 ms · olay döngüsü en çok 0 ms (n=5)
+  Şüpheli Alacaklar raporu: durum 200 · en iyi 57.9 ms · ortanca 67.7 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (şüpheli + bağlı): durum 200 · en iyi 127.1 ms · ortanca 144.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · en iyi 373.4 ms · ortanca 414.8 ms · olay döngüsü en çok 461.9 ms (n=5)
+  YAZIM bağlı çek (şüpheli cari; kapı): durum 200 · en iyi 130.3 ms · ortanca 139 ms · olay döngüsü en çok 0 ms (n=5)
+yük (sonda) 1.01 1.08 1.23
+çıkış 0 · sonda 1.01 1.08 1.23 1/120 807 
+kilit ('2026-06-30',)
+=== yeni · başta 1.01 1.08 1.23 1/120 817 
+kod /dev/shm/ana-t3duz/yeni · yük (başta) 1.06 1.09 1.23 · TZ Europe/Istanbul · açılış 28019.1 ms
+donma (bekleyen koşu) 10121.3 ms
+veri: 102365 cari satırı, 3 banka hesabı, 22 şüpheli kaydı, kilit 2026-06-30
+  İLK G1 Banka ve POS (Tümü) · Tüm Hesaplar · tüm zamanlar: durum 200 · 2502.3 ms · olay döngüsü en çok 2499.8 ms
+  İLK G1 Banka ve POS (Tümü) · Tüm Hesaplar · yıl: durum 200 · 1060 ms · olay döngüsü en çok 0 ms
+  İLK G1 Banka (Havale / EFT) · Tüm Hesaplar · yıl: durum 200 · 737.6 ms · olay döngüsü en çok 0 ms
+  İLK G1 POS / Kart · Tüm Hesaplar · yıl: durum 200 · 591.3 ms · olay döngüsü en çok 0 ms
+  İLK G1 PDF · Tüm Hesaplar · yıl: durum 200 · 2135.4 ms · olay döngüsü en çok 2118.1 ms
+  İLK G1 Excel · Tüm Hesaplar · yıl: durum 200 · 1735.4 ms · olay döngüsü en çok 1728.1 ms
+  İLK G1 denetim · Hesabı Atanmamış · tüm zamanlar: durum 200 · 1153.6 ms · olay döngüsü en çok 1151.3 ms
+  İLK Kasa penceresi (GET cash): durum 200 · 1358.8 ms · olay döngüsü en çok 8.3 ms
+  İLK Kasa Hareketleri (rapor) · yıl: durum 200 · 1089.7 ms · olay döngüsü en çok 1087.4 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 4581.4 ms · olay döngüsü en çok 0 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 3100.4 ms · olay döngüsü en çok 0 ms
+  İLK Hesap Planı Mizanı (rapor): durum 200 · 4552.8 ms · olay döngüsü en çok 0 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 19434.6 ms · olay döngüsü en çok 0 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 11984.2 ms · olay döngüsü en çok 0 ms
+  İLK Şüpheli Alacaklar raporu: durum 200 · 7.5 ms · olay döngüsü en çok 0 ms
+  İLK cari kartı (şüpheli + bağlı): durum 200 · 111.3 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · 227 ms · olay döngüsü en çok 224.3 ms
+  İLK YAZIM bağlı çek (şüpheli cari; kapı): durum 200 · 78.1 ms · olay döngüsü en çok 0 ms
+  G1 Banka ve POS (Tümü) · Tüm Hesaplar · tüm zamanlar: durum 200 · en iyi 2499.7 ms · ortanca 2578.7 ms · olay döngüsü en çok 0 ms (n=5)
+  G1 Banka ve POS (Tümü) · Tüm Hesaplar · yıl: durum 200 · en iyi 1103.6 ms · ortanca 1269.4 ms · olay döngüsü en çok 1103.1 ms (n=5)
+  G1 Banka (Havale / EFT) · Tüm Hesaplar · yıl: durum 200 · en iyi 649.6 ms · ortanca 731.7 ms · olay döngüsü en çok 0 ms (n=5)
+  G1 POS / Kart · Tüm Hesaplar · yıl: durum 200 · en iyi 542.5 ms · ortanca 608.3 ms · olay döngüsü en çok 541.6 ms (n=5)
+  G1 PDF · Tüm Hesaplar · yıl: durum 200 · en iyi 1792.6 ms · ortanca 2094.5 ms · olay döngüsü en çok 2216.7 ms (n=5)
+  G1 Excel · Tüm Hesaplar · yıl: durum 200 · en iyi 1583 ms · ortanca 1737.8 ms · olay döngüsü en çok 2005.9 ms (n=5)
+  G1 denetim · Hesabı Atanmamış · tüm zamanlar: durum 200 · en iyi 1137.6 ms · ortanca 1288.5 ms · olay döngüsü en çok 1342.2 ms (n=5)
+  Kasa penceresi (GET cash): durum 200 · en iyi 1409.6 ms · ortanca 1591.1 ms · olay döngüsü en çok 1431.3 ms (n=5)
+  Kasa Hareketleri (rapor) · yıl: durum 200 · en iyi 940.2 ms · ortanca 1077.5 ms · olay döngüsü en çok 1297.1 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3662.6 ms · ortanca 3891.4 ms · olay döngüsü en çok 0 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2770.8 ms · ortanca 2998.4 ms · olay döngüsü en çok 0 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3473.8 ms · ortanca 3634.1 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 18939.5 ms · ortanca 19401.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 10510 ms · ortanca 11171.6 ms · olay döngüsü en çok 10703.9 ms (n=5)
+  Şüpheli Alacaklar raporu: durum 200 · en iyi 4.2 ms · ortanca 4.7 ms · olay döngüsü en çok 5.6 ms (n=5)
+  cari kartı (şüpheli + bağlı): durum 200 · en iyi 70.7 ms · ortanca 79.1 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · en iyi 175.4 ms · ortanca 203.5 ms · olay döngüsü en çok 182.5 ms (n=5)
+  YAZIM bağlı çek (şüpheli cari; kapı): durum 200 · en iyi 66.3 ms · ortanca 70 ms · olay döngüsü en çok 0 ms (n=5)
+yük (sonda) 1.08 1.07 1.17
+çıkış 0 · sonda 1.08 1.07 1.17 1/121 1075 
+bitti 09:51:36 · 0 geçersiz · çıkışlar: çıkış 0 çıkış 0 çıkış 0 çıkış 0 

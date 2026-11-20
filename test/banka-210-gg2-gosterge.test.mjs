@@ -106,10 +106,14 @@ describe("GG2 — Banka ve POS Hareketleri: açılış ve Devir Kapanışı para
     const base = summaryOf(await report(ctx.api));
     assert.equal(money(base["Dönem Giriş"]), 5000);
     const account = await openAccount(ctx.api, { bankName: "Ziraat Bankası", name: "A Hesabı", kind: "demand", opening: { date: "2026-10-01", amount: "100.000", confirmed: true } });
-    const opened = summaryOf(await report(ctx.api));
-    assert.equal(money(opened["Dönem Giriş"]), 5000, "açılış bakiyesi dönem girişi değildir");
-    assert.equal(money(opened["Dönem Sonu"]), 105000, "açılışla bakiye 105.000");
+    // 2.5.0 tek aday düzeltme turu — BEKLENTİ BİLEREK DEĞİŞTİ (S214 = A, iş listesi C AYNEN: "Tüm Hesaplar seçimi de 'Açılışta Sayıldı' işaretini uygular — rapor = defter = kova"):
+    // 20.09'daki hesapsız havale (5.000) havale hesabının açılışından (01.10) önce → açılışta sayılır: satırda işaretli kalır, dönem girişine ve bakiyeye girmez (önceden 5.000 / 105.000).
+    const openedData = await report(ctx.api);
+    const opened = summaryOf(openedData);
+    assert.equal(money(opened["Dönem Giriş"]), 0, "açılış bakiyesi dönem girişi değildir; açılışta sayılmış havale de");
+    assert.equal(money(opened["Dönem Sonu"]), 100000, "açılışla bakiye 100.000 (= defter 102)");
     assert.equal(money(opened["Açılış ve Devir Düzeltmeleri"]), 100000);
+    assert.equal(openedData.rows.filter(row => /Açılışta Sayıldı/.test(String(row[3]))).length, 1, "20.09 havalesi işaretli satır olarak kalır");
     const job = await must("sihirbaz", ctx.api.post(`${BANK}/setup`, { accountId: account.id, carryClose: true, assign: "all" }));
     await must("geri al", ctx.api.post(`${BANK}/setup/${job.id}/undo`, {}));
     await must("açılış 0", ctx.api.post(`${BANK}/accounts/${account.id}/opening`, { date: "2026-10-01", amount: "0", confirmed: true }));

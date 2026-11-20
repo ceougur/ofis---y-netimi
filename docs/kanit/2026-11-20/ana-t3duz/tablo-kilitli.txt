@@ -1,0 +1,38 @@
+geçersiz blok: 0
+yol                                                             taban ort. (iki blok)   yeni ort. (iki blok)   oran   olay döngüsü t/y durum
+İLK G1 Banka ve POS (Tümü) · Tüm Hesaplar · tüm zamanlar              2232.3 / 2415.4        2336.7 / 2502.3   1.05        2412 / 2500 200
+İLK G1 Banka ve POS (Tümü) · Tüm Hesaplar · yıl                       1382.0 / 1433.5        1198.6 / 1060.0   0.77           1380 / 0 200
+İLK G1 Banka (Havale / EFT) · Tüm Hesaplar · yıl                        880.1 / 943.4          705.2 / 737.6   0.80              0 / 0 200
+İLK G1 POS / Kart · Tüm Hesaplar · yıl                                 752.2 / 1011.4          569.8 / 591.3   0.76              0 / 0 200
+İLK G1 PDF · Tüm Hesaplar · yıl                                       2234.7 / 2714.1        1913.2 / 2135.4   0.86           0 / 2118 200
+İLK G1 Excel · Tüm Hesaplar · yıl                                     1598.2 / 1862.5        1710.6 / 1735.4   1.07        1854 / 1728 200
+İLK G1 denetim · Hesabı Atanmamış · tüm zamanlar                      1233.0 / 1182.1        1268.2 / 1153.6   0.98        1231 / 1267 200
+İLK Kasa penceresi (GET cash)                                         1294.4 / 1470.8        1298.6 / 1358.8   1.00              9 / 9 200
+İLK Kasa Hareketleri (rapor) · yıl                                    1042.3 / 1027.4        1023.7 / 1089.7   1.00        1040 / 1087 200
+İLK Mizan + mutabakat (GET ledger)                                    4096.5 / 4475.1        4578.3 / 4581.4   1.12           4475 / 0 200
+İLK Yevmiye Defteri (rapor)                                           2601.4 / 3134.2        2856.8 / 3100.4   1.10              0 / 0 200
+İLK Hesap Planı Mizanı (rapor)                                        4233.0 / 4554.8        3810.7 / 4552.8   0.90              0 / 0 200
+İLK Defter Mutabakatı (rapor)                                       18270.2 / 22010.2      18604.1 / 19434.6   1.02              0 / 0 200
+İLK Mutabakat Testi (GET ledger/integrity)                          11875.5 / 13999.5      11448.4 / 11984.2   0.96              0 / 0 200
+İLK Şüpheli Alacaklar raporu                                              58.0 / 80.0              5.4 / 7.5   0.09             78 / 0 200
+İLK cari kartı (şüpheli + bağlı)                                        130.7 / 197.8           83.3 / 111.3   0.64              0 / 0 200
+İLK YAZIM bağlı tahsilat (şüpheli cari; kapı)                           391.4 / 507.7          205.8 / 227.0   0.53            0 / 224 200
+İLK YAZIM bağlı çek (şüpheli cari; kapı)                                127.7 / 148.9            77.2 / 78.1   0.60              0 / 0 200
+G1 Banka ve POS (Tümü) · Tüm Hesaplar · tüm zamanlar                  2520.3 / 2679.0        2413.4 / 2578.7   0.96              0 / 0 200
+G1 Banka ve POS (Tümü) · Tüm Hesaplar · yıl                           1330.1 / 1629.1        1126.4 / 1269.4   0.85        1834 / 1418 200
+G1 Banka (Havale / EFT) · Tüm Hesaplar · yıl                          1084.9 / 1002.4          699.9 / 731.7   0.70            0 / 695 200
+G1 POS / Kart · Tüm Hesaplar · yıl                                      798.5 / 883.8          568.7 / 608.3   0.71          846 / 568 200
+G1 PDF · Tüm Hesaplar · yıl                                           2190.7 / 2415.5        1997.6 / 2094.5   0.91        2428 / 2217 200
+G1 Excel · Tüm Hesaplar · yıl                                         1801.8 / 1947.8        1812.6 / 1737.8   0.96        2254 / 2117 200
+G1 denetim · Hesabı Atanmamış · tüm zamanlar                          1208.4 / 1262.4        1201.9 / 1288.5   0.99        1590 / 1342 200
+Kasa penceresi (GET cash)                                             1271.1 / 1523.1        1384.5 / 1591.1   1.09        1359 / 1431 200
+Kasa Hareketleri (rapor) · yıl                                        1106.8 / 1211.9         997.5 / 1077.5   0.90        1267 / 1297 200
+Mizan + mutabakat (GET ledger)                                        3722.7 / 3832.2        3371.7 / 3891.4   0.91           4211 / 0 200
+Yevmiye Defteri (rapor)                                               2773.3 / 2862.8        2637.0 / 2998.4   0.95              0 / 0 200
+Hesap Planı Mizanı (rapor)                                            3662.6 / 3759.0        3460.1 / 3634.1   0.94              0 / 0 200
+Defter Mutabakatı (rapor)                                           19381.3 / 20255.8      18812.1 / 19401.6   0.97              0 / 0 200
+Mutabakat Testi (GET ledger/integrity)                              11343.8 / 12353.0      10976.6 / 11171.6   0.97          0 / 10704 200
+Şüpheli Alacaklar raporu                                                  58.6 / 67.7              4.7 / 4.7   0.08              0 / 6 200
+cari kartı (şüpheli + bağlı)                                            125.2 / 144.7            75.1 / 79.1   0.60            0 / 107 200
+YAZIM bağlı tahsilat (şüpheli cari; kapı)                               359.8 / 414.8          208.7 / 203.5   0.57          462 / 251 200
+YAZIM bağlı çek (şüpheli cari; kapı)                                    130.4 / 139.0            72.0 / 70.0   0.54              0 / 0 200
