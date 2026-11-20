@@ -1008,7 +1008,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const lock = period?.lockedUntil?.();
     if (lock && row.issueDate <= lock) return `Belge ${dayText(row.issueDate)} tarihli; ${dayText(lock)} ve öncesi kilitli dönem. Düzenlemek için dönem kilidi açılmalı.`;
     const planId = plan?.id || row.planId;
-    if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return row.kind === "smm" ? "Makbuzun taksit kartında tahsilat var; düzenlenmez. Önce taksit kartındaki tahsilatları silin (makbuzdan iade belgesi olmaz)." : "Faturanın taksit kartında tahsilat var; düzenlenmez. Borcu düşürmek için iade faturası kaydedin.";
+    if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return row.kind === "smm" ? "Makbuzun taksit kartında tahsilat var; düzenlenmez. Önce taksit kartındaki tahsilatları silin (makbuzdan iade belgesi olmaz)." : "Faturanın taksit kartında tahsilat var; düzenlenmez. İptal Et ile iptal edin (tahsilat carinin avansı olur) ya da borcu düşürmek için iade faturası kaydedin.";
     return "";
   }
   // Kaydedilmiş belgeyi düzenleme: tek işlemde eski etkiler (stok, cari, Kasa, taksit, çek/senet) geri alınır, yenileri
@@ -3311,7 +3311,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (row.eStatus === "draft") return "Bu belge EDM portalına taslak olarak yüklendi; silinmez. Önce İptal edin (e-Arşiv taslağı EDM'de de iptal edilir; e-Fatura taslağını EDM portalından silin).";
     if (traced) return `Bu belge entegratöre (EDM) iletildi (durum: ${E_STATES[row.eStatus] || row.eStatus}); numarası kullanıldı, silinmez. Gerekirse İptal edin: belge “İptal Edildi” olarak kalır.`;
     const planId = plan?.id || row.planId;
-    if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return row.kind === "smm" ? "Makbuzun taksit kartında tahsilat var; silinmez. Önce tahsilatları silin." : "Faturanın taksit kartında tahsilat var; silinmez. Önce tahsilatları silin ya da iade faturası kaydedin.";
+    if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return row.kind === "smm" ? "Makbuzun taksit kartında tahsilat var; silinmez. Önce tahsilatları silin." : "Faturanın taksit kartında tahsilat var; silinmez. İptal Et ile iptal edin (tahsilat carinin avansı olur), tahsilatları silin ya da iade faturası kaydedin.";
     return "";
   }
   function deleteInvoice(user, id, { reason = "", force = {}, posOutcome = "refunded" } = {}) {
