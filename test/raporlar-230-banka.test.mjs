@@ -628,14 +628,19 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
     assert.equal(mixed.rows.filter(row => row[2] !== "Devir").length, 0);
     const kk = await screen("banka-pos-hareketleri", { payMethod: "ccard", anyAccount: acc.K.id }, "kart + Kredi Kartı");
     assert.equal(kk.rows.filter(row => row[2] !== "Devir").length, 2);
-    // Eski üç seçim ve "Tüm Hesaplar": önceki yol (cash.report) — Dönem Giriş = bütün dış banka girişleri (eski havale dahil), Çıkış 15,75.
+    // Eski üç seçim ve "Tüm Hesaplar": önceki yol (cash.report) — Çıkış 15,75.
+    // 2.5.0 tek aday düzeltme turu — BEKLENTİ BİLEREK DEĞİŞTİ (S214 = A, iş listesi C AYNEN: "Tüm Hesaplar seçimi de 'Açılışta Sayıldı' işaretini uygular — rapor = defter = kova"; 14.11
+    // 12:13 kararının bu raporu 'Kasa raporları değişmez'e bağlayan okuması YANLIŞTI): açılışta sayılmış eski havale (20.09, 5.000) satırda işaretli kalır, Dönem Giriş'e ve Dönem Sonu'na
+    // girmez (önceden + 500_000). Banka (Havale / EFT) seçimi de aynı.
     const noncash = await screen("banka-pos-hareketleri", {}, "tümü");
-    const allLines = rows([...REAL, "U102"], r);
-    assert.equal(summaryOf(noncash, "Dönem Giriş"), sumBy(allLines, row => row.extIn), "Banka ve POS (Tümü): Dönem Giriş");
+    const allLines = periodOf([...REAL, "U102"], r);
+    assert.equal(summaryOf(noncash, "Dönem Giriş"), sumBy(allLines, row => row.extIn), "Banka ve POS (Tümü): Dönem Giriş (açılışta sayılmış eski havale hariç)");
     assert.equal(summaryOf(noncash, "Dönem Çıkış"), sumBy(allLines, row => row.extOut), "Banka ve POS (Tümü): Dönem Çıkış");
-    assert.equal(summaryOf(noncash, "Dönem Sonu"), closing([...REAL, "U102"], r) + 500_000, "Banka ve POS (Tümü): Dönem Sonu (kart ve kredi girmez; Kasa yolu — açılışta sayılmış eski havale dahil, değişmedi)");
+    assert.equal(summaryOf(noncash, "Dönem Sonu"), closing([...REAL, "U102"], r), "Banka ve POS (Tümü): Dönem Sonu = defter (kart ve kredi girmez; açılışta sayılmış eski havale hariç)");
+    assert.equal(noncash.rows.filter(row => /Açılışta Sayıldı/.test(String(row[3]))).length, rows([...REAL, "U102"], r).filter(row => row.counted).length, "Banka ve POS (Tümü): açılışta sayılmış satır işaretli listede");
     const bank = await screen("banka-pos-hareketleri", { payMethod: "bank" }, "havale");
     assert.equal(summaryOf(bank, "Dönem Giriş"), sumBy(allLines, row => row.extIn));
+    assert.equal(summaryOf(bank, "Dönem Sonu"), closing([...REAL, "U102"], r), "Banka (Havale / EFT): Dönem Sonu = defter");
     expectStatus(await api.get(`${RC}/banka-pos-hareketleri?anyAccount=yok-boyle-hesap`), 404, "bank-account-missing", "tanınmayan hesap");
     expectStatus(await api.get(`${RC}/banka-gunluk?bankAccount=yok-boyle-hesap`), 404, "bank-account-missing", "tanınmayan hesap (günlük)");
   });
