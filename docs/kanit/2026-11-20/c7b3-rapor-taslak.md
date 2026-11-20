@@ -134,3 +134,21 @@ Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
 - Kabul C (muhasebe sürücüsü, DEĞİŞTİRİLMEDİ) yeni: 7.770 denetim, 7.568 geçti, 62 başarısız — sınıf dağılımı (AYNI 7.052 · U 516 · P 34 · K 0 · R 28 · SINIFLANMADI 0) önceki
   yeni koşuyla (7b6ec843, bölüm 4) satır satır AYNI (sınıf listesi farkı 0 satır).
 - G: senaryo-c7b-tur3-250 yeni kodda UTC 32 / 32, Europe/Istanbul 32 / 32 (S206 / S210 iptal penceresi notu — kapsamdaki fatura — aynen; kapsamda olmayanın notu kartı anmaz).
+
+## 12. Kabul E — hız KİLİTSİZ (son kod 6fccbf94 ↔ c7b3-taban; ÖZEL kilit 08:56; 4 blok, her blok taze 100 bin kopya, 5 tekrar; GEÇERSİZ blok 0, blok başı yük 1,05–1,44) — kanıt c7b3-d4-hiz-kilitsiz-*
+Ölçüm betiğine devam 3 eki: 'Geciken listesi — yazımdan önce' (aynı veride iki kod). Tablo c7b3-d4-hiz-kilitsiz-tablo-kilitsiz.md. Hız düzeltmesinden ÖNCEKİ (da458f89) ölçümle karşılaştırma:
+| yol | taban en iyi / ortanca | da458f89 (düzeltme öncesi) | 6fccbf94 en iyi / ortanca | hüküm |
+|---|---|---|---|---|
+| Fatura kartı (İptal Et notu) | 126,7 / 131,1 | ×1,58 | 128,1 / 133,2 | tamam (1,02) |
+| Satış yazımı (taksitli) | 240,5 / 253,5 | ×1,30 | 245,5 / 261,7 | tamam (1,03) |
+| Satış (kapsayan kartlı cari) | 198,4 / 208,6 | ×1,45 | 204,8 / 221,3 | tamam (1,06) |
+| İade (kart küçülmesi) | 740,8 / 773,1 | 0,95 | 524,0 / 543,7 | tamam (0,70) |
+| Faturasız stok iadesi (trimCovers) | 280,6 / 285,2 | 0,96 | 101,4 / 103,6 | tamam (0,36) |
+| Fatura iptali (taksitli, tahsilatsız) | 134,1 / 143,0 | ×3,26 | 163,5 / 176,7 | KÖTÜLEŞEN (+~30 ms; 1,24) |
+| Fatura iptali (kapsayan kartlı cari) | 126,6 / 133,8 | ×3,21 | 154,5 / 158,8 | KÖTÜLEŞEN (+~28 ms; 1,19) |
+| Fatura silme (kapsayan kartlı cari) | 155,6 / 159,2 | ×2,85 | 181,2 / 188,4 | KÖTÜLEŞEN (+~26 ms; 1,18) |
+| Geciken listesi — yazımdan ÖNCE | 780,2 / 892,1 | — | 797,5 / 854,6 | tamam (0,96) |
+| Geciken listesi — döngünün yazımlarından SONRA | 780,4 / 848,3 | ×2,40 | 1.812,2 / 1.878,6 | KÖTÜLEŞEN (veri ayrışması mı — bölüm 13) |
+| Cari kartı, kapsayan kartlı cari kartı, Mizan, Mutabakat Testi, taksit tahsilatı | — | tamam | oran 0,89–0,99 | tamam |
+| S15 iptali (tabanda 409) | 41,1 (409) | — | 164,2 / 172,6 (200) | KARŞILAŞTIRILMAZ (durum farklı) |
+- Kalan iptal / silme farkı (+26–30 ms): iptalin kart yolu `settleCoverOnCancel` → `trimCovers` (kuyruksuz `accounts.detail`, ~25–30 ms; S206 / S211 ailesinin 'borçtan büyük kalan kart küçülür, borcu kalmayan kapanır' kuralının okuması — carinin bakiyesi ve kart kalanları gerekir). Taban bu kuralı hiç uygulamıyordu.
