@@ -38,6 +38,8 @@ def soru(n):
 D31 = tek(cl, '31. ')
 SUREC = [l.strip() for l in cl if l.strip().startswith('Ç5-A DAR KONTROL SÜREÇ KURALI')]
 assert len(SUREC) == 1
+BIRAK = [l.strip() for l in cl if l.strip().startswith("2.5.1'E BIRAK")]
+assert len(BIRAK) == 1
 d0006 = dkayit('BAŞ MİMAR KARARI 20.11 00:06')
 K1 = kes(d0006, '(2) B1 — aynı sınıf içinde YAZIM SIRASI', 'kullanıcıya soru değil);')
 K2 = kes(d0006, '(3) S212 = A', '— aynı ayırıcı;')
@@ -77,7 +79,7 @@ w("2. B1 (ders 31): aynı gün aynı sınıfta birden çok alacak — 2 yazım s
 w("3. S212: şüpheliye alma ↔ bağsız ödeme ↔ bağlı tahsilat ↔ Şüpheliden Çıkar ↔ silme / geri alma — farklı sıralarda (ders 17) 120 / 128 / 644 dağılımı ve kuyruk karar metnine uyuyor mu; serbest kalan bağsız ödeme NEREYE dağılıyor (en eski açık fatura mı, kuyruk sırası mı) — karar metniyle karşılaştır; iki yükleyici aynı mı.")
 w("4. Beklentisi DEĞİŞEN e2e (test/e2e/senaryo-banka-210.mjs): eski ve yeni beklenen sayıyı KENDİN hesapla (senaryonun adımlarından, kural kitabı + S214 metninden); yeni beklenti kararla mı geldi, yoksa bir gerilemeyi mi örtüyor? Senaryoyu iki kodda koş (ders 28).")
 w("5. HIZ değişikliklerinin EŞDEĞERLİĞİ: düzeltme öncesi ↔ sonrası çıktılar, G1 / B1 / S212'nin BİLEREK değiştirdiği yerler dışında BİREBİR mi (temiz büyük veri + şüpheli / bağlı tahsilatlı / çek / taksitli / silinmiş kayıtlı / iki şirketli küçük veri; iki TZ). Yeni eşdeğerlik testi (test/g1-hiz-esdegerlik-250.test.mjs) ürünle aynı elden — kâhin sayılmaz (ders 5, 32); kendi karşılaştırmanı yap.")
-w("6. Testin dişi: yeni / değişen testler düzeltme öncesi kodda BEKLENEN NEDENLE kırmızı mı (ders 38, 51); mutasyon aracında (test/supheli-kuyruk-defter-250-mutasyon.mjs) her mutantı birkaç kez koş — ARA SIRA yaşayan var mı; kendi kopyanda en az 8 YENİ mutant (dört işten en az ikişer) — yaşayan her mutant eksik testtir; yalnız redle (istek reddedildi → test geçti) yakalanan mutant var mı.")
+w("6. Testin dişi (prensip §3): yeni / değişen testler düzeltme öncesi kodda BEKLENEN NEDENLE kırmızı mı (ders 38, 51); mutasyon aracındaki mevcut mutantlar (test/supheli-kuyruk-defter-250-mutasyon.mjs) birkaç kez — ara sıra yaşayan var mı. YENİ MUTANT YAZMAK ZORUNLU DEĞİL; yaşayan mutant / eksik test aşağıdaki KULLANICI KURALIYLA 'SONRAKİ SÜRÜME (2.5.1)' başlığına yazılır, yeni tur açmaz.")
 w("7. S181 çek yolu: çek VE senet yolunda ileti nakit yoluyla aynı öneriyi veriyor mu (tutar / bağ); red durumunda veri tabanında iz yok mu (ders 3); kabul edilen sınır tutarında (tam eşit) davranış.")
 w("")
 w("## Ne ara (sonra)")
@@ -112,6 +114,9 @@ w(f"İş listesinden AYNEN çekilmiş karar metinleri ayrı dosyada: `/home/user
 w("")
 w("SÜREÇ KURALI (kullanıcı kararı — bu dar kontrolde GEÇERLİ; CLAUDE.md'den AYNEN): " + SUREC[0])
 w("")
+w("BULGU SINIFI — KULLANICI KURALI (bu dar kontrolde GEÇERLİ; CLAUDE.md'den AYNEN): " + BIRAK[0])
+w("Bu kurala göre: programın davranışını / sayılarını / hızını ya da kullanıcının gördüğünü DEĞİŞTİRMEYEN husus DÜŞÜK'tür ve raporun 'SONRAKİ SÜRÜME (2.5.1)' başlığına yazılır; programı ya da kullanıcıyı etkileyen her bozulma (yanlış para / bakiye / defter / rapor toplamı, yanlış ileti, gerileme, veri kaybı, KVKK) eskisi gibi YÜKSEK / ORTA. Ayrıntıya boğulma: önce İLK MADDELER, sonra kalan süre kadar genel liste.")
+w("")
 w("## Yöntem (prensip §3)")
 w("- Her bulgu betikle GERÇEK programda üretilir; çıktıda sayı olur. Program başlatırken `HUKUK_LICENSE_URL=http://127.0.0.1:9`. Üretilemeyen kuşku 'DOĞRULANMADI'ya.")
 w("- Eski kod yalnız ayrı kopyada (ders 23, 51).")
@@ -123,6 +128,6 @@ w("- SAKINCA SÜZGECİ: her DÜŞÜK için yaz — yanlış para / bakiye / deft
 w("- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME.")
 w("")
 w("## Rapor (prensip §3 biçimi; SubagentHandback ile)")
-w("EN BAŞTA: GERİLEMELER (varsa). Sonra İLK MADDELER 1–7'nin sonucu tek tek. Sonra her bulgu — sınıf (YÜKSEK / ORTA / DÜŞÜK; SÜREÇ KURALI'na göre), dosya:satır, betik + çıktı (sayılarla), kök neden, en küçük düzeltme önerisi; sıra / eşzamanlılık / yetki tabloları; düzeltme öncesi ↔ sonrası eşdeğerlik; yeni mutantların sonucu; K1–K5 değerlendirmesi; KULLANICIYA SORULMALI; DOĞRULANMADI; DENENMEYEN; not defteri klasörlerin (tam yol). Bulgu yoksa açıkça 'YÜKSEK / ORTA YOK'.")
+w("EN BAŞTA: GERİLEMELER (varsa). Sonra İLK MADDELER 1–7'nin sonucu tek tek. Sonra her bulgu — sınıf (YÜKSEK / ORTA / DÜŞÜK; SÜREÇ KURALI'na göre), dosya:satır, betik + çıktı (sayılarla), kök neden, en küçük düzeltme önerisi; sıra / eşzamanlılık / yetki tabloları; düzeltme öncesi ↔ sonrası eşdeğerlik; K1–K5 değerlendirmesi; KULLANICIYA SORULMALI; SONRAKİ SÜRÜME (2.5.1); DOĞRULANMADI; DENENMEYEN; not defteri klasörlerin (tam yol). Bulgu yoksa açıkça 'YÜKSEK / ORTA YOK'.")
 open(OUT, 'w', encoding='utf-8').write('\n'.join(p) + '\n')
 print(len('\n'.join(p)))
