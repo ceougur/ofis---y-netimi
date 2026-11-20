@@ -1,0 +1,32 @@
+{
+  "ad": "s223-surucu-yeni",
+  "komut": "node test/bagimsiz/muhasebe-surucu/kos.mjs --program /home/user/ofis---y-netimi/.claude/worktrees/agent-a2b475536b68533c3 --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/surucu-yeni",
+  "commit": "06130ed0468f17a50d0cdae99a082d7019bde9d5",
+  "dal": "worktree-agent-a2b475536b68533c3",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T22:34:31.738Z",
+  "sure_sn": 473,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7946,
+    "gecen": 7750,
+    "basarisiz": 50,
+    "iptal": 0,
+    "atlanan": 146
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 50 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/kanit/2026-11-20/s223-surucu-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2b475536b68533c3",
+  "ham_cikti_sha256": "0299571231b578f194965bdfedbc2e45e0deb0acc521020a2a7216f3a5ab2d77",
+  "ham_cikti_bayt": 120733
+}

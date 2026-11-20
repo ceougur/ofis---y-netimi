@@ -109,3 +109,5 @@ SQL okuması hariç) — yükleme başına BİR kez, yalnız NOCASE'in bulamadı
   Yapım aşaması listesi kendi kopyamda (KAHIN_YAPIM_ASAMASI) yeniden üretildi: 0 kayıt; eski listeyle fark yeni 0 / kapanan 0 / değişen 0.
 - C muhasebe sürücüsü: taban (c7b-aday) 7.946 denetim, 7.750 geçti, 50 başarısız, 146 atlanan (BAŞARISIZ — taban kendi hâliyle; sürücü bakımı 5 ana oturumda).
   Yeni kod koşusu + gerileme.py karşılaştırması: aşağıda.
+- C yeni kod: 7.946 denetim, 7.750 geçti, 50 başarısız, 146 atlanan — tabanla AYNI sayılar; gerileme.py (taban ↔ yeni program çıktıları): 248/248, fark 0 ("eski↔yeni program çıktısı BİREBİR").
+  50 başarısız tabanın kendi sınıflanmamış / P satırları (sürücü bakımı 5'in konusu; bu tur dokunmadı).
