@@ -532,6 +532,28 @@ export function createMoneyLines(store, { verify = false } = {}) {
     const row = store.get(`SELECT COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, unbound: true, cover: true })}) w WHERE ${COVER_SQL}`, coverParams(coverBounds(store)));
     return { cents: Number(row?.cents) || 0, count: Number(row?.count) || 0 };
   }
+  /**
+   * 2.5.0 tek aday düzeltme turu (G1 hız; ders 47, 53 (a)): "açılışta sayılmış" hesabı atanmamış satırların YOL bazında işaretli toplamı (kuruş; giriş +, çıkış −) —
+   * { [yol]: { cents, before } }; before: verilen günden ÖNCEKİ satırların payı. coveredTotal ile AYNI küme (COVER_SQL, bağsız kısmi indeks), TEK okuma; unassignedWays gibi veri
+   * damgasıyla saklanır (Banka ve POS Hareketleri'nin Tüm Hesaplar seçimi: devir, dönem sonu ve "(tüm hareketler)" satırları bu payı düşer).
+   */
+  function coveredWays({ before = "" } = {}) {
+    const stamp = stampOf();
+    const cover = coverBounds(store);
+    const key = `|covered|${before}|${cover.bank}|${cover.card}|${cover.pos}|${cover.carry}|${cover.off ? 1 : 0}`;
+    const hit = stamp ? totals.get(key) : null;
+    if (hit && hit.stamp === stamp) return hit.ways;
+    const ways = {};
+    const signed = "CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END";
+    for (const group of store.all(`SELECT w.way AS way, COALESCE(SUM(${signed}), 0) AS cents, COALESCE(SUM(CASE WHEN w.date < :cfrom THEN ${signed} ELSE 0 END), 0) AS before FROM (${waySql({ light: true, unbound: true, cover: true })}) w WHERE w.ref = '' AND w.way IN ('bank', 'card') AND ${COVER_SQL} GROUP BY w.way`, { ...coverParams(cover), cfrom: before || "" })) {
+      ways[group.way] = { cents: Number(group.cents) || 0, before: Number(group.before) || 0 };
+    }
+    if (stamp && keep()) {
+      if (totals.size > 200) totals.clear();
+      totals.set(key, { stamp, ways });
+    }
+    return ways;
+  }
   /** Yol bazında bakiye (kuruş): { cash, bank, card, ccard, loan, unknown, all }. */
   function balances(list = rawGroups()) {
     const out = Object.fromEntries(WAYS.map(way => [way, 0]));
@@ -781,7 +803,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
     return out;
   }
 
-  return { lines, rows, shape, classified, classifiedTotals, keyTotals, wayBalance, firstDate, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, rawGroups, coveredTotal, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
+  return { lines, rows, shape, classified, classifiedTotals, keyTotals, wayBalance, firstDate, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, rawGroups, coveredTotal, coveredWays, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
     schema = null;
     totals.clear();
   } };

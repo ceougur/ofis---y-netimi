@@ -1610,18 +1610,13 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         // Devir Kapanışı yok) hiçbir satır sayılmamıştır: ek okuma yapılmaz, rapor eskisiyle birebir. Kasa penceresi ve Kasa raporları (cash().report) DEĞİŞMEZ.
         const bounds = coverBounds(store);
         const covering = Boolean(bounds.bank || bounds.card || bounds.pos || bounds.carry);
-        // Açılışta sayılmış hesabı atanmamış satırlar — satırların işaretiyle AYNI yoldan (markCounted: opening-cover isCovered; Banka Hareket Raporu'nun işaretiyle aynı): her sayılmış
-        // satırın günü sınırların EN GEÇİNE eşit ya da ondan önce (açılış / kart / POS sınırı date < sınır; Devir Kapanışı satırı kendi günü = carry ≤ sınır) → yalnız o güne kadarki
-        // bağsız satırlar TEK okumayla (classified; bağsız kısmi indeks). Hız (ders 47, 53 (a); tek aday düzeltme turu ölçümü): önceki yazım keyTotals'ı dört kez (ayrımsız − ayrımlı,
-        // iki kapsam) çağırıyordu — 100 bin satırda raporu ~600 ms yavaşlattı. Toplamlar işaretli satırların kendisinden: düşülen = işaretlenen (ekrandan ekrana tek sayı).
-        const coverUntil = [bounds.bank, bounds.card, bounds.pos, bounds.carry].filter(Boolean).sort().pop() || "";
-        const coveredLines = covering && moneyLines()?.classified ? markCounted(moneyLines().classified({ ways: ["bank", "card"], unbound: true, until: coverUntil, light: true })).filter(line => line.counted) : [];
-        const signedOf = line => (line.kind === "in" ? 1 : -1) * (Number(line.cents) || 0);
-        const methodWays = new Set(waysFor(method) || ["bank", "card"]);
-        const coveredBefore = range.from ? coveredLines.reduce((sum, line) => (methodWays.has(line.way) && line.date < range.from ? sum + signedOf(line) : sum), 0) : 0;
+        // Açılışta sayılmış hesabı atanmamış satırların yol bazında toplamı (kuruş; moneyLines.coveredWays — Ana Defter'in 519 payıyla AYNI küme, COVER_SQL; TEK okuma, veri damgasıyla
+        // saklı). Hız (ders 47, 53 (a); tek aday düzeltme turu ölçümü): ilk yazım keyTotals'ı dört kez çağırıyor, ikincisi bağsız ~32.000 satırı JS'e çekiyordu (100 bin satırda raporu
+        // ~400–600 ms yavaşlattı).
+        const covered = covering && moneyLines()?.coveredWays ? moneyLines().coveredWays({ before: range.from || "" }) : {};
+        const coveredBefore = range.from ? [...new Set(waysFor(method) || ["bank", "card"])].reduce((sum, way) => sum + (covered[way]?.before || 0), 0) : 0;
         // "(tüm hareketler)" satırları yoldan bağımsız (havale + POS; Kasa özetinin yol bakiyeleri) — düşülen de iki yolun bütün sayılmış satırları.
-        const coveredAll = new Map();
-        for (const line of coveredLines) coveredAll.set(`u:${line.way}`, (coveredAll.get(`u:${line.way}`) || 0) + signedOf(line));
+        const coveredAll = new Map(Object.entries(covered).map(([way, item]) => [`u:${way}`, item.cents]));
         // Paylar yalnız dönem satırları için okunur (raporun satırları dönem içinden; 11.10.2026 hız düzeltmesi).
         const periodLines = moneyLines()?.classified ? moneyLines().classified({ ways: waysFor(method), since: range.from, until: range.to, light: true }) : [];
         for (const line of covering ? markCounted(periodLines) : periodLines) parts.set(`${moneyLines().sourceName(line.src)}|${line.id}`, line);
