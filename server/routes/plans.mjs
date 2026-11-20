@@ -1740,8 +1740,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       const linked = cheques()?.countForPlan ? cheques().countForPlan(plan.id) : 0;
       if (linked) throw new HttpError(409, `Faturanın taksit kartına sayılmış ${linked} çek/senet var; önce evrakı karttan ayırın.`, { code: "plan-has-cheques", planId: plan.id });
       if (paid) {
-        // Kartı Kapat'la önceden kapatılmış kart (kalanı düşülmüş — "Kart kapatıldı · kalan düşüldü"): iptal kalanı ikinci kez düşerdi (bakiye −tutar) → bugünkü gibi 409.
-        if (store.get("SELECT status FROM plans WHERE id = ?", plan.id)?.status === "closed") throw new HttpError(409, `Faturanın taksit kartı (“${plan.name}”) kapatılmış ve ${paid} tahsilatı var; fatura iptal edilemez. Önce kartı Yeniden Aç ile açın, sonra faturayı iptal edin.`, { code: "plan-has-payments", planId: plan.id });
+        // Kartı Kapat'la önceden kapatılmış kart (kalanı düşülmüş — "Kart kapatıldı · kalan düşüldü"): iptal kalanı ikinci kez düşerdi (bakiye −tutar) → bugünkü gibi 409
+        // S217 = A (D 20.11 04:15 (5)): ileti "Önce kartı Yeniden Aç ile açın." (Yeniden Aç → İptal Et görünür yolu; Borçta Kalsın tur 3b'de yeniden sınanır).
+        if (store.get("SELECT status FROM plans WHERE id = ?", plan.id)?.status === "closed") throw new HttpError(409, `Faturanın taksit kartı (“${plan.name}”) kapatılmış ve ${paid} tahsilatı var; fatura iptal edilemez. Önce kartı Yeniden Aç ile açın.`, { code: "plan-has-payments", planId: plan.id });
         closeForInvoice(user, plan.id, { reason: "invoice-cancelled", invoiceId });
         ids.push(plan.id);
         continue;
@@ -1769,16 +1770,24 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     audit(user, "plan.updated", row.id, { previous: { status: row.status, total: row.total, invoiceId: row.invoiceId || "" }, status: "closed", reason, invoiceId: invoiceId || row.invoiceId || "", total: roundMoney((Number(row.total) || 0) - (cut > 0.005 ? cut : 0)) });
     return true;
   }
-  // 2.5.0 Ç7b tur 3 — S206 = A / S211 = A (+ karar (4); §16.4): fatura iptal edilince carinin borcu düşer; borçtan büyük kalan Mevcut Borç kartları iade / alacaktaki kuralla
-  // (trimCovers — en yeni karttan, karar (4) sırasıyla; kartın kalanıyla sınırlı, fazlası carinin avansı) küçülür; bu küçülmeyle kalanı 0'a inen kart KAPANIR (borcu kalkan kart
-  // kalmaz — S206 tahsilatlı, S211 tahsilatsız). Kartta başka borç da varsa kart küçülür, açık kalır (karar (4) — §16.6 K-3a). Dönüş: değişen kartlar.
-  function settleCoverOnCancel(user, accountId, note = "") {
+  // Hız (ders 47): carinin açık Mevcut Borç kartı (faturasız, covers_balance) var mı — yoksa iptalin kart yolu (kapsama okuması, cari kartı) hiç hesaplanmaz.
+  const hasOpenCover = accountId => Boolean(accountId && store.get("SELECT 1 AS found FROM plans WHERE account_id = ? AND deleted_at IS NULL AND status = 'active' AND covers_balance = 1 AND invoice_id = '' LIMIT 1", accountId));
+  // 2.5.0 Ç7b tur 3 — S206 = A / S210 = A / S211 = A (+ karar (4); docs/erp/C7B-FATURA-TASARIM.md §16.4, §16.8): fatura iptal edilince carinin borcu düşer.
+  //  (1) Faturayı içine almış Mevcut Borç kartları (coverIds — çağıran iptalden ÖNCE faturanın kart paylarından okur) KAPANIR: kalanı karar (4) sırasıyla kesilir (kart tutarı = net
+  //      tahsilat), kartın tahsilatları carinin alacağı olarak kalır (avans). Kartta başka borç da varsa (S210 — elle Borç + fatura) o borç kartın dışına çıkar, kendi vadesiyle
+  //      carinin kuyruğuna döner (kart artık onu taksitlendirmez); bakiye değişmez. Kalan 0 olduğundan kapanış maddesi / "kalan düşüldü" satırı yazılmaz.
+  //      Önceden (tur 3'ün ilk kodu) çok kalemli kart faturanın payı kadar küçülüp AÇIK kalıyordu (karar (4)'ün genel metni) — S210 = A özel kararı genelin önünde (D 20.11 04:15 (3)).
+  //  (2) Faturayı içine almamış öbür Mevcut Borç kartları borçtan büyük kalırsa iade / alacaktaki kuralla (trimCovers — en yeni karttan, karar (4) sırasıyla; kartın kalanıyla sınırlı,
+  //      fazlası carinin avansı) küçülür; bu küçülmeyle kalanı 0'a inen kart da kapanır (borcu kalkan kart kalmaz). Dönüş: değişen kartlar.
+  function settleCoverOnCancel(user, accountId, note = "", { coverIds = [] } = {}) {
     const changedIds = [];
-    if (!accountId) return changedIds;
-    // Hız (ders 47): carinin açık Mevcut Borç kartı yoksa (çoğu iptal) cari kartı (trimCovers → accounts.detail) hiç hesaplanmaz.
-    if (!store.get("SELECT 1 AS found FROM plans WHERE account_id = ? AND deleted_at IS NULL AND status = 'active' AND covers_balance = 1 AND invoice_id = '' LIMIT 1", accountId)) return changedIds;
+    if (!hasOpenCover(accountId)) return changedIds;
+    for (const planId of coverIds) {
+      const own = store.get("SELECT 1 AS found FROM plans WHERE id = ? AND account_id = ? AND deleted_at IS NULL AND status = 'active' AND covers_balance = 1 AND invoice_id = ''", planId, accountId);
+      if (own && closeForInvoice(user, planId, { reason: "cover-invoice-cancelled", note })) changedIds.push(planId);
+    }
     for (const plan of trimCovers(accountId, user, note || "Fatura iptali")) {
-      changedIds.push(plan.id);
+      if (!changedIds.includes(plan.id)) changedIds.push(plan.id);
       if (leftOf(plan.id) <= 0.005) closeForInvoice(user, plan.id, { reason: "cover-invoice-cancelled", note });
     }
     return changedIds;
@@ -1871,5 +1880,5 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { shownTotalsOf, queueSummaryOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, cutTargets, settleCoverOnCancel, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
+  return { shownTotalsOf, queueSummaryOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, cutTargets, settleCoverOnCancel, hasOpenCover, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
 }

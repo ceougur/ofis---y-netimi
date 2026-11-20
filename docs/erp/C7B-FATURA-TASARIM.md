@@ -551,3 +551,17 @@ kilit izi / kapı (`integrity*.mjs`: kapalı kartın `waived` = 0), şüpheli al
 8. Eski sürüm verisi (v2.4.9 gerçek kodu): taksitli kart, kapatılmış kart, küçülmüş kart → güncellemeden sonra değerler aynen (bu tur yalnız YENİ yazımları değiştirir).
 9. İki kişi aynı anda: iptal ile kart tahsilatı (tek işlem — bank.post / store.tx).
 10. Geri yükleme: iptal edilmiş faturanın kapalı kartı yedekte aynen.
+
+### 16.8 Tur 3 devamı (20.11.2026; görev metni `docs/devir/2.5.0-DEVAM/c7b3-devam-istem.txt`; ana oturumun kararları iş listesi D 'BAŞ MİMAR KARARI 20.11 04:15', C S216 / S217)
+- (1) B-11 = A: (6) Borçta Kalsın + S205 ayrı tur 3b'de — bu turda DOKUNULMADI; Kartı Kapat onay metni ve kılavuzu bugünkü davranışı anlatmaya devam eder. (2) B-12 = A: §16.4'teki kod aynen.
+- (3) **S210 = A** (K-3a'nın yanıtı — özel karar karar (4)'ün genel metninin önünde): faturayı içine almış Mevcut Borç kartı faturanın iptalinde KARTTA BAŞKA BORÇ DA OLSA kapanır. Uygulama
+  (`routes/invoices.mjs cancel` → `routes/plans.mjs settleCoverOnCancel`): iptalden ÖNCE faturanın kart payları kart / bağ defterinden okunur (`coverState(...).coveredBy` — iadedeki okumanın
+  aynısı; carinin açık Mevcut Borç kartı yoksa okunmaz, `hasOpenCover`); payı olan her kart `closeForInvoice` ile kapanır (kalanı karar (4) sırasıyla kesilir → kart tutarı = net tahsilat; kalan 0
+  olduğundan "kalan düşüldü" satırı / 689 YAZILMAZ). Karttaki öbür borç (elle Borç) kartın dışına çıkar ve kendi vadesiyle carinin kuyruğuna döner; kartın tahsilatı carinin alacağı (avans) olarak
+  kalır. Payı olmayan öbür Mevcut Borç kartları önceki gibi `trimCovers` ile borçtan büyük kalmaz (kalanı 0'a inen kapanır). Örnek (test `c7b-tur3-kart-250` 6. sınama; sahte saat 08.10.2026): elle Borç
+  400 (07.10) + fatura 500 → kart 900 (10.10 / 10.11 / 10.12) → tahsilat 300 → fatura İptal Et → kart KAPALI, tutar 300; bakiye 100; gecikmiş **100** (elle borç 07.10'dan; önceki kodda kart açık 400 /
+  kalan 100, gecikmiş 0). İptal Et penceresi (cancelNotice) kartın kapanacağını, tahsilatın avans olacağını ve öbür borcun kendi vadesiyle kalacağını söyler. Muhasebe kâhininin s58 beklentisi (TK3
+  açık) bu yüzden programdan AYRILIR — kâhine dokunulmadı; "S210 = A — kâhin bakımı bekliyor".
+- (4) S216 = C: iade iptalinde kartın büyümesi bugünkü gibi SON taksite (kod değişmedi; kalıcı testle gösterilir). (5) **S217 = A**: Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturasının
+  İptal Et'i 409 (`plan-has-payments`), ileti "Faturanın taksit kartı (“…”) kapatılmış ve N tahsilatı var; fatura iptal edilemez. Önce kartı Yeniden Aç ile açın." (6) Açılış onarımının kilit
+  aynasının `cutTargets`'tan okunması KABUL (§16.3).

@@ -7,8 +7,11 @@
 //      Aynı faturanın SİLİNMESİ (Sil) → 409 "taksit kartında tahsilat var; silinmez" (bugünkü gibi; muhasebe kâhini s58). Tahsilatsız kendi kart iptalde silinir (bugünkü gibi).
 //  S206 fatura 900, Mevcut Borç kartı 900 (3 × 300), kart tahsilatı 300, fatura İptal Et → kart KAPALI, tutar 300; bakiye −300; sonra fatura 500 → açık 200, bakiye 200.
 //  S211 aynı, tahsilatsız → kart KAPALI, tutar 0; bakiye 0.
-//  K-3a (karar (4)) elle Borç 400 + fatura 500 → kart 900 → tahsilat 300 → fatura iptal → kart AÇIK, tutar 400, kalan 100; bakiye 100.
-// NASIL BOZARIM (mutantlar): küçülmeyi son taksitten yapmak; ödenmiş kısmı kesmek; S15'te iptali yine reddetmek; iptalde kartın tahsilatını silmek / kalanı düşmek (689); Sil'i kabul
+//  S210 = A (D 20.11 04:15 (3); önceki K-3a 'karar (4)' okumasının yerine) elle Borç 400 (07.10) + fatura 500 → kart 900 (10.10 / 10.11 / 10.12) → tahsilat 300 → fatura iptal →
+//      kart KAPALI, tutar 300 (= tahsilat; kalan 0); elle borç kartın dışına çıkar, kendi vadesiyle (07.10) carinin borcunda: bakiye 100, 08.10'da gecikmiş 100 (önceki kodda kart
+//      açık 400 / kalan 100, borç kartın 10.10 taksitinde — gecikmiş 0). İptal penceresi kartın kapanacağını söyler.
+//  S217 = A (D 20.11 04:15 (5)) Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası: İptal Et 409, ileti 'Önce kartı Yeniden Aç ile açın.'
+// NASIL BOZARIM (mutantlar): S210'da kartı açık bırakmak; küçülmeyi son taksitten yapmak; ödenmiş kısmı kesmek; S15'te iptali yine reddetmek; iptalde kartın tahsilatını silmek / kalanı düşmek (689); Sil'i kabul
 // etmek; kapsayan kartı açık bırakmak; kapsayan kartı küçültmeden kapatmak (kalan düşülür → bakiye değişir).
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
@@ -16,7 +19,7 @@ import { must } from "./banka-210-ortak.mjs";
 import { bootBank } from "./banka-210-hesap-ortak.mjs";
 
 const W = "/api/workspace";
-describe("Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S211", () => {
+describe("Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217", () => {
   let ctx;
   let api;
   let n = 0;
@@ -140,22 +143,34 @@ describe("Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S211", () =>
     const res = await api.post(`${W}/invoices/${f}/cancel`, { reason: "kapalı kart" });
     assert.equal(res.status, 409, JSON.stringify(res.data).slice(0, 300));
     assert.equal(res.data?.code, "plan-has-payments");
-    assert.match(String(res.data?.error || ""), /Yeniden Aç/);
+    assert.match(String(res.data?.error || ""), /fatura iptal edilemez\. Önce kartı Yeniden Aç ile açın\.$/, "S217 = A iletisi");
     assert.equal(invoiceStatus(f), "issued");
     assert.equal((await totals(A)).balance, balance, "bakiye değişmedi");
   });
 
-  it("K-3a (bu turda karar (4)): kartta başka borç da varsa kart faturanın payı kadar küçülür, açık kalır", async () => {
+  it("S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner", async () => {
     const A = await acc();
     await must("Borç Yaz", api.post(`${W}/accounts/${A}/entries`, { kind: "debt", amount: "400", date: "2026-10-07", note: "Elle borç" }));
     const f = await service(A, "2026-10-07", 500, { rest: "open" });
     const p = (await must("kart", api.post(`${W}/plans`, { accountId: A, name: "Mevcut K", total: "900", registeredOn: "2026-10-07", mode: "auto", count: 3, firstDue: "2026-10-10", coversBalance: true }))).id;
     await pay(p, 300, "2026-10-07");
-    await must("iptal", api.post(`${W}/invoices/${f}/cancel`, { reason: "K-3a" }));
-    assert.deepEqual(planRow(p), { status: "active", total: 400, deletedAt: null }, "kart 500 küçüldü, açık");
-    assert.equal((await must("kart", api.get(`${W}/plans/${p}`))).totals.remaining, 100);
-    assert.equal((await totals(A)).balance, 100);
-    await integrity("K-3a");
+    const onceki = await totals(A);
+    assert.equal(onceki.balance, 600);
+    assert.equal(onceki.overdueDebt, 0, "iptalden önce borç kartın taksitlerinde (ilk vade 10.10)");
+    const notice = String((await must("fatura", api.get(`${W}/invoices/${f}`))).cancelNotice || "");
+    const trialBefore = await trial();
+    await must("iptal", api.post(`${W}/invoices/${f}/cancel`, { reason: "S210" }));
+    assert.deepEqual(planRow(p), { status: "closed", total: 300, deletedAt: null }, "S210: kart kapalı, tutar = tahsilat");
+    assert.equal((await must("kart", api.get(`${W}/plans/${p}`))).totals.remaining, 0);
+    const sonra = await totals(A);
+    assert.equal(sonra.balance, 100, "bakiye: 400 + 500 − 300 − 500");
+    assert.equal(sonra.overdueDebt, 100, "elle borç kendi vadesiyle (07.10) — 08.10'da gecikmiş 100");
+    const trialAfter = await trial();
+    assert.equal(trialAfter["689"] || 0, trialBefore["689"] || 0, "kalan düşülmedi (689 yok)");
+    assert.equal(roundTo((trialAfter["120"] || 0) - (trialBefore["120"] || 0)), -500, "120 yalnız iptal edilen satış kadar düştü");
+    await integrity("S210");
+    // İptal penceresi (iptalden ÖNCE okundu) sonucu söyler — kartın durumundan SONRA denetlenir ki önceki kodun kırmızısı kartın kendisinden okunsun (ders 38).
+    assert.match(notice, /“Mevcut K” taksit kartı iptalde kapanır; karta alınan 300,00 TL tahsilat carinin avansı olur; karttaki öbür borç kendi vadesiyle carinin borcunda kalır\./, `iptal penceresi: ${notice}`);
   });
 });
 

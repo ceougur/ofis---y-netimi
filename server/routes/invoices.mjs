@@ -1236,7 +1236,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // TEK kural (localCancelKind; E7).
       canLocalCancel: manage && canUser(user, "invoices.settings") && activeReturns === 0 && !bankFee && localCancelKind(row),
       // K4: iptal penceresinde söylenir (şüpheli carinin "Normal Cariye İşlendi" tahsilatı iptalle şüpheliden düşmeye başlar).
-      cancelNotice: manage && row.status === "issued" ? [doubtfulRelinkText(doubtfulRelinks(row.id)), planCancelText(row.planId)].filter(Boolean).join(" ") : "",
+      cancelNotice: manage && row.status === "issued" ? [doubtfulRelinkText(doubtfulRelinks(row.id)), planCancelText(row.planId), coverCancelText(row)].filter(Boolean).join(" ") : "",
       cancelBlock: row.status === "issued" && bankFee ? bankFeeText(bankFee) : row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : cancelLimit?.late && !cancelRecheck ? cancelLateText(cancelLimit) : "",
       // 31d E4: süre dolmuş ama önceki iptal isteğinin sonucu kaydedilmemiş — İptal Et önce EDM'ye sorar.
       cancelRecheck,
@@ -2693,12 +2693,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // İz 7.3: e-Fatura taslağı EDM'den programla silinemez (EDM'de iptal yalnız e-Arşiv'de); kullanıcı portaldan siler, burada onaylar.
       if (invoice.eStatus === "draft" && invoice.profile !== "EARSIVFATURA" && !confirmExternal) throw new HttpError(409, "Bu e-Fatura EDM portalında taslak olarak duruyor. Önce EDM portalında taslağı silin, sonra burada onaylayın (yoksa taslak portaldan gönderilebilir).", { code: "einvoice-draft" });
       if (["sent", "accepted"].includes(invoice.eStatus) && !confirmExternal) throw new HttpError(409, `Bu belge ${E_STATES[invoice.eStatus].toLocaleLowerCase("tr-TR")}. Önce GİB / entegratör tarafında iptal edin (e-Arşiv iptali ya da e-Fatura iade/itiraz), sonra burada onaylayın.`, { code: "einvoice-sent" });
+      // 2.5.0 Ç7b tur 3 — S206 / S210 / S211 = A: faturayı içine almış Mevcut Borç kartları iptalden ÖNCE kart / bağ defterinden okunur (coverState — iadedeki okumanın aynısı);
+      // carinin açık Mevcut Borç kartı yoksa okunmaz (ders 47).
+      const saleKind = invoice.kind === "sale" || invoice.kind === "smm";
+      const coverIds = saleKind && plans()?.hasOpenCover?.(invoice.accountId) ? Object.entries(coverState(invoice.id)?.coveredBy || {}).filter(([, value]) => Number(value) > 0.005).map(([planId]) => planId) : [];
       reverseEffects(user, invoice, touched, { force, paidCard });
       const stamp = now();
       store.run("UPDATE invoices SET status = 'cancelled', cancelled_by = ?, cancelled_at = ?, cancel_reason = ?, updated_by = ?, updated_at = ? WHERE id = ?", user.id, stamp, limited(reason, 300, "İptal nedeni"), user.id, stamp, invoice.id);
-      // 2.5.0 Ç7b tur 3 — S206 = A / S211 = A (+ karar (4); docs/erp/C7B-FATURA-TASARIM.md §16.4): borçtan büyük kalan Mevcut Borç kartları küçülür (fazlası avans); borcu kalmayan
-      // kart kapanır; başka borcu olan kart açık kalır.
-      if ((invoice.kind === "sale" || invoice.kind === "smm") && plans()?.settleCoverOnCancel) for (const planId of plans().settleCoverOnCancel(user, invoice.accountId, `Fatura iptali ${invoice.number || ""}`.trim())) touched.plans.add(planId);
+      // 2.5.0 Ç7b tur 3 — S206 = A / S210 = A / S211 = A (+ karar (4); docs/erp/C7B-FATURA-TASARIM.md §16.4, §16.8): faturayı içine almış Mevcut Borç kartı KAPANIR (kartta başka borç
+      // da varsa o borç kendi vadesiyle carinin kuyruğuna döner; tahsilatı avans); öbür kartlar borçtan büyük kalırsa küçülür (fazlası avans), borcu kalmayan kapanır.
+      if (saleKind && plans()?.settleCoverOnCancel) for (const planId of plans().settleCoverOnCancel(user, invoice.accountId, `Fatura iptali ${invoice.number || ""}`.trim(), { coverIds })) touched.plans.add(planId);
       // İade iptali: asıl faturanın taksit kartı iadeyle küçüldüyse geri büyür (müşteri borcu yine taksitlerde izlenir).
       if (invoice.kind === "sale_return" && invoice.originalId && plans()?.shrinkPlan) {
         restoreCuts(user, { id: invoice.id }, touched, `İade iptali ${invoice.number}`);
@@ -3493,6 +3497,22 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!plan || !plan.n || plan.status === "closed") return "";
     const paid = roundMoney(Number(plan.paid) || 0);
     return paid > 0.005 ? `Taksit kartına alınan ${tl(paid)} tahsilat iptalden sonra carinin avansı olur (sonraki borcu kapatır); kart kapanır.` : "Taksit kartında tahsilat hareketi var; iptalde kart kapanır.";
+  }
+  // 2.5.0 Ç7b tur 3 — S206 / S210 / S211 = A: faturayı içine almış Mevcut Borç kartı iptalde kapanır; pencere bunu söyler (iptalin okuduğu kart / bağ defterinden — coverState).
+  // Carinin açık Mevcut Borç kartı yoksa okunmaz (ders 47).
+  function coverCancelText(row) {
+    if (!(row.kind === "sale" || row.kind === "smm") || !plans()?.hasOpenCover?.(row.accountId)) return "";
+    const shares = Object.entries(coverState(row.id)?.coveredBy || {}).filter(([, value]) => Number(value) > 0.005);
+    return shares
+      .map(([planId, share]) => {
+        const plan = store.get("SELECT name, total, (SELECT COALESCE(SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END), 0) FROM plan_entries e WHERE e.plan_id = p.id) AS paid FROM plans p WHERE p.id = ? AND p.deleted_at IS NULL AND p.status = 'active' AND p.covers_balance = 1 AND p.invoice_id = ''", planId);
+        if (!plan) return "";
+        const paid = roundMoney(Math.max(0, Number(plan.paid) || 0));
+        const other = roundMoney((Number(plan.total) || 0) - (Number(share) || 0)) > 0.005;
+        return `Bu faturayı içine alan “${plan.name}” taksit kartı iptalde kapanır${paid > 0.005 ? `; karta alınan ${tl(paid)} tahsilat carinin avansı olur` : ""}${other ? "; karttaki öbür borç kendi vadesiyle carinin borcunda kalır" : ""}.`;
+      })
+      .filter(Boolean)
+      .join(" ");
   }
   function doubtfulRelinkText(list, { done = false } = {}) {
     if (!list.length) return "";
