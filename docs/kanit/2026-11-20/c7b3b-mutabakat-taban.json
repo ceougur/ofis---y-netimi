@@ -1,0 +1,32 @@
+{
+  "ad": "c7b3b-mutabakat-taban",
+  "komut": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs --islem 600 --tohum 11 --tohumlar 2 --her 10",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T13:31:20.541Z",
+  "sure_sn": 64.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kanit/2026-11-20/c7b3b-mutabakat-taban.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban",
+  "ham_cikti_sha256": "94dfa15c092e5d1e33b6537fac554c494c458ff28e5b7625e773fc3e716b16ab",
+  "ham_cikti_bayt": 4539
+}

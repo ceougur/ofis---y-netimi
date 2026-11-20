@@ -41,3 +41,7 @@ Taban: c7b3b-taban = b3a59f2a. Görev metni: docs/devir/2.5.0-DEVAM/c7b3b-istem.
 
 ## Ekran yürüyüşü (G; c7b3b-yuruyus-son.out, ekran görüntüleri c7b3b-ekran-*.png)
 - Taksitler → kart → Kartı Kapat tıklama → onay penceresi (ilk odak Vazgeç; Tab ile Kartı Kapat, Enter) → veri tabanı closed / '' / 08.10 → cari kartı Bakiye 600, ekstrede "kalan düşüldü" yok, Gecikmiş 0 → ertesi gün (sayfa + sunucu saati) Gecikmiş Borç 600 · 2 kalem, zilde 2 kalem "1 gün gecikti", Vade Takip 600 → Alacak Yaz 600 (insan hızı) → bakiye 0, gecikmiş 0; Mutabakat Testi temiz; sayfa hatası yok. SONUÇ: SORUNSUZ (ilk koşudaki tek ✗ betiğin seçicisiydi — görüntüde 600,00 vardı).
+
+## F değişmezler
+- Rastgele sıra (test/mutabakat/kos.mjs --islem 600 --tohum 11 --tohumlar 2 --her 10; TZ İstanbul): taban 2/2 (kendi motoruyla), yeni 2/2 (motor karar (6)'ya göre: kart-kapat cariyi değiştirmez); iki koşuda kart-kapat 6 + 12 işlem.
+- Her adımda Mutabakat Testi / Defter Mutabakatı: yeni testler (T1–T6, D) ve ekran yürüyüşü her adımdan sonra temiz.
