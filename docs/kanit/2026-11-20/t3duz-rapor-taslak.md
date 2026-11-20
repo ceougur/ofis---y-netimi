@@ -72,3 +72,30 @@ banka-210-raporlar, raporlar-230-banka) ve şema kapısı / geri yükleme komşu
   S212 — üç test (nakit / çek / kısmi bağ: deepStrictEqual 120 / 128); S181 — iki test (eski ileti 'kaydı şüpheliye alma tarihinden sonraya girin…');
   G1 hız 3 eşdeğerliği — g1-hiz-esdegerlik-250 ('moneyLines bağlamda' — tabanda coverGroups yok; 5 alt test iptal).
   Tabanda YEŞİL kalanlar (var olan davranışın eksik testleri; dişleri mutasyonla): DÜŞÜK (a) N7 / N8 / N11, M12 testi.
+
+### Ekran senaryoları — önceki ajan (devam 3), UTC, 7aa16bdf (her biri ayrı 'Kanıt:' commit'i; sayılar `t3duz-ozet.txt`)
+| Senaryo | Çıkış | Denetim |
+|---|---|---|
+| banka-210-ekran-aciklama | 0 | 11 / 11 |
+| senaryo-banka-210-eski-satir | 0 | 29 / 29 |
+| senaryo-banka-210-temel | 0 | 80 / 80 |
+| senaryo-banka-210 | **1** | 426 / 428 — adım 46 iki denetim: özet Dönem Giriş 21.500 / Dönem Sonu 160.484,25 (beklenti 26.500 / 165.484,25) ve TOPLAM Giriş 21.500 — G1'in (S214 = A) BEKLENEN etkisi; beklenti değişikliği ve koşusu aşağıda (devam 4) |
+| senaryo-cari-243 | 0 | 70 / 70 |
+| senaryo-pos-kart-249 | 0 | 383 / 383 |
+| uiux-a-243 | 0 | 51 / 51 |
+| senaryo-213 | 0 | 64 / 64 |
+| senaryo-223 | 0 | 29 / 29 |
+| senaryo-banka-rapor-243 | 0 | 38 / 38 |
+| senaryo-supheli-230 | 0 | 67 / 67 |
+| senaryo-supheli-kuyruk-250 | 0 | 15 / 15 |
+| senaryo-217 | 0 | 65 / 65 |
+| senaryo-ux18-244 | 0 | 27 / 27 |
+| senaryo-iz1-kasa-acilis | 0 | 21 / 21 |
+| senaryo-kasa-acilis-uyari-250 | 0 | 20 / 20 |
+| senaryo-210 | 0 | 57 / 57 |
+Not: `e2e-senaryo-banka-210-s214` (429 / 429) önceki ajanın COMMIT'SİZ uyarlamasıyla koşuldu (kapsayıcı yenilenince uyarlama kayboldu) — kanıt sayılmadı; devam 4 aynı uyarlamayı commit'leyip yeniden koştu.
+
+### Tur 3 mutasyon dosyası (`test/supheli-kuyruk-defter-250-mutasyon.mjs`, M1–M18) — önceki ajan (devam 3), /dev/shm kopyası (7aa16bdf + 62f94abe)
+- M1–M9: UTC 9 / 9 yakalandı (`mut-t3-1a2-UTC`; ilk koşu `mut-t3-1a-UTC` çıkış 1 — M4'ün deseni B1'den sonra 0 kez bulundu, araç 'YAKALANDI SAYILMAZ' diye durdu; 62f94abe deseni uyarladı), İstanbul 9 / 9 (`mut-t3-1a-Europe-Istanbul`).
+- M10–M18: UTC 9 / 9 (`mut-t3-1b-UTC`), İstanbul 9 / 9 (`mut-t3-1b-Europe-Istanbul`).
+- M12 (+ M16, M17, M18): 5 ayrı koşu UTC + 5 ayrı koşu İstanbul, HER koşuda 4 / 4 yakalandı → M12, 1b koşularıyla birlikte 12 / 12 koşuda öldü (B1'den önce ara sıra yaşıyordu).
