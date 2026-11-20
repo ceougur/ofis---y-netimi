@@ -51,3 +51,14 @@ Sürücü bu dalda (bakım 3) R-S192-BAG-SONRA kuralını taşımıyor; kural s�
   128 = 1.000 (kâhin 2.000 / 0) → yeni ADIM AYNI, Mizan 120 = 2.000 / 128 = 0 AYNI. Kalan tek fark af0205 Açık Faturalar F2 program 1.000 · kâhin 0 — taban ve yenide AYNI;
   bu S213 = B (kod değişmez; kâhin bakımına — iş listesi D, sürücü bakımı 4 kararı (3)).
 SONUÇ: R-S192-BAG-SONRA kuralı yeni kodda ARTIK ATEŞLEMİYOR (rastgele-1 13 → 0 R / TZ, rastgele-2 3 → 0 adım). Kural sürücü sınıflamasında duruyor (silinmedi; sürücüyü ana oturum günceller).
+| Parça | dosya | UTC | Europe/Istanbul |
+|---|---|---|---|
+| komsu-0 | 56 | çıkış 0 · 591 / 591 | çıkış 0 · 591 / 591 |
+| komsu-1 | 56 | çıkış 0 · 654 / 654 | çıkış 0 · 654 / 654 |
+| komsu-2 | 54 | çıkış 0 · 625 / 625 | çıkış 0 · 625 / 625 |
+| komsu-3 | 57 | çıkış 0 · 720 / 720 | çıkış 0 · 720 / 720 |
+| TOPLAM | 223 | 2.590 / 2.590, fail 0, cancelled 0, skipped 0 | 2.590 / 2.590, fail 0, cancelled 0, skipped 0 |
+Liste: scratchpad/t3duz-d3/komsu-tam.txt (önceki ajanın taraması; bu ajan değişen ürün dosyalarına — doubtful-gl, bank/doubtful, money-lines, obligation-queue,
+routes/cheques, report-center — `komsu.py` ile yeniden taradı: 135 dosya, hepsi 223'ün içinde). Kapsam: yeni testler (hesapsiz-tumu-250, supheli-kuyruk-defter-250,
+g1-hiz-esdegerlik-250, pos-komisyon-satis-gunu-250, hesapsiz-acilis-250, kural-farki-yil-250, defter-kaynak-iz-250), beklentisi değişen komşular (gg2,
+banka-210-raporlar, raporlar-230-banka) ve şema kapısı / geri yükleme komşuları listede.
