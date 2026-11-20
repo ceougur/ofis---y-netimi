@@ -1,0 +1,127 @@
+TAP version 13
+# Subtest: Ç6-HESAP değerleme — hareket sınıfı (defterin 153 maddeleriyle aynı ayrım)
+    # Subtest: açılış / alış / alış iadesi / yalnız miktar
+    ok 1 - açılış / alış / alış iadesi / yalnız miktar
+      ---
+      duration_ms: 1.166577
+      type: 'test'
+      ...
+    1..1
+ok 1 - Ç6-HESAP değerleme — hareket sınıfı (defterin 153 maddeleriyle aynı ayrım)
+  ---
+  duration_ms: 2.382682
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP değerleme — dönemsel ağırlıklı ortalama, iki yıl (DBS = önceki yıl DSS, KG-12 A)
+    # Subtest: 2025 yıl sonu: DSS 108,00, SMM 1.242,00
+    ok 1 - 2025 yıl sonu: DSS 108,00, SMM 1.242,00
+      ---
+      duration_ms: 1.622954
+      type: 'test'
+      ...
+    # Subtest: 2026: DBS = 2025 DSS; 31.01 DSS 108,00; 31.03 DSS 448,00, SMM 320,00
+    ok 2 - 2026: DBS = 2025 DSS; 31.01 DSS 108,00; 31.03 DSS 448,00, SMM 320,00
+      ---
+      duration_ms: 0.57086
+      type: 'test'
+      ...
+    # Subtest: yıl sonu ile 31 Aralık 'at' aynı (tek işlev)
+    ok 3 - yıl sonu ile 31 Aralık 'at' aynı (tek işlev)
+      ---
+      duration_ms: 0.215783
+      type: 'test'
+      ...
+    1..3
+ok 2 - Ç6-HESAP değerleme — dönemsel ağırlıklı ortalama, iki yıl (DBS = önceki yıl DSS, KG-12 A)
+  ---
+  duration_ms: 2.738246
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP değerleme — G-1 yuvarlama, KG-9, KG-10, M5, 29 Şubat, silinen ürün, eksi birim maliyet
+    # Subtest: G-1: ürün başına kuruşa yarım yukarı, toplam = yuvarlanmış satırlar
+    ok 1 - G-1: ürün başına kuruşa yarım yukarı, toplam = yuvarlanmış satırlar
+      ---
+      duration_ms: 0.830305
+      type: 'test'
+      ...
+    # Subtest: KG-9 A: eksi miktar 0 değer + eksi stok listesi; M5: ertesi yıl eksi dönem başı ortalamada 0, miktar devri eksi dahil
+    ok 2 - KG-9 A: eksi miktar 0 değer + eksi stok listesi; M5: ertesi yıl eksi dönem başı ortalamada 0, miktar devri eksi dahil
+      ---
+      duration_ms: 0.543206
+      type: 'test'
+      ...
+    # Subtest: KG-10 A: alışı ve DBS'si olmayan ürün kartın alış fiyatıyla; fiyat da yoksa 0 + uyarı
+    ok 3 - KG-10 A: alışı ve DBS'si olmayan ürün kartın alış fiyatıyla; fiyat da yoksa 0 + uyarı
+      ---
+      duration_ms: 0.684815
+      type: 'test'
+      ...
+    # Subtest: 29 Şubat (artık yıl 2028): alış 29.02'de; 28.02'de stok yok, 29.02'de 30,00
+    ok 4 - 29 Şubat (artık yıl 2028): alış 29.02'de; 28.02'de stok yok, 29.02'de 30,00
+      ---
+      duration_ms: 0.431202
+      type: 'test'
+      ...
+    # Subtest: silinmiş ürün kartı silindiği günden itibaren envantere girmez (tasarım §3, S-a A); öncesinde girer
+    ok 5 - silinmiş ürün kartı silindiği günden itibaren envantere girmez (tasarım §3, S-a A); öncesinde girer
+      ---
+      duration_ms: 0.399056
+      type: 'test'
+      ...
+    # Subtest: alış iadesi alışlardan değerliyse birim maliyet 0'a kırpılır, kırpılan tutar listede (S209 = B; tur 1'in 'eksi değer + uyarı' beklentisi kararla değişti)
+    not ok 6 - alış iadesi alışlardan değerliyse birim maliyet 0'a kırpılır, kırpılan tutar listede (S209 = B; tur 1'in 'eksi değer + uyarı' beklentisi kararla değişti)
+      ---
+      duration_ms: 1.564003
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-degerleme-yeni.test.mjs:105:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        -8000 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: -8000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-degerleme-yeni.test.mjs:109:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: alış iadesi birim maliyeti DÜŞÜRÜR / YÜKSELTİR (iade fiyatı ortalamadan farklıysa)
+    ok 7 - alış iadesi birim maliyeti DÜŞÜRÜR / YÜKSELTİR (iade fiyatı ortalamadan farklıysa)
+      ---
+      duration_ms: 0.23708
+      type: 'test'
+      ...
+    # Subtest: sonradan açılan ürünün açılışı (M-07) kendi yılının dönem başıdır; boş veri 0
+    ok 8 - sonradan açılan ürünün açılışı (M-07) kendi yılının dönem başıdır; boş veri 0
+      ---
+      duration_ms: 0.199285
+      type: 'test'
+      ...
+    1..8
+not ok 3 - Ç6-HESAP değerleme — G-1 yuvarlama, KG-9, KG-10, M5, 29 Şubat, silinen ürün, eksi birim maliyet
+  ---
+  duration_ms: 5.534561
+  type: 'suite'
+  location: '/dev/shm/c6h2-eski/test/c6h-degerleme-yeni.test.mjs:59:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 12
+# suites 3
+# pass 11
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 111.61629

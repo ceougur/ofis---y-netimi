@@ -1,0 +1,15 @@
+1.44 1.44 1.43 4/140 10311
+A başta yük 1.44 1.44 1.43 3/143 10315 · 10:36:55 · uç f2e3aab9
+yeni UTC çıkış 0 · # tests 70 # pass 70 # fail 0 # cancelled 0 # skipped 0 
+yeni Europe/Istanbul çıkış 0 · # tests 70 # pass 70 # fail 0 # cancelled 0 # skipped 0 
+başta yük 1.87 1.54 1.47 1/126 10650 · 10:37:14 · eski kod 2 balanceSheet anması
+c6h-bilanco çıkış 1 · # tests 1 # pass 0 # fail 1 
+c6h-bilanco-uc çıkış 1 · # tests 8 # pass 0 # fail 8 
+c6h-ba çıkış 1 · # tests 5 # pass 1 # fail 4 
+c6h-s209 çıkış 1 · # tests 3 # pass 0 # fail 3 
+c6h-degerleme-yeni çıkış 1 · # tests 12 # pass 11 # fail 1 
+sonda yük 1.80 1.53 1.46 1/129 10741 · 10:37:16
+mutasyon: 30 yakalandı, 0 yaşadı, 0 uygulanamadı
+A sonda yük 2.90 1.92 1.60 3/160 13193 · 10:38:36
+
+[exited with code 0]
