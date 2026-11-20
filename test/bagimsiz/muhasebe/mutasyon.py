@@ -733,16 +733,21 @@ def main():
         return 1
     for _, degisiklikler in MUTANTLAR:                # parçalar önce denetlenir (tam bir kez geçmeli)
         mutant_kaynak(src, degisiklikler)
+    # bakım 14: MUTASYON_ARALIK="a:b" yalnız MUTANTLAR[a:b] dilimini koşar (kanıt koşusunu ≤ 40 dk parçalara bölmek için; varsayılan hepsi)
+    aralik = os.environ.get("MUTASYON_ARALIK")
+    secili = MUTANTLAR[slice(*[int(x) if x else None for x in aralik.split(":")])] if aralik else MUTANTLAR
+    if aralik:
+        print(f"aralık {aralik}: {len(secili)} / {len(MUTANTLAR)} mutant")
     sag = []
     # her mutant ayrı süreçte (fork) koşar; sonuç sırası korunur. MUTASYON_PARALEL=1 sıralı koşar.
     paralel = int(os.environ.get("MUTASYON_PARALEL", os.cpu_count() or 1))
-    isler = [(src, d) for _, d in MUTANTLAR]
+    isler = [(src, d) for _, d in secili]
     if paralel > 1:
         havuz = multiprocessing.get_context("fork").Pool(paralel)
         sonuclar = havuz.imap(_mutant_kos, isler)
     else:
         havuz, sonuclar = None, map(_mutant_kos, isler)
-    for (ad, degisiklikler), (n, kirmizi) in zip(MUTANTLAR, sonuclar):
+    for (ad, degisiklikler), (n, kirmizi) in zip(secili, sonuclar):
         durum = "ÖLDÜ" if kirmizi else "SAĞ KALDI"
         print(f"{ad:<78} {durum:<10} ({len(kirmizi)}/{n} test kırmızı: {', '.join(kirmizi[:3])}{' …' if len(kirmizi) > 3 else ''})")
         if not kirmizi:
@@ -751,8 +756,8 @@ def main():
         havuz.close()
         havuz.join()
     yukle(src)
-    print(f"# tests {len(MUTANTLAR)}")
-    print(f"# pass {len(MUTANTLAR) - len(sag)}")
+    print(f"# tests {len(secili)}")
+    print(f"# pass {len(secili) - len(sag)}")
     print(f"# fail {len(sag)}")
     if sag:
         print("SAĞ KALAN:", "; ".join(sag))
