@@ -159,3 +159,9 @@ Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
 - Kart kaldıran / kapatan her yazımdan sonra ilk Geciken çağrısının tam kurulumu tabanda da aynıdır (bölüm 10 tanısı tani-1: tahsilatsız taksitli fatura iptalinden sonra taban 1.966 / yeni
   2.187 ms). Yani fark aynı işlemin yavaşlaması DEĞİL, S15 = A'nın getirdiği YENİ yazımın (tabanda reddedilen) bedeli → hüküm: KARŞILAŞTIRILMAZ (durum farklı; S15 satırıyla aynı).
   'Kart kapanınca Geciken listesinin artımlı yenilenmesi' SONRAKİ SÜRÜME (2.5.1) — hız işi, davranış değişmez.
+
+## 14. Kabul E — hız KİLİTLİ (son kod 92d60f9a — sunucu kodu 82c4ca0a ile aynı; ÖZEL kilit 09:51; GEÇERSİZ blok 0, blok başı yük 1,08–1,15) — kanıt c7b3-d4-hiz-kilitli-*
+Kilitsizle aynı tablo: fatura kartı 1,03, satış yazımları 1,00–1,07, iade 0,70, stok iadesi 0,35, Cari kartı / Mizan / Mutabakat Testi / tahsilat 0,95–1,06 → tamam.
+KÖTÜLEŞEN (kalan): fatura iptali (tahsilatsız taksitli) 140,9 / 145,5 → 170,9 / 174,2 (1,20); iptal (kapsayan kartlı cari) 133,3 / 134,9 → 165,6 / 168,4 (1,25); silme 161,5 / 163,5 → 192,9 / 200,4
+(1,23) — yine +~30 ms (`trimCovers` okuması; bölüm 12). Geciken (yazımlardan sonra) 2,22 — bölüm 13: KARŞILAŞTIRILMAZ (S15 yazımı). S15 iptali KARŞILAŞTIRILMAZ.
+→ BAŞ MİMAR KARARI GEREKİYOR: iptal / silmenin +~30 ms'si S206 / S211 ailesinin YENİ kuralının okumasıdır (taban bu kuralı uygulamıyordu).
