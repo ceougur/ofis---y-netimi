@@ -48,3 +48,7 @@ Taban: c7b3b-taban = b3a59f2a. İş: P7 (S219 = A) + S200 okuması. P6 → 2.5.1
 - KALAN P6 (S44 / S79 bağ düzeltme yolu; s81, s82, s94, s103) AYNEN; başka sınıf değişmedi (sıralı fark listelerinin comm'u: yalnız tabanda 16 satır, yalnız yenide 2 satır).
 - YENİ (2; yalnız TZ=UTC): s91 mz0 (01.01–09.03 mizanı) ana:120 program 3.200 · kâhin 1.200; ana:519 −3.200 · −1.200 → SINIFLANMADI. KÖK NEDEN (ders 6, okundu): TE1'in yükleme anı 2026-03-09T22:30:00Z — UTC sürecinde 09.03, İstanbul'da 10.03; program KG-5 maddesini sürecin yerel gününe (09.03), kâhin İstanbul gününe (10.03) yazar → aynı R-B5-YEREL-GUN-UTC farkı (sınıflamada yalnız mz1 için yazılı). Bugüne dek TE1'in kartı P7 yüzünden açılmadığı için mz0'da görünmüyordu. TZ=Europe/Istanbul koşusunda AYNI. Program hatası DEĞİL; sınıflamaya mz0 satırı eklenmesi ana oturumun (sürücü bakımı) işi.
 - s51 (S120): taban ve yeni iki TZ AYNI 9 / 9 (U 0, P 0, K 0, R 0) — değişmedi.
+
+## 7. F — değişmezler
+- Rastgele sıra (test/mutabakat/kos.mjs --islem 400 --tohum 11 --tohumlar 2 --her 20): yeni 2/2, taban 2/2 — her doğrulamada Kasa / cari / stok / taksit / fatura / çek / ana defter tutarlı.
+- Mutabakat Testi: yeni test (1)(5)(9) ve ekran senaryosu sonunda tutarlı; kâhin-defter 187/187.
