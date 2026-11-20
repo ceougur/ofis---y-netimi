@@ -494,6 +494,38 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     return ["accountId", "planId", "itemId", "issueDate", "instrument"].some(key => body[key] !== undefined && text(body[key] ?? "") !== text(previous[key] ?? ""));
   }
 
+  // 2.5.0 tek aday düzeltme turu (dar kontrol t3c7a DÜŞÜK; S181 = B — KULLANICI KURALIYLA ÖNERİ 14.11 09:00, iş listesi C: "fazla 120'ye; 120 eksiye düşerse işlem reddedilir (S155 = A'nın
+  // açık sözü; kullanıcı evrakı bağsız girer ya da tutarı böler)"): faturaya BAĞLI alınan evrakın reddi nakit yolundaki (routes/accounts.mjs assertNormalRoom) gibi yapılabilecek yolu
+  // söyler. KURAL ve RET AYNEN (tam kapının doubtful:balance nedeni; 409 ledger-integrity, failures; hiçbir satır yazılmaz) — yalnız ileti + önerilen tutar (suggestedMinor). Ölçü kapının
+  // kendi rakamı (yazımdan SONRAKİ hâl, evrakın carisi): aşan = açık şüpheli − borç; önerilen tutar = tutar − aşan (bağlı evrakın şüpheli payı tutardan önce düştüğü için 120'ye düşen
+  // kısım tam şüpheli dışı borca iner). Bağsız evrakın ve başka nedenli reddin iletisi değişmez (lib/integrity.mjs doubtfulText).
+  const linkedDoubtfulError = (error, hint) => {
+    if (!hint?.invoiceId || hint.direction !== "in" || !(error instanceof HttpError) || error.extra?.code !== "ledger-integrity") return error;
+    const failures = Array.isArray(error.extra.failures) ? error.extra.failures : [];
+    if (!failures.length || !failures.every(item => item.code === "doubtful:balance")) return error;
+    const figure = (failures[0].figures || []).find(item => item.party === hint.accountId);
+    if (!figure) return error;
+    const balanceMinor = Number(figure.balanceMinor) || 0;
+    const openMinor = Number(figure.openMinor) || 0;
+    const overMinor = openMinor - balanceMinor;
+    const mostMinor = Math.round((Number(hint.amount) || 0) * 100) - overMinor;
+    if (!(overMinor > 0) || !(mostMinor > 0)) return error;
+    return new HttpError(
+      409,
+      `Evrakın normal cari hesaba işlenecek kısmı carinin şüpheli dışı borç bakiyesini ${tl(overMinor / 100)} aşıyor (kayıttan sonra borç ${tl(balanceMinor / 100)}, açık şüpheli ${tl(openMinor / 100)}); fazlası şüpheli alacaktan düşmek zorunda. Tutarı ${tl(mostMinor / 100)}'ye indirin ya da Kapatılacak Fatura bağını kaldırın.`,
+      { ...error.extra, suggestedMinor: mostMinor },
+    );
+  };
+  // Yazımı sarar: hint yazımın içinde (girdi okununca) doldurulur; bağlı evrakın şüpheli reddi yukarıdaki iletiye çevrilir.
+  const withLinkedHint = run => {
+    const hint = {};
+    try {
+      return run(hint);
+    } catch (error) {
+      throw linkedDoubtfulError(error, hint);
+    }
+  };
+
   // ---------- Yazma ----------
   const banking = bankForm(bankModule);
   const imports = createImportRequests({ store, now: clock });
@@ -504,14 +536,15 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   router.post("/api/workspace/cheques", async ({ req, res }) => {
     const user = auth.requirePermission(req, "cheques.manage");
     const body = await readJson(req);
-    const created = bank.post({ user, module: "cheque", op: "create", requestId: banking.requestId(req, body), scope: "cheque.create", body, write: () => {
+    const created = withLinkedHint(hint => bank.post({ user, module: "cheque", op: "create", requestId: banking.requestId(req, body), scope: "cheque.create", body, write: () => {
       const input = chequeAccountOf(coreInput(body, null, { dated: true }), body);
       const bond = invoiceBond(input, body.invoiceId);
+      Object.assign(hint, { direction: input.direction, amount: input.amount, accountId: input.accountId, invoiceId: bond });
       if (body.allowDuplicate !== true) assertUnique(input);
       const result = insertCheque(user, input, { eventInvoiceId: bond });
       audit(user, "cheque.created", result.id, { direction: input.direction, instrument: input.instrument, serialNo: input.serialNo, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, planId: input.planId, ...(input.bankAccountId ? { bankAccountId: input.bankAccountId } : {}), ...(bond ? { invoiceId: bond } : {}) });
       return result;
-    } });
+    } }));
     if (created?.replayed) return ok(res, { ...detail(created.refId, user), replayed: true });
     changed(user, { chequeId: created.id, ...touchedBy(created.effects) });
     ok(res, detail(created.id, user));
@@ -521,7 +554,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const user = auth.requirePermission(req, "cheques.manage");
     const body = await readJson(req);
     let touched = { accountIds: [], planIds: [] };
-    const id = bank.post({ user, module: "cheque", op: "update", prev: { chequeId: params.id }, write: () => {
+    const id = withLinkedHint(hint => bank.post({ user, module: "cheque", op: "update", prev: { chequeId: params.id }, write: () => {
       const previous = chequeRow(params.id);
       if (body.updatedAt && body.updatedAt !== previous.updatedAt) throw new HttpError(409, "Bu çek siz bakarken değişti. Kartı yenileyip yeniden deneyin.", { code: "cheque-stale" });
       const history = eventsOf(previous.id);
@@ -550,6 +583,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         period?.assertOpen(previous.issueDate, "Bu çek/senet");
       }
       const nextBond = asked && (asked !== bond || coreChange) ? invoiceBond(input, asked, { posted: isPosted(first) }) : asked;
+      Object.assign(hint, { direction: input.direction, amount: input.amount, accountId: input.accountId, invoiceId: previous.invoiceId ? "" : nextBond });
       if (coreChange) {
         // Tek olaylı (alındı/verildi) kayıt: eski defter etkileri geri alınır, yenileri yazılır (aynı işlem bloğunda).
         const oldEffects = effectsOf(first);
@@ -571,7 +605,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       );
       audit(user, "cheque.updated", previous.id, { previous: { amount: previous.amount, dueDate: previous.dueDate, accountId: previous.accountId, serialNo: previous.serialNo, bankAccountId: previous.bankAccountId || "", bank: previous.bank }, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, serialNo: input.serialNo, bankAccountId: input.bankAccountId || "", bank: input.bank, ...(nextBond !== bond ? { invoiceId: nextBond, previousInvoiceId: bond } : {}) });
       return previous.id;
-    } });
+    } }));
     changed(user, { chequeId: id, ...touched });
     ok(res, detail(id, user));
   });
