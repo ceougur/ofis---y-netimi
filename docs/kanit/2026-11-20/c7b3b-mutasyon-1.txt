@@ -1,0 +1,30 @@
+MUTASYON c7b3b · 11:46:37 · başta 2.94 2.63 2.58 4/162 8801
+uygulandı M1-yeni-kart-eski-kuralla-dus
+M1-yeni-kart-eski-kuralla-dus · UTC · çıkış 1 · pass 116 · fail 9 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         kural "": kalan borçta                  0 !== 600          
+M1-yeni-kart-eski-kuralla-dus · Europe/Istanbul · çıkış 1 · pass 116 · fail 9 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         kural "": kalan borçta                  0 !== 600          
+geri alındı
+uygulandı M2-eski-karti-yeni-kuralla-say
+M2-eski-karti-yeni-kuralla-say · UTC · çıkış 1 · pass 109 · fail 16 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         Expected values to be strictly equal:                  1550 !== 2150          
+M2-eski-karti-yeni-kuralla-say · Europe/Istanbul · çıkış 1 · pass 109 · fail 16 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         Expected values to be strictly equal:                  1550 !== 2150          
+geri alındı
+uygulandı M3a-genel-defter-yardimcidan-kopuk
+M3a-genel-defter-yardimcidan-kopuk · UTC · çıkış 1 · pass 103 · fail 9 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         motor: her işlemde tutarlı         + actual - expected                  + [ 
+M3a-genel-defter-yardimcidan-kopuk · Europe/Istanbul · çıkış 1 · pass 103 · fail 9 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         motor: her işlemde tutarlı         + actual - expected                  + [ 
+geri alındı
+uygulandı M3b-cari-defteri-yardimcidan-kopuk
+M3b-cari-defteri-yardimcidan-kopuk · UTC · çıkış 1 · pass 117 · fail 8 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         kural "": kalan borçta                  0 !== 600          
+M3b-cari-defteri-yardimcidan-kopuk · Europe/Istanbul · çıkış 1 · pass 117 · fail 8 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         kural "": kalan borçta                  0 !== 600          
+geri alındı
+uygulandı M3c-partyTotals-yardimcidan-kopuk
+M3c-partyTotals-yardimcidan-kopuk · UTC · çıkış 1 · pass 124 · fail 1 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         süzgeç tam kapıyla aynı karar vermeli: {"temiz":158,"bulgu":1,"taban sapması":140,"invoice_lines":1,"doubtful_receivables yazımı":4,"doubtful_provisions yazımı":2}                  1 !== 0          
+M3c-partyTotals-yardimcidan-kopuk · Europe/Istanbul · çıkış 1 · pass 124 · fail 1 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         süzgeç tam kapıyla aynı karar vermeli: {"temiz":158,"bulgu":1,"taban sapması":140,"invoice_lines":1,"doubtful_receivables yazımı":4,"doubtful_provisions yazımı":2}                  1 !== 0          
+geri alındı
+uygulandı M3d-supheli-ayirici-yardimcidan-kopuk
+M3d-supheli-ayirici-yardimcidan-kopuk · UTC · çıkış 1 · pass 124 · fail 1 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         Kartı Kapat: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (gl:120, gl:128).","code":"gate-equivalence","failures":[{"code":"gl:120","name":"120 Alıcılar (Müşteri Carileri
+M3d-supheli-ayirici-yardimcidan-kopuk · Europe/Istanbul · çıkış 1 · pass 124 · fail 1 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         Kartı Kapat: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (gl:120, gl:128).","code":"gate-equivalence","failures":[{"code":"gl:120","name":"120 Alıcılar (Müşteri Carileri
+geri alındı
+uygulandı M3e-cari-listesi-yardimcidan-kopuk
+M3e-cari-listesi-yardimcidan-kopuk · UTC · çıkış 1 · pass 103 · fail 9 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         motor: her işlemde tutarlı         + actual - expected                  + [ 
+M3e-cari-listesi-yardimcidan-kopuk · Europe/Istanbul · çıkış 1 · pass 103 · fail 9 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         motor: her işlemde tutarlı         + actual - expected                  + [ 
+geri alındı
+bitti 11:57:07

@@ -1,0 +1,32 @@
+{
+  "ad": "c7b3b-e2e-run",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/run.mjs",
+  "commit": "ae4da429560537853c94ae01d3bdf8aab5d236dc",
+  "dal": "worktree-agent-a7251f6b5e9ebfc97",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T11:43:39.373Z",
+  "sure_sn": 165.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/kanit/2026-11-20/c7b3b-e2e-run.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7251f6b5e9ebfc97",
+  "ham_cikti_sha256": "ac08bef3c51e7fb1195bad79708061a762c1df6bc61bf2735ee41344d68b4df3",
+  "ham_cikti_bayt": 5605
+}
