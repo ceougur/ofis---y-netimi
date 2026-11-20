@@ -1,0 +1,157 @@
+TAP version 13
+# (node:25649) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b tur 3b — Kartı Kapat 'Borçta Kalsın' (karar (6), S205)
+    # Subtest: T1 (6): kalan carinin borcunda kalır, madde yok; S205 kapanışın ertesi gününden gecikmiş; zil / Vade Takip; vazgeçme Alacak Yaz ile
+    not ok 1 - T1 (6): kalan carinin borcunda kalır, madde yok; S205 kapanışın ertesi gününden gecikmiş; zil / Vade Takip; vazgeçme Alacak Yaz ile
+      ---
+      duration_ms: 699.293972
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:53:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Borçta Kalsın: bakiye 600 kalır (eski kural 0)
+        
+        0 !== 600
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 600
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:61:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: T2 S205: vadesi kapanıştan önce geçmiş kalem kendi vadesiyle gecikmiş kalır; gelmemiş kalem kapanışın ertesinden
+    not ok 2 - T2 S205: vadesi kapanıştan önce geçmiş kalem kendi vadesiyle gecikmiş kalır; gelmemiş kalem kapanışın ertesinden
+      ---
+      duration_ms: 480.672479
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:85:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        0 !== 900
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 900
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:91:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T3 eski kurallı kapalı kart + yeni Borçta Kalsın kartı aynı caride; Yeniden Aç → yeniden Kapat yeni kuralla
+    not ok 3 - T3 eski kurallı kapalı kart + yeni Borçta Kalsın kartı aynı caride; Yeniden Aç → yeniden Kapat yeni kuralla
+      ---
+      duration_ms: 396.088802
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:99:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni kart Borçta Kalsın
+        
+        0 !== 500
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 500
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:104:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:25649) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:25649) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: T4 kilit: Borçta Kalsın kartı kilitli kapanışta Yeniden Aç / tahsilat serbest; eski kurallı kart 409; işaret kilit izinde
+    not ok 4 - T4 kilit: Borçta Kalsın kartı kilitli kapanışta Yeniden Aç / tahsilat serbest; eski kurallı kart 409; işaret kilit izinde
+      ---
+      duration_ms: 751.498275
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:126:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Borçta Kalsın kartı kilitli kapanışta Yeniden Aç ({"ok":false,"error":"Bu kart 08.10.2026 tarihinde kapatıldı (kalan alacaktan vazgeçildi); 09.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Kart yeniden açılamaz. Gerekirse yönetici dönem kilidini açmalı.","code":"period-locked","lockedUn)
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:137:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - Ç7b tur 3b — Kartı Kapat 'Borçta Kalsın' (karar (6), S205)
+  ---
+  duration_ms: 2329.664619
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:25:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç7b tur 3b — göç 53 (kart başına kural işareti)
+    # Subtest: T5 göç öncesi (52) dosyada kapalı kart '2.4.9' (kalan düşülmüş — eski kural), açık kart ''; eşgüçlü
+    not ok 1 - T5 göç öncesi (52) dosyada kapalı kart '2.4.9' (kalan düşülmüş — eski kural), açık kart ''; eşgüçlü
+      ---
+      duration_ms: 599.459273
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:153:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        göç koştu
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:175:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - Ç7b tur 3b — göç 53 (kart başına kural işareti)
+  ---
+  duration_ms: 599.985255
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/taban/test/c7b-tur3b-borcta-kalsin-250.test.mjs:152:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3391.252456

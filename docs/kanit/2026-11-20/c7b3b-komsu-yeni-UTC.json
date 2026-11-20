@@ -1,0 +1,158 @@
+{
+  "ad": "c7b3b-komsu-yeni-UTC",
+  "komut": "node --test --test-concurrency=3 test/accounts-stock.test.mjs test/acilis-519-250.test.mjs test/acilis-isareti-246.test.mjs test/acilis-olabilir-250.test.mjs test/backup.test.mjs test/banka-210-altin.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-onarim.test.mjs test/banka-210-ters-kayit.test.mjs test/banka-220-hesap-kart.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-230-supheli-bozma.test.mjs test/birlesik-tur2-yaris-250.test.mjs test/birlesik-tur3-yaris-250.test.mjs test/birlesik-tur4-degisiklik-yok-250.test.mjs test/bulgu-223.test.mjs test/c7b-goc52-kilit-izi-250.test.mjs test/c7b-kart-kapat-onay-250.test.mjs test/c7b-kilit-izi-250.test.mjs test/c7b-tur3-eski-surum-250.test.mjs test/c7b-tur3-kart-250.test.mjs test/c7b-tur3b-borcta-kalsin-250.test.mjs test/cari-duzeltme-yaris-250.test.mjs test/cari-hareket-249.test.mjs test/cari-vade-245.test.mjs test/cheques-overview.test.mjs test/columns.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/dataset.test.mjs test/db-tx-kayip-250.test.mjs test/db-tx-kayip-pragma-250.test.mjs test/defter-243-vergi.test.mjs test/defter-kaynak-iz-250.test.mjs test/defter-turu-c4.test.mjs test/devir-arsiv-wal-250.test.mjs test/devir-d2-arsiv-250.test.mjs test/devir-d2-arsiv-goc-kesinti-250.test.mjs test/devir-d2-bakim-250.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-kilit-ucu-250.test.mjs test/donmus-defter-yasam-250.test.mjs test/dues.test.mjs test/duzeltmeler-212.test.mjs test/edoc-kullanim-birim-247.test.mjs test/fis-defteri-yasam-250.test.mjs test/geri-yukleme-uyari-244.test.mjs test/goc-243-iade-ref.test.mjs test/goc-243-stok-acilis.test.mjs test/goc-243-stok-kdv.test.mjs test/goc-244-numara-tabani.test.mjs test/goc-245-cari-vade.test.mjs test/goc-246-iade-bagi.test.mjs test/iade-geri-odeme-246.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/isgecmisi-230-geri-yukleme-yetki.test.mjs test/kalan-borc-ortak-30a.test.mjs test/kalan-borc-satir-31d.test.mjs test/kalan-metin-246.test.mjs test/kapali-kart-ekstre-tarihi-250.test.mjs test/kapama-ks7-245.test.mjs test/kapi-uyari-245.test.mjs test/kayit-bag-31e.test.mjs test/kayit-tahsilat-244.test.mjs test/kilit-izi-alanlar-250.test.mjs test/kullanici-yetki-210.test.mjs test/kural-farki-kapi-disi-250.test.mjs test/maliyet-cekirdek-246.test.mjs test/migrations.test.mjs test/names.test.mjs test/obligation-input-250.test.mjs test/personel-ozluk-244.test.mjs test/plan-case-link.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/projeksiyon-vade-246.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-230-banka.test.mjs test/schema-flex.test.mjs test/sema-kapisi-bs7.test.mjs test/sirketler-217.test.mjs test/t3hiz-esdegerlik-250.test.mjs test/table-columns.test.mjs test/tablo-borc-dosya-u2.test.mjs test/tablo-borc-r31e.test.mjs test/takvim-pil-kaynak.test.mjs test/tyk-api-250.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/tyk-kapanis-250.test.mjs test/tyk-kapanis-dis-250.test.mjs test/tyk-son-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-tur2b2-250.test.mjs test/update-flow.test.mjs test/upgrade-identity.test.mjs test/uyari-ufku-225.test.mjs test/vade-takip-soz-b7-250.test.mjs test/whatsapp-b3-goc-249.test.mjs test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs test/whatsapp-we-webhook-bilgisi-250.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-220.test.mjs",
+  "commit": "7b38384ec7c800182f0bc6575ea56fa4bab97564",
+  "dal": "worktree-agent-a7251f6b5e9ebfc97",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T11:15:27.012Z",
+  "sure_sn": 310,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1472,
+    "gecen": 1443,
+    "basarisiz": 29,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 29 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "cari ve stok hesap kuralları (saf) › defter: borç − alacak; taksit planı borç, taksit tahsilatı alacak; kapatılan kartın kalanı düşülür",
+      "konum": "test/accounts-stock.test.mjs:27:3",
+      "hata": "Expected values to be strictly equal: · 1550 !== 2150 (beklenen 2150, gelen 1550)"
+    },
+    {
+      "ad": "B8 — carinin defter bakiyesi: SQL toplamı = yevmiye (iki yolun eşdeğerliği) › rastgele mutabakat motoru (eşik 0: her cari SQL yolunda, eşdeğerlik denetimi açık): her işlem tutarlı, süzgeç bulgusu yok, her cari eşit",
+      "konum": "test/banka-210-gg-cari.test.mjs:39:3",
+      "hata": "motor: her işlemde tutarlı · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "kapı süzgeci — nasıl bozarım: bağlı varlıkta çıkan sapma (üretim kipi) › 20. kapatılmış (kilitli dönemde) kartın tahsilatı: karta bugün tahsilat → kilit izi (vazgeçilen kalan) → 409",
+      "konum": "test/banka-210-kapi-kapsam.test.mjs:246:3",
+      "hata": "Missing expected exception: kapı reddetmeli (409)"
+    },
+    {
+      "ad": "kapı süzgeci — nasıl bozarım: bağlı varlıkta çıkan sapma (üretim kipi) › süzgeç her durumda sapmayı gördü (karar tam kapının) ve normal işler yine süzgeç yolunda",
+      "konum": "test/banka-210-kapi-kapsam.test.mjs:265:3",
+      "hata": "bozma denemelerinden sonra: mutabakat bozuk [{\"code\":\"money:event\",\"name\":\"İşlem Başlığı Olmayan Para Satırı (v20'den sonra)\",\"ok\":false,\"count\":1,\"gateCount\":1,\"sample\":[\"plan_entries:pe-6118ffa8-8095-40ee-b717-d24e61c5df67\"]}] · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 2 (b) — gövde yoldayken dönem kilitlenir / kartın kapanış günü kilitli döneme girer › taksit: kart 08.10'da kapatıldı, tahsilatı 10.10 tarihli; düzeltme yoldayken dönem 09.10'a kadar kilitlenir → kartın kapanışı kilitli: 409, tutar değişmez",
+      "konum": "test/birlesik-tur2-yaris-250.test.mjs:249:3",
+      "hata": "409 period-locked olmalı — 200  {\"ok\":true,\"data\":{\"id\":\"plan-f402bcea-e0da-4917-b020-4f1564bbbcf6\",\"accountId\":\"account-301f64b8-a34d-4650-9710-e33ade4f8474\",\"refNo\":\"2\",\"registeredOn\":\"2026- | tutar 150 (beklenen 100) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.0.23 Bulgu 2: taksit kartı ↔ fatura kapama › G: ayrı kartı kapatmak (kalanı silmek) ödenmemiş faturayı kapatmaz",
+      "konum": "test/bulgu-223.test.mjs:114:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16) › türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)",
+      "konum": "test/defter-kaynak-iz-250.test.mjs:307:3",
+      "hata": "kilit izinde OLMAYAN ve istisna listesinde de olmayan türetme sütunları (LOCK_SQL'e ekleyin ya da gerekçeyle istisnaya yazın): plans.closed_at, plans.status, plans.updated_at · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği › F1: kilit konunca kilit gününe kadarki türetilmiş yevmiye satır satır donar; donmuş = canlı (madde madde, mizan yıl yıl); koşu başlığı kural sürümü ve kaynak iziyle",
+      "konum": "test/donmus-defter-250.test.mjs:90:3",
+      "hata": "göç 52 (donmuş defter göç 47'de; 48 / 49 / 50 Ç5-A; 51 Ç7b geçiş günü; 52 Ç7b KG-7 — BEKLENTİ BİLEREK DEĞİŞTİ, tur 2d) · 53 !== 52 (beklenen 52, gelen 53)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm, göç › F11 (benzetim): göç 47 — kilitli 46'lık dosyada bekleyen 2.4.9 koşusu yazılır, açılıştan sonra 2.4.9 kopyasıyla donar; kilitsiz dosyada koşu yok",
+      "konum": "test/donmus-defter-yasam-250.test.mjs:293:3",
+      "hata": "Expected values to be strictly equal: · 53 !== 52 (beklenen 52, gelen 53)"
+    },
+    {
+      "ad": "İ1 — Taksite Aktar: kilitli günde kapatılmış bağsız karta tahsilat taşınamaz; kişi nedeniyle atlanır › nasıl bozarım: ön izleme kişiyi aktarılamaz gösterir ve nedenini söyler (kart kilitli günde kapatıldı)",
+      "konum": "test/inceleme-226-2.test.mjs:101:3",
+      "hata": "ön izleme seçili göstermemeli: link · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "İ1 — Taksite Aktar: kilitli günde kapatılmış bağsız karta tahsilat taşınamaz; kişi nedeniyle atlanır › nasıl bozarım: aktarım bütünüyle 409 değil; 200, kişi nedeniyle atlanır, tahsilat kayıtta, kilitli 689 aynı",
+      "konum": "test/inceleme-226-2.test.mjs:110:3",
+      "hata": "Expected values to be strictly equal: · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "İ1 — Taksite Aktar: kilitli günde kapatılmış bağsız karta tahsilat taşınamaz; kişi nedeniyle atlanır › çalışıyor mu: tahsilatları taşımadan (payments: false) kart kayda bağlanır; kilitli 689 aynı",
+      "konum": "test/inceleme-226-2.test.mjs:122:3",
+      "hata": "Expected values to be strictly equal: · 'exists' !== 'link' (beklenen link, gelen exists)"
+    },
+    {
+      "ad": "İ1 — aktarımı geri alma: kapatılmış karta taşınan tahsilat, kart kilitli günde kapatıldıysa nedenli 409 › nasıl bozarım: kilitten sonra geri al → 409 period-locked (nedenli; kapıdaki nedensiz ledger-integrity değil)",
+      "konum": "test/inceleme-226-2.test.mjs:153:3",
+      "hata": "geri al: 409 beklendi, 200 geldi () {\"plans\":0,\"links\":1,\"payments\":1,\"accountEntries\":0,\"accounts\":0,\"accountsKept\":0} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "İ1 — aktarımı geri alma: kapatılmış karta taşınan tahsilat, kart kilitli günde kapatıldıysa nedenli 409 › çalışıyor mu: kilit kalkınca geri alınır (tahsilat kayda döner)",
+      "konum": "test/inceleme-226-2.test.mjs:159:3",
+      "hata": "geri al: 409  Bu aktarım zaten geri alındı. · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "G1 — kilitli günde kapatılmış taksit kartı (kilit bugün) › nasıl bozarım: kilitli günde kapatılmış yeni borç kartını yeniden aç → 409 period-locked",
+      "konum": "test/inceleme-226.test.mjs:107:3",
+      "hata": "yeniden aç: 409 beklendi, 200 geldi () {\"id\":\"plan-46d732f3-fddf-4499-b26a-dd417c8c9092\",\"accountId\":\"account-7e5d8c22-70fd-45fe-8204-3685b8f537ce\",\"refNo\":\"2\",\"registeredOn\":\"2026-11-20\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"G1 Yeni Borç\",\"note\":\"\",\"phone\":\"\",\"total\":500,\"status\":\"active\",\" · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "G1 — kilitli günde kapatılmış taksit kartı (kilit bugün) › nasıl bozarım: kilitli günde kapatılmış Mevcut Borç kartını sil → 409 period-locked",
+      "konum": "test/inceleme-226.test.mjs:112:3",
+      "hata": "sil: 409 beklendi, 200 geldi () {\"id\":\"plan-66f37717-edc1-4da5-ba7b-dc8b05a3d860\"} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "G1 — kilitli günde kapatılmış taksit kartı (kilit bugün) › nasıl bozarım: kilitten önce silinmiş kapatılmış kartı kilitten sonra geri yükle → 409 period-locked",
+      "konum": "test/inceleme-226.test.mjs:116:3",
+      "hata": "geri yükle: 409 beklendi, 200 geldi () {\"restored\":\"plan\",\"message\":\"“G1 Silinen” taksit kartı geri geldi.\"} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "G1 — kilitli günde kapatılmış taksit kartı (kilit bugün) › nasıl bozarım: kilit izi kapanışı kapsar — doğrudan SQL ile yeniden açma, silme ya da tutar değişikliği kapıda geri alınır",
+      "konum": "test/inceleme-226.test.mjs:129:3",
+      "hata": "Missing expected exception (lockFailure): yeniden açma"
+    },
+    {
+      "ad": "G1 — kilitli günde kapatılmış taksit kartı (kilit bugün) › kilitli dönemin mizanı (120, 689) değişmedi; mutabakat 0",
+      "konum": "test/inceleme-226.test.mjs:135:3",
+      "hata": "vazgeçilen kalan 1.000 + 500 + 200 · 0 !== 1700 (beklenen 1700, gelen 0)"
+    },
+    {
+      "ad": "G1 — 01.05.2025'te kapatılmış kart (kilit 30.06.2025): tahsilat, çek karşılıksızı › nasıl bozarım: kilitli dönemde kapatılmış karta bugün tahsilat → 409 period-locked (689 kilitli günde küçülürdü)",
+      "konum": "test/inceleme-226.test.mjs:171:3",
+      "hata": "tahsilat: 409 beklendi, 200 geldi () {\"id\":\"plan-f8b9afc1-2dcb-49f1-b401-f42f48e264dd\",\"accountId\":\"account-8a0090b7-a7ad-4034-8b5e-455fd5016028\",\"refNo\":\"1\",\"registeredOn\":\"2025-03-02\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"G1b Eski Kart\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"closed\" · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "G1 — 01.05.2025'te kapatılmış kart (kilit 30.06.2025): tahsilat, çek karşılıksızı › nasıl bozarım: karta sayılan çek bugün karşılıksız çıkarsa tahsilat karttan düşerdi → 409 period-locked",
+      "konum": "test/inceleme-226.test.mjs:175:3",
+      "hata": "karşılıksız: 409 beklendi, 200 geldi () {\"id\":\"cheque-aa971d3e-6350-404e-b4fe-6d59fcccabe1\",\"direction\":\"in\",\"instrument\":\"cheque\",\"serialNo\":\"G1B-1\",\"bank\":\"\",\"drawer\":\"\",\"accountId\":\"account-d3e9e5e1-6ee2-498d-847e-b64ef5524437\",\"planId\":\"plan-ef61ca5f-4feb-4295-8eb9-10bbc2e652d0\",\"amount\":400,\"issueDate\":\"2025-03-05\",\"dueDate\":\"2025-12 · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "G1 — 01.05.2025'te kapatılmış kart (kilit 30.06.2025): tahsilat, çek karşılıksızı › nasıl bozarım: doğrudan SQL ile kapatılmış karta açık dönemde tahsilat eklenirse kilit izi yakalar",
+      "konum": "test/inceleme-226.test.mjs:179:3",
+      "hata": "The \"lockFailure\" validation function is expected to return \"true\". Received false · Caught error: · Error: Para kaydı merkezi denetimden geçmedi: işlem başlığı (İşlem No) olmadan para satırı (plan_entries). Hiçbir değişiklik yazılmadı."
+    },
+    {
+      "ad": "G1 — 01.05.2025'te kapatılmış kart (kilit 30.06.2025): tahsilat, çek karşılıksızı › nasıl bozarım: 2.0.13 öncesi kapatılmış kartın (kapanış günü boş) adı düzeltilince vazgeçilen kalanın günü kaymaz",
+      "konum": "test/inceleme-226.test.mjs:186:3",
+      "hata": "yeniden aç: 409 beklendi, 200 geldi () {\"id\":\"plan-7a736502-d1e5-4f25-92a9-9f39f8865657\",\"accountId\":\"account-96bac420-9ac3-492b-890c-e9f5d45a1b7f\",\"refNo\":\"4\",\"registeredOn\":\"2025-03-02\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"G1b Eski Sürüm Kartı (ad)\",\"note\":\"\",\"phone\":\"\",\"total\":600,\"statu · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 5 — kapalı kartın \"Kart kapatıldı\" satırı: cari ekstre = genel defter (kapanış günü) › kapanış günü: üç yerde de kapanış günü (ön koşul: closed_at = kapanış günü)",
+      "konum": "test/kapali-kart-ekstre-tarihi-250.test.mjs:75:3",
+      "hata": "Not kapanış günü: cari kartı / Cari Ekstre / Tüm Cari Hareketleri / Yevmiye 689 aynı gün (08.10.2026) olmalı · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 5 — kapalı kartın \"Kart kapatıldı\" satırı: cari ekstre = genel defter (kapanış günü) › +40 gün: kartın yalnız NOTU düzeltildi / cari adı değişti / aynı içerikle Kaydet → satır kapanış gününde kalır (ön koşul: kartın updated_at'i ilerledi)",
+      "konum": "test/kapali-kart-ekstre-tarihi-250.test.mjs:83:3",
+      "hata": "Not +40 gün: {\"card\":[],\"ekstre\":[],\"all\":[],\"general\":[]} — dördü de 08.10.2026 olmalı · Ad +40 gün: {\"card\":[],\"ekstre\":[],\"all\":[],\"general\":[]} — dördü de 08.10.2026 olmalı · Aynı +40 gün: {\"card\":[],\"ekstre\":[],\"all\":[],\"general\":[]} — dördü de 08.10.2026 olmalı (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/kanit/2026-11-20/c7b3b-komsu-yeni-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7251f6b5e9ebfc97",
+  "ham_cikti_sha256": "557a0ae40c43af16b5c02cffc2a2a98be1e6cbd0150f05963e021d082c5eb94a",
+  "ham_cikti_bayt": 681499
+}
