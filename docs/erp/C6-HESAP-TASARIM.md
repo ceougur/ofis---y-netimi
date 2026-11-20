@@ -152,6 +152,12 @@ Kaynak: kitap §4, §7.2, §7.3, §7.4, §8; KG-11 A, KG-12 A, KG-14 A; EK-1 M4;
   - Nasıl bozulur → test: kilit t'nin içinde / dışında (t < kapsam, t = kapsam, t > kapsam; Gelir Tablosu a ≤ kapsam < b, kapsam < a); kilit açıldı → yeniden kilitlendi (yeni koşu, eski satırlar
     silinir); kural değişikliği farkı olan kilitli yıl (test kancası `__testLedgerRule`); iki şirket; yedek → geri yükleme; boş donmuş dönem (kilit var, satır yok); aynı gün sırası (ders 31).
     Eşdeğerlik: yeni okuma ↔ eski okuma (aynı süreçte eski bileşim: `book()` maddeleri + aynı saf işlevler) ve c6h2-uc kodu ↔ yeni kod (aynı veri kopyası, uçların tam JSON'u) BİREBİR.
+  - ÖLÇÜLDÜ (20.11, tur 3; temiz 100 bin, AYNI kaynak kopya, yük başta 1,0–1,8; kanıt docs/kanit/2026-11-20/c6h3-hiz100k-*): yanıtların sha256 özeti eski ↔ yeni 13 istekte AYNI (iki kip,
+    iki şirket). KİLİTLİ (30.06.2026) Bilanço ortanca eski 7,10–7,99 sn → yeni 5,53–6,15 sn (en iyi 6,51–7,42 → 5,15–5,27); Gelir Tablosu ortanca eski 4,11–4,20 → yeni 3,45–3,68 sn.
+    KİLİTSİZ yol aynı kod (frozen yok): ilk koşuda Bilanço ortanca eski 5,18–5,49 ↔ yeni 5,45–6,05 (en iyi 4,82–4,97 ↔ 4,89–5,33), Gelir Tablosu 3,23–3,57 ↔ 3,29–3,59 — yeni önce
+    koşmuştu; sıra ters çevrilerek YİNELENDİ (aşağıda). Olay döngüsü istek başına en çok 9,5–56,7 ms (bir ilk istekte 225 ms).
+    Bütçe (≤ 3 sn) HÂLÂ aşılıyor. Parça (yeni kod, kilitli, iş parçacığısız): check() 3,45–4,05 sn (canlı türetme 2,26–2,68 + beklenenler) · donmuş toplam SQL 1,16–1,62 sn · biçimlendirme
+    11–22 ms · kuyruk 15 ms · kural farkı 0,10–0,13 · değerleme girdisi 0,44–0,48 · Bilanço hesabı 0,12–0,17 sn. Kilitsiz: check() 3,48–4,18 · değerleme 0,42–0,55 · Bilanço hesabı 0,81–0,86 sn.
 
 ## 9. Nasıl bozulur? (testler buradan; plan §9 madde 6, 8, 9, 10)
 1. 7/A yansıtma (760 → 631, 770 → 632, 780 → 660); iade 610 ve .90; POS komisyonu 653; kredi faizi 780 → H; vergi ödemesi gecikme zammı 689 → J; boş dönem; tek kayıt; çeyrek sınırı (31.03 / 01.04).
