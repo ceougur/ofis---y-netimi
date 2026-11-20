@@ -1,0 +1,48 @@
+{
+  "ad": "t3duz-e2e-senaryo-banka-210-g1-taban",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T07:54:57.817Z",
+  "sure_sn": 331.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 429,
+    "gecen": 426,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "özet: {\"Devir\":\"0,00 TL\",\"Dönem Giriş\":\"26.500,00 TL\",\"Dönem Çıkış\":\"15,75 TL\",\"Dönem Net\":\"26.484,25 TL\",\"Transfer Giriş\":\"21.000,00 TL\",\"Transfer Çıkış\":\"32.000,00 TL\",\"Açılış ve Devir Düzeltmeleri\":\"150.000,00 TL\",\"Dönem Sonu\":\"165.484,25 TL\",\"Banka (tüm hareketler)\":\"165.484,25 TL\",\"POS / Kredi ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TOPLAM = dış giriş/çıkış (TOPLAM |  |  |  | 26.500,00 TL | 15,75 TL |  | )",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "eski havale satırı kalır, 'Açılışta Sayıldı' işaretli, tutar hücreleri boş ()",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d4/k/2026-11-20/t3duz-e2e-senaryo-banka-210-g1-taban.log",
+  "klasor": "/dev/shm/t3duz-d4/taban",
+  "ham_cikti_sha256": "546b6cfdbab7d1eb997f0ff260b5c17532c0385fda6ab12c2692c5d5ab5569f6",
+  "ham_cikti_bayt": 48186
+}
