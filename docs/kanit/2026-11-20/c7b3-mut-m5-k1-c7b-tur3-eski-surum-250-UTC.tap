@@ -1,0 +1,122 @@
+TAP version 13
+# (node:5423) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen
+    # Subtest: v2.4.9'un kendi değerleri elle beklenenle aynı (üreticinin doğruluğu)
+    ok 1 - v2.4.9'un kendi değerleri elle beklenenle aynı (üreticinin doğruluğu)
+      ---
+      duration_ms: 1.334311
+      type: 'test'
+      ...
+    # Subtest: güncellemeden sonra kartlar, bakiyeler ve 689 aynen; Mutabakat Testi temiz
+    ok 2 - güncellemeden sonra kartlar, bakiyeler ve 689 aynen; Mutabakat Testi temiz
+      ---
+      duration_ms: 74.932976
+      type: 'test'
+      ...
+    # Subtest: eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+    not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+      ---
+      duration_ms: 85.781262
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/mut-kopya/test/c7b-tur3-eski-surum-250.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            status: 'closed',
+        +   total: 900
+        -   total: 0
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        status: 'closed'
+        total: 0
+      actual:
+        status: 'closed'
+        total: 900
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/mut-kopya/test/c7b-tur3-eski-surum-250.test.mjs:103:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle borç kendi vadesiyle
+    not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle borç kendi vadesiyle
+      ---
+      duration_ms: 46.14832
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/mut-kopya/test/c7b-tur3-eski-surum-250.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart kapalı, tutar = tahsilat
+        + actual - expected
+        
+          {
+            status: 'closed',
+        +   total: 900
+        -   total: 300
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        status: 'closed'
+        total: 300
+      actual:
+        status: 'closed'
+        total: 900
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/mut-kopya/test/c7b-tur3-eski-surum-250.test.mjs:114:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeniden Aç → İptal Et → kalan bir kez düşülür
+    not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeniden Aç → İptal Et → kalan bir kez düşülür
+      ---
+      duration_ms: 116.375561
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/mut-kopya/test/c7b-tur3-eski-surum-250.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tahsilat avans; kalan bir kez düşüldü
+        
+        -900 !== -300
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -300
+      actual: -900
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/mut-kopya/test/c7b-tur3-eski-surum-250.test.mjs:133:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen
+  ---
+  duration_ms: 1754.934951
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/mut-kopya/test/c7b-tur3-eski-surum-250.test.mjs:35:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 2
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2139.111962
