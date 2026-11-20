@@ -28,3 +28,11 @@ Taban: c7b3b-taban = b3a59f2a. İş: P7 (S219 = A) + S200 okuması. P6 → 2.5.1
 - test/plans.test.mjs 'Excel'den ilk yükleme' beklentisi değişti: telefonsuz 'Ali Veli' (aynı grupta telefonlu Ali Veli'nin kartı var) → yeni neden (kişi kesin değil).
 - G2 (27 Excel taksit / cari eşleştirme komşusu + plan-case-link, accounts-stock, cari-243, is-akisi): UTC 482/483 (tek kırmızı plans.test beklentisi — yukarıda).
 - Mutantlar (7; her biri iki TZ, yeni test + plans.test): hepsi öldü (bkz. c7bt-mutant-sonuc.txt).
+- G2 Europe/Istanbul (plans.test güncel): 483/483. plans.test UTC 12/12.
+
+## 3. A — kâhin-defter
+- Yeni 187/187, taban 187/187 (değişmedi).
+
+## 4. G — EKRAN
+- test/e2e/senaryo-c7bt-ayni-ad-250.mjs (yeni; CI listesine eklenecek): yeni 21/21; taban 15/21 (6 kırmızı, nedenleri: '1 kart oluşturuldu. 1 satır atlandı (Aynı adla açık kart var)', C2 kartsız / bakiye 0, 120 +3.000, telefonsuz satırın nedeni eski metin, listede 1 Ahmet Yılmaz kartı). Ekran görüntülerine bakıldı (Taksitler listesinde iki Ahmet Yılmaz kartı, telefonlarıyla; bildirimler).
+- senaryo-219 (Excel yüklemeleri komşusu): 74/74.
