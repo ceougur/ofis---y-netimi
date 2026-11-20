@@ -1,0 +1,6 @@
+senaryo-c7b-kabul-250 UTC çıkış 0
+senaryo-c7b-kabul-250 Europe/Istanbul çıkış 0
+senaryo-kdv-donemi-250 UTC çıkış 0
+senaryo-kdv-donemi-250 Europe/Istanbul çıkış 0
+senaryo-c7b-kabul-250 TABAN UTC çıkış 1
+BITTI

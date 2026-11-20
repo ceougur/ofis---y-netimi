@@ -1,0 +1,55 @@
+(node:20454) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20454) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ A) Kural Farkı Düzeltme: Ç7b satırları (fiş satırları elle), farkı doğuran 6 kayıt, onay Tab + Boşluk, Fişi Kaydet → Düzeltildi
+  ✗ Mutabakat satırında kural farkı uyarısı (Mutabakat: 62 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.)
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible [data-rule-diff-lines]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/e2e/senaryo-c7b-kabul-250.mjs:204:16
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/e2e/senaryo-c7b-kabul-250.mjs:107:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/e2e/senaryo-c7b-kabul-250.mjs:200:3
+
+■ B1) Yevmiye Defteri — her süzgeç: Borç TOPLAM = Alacak TOPLAM = satırlar; .90 alt hesapları ve 601 görünür
+  ✓ Bu Ay: boş dönem (ipucu; elle — 10.11–10.12 arasında kayıt yok)
+  ✓ Geçen Ay: 6 satır, TOPLAM Borç ₺3.000,00 = Alacak ₺3.000,00 = satırlar
+  ✓ Son 30 Gün: boş dönem (ipucu; elle — 10.11–10.12 arasında kayıt yok)
+  ✓ Bu Yıl: 34 satır, TOPLAM Borç ₺35.600,00 = Alacak ₺35.600,00 = satırlar
+  ✗ Bu Yıl: Hesap sütununda 649.90, 770.90, 602.90, 600.90, 601 ()
+  ✓ Tüm Zamanlar: 34 satır, TOPLAM Borç ₺35.600,00 = Alacak ₺35.600,00 = satırlar
+
+■ B2) Hesap Planı Mizanı — her süzgeç: TOPLAM = satırlar; 601 Yurt Dışı Satışlar 5.000 Alacak
+  ✓ Bu Ay: TOPLAM = satırlar (boş ay — yalnız devir)
+  ✓ Geçen Ay: 10 hesap, TOPLAM Borç ₺3.000,00 / Alacak ₺3.000,00 = satırlar
+  ✓ Son 30 Gün: 10 hesap, TOPLAM Borç ₺0,00 / Alacak ₺0,00 = satırlar
+  ✓ Bu Yıl: 10 hesap, TOPLAM Borç ₺35.600,00 / Alacak ₺35.600,00 = satırlar
+  ✗ 601 satırı: []
+  ✓ Tüm Zamanlar: 10 hesap, TOPLAM Borç ₺35.600,00 / Alacak ₺35.600,00 = satırlar
+
+■ B3) KDV Özeti — her süzgeç: TOPLAM = satırlar; KDV elle (Bu Yıl 3.500, Geçen Ay 500, Bu Ay / Son 30 Gün boş)
+  ✓ Bu Ay: boş dönem (ipucu)
+  ✓ Geçen Ay: 2 satır, KDV Σ 500 (elle 500); TOPLAM Satış 400 ↔ satırlar 400 · TOPLAM Alış 100 ↔ satırlar 100 · Net KDV (Ödenecek) 300 ↔ satırlardan 300
+  ✓ Son 30 Gün: boş dönem (ipucu)
+  ✓ Bu Yıl: 7 satır, KDV Σ 3500 (elle 3500); TOPLAM Satış 3000 ↔ satırlar 3000 · TOPLAM Alış 500 ↔ satırlar 500 · Net KDV (Ödenecek) 2500 ↔ satırlardan 2500
+  ✓ Tüm Zamanlar: 7 satır, KDV Σ 3500 (elle 3500); TOPLAM Satış 3000 ↔ satırlar 3000 · TOPLAM Alış 500 ↔ satırlar 500 · Net KDV (Ödenecek) 2500 ↔ satırlardan 2500
+
+■ C) Banka → Alt Hesap Mizanı: .90 alt hesapları yok (B-10 = B), TOPLAM satırı
+  ✓ banka Alt Hesap Mizanı'nda .90 alt hesabı yok (boş)
+
+■ E) Kartı Kapat — eskimiş 'Kalan' onayı (YB-1): pencere açıkken tahsilat girilir; ilk onay (Kalan 900) reddedilir, GÜNCEL kalanla (600) yeniden sorulur, kart kapanır
+  ✓ ilk onay penceredeki (eski) kalanla:  × ONAY Kartı Kapat Kalan ₺900,00 açıkken “Ayşe Kapanış Kartı” kartı kapatılsın mı? Kapalı kart uyarı vermez, kalan tutar artık istenmez ve 
+    [soru] "Kartı Kapat" → Kartı Kapat (eski kalanla — sunucu reddetmeli; ders 34)
+  ✗ beklenmeyen hata: page.waitForFunction: Timeout 15000ms exceeded.
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/e2e/senaryo-c7b-kabul-250.mjs:306:16
+    at async step (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/e2e/senaryo-c7b-kabul-250.mjs:107:5)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/e2e/senaryo-c7b-kabul-250.mjs:285:3
+
+■ D) Telefon genişliği (390 px): KDV Özeti açılır, sayfa yatay kaymaz, TOPLAM görünür
+  ✓ sayfa yatay kaymıyor (scrollWidth 390 ≤ 390)
+  ✓ TOPLAM satırı görünür
+  ✓ sayfa hatası yok
+
+✗ senaryo-c7b-kabul-250: 20 geçti, 5 kaldı

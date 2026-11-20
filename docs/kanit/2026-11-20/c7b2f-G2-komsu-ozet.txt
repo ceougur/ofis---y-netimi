@@ -1,0 +1,4 @@
+dosya 48
+UTC çıkış 0
+Europe/Istanbul çıkış 0
+BITTI

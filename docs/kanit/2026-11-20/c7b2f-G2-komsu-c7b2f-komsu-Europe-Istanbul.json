@@ -1,0 +1,32 @@
+{
+  "ad": "c7b2f-komsu-Europe-Istanbul",
+  "komut": "node --test --test-concurrency=2 test/acilis-519-250.test.mjs test/acilis-duzeni-v249-250.test.mjs test/acilis-olabilir-250.test.mjs test/acilis-onarimi-hiz-250.test.mjs test/banka-210-gg-tarama.test.mjs test/banka-210-gg-turler.test.mjs test/banka-210-gg2-hiz.test.mjs test/banka-210-sihirbaz.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-220-tahsile-ver.test.mjs test/c7b-degismez-250.test.mjs test/c7b-eski-surum-sinif-250.test.mjs test/c7b-gecis-gunu-250.test.mjs test/c7b-goc52-kilit-izi-250.test.mjs test/c7b-kart-kapat-onay-250.test.mjs test/c7b-kdv-donemi-250.test.mjs test/c7b-kdv-ozeti-donem-250.test.mjs test/c7b-kdv-s4-250.test.mjs test/c7b-kilit-izi-250.test.mjs test/c7b-kitap-turetme-250.test.mjs test/c7b-sifirla-kdv-mahsup-250.test.mjs test/cheques-overview.test.mjs test/defter-kaynak-iz-250.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-bellek-250.test.mjs test/donmus-defter-tur1-250.test.mjs test/donmus-defter-tur3-250.test.mjs test/donmus-defter-tur4-250.test.mjs test/donmus-defter-yasam-250.test.mjs test/ebelge-240-bitis-turu.test.mjs test/fis-defteri-250.test.mjs test/goc-243-stok-acilis.test.mjs test/hesap-plani-sinif-250.test.mjs test/hesapsiz-acilis-v249-250.test.mjs test/kapi-para-245.test.mjs test/karekod.test.mjs test/kasa-acilis-once-250.test.mjs test/kilit-izi-alanlar-250.test.mjs test/koruma-taban-ailesi-250.test.mjs test/kural-farki-alarm-250.test.mjs test/kural-farki-duzeltme-250.test.mjs test/kural-farki-kapi-disi-250.test.mjs test/kural-farki-yil-250.test.mjs test/pos-komisyon-v249-250.test.mjs test/s127-tek-kez-250.test.mjs test/supheli-kuyruk-defter-250.test.mjs",
+  "commit": "709bb3f0e634d7e4de59f70738af7c9ba119a7f7",
+  "dal": "worktree-agent-ae27e83b1d47b96a8",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T00:29:38.515Z",
+  "sure_sn": 206.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 508,
+    "gecen": 508,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/komsu/2026-11-20/c7b2f-komsu-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae27e83b1d47b96a8",
+  "ham_cikti_sha256": "599be1b609d85dae5c2234ba1b609394788ae80ff8471c225c52565f1ed6d903",
+  "ham_cikti_bayt": 287523
+}

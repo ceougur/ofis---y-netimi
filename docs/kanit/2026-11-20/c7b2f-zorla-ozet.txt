@@ -1,0 +1,9 @@
+c7b-eski-surum-sinif-250 bitir UTC çıkış 0
+c7b-eski-surum-sinif-250 bitir Europe/Istanbul çıkış 0
+c7b-eski-surum-sinif-250 gozlem UTC çıkış 0
+c7b-eski-surum-sinif-250 gozlem Europe/Istanbul çıkış 0
+c7b-degismez-250 bitir UTC çıkış 2
+c7b-degismez-250 bitir Europe/Istanbul çıkış 2
+c7b-degismez-250 gozlem UTC çıkış 2
+c7b-degismez-250 gozlem Europe/Istanbul çıkış 2
+BITTI
