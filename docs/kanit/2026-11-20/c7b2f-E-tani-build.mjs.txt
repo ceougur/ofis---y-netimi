@@ -1,0 +1,21 @@
+// Tanı: yalnız ledger.build() × 7 (CPU profili için). Kullanım: node --cpu-prof … build.mjs <kod kökü> <veri kopyası>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir] = process.argv.slice(2);
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const app = createApp({ dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: "Kapi-Olcum-2026!", HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false });
+await app.listen(0, "127.0.0.1");
+const { Session } = await import("node:inspector/promises");
+const s = new Session(); s.connect();
+await s.post("Profiler.enable"); await s.post("Profiler.setSamplingInterval", { interval: 200 }); await s.post("Profiler.start");
+const ms = [];
+for (let i = 0; i < 7; i++) { const t = performance.now(); app.ledger.build(); ms.push(performance.now() - t); }
+const { profile } = await s.post("Profiler.stop");
+const { writeFileSync } = await import("node:fs");
+writeFileSync(process.env.PROF_OUT, JSON.stringify(profile));
+ms.sort((a, b) => a - b);
+console.log(`build en iyi ${ms[0].toFixed(1)} ortanca ${ms[3].toFixed(1)} ms`);
+await app.close();

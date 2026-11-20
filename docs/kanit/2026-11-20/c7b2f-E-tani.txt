@@ -1,0 +1,77 @@
+# Tanı 1 (tani.mjs; özel kilit; temiz 100 bin kopyası, kilitsiz): ledger.build() ve KDV tablosu (eski monthFigures ↔ yeni figureTable aynı maddelerde)
+0.51 0.94 1.14 2/137 12437
+== taban yük 1.08
+ledger.build(): en iyi 1308.7 ms · ortanca 1394.9 ms
+madde 153803 · satır 343082
+eski monthFigures ×2 (ay + önceki ay): en iyi 39.6 ms · ortanca 41.0 ms
+yeni figureTable tek geçiş + of ×2: en iyi 23.5 ms · ortanca 26.5 ms
+eşit: true [{"out":7083234,"input":139663575,"carry":0},{"out":12269691,"input":45207882,"carry":0}]
+== yeni yük 1.05
+ledger.build(): en iyi 1446.3 ms · ortanca 1561.1 ms
+madde 153803 · satır 343082
+eski monthFigures ×2 (ay + önceki ay): en iyi 39.7 ms · ortanca 53.1 ms
+yeni figureTable tek geçiş + of ×2: en iyi 26.7 ms · ortanca 28.3 ms
+eşit: true [{"out":12621339,"input":145201680,"carry":0},{"out":13097754,"input":46035945,"carry":0}]
+vatPeriods sorgusu: en iyi 7.8 ms · ortanca 8.0 ms
+
+[exited with code 0]
+# Tanı 2 (build.mjs; özel kilit; CPU profili, 7 × ledger.build(), öz süre)
+1.26 1.18 1.16 4/132 13481
+== taban yük 1.02
+build en iyi 1518.6 ortanca 1673.5 ms
+toplam 11890 ms
+    5285 ms  next :0
+    3643 ms  leanRows lean-rows.mjs:32
+    1029 ms  (garbage collector) :0
+     336 ms  journal general-ledger.mjs:364
+     290 ms  post node:inspector:118
+     266 ms  leanAll lean-rows.mjs:76
+     195 ms  journalSort general-ledger.mjs:828
+     180 ms  build ledger.mjs:299
+     180 ms  all :0
+     108 ms  classOf general-ledger.mjs:811
+     105 ms  post general-ledger.mjs:378
+      79 ms  (anon) general-ledger.mjs:834
+      33 ms  applyDoubtfulToJournal doubtful-gl.mjs:261
+      31 ms  postLines general-ledger.mjs:571
+      29 ms  stamp general-ledger.mjs:372
+      26 ms  line general-ledger.mjs:381
+      23 ms  (anon) general-ledger.mjs:572
+       8 ms  get :0
+       7 ms  (anon) doubtful-gl.mjs:268
+       6 ms  moneyOf general-ledger.mjs:403
+       5 ms  cents general-ledger.mjs:267
+       4 ms  roundMoney money.mjs:32
+       2 ms  (anon) general-ledger.mjs:588
+       2 ms  (anon) general-ledger.mjs:598
+       2 ms  isCovered opening-cover.mjs:51
+== yeni yük 1.01
+build en iyi 1496.2 ortanca 1592.4 ms
+toplam 12089 ms
+    5362 ms  next :0
+    3463 ms  leanRows lean-rows.mjs:32
+     896 ms  (garbage collector) :0
+     593 ms  post node:inspector:118
+     428 ms  journal general-ledger.mjs:414
+     269 ms  leanAll lean-rows.mjs:76
+     196 ms  build ledger.mjs:310
+     179 ms  journalSort general-ledger.mjs:892
+     170 ms  all :0
+     138 ms  classOf general-ledger.mjs:875
+      88 ms  post general-ledger.mjs:428
+      80 ms  (anon) general-ledger.mjs:898
+      70 ms  applyDoubtfulToJournal doubtful-gl.mjs:261
+      39 ms  stamp general-ledger.mjs:422
+      26 ms  postLines general-ledger.mjs:628
+      17 ms  line general-ledger.mjs:431
+      14 ms  (anon) general-ledger.mjs:629
+      10 ms  (anon) doubtful-gl.mjs:268
+       8 ms  moneyOf general-ledger.mjs:453
+       7 ms  get :0
+       6 ms  cents general-ledger.mjs:289
+       6 ms  roundMoney money.mjs:32
+       3 ms  (anon) general-ledger.mjs:672
+       2 ms  isOpeningEntry general-ledger.mjs:297
+       2 ms  (anon) general-ledger.mjs:645
+
+[exited with code 0]
