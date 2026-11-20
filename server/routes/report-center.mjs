@@ -1610,19 +1610,18 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         // Devir Kapanışı yok) hiçbir satır sayılmamıştır: ek okuma yapılmaz, rapor eskisiyle birebir. Kasa penceresi ve Kasa raporları (cash().report) DEĞİŞMEZ.
         const bounds = coverBounds(store);
         const covering = Boolean(bounds.bank || bounds.card || bounds.pos || bounds.carry);
-        // Yol bazında (u:bank / u:card) açılışta sayılmış satırların işaretli toplamı (kuruş): keyTotals'ın ayrımsız − ayrımlı farkı (aynı COVER_SQL; bağsız kısmi indeks).
-        const coveredByWay = options => {
-          const out = new Map();
-          if (!covering || !moneyLines()?.keyTotals) return out;
-          const scope = { unbound: true, ...options };
-          for (const item of moneyLines().keyTotals(scope)) out.set(item.key, (out.get(item.key) || 0) + item.cents);
-          for (const item of moneyLines().keyTotals({ ...scope, uncounted: true })) out.set(item.key, (out.get(item.key) || 0) - item.cents);
-          return out;
-        };
-        const sumOf = map => [...map.values()].reduce((sum, value) => sum + value, 0);
-        const coveredBefore = range.from ? sumOf(coveredByWay({ ways: waysFor(method), before: range.from })) : 0;
-        // "(tüm hareketler)" satırları yoldan bağımsız (havale + POS; Kasa özetinin yol bakiyeleri) — düşülen de iki yolun bütün satırları.
-        const coveredAll = coveredByWay({ ways: ["bank", "card"] });
+        // Açılışta sayılmış hesabı atanmamış satırlar — satırların işaretiyle AYNI yoldan (markCounted: opening-cover isCovered; Banka Hareket Raporu'nun işaretiyle aynı): her sayılmış
+        // satırın günü sınırların EN GEÇİNE eşit ya da ondan önce (açılış / kart / POS sınırı date < sınır; Devir Kapanışı satırı kendi günü = carry ≤ sınır) → yalnız o güne kadarki
+        // bağsız satırlar TEK okumayla (classified; bağsız kısmi indeks). Hız (ders 47, 53 (a); tek aday düzeltme turu ölçümü): önceki yazım keyTotals'ı dört kez (ayrımsız − ayrımlı,
+        // iki kapsam) çağırıyordu — 100 bin satırda raporu ~600 ms yavaşlattı. Toplamlar işaretli satırların kendisinden: düşülen = işaretlenen (ekrandan ekrana tek sayı).
+        const coverUntil = [bounds.bank, bounds.card, bounds.pos, bounds.carry].filter(Boolean).sort().pop() || "";
+        const coveredLines = covering && moneyLines()?.classified ? markCounted(moneyLines().classified({ ways: ["bank", "card"], unbound: true, until: coverUntil, light: true })).filter(line => line.counted) : [];
+        const signedOf = line => (line.kind === "in" ? 1 : -1) * (Number(line.cents) || 0);
+        const methodWays = new Set(waysFor(method) || ["bank", "card"]);
+        const coveredBefore = range.from ? coveredLines.reduce((sum, line) => (methodWays.has(line.way) && line.date < range.from ? sum + signedOf(line) : sum), 0) : 0;
+        // "(tüm hareketler)" satırları yoldan bağımsız (havale + POS; Kasa özetinin yol bakiyeleri) — düşülen de iki yolun bütün sayılmış satırları.
+        const coveredAll = new Map();
+        for (const line of coveredLines) coveredAll.set(`u:${line.way}`, (coveredAll.get(`u:${line.way}`) || 0) + signedOf(line));
         // Paylar yalnız dönem satırları için okunur (raporun satırları dönem içinden; 11.10.2026 hız düzeltmesi).
         const periodLines = moneyLines()?.classified ? moneyLines().classified({ ways: waysFor(method), since: range.from, until: range.to, light: true }) : [];
         for (const line of covering ? markCounted(periodLines) : periodLines) parts.set(`${moneyLines().sourceName(line.src)}|${line.id}`, line);
