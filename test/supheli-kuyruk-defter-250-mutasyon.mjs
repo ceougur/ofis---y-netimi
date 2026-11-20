@@ -30,7 +30,8 @@ const MUTASYONLAR = [
   ]],
   [2, "128 ↔ 120 dağılımı eski sabite: bağlı evrak en eski kayıttan (kuyruk payı okunmaz — geri çağrı yok)", [[GL, "        const shares = linked && !credit.openedOn", "        const shares = false && linked && !credit.openedOn"]]],
   [3, "ikinci yükleyici (doubtfulState) eski kuralda kalır", [[BD, "  const { state, allocations } = allocateDoubtful({ records, provisions, credits, linked: rows.linked || null });", "  const { state, allocations } = allocateDoubtful({ records, provisions, credits, linked: null });"]]],
-  [4, "yevmiye yükleyicisi (doubtfulRows) eski kuralda kalır", [[GL, "credits, linked: typeof doubtful?.linked === \"function\" ? doubtful.linked : null });", "credits, linked: null });"]]],
+  // Tek aday düzeltme turu: B1 aynı satıra writeOrder'ı ekledi (desen "… : null });" artık yoktu — M4 koşmuyor, tarama M4'te duruyordu); anlam aynı (linked verilmez).
+  [4, "yevmiye yükleyicisi (doubtfulRows) eski kuralda kalır", [[GL, "credits, linked: typeof doubtful?.linked === \"function\" ? doubtful.linked : null, writeOrder:", "credits, linked: null, writeOrder:"]]],
   // M5: önce "if (line.id === lineId) return false;" satırı silinerek denendi — EŞDEĞER mutant (satırın kendisi anahtar eşitliğiyle zaten dışarıda: "< 0"); yerine eşitliği içeren karşılaştırma.
   // Tek aday düzeltme turu S212 = A: kesit satırı artık kuyruğa GİRER (bağının önceliği), kendi ödemesi kalemlere geri eklenir. M5'in anlamı (satırın KENDİ ödemesi de şüpheli dağılımına
   // girer) korunur: geri ekleme kalkar + aynı anahtar da (<=). M18: S212 gerilemesi — satır kuyruğa hiç girmez (bugünkü kurala dönüş).
