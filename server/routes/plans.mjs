@@ -357,8 +357,11 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // yazımdan hemen sonra bütün carilerin izi yeniden hesaplanıyordu (100 bin satırda kart tahsilatı yanıtı ~0,15 → ~1,1 sn). Eşdeğerlik: test/tyk-tur2b1-250.test.mjs
   // (yanıt = ardından okuma = bütün carilerin kuyruğu). Liste (Taksitler) bütün carilerin kuyruğunu okumayı sürdürür.
   const AUDITOR = { id: "plans", role: "admin", permissions: [] };
-  const queueFor = accountId => {
-    if (store.inTransaction || !accountId) return null;
+  const queueFor = accountId => (store.inTransaction ? null : queueBuild(accountId));
+  // 2.5.0 Ç7b aday düzeltme turu (YB-1; ana oturumun ekran yürüyüşü ORTA bulgusu): kuyruğu işlem İÇİNDE de kuran yol — YALNIZ Kartı Kapat onayının denetimi (shownRemaining)
+  // çağırır. invoices.obligationsOf işlem içinde önbelleğe okumaz / yazmaz (kesinleşmemiş veri saklanmaz); queueFor / queueOf'un işlem içindeki davranışı (kuyruk yok) DEĞİŞMEDİ.
+  function queueBuild(accountId) {
+    if (!accountId) return null;
     const module = invoices();
     if (!module?.obligationsOf || module.legacyView) return null;
     const ledgerOf = () => {
@@ -371,13 +374,22 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     // Ç5-B son tur (hız): aynı veri durumunda carinin kuyruğu bir kez kurulur (invoices.obligationsOf — yazım yanıtından hemen sonraki kart okuması yeniden kurmaz).
     const result = module.obligationsOf(accountId, ledgerOf);
     return result ? new Map([[accountId, result]]) : null;
-  };
+  }
   // Kart ekranı (GET): kartın kendi hesabı + kuyruk görünümü.
   const detailView = (id, user) => {
     const plan = planRow(id);
     const shaped = shape(plan, user);
     const view = withQueue(plan, shaped, queueFor(plan.accountId));
     return view === shaped ? shaped : { ...shaped, ...view };
+  };
+  // 2.5.0 Ç7b aday düzeltme turu (YB-1): kart penceresinin GÖSTERDİĞİ kalan (detailView ile aynı kural — S129 = A tek kuyruk: totals.remaining) işlemin İÇİNDE, güncel kartla.
+  // Önceden denetim detail() → shape() okuyordu: işlem içinde kuyruk kurulmadığı için kartın KENDİ hesabı (allocate) çıkıyordu — cari kartından tahsilat girilmiş kartta pencere
+  // "Kalan 2.500" diye onay alıyor, sunucu "güncel kalan 3.000,00 TL" diye reddediyordu (pencere ikinci kez soruyordu). Karşılaştırma yazımla aynı işlemde (BEGIN IMMEDIATE):
+  // denetimle yazım arasına başka yazım giremez. Carisiz kart / eski kapama görünümü: kuyruk yok → kartın kendi kalanı (pencere de onu gösterir).
+  const shownRemaining = (plan, user) => {
+    const shaped = shape(plan, user);
+    const view = withQueue(plan, shaped, queueBuild(plan.accountId));
+    return roundMoney(Number(view?.totals?.remaining) || 0);
   };
   // Yazım yanıtı (kart açma / düzenleme / durum, Otomatik Dağıt, taksit ve tahsilat işlemleri): okumayla aynı görünüm (O-2) + bütün carilerin kuyruk önbelleği BURADA yenilenir.
   // Ç5-B son tur (hız; iş listesi D "HIZ KABUL ÖLÇÜMÜ" 11.11 08:49 — hedef: çalışma dalına göre yazım + ilk okumalar toplamı ve hiçbir TEK yol kötüleşmesin): tur 2b-1 yanıtı
@@ -889,7 +901,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       // İÇİNDE kartın GÜNCEL kalanı (kart penceresinin gösterdiği totals.remaining) kuruşu kuruşuna aynı değilse 409 plan-close-stale + güncel kalan; istemci güncel kalanla yeniden
       // sorar. Alan yoksa (eski istemci) bugünkü gibi. Kapatmanın defter / cari etkisi DEĞİŞMEDİ (karar (6) / KG-23 → Ç7b tur 3).
       if (previous.status !== "closed" && status === "closed" && body.closeRemaining !== undefined && body.closeRemaining !== null) {
-        const current = roundMoney(Number(detail(previous.id, user)?.totals?.remaining) || 0);
+        // Ç7b aday düzeltme turu: kart penceresinin GÖSTERDİĞİ kalan (shownRemaining; işlem içinde kuyruk dahil) — önceden kartın kendi hesabı (detail) okunuyordu.
+        const current = shownRemaining(previous, user);
         if (Math.round(current * 100) !== Math.round((Number(body.closeRemaining) || 0) * 100)) {
           throw new HttpError(409, `Kartın kalanı siz onayladıktan sonra değişti; güncel kalan ${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(current)} TL. Kartı Kapat yeniden sorulacak.`, { code: "plan-close-stale", remaining: current });
         }
