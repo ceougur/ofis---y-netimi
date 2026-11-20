@@ -89,3 +89,19 @@ Her mutant dört koşunun dördünde aynı sayıyla kırmızı (kararlı).
   Önce kartı Yeniden Aç ile açın.').
 - DÜŞÜK (gözlem): S217 durumunda İptal Et penceresi reddi ÖNCEDEN söylemiyor — kullanıcı iptal nedenini yazıp İptal Et'e bastıktan sonra 409 iletisi çıkıyor (planCancelText kapalı kartta boş döner;
   cancelBlock'a girmiyor). Daha iyisi: pencere açılırken nedeni göstermek / düğmeyi nedeniyle pasif yapmak. Karar / sonraki tur.
+
+# Devam 3 ajanı (görev metni docs/devir/2.5.0-DEVAM/c7b3-devam3-istem.txt; taban c7b3-devam3 = da458f89 doğrulandı; not defteri scratchpad/c7b3-d4)
+
+## 8. S218 = B kodu (379b07e7) — kanıt c7b3-d4-s218-*, c7b3-d4-mut-*
+- Kod: `routes/plans.mjs cutTargets(..., { order: "tail" })` (eski döngünün birebiri: son taksitten geriye, taksit tutarından, ziyaret edilen her taksit) + `cutPlan` / `shrinkPlan` `order` geçirir
+  (varsayılan "due" = karar (4)); `routes/invoices.mjs repairOwnCards` kilit aynası ve kesim `order: "tail"`. İade / iptal / silme / trimCovers DEĞİŞMEDİ. Tasarım §16.9.
+- Yeni kodda (379b07e7) iki TZ: acilis-onarimi-hiz-250 3 / 3, acilis-onarimi-savunma-250 6 / 6, c7b-tur3-kart-250 9 / 9 (karar (4) testleri yeşil), c7b-tur3-eski-surum-250 5 / 5.
+- Kırmızı kanıtı: önceki uçta (da458f89) acilis-onarimi-hiz-250 iki TZ 1 / 3 — 'ikinci koşu: onarılan 0 (beklenen 0), kilitli 4 (beklenen 3)' + eşdeğerlik bölümleri (devam 2'nin c7b3-t2-onarim-*; ileti okundu).
+  Eski kodda (c7b3-taban) 3 / 3 (aynı kanıt).
+- Karşı mutantlar (yerinde, her biri sonra geri alındı; iki TZ):
+  | mutant | acilis-onarimi-hiz-250 | savunma | kart (karar 4) | sonuç |
+  |---|---|---|---|---|
+  | A: onarımın kesimi + aynası karar (4) yönünde (iki koşu) | 1 / 3 ('kilitli 4 (beklenen 3)' + eşdeğerlik) | 6 / 6 | 9 / 9 | YAKALANDI (4 / 4 koşu) |
+  | B: yalnız kilit aynası karar (4) yönünde | 1 / 3 (aynı) | 6 / 6 | 9 / 9 | YAKALANDI |
+  | C: yalnız kesim karar (4) yönünde (ayna eski) | 2 / 3 (eşdeğerlik: 'taksitler' / 'faturaDurumlari' / 'cariler' / 'adayKartlar' eski dökümden ayrı) | 6 / 6 | 9 / 9 | YAKALANDI |
+  Savunma testi üç mutantta da yeşil — onarım yönünün koruyucusu acilis-onarimi-hiz-250'dir (savunmanın işi kart kesilemezse onarımın yazmaması).

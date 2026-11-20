@@ -1,0 +1,11 @@
+import sys
+p, m = sys.argv[1], sys.argv[2]
+s = open(p, encoding='utf-8').read()
+AYNA = 'cutTargets(row.planId, cut, null, { order: "tail" })'
+KES = 'büyütmüştü · ${row.number}`, { order: "tail" })'
+assert s.count(AYNA) == 1 and s.count(KES) == 1
+if m in ('A', 'B'):
+    s = s.replace(AYNA, AYNA.replace('"tail"', '"due"'))  # kilit aynası karar (4) yönünde
+if m in ('A', 'C'):
+    s = s.replace(KES, KES.replace('"tail"', '"due"'))  # kesim karar (4) yönünde
+open(p, 'w', encoding='utf-8').write(s)

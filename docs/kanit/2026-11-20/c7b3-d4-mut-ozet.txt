@@ -1,0 +1,31 @@
+başta 07:56:32 · 2.71 2.15 1.34 12/296 2538 · 379b07e7
+mutant A koşu 1:  1 file changed, 2 insertions(+), 2 deletions(-)
+  A k1 acilis-onarimi-hiz-250 UTC: # pass 1 # fail 2      not ok 1 - öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı kü�|    not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her ad|
+  A k1 acilis-onarimi-savunma-250 UTC: # pass 6 # fail 0  
+  A k1 c7b-tur3-kart-250 UTC: # pass 9 # fail 0  
+  A k1 acilis-onarimi-hiz-250 Europe/Istanbul: # pass 1 # fail 2      not ok 1 - öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı kü�|    not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her ad|
+  A k1 acilis-onarimi-savunma-250 Europe/Istanbul: # pass 6 # fail 0  
+  A k1 c7b-tur3-kart-250 Europe/Istanbul: # pass 9 # fail 0  
+mutant A koşu 2:  1 file changed, 2 insertions(+), 2 deletions(-)
+  A k2 acilis-onarimi-hiz-250 UTC: # pass 1 # fail 2      not ok 1 - öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı kü�|    not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her ad|
+  A k2 acilis-onarimi-savunma-250 UTC: # pass 6 # fail 0  
+  A k2 c7b-tur3-kart-250 UTC: # pass 9 # fail 0  
+  A k2 acilis-onarimi-hiz-250 Europe/Istanbul: # pass 1 # fail 2      not ok 1 - öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı kü�|    not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her ad|
+  A k2 acilis-onarimi-savunma-250 Europe/Istanbul: # pass 6 # fail 0  
+  A k2 c7b-tur3-kart-250 Europe/Istanbul: # pass 9 # fail 0  
+mutant B koşu 1:  1 file changed, 1 insertion(+), 1 deletion(-)
+  B k1 acilis-onarimi-hiz-250 UTC: # pass 1 # fail 2      not ok 1 - öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı kü�|    not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her ad|
+  B k1 acilis-onarimi-savunma-250 UTC: # pass 6 # fail 0  
+  B k1 c7b-tur3-kart-250 UTC: # pass 9 # fail 0  
+  B k1 acilis-onarimi-hiz-250 Europe/Istanbul: # pass 1 # fail 2      not ok 1 - öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı kü�|    not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her ad|
+  B k1 acilis-onarimi-savunma-250 Europe/Istanbul: # pass 6 # fail 0  
+  B k1 c7b-tur3-kart-250 Europe/Istanbul: # pass 9 # fail 0  
+mutant C koşu 1:  1 file changed, 1 insertion(+), 1 deletion(-)
+  C k1 acilis-onarimi-hiz-250 UTC: # pass 2 # fail 1      not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her ad|
+  C k1 acilis-onarimi-savunma-250 UTC: # pass 6 # fail 0  
+  C k1 c7b-tur3-kart-250 UTC: # pass 9 # fail 0  
+  C k1 acilis-onarimi-hiz-250 Europe/Istanbul: # pass 2 # fail 1      not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her ad|
+  C k1 acilis-onarimi-savunma-250 Europe/Istanbul: # pass 6 # fail 0  
+  C k1 c7b-tur3-kart-250 Europe/Istanbul: # pass 9 # fail 0  
+geri alındı: 0 kirli
+BİTTİ 07:57:28 · 3.11 2.41 1.48 2/300 3533
