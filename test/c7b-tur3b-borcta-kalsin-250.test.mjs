@@ -149,6 +149,33 @@ describe("Ç7b tur 3b — Kartı Kapat 'Borçta Kalsın' (karar (6), S205)", () 
   });
 });
 
+describe("Ç7b tur 3b — şüpheli alacaklı caride Kartı Kapat (şüpheli ayırıcısı = defter; lib/bank/doubtful.mjs)", () => {
+  it("T6 Yeni Borç kartı 900 → Şüpheliye al 900 (01.10) → 08.10 Kartı Kapat: 128 900 KALIR (eski kuralda 689 ile 0), 120 0; şüpheli kaydının kalanı 900; Mutabakat Testi temiz", async () => {
+    const ctx = await bootBank({ now: { time: "2026-10-08T12:00:00+03:00", fixed: true } });
+    const { api } = ctx;
+    try {
+      const A = (await must("cari", api.post(`${W}/accounts`, { name: "Tur3b Şüpheli", type: "customer", registeredOn: "2026-08-01" }))).id;
+      const made = await must("kart", api.post(`${W}/plans`, { accountId: A, name: "Tur3b Şüpheli Kart", total: "900", registeredOn: "2026-08-01", mode: "auto", count: 3, firstDue: "2026-09-05" }));
+      const p = made.id || made.plan?.id;
+      const record = await must("şüpheliye al", api.post(`${W}/accounts/${A}/doubtful`, { amount: "900", date: "2026-10-01", reason: "lawsuit" }));
+      const recordId = record?.record?.id || ctx.store.get("SELECT id FROM doubtful_receivables WHERE account_id = ?", A).id;
+      await must("Kartı Kapat", api.put(`${W}/plans/${p}`, { status: "closed", closeRemaining: 900 }));
+      const b = { 120: 0, 128: 0, 689: 0 };
+      for (const entry of ctx.app.ledger.build()) for (const line of entry.lines || []) if (line.party === A && line.account in b) b[line.account] += (line.debit - line.credit) / 100;
+      for (const entry of ctx.app.ledger.build()) for (const line of entry.lines || []) if (line.account === "689" && entry.id === `plan-close:${p}`) b[689] += (line.debit - line.credit) / 100;
+      assert.deepEqual(b, { 120: 0, 128: 900, 689: 0 }, "kalan şüpheli alacakta kalır (madde yok)");
+      const state = ctx.app.context.bank?.doubtful?.state?.() || null;
+      const remaining = state ? state.get?.(recordId)?.remaining : null;
+      if (remaining !== null && remaining !== undefined) assert.equal(remaining, 90000, "şüpheli kaydının kalanı (kuruş)");
+      assert.equal((await must("cari kartı", api.get(`${W}/accounts/${A}`))).totals.balance, 900);
+      const result = await must("Mutabakat Testi", api.get(`${W}/ledger/integrity`));
+      assert.equal(result.ok, true, JSON.stringify(result.failures || "").slice(0, 600));
+    } finally {
+      await ctx.server.close();
+    }
+  });
+});
+
 describe("Ç7b tur 3b — göç 53 (kart başına kural işareti)", () => {
   it("T5 göç öncesi (52) dosyada kapalı kart '2.4.9' (kalan düşülmüş — eski kural), açık kart ''; eşgüçlü", async () => {
     const NOW = { time: "2026-10-08T12:00:00+03:00", fixed: true };
