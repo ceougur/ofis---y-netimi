@@ -32,3 +32,12 @@ Not: iki kâhin de tabanda yeşil — cari kâhininin (bakım 20) ve defter kâh
 bekleyen kâhin muhasebe kâhini bakım 13'tür (Ç7b zincirinde, c7b2f-taban2) → sürücü bölümünde.
 
 ### Komşular (ders 10; tarama `komsu.py` + Kasa ucu = 223 dosya, dört parça; iki TZ)
+
+### Muhasebe sürücüsü önce / sonra (sürücü + muhasebe kâhini bakım 13 = c7b2f-taban2'nin test/bagimsiz'i, DEĞİŞTİRİLMEDİ; `--program` taban / yeni; iki TZ)
+Sürücü bu dalda (bakım 3) R-S192-BAG-SONRA kuralını taşımıyor; kural sürücü bakımı 4'te (Ç7b zinciri). Bu yüzden önceki ajan gibi c7b2f-taban2'nin
+`test/bagimsiz` kopyası (scratchpad/t3duz-d3/s4c; d2'nin s4'üyle `diff -r` BİREBİR) kullanıldı; program Ç7b'siz olduğundan Ç7b kurallarının farkları
+(SINIFLANMADI 33 / TZ: 600 ↔ 601, 191 ↔ 391, KDV mahsubu) iki yanda da var ve AYNI küme.
+- rastgele-1 (`t3duz-surucu-r1-karsilastirma.txt`): taban R 13 / TZ (R-S192-BAG-SONRA ile ilişkili 23 satır: 10 adım + 13 rapor) → yeni R 0, R-S192-BAG-SONRA 0;
+  AYNI 219 → 225; P 0 / K 0 iki yanda; SINIFLANMADI kümesi taban ↔ yeni BİREBİR (132 satır); red farkı 0; UTC = İstanbul.
+  Gerileme (gerileme.py): 2 / 2 koşu FARKLI (138 fark / TZ) — ilk fark olay 616 (P308, F109'a bağlı 472.560: taban 120'den, yeni 128'den + 129 / 644 çözülme);
+  yeni hiçbir karşılaştırılan alanda kâhinden UZAKLAŞMADI (yeni sınıf yok) → farkların tamamı S212 yönünde.

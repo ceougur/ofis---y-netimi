@@ -1,0 +1,19 @@
+taban  rastgele-1                               Europe/Istanbul  AYNI  219 · U  12 · P  0 · K  0 · R  13 · SINIFLANMADI  33 · ÖLÇÜLEMEDİ  6 · SUSMA 0 · red 0 · R-S192-BAG-SONRA 23
+taban  rastgele-1                               UTC              AYNI  219 · U  12 · P  0 · K  0 · R  13 · SINIFLANMADI  33 · ÖLÇÜLEMEDİ  6 · SUSMA 0 · red 0 · R-S192-BAG-SONRA 23
+yeni   rastgele-1                               Europe/Istanbul  AYNI  225 · U  12 · P  0 · K  0 · R   0 · SINIFLANMADI  33 · ÖLÇÜLEMEDİ  6 · SUSMA 0 · red 0 · R-S192-BAG-SONRA 0
+yeni   rastgele-1                               UTC              AYNI  225 · U  12 · P  0 · K  0 · R   0 · SINIFLANMADI  33 · ÖLÇÜLEMEDİ  6 · SUSMA 0 · red 0 · R-S192-BAG-SONRA 0
+
+SINIFLANMADI kümeleri taban ↔ yeni: AYNI (132 satır)
+
+GERİLEME DENETİMİ: 2 koşu (senaryo × saat dilimi); program çıktısı BİREBİR 0, FARKLI 2
+  rastgele-1 [UTC] 138 FARK: /olaylar[616]/delta/ana/120: -472560 → "<yok>" · /olaylar[616]/delta/ana/128: "<yok>" → -472560 · /olaylar[616]/delta/ana/129: "<yok>" → 460117 · /olaylar[616]/delta/ana/644: "<yok>" → -460117 · /olaylar[622]/delta/ana/129: 5457 → 17900 · /olaylar[622]/delta/ana/644: -5457 → -17900
+  rastgele-1 [Europe-Istanbul] 138 FARK: /olaylar[616]/delta/ana/120: -472560 → "<yok>" · /olaylar[616]/delta/ana/128: "<yok>" → -472560 · /olaylar[616]/delta/ana/129: "<yok>" → 460117 · /olaylar[616]/delta/ana/644: "<yok>" → -460117 · /olaylar[622]/delta/ana/129: 5457 → 17900 · /olaylar[622]/delta/ana/644: -5457 → -17900
+
+KİLİTLİ DÖNEM (Ç3 donmuş okuma ↔ eski kodun canlı türetmesi): 0 koşu
+
+# tests 2
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
