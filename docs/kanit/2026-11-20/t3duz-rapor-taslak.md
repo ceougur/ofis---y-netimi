@@ -128,3 +128,25 @@ NOT (ders 4, 14): ilk DÜŞÜK koşusu (`mut-dusuk-UTC`, `mut-dusuk-Europe-Istan
 özet 'skipped 0' der). Etiketli `git worktree` kopyasında (ders 54) D1 iki TZ'de YAKALANDI ('kilit günü = fiş günü: fiş kilitli sayılır' iletisiyle). Bu yüzden git'siz kopyada koşulan
 eski kod kırmızısı (`t3duz-taban-kirmizi-*`) bu bölümü İÇERMİYOR (N11 tabanda zaten yeşil beklenen; dişi D1 ile gösterildi). kanit aracı mutasyon betiklerinin çıktısını tanımaz
 ('BELİRSİZ / özet yok') — sonuç betiğin kendi 'SONUÇ' satırından okunur.
+
+### (2) Ekran senaryoları — devam 4 (kod 78d5aaab ve sonrası yalnız kanıt commit'leri; her senaryo ayrı 'Kanıt:' commit'i)
+Önceki ajanın UTC'de koştukları listeden çıkarıldı; kalanlar UTC, değişen yolların (G1 raporu, şüpheli ayırıcı, çek yolu, Kasa penceresi, POS / kart para satırları) senaryoları İstanbul'da da.
+| Senaryo | TZ | Çıkış | Denetim |
+|---|---|---|---|
+| senaryo-cari-vade-245 | UTC | 0 | 45 / 45 |
+| senaryo-ekstre-ayrinti-245 | UTC | 0 | 37 / 37 |
+| senaryo-iade-246 | UTC | 0 | 26 / 26 |
+| senaryo-kart-faizi-250 | UTC | 0 | 26 / 26 |
+| banka-230-hareket-yaris | UTC | 0 | 37 / 37 |
+| suzgec-cubugu-yaris | UTC | 0 | 20 / 20 |
+| senaryo-211 | UTC | 0 | 59 / 59 |
+| banka-210-yaris | UTC | 0 | 10 / 10 |
+| ui-ux-217 | UTC | 0 | 407 / 407 |
+| senaryo-supheli-kuyruk-250 | İstanbul | 0 | 15 / 15 |
+| senaryo-supheli-230 | İstanbul | 0 | 67 / 67 |
+| senaryo-banka-rapor-243 | İstanbul | 0 | 38 / 38 |
+| senaryo-ux18-244 | İstanbul | 0 | 27 / 27 |
+| senaryo-kasa-acilis-uyari-250 | İstanbul | 0 | 20 / 20 |
+| senaryo-pos-kart-249 | İstanbul | 0 | 383 / 383 |
+| senaryo-banka-210 (yeni beklenti) | İstanbul | 0 | 429 / 429 |
+Hepsinde başarısız 0, iptal 0, atlanan 0.
