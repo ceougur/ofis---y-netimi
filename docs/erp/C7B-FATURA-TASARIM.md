@@ -586,3 +586,65 @@ kilit izi / kapı (`integrity*.mjs`: kapalı kartın `waived` = 0), şüpheli al
   `born <= plan.at`; plan.at = kartın created_at, faturanın born'u = COALESCE(NULLIF(issued_at, ''), created_at)) → faturadan sonra açılmış etkin Mevcut Borç kartı yoksa kapsam okunmaz
   (eşitlikte ve ISO-UTC dışı biçimde okunur — koruyucu); (2) `routes/plans.mjs trimCovers` `accounts().detail(..., { withRemaining: false })` (okuduğu bakiye, kart özetinin kendi
   toplamları ve defter satırları iki yolda aynı; kuyruk gerekirse `openByQueue` kurar). Eşdeğerlik + dişi: `test/c7b-tur3-hiz-250.test.mjs`.
+
+## 17. Tur 3b (20.11.2026; görev metni `docs/devir/2.5.0-DEVAM/c7b3b-istem.txt`) — Kartı Kapat 'Borçta Kalsın' (karar (6) / KG-23 / S205; B-11 = A) — KODDAN ÖNCE yazıldı
+Kararlar (iş listesinden AYNEN; görev metni): KG-23 = A ("Alacak CH'de kalır (madde yok)"); (6) 2B-S5 / S10 = A "Borçta Kalsın: Kartı Kapat yalnız ödeme planını bitirir; kalan carinin borcunda kalır,
+ertesi günden gecikmiş, hatırlatma gider; vazgeçme ayrı ve görünür işlemle (Alacak Yaz ya da Şüpheli → Değersiz; VUK md. 322). … önceden kapatılmış kartlar olduğu gibi kalır"; S205 = A
+("kalan 600'ün tamamı 11.04'ten gecikmiş"); BAŞ MİMAR KARARI 20.11 04:15 (1) B-11 = A (kart başına kural işareti, var olan kapalı kartlar eski kural, TEK yardımcı bütün okuyuculara).
+
+### 17.1 Kart başına kural işareti — göç 53
+- Sütun `plans.close_rule TEXT NOT NULL DEFAULT ''`. Değerler: `'2.4.9'` = ESKİ kural (kapatılınca kalan carinin borcundan düşülür: cari ekstresinde "Kart kapatıldı · kalan düşüldü", defterde
+  B 689 / A CH); `''` = Borçta Kalsın (kalan borçta kalır; madde YOK). Göç 53 (bu tabandaki son göç 52): sütun BU göçte eklendiyse `UPDATE plans SET close_rule = '2.4.9' WHERE status =
+  'closed'` (silinmiş kartlar dahil — Silinenler'den geri yüklenen kapalı kart da eski kuralla döner); yeniden koşuda (sütun var) dokunulmaz (eşgüçlü). Tutar / tarih / durum DEĞİŞMEZ.
+- Yazım: Kartı Kapat / Yeniden Aç (routes/plans.mjs PUT, durum değişince) `close_rule = ''` — Yeniden Aç → yeniden Kapat YENİ kuralla (gerekçe: kural, kapatma İŞLEMİNE bağlıdır; "önceden
+  kapatılmış kartlar olduğu gibi kalır" kapalı durumu süren kartı söyler — Yeniden Aç ile kart artık kapatılmış değildir, eski 689 / "kalan düşüldü" bugünkü gibi kalkar; yeniden kapatma
+  yeni bir Kartı Kapat'tır; para kuralı açısından iki okuma yok: Yeniden Aç anında borç geri gelir (bugünkü davranış), yeni kapatmada borç yerinde kalır). `closeForInvoice` (S15 / S206 / S210
+  iptal kapanışı) da `''` yazar (kalan 0 — iki kuralda aynı). Program başka yerde yazmaz.
+- Kilit izi: `lib/integrity.mjs` LOCK_SQL'e `plans_close_rule_lock` = `SELECT id, close_rule FROM plans WHERE close_rule <> '' AND <kapanış günü> <= ?1` (requires `plans.close_rule`, since
+  "2.5.2" — tanım sürümü AYNI, 2.5.2 yayımlanmadı). Yalnız eski kurallı (işaretli) kartlar satır üretir. Kapı dışı '2.4.9' ↔ '' değişimi kilitli dönemde izi değiştirir. `plans_close_lock`
+  (vazgeçilen kalanın izi) YALNIZ kalanı düşülen kartlarla (`… AND close_rule = '2.4.9'`): göç 53'ten sonra v2.4.9 verisinde satırlar AYNEN (bütün kapalı kartlar '2.4.9') → eski koşuların
+  izinde yanlış alarm yok; Borçta Kalsın kartının kapanışı defter olayı değildir, kilide girmez.
+- Göç öncesi (≤ 52) yedeğin geri yüklenmesi göç 53'ü koşar → o yedeğin kapalı kartları eski kural. İki şirket: her dosya kendi göçüyle. Eski sürüme dönüş (v2.4.9 programı) işareti bilmez →
+  Borçta Kalsın kartının kalanını düşer (BİLİNEN SINIR — eski programın kendi kuralı).
+
+### 17.2 TEK yardımcı — `server/lib/accounts.mjs` (saf; veri tabanına dokunmaz)
+- `CLOSE_RULE_WAIVE = "2.4.9"`; `waivesRemaining(plan)` = `plan.status === "closed" && plan.closeRule === CLOSE_RULE_WAIVE` (alan yoksa / boşsa Borçta Kalsın — alan SEÇİLMEYEN okuyucu
+  eski kuralı sessizce taşımasın: testler bunu yakalar); `waivedOf(plan, paid)` = waivesRemaining ? max(0, tutar − net tahsilat) : 0 (yuvarlanmış TL).
+- SQL ikizi: `waivesSql(alias, { column = true } = {})` = `(alias.status = 'closed' AND alias.close_rule = '2.4.9')` — sütun yoksa (`column: false`, göç öncesi depo) `alias.status = 'closed'`
+  (eski veri = eski kural). `closeDaySql(alias)` = kapanış günü (689'un tarihi; bugünkü ifade aynen: MAX(COALESCE(closed_at, substr(updated_at, 1, 10)), Kayıt Tarihi)).
+- S205 vadesi: `keptDueOf(dueDate, closeDay)` = min(kalemin vadesi, kapanış gününün ertesi günü) ve SQL ikizi `keptDueSql(planAlias, dueColumn)` = Borçta Kalsın ile kapatılmış kartta
+  `MIN(due, date(<kapanış günü>, '+1 day'))`, öbür kartlarda `due`. "Kalemin kendi vadesine bakılmaz" görev metninin S205 açıklamasıdır (soru vadesi GELMEMİŞ kalemi soruyordu);
+  vadesi kapanıştan ÖNCE geçmiş kalem KENDİ vadesiyle gecikmiş kalır (MIN) — harfiyen okuma (hepsi kapanış ertesi) kapatma günü gecikmişi 0'a indirir ve gecikme yaşını küçültürdü; gecikmiş
+  TUTARI kapanış ertesinden itibaren iki okumada aynı (rapor: KULLANICIYA SORULMALI).
+
+### 17.3 Okuyucular (tarama `status === "closed"|status = 'closed'|plan-close|closeDayOf` server/** — ders 10)
+| Okuyucu | Dosya:işlev | Bağlantı |
+|---|---|---|
+| cari ekstresi / bakiye (satır "Kart kapatıldı · kalan düşüldü") — Tek Yükümlülük Kuyruğu'nun girdisi de bu satırlardan | `lib/accounts.mjs` accountLedger | `waivedOf(plan, paid)`; plan nesnesi `closeRule` taşır (`lib/account-lines.mjs` ledgerPlansByAccount / ledgerPlansOf seçer; `routes/plans.mjs` PLAN_SQL / forAccount) |
+| genel defter 689 | `lib/general-ledger.mjs` journal | `waivedOf(plan, plan.paid)`; `routes/ledger.mjs` rows() `p.close_rule AS closeRule` (sütun yoksa '2.4.9') |
+| Defter Mutabakatı: carisiz kartın 127 beklenini | `routes/ledger.mjs` expected() | `waivedOf` |
+| Defter Mutabakatı / kapı: carinin bakiye SQL'i | `routes/ledger.mjs` partyTotals | `CASE WHEN waivesSql('p') …` |
+| kapı: carisiz kart (kart bazında) | `lib/integrity.mjs` party:plans, `lib/integrity-scope.mjs` party:plans | `waivedOf` (SQL'e close_rule) |
+| kilit izi | `lib/integrity.mjs` LOCK_SQL plans_close_lock + plans_close_rule_lock | `waivesSql('p')`, `closeDaySql('p')` |
+| süzgeç: "kapatılmış kart kilitli dönem" / "kapatılmış kartın tahsilatı" | `lib/integrity-scope.mjs` | yalnız kalanı düşülen kart (`waivesRemaining`; alan listesine `close_rule`) |
+| kapanış günü kilidi (Yeniden Aç, silme, geri yükleme, tutar, tahsilat; Tablodan Aktar bağı `plan-transfer.mjs` bunu çağırır) | `routes/plans.mjs` closeDayOf / assertCloseOpen | yalnız kalanı düşülen kart (Borçta Kalsın kartın kapanışı defter olayı değil) — `plan-transfer.mjs` DEĞİŞMEZ (closeDayOf'tan okur) |
+| cari "tarihli" kilit (lockedSince — silme / geri yükleme / tür) | `routes/accounts.mjs` lockedSince | `waivesSql('p')` |
+| Cari Listesi bakiye (planCredit) | `routes/accounts.mjs` list | `paid + waivedOf(plan, paid)` (= bugünkü max(tutar, ödenen) eski kuralda) |
+| şüpheli ayırıcısının "plan-close" kalemi | `lib/bank/doubtful.mjs` doubtfulCredits | `WHERE waivesSql('p')` |
+| Tek Yükümlülük Kuyruğu girdisi: kart takvimi (S205) | `lib/obligation-input.mjs` obligationExtras / settleTables / accountSettleInput | `keptDueSql('p', 'i.due_date')` (üç sorgu aynı ifade) |
+| kart penceresi / Taksitler / cari kartı özeti / zil / Vade Takip / nakit akışı / yaşlandırma (kuyruk görünümü) | `routes/plans.mjs` withQueue, shownTotalsOf, queueExtras, summariesByAccount, dueItems, openItems | Borçta Kalsın kapalı kart AÇIK kart gibi kuyruktan gösterilir (durumu "Kapalı" kalır); kalemin günü `keptDueOf`; dueItems / openItems kalanı düşülmemiş kapalı kartı da alır |
+| Kartı Kapat onay penceresi | `client/assets/hof-plans.js` closePlan | metin sonucu söyler |
+`lib/obligation-queue.mjs` DEĞİŞMEZ (vade girdiden). `lib/ledger-rule-249/**` DEĞİŞMEZ (2.4.9 kopyası: her kapalı kartta 689 — yalnız eski kuralla donan dönemi türetir; Borçta Kalsın kartı
+güncellemeden sonra açık dönemde kapanır). WhatsApp Ödeme Hatırlatma (`lib/whatsapp/queue.mjs` overdueOf: eski anlamlı totals.overdue + AÇIK kart) YAZILMAZ → Borçta Kalsın kartının gecikmişi
+WhatsApp hatırlatmasına Ç5-C'de (WhatsApp'ın kuyruğun gecikmişine geçişi) girer (BAŞ MİMAR KARARI GEREKİYOR, rapor). Zil (dueItems) bu turda alır.
+
+### 17.4 Nasıl bozulur? (önce yazıldı; testler buradan)
+1. Aynı caride eski kapalı kart ('2.4.9', kalan düşülmüş) + yeni Borçta Kalsın kartı: bakiye = yalnız yenisinin kalanı; 689 yalnız eskisinin; Defter Mutabakatı / Mutabakat Testi temiz.
+2. Yeniden Aç → yeniden Kapat: eski kurallı kart yeniden açılınca borç geri gelir (bugünkü), yeniden kapatınca Borçta Kalsın (689 kalkar, bakiye kalır).
+3. Kapatıldıktan sonra: cari tahsilatı (gecikmişi kapatır), kart tahsilatı (kapalı karta), iade faturası (kendi kartı kapalı — küçülmez, iade alacağı kalemi kapatır), Alacak Yaz (vazgeçme), Şüpheliye alma.
+4. S205: kapanış günü gecikmiş = kapanıştan önce vadesi geçmişler; ertesi gün kalanın tamamı; vadesi gelmemiş kalem kapanış ertesine çekilir; mutant 'kalem vadesinden başlat' kırmızı.
+5. Kilitli dönemde kapatılmış ESKİ kart: Yeniden Aç 409 (bugünkü); Borçta Kalsın kartı kilitli kapanışta Yeniden Aç / tahsilat serbest; işaret kapı dışı değişirse kilit izi değişir.
+6. Yedek → geri yükleme: ≤ 52 yedeği → göç 53 → kapalı kartlar eski kural; 53 yedeği işaretiyle.
+7. v2.4.9 gerçek kodun verisi: kapatılmış kart göçten sonra eski kuralda — bakiye, ekstre, defter (689) AYNI; Kural Değişikliği Farkı çıkmaz.
+8. İki şirket: her dosyanın kendi işareti. Carisiz eski kart: 127 beklenen = defter.
+9. Aynı gün sıra (ders 31): kapanış günü tek; gecikme yüklemi yalnız tarih.
