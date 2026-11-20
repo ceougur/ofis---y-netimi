@@ -1,0 +1,38 @@
+=== onceki (bakım öncesi sürücü)
+[UTC] AYNI 3619 · U 254 · P 0 · K 0 · R 2 · SINIFLANMADI 11 · OLCULEMEDI 57 · SUSMA 11 · sınıfsız adım 5 · red farkı 0 · uygulanamayan 0 · red/olay P-K-R 9
+  s103-s79-olagan-bag-cari: AYNI 35 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 2 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s118-a1-s200-elle-once-sonra-fatura: AYNI 15 · U 1 · P 0 · K 0 · R 0 · SINIFLANMADI 1 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s121-a5-s220-kart-kapat-onceden-gecikmis: AYNI 19 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 2 · uygulanamayan 0
+  s14-kdv-mahsup-360: AYNI 30 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 1 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s40-s1-vadesiz-gecikmis: AYNI 23 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 1 · uygulanamayan 0
+  s60-r6-kart-kapat-borcta-kalir: AYNI 11 · U 1 · P 0 · K 0 · R 0 · SINIFLANMADI 8 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 2 · uygulanamayan 0
+  s81-s44-geri-yuklenen-kasa-taksit-normal-cari: AYNI 52 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 3 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s82-s45-bagli-geri-yuklenen-kayit-cari: AYNI 57 · U 5 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 2 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s91-b5-kg5-yukleme-yerel-gunu: AYNI 17 · U 0 · P 0 · K 0 · R 2 · SINIFLANMADI 2 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s94-s54-ayni-duzeltmede-bag-cari: AYNI 30 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 1 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+[Europe-Istanbul] AYNI 3623 · U 254 · P 0 · K 0 · R 0 · SINIFLANMADI 9 · OLCULEMEDI 57 · SUSMA 11 · sınıfsız adım 5 · red farkı 0 · uygulanamayan 0 · red/olay P-K-R 9
+  s103-s79-olagan-bag-cari: AYNI 35 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 2 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s118-a1-s200-elle-once-sonra-fatura: AYNI 15 · U 1 · P 0 · K 0 · R 0 · SINIFLANMADI 1 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s121-a5-s220-kart-kapat-onceden-gecikmis: AYNI 19 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 2 · uygulanamayan 0
+  s14-kdv-mahsup-360: AYNI 30 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 1 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s40-s1-vadesiz-gecikmis: AYNI 23 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 1 · uygulanamayan 0
+  s60-r6-kart-kapat-borcta-kalir: AYNI 11 · U 1 · P 0 · K 0 · R 0 · SINIFLANMADI 8 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 2 · uygulanamayan 0
+  s81-s44-geri-yuklenen-kasa-taksit-normal-cari: AYNI 52 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 3 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s82-s45-bagli-geri-yuklenen-kayit-cari: AYNI 57 · U 5 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 2 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s94-s54-ayni-duzeltmede-bag-cari: AYNI 30 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 1 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+=== son (bakım sonrası sürücü)
+[UTC] AYNI 3622 · U 254 · P 0 · K 0 · R 7 · SINIFLANMADI 0 · OLCULEMEDI 55 · SUSMA 11 · sınıfsız adım 0 · red farkı 0 · uygulanamayan 0 · red/olay P-K-R 9
+  s103-s79-olagan-bag-cari: AYNI 35 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 2 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s118-a1-s200-elle-once-sonra-fatura: AYNI 15 · U 1 · P 0 · K 0 · R 3 · SINIFLANMADI 0 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s14-kdv-mahsup-360: AYNI 30 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 1 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s81-s44-geri-yuklenen-kasa-taksit-normal-cari: AYNI 52 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 3 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s82-s45-bagli-geri-yuklenen-kayit-cari: AYNI 57 · U 5 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 2 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s91-b5-kg5-yukleme-yerel-gunu: AYNI 17 · U 0 · P 0 · K 0 · R 4 · SINIFLANMADI 0 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s94-s54-ayni-duzeltmede-bag-cari: AYNI 30 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 1 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+[Europe-Istanbul] AYNI 3626 · U 254 · P 0 · K 0 · R 3 · SINIFLANMADI 0 · OLCULEMEDI 55 · SUSMA 11 · sınıfsız adım 0 · red farkı 0 · uygulanamayan 0 · red/olay P-K-R 9
+  s103-s79-olagan-bag-cari: AYNI 35 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 2 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s118-a1-s200-elle-once-sonra-fatura: AYNI 15 · U 1 · P 0 · K 0 · R 3 · SINIFLANMADI 0 · red/olay P-K-R 0 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s14-kdv-mahsup-360: AYNI 30 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 1 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s81-s44-geri-yuklenen-kasa-taksit-normal-cari: AYNI 52 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 3 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s82-s45-bagli-geri-yuklenen-kayit-cari: AYNI 57 · U 5 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 2 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0
+  s94-s54-ayni-duzeltmede-bag-cari: AYNI 30 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red/olay P-K-R 1 · red farkı 0 · sınıfsız adım 0 · uygulanamayan 0

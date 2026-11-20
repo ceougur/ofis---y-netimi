@@ -43,3 +43,11 @@
    UÇ DURUM DEĞİL — en küçük örnek 2 (ek-mevcut-borc-tum-fatura: elle borç yok, "Carinin Mevcut Borcu" kartı 50.000 faturanın tamamını alır): program Açık Faturalar'da
    F1 50.000 (6 gün gecikmiş), cari kartı Gecikmiş Borç 0; kâhin F1'i listelemez. v2.4.9 aynı (gerileme değil). Öneri A (yaşlandırma raporu cari kartının gecikmişiyle ve Vade Takip'le aynı sayıyı göstermeli; kartın kendi faturası
    zaten rapora girmiyor — "taksitli faturalar taksit kartında izlenir"). Yaygın programlar: doğrulanmış kaynak okunmadı.
+
+## Adım 4 — son koşu (bakım SONRASI sürücü 4959ab79, c7b-aday, iki TZ)
+- kanit: çıkış 1 · 7.756/7.926 geçti, 28 başarısız, 142 atlanan.
+- AYNI 7.248 · U 508 · P 18 · K 0 · R 10 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 120 · SUSMA 22 · red farkı 0 · uygulanamayan 0 · sınıfsız adım 0 · değişmez 0 · öz denetim bozuk 0.
+- Kırmızı: P6 (s81, s82, s94, s103) + P4 (s14) = 18; R: s118 af1 / af3 ×3 (iki TZ, R-S200) + s91 mz0 / mz1 ×4 (yalnız UTC, R-B5).
+- Bekleyen U: 2.5.1-Ç7b-B1 4/44 · D2–D4 28/30 · D4-(7) 1/1 · D4-GERI-AL 1/1 · GÖRÜNÜM-YOK 32/77 + 1/1 · Ç5-C 27/140. Ç7b kimlikli U: 0.
+- Ateşleme: 15 kuralın hepsi ateşledi. Tablolar surucu5-tablo.txt.
+- Gerileme koşusu (aynı sürücü, --program c7b2-taban kopyası) başlatıldı.
