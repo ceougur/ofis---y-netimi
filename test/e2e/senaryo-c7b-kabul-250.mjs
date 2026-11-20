@@ -10,6 +10,7 @@
 //      Bu Ay ve Son 30 Gün boş (ipucu).
 //   C) Banka → Alt Hesap Mizanı: banka / evrak alt hesapları; .90 alt hesapları YOK (BAŞ MİMAR KARARI B-10 = B).
 //   D) Telefon genişliği (390 px): KDV Özeti açılır, sayfa yatay kaymaz, TOPLAM görünür.
+//   E) Kartı Kapat (YB-1): kart penceresi açıkken ikinci oturum 300 TL tahsilat girer; "Kalan ₺900,00" onayı sunucuda reddedilir (409), pencere "Kalan ₺600,00" ile yeniden sorar, kart kapanır.
 // Çıkış: "N geçti, M kaldı"; GÖZLEM satırları (sayılmaz) ayrıca yazılır.
 import fs from "node:fs";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -279,6 +280,39 @@ try {
     const t = await table();
     const subs = t.body.map(row => row[0]);
     ok(!subs.some(code => /\.90$/.test(code)), `banka Alt Hesap Mizanı'nda .90 alt hesabı yok (${subs.join(", ") || "boş"})`);
+  });
+
+  await step("E) Kartı Kapat — eskimiş 'Kalan' onayı (YB-1): pencere açıkken tahsilat girilir; ilk onay (Kalan 900) reddedilir, GÜNCEL kalanla (600) yeniden sorulur, kart kapanır", async () => {
+    const api = await server.login();
+    const accountId = app.store.get("SELECT id FROM accounts WHERE name = 'Ayşe Kaya'").id;
+    const created = await must("kart", api.post("/api/workspace/plans", { accountId, name: "Ayşe Kapanış Kartı", total: "900", registeredOn: "2026-11-01", mode: "auto", count: 3, firstDue: "2026-12-01" }));
+    const planId = created.id || created.plan?.id;
+    await page.goto(`${BASE}/`, { waitUntil: "load" });
+    await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+    await page.click('#hof-sidecard [data-action="plans"]');
+    await page.waitForSelector(`.hof-plans-table tbody tr[data-plan="${planId}"]`, { timeout: 15000 });
+    await human();
+    await page.click(`.hof-plans-table tbody tr[data-plan="${planId}"]`);
+    await page.waitForSelector('.hof-plans [data-act="close"]', { timeout: 15000 });
+    // Kart penceresi açıkken başka biri (ikinci oturum) 300 TL tahsilat girer — pencerenin bildiği kalan (900) eskir.
+    await must("tahsilat (ikinci oturum)", api.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: "300", date: "2026-12-10", method: "cash" }));
+    await human();
+    await page.click('.hof-plans [data-act="close"]');
+    await page.waitForSelector(`${topSel} [data-answer="yes"]`, { timeout: 10000 });
+    const first = ((await page.textContent(topSel)) || "").replace(/\s+/g, " ");
+    ok(/Kalan ₺900,00/.test(first), `ilk onay penceredeki (eski) kalanla: ${first.slice(0, 140)}`);
+    console.log("    [soru] \"Kartı Kapat\" → Kartı Kapat (eski kalanla — sunucu reddetmeli; ders 34)");
+    await page.click(`${topSel} [data-answer="yes"]`);
+    await page.waitForFunction(() => /Kalan ₺600,00/.test(document.querySelector(".hof-modal-backdrop.is-visible:last-of-type")?.textContent || ""), null, { timeout: 15000 });
+    const second = ((await page.textContent(topSel)) || "").replace(/\s+/g, " ");
+    ok(/Kalan ₺600,00/.test(second), `yeniden soru GÜNCEL kalanla: ${second.slice(0, 140)}`);
+    ok(app.store.get("SELECT status FROM plans WHERE id = ?", planId).status === "active", "reddedilen ilk onay kartı kapatmadı (veri tabanı)");
+    await shot("kart-kapat-yeniden-soru");
+    console.log("    [soru] \"Kartı Kapat\" → Kartı Kapat (güncel kalan 600 — beklenen soru)");
+    await page.click(`${topSel} [data-answer="yes"]`);
+    await page.waitForSelector('.hof-plans [data-act="reopen"]', { timeout: 15000 });
+    ok(app.store.get("SELECT status FROM plans WHERE id = ?", planId).status === "closed", "kart kapandı (veri tabanı)");
+    await page.keyboard.press("Escape");
   });
 
   await step("D) Telefon genişliği (390 px): KDV Özeti açılır, sayfa yatay kaymaz, TOPLAM görünür", async () => {
