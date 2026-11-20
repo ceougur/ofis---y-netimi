@@ -137,6 +137,22 @@ Kaynak: kitap §4, §7.2, §7.3, §7.4, §8; KG-11 A, KG-12 A, KG-14 A; EK-1 M4;
   Gelir Tablosu önce (c6h2-taban) / sonra (tur 2) AYNI kopyada: kilitsiz yıl en iyi 2.835 → 2.959 ms (+%4,4), ortanca 2.956 → 3.051 (+%3,2); Ç2 2.844 → 2.885 / 2.986 → 3.089; kilitli yıl 3.362 → 3.196 /
   3.462 → 3.255; Ç2 3.195 → 3.064 / 3.230 → 3.366 (+%4,2) — %10 ölçütünün altında, KÖTÜLEŞEN YOK.
 
+- B-g (b) TASARIMI (tur 3, 20.11.2026; BAŞ MİMAR KARARI 20.11 11:37 — koddan ÖNCE yazıldı; DAVRANIŞ AYNEN, yalnız hız): kilitli kipte donmuş dönem madde madde okunmaz, `ledger_snapshots`'tan
+  TEK okuyucu `frozenSums(store, { from, through, split })` (lib/ledger-snapshots.mjs'in sonunda; var olan işlevler değişmez) iki toplu SQL ile okunur: (1) satır toplamı GROUP BY yıl × kısım
+  (tarih ≥ split) × kimlik öneki × 'voucher' öneki × hesap × alt hesap × cari → Σ(borç − alacak), satır sayısı, en geç tarih; (2) madde toplamı GROUP BY run, entry_id, date (frozenTrial'ın
+  "dengesiz madde" tanımı) → yıl × kısım başına madde sayısı ve dengesiz madde sayısı. Kimlik öneki SQL'de `classOf`'un AYNI kuralıyla (ilk ':' öncesi; ':' yoksa son karakter hariç) — donmuş
+  madde `entryClass`'ını kimlik önekinden alır (frozenEntries `cls` vermez), toplam da öyle. Seyrek ek okuma `firstSeen(hesaplar)`: sınıflandırılmamış hesapların (1–5'te planda olmayan,
+  6 / 7'de önekle sınıflanamayan) İLK görünüş sırası (Kesin Değil ayrıntısının sırası eski okumayla aynı kalsın; çoğu veride hiç çağrılmaz).
+  - Boyut: hesap / alt hesap / cari Bilanço'nun hücre anahtarıyla (`hesap|alt|cari`) AYNI; Gelir Tablosu (hesap, alt) ve 153 / 621 / 6–7 yıl bilgileri aynı satırlardan JS'te (ikinci tarama yok).
+  - Birleşme: donmuş dönem = [başlangıç, min(t, kapsam)] toplamları; kapsamın sonrası `ledger.book({ from: kapsam + 1 gün, to: t, live })` (karma yevmiyenin AYNI kuyruğu — bekleyen eski kurallı
+    koşunun ara dilimi dahil; donmuş satır okumaz) madde madde. t ≤ kapsam ise kuyruk boş. Kilitsiz dönemde (kapsam yok ya da t'nin yılından önce biter — Gelir Tablosu) okuma AYNEN eski yol.
+  - Ortak: `incomeStatement` / `estimatedCost` / `balanceSheet` / `periodRuleDiff` isteğe bağlı `frozen` girdisi alır (verilmezse kod ve sonuç eskisi). Gelir Tablosu ucu da AYNI okuyucuyu
+    kullanır (kısım = a: [1 Ocak, a − 1] yalnız 153 akışı; [a, min(b, kapsam)] tablo) — Bilanço'nun hesaplanmış satırları zaten `incomeStatement`'ın kendisi (iki formül yok).
+  - Kural Değişikliği Farkı: donmuş tarafın yıl × hesap toplamı (kimliği 'voucher' ile başlamayanlar) aynı okumadan; güncel taraf `live` (değişmedi).
+  - Nasıl bozulur → test: kilit t'nin içinde / dışında (t < kapsam, t = kapsam, t > kapsam; Gelir Tablosu a ≤ kapsam < b, kapsam < a); kilit açıldı → yeniden kilitlendi (yeni koşu, eski satırlar
+    silinir); kural değişikliği farkı olan kilitli yıl (test kancası `__testLedgerRule`); iki şirket; yedek → geri yükleme; boş donmuş dönem (kilit var, satır yok); aynı gün sırası (ders 31).
+    Eşdeğerlik: yeni okuma ↔ eski okuma (aynı süreçte eski bileşim: `book()` maddeleri + aynı saf işlevler) ve c6h2-uc kodu ↔ yeni kod (aynı veri kopyası, uçların tam JSON'u) BİREBİR.
+
 ## 9. Nasıl bozulur? (testler buradan; plan §9 madde 6, 8, 9, 10)
 1. 7/A yansıtma (760 → 631, 770 → 632, 780 → 660); iade 610 ve .90; POS komisyonu 653; kredi faizi 780 → H; vergi ödemesi gecikme zammı 689 → J; boş dönem; tek kayıt; çeyrek sınırı (31.03 / 01.04).
 2. Değerleme: elle hesaplanmış örnekler — iki yıl (DBS = önceki yıl DSS), alış iadesi birim maliyeti düşürür / yükseltir, müşteri iadesi değiştirmez, eksi stok (KG-9) ve eksi dönem başı (M5),
@@ -174,4 +190,4 @@ Kaynak: kitap §4, §7.2, §7.3, §7.4, §8; KG-11 A, KG-12 A, KG-14 A; EK-1 M4;
   türetme (B-c ile aynı), mutabakatın cari listesi (B-d'nin bedeli ~1,0–1,4 sn), kilitli kipte donmuş dönemin bütününün madde madde okunması (~1,8 sn). Seçenekler: (a) BİLİNEN SINIR (önbellek
   tekrarı 4–11 ms; "az aşan" değil — kullanıcı ilk açılışta ~5–7 sn bekler); (b) donmuş dönemin (hesap, alt hesap, cari) ve yıl × 6 / 7 toplamlarını SQL ile okuyan bir `ledger-snapshots` işlevi (trial()
   deseni) — kilitli kipte ~−1,8 sn; (c) mutabakat sonucunu Mutabakat Testi'nin son tam taramasından okumak (integrity.mjs'e okuyucu; sonuç en çok 15 dk eski) — ~−1,2 sn; (d) B-c (b) ile canlı türetmeyi
-  açık döneme kısmak. Öneri: (b) + (c) Ç6-EKRAN'dan önce dosya izniyle (kilitli ~3,6 sn, kilitsiz ~3,5 sn bekleniyor — ÖLÇÜLMEDİ), kalan aşım (d) ile; o zamana kadar (a).
+  açık döneme kısmak. Öneri: (b) + (c) Ç6-EKRAN'dan önce dosya izniyle (kilitli ~3,6 sn, kilitsiz ~3,5 sn bekleniyor — ÖLÇÜLMEDİ), kalan aşım (d) ile; o zamana kadar (a). → BAŞ MİMAR KARARI 20.11 11:37: (b) tur 3'te (tasarım §8 'B-g (b) TASARIMI'); (c) REDDEDİLDİ; tur 3'ten sonra süre hâlâ bütçeyi aşıyorsa kullanıcıya sayıyla sorulur.
