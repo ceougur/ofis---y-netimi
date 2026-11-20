@@ -130,6 +130,12 @@ Kaynak: kitap §4, §7.2, §7.3, §7.4, §8; KG-11 A, KG-12 A, KG-14 A; EK-1 M4;
 - Bilanço (tur 2): TEK canlı türetme (`check()`'in) + karma yevmiye + mutabakatın beklenenleri (cari listesi + SQL toplamları) + değerleme (`at(t)` bir kez, önbellekli) + Gelir Tablosu çağrıları
   (t'nin yılı + kapanmamış her önceki yıl; madde dizisi üzerinde, sorgusuz). İş parçacığı Ana Defter'i cari / taksit / stok / tek kaynak servisleriyle kurar (integrity-scan-worker deseni) — mutabakat
   ana iş parçacığındakiyle aynı sonucu verir (test iki yolu karşılaştırır). Bütçe plan §8 (100 bin satırda ≤ 3 sn, olay döngüsü ≤ 50 ms); ölçüm kanıtı docs/kanit/2026-11-20/c6h2-hiz-*.
+- ÖLÇÜLDÜ (20.11, temiz 100 bin satır; geçerli koşu yükü 0,5–1,4): Bilanço kilitsiz ortanca 4,66–4,75 sn (en iyi 4,41–4,64), kilitli (30.06.2026) 6,22–6,81 sn — BÜTÇE AŞILDI (B-g); olay döngüsü
+  istek başına en çok 10,9–27 ms; önbellekten 3,6 / 7,9 ms; Aktif = Pasif (fark 0) ve hesaplanmış Dönem Net Kârı = Gelir Tablosu (yıl 2026: 51.248.200,44 TL) büyük veride de. Parça (iş parçacığısız):
+  canlı türetme 2,0–2,6 sn (Gelir Tablosu ile ortak) · mutabakatın beklenenleri (cari listesi 0,7–1,0 + SQL 0,3–0,4 sn; B-d) · kilitli kipte donmuş dönemin TAMAMININ madde madde okunması 1,75–1,92 sn
+  (karma yevmiye; Gelir Tablosu yalnız yılını okur) · değerleme girdisi ~0,4 sn · Bilanço hesabı 0,8–1,2 sn (yıl başına Gelir Tablosu çağrısı fe693f47'den beri yalnız kendi yılının maddeleri).
+  Gelir Tablosu önce (c6h2-taban) / sonra (tur 2) AYNI kopyada: kilitsiz yıl en iyi 2.835 → 2.959 ms (+%4,4), ortanca 2.956 → 3.051 (+%3,2); Ç2 2.844 → 2.885 / 2.986 → 3.089; kilitli yıl 3.362 → 3.196 /
+  3.462 → 3.255; Ç2 3.195 → 3.064 / 3.230 → 3.366 (+%4,2) — %10 ölçütünün altında, KÖTÜLEŞEN YOK.
 
 ## 9. Nasıl bozulur? (testler buradan; plan §9 madde 6, 8, 9, 10)
 1. 7/A yansıtma (760 → 631, 770 → 632, 780 → 660); iade 610 ve .90; POS komisyonu 653; kredi faizi 780 → H; vergi ödemesi gecikme zammı 689 → J; boş dönem; tek kayıt; çeyrek sınırı (31.03 / 01.04).
@@ -164,3 +170,8 @@ Kaynak: kitap §4, §7.2, §7.3, §7.4, §8; KG-11 A, KG-12 A, KG-14 A; EK-1 M4;
   zamana kadar Bilanço bu nedeni YAZMAZ (verilmeyen bulgu denetlenmemiştir) — kullanıcının gördüğünü etkiler, 2.5.0'da kalır.
 - B-f BAŞ MİMAR KARARI GEREKİYOR (sınıflama — kitap §9: baş mimar + mali müşavir): alacaklı 127 (carisiz taksit kartı) planda "karar"; EK-2 S. 36 önerisi Pasif III.D 340, kart bazında brüt — tur 2
   bu öneriyle KODLADI (sessiz varsayım değil: burada ve raporda). Seçenek: 127 kendi kaleminde eksi + Kesin Değil. Net kâr ve özkaynak iki seçenekte aynı; MA'da mali müşavir A onaylar.
+- B-g BAŞ MİMAR KARARI GEREKİYOR (hacim, tur 2): Bilanço 100 bin satırda kilitsiz ~4,7 sn, kilitli ~6,6 sn (bütçe ≤ 3 sn; olay döngüsü bütçe içinde). Payı bu turun dosyalarında olmayan üç kalem: canlı
+  türetme (B-c ile aynı), mutabakatın cari listesi (B-d'nin bedeli ~1,0–1,4 sn), kilitli kipte donmuş dönemin bütününün madde madde okunması (~1,8 sn). Seçenekler: (a) BİLİNEN SINIR (önbellek
+  tekrarı 4–11 ms; "az aşan" değil — kullanıcı ilk açılışta ~5–7 sn bekler); (b) donmuş dönemin (hesap, alt hesap, cari) ve yıl × 6 / 7 toplamlarını SQL ile okuyan bir `ledger-snapshots` işlevi (trial()
+  deseni) — kilitli kipte ~−1,8 sn; (c) mutabakat sonucunu Mutabakat Testi'nin son tam taramasından okumak (integrity.mjs'e okuyucu; sonuç en çok 15 dk eski) — ~−1,2 sn; (d) B-c (b) ile canlı türetmeyi
+  açık döneme kısmak. Öneri: (b) + (c) Ç6-EKRAN'dan önce dosya izniyle (kilitli ~3,6 sn, kilitsiz ~3,5 sn bekleniyor — ÖLÇÜLMEDİ), kalan aşım (d) ile; o zamana kadar (a).
