@@ -1,0 +1,34 @@
+
+■ Kurulum: yönetici girer, başlangıç tablosu yüklenir
+
+■ 1. Taksitler → Excel: Elif Su (telefonsuz), Grup 'Işık Servisi'
+  ✓ plans: eşleme penceresi açıldı (taksit-ilk.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "1 kart oluşturuldu, 1 grup tanımlandı. Yanlışsa Son Aktarımlar’dan geri alınır." (beklenen "1 kart oluşturuldu")
+  ✓ grup 1, cari 1 (beklenen 1 / 1)
+
+■ 2. Taksitler → Excel: ELİF SU (telefonsuz), Grup 'IŞIK SERVİSİ' → aynı grup, aynı kişi; çift kart / borç yok
+  ✓ plans: eşleme penceresi açıldı (taksit-buyuk.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✗ bildirim: "1 kart oluşturuldu, 1 grup tanımlandı. Yanlışsa Son Aktarımlar’dan geri alınır." (beklenen 0 kart, 1 satır atlandı — Aynı adla açık kart var)
+  ✗ grup sayısı 2 (beklenen 1; 'IŞIK SERVİSİ' yeni grup açmadı)
+  ✗ cari sayısı 2 (beklenen 1; çift cari yok)
+  ✗ defter 120 değişmedi (borç bir kez)
+
+■ 3. Taksitler → Excel: 'ışık servisi' ve 'IŞIK  SERVİSİ' yazımlarıyla iki yeni kişi → kartlar 'Işık Servisi' grubunda
+  ✓ plans: eşleme penceresi açıldı (taksit-yazimlar.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "2 kart oluşturuldu, 2 grup tanımlandı. Yanlışsa Son Aktarımlar’dan geri alınır." (beklenen "2 kart oluşturuldu")
+  ✗ grup sayısı 4 (beklenen 1)
+  ✗ kartların grubu: Can Er ışık servisi, Nur Ak IŞIK  SERVİSİ (beklenen Işık Servisi)
+
+■ 4. Çek / Senet → Excel: eşleme penceresinin metni
+  ✓ cheques: eşleme penceresi açıldı (cek.xlsx)
+  ✗ pencere metni yeni cümleyi içeriyor: " × cek.xlsx Çek / Senet Portföyü: Kolonları Eşle 1 satır bulundu. Program başlıkları tanıdı; yanlışsa değiştirin. Keşideci adı birebir aynı olan tek cari varsa evrak o cariye bağlanır.Çek No — ör. E2E-S231-1— Alma —Çek / Senet NoBanka / ŞubeKeşideci / Lehtar (kişi, firma)TutarVade TarihiAlış / Veriliş TarihiYön (alınan / verilen)Evrak (çek / senet)DurumAçıklamaAçıklamaya EkleBanka — ör. Ziraat— Al"
+  ✗ eski metin ('birebir aynı olan tek cari') yok
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "1 evrak portföye alındı, 1 cariye bağlandı." (beklenen "1 evrak portföye alındı, 1 cariye bağlandı.")
+  ✓ Mutabakat Testi tutarlı
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo S231 (grup adı Türkçe harf katlamalı; çek penceresi metni): 14 geçti, 8 kaldı. Ekranlar: test/e2e/artifacts/senaryo-s231-250

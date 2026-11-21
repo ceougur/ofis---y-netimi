@@ -1,0 +1,73 @@
+{
+  "ad": "ana-s231-ekran-eski",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-s231-250.mjs",
+  "commit": "9aa46ebadfa29797ed7529690455a57a0980359f",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T08:55:01.166Z",
+  "sure_sn": 55.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 22,
+    "gecen": 14,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "bildirim: \"1 kart oluşturuldu, 1 grup tanımlandı. Yanlışsa Son Aktarımlar’dan geri alınır.\" (beklenen 0 kart, 1 satır atlandı — Aynı adla açık kart var)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "grup sayısı 2 (beklenen 1; 'IŞIK SERVİSİ' yeni grup açmadı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cari sayısı 2 (beklenen 1; çift cari yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "defter 120 değişmedi (borç bir kez)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "grup sayısı 4 (beklenen 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kartların grubu: Can Er ışık servisi, Nur Ak IŞIK  SERVİSİ (beklenen Işık Servisi)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "pencere metni yeni cümleyi içeriyor: \" × cek.xlsx Çek / Senet Portföyü: Kolonları Eşle 1 satır bulundu. Program başlıkları tanıdı; yanlışsa değiştirin. Keşideci adı birebir aynı olan tek cari varsa evrak o cariye bağlanır.Çek No — ör. E2E-S231-1— Alma —Çek / Senet NoBanka / ŞubeKeşideci / Lehtar (ki",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "eski metin ('birebir aynı olan tek cari') yok",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-s231/kanit/2026-11-21/ana-s231-ekran-eski.log",
+  "klasor": "/dev/shm/ana-s231/yeni",
+  "ham_cikti_sha256": "e2cad5402216675c6167e21ae27dd5c4e75e6c36cf0f2f3c694c20159241f143",
+  "ham_cikti_bayt": 2549
+}
