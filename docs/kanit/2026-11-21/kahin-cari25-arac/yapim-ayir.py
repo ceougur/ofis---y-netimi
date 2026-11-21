@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Cari kâhini bakımı 24: `--yapim-asamasi-yaz` ile kendi kopyada üretilen listeyi ayrıştırır (görev metni: yalnız programın HENÜZ YAPMADIĞI BİLİNEN kısım — girdi §1 (e) Düzenle ile azaltma,
-§1 (f) iki kart — fark verirse listeye kayıt; öbür farklar program şüphesi 'P' diye RAPORLANIR, listeye girmez — ders 40). Kayıt seçimi: d53'ün Düzenle carileri P4 / A4 (adımlar dz4 / dza4; fatura FP4 / FA4;
-kart KP4 / KA4) → paket "Ç7b". İki kart (P6 / A6) farkı çıkmazsa kayıt yok. ESKİ liste ↔ yeni liste farkı (yeni / kapanan / değişen) dökülür.
+"""Cari kâhini bakımı 25 (§37) — bakım 24 aracının uyarlaması: `--yapim-asamasi-yaz` ile kendi kopyada üretilen listeyi ayrıştırır. Listeye girecek kısım görev metnindeki "programın henüz yapmadığı BİLİNEN
+kısım" — S241'in azaltma kolu (d57 K1 / K2 / K3: Düzenle fazlası avans; açık / kapanmış / kendi kartı) ve §3 (d56 L1 / L2: kartın içine almadığı faturanın iadesi / iptali kartı değiştirmez); paket "Ç7b". Öbür farklar
+program şüphesi 'P' diye RAPORLANIR, listeye girmez (ders 40). ESKİ liste ↔ yeni liste farkı (yeni / kapanan / değişen) dökülür.
   python3 -I yapim-ayir.py <üretilen liste> <depodaki eski liste> <yazılacak depo listesi> <döküm json>"""
 import json
 import sys
@@ -10,12 +10,11 @@ import sys
 uretilen, eski_yol, hedef, dokum_yol = sys.argv[1:5]
 U = json.load(open(uretilen, encoding="utf-8"))
 E = json.load(open(eski_yol, encoding="utf-8"))
-DUZENLE = (":P4:", ":A4:", ":FP4:", ":FA4:", ":KP4:", ":KA4:", "adim:dz4:", "adim:dza4:")
-IKI_KART = (":P6:", ":A6:", ":F6A:", ":G6A:", ":K6A:", ":K6B:", ":L6A:", ":L6B:")
+BILINEN25 = {"d57-c5-s241-s242-duzenle": (":K1:", ":K2:", ":K3:", ":KK1:", ":KK2:", ":FK1:", ":FK2:", ":FK3:", "adim:dk1:", "adim:dk2:", "adim:dk3:"),
+             "d56-c5-s238-s240-iade-ve-secilmeyen": (":L1:", ":L2:", ":KL1:", ":KL2:", ":FL1:", ":FL2:", ":IL1:", ":bl1", ":bl2", "adim:il1:", "adim:ifl2:")}
 secilen, disarida = [], []
 for e in U["kayitlar"]:
-    a = e["senaryo"] + " " + e["anahtar"]
-    if e["senaryo"] in ("d53-c5-s234-kapali-kart-iade", "d54-c5-s234-acik-kart-iade") and any(x in e["anahtar"] for x in DUZENLE + IKI_KART):
+    if any(x in e["anahtar"] for x in BILINEN25.get(e["senaryo"], ())):
         secilen.append(dict(e, paket="Ç7b"))
     else:
         disarida.append(e)
@@ -33,5 +32,5 @@ with open(hedef, "w", encoding="utf-8") as f:
     f.write("\n")
 with open(dokum_yol, "w", encoding="utf-8") as f:
     json.dump(dokum, f, ensure_ascii=False, indent=1)
-print("üretilen %d kayıt · listeye giren (Düzenle / iki kart — Ç7b) %d · girmeyen (P şüphesi) %d · eski liste %d → yeni %d (yeni %d, kapanan %d, değişen %d)" % (
+print("üretilen %d kayıt · listeye giren (S241 azaltma / §3 — Ç7b) %d · girmeyen (P şüphesi) %d · eski liste %d → yeni %d (yeni %d, kapanan %d, değişen %d)" % (
     len(U["kayitlar"]), len(secilen), len(disarida), len(E["kayitlar"]), len(secilen), len(dokum["yeni"]), len(dokum["kapanan"]), len(dokum["degisen"])))
