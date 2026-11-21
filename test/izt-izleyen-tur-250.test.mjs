@@ -221,6 +221,20 @@ describe("İzleyen küçük tur — S234-c (Düzenle ile azaltma iade gibi)", ()
   }
 });
 
+describe("İzleyen küçük tur — S234-c sınırı (Düzenle'de eklenen peşin ödeme kartı küçültmez — ödemedir, iade değil)", () => {
+  it("C2: fatura 900 → kart 900 → Düzenle aynı tutar + 300 peşin → kart 900 kalır; bakiye 600", () =>
+    world("2026-09-02", async h => {
+      const A = await h.acc();
+      const f = await h.goods(A, "2026-09-01", 3);
+      const k = await h.cover(A, 900, "2026-10-05", "2026-09-02");
+      h.at("2026-09-10");
+      await h.edit(f, 3, { cash: [{ amount: "300", method: "cash" }], rest: "account" });
+      assert.equal((await h.card(k)).total, 900, "kart küçülmez (tutar azalmadı)");
+      assert.equal((await h.account(A)).balance, 600);
+      assert.equal(await h.ok(), true, "Mutabakat Testi");
+    }));
+});
+
 describe("İzleyen küçük tur — S239 = A ve S240 = A (bugünkü davranış kararla aynı — bekçi)", () => {
   it("S239: fatura 900, kart 600 (faturanın 600'ü kartta), iade 300 → kart DEĞİŞMEZ (dışarıdaki 300 kapanır); 06.10 gecikmiş = ilk taksit 200", () =>
     world("2026-09-02", async h => {

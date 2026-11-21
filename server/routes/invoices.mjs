@@ -1142,14 +1142,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (existing.kind === "sale_return" && existing.originalId) restoreCuts(user, { id: existing.id }, touched, `İade düzenlendi ${existing.number}`);
       // 2.5.0 İzleyen küçük tur — S234-c (S234 = A + karar (4); tasarım §19.5): taksitsiz satış faturasının Düzenle'si onu içine almış Mevcut Borç kartlarını iade gibi küçültür — kart payları
       // Düzenle'den ÖNCE okunur (kapama defteri), yeni etkilerden sonra fark kadar karar (4) ile küçülür. Küçülebilecek kart yoksa okunmaz (ders 47).
-      const coverPre = (existing.kind === "sale" || existing.kind === "smm") && !existing.planId && plans()?.hasShrinkableCover?.(existing.accountId) ? coverState(existing.id) : null;
+      // Yalnız AZALTMADA (tutar düştü ya da cari değişti — borç bu cariden çıktı): Düzenle'de eklenen peşin ödeme kartı küçültmez (ödemedir, iade değil); tutarı düşmeyen Düzenle kapsam okumaz (ders 47).
+      const decrease = doc.account?.id && doc.account.id !== existing.accountId ? Number(existing.tryPayable) || 0 : roundMoney((Number(existing.tryPayable) || 0) - c2(doc.money.payable));
+      const coverPre = (existing.kind === "sale" || existing.kind === "smm") && !existing.planId && decrease > 0.005 && plans()?.hasShrinkableCover?.(existing.accountId) ? coverState(existing.id) : null;
       // BULGU-2 (§19.6): faturanın KENDİ kartı açık, tahsilatsız ve yeni ödeme planı kayıtlıyla aynıysa kart kaldırılıp yeniden kurulmaz (writeIssued karar verir).
       const keepPlan = ownPlanToKeep(existing);
       reverseEffects(user, existing, touched, { force, edit: true, keepPlanId: keepPlan?.id || "" });
       const pre = existing.kind === "sale_return" && existing.originalId ? coverState(existing.originalId) : null;
       const payment = paymentInput(body, doc, user, { previous: previousLines });
       const written = writeIssued(user, doc, payment, { id: existing.id, force, edit: existing, pre, keepEvents, keepPlan });
-      if (coverPre && Object.keys(coverPre.coveredBy).length) shrinkCoversByEdit(user, coverPre, touched, `Fatura düzenlendi ${existing.number}`);
+      if (coverPre && Object.keys(coverPre.coveredBy).length) shrinkCoversByEdit(user, coverPre, touched, `Fatura düzenlendi ${existing.number}`, decrease);
       // Son durum denetimi — stok: düzenleme bir ürünü eksiye düşürdüyse (ya da eksiyi büyüttüyse) sorulur.
       if (!force.stock) {
         for (const [itemId, was] of stockBefore) {
@@ -2373,11 +2375,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
   // 2.5.0 İzleyen küçük tur — S234-c (§19.5): Düzenle'den önceki kart payları (pre) ile sonrası arasındaki azalış kadar her kart karar (4) ile küçülür (shrinkPlan — kalanla sınırlı, fazlası avans);
   // carinin borcundan büyük kalan kartlar iadedeki gibi kırpılır (trimCovers). Kesim kaydı yazılmaz (iade belgesi yok; artırma kartı büyütmez — SK-42 (b) bugünkü davranış).
-  function shrinkCoversByEdit(user, pre, touched, note) {
+  // limit: faturanın azalan tutarı — kart payındaki azalış onu aşamaz (Düzenle'deki öbür değişiklik — ör. eklenen peşin — kartı küçültmez).
+  function shrinkCoversByEdit(user, pre, touched, note, limit = Infinity) {
     const post = coverState(pre.row.id);
     if (!post) return;
+    let room = limit;
     for (const planId of Object.keys(pre.coveredBy)) {
-      const delta = roundMoney((pre.coveredBy[planId] || 0) - (post.coveredBy[planId] || 0));
+      const delta = roundMoney(Math.min(room, (pre.coveredBy[planId] || 0) - (post.coveredBy[planId] || 0)));
+      if (delta > 0.005) room = roundMoney(room - delta);
       if (!(delta > 0.005)) continue;
       if (plans().shrinkPlan(user, planId, delta, note) > 0) touched.plans.add(planId);
     }
