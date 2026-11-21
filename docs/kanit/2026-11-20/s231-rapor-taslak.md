@@ -55,3 +55,13 @@
 - Neden 2: ayraç düzeltilince de kimlik + ad metni ~400 bin karakter; katlama 3,3 ms + SQL 2,9 ms ≈ eski yol. → yalnız adlar (U+001F) + rowid'ler; eşleşenlerin kimliği ayrı okunur.
 - Neden 3 (grup kolonlu cari Excel): grup bulucusunun her NOCASE ıskasında json_each sorgusu (1.000 satır). → yalnız yüklemede açılan aday kimlikle okunur.
 - Düzeltme 2 = commit 6f6aff4a; ölçüm 2 sürüyor.
+
+## 6. DÜZELTME 3 (270b3ad9) ve HIZ ÖLÇÜMÜ 4 — GEÇTİ
+- Yalnız adlar (U+001F) + COUNT tek sorguda; eşleşen ham adların carileri adla okunur; boşluk düzenli ifadesi yalnız gerekiyorsa. profil2: personIndexFor kurulum + 500 ids 3,8 ms (personIndex 8,2 ms).
+- Ölçüm 3 GÜRÜLTÜLÜ (başka ajanların yükü; s223'ün değişmemiş grup yolu bile +%14) → ölçüm 4: 6 dönüşümlü tur, özel kilit, koşu başı ve sonu yük ≤ 2, geçersiz 0. Çek 500: c7b 74,8 / 80,7 → yeni 77,3 / 82,2 (1,03 / 1,02); S223 84,3 / 89,0. Bütün yollar GEÇTİ (docs/kanit/2026-11-20/s231-hiz/olcum4).
+
+## 7. SON KODDA KABUL (zincir 4; docs/kanit/2026-11-20/s231-kanit/son-kod-270b3ad9)
+- Yeni + S223 + c7bt + names testleri 55/55 UTC ve İstanbul; eşdeğerlik testi tabanda 0/3 (işlevler yok — beklenen).
+- Komşular 57 dosya 829/829 iki TZ. Muhasebe sürücüsü yeni 7.750 / 50 / 146 (taban aynı), gerileme.py 248/248 BİREBİR.
+- kâhin-defter 187/187 (taban + yeni, iki TZ), kâhin-cari 17.648/17.648 (yeni iki TZ; taban iki TZ zincir 3'te), yapım aşaması 0.
+- Ekran: senaryo-s231-250 yeni 22/0, taban 14/8; senaryo-s223-250 yeni 26/0. Mutantlar 11/11 kırmızı.

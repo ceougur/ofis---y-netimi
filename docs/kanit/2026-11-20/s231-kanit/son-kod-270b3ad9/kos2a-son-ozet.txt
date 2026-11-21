@@ -1,0 +1,10 @@
+kilit 08:21 yük 2.82 4.05 3.59 1/235 20012
+[kanit] s231-kahin-defter-taban-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b169e19 +6 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-kahin-defter-yeni-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 270b3ad +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-kahin-cari-yeni-UTC: GEÇTİ · çıkış 0 · 17648/17648 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 270b3ad +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-kahin-defter-taban-Europe: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b169e19 +6 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-kahin-defter-yeni-Europe: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 270b3ad +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-kahin-cari-yeni-Europe: GEÇTİ · çıkış 0 · 17648/17648 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 270b3ad +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+yapım aşaması yazımı çıkış 0
+yapım aşaması kayıt sayısı 0
+BİTTİ 08:41 yük 3.63 3.00 2.74 2/247 27701
