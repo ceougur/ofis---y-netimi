@@ -1,0 +1,42 @@
+=== Europe/Istanbul başta 5.01 4.64 3.45 2/150 7307 21:06:21
+    # Subtest: hareketler: tahsilat Kasa'ya giriş, ödeme Kasa'dan çıkış; borç/alacak Kasa'ya girmez; makbuz ve ekstre PDF
+    ok 3 - hareketler: tahsilat Kasa'ya giriş, ödeme Kasa'dan çıkış; borç/alacak Kasa'ya girmez; makbuz ve ekstre PDF
+    # Subtest: giriş Kasa'dan ödenirse Kasa'ya gider (miktar × birim fiyat); çıkış yalnız miktar; kritik seviye uyarısı
+    ok 2 - giriş Kasa'dan ödenirse Kasa'ya gider (miktar × birim fiyat); çıkış yalnız miktar; kritik seviye uyarısı
+    # Subtest: Kasa girişi çıkışa çevrilince tür cash_out; tarih geçen yıla alınınca numara aynı (kalıcı kimlik); bank:event türü de denetler
+    ok 1 - Kasa girişi çıkışa çevrilince tür cash_out; tarih geçen yıla alınınca numara aynı (kalıcı kimlik); bank:event türü de denetler
+    # Subtest: Engelle: 50.000 çıkış → 409 cash-blocked, hiçbir şey yazılmaz; negativeOk da geçmez
+    ok 1 - Engelle: 50.000 çıkış → 409 cash-blocked, hiçbir şey yazılmaz; negativeOk da geçmez
+    # Subtest: F5 girişimden 8 gün dolmadıysa EDM'ye sorulmaz (K4 çıkış yolu); belgeye yazılan ileti e-Faturanın iptal yolunu söyler
+    ok 1 - F5 girişimden 8 gün dolmadıysa EDM'ye sorulmaz (K4 çıkış yolu); belgeye yazılan ileti e-Faturanın iptal yolunu söyler
+# \# 6d K çeviri: yapılan 79; beklenen ret ["KG0: 409 Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür."]; atlanan ["AE1: uç adı henüz verilmedi (kos.mjs UCLAR.acilis_evrak)","AE2: uç adı henüz verilmedi (kos.mjs UCLAR.acilis_evrak)","AE3: uç adı henüz verilmedi (kos.mjs UCLAR.acilis_evrak)","AE1K: evrakı programa gönderilmedi (atlanan / reddedilen)","AE2K: evrakı programa gönderilmedi (atlanan / reddedilen)","EX1: uç adı henüz verilmedi (kos.mjs UCLAR.excel_taksit_karti)","KDZ1: uç adı henüz verilmedi (kos.mjs UCLAR.kasa_duzelt)","KDZ2: uç adı henüz verilmedi (kos.mjs UCLAR.kasa_duzelt)"]
+    # Subtest: müşteriye bağlı Ödeme (çıkış) alacak tarafında yükümlülük; tedarikçiden bağlı Tahsilat (giriş) borç tarafında yükümlülük
+    ok 1 - müşteriye bağlı Ödeme (çıkış) alacak tarafında yükümlülük; tedarikçiden bağlı Tahsilat (giriş) borç tarafında yükümlülük
+# Subtest: İ5 — düzeltmede eksi bakiye sorusu düzeltmeyi anlatır (çıkış / yol önerisi değil)
+    # Subtest: nasıl bozarım: kayıt tahsilatı 1.000 → 500 → soru 'düzeltilince Nakit Kasa'dan 500,00 TL düşer', 'çıkış' yok, explained
+    ok 1 - nasıl bozarım: kayıt tahsilatı 1.000 → 500 → soru 'düzeltilince Nakit Kasa'dan 500,00 TL düşer', 'çıkış' yok, explained
+    # Subtest: çalışıyor mu: yeni Kasa ödemesinde (gerçek çıkış) metin ve yol önerisi aynı kalır (explained yok)
+    ok 4 - çalışıyor mu: yeni Kasa ödemesinde (gerçek çıkış) metin ve yol önerisi aynı kalır (explained yok)
+ok 290 - İ5 — düzeltmede eksi bakiye sorusu düzeltmeyi anlatır (çıkış / yol önerisi değil)
+    # Subtest: çalışıyor mu: kayıt tahsilatı ve cari silmede soru 'silinince Nakit Kasa'dan … düşer' der ('çıkış' değil)
+    ok 1 - çalışıyor mu: kayıt tahsilatı ve cari silmede soru 'silinince Nakit Kasa'dan … düşer' der ('çıkış' değil)
+    # Subtest: çalışıyor mu: kayıtta çıkış sorusu (yeni ödeme) eski metniyle kalır
+    ok 2 - çalışıyor mu: kayıtta çıkış sorusu (yeni ödeme) eski metniyle kalır
+    # Subtest: S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok
+    ok 5 - S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok
+    # Subtest: karar (5): müşterideki elle Alacak müşterinin borcuyla netleşir (çıkış kalemi yok); net borç kendi vadesinde; carinin net = bakiye
+    ok 5 - karar (5): müşterideki elle Alacak müşterinin borcuyla netleşir (çıkış kalemi yok); net borç kendi vadesinde; carinin net = bakiye
+    # Subtest: bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz
+    ok 13 - bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz
+    # Subtest: Nakit Akış (90 gün): beklenen giriş/çıkış bağımsız (taksit, portföydeki senet, verilen çek); başlangıç Kasa + Gerçek Banka (K10)
+    ok 43 - Nakit Akış (90 gün): beklenen giriş/çıkış bağımsız (taksit, portföydeki senet, verilen çek); başlangıç Kasa + Gerçek Banka (K10)
+    # Subtest: KS7.1 aynen: tedarikçiye NEDENSİZ açık hesap çıkışı yükümlülüktür (alış faturasını kapatmaz; yevmiye 600)
+    ok 2 - KS7.1 aynen: tedarikçiye NEDENSİZ açık hesap çıkışı yükümlülüktür (alış faturasını kapatmaz; yevmiye 600)
+# tests 2145
+# pass 2145
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 464268.499483
+çıkış 0 sonda 4.90 4.83 4.03 4/154 11116 21:14:05
