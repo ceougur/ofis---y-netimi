@@ -15,7 +15,8 @@ import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
 import { loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
 import { waitForFreeze } from "./fixtures/donma-bekle.mjs";
-import { frozenPartOf, periodRuleDiff, postedCorrectionsAt, ruleDiffRemainder } from "../server/lib/financial-statements.mjs";
+// Ad alanıyla (eski kodda — 5ee4d99e — yeni işlevler yok: dosya yine yüklenir, API sınamaları beklenen nedenle kırmızı olur; eşdeğerlik "işlev yok" der).
+import * as financial from "../server/lib/financial-statements.mjs";
 import { postedRuleDiffCorrections, ruleDiffCorrectionPlan, ruleDiffCorrectionYear } from "../server/lib/ledger-opening.mjs";
 import { frozenSums } from "../server/lib/ledger-snapshots.mjs";
 
@@ -57,6 +58,8 @@ async function withFixture(sinif, fn) {
 
 /** Hızlı yol ↔ Yönetim'in planı (aynı süreç, aynı veri): girdinin toplamları ve plan BİREBİR. */
 function assertSameAsAdmin(server, label) {
+  for (const name of ["frozenPartOf", "periodRuleDiff", "postedCorrectionsAt", "ruleDiffRemainder"]) assert.equal(typeof financial[name], "function", `${name} işlevi yok`);
+  const { frozenPartOf, periodRuleDiff, postedCorrectionsAt, ruleDiffRemainder } = financial;
   const { store } = server.app;
   const ledger = server.app.ledger;
   const state = ledger.snapshots.state();
@@ -94,18 +97,15 @@ const readAll = async get => Object.fromEntries(await Promise.all(Object.entries
 
 describe("2.5.0 Ç6-HESAP tur 4 — ORTA-2: Kural Farkı Düzeltme Fişi'nden sonra Kesin Değil (Yönetim'in KALAN'ı)", () => {
   for (const sinif of ["kasa", "satis-fatura", "banka", "taksit"]) {
-    it(`${sinif}: fişten sonra t ≥ fiş günü neden yok + bilgi satırı (Yönetim kalan 0); fişten önceki t'ler AYNEN; Aktif = Pasif; hızlı yol = Yönetim planı`, { timeout: 300_000 }, async () => {
-      await withFixture(sinif, async ({ get, client, server }) => {
+    it(`${sinif}: fişten sonra t ≥ fiş günü neden yok + bilgi satırı (Yönetim kalan 0); fişten önceki t'ler AYNEN; Aktif = Pasif`, { timeout: 300_000 }, async () => {
+      await withFixture(sinif, async ({ get, client }) => {
         const before = await readAll(get);
         assert.ok(reasonOf(before.bsNow), `${sinif}: fişten önce bugünkü Bilanço'da neden var`);
         for (const out of Object.values(before)) assert.equal(out.bilgi, undefined, "fişsiz yanıtta bilgi alanı yok (yanıt eskisi gibi)");
-        assertSameAsAdmin(server, `${sinif} fişten önce`);
         const { view, voucher } = await postCorrection(client, get, sinif);
         assert.equal(voucher.date || view.date, "2026-07-01");
         const admin = await get("/api/admin/ledger/rule-diff-correction");
         assert.deepEqual([admin.lines.length, admin.code], [0, "rule-diff-nothing"], `${sinif}: Yönetim kalan 0`);
-        const { remainder } = assertSameAsAdmin(server, `${sinif} fişten sonra`);
-        assert.deepEqual([remainder.exact, remainder.corrected, remainder.vouchers], [true, true, ["Fiş 2026-000001"]]);
         const after = await readAll(get);
         for (const key of ["bsNow", "bs0701"]) {
           assert.equal(reasonOf(after[key]), null, `${sinif} ${key}: neden düştü`);
@@ -125,6 +125,14 @@ describe("2.5.0 Ç6-HESAP tur 4 — ORTA-2: Kural Farkı Düzeltme Fişi'nden so
         assert.equal(noRule(after.bs0630), noRule(before.bs0630), "fişten önceki gün: neden dışında da aynı");
       });
     });
+    it(`${sinif}: hızlı yol ↔ Yönetim planı EŞDEĞER (fişten önce ve sonra)`, { timeout: 300_000 }, async () => {
+      await withFixture(sinif, async ({ get, client, server }) => {
+        assertSameAsAdmin(server, `${sinif} fişten önce`);
+        await postCorrection(client, get, sinif);
+        const { remainder } = assertSameAsAdmin(server, `${sinif} fişten sonra`);
+        assert.deepEqual([remainder.exact, remainder.corrected, remainder.vouchers], [true, true, ["Fiş 2026-000001"]]);
+      });
+    });
   }
 
   it("kasa: fişten sonra kilit 31.12.2025'e geri çekilir → fişin 770 / 770.90 satırı fazla → neden KALAN ile (Yönetim ön izlemesinin satırları)", { timeout: 300_000 }, async () => {
@@ -136,8 +144,6 @@ describe("2.5.0 Ç6-HESAP tur 4 — ORTA-2: Kural Farkı Düzeltme Fişi'nden so
       assert.equal(server.app.ledger.snapshots.state().coverage, "2025-12-31", "kapsam indi");
       const admin = await get("/api/admin/ledger/rule-diff-correction");
       assert.deepEqual(admin.lines.map(line => [line.account, line.sub, line.debit, line.credit]), [["770", "", 30000, 0], ["770", "770.90", 0, 30000]], "Yönetim: fazla düzeltmenin tersi önerilir (ELLE)");
-      const { remainder } = assertSameAsAdmin(server, "kasa kilit geri çekildi");
-      assert.deepEqual([remainder.exact, remainder.corrected], [true, false]);
       const bs = await get(`${FS}/balance-sheet?date=2026-10-20`);
       const reason = reasonOf(bs);
       assert.deepEqual(reason?.ayrinti, admin.lines.map(lineText), "neden KALAN tutarla (Yönetim'in satırları)");
@@ -147,6 +153,8 @@ describe("2.5.0 Ç6-HESAP tur 4 — ORTA-2: Kural Farkı Düzeltme Fişi'nden so
       assert.equal(bs.toplamlar.farkMinor, 0);
       const gt = await get(`${FS}/income-statement?from=2025-01-01&to=2025-12-31`);
       assert.deepEqual(reasonOf(gt)?.ayrinti, ["2025 · 649: 1.000,00 TL", "2025 · 649 (649.90): −1.000,00 TL"], "kilitli 2025 (fiş dışında): ham fark AYNEN");
+      const { remainder } = assertSameAsAdmin(server, "kasa kilit geri çekildi");
+      assert.deepEqual([remainder.exact, remainder.corrected], [true, false]);
     });
   });
 

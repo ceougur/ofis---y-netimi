@@ -62,7 +62,6 @@ describe("2.5.0 Ç6-HESAP tur 4 — S236 = A: kilitli dönemin değerlemesi kili
         return must("kart düzelt", api.put(`/api/workspace/stock/${id}`, { ...body, updatedAt: current.item?.updatedAt ?? current.updatedAt }));
       };
       await lockAndWait(api.client, "2025-12-31");
-      assert.equal(store.get("SELECT COUNT(*) AS n FROM ledger_snapshot_items").n, 2, "kilit anında iki kart donmuş");
       const base = await readAll(api);
       assert.deepEqual(base.locked, LOCKED_A, "kilitten sonra (ELLE)");
       assert.deepEqual([base.open.d, base.open.s153, base.open.dss0101], [0, 60000, 60000], "açık yıl: dönem başı 600 = dönem sonu 600");
@@ -98,6 +97,7 @@ describe("2.5.0 Ç6-HESAP tur 4 — S236 = A: kilitli dönemin değerlemesi kili
       await card(K.id, { unitPrice: "60" });
       const after = await readAll(api);
       assert.deepEqual(after.locked, unlocked.locked, "yeni dondurmadan sonra K 80 → 60: kilitli 2025 aynı (−700)");
+      // Tablo düzeyi (göç 54; eski kodda tablo yok — buraya kadar API sınamaları beklenen nedenle kırmızı olur).
       const runs = store.all("SELECT r.no, r.kind, r.state, COUNT(s.item_id) AS n FROM ledger_snapshot_runs r LEFT JOIN ledger_snapshot_items s ON s.run = r.no GROUP BY r.no ORDER BY r.no").map(row => [row.kind, row.state, row.n]);
       assert.deepEqual(runs, [["freeze", "done", 2], ["thaw", "done", 0], ["freeze", "done", 2]], "her freeze koşusu kendi kartıyla");
       const frozen = store.all("SELECT run, kind, unit_price AS price FROM ledger_snapshot_items WHERE item_id = ? ORDER BY run", K.id).map(row => [row.run, row.kind, row.price]);
@@ -140,9 +140,10 @@ describe("2.5.0 Ç6-HESAP tur 4 — S236 = A: kilitli dönemin değerlemesi kili
           return res.data.data;
         };
         if (kip === "kilitli") {
-          const items = store.get("SELECT COUNT(*) AS n FROM stock_items").n;
-          assert.ok(items > 0);
-          assert.deepEqual(store.all("SELECT run, COUNT(*) AS n FROM ledger_snapshot_items GROUP BY run").map(row => [row.run, row.n]), [[1, items]], "göç 47'nin koşusuna göç anının kartları");
+          // Tablo düzeyi aşağıda (sayı sınamalarından SONRA — eski kodda tablo yok, kırmızının nedeni sayı farkı olsun).
+          const table = store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'ledger_snapshot_items'");
+          results.items = store.get("SELECT COUNT(*) AS n FROM stock_items").n;
+          results.cards = table ? store.all("SELECT run, COUNT(*) AS n FROM ledger_snapshot_items GROUP BY run").map(row => [row.run, row.n]) : null;
         }
         const read = async () => ({
           gt25: (await get(`${FS}/income-statement?from=2025-01-01&to=2025-12-31`)).items.find(item => item.kod === "D").tutarMinor,
@@ -166,5 +167,7 @@ describe("2.5.0 Ç6-HESAP tur 4 — S236 = A: kilitli dönemin değerlemesi kili
     assert.deepEqual(results.kilitli.after, results.kilitli.before, "kilitli: tür değişikliği 2025 ve 30.06.2026'yı değiştirmez");
     assert.notDeepEqual(results.kilitsiz.after, results.kilitsiz.before, "kilitsiz: aynı değişiklik değerlemeyi değiştirir (dişi)");
     assert.equal(results.kilitsiz.after.dss, 0, "kilitsiz: bütün ürünler Hizmet → stok 0");
+    assert.ok(results.items > 0);
+    assert.deepEqual(results.cards, [[1, results.items]], "göç 54: göç 47'nin koşusuna göç anının kartları");
   });
 });
