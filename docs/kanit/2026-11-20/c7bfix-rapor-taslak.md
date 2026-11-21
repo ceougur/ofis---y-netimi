@@ -68,3 +68,9 @@ AYNI AİLE: YOK (aynı desen — işlem içinde kuyruksuz okunan sayının pence
 | m3 409'da güncel kalanı kartın kendi hesabından söyle | 4 / 12 kırmızı | K3a (3.000 ≠ 2.500), K4 (3.600 ≠ 3.100), K5b (1.200 ≠ 400), K8 (1.000 ≠ 333,34) |
 | m4 kalansız kartı (onay 0) denetim dışı bırak | 3 / 12 kırmızı | K5b, K8, mevcut 'kalansız kart' |
 Özgün geri yüklendi (cmp aynı).
+
+## 5. E — DEĞİŞMEZLER (c7bfix-degismez/; degismez.mjs, eski = surucu5-uc, yeni = db290c39)
+Aynı istek dizisi (S1 eski istemci; S2 cari kartından 500 + closeRemaining — eskide kartın kendi sayısı 3.000 (aksi 409), yenide pencere 2.500; S3 Taksit Tahsilatı 1.000 + pencere 2.000;
+S2'nin kartı Yeniden Aç → yine Kapat; S4 Mevcut Borç taksitli + cari 500): plans (status / closed_at / close_rule), plan_entries, account_entries (veri tabanı), cari kartları (bakiye,
+gecikmiş, ekstre satırları), Mizan, Mutabakat Testi, Defter Mutabakatı — İstanbul ve UTC'de eski ↔ yeni HEPSİ AYNI; Mutabakat Testi temiz (true / true), Defter Mutabakatı 'Tüm hesaplar
+tutarlı'. Bakiyeler A 2.500 · B 2.500 · C 2.000 · D 2.500 (Borçta Kalsın).
