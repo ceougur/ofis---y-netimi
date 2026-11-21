@@ -120,4 +120,4 @@ B: Borçta Kalsın kalanı kuyrukta kendi vadesini korusun (S205'in gecikmiş ku
   pencereyle aynı kural), eski kuralla kapanmış (frozen) kartın Yeniden Aç → Kapat'ı: ayrı sınama yazılmadı; shownRemaining detailView ile AYNI withQueue kuralını çağırır (yer tablosu testi denetler).
 - Kartı Kapat'ın iki kişinin aynı anda kapatması (yarış) ayrıca zorlanmadı; denetim + yazım tek BEGIN IMMEDIATE işleminde.
 - Mutantlar yalnız UTC'de; hız yalnız İstanbul TZ'de; Windows (CI'ye kalır).
-- run.mjs (ana e2e; Kartı Kapat sorusu iki yerde), senaryo-226, uiux-a-243 koşulmadı (Kartı Kapat'ı kalanı kartın kendi hesabıyla aynı olan kartta kullanırlar — davranış değişmez; aday kapısında koşulur).
+- senaryo-226, uiux-a-243 koşulmadı (Kartı Kapat'ı API'den / kalanı kartın kendi hesabıyla aynı kartta kullanırlar; aday kapısında koşulur). Ana e2e (test/e2e/run.mjs; Kartı Kapat sorusu iki yerde) KOŞULDU: 50 / 50 (c7bfix-e2e-run-yeni).
