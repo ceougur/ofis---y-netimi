@@ -21,6 +21,11 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { must } from "./banka-210-ortak.mjs";
 import { bootBank } from "./banka-210-hesap-ortak.mjs";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { ADMIN_PASSWORD } from "./helpers.mjs";
+import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 
 const W = "/api/workspace";
 const own3 = { rest: "installments", installments: { count: 3, firstDue: "2026-10-05" } };
@@ -356,4 +361,73 @@ describe("İzleyen tur 2 — İş 4 (iade Düzenle'si iptalle aynı yardımcıda
       assert.equal(t.overdueDebt, 0);
       assert.equal(await h.ok(), true);
     }));
+});
+
+// D 18:28 (6): kilitli dönem + yedek → geri yükleme — S241 kaydı (payment_json.editCuts) ve iade kesim kaydı (coverCutItems) yedekte taşınır; geri yüklemeden sonra kart görünümü ve iade iptali
+// aynı; kilitli dönemdeki faturanın Düzenle'si bugünkü gibi reddedilir.
+describe("İzleyen tur 2 — yedek → geri yükleme ve kilitli dönem (D 18:28 (6))", () => {
+  const W2 = "/api/workspace";
+  const sale = (api, accountId, date, qty) => must("satış", api.post(`${W2}/invoices`, { scenario: "goods_sale", accountId, issueDate: date, lines: [{ name: "Mal", qty, unitPrice: 250, vatRate: 20 }], payment: { rest: "account" } }));
+  const plan = (api, accountId, total, registeredOn) => must("kart", api.post(`${W2}/plans`, { accountId, name: `Y ${total}`, total: String(total), registeredOn, mode: "auto", count: 3, firstDue: "2026-10-05", coversBalance: true }));
+  const editTo = async (api, id, qty) => {
+    const d = await must("fatura", api.get(`${W2}/invoices/${id}`));
+    return api.post(`${W2}/invoices/${id}/edit`, { scenario: d.scenario, accountId: d.accountId, issueDate: d.issueDate, lines: [{ name: "Mal", qty, unitPrice: 250, vatRate: 20 }], payment: { rest: "account" }, force: true });
+  };
+  it("Y1: S241 kaydı ve iade kesim kaydı yedekle taşınır; geri yüklemeden sonra kart 600 · 600 · 0 ve iade iptali aynı taksitlere; Y2: kilitli dönemde Düzenle reddi bugünkü gibi", async () => {
+    const root = mkdtempSync(path.join(tmpdir(), "izt2-yedek-"));
+    const dirs = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups") };
+    let server = null;
+    try {
+      server = await bootVersion(CURRENT, { ...dirs, now: { time: "2026-09-02T12:00:00+03:00", fixed: true } });
+      let api = await server.login();
+      const clock = t => server.app.config.now.set(t);
+      const A = (await must("cari", api.post(`${W2}/accounts`, { name: "Yedek İzt2 A", type: "customer", registeredOn: "2026-08-01" }))).id;
+      const fA = (await sale(api, A, "2026-09-01", 3)).id;
+      clock("2026-09-02T12:05:00+03:00");
+      const kA = (await plan(api, A, 900, "2026-09-02")).id;
+      const B = (await must("cari", api.post(`${W2}/accounts`, { name: "Yedek İzt2 B", type: "customer", registeredOn: "2026-08-01" }))).id;
+      clock("2026-09-02T12:10:00+03:00");
+      const fB = (await sale(api, B, "2026-09-02", 3)).id;
+      clock("2026-09-02T12:15:00+03:00");
+      const kB = (await plan(api, B, 900, "2026-09-02")).id;
+      clock("2026-09-03T12:00:00+03:00");
+      await must("tahsilat A", api.post(`${W2}/plans/${kA}/entries`, { kind: "in", amount: "600", date: "2026-09-03", method: "cash" }));
+      await must("tahsilat B", api.post(`${W2}/plans/${kB}/entries`, { kind: "in", amount: "300", date: "2026-09-03", method: "cash" }));
+      clock("2026-09-10T12:00:00+03:00");
+      assert.equal((await editTo(api, fA, 1)).status, 200, "Düzenle 900 → 300");
+      const rowsB = () => server.app.store.all("SELECT id, seq, due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", kB).map(row => ({ ...row }));
+      const beforeB = rowsB();
+      clock("2026-11-10T12:00:00+03:00");
+      const line = (await must("fatura B", api.get(`${W2}/invoices/${fB}`))).lines[0].id;
+      const rB = (await must("iade B", api.post(`${W2}/invoices`, { kind: "sale_return", accountId: B, originalId: fB, issueDate: "2026-11-10", lines: [{ originLineId: line, qty: 1 }], payment: { cash: [] }, force: true }))).id;
+      const backup = (await must("yedek", api.post("/api/admin/backups", { scope: "one", companyId: "sirket-001" }))).backups[0].name;
+      // Yedekten sonra bozucu değişiklik: iade iptal edilir (geri yükleme onu geri almalı).
+      clock("2026-11-12T12:00:00+03:00");
+      await must("iade iptal (yedekten sonra)", api.post(`${W2}/invoices/${rB}/cancel`, { reason: "x" }));
+      await must("geri yükle", api.post("/api/admin/backups/restore", { name: backup, company: "sirket-001", confirm: "001", password: ADMIN_PASSWORD }));
+      await server.close();
+      server = null;
+      server = await bootVersion(CURRENT, { ...dirs, now: { time: "2026-11-20T12:00:00+03:00", fixed: true } });
+      api = await server.login();
+      assert.equal(server.app.stagedRestore?.ok, true, JSON.stringify(server.app.stagedRestore));
+      assert.ok(JSON.parse(server.app.store.get("SELECT payment_json AS j FROM invoices WHERE id = ?", fA).j).editCuts?.length === 1, "S241 kaydı yedekte");
+      const card = await must("kart A", api.get(`${W2}/plans/${kA}`));
+      assert.deepEqual({ total: card.total, paid: card.totals.paid, left: card.totals.remaining }, { total: 600, paid: 600, left: 0 }, "geri yüklemeden sonra kart görünümü kendi hesapla aynı");
+      assert.equal((await must("cari A", api.get(`${W2}/accounts/${A}`))).totals.balance, -300);
+      assert.equal(server.app.store.get("SELECT status FROM invoices WHERE id = ?", rB).status, "issued", "iade geri geldi");
+      await must("iade iptal (geri yüklemeden sonra)", api.post(`${W2}/invoices/${rB}/cancel`, { reason: "y" }));
+      assert.deepEqual(rowsB(), beforeB, "iade iptali aynı taksitlere (kimlik, sıra, vade, tutar)");
+      assert.equal((await must("Mutabakat Testi", api.get(`${W2}/ledger/integrity`))).ok, true);
+      // Y2: kilitli dönem — faturanın günü kilitli: Düzenle bugünkü gibi reddedilir; kart görünümü ve bakiye değişmez.
+      await must("kilit", api.put("/api/admin/period-lock", { lockedUntil: "2026-09-30" }));
+      const locked = await editTo(api, fA, 2);
+      assert.equal(locked.status, 409, `kilitli dönemdeki faturanın Düzenle'si reddedilir: ${JSON.stringify(locked.data).slice(0, 200)}`);
+      const after = await must("kart A", api.get(`${W2}/plans/${kA}`));
+      assert.deepEqual({ total: after.total, paid: after.totals.paid, left: after.totals.remaining }, { total: 600, paid: 600, left: 0 });
+      assert.equal((await must("Mutabakat Testi", api.get(`${W2}/ledger/integrity`))).ok, true, "kilitten sonra Mutabakat Testi temiz");
+    } finally {
+      await server?.close();
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
 });
