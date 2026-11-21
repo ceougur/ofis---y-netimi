@@ -1,0 +1,32 @@
+{
+  "ad": "c6h4-alt-UTC",
+  "komut": "node --test test/c6h-alt-hesap-farki.test.mjs",
+  "commit": "24c1563e67d83229ace4b5a2c4bdb3cda2749eae",
+  "dal": "worktree-agent-adeefec4f86e1240e",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T10:32:45.439Z",
+  "sure_sn": 5.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/kanit/2026-11-21/c6h4-alt-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-adeefec4f86e1240e",
+  "ham_cikti_sha256": "5cc0c650dfc8bb65b034e2fdc5e9b073ae220126a5c27eff2ff27c8c26c4bdb2",
+  "ham_cikti_bayt": 2146
+}

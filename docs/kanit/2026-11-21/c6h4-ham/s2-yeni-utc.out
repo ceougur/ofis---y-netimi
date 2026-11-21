@@ -1,0 +1,77 @@
+--- kasa: kilit 2026-06-30 fiş 2026-07-01 satırlar [["500","",500000,0],["519","",0,500000],["671","",0,100000],["681","",100000,0],["770","",0,30000],["770","770.90",30000,0]] pasif false 
+    önce Kesin Değil (bugün): kural-farki,kapanmamis-yil,bilgi-amacli | fark 0
+OK   kasa önce bs0630 Aktif−Pasif: 0
+OK   kasa önce bs1231 Aktif−Pasif: 0
+OK   kasa önce bsNow Aktif−Pasif: 0
+    fiş yazımı: 200 
+OK   kasa sonra bs0630 Aktif−Pasif: 0
+OK   kasa sonra bs1231 Aktif−Pasif: 0
+OK   kasa sonra bsNow Aktif−Pasif: 0
+OK   kasa 2025 GT fişten sonra aynı: true
+OK   kasa 2026 [01.01, 30.06] GT fişten sonra aynı: true
+OK   kasa Bilanço 30.06 fişten sonra aynı: true
+OK   kasa Bilanço 31.12.2025 fişten sonra aynı: true
+OK   kasa 2026 [07.01, 10.20] dönem kârı farkı = fişin 6/7 neti: 0
+OK   kasa Bilanço bugün DNK farkı = fişin 6/7 neti: 0
+    sonra Kesin Değil (bugün): tamamlanmamis-acilis,kapanmamis-yil,bilgi-amacli | GT 2026 bilgi-amacli
+OK   kasa sonra bugün 'kural-farki' yok: false
+    500 / 519 bugün önce -500000 / 0 sonra 0 / -500000
+    GT [07.01, 10.20] kalemler önce {"A":0,"B":0,"D":0,"E":15000,"F":0,"G":0,"H":0,"I":0,"J":0,"K":0} sonra {"A":0,"B":0,"D":0,"E":15000,"F":0,"G":0,"H":0,"I":100000,"J":100000,"K":0}
+--- satis-fatura: kilit 2026-06-30 fiş 2026-07-01 satırlar [["500","",150000,0],["519","",0,150000]] pasif false 
+    önce Kesin Değil (bugün): smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli | fark 0
+OK   satis-fatura önce bs0630 Aktif−Pasif: 0
+OK   satis-fatura önce bs1231 Aktif−Pasif: 0
+OK   satis-fatura önce bsNow Aktif−Pasif: 0
+    fiş yazımı: 200 
+OK   satis-fatura sonra bs0630 Aktif−Pasif: 0
+OK   satis-fatura sonra bs1231 Aktif−Pasif: 0
+OK   satis-fatura sonra bsNow Aktif−Pasif: 0
+OK   satis-fatura 2025 GT fişten sonra aynı: true
+OK   satis-fatura 2026 [01.01, 30.06] GT fişten sonra aynı: true
+OK   satis-fatura Bilanço 30.06 fişten sonra aynı: true
+OK   satis-fatura Bilanço 31.12.2025 fişten sonra aynı: true
+OK   satis-fatura 2026 [07.01, 10.20] dönem kârı farkı = fişin 6/7 neti: 0
+OK   satis-fatura Bilanço bugün DNK farkı = fişin 6/7 neti: 0
+    sonra Kesin Değil (bugün): tamamlanmamis-acilis,smm-tahmini,kapanmamis-yil,bilgi-amacli | GT 2026 smm-tahmini,bilgi-amacli
+OK   satis-fatura sonra bugün 'kural-farki' yok: false
+    500 / 519 bugün önce -150000 / 0 sonra 0 / -150000
+    GT [07.01, 10.20] kalemler önce {"A":15000,"B":10000,"D":0,"E":0,"F":0,"G":0,"H":0,"I":0,"J":0,"K":0} sonra {"A":15000,"B":10000,"D":0,"E":0,"F":0,"G":0,"H":0,"I":0,"J":0,"K":0}
+--- banka: kilit 2026-06-30 fiş 2026-07-01 satırlar [["500","",2500000,0],["519","",0,2500000]] pasif false 
+    önce Kesin Değil (bugün): kural-farki,bilgi-amacli | fark 0
+OK   banka önce bs0630 Aktif−Pasif: 0
+OK   banka önce bs1231 Aktif−Pasif: 0
+OK   banka önce bsNow Aktif−Pasif: 0
+    fiş yazımı: 200 
+OK   banka sonra bs0630 Aktif−Pasif: 0
+OK   banka sonra bs1231 Aktif−Pasif: 0
+OK   banka sonra bsNow Aktif−Pasif: 0
+OK   banka 2025 GT fişten sonra aynı: true
+OK   banka 2026 [01.01, 30.06] GT fişten sonra aynı: true
+OK   banka Bilanço 30.06 fişten sonra aynı: true
+OK   banka Bilanço 31.12.2025 fişten sonra aynı: true
+OK   banka 2026 [07.01, 10.20] dönem kârı farkı = fişin 6/7 neti: 0
+OK   banka Bilanço bugün DNK farkı = fişin 6/7 neti: 0
+    sonra Kesin Değil (bugün): tamamlanmamis-acilis,bilgi-amacli | GT 2026 bilgi-amacli
+OK   banka sonra bugün 'kural-farki' yok: false
+    500 / 519 bugün önce -2500000 / 0 sonra 0 / -2500000
+    GT [07.01, 10.20] kalemler önce {"A":100000,"B":0,"D":0,"E":0,"F":0,"G":0,"H":0,"I":0,"J":0,"K":0} sonra {"A":100000,"B":0,"D":0,"E":0,"F":0,"G":0,"H":0,"I":0,"J":0,"K":0}
+--- taksit: kilit 2026-06-30 fiş 2026-07-01 satırlar [["671","",0,120000],["681","",120000,0]] pasif false 
+    önce Kesin Değil (bugün): kural-farki,kapanmamis-yil,bilgi-amacli | fark 0
+OK   taksit önce bs0630 Aktif−Pasif: 0
+OK   taksit önce bs1231 Aktif−Pasif: 0
+OK   taksit önce bsNow Aktif−Pasif: 0
+    fiş yazımı: 200 
+OK   taksit sonra bs0630 Aktif−Pasif: 0
+OK   taksit sonra bs1231 Aktif−Pasif: 0
+OK   taksit sonra bsNow Aktif−Pasif: 0
+OK   taksit 2025 GT fişten sonra aynı: true
+OK   taksit 2026 [01.01, 30.06] GT fişten sonra aynı: true
+OK   taksit Bilanço 30.06 fişten sonra aynı: true
+OK   taksit Bilanço 31.12.2025 fişten sonra aynı: true
+OK   taksit 2026 [07.01, 10.20] dönem kârı farkı = fişin 6/7 neti: 0
+OK   taksit Bilanço bugün DNK farkı = fişin 6/7 neti: 0
+    sonra Kesin Değil (bugün): kapanmamis-yil,bilgi-amacli | GT 2026 bilgi-amacli
+OK   taksit sonra bugün 'kural-farki' yok: false
+    500 / 519 bugün önce 0 / 0 sonra 0 / 0
+    GT [07.01, 10.20] kalemler önce {"A":90000,"B":0,"D":0,"E":0,"F":0,"G":0,"H":0,"I":0,"J":0,"K":0} sonra {"A":90000,"B":0,"D":0,"E":0,"F":0,"G":0,"H":0,"I":120000,"J":120000,"K":0}
+SONUÇ: 0 fark
