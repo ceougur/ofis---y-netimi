@@ -720,3 +720,17 @@ eklenirse açık kartla ayrışır; ikisine eklenirse açık kartın bugünkü d
 13. Kendi kartı (taksitli fatura) Borçta Kalsın kapalı + iade → kart küçülür (karar (4)); faturanın açığı = kartın kalanı (v2.0.24 değişmezi).
 14. Açılış onarımı (order "tail"): kapalı kart bugünkü gibi atlanır.
 15. S235: kapalı kartlı taksitli faturada Düzenle → onayda cümle (Taksitlendir / Açık Hesap'a göre); açık kartta cümle YOK; davranış (yeni kart / kart kaldırılır) aynen.
+
+### 18.7 Kod ve sonuç (kodla birlikte; kanıt docs/kanit/2026-11-21/dkfix-*)
+- `routes/plans.mjs`: `shrinkable(row, order)` (açık kart; ya da kalanı düşülmemiş kapalı kart, order "tail" dışında) — `shrinkPlan`, `trimCovers` (yeni seçenek `{ closed = true }`; `settleCoverOnCancel`
+  `closed: false`), `growForInvoice` (+ FREEZE_CLOSE) aynı yüklemi okur. `routes/invoices.mjs shape`: `ownPayState` (yalnız inPlan varken). `client/assets/hof-invoices.js`: `form.modifyPlanClosed` + onay
+  cümlesi. Testler: `test/dkfix-s234-kapali-kart-250.test.mjs` (T1–T9), `test/e2e/senaryo-dkfix-250.mjs` (A–D + E gözlem), altın test S230 katlaması, K1 yardımcısı, mutabakat motoru.
+- KOD SÜRERKEN GÖRÜLDÜ (önce / sonra sayıyla, yoklama pk.mjs; ders 6):
+  (a) §18.6 (2) — kapanıştan önce vadesi geçmiş açık taksitli kapalı kartta iade: KAPANIŞ GÜNÜ gecikmişi taban 300 → yeni 0 (kuyruk tabanda iade alacağını kartın SON kalemine kapatıyordu; karar (4) en önce
+      gelen açık taksiti keser — açık kartla aynı); ertesi gün aynı (600). Kararın "gecikmiş her seçenekte AYNI" önermesi bu alt durumda tutmuyor → KULLANICIYA SORULMALI (uç durum).
+  (b) §18.6 (9) — iki Mevcut Borç kartı aynı caride (eski kapalı kart fatura 900'ü almış, yeni açık kart sonraki fatura 300'ü almış), ilk faturaya iade 300: kapalı kart 600'e küçülünce Tek Yükümlülük
+      Kuyruğu yeni kartın kapsamını kapama defterinden AYRI dağıtıyor — kapama defteri (cardLedgerState) ikinci faturayı yeni kartça kapsanmış sayıyor (covered 300), kuyruk ise ikinci faturayı kapsamsız
+      'Gecikti' ve yeni kartın taksitlerini 'Ödendi' gösteriyor → gecikmiş 08.10 0 → 300, 09.10 600 → 900. TABANDA AÇIK iki kartta da aynı (iade sonrası açık kart 600 + ikinci fatura 300 gecikmiş;
+      doğrusu 0) — kök neden kuyrukta (dosya sınırı dışı); S234 = A bunu kapalı karta da taşıyor → BULGU (ORTA aday) + BAŞ MİMAR KARARI GEREKEN.
+  (c) Düzenle formu (önceden var, en az v2.4.9'dan): kaydedilmiş taksitli faturada kalan ödeme 'Açık Hesap (Vadeli)' seçili açılıyor (istemci `payFrom` payment.rest === "installments" arıyor; kaydedilmiş
+      belgede rest tutar, mode "installments") → değiştirmeden Kaydet taksit kartını kaldırıyor (ekran senaryosu E gözlemi). S235'in onay cümlesi bu yüzden Açık Hesap seçiliyken 'kaldırılır' der → BULGU.
