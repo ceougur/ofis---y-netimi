@@ -398,7 +398,7 @@ function ruleFacts(rawRows, correction) {
  * Kapsamın TAMAMININ kural farkı (bütün hesaplar, cari boyutlu) — KALAN'ın girdisi. Tur 5 (tasarım §11.6): donmuş taraf ikinci bir okuma DEĞİL — tablonun kendi okumasının (frozenSums ruleThrough =
  * kapsam) [from, through] kısmının `rule`'u (part: frozenPartOf) + aynı çağrının dışarıdaki ('voucher' olmayan) satırları; ["", kapsam] = içerisi ∪ dışarısı → tur 4'ün kapsam okumasıyla aynı toplamlar.
  */
-function fullRuleDiff(part, outside, live, cover) {
+export function fullRuleDiff(part, outside, live, cover) {
   const years = new Map();
   const add = (year, key, net) => {
     let item = years.get(year);
