@@ -91,6 +91,7 @@ jobs:
       - run: npm run test:senaryo-kdv-donemi-250
       - run: npm run test:senaryo-c7b-tur3-250
       - run: npm run test:senaryo-c7bt-ayni-ad-250
+      - run: npm run test:senaryo-dkfix-250
       - run: npm run test:senaryo-donem-kilidi-ilerleme-250
       - run: npm run test:senaryo-kasa-acilis-uyari-250
       - run: npm run test:senaryo-acilis-duzeni-250
