@@ -1,0 +1,32 @@
+{
+  "ad": "c7bfix-kahin-cari-yeni-europeistanbul",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs",
+  "commit": "e8ebce77d789588f3e9e176a0ac37ff4ed61874f",
+  "dal": "worktree-agent-aa660861cba7cd284",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T01:10:36.175Z",
+  "sure_sn": 387.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17648,
+    "gecen": 17648,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bfix-a66/kanit/2026-11-21/c7bfix-kahin-cari-yeni-europeistanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa660861cba7cd284",
+  "ham_cikti_sha256": "ea1b5d4d027c568b3e37454bc9eb8e048237158688bf4755410144cbedc8866f",
+  "ham_cikti_bayt": 72815
+}

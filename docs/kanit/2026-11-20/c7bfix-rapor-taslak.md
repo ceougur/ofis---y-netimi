@@ -79,3 +79,10 @@ tutarlı'. Bakiyeler A 2.500 · B 2.500 · C 2.000 · D 2.500 (Borçta Kalsın).
 - UTC: parça 00 900 / 900; parça 01 1.130 / 1.131 — 1 kırmızı: test/tyk-birlesik8-ekranlar-250.test.mjs:237 'yeni bir shape( çağıranı yer tablosuna … eklenmeli' (BEKLENEN NEDEN: bu turun shownRemaining'i shape( çağırır). İstanbul: 900 / 900 + 1.130 / 1.131 (aynı tek kırmızı).
 - Düzeltme (commit 72fac9ac; BEKLENTİ BİLEREK DEĞİŞTİ, ders 28): beklenen listeye shownRemaining + 'shownRemaining kuyruk görünümünü (withQueue) okur' denetimi. Yeniden koşu UTC 12 / 12, İstanbul 12 / 12.
 - Ekran: senaryo-kdv-donemi-250 YENİ 22 / 0.
+
+## 7. A — kâhin ↔ program (taban fce3d272 / son e8ebce77, iki TZ)
+| | taban UTC | taban İstanbul | son UTC | son İstanbul |
+|---|---|---|---|---|
+| test:kahin-defter | 187 / 187, 0 fark, 0 yakalanmayan mutasyon | 187 / 187 | 187 / 187 | 187 / 187 |
+| test:kahin-cari | 17.648 / 17.648, 0 fark, 0 yapım aşaması | 17.648 / 17.648 | 17.648 / 17.648, 0 yapım aşaması | 17.648 / 17.648, 0 yapım aşaması |
+Sayılar taban ↔ son AYNI; yapım aşaması listesi BOŞ (0).
