@@ -103,7 +103,7 @@ describe("S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünki
       await must("sil", api.del(`/api/workspace/accounts/${gone}`));
       const service = ctx.app.context.accounts;
       assert.equal(typeof service.personIndexFor, "function", "routes/accounts.mjs personIndexFor yok");
-      const drawers = ["AHMET YILMAZ", "ahmet  yılmaz", "Zeynep Kılıç", "ZEYNEP KILIÇ", "zeynep kılıç", "İLKER IŞIK", "DENİZ AK", " ÖMER ÇİFTÇİ ", "BORA ÜNSAL", "Yok Kişi", ""];
+      const drawers = ["AHMET YILMAZ", "ahmet  yılmaz", "Zeynep Kılıç", "ZEYNEP KILIÇ", "ZEYNEP KILIç", "İLKER IŞIK", "DENİZ AK", " ÖMER ÇİFTÇİ ", "BORA ÜNSAL", "Yok Kişi", ""];
       const check = label => {
         const fresh = service.personIndexFor(drawers);
         const old = service.personIndex();
