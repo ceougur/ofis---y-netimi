@@ -102,3 +102,22 @@ Tablo ana oturumun tablo.py'si (oran = yeni ortancaların küçüğü / eski ort
 | kart GET açık / kapalı | 1,23 / 0,95 (2 ↔ 3 ms; en iyi değil) · 1,00 / 1,00 | 1,00 / 1,00 · 1,05 / 1,00 |
 | Yeniden Aç, Kartı Kapat eski istemci | 0,95–1,03 | 0,97–1,04 |
 KÖTÜ (ortanca VE en iyi > %10): 0 / 0. Ek maliyet işlem içinde tek carinin kuyruğu (~30–60 ms, istek ~1 sn — çoğu yazım sonrası bütün carilerin kuyruk taraması, değişmedi).
+
+## 10. KULLANICIYA SORULMALI (aday — ana oturum karar verir; GÖRÜNEN TUTAR, ders 43 ailesi; bakiye her seçenekte AYNI)
+K8 gözlemi: aynı caride iki kart, carinin karta bağlanmadan girilen tahsilatı tek kuyrukta vade sırasıyla dağılır. Geç vadeli kart B Kartı Kapat 'Borçta Kalsın' ile kapanınca kalanının
+vadesi kapanışın ertesi günü olur (S205 = A / S220 = A) ve eski kart A'nın sonraki taksitinden öne geçer: A'nın penceresi 'Kalan 0 · Tamamlandı'dan 'Kalan 333,34'e döner (örnek: A 1.000 /
+3 taksit 08.09–08.11, B 1.000 / ilk vade 08.01.2027, cari tahsilatı 1.200; bakiye 800 iki durumda aynı). A: bugünkü gibi kalsın (kuyruk kuralı, S50 / S129 / S205'in sonucu) — ÖNERİ;
+B: Borçta Kalsın kalanı kuyrukta kendi vadesini korusun (S205'in gecikmiş kuralı ayrı tutulur); C: Uç durum böyle kalsın (BİLİNEN SINIR). Yaygın programlarda: doğrulanmış kaynak okunmadı.
+İş listesinde arandı ('başka kart', 'öne geç', 'Tamamlandı'): bu duruma karar YOK. YB-1 burada DOĞRU çalışır (A'nın eski 'kalan 0' onayı 409).
+
+## 11. SONRAKİ SÜRÜME (2.5.1)
+- K6b gözlemi: taksitsiz Mevcut Borç kartında cari kartından tahsilat alttaki borç kalemine gider; pencere 3.000, carinin borcu 2.500 (S129 kapanış notu 'taksitlere bölünmemiş kısım …
+  alttaki borç kalemi olarak durur' — kararın sözüyle tutarlı; Kartı Kapat tek soruyla kapanır). Görünüm ayrıntısı; kovalanmadı.
+- senaryo-c7b-kabul-250 E'nin eski (yarışlı) hâli tur 2f'de 34 / 34 geçmişti: ekran senaryolarında 'pencere açıkken başka oturum yazar' kurgusu olan öbür senaryolar da aynı yarışa açık olabilir — taranmadı.
+
+## 12. DENENMEYEN
+- Şüpheli kuyruğundaki kısım (held) olan kart, kilitli gün (bugün kilitli — kapatma reddi YB-1'den önce, sıra değişmedi), carisiz eski kart (queueBuild '' → kuyruk yok → kartın kendi kalanı,
+  pencereyle aynı kural), eski kuralla kapanmış (frozen) kartın Yeniden Aç → Kapat'ı: ayrı sınama yazılmadı; shownRemaining detailView ile AYNI withQueue kuralını çağırır (yer tablosu testi denetler).
+- Kartı Kapat'ın iki kişinin aynı anda kapatması (yarış) ayrıca zorlanmadı; denetim + yazım tek BEGIN IMMEDIATE işleminde.
+- Mutantlar yalnız UTC'de; hız yalnız İstanbul TZ'de; Windows (CI'ye kalır).
+- run.mjs (ana e2e; Kartı Kapat sorusu iki yerde), senaryo-226, uiux-a-243 koşulmadı (Kartı Kapat'ı kalanı kartın kendi hesabıyla aynı olan kartta kullanırlar — davranış değişmez; aday kapısında koşulur).
