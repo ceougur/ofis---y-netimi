@@ -42,6 +42,10 @@
 # 2.5.0 Ç5 bakımı 3 (12.11.2026; KARARLAR.md "2.5.0 Ç5 bakımı 3" — BAŞ MİMAR KARARI 12.11, para / defter kuralı DEĞİL): ÖK-1 senaryo ön koşulu — aynı carinin o an AÇIK taksit kartı
 #   (iptal edilmemiş, kalanı > 0 taksitli satış faturası ya da silinmemiş, T − P > 0 Excel kartı) varken gelen `excel_taksit_karti` kurulmaz: kâhin sayı üretmez, hata verir.
 #
+# 2.5.0 Ç5 bakımı 4 (19.11.2026; KARARLAR.md "2.5.0 Ç5 bakımı 4" — muhasebe kâhini bakımı 13 ile aynı TOPLU bakım, kodu görmeyen AYRI el; KG-8 = A, F-08, A2 B-8 + B-6):
+#   D11 iade KDV'si kararlı sütunda — satıştan iade B 191 (KDV − tevkifat), alıştan iade A 391 (KDV) · D11′ KDV mahsubu ayın DEFTERDEKİ 391 / 191'ini sıfırlar (H − İ aynı);
+#   `kdv` çıktısı KDV Özeti — bugünkü düzeninde (iade kendi tarafını azaltır) · D12 kural geçiş günü = `goc.kilit`: ≤ geçiş ya da ayının göç öncesi (ters edilmemiş) mahsubu
+#   varsa ESKİ yön (B 391 / A 191); göç öncesi dönem eski yön; mahsubun göçten sonraki tersi ayı yeni yöne geçirir (yeniden türetme).
 # Kullanım: python3 -I kahin.py senaryo.json [--yapilan yapilan.json] [--mutasyon N] [--kural 2.5.0|2.4.9] > beklenen.json
 import json
 import sys
@@ -81,6 +85,12 @@ MUTASYONLAR_250 = {
     37: "D4′ (S66): cari seçilse de cari borçlanmaz (B 649 / A 101)",
     38: "D4′ Y2 (G-7 B): kilitli dönem içinde tarihli karşılıksız kabul (madde donmuş döneme yazılır)",
     # bakım 3 (KARARLAR.md "2.5.0 Ç5 bakımı 3") — kural değil, senaryo ön koşulunun denetimi (testin dişi)
+    40: "D11 (KG-8 B): satıştan iade KDV'si 391'de (eski yön her yerde)",
+    41: "D11 (F-08 eski): alıştan iade KDV'si 191'de (eski yön her yerde)",
+    42: "D12 (B-8 yok): geçiş günü yok sayılır — kilitli eski kayıtlar da yeni yön",
+    43: "D12 (B-6 yok): göç öncesi mahsubu yazılmış ay da yeni yön",
+    44: "D12: göç öncesi mahsup ters kaydedilse de ay eski yönde kalır",
+    45: "D12: göç öncesi dönem yeni yönle (eski mahsubun tutarları yeni yönle)",
     39: "ÖK-1 denetimi yok: açık taksit kartlı cariye Excel taksit kartı sessizce kurulur (sayı üretilir)",
 }
 ACILIS_TURLERI = ("kasa_acilis", "banka_hesap", "urun", "cari_acilis", "borc_yaz", "alacak_yaz", "acilis_evrak", "cek_carisiz", "excel_taksit_karti")
@@ -141,7 +151,8 @@ def hesapla(sen, yapilan=None, mut=0, kural=VARSAYILAN_KURAL):
     faturalar = {}
     cekler = {}
     kdv_ay = defaultdict(lambda: {"hesaplanan": 0, "indirilecek": 0})
-    mahsuplar = {}
+    mahsuplar = {}                   # mahsup olayı → {"ay", "oncesi" (göçten önce yazıldı), "ters"} (bakım 4, D12)
+    iadeler = []                     # bakım 4 (D11 / D12): iade fişleri {"j", "ft", "kdv", "ay", "tarih"} — yön her yeniden türetmede kurala göre
     pos_oran = {}
     kontroller = {}
     kontrol_sirasi = []
@@ -255,6 +266,36 @@ def hesapla(sen, yapilan=None, mut=0, kural=VARSAYILAN_KURAL):
         kaynak[o["id"]] = {"o": o, "eski": eski, "aday": False, "karar": None, "silindi": False, "tarih": tarih}
         fis(tarih, o["id"], *turet(o, "2.4.9" if (eski or not Y) else "2.5.0"))
 
+    def iade_eski(tarih):
+        """Bakım 4 — D12 (A2 B-8 + B-6): iade KDV'si ESKİ yönde mi (2.4.9: satıştan iade B 391, alıştan iade A 191)? Mutant 40 / 41: hep eski; 42–45 KARARLAR bakım 4."""
+        if not Y:
+            return True
+        if goc_i is not None and not kaynak_goc_gecti[0]:
+            return mut != 45                 # göç öncesi: 2.4.9 programı
+        if goc_i is not None and kilit[0] is not None and tarih <= kilit[0] and mut != 42:
+            return True                      # kural geçiş günü = göçteki kilit
+        ay = tarih[:7]
+        return mut != 43 and any(m["ay"] == ay and m["oncesi"] and (not m["ters"] or mut == 44) for m in mahsuplar.values())
+
+    def iade_satirlari(x):
+        """İade fişi: satıştan iade KDV satırı B 391 (eski) / B 191 (yeni); alıştan iade A 191 (eski) / A 391 (yeni)."""
+        eski = iade_eski(x["tarih"])
+        if x["ft"] == "satis_iade":
+            kdv = B("391" if (eski or mut == 40) else "191", x["kdv"])
+        else:
+            kdv = A("191" if (eski or mut == 41) else "391", x["kdv"])
+        return x["govde"] + [kdv] + x["son"]
+
+    def iade_yeniden():
+        """Bakım 4 (D12): göçte ve göç öncesi mahsubun tersinde iade maddeleri güncel kurala göre yeniden yazılır (G-7)."""
+        for x in iadeler:
+            tarih, olay, _ = J[x["j"]]
+            J[x["j"]] = (tarih, olay, [z for z in iade_satirlari(x) if z[1] or z[2]])
+
+    def iade_kdv_farki(ay):
+        """Bakım 4 (D11′): ayın YENİ yöndeki iadelerinin KDV'si — defterin 391'i ve 191'i KDV Özeti'nden (kdv_ay) bu kadar büyük (ikisi eşit: H − İ değişmez)."""
+        return sum(x["kdv"] for x in iadeler if x["ay"] == ay and not (iade_eski(x["tarih"]) or (mut == 40 and x["ft"] == "satis_iade") or (mut == 41 and x["ft"] == "alis_iade")))
+
     def madde_bul(oid):
         return next((i for i, (_, olay, _) in enumerate(J) if olay == oid), None)
 
@@ -366,7 +407,8 @@ def hesapla(sen, yapilan=None, mut=0, kural=VARSAYILAN_KURAL):
                 for k in kalemler:
                     if k["urun"]: stok[k["urun"]] -= k["miktar"]
             elif ft == "satis_iade":
-                satirlar = [B("600" if mut == 2 else "610", k["net"]) for k in kalemler] + [B("391", kdv - tev), A("120", odenecek)]
+                iade = {"ft": ft, "kdv": kdv - tev, "ay": ay, "tarih": t, "govde": [B("600" if mut == 2 else "610", k["net"]) for k in kalemler], "son": [A("120", odenecek)]}
+                satirlar = iade_satirlari(iade)
                 cari[c] -= odenecek
                 kdv_ay[ay]["hesaplanan"] -= kdv - tev
                 for k in kalemler:
@@ -380,12 +422,15 @@ def hesapla(sen, yapilan=None, mut=0, kural=VARSAYILAN_KURAL):
                 for k in kalemler:
                     if k["urun"]: stok[k["urun"]] += k["miktar"]
             elif ft == "alis_iade":
-                satirlar = [B("320", odenecek), B("360", tev + stopaj)] + [A(k["hesap"], k["net"]) for k in kalemler] + [A("191", kdv)]
+                iade = {"ft": ft, "kdv": kdv, "ay": ay, "tarih": t, "govde": [B("320", odenecek), B("360", tev + stopaj)] + [A(k["hesap"], k["net"]) for k in kalemler], "son": []}
+                satirlar = iade_satirlari(iade)
                 cari[c] += odenecek
                 kdv_ay[ay]["indirilecek"] -= kdv
                 for k in kalemler:
                     if k["urun"]: stok[k["urun"]] -= k["miktar"]
             fis(t, oid, *satirlar)
+            if ft in ("satis_iade", "alis_iade"):
+                iadeler.append(dict(iade, j=len(J) - 1))
             sinif_gun[t].append("belge")
             # 31b-MM3: Stopaj ve Tevkifat Özeti satırı (stopaj ya da tevkifat varsa; iade asıl belgenin tarafında eksi)
             if tev or stopaj:
@@ -560,18 +605,22 @@ def hesapla(sen, yapilan=None, mut=0, kural=VARSAYILAN_KURAL):
             if mut == 9: fis(t, oid, B("360", x + z), A(para, x + z))
             else: fis(t, oid, B("360", x), B("689", z), A(para, x + z))
         elif tur == "kdv_mahsup":
-            H = kdv_ay[o["ay"]]["hesaplanan"]; I = kdv_ay[o["ay"]]["indirilecek"]
+            fk = iade_kdv_farki(o["ay"])        # bakım 4 (D11′): mahsup ayın DEFTERDEKİ 391 / 191'ini sıfırlar
+            H = kdv_ay[o["ay"]]["hesaplanan"] + fk; I = kdv_ay[o["ay"]]["indirilecek"] + fk
             devreden = bakiye().get("190", 0)
             if H - I > 0:
                 kullan = 0 if mut == 6 else min(devreden, H - I)
                 fis(t, oid, B("391", H), A("191", I), A("190", kullan), A("360", H - I - kullan))
             else:
                 fis(t, oid, B("391", H), B("190", I - H), A("191", I))
-            mahsuplar[oid] = True
+            mahsuplar[oid] = {"ay": o["ay"], "oncesi": goc_i is not None and not kaynak_goc_gecti[0], "ters": False}
         elif tur == "kdv_mahsup_geri_al":
             for tarih, olay, satirlar in list(J):
                 if olay == o["mahsup"]:
                     fis(t, oid, *[(h, a, b) for h, b, a in satirlar])
+            if o["mahsup"] in mahsuplar:
+                mahsuplar[o["mahsup"]]["ters"] = True
+                iade_yeniden()                  # bakım 4 (D12): göç öncesi mahsubun tersi ayı yeni yöne geçirir
         elif tur == "goc":
             # D6 / D7: 2.4.9 → 2.5.0 sürüm geçişi. Önceki kayıtlar ESKİ (2.4.9'un yazdığı). L = göç anındaki dönem kilidi (S13 GAP_RULE: 2.4.9 kuralıyla donar);
             # mutant 27 (S53 B): son tamamlanmış yılın 31 Aralık'ına kendiliğinden kilit.
@@ -581,6 +630,7 @@ def hesapla(sen, yapilan=None, mut=0, kural=VARSAYILAN_KURAL):
                 L = max(L or "", yil_sonu)
             kilit[0] = L
             kaynak_goc_gecti[0] = True
+            iade_yeniden()                      # bakım 4 (D12): kilitsiz / mahsupsuz ayın iadesi göçte yeni yöne
             for kid, kk in kaynak.items():
                 ko = kk["o"]
                 if ko["tur"] in ("borc_yaz", "alacak_yaz") and kk["eski"] and mut != 23:

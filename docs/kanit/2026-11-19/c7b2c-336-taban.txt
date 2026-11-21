@@ -1,0 +1,17 @@
+# Ç7b tur 2c — tur 2b'nin 336 ayrışmasının yeniden üretimi (betik not defteri c7b2c-ag/uret/b8-336.mjs; veri fikstür surum-2.0.26-zincir = v2.0.26 GERÇEK kodu); TABAN c7b2c-taban (b66f1ae8), TZ UTC
+== açılış (güncelleme sonrası)
+  336: karma -750 · canlı -1500 · beklenen -1500
+  602: karma -460525.85 · canlı -70775.85 · beklenen -
+  191: karma 5376 · canlı 5466 · beklenen 5466
+  391: karma -69517.5 · canlı -69607.5 · beklenen -69607.5
+  Mutabakat Testi: ok=false hatalar=["ledger:rule-diff","dates:future:cheque_events"] kural farkı: ok=false corrected=false excludedMinor=- remainder=-
+  kayıt tahsilatı: kilitli 750 · açık 750 · kilit 2026-10-05 · geçiş (yok)
+  fiş ön izleme: excluded=[{"account":"191","sub":"","party":"","minor":9000,"subledger":true,"name":"İndirilecek KDV","reason":"Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)."},{"account":"336","sub":"336.90","p
+  fiş: 200
+== Kural Farkı Düzeltme Fişi sonrası
+  336: karma -750 · canlı -1500 · beklenen -1500
+  602: karma -196525.85 · canlı 193224.15 · beklenen -
+  191: karma 5376 · canlı 5466 · beklenen 5466
+  391: karma -69517.5 · canlı -69607.5 · beklenen -69607.5
+  Mutabakat Testi: ok=false hatalar=["ledger:rule-diff","dates:future:cheque_events"] kural farkı: ok=false corrected=false excludedMinor=84000 remainder=0
+  kayıt tahsilatı: kilitli 750 · açık 750 · kilit 2026-10-05 · geçiş (yok)

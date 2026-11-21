@@ -1,0 +1,18 @@
+SÜRÜCÜ BAKIMI 4 — testin dişi (iki bilinçli hata; programın AYRI kopyası, sınanan kod 301c0e29 'git archive' ile /dev/shm/surucu4-afb4/kod-mutantN; worktree'ye dokunulmadı)
+Araç: surucu4-arac/mutant.py (tek satır değişikliği server/lib/general-ledger.mjs), koşu surucu4-arac/kos-tam.sh <ad> <kopya> <senaryo süzgeci> (iki saat dilimi).
+
+mutant1 — satıştan iade KDV'si her zaman eski yöne (B 391; KG-8 A + kural geçiş günü yok sayılır):
+  { account: oldReturnVat(shift, row.date) ? "391" : "191", ... }  →  { account: "391", ... }
+  Senaryolar (satıştan iadesi olanlar): rastgele-1/2/3, s05, s08, s114, s28, s34, s45, s52, s57, s72
+  Sonuç (surucu4-mutant1.json / .log.gz; iki TZ toplam): AYNI 1956 · R 48 · SINIFLANMADI 22 · red farkı 60 · sınıfsız adım 6 · değişmez 4 · # fail 140 — YAKALANDI
+  Yakalayan senaryolar: rastgele-1 / rastgele-2 / rastgele-3 (red farkı 11 / 10 / 5 — KDV mahsubunun kabul / reddi değişti), s05 (red farkı 1), s114 (SINIFLANMADI 10, sınıfsız adım 3, değişmez 2),
+  s28 (red farkı 1), s34 (red farkı 2). Hatasız sınamada (surucu4-son) bu senaryolarda sınıflanmamış fark yok.
+
+mutant2 — kayıt tahsilatı her zaman 602'ye (KG-3 A / 336.90 yok sayılır):
+  oldCollection(shift, row.date) ? "602" : UNCLASSIFIED_GL.collection  →  "602"
+  Senaryolar (kayıt tahsilatı olanlar): s11, s114
+  Sonuç (surucu4-mutant2.json / .log.gz; iki TZ toplam): AYNI 146 · SINIFLANMADI 20 · red farkı 2 · sınıfsız adım 2 · değişmez 4 · # fail 28 — YAKALANDI
+  Yakalayan: s11 (red farkı 1, sınıfsız adım 1), s114 (SINIFLANMADI 10 — geçiş gününden (30.06) sonraki KT2 336 yerine 602, değişmez 2).
+
+Not: ilk mutant koşusu (aynı adla) koşucu betiğinin çıktı klasörünü mutant kopyasıyla aynı ada koyması yüzünden kopyayı silip 'koşu hatası' verdi (sürücü değil, betik hatası);
+kopyalar kod-mutantN adıyla yeniden üretildi, yukarıdaki sayılar ikinci koşunun.

@@ -14,6 +14,7 @@ import { DatabaseSync } from "node:sqlite";
 import { describe, it } from "node:test";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { readFixture, unpackFixture } from "./guvenilirlik/fikstur.mjs";
+import { c7bCorrectionLines, mergeLines } from "./fixtures/c7b-kural.mjs";
 
 process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
 const URL = "/api/admin/ledger/rule-diff-correction";
@@ -41,6 +42,10 @@ const integrity = async api => {
   assert.equal(r.status, 200);
   return { ok: r.data.ok, failures: (r.data.failures || []).map(item => item.code), item: (r.data.checks || []).find(item => item.code === RULE_DIFF) || null };
 };
+// 2.5.0 Ç7b tur 2c — BEKLENTİ BİLEREK DEĞİŞTİ (BAŞ MİMAR KARARI 19.11 05:07 B-8 = A, "kural geçiş günü"): eski verinin KİLİTLİ dönemindeki kayıt (dosya) tahsilatı (KG-3) ve iade KDV'si
+// (KG-8 / F-08) geçiş gününde / öncesinde ESKİ yönde kalır → alt defter hesabında (336 / 191 / 391) kural farkı DOĞMAZ; fiş kalan bütün farkı kapatır ve öğe "Düzeltildi" olur (tur 2b'de
+// bu üç kuralın farkı fişin dışında kalıyor, uyarı fişle kapanmıyordu).
+const fixedOrSubledgerOnly = item => Boolean(item?.corrected);
 const lineText = lines => lines.map(line => `${line.debit ? "B" : "A"} ${line.sub || line.account} ${(line.debit || line.credit) / 100}`).sort();
 const class15 = entries => {
   const out = new Map();
@@ -51,6 +56,8 @@ const class15 = entries => {
 function assertInvariant(app, label) {
   const karma = class15(app.ledger.book({}));
   const fresh = class15(app.ledger.build().filter(entry => !String(entry.id).startsWith("voucher")));
+  // Ç7b tur 2c (B-8 = A): 336 / 191 / 391 de DAHİL — kural geçiş gününden sonra karma defter ile canlı türetme bu üç alt defter hesabında da aynı (tur 2b'de v2.0.26 verisinde 336: karma
+  // −750 ↔ canlı −1.500 ayrışıyordu; neden: kilitli 750 TL kayıt tahsilatı donmuş defterde 602, canlıda 336.90 — yeniden üretim c7b2c-336-*.txt).
   const bad = [...new Set([...karma.keys(), ...fresh.keys()])].filter(key => (karma.get(key) || 0) !== (fresh.get(key) || 0)).map(key => `${key}: karma ${(karma.get(key) || 0) / 100} ↔ baştan ${(fresh.get(key) || 0) / 100}`);
   assert.deepEqual(bad, [], `${label}: fişten sonra 1–5 sınıfı karma bakiyeleri = yeni kuralla baştan türetilmiş defter`);
 }
@@ -138,7 +145,15 @@ describe("Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi", () => {
       assert.ok(frozen500 < 0, "ön koşul: eski kuralın donmuş 500'ü alacaklı (açılışlar)");
       const view = (await api.get(URL)).data;
       assert.equal(view.date, "2026-10-06");
-      assert.deepEqual(lineText(view.lines), lineText([{ account: "500", debit: Math.round(-frozen500), credit: 0 }, { account: "519", debit: 0, credit: Math.round(-frozen500) }]), "aynı yıl: açılışların 500'ü 519'a");
+      // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (K-01 / K-02, C-01 / C-02, KG-2; kabul D): fişte Ç5-A'nın 500 ↔ 519'u + Ç7b'nin sınıflama farkları (Kasa 649.90 / 770.90, Borç / Alacak Yaz
+      // 602.90 / 770.90, belgesiz 600.90 / 610.90, taksit Yeni Borç 602 → 600.90); önceki yılın (2025) 6 / 7 sınıfı farkı 671 / 681 (M7). Kayıt tahsilatı (336.90) ve iade KDV'si (191 / 391)
+      // alt defter hesabıdır — fişe girmez (B14 (a)). Beklenen, donmuş (2.4.9) maddelerden kural metniyle (test/fixtures/c7b-kural.mjs).
+      // Tur 2c (B-8 = A): geçiş günü = güncellemedeki kilit (05.10.2026) — kilitli dönemin KG-3 / KG-8 / F-08 maddeleri eski yönde (fark yok).
+      assert.equal(app.store.get("SELECT value FROM settings WHERE key = 'ledger.ruleShiftThrough'")?.value, lock, "göç 51: geçiş günü = güncellemedeki kilit");
+      const c7b = c7bCorrectionLines(app.ledger.snapshots.entries({ to: lock }), { year: 2026, through: lock });
+      assert.deepEqual(view.excluded, [], "tur 2c: alt defter hesabı farkı yok (KG-3 / KG-8 / F-08 geçiş gününde / öncesinde eski yönde)");
+      assert.ok(c7b.length > 0, "ön koşul: eski veride Ç7b kural farkı var");
+      assert.deepEqual(lineText(view.lines), lineText(mergeLines([{ account: "500", debit: Math.round(-frozen500), credit: 0 }, { account: "519", debit: 0, credit: Math.round(-frozen500) }], c7b)), "aynı yıl: açılışların 500'ü 519'a + Ç7b sınıflama farkları");
       // Muhasebe rolü: ön izleme ve kayıt 403 (system.manage).
       const made = await api.post("/api/admin/users", { username: "kfd-muhasebe", name: "Kfd Muhasebe", role: "muhasebe", password: "Kfd-Muhasebe-2026!", mustChangePassword: false });
       assert.equal(made.status, 200, JSON.stringify(made.data));
@@ -150,8 +165,9 @@ describe("Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi", () => {
       assert.deepEqual([first.status, second.status].sort(), [200, 409], `iki istek: ${first.status} ${second.status}`);
       assert.equal(app.store.get("SELECT COUNT(*) AS n FROM ledger_vouchers").n, 1, "iki kişi aynı anda: tek fiş");
       const after = await integrity(api);
-      assert.ok(after.item?.corrected, "kural farkı düzeltildi");
-      assert.deepEqual(after.failures, ["dates:future:cheque_events"], "eski sürümden kalan gerçek satır ayrı ve aynen görünür");
+      assert.ok(fixedOrSubledgerOnly(after.item), `kural farkı fişle kapandı — Düzeltildi (tur 2c, B-8 = A): ${JSON.stringify(after.item).slice(0, 400)}`);
+      // 2.5.0 Ç7b tur 2c — BEKLENTİ BİLEREK DEĞİŞTİ (B-8 = A): kural farkı uyarısı fişle kapanır; yalnız eski sürümden kalan gerçek satır (ileri tarihli evrak) görünür.
+      assert.deepEqual([...after.failures].sort(), ["dates:future:cheque_events"], "eski sürümden kalan gerçek satır ayrı ve aynen görünür");
       assertInvariant(app, "v2.0.26 fiş sonrası");
     } finally {
       await ctx.close();
@@ -210,14 +226,17 @@ describe("Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi", () => {
       assert.equal((await api.post(`/api/workspace/opening-review/${row.id}`, { decision: "reject" })).status, 200);
       const first = (await api.get(URL)).data;
       assert.equal((await api.post(URL, { requestId: rid(), digest: first.digest, confirm: true })).status, 200);
-      assert.ok((await integrity(api)).item?.corrected, "ret durumunda fiş farkı kapattı");
+      assert.ok(fixedOrSubledgerOnly((await integrity(api)).item), "ret durumunda fiş farkı kapattı (Düzeltildi; tur 2c B-8 = A)");
       assert.equal((await api.post(`/api/workspace/opening-review/${row.id}`, { decision: "confirm" })).status, 200);
       const reopened = await integrity(api);
       assert.ok(reopened.item && reopened.item.ok === false && !reopened.item.corrected && reopened.item.correction?.remainderMinor === minor, `kararı değişen satır: kalan fark ${minor} kuruş, Düzeltildi değil: ${JSON.stringify(reopened.item)}`);
       const rest = (await api.get(URL)).data;
-      assert.deepEqual(lineText(rest.lines).sort(), lineText([{ account: "519", debit: 0, credit: minor }, { account: row.date.slice(0, 4) === first.date.slice(0, 4) ? "602" : "681", debit: minor, credit: 0 }]).sort(), "ikinci fiş yalnız kalanı önerir (önceki yılın 602 farkı 681)");
+      // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (C-01, KG-4 = A; M7): ret durumundaki İLK fiş reddedilen Borç Yaz'ın 602 → 602.90 sınıflamasını da yazdı (aynı yıl: B 602 / A 602.90;
+      // önceki yıl: B 681 / A 671). Onaydan sonra gereken 602 → 519 (aynı yıl: B 602 / A 519; önceki yıl: B 681 / A 519) — kalan: aynı yıl A 519 / B 602.90, önceki yıl A 519 / B 671.
+      assert.deepEqual(lineText(rest.lines).sort(), lineText([{ account: "519", debit: 0, credit: minor }, row.date.slice(0, 4) === first.date.slice(0, 4) ? { account: "602", sub: "602.90", debit: minor, credit: 0 } : { account: "671", debit: minor, credit: 0 }]).sort(), "ikinci fiş yalnız kalanı önerir (Ç7b: ilk fişin sınıflama satırı düşülür)");
       assert.equal((await api.post(URL, { requestId: rid(), digest: rest.digest, confirm: true })).status, 200);
-      assert.ok((await integrity(api)).item?.corrected?.vouchers?.length === 2, "iki fişle düzeltildi");
+      const twice = (await integrity(api)).item;
+      assert.ok(fixedOrSubledgerOnly(twice) && (twice.corrected?.vouchers?.length === 2 || twice.correction?.vouchers?.length === 2), `iki fişle düzeltildi (Düzeltildi; tur 2c B-8 = A): ${JSON.stringify(twice).slice(0, 300)}`);
       assertInvariant(app, "iki fiş sonrası");
     } finally {
       await ctx.close();
@@ -257,8 +276,9 @@ describe("Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi", () => {
       const { app, api } = ctx;
       const lock = app.ledger.snapshots.coverage();
       const before = (await api.get(URL)).data;
-      const row = app.store.get("SELECT e.id, e.account_id AS party FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL AND a.type = 'customer' WHERE COALESCE(e.source, '') = '' AND e.kind = 'debt' AND e.is_opening = 0 AND e.opening_review = '' AND e.date <= ? ORDER BY e.rowid LIMIT 1", lock);
-      assert.ok(row, "ön koşul: kilitli dönemde müşterinin sıradan Borç Yaz satırı");
+      const row = app.store.get("SELECT e.id, e.account_id AS party FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL AND a.type = 'customer' WHERE COALESCE(e.source, '') = '' AND e.kind = 'in' AND e.is_opening = 0 AND e.opening_review = '' AND e.date <= ? ORDER BY e.rowid LIMIT 1", lock);
+      // 2.5.0 Ç7b: sıradan Borç Yaz artık kendisi kural farkında (C-01 602 → 602.90) — bozulacak satır müşterinin TAHSİLATI (B para / A 120; Ç7b'de değişmez).
+      assert.ok(row, "ön koşul: kilitli dönemde müşterinin sıradan tahsilat satırı");
       assert.ok(!before.sources.some(item => item.id === `account:${row.id}`), "ön koşul: satır kural farkında değil");
       const other = new DatabaseSync(app.store.get("PRAGMA database_list").file);
       try {
@@ -272,7 +292,7 @@ describe("Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi", () => {
       const source = after.sources.find(item => item.id === `account:${row.id}`);
       assert.ok(source && source.excluded === true, `bozulan kayıt kaynak listesinde, fişle düzeltilmez: ${JSON.stringify(source)}`);
       const excluded120 = after.excluded.find(item => item.account === "120" && item.party === row.party);
-      assert.ok(excluded120 && excluded120.minor === 10_000 && excluded120.subledger === true, `120 farkı dışarıda, nedeniyle: ${JSON.stringify(after.excluded)}`);
+      assert.ok(excluded120 && excluded120.minor === -10_000 && excluded120.subledger === true, `120 farkı dışarıda, nedeniyle: ${JSON.stringify(after.excluded)}`);
       assert.match(after.excluded[0].reason, /Alt defter hesabı/);
       const post = await api.post(URL, { requestId: rid(), digest: after.digest, confirm: true });
       // Kapı (kilit izi) kilitli kaynağın kapı dışı değişikliğini görür: hiçbir yazım (fiş dahil) geçmez — fark fişe sessizce giremez (409 ledger-integrity, fiş yok).
@@ -319,11 +339,13 @@ describe("Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi", () => {
       assert.equal(app.ledger.snapshots.state().pending, null, "açılıştaki dondurma bitmeli");
       const api = await server.login();
       const before = (await api.get(URL)).data;
-      assert.deepEqual(lineText(before.lines), ["A 519 800", "B 500 800"], "ön koşul: gerçek kural farkı (v2.4.9'un cari açılışı 500 → 519)");
+      // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (C-01, KG-4 = A): kilitli işaretsiz Borç Yaz 1.000 TL (20.08, "Hizmet") 602 → 602.90 — elle: B 602 1.000 / A 602.90 1.000.
+      const GENUINE = ["A 519 800", "A 602.90 1000", "B 500 800", "B 602 1000"];
+      assert.deepEqual(lineText(before.lines), GENUINE, "ön koşul: gerçek kural farkı (v2.4.9'un cari açılışı 500 → 519; Ç7b Borç Yaz 602 → 602.90)");
       assert.deepEqual(before.excluded, [], "ön koşul: dışarıda kalan fark yok");
       assert.ok(!before.sources.some(item => item.id === `account:${ids.entry}`), "ön koşul: tahsilat kural farkında değil");
       const ruleBefore = await integrity(api);
-      assert.equal(ruleBefore.item?.count, 1, "ön koşul: Mutabakat Testi'nde bir kural farkı kaydı");
+      assert.equal(ruleBefore.item?.count, 2, "ön koşul: Mutabakat Testi'nde iki kural farkı kaydı (açılış + Ç7b Borç Yaz)");
       const other = new DatabaseSync(app.store.get("PRAGMA database_list").file);
       try {
         other.exec("PRAGMA busy_timeout = 5000");
@@ -341,12 +363,12 @@ describe("Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi", () => {
       assert.deepEqual(after.excluded.map(item => `${item.account} ${item.party === ids.party ? "cari" : item.party} ${item.minor} ${item.subledger}`).sort(), ["120 cari -10000 true", "128 cari 10000 true"], "120 / 128 farkı dışarıda (alt defter hesabı)");
       for (const item of after.excluded) assert.match(item.reason, /Alt defter hesabı/);
       const ruleAfter = await integrity(api);
-      assert.equal(ruleAfter.item?.count, 2, "Mutabakat Testi'nde kural farkı kaydı 1 → 2");
+      assert.equal(ruleAfter.item?.count, 3, "Mutabakat Testi'nde kural farkı kaydı 2 → 3");
       assert.ok(ruleAfter.item.sample.some(text => text.startsWith(`account:${ids.entry}`)), `Mutabakat Testi kaydı adıyla gösterir: ${JSON.stringify(ruleAfter.item.sample)}`);
       const post = await api.post(URL, { requestId: rid(), digest: after.digest, confirm: true });
       assert.equal(post.status, 200, JSON.stringify(post.data).slice(0, 300));
       const lines = app.store.all("SELECT l.account, l.sub, l.debit_minor AS debit, l.credit_minor AS credit FROM ledger_vouchers v JOIN ledger_voucher_lines l ON l.voucher_id = v.id WHERE v.type = 'rule-diff-correction'");
-      assert.deepEqual(lines.map(line => `${line.debit ? "B" : "A"} ${line.sub || line.account} ${(line.debit || line.credit) / 100}`).sort(), ["A 519 800", "B 500 800"], "fiş yalnız gerçek kural farkı: 120 / 128 satırı yok");
+      assert.deepEqual(lines.map(line => `${line.debit ? "B" : "A"} ${line.sub || line.account} ${(line.debit || line.credit) / 100}`).sort(), GENUINE, "fiş yalnız gerçek kural farkı: 120 / 128 satırı yok");
       assert.equal(app.store.get("SELECT COUNT(*) AS n FROM ledger_vouchers").n, 1);
       // Tur 2e DÜŞÜK-2 (dar kontrol c5a2 N4): fiş yazıldıktan SONRA dışarıda kalan alt defter farkı (120 / 128, 100 TL) sürüyor → "Düzeltildi" DEĞİL; uyarı ve ipucu B14'ü söyler.
       const fixed = await integrity(api);

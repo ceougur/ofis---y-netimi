@@ -1,0 +1,21 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 103 elle senaryonun 0'inin adımları değişti: yok · izinli: yok · yeni elle senaryo: d50-c5-s206-s25c-b1-iptal-havale
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 103 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 496/496 bayt bayt aynı
+G3 (kural 2.5.0; 124 senaryo — eski kopyanın 103 elle senaryosu + yeni elle + 20 rastgele): eski 50867 denetim · yeni 50866 denetim · değişen / kalkan / yeni toplam 17 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  S206           kalkan       9
+      örn. d49-c5-s15-s25-iptal-ve-fazla k1:kart:KA1:mevcutBorc: true → "(denetim yok)"
+      örn. d49-c5-s15-s25-iptal-ve-fazla k1:kart:KA1:toplam: 90000 → "(denetim yok)"
+      örn. d49-c5-s15-s25-iptal-ve-fazla k1:kart:KA1:var: true → "(denetim yok)"
+      örn. d49-c5-s15-s25-iptal-ve-fazla k2:kart:KA1:mevcutBorc: true → "(denetim yok)"
+  S206           yeni         8
+      örn. d49-c5-s15-s25-iptal-ve-fazla k1:takvim:fatura:FA1: "(denetim yok)" → "yok"
+      örn. d49-c5-s15-s25-iptal-ve-fazla k2:takvim:fatura:FA1: "(denetim yok)" → "yok"
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:cari:I1:acikEsitBakiye: "(denetim yok)" → true
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:cari:I1:acikToplam: "(denetim yok)" → 20000
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d49-c5-s15-s25-iptal-ve-fazla            S206/kalkan 6 · S206/yeni 2
+  d50-c5-s206-s25c-b1-iptal-havale         S206/kalkan 3 · S206/yeni 6
+# tests 620
+# pass 620
+# fail 0
+620/620 denetim geçti

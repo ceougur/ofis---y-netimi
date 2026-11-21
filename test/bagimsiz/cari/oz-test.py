@@ -54,6 +54,11 @@
 20. Bakım 20 (§31; S168 = B, S181 = B): faturaya bağlı tahsilat / evrak faturanın kuyrukta şüpheli sayılan payı kadar şüpheliden düşer, 120'ye düşen kısım şüpheli dışı borcu aşarsa RET — d47 elle
    tablosu (Z1 / Z3 / Z7 / Z8 değerle KABUL, Z2 / Z6 RET; Z4 SK-38 (d), Z5 SK-38 (c) SUS), d44 X9 artık KABUL; mutantlar 313 / 314 / 315 DEĞERLE, 316 (SUS kuralı) elle tablonun `elleYok` /
    `elleBelirsiz` satırıyla.
+21. Bakım 21 (§32; C1 KG-3 = A, C2 geçiş günü, C4 S15, C5 S25): kayıt tahsilatı B 100 / A 336 — d48 elle tablosu (sonradan konan kilit, yeniden açılış, kilit aç-kapa geçiş koymaz; 602 `elleYok`);
+   Mevcut Borç kartlı faturanın iptali (bakiye, SUS) ve S25 (b) fazlası 120'ye — d49 elle tablosu; mutantlar 317–322 DEĞERLE.
+22. Bakım 21b (§33; C6 S206 = A, kesik girdinin tam metni — C1 B1 kolları, C4 S15 asıl durum, C5 S25 (c)): Mevcut Borç kartının içine aldığı faturanın iptalinde kart kapanır, tahsilatı avans (d50 I1 —
+   kararın örneği; d49 A1 artık tanımlı, kapanmış kartın göstergeleri SUS); çok kalemli / tahsilatsız kart SUS (SK-41 (a) / (b) — d50 I2 / I3); faturaya bağlı havale / nakit şüpheliden payı kadar
+   (d50 H1 … H3); B1 kolları (d50 G1); taksitli faturanın iptalinde S50 tahsilatı avans (d50 I4); mutantlar 323 / 325 DEĞERLE, 324 (SUS kuralı) `elleYok` / `elleBelirsiz` satırıyla.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
@@ -323,7 +328,7 @@ def main():
         eski_sk = [b for b in _m.son_belirsiz if "SK-9 … SK-12" in b or "(SK-13;" in b]
         denetle("%s SK-9 … SK-13 susması yok (S102–S105 A, S99 A)" % ad, not eski_sk, json.dumps(eski_sk[:2], ensure_ascii=False))
     # 2. mutantlar 200–223 (… bakım 20: 313–316)
-    SUSMA_MUTANTLARI = {316}  # bakım 20 (§31 C10x): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
+    SUSMA_MUTANTLARI = {316, 324}  # bakım 20 (§31 C10x) / bakım 21b (§33 C10z): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
     for n, ad in M.MUTASYONLAR.items():
         if n < 200:
             continue

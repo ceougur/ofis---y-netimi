@@ -1,0 +1,74 @@
+"""Ç7b tur 3b mutantları (DEĞERLE). Kullanım: python3 -I mutantlar.py <mut kopyası kökü> <ad|geri>
+Her mutant bir (dosya, eski, yeni) listesi; 'geri' mutasyonu kaldırır (dosyalar .orig'ten)."""
+import os, shutil, sys
+MUT = {
+  'M1-yeni-kart-eski-kuralla-dus': [
+    ('server/lib/accounts.mjs', 'export const waivesRemaining = plan => Boolean(plan) && plan.status === "closed" && plan.closeRule === CLOSE_RULE_WAIVE;',
+     'export const waivesRemaining = plan => Boolean(plan) && plan.status === "closed";'),
+    ('server/lib/accounts.mjs', "(column ? `(${alias}.status = 'closed' AND ${alias}.close_rule = '${CLOSE_RULE_WAIVE}')` : `${alias}.status = 'closed'`)",
+     "`${alias}.status = 'closed'`"),
+  ],
+  'M2-eski-karti-yeni-kuralla-say': [
+    ('server/lib/accounts.mjs', 'export const waivesRemaining = plan => Boolean(plan) && plan.status === "closed" && plan.closeRule === CLOSE_RULE_WAIVE;',
+     'export const waivesRemaining = plan => false;'),
+    ('server/lib/accounts.mjs', "(column ? `(${alias}.status = 'closed' AND ${alias}.close_rule = '${CLOSE_RULE_WAIVE}')` : `${alias}.status = 'closed'`)",
+     "`(1 = 0)`"),
+  ],
+  'M3a-genel-defter-yardimcidan-kopuk': [
+    ('server/lib/general-ledger.mjs', '    if (waivesRemaining(plan)) {\n      const n = out.length;\n      post(`plan-close:${plan.id}`',
+     '    if (plan.status === "closed") {\n      const n = out.length;\n      post(`plan-close:${plan.id}`'),
+    ('server/lib/general-ledger.mjs', '"Kalan alacaktan vazgeçildi", "689", control, waivedOf(plan, plan.paid));',
+     '"Kalan alacaktan vazgeçildi", "689", control, Math.max(0, roundMoney((Number(plan.total) || 0) - (Number(plan.paid) || 0))));'),
+  ],
+  'M3b-cari-defteri-yardimcidan-kopuk': [
+    ('server/lib/accounts.mjs', '      const writeOff = waivedOf(plan, paid);', '      const writeOff = roundMoney(total - paid);'),
+  ],
+  'M3c-partyTotals-yardimcidan-kopuk': [
+    ('server/routes/ledger.mjs', '          - CASE WHEN ${waivesSql("p", { column: hasColumn("plans", "close_rule") })} THEN MAX(0,', "          - CASE WHEN p.status = 'closed' THEN MAX(0,"),
+  ],
+  'M3d-supheli-ayirici-yardimcidan-kopuk': [
+    ('server/lib/bank/doubtful.mjs', 'CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL WHERE ${waivesSql("p")}`,', "CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL WHERE p.status = 'closed'`,"),
+  ],
+  'M3e-cari-listesi-yardimcidan-kopuk': [
+    ('server/routes/accounts.mjs', '        planCredit += paid + waivedOf(plan, paid);', '        planCredit += plan.status === "closed" ? Math.max(total, paid) : paid;'),
+  ],
+  'M3f-kapanis-kilidi-yardimcidan-kopuk': [
+    ('server/routes/plans.mjs', '    if (!row || !waivesRemaining(row)) return "";\n    return row.closedOn', '    if (!row || row.status !== "closed") return "";\n    return row.closedOn'),
+  ],
+  'M4-gecikme-kalem-vadesinden': [
+    ('server/lib/accounts.mjs', "THEN MIN(${due}, ${closeDaySql(alias)}) ELSE ${due} END`;", "THEN ${due} ELSE ${due} END`;"),
+  ],
+  'M5-vade-kapanis-ertesi': [
+    ('server/lib/accounts.mjs', "THEN MIN(${due}, ${closeDaySql(alias)}) ELSE ${due} END`;", "THEN MIN(${due}, date(${closeDaySql(alias)}, '+1 day')) ELSE ${due} END`;"),
+  ],
+  'M6-isaret-kilit-izinden-cikar': [
+    ('server/lib/integrity.mjs', '  plans_close_rule_lock: { requires: ["plans.close_rule"],', '  plans_close_rule_lock_YOK: { requires: ["plans.yok_sutun"],'),
+  ],
+  'M7-yeniden-acta-isaret-sifirlanmaz': [
+    ('server/routes/plans.mjs', '''store.run("UPDATE plans SET closed_at = ?, close_rule = '' WHERE id = ?", status === "closed" ? today() : null, previous.id);''',
+     '''store.run("UPDATE plans SET closed_at = ? WHERE id = ?", status === "closed" ? today() : null, previous.id);'''),
+  ],
+  'M8-goc-isaretlemez': [
+    ('server/lib/migrations.mjs', '''        store.run("UPDATE plans SET close_rule = '2.4.9' WHERE status = 'closed'");''', '        // (mutant) işaret yok'),
+  ],
+  'M9-zil-kapali-karti-almaz': [
+    ('server/routes/plans.mjs', "const plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND NOT ${waivesSql(\"p\")}`);", "const plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.status = 'active'`);"),
+  ],
+}
+root, name = sys.argv[1], sys.argv[2]
+files = sorted({f for muts in MUT.values() for f, _, _ in muts})
+if name == 'geri':
+    for f in files:
+        o = os.path.join(root, f + '.orig')
+        if os.path.exists(o):
+            shutil.copyfile(o, os.path.join(root, f)); os.remove(o)
+    print('geri alındı'); sys.exit(0)
+for f, a, b in MUT[name]:
+    p = os.path.join(root, f)
+    if not os.path.exists(p + '.orig'):
+        shutil.copyfile(p, p + '.orig')
+    s = open(p, encoding='utf-8').read()
+    if s.count(a) != 1:
+        print(f'DESEN YOK ({s.count(a)}): {f}: {a[:80]}'); sys.exit(2)
+    open(p, 'w', encoding='utf-8').write(s.replace(a, b))
+print('uygulandı', name)

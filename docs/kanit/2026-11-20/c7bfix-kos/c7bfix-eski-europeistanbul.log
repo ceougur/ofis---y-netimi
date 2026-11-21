@@ -1,0 +1,250 @@
+TAP version 13
+# (node:12061) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b YB-1 — eskimiş 'Kalan X' onayıyla Kartı Kapat reddedilir
+    # Subtest: tahsilat silinince eski onay (Kalan 2.000) 409, güncel kalanla (3.000) kapanır
+    ok 1 - tahsilat silinince eski onay (Kalan 2.000) 409, güncel kalanla (3.000) kapanır
+      ---
+      duration_ms: 109.922892
+      type: 'test'
+      ...
+    # Subtest: kalansız kart: onay 'kalan 0' iken tutar büyüdü → 409; eski istemci (alan yok) bugünkü gibi kapatır
+    ok 2 - kalansız kart: onay 'kalan 0' iken tutar büyüdü → 409; eski istemci (alan yok) bugünkü gibi kapatır
+      ---
+      duration_ms: 90.625464
+      type: 'test'
+      ...
+    1..2
+ok 1 - Ç7b YB-1 — eskimiş 'Kalan X' onayıyla Kartı Kapat reddedilir
+  ---
+  duration_ms: 685.740954
+  type: 'suite'
+  ...
+# (node:12063) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A)
+    # Subtest: K1 en küçük örnek: cari kartından 500 → pencere 2.500 → TEK onayla kapanır; bakiye 2.500, 120 aynı
+    not ok 1 - K1 en küçük örnek: cari kartından 500 → pencere 2.500 → TEK onayla kapanır; bakiye 2.500, 120 aynı
+      ---
+      duration_ms: 110.996056
+      type: 'test'
+      location: '/dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:74:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        K1: tek onayla kapanmalı — 409 {"ok":false,"error":"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 3.000,00 TL. Kartı Kapat yeniden sorulacak.","code":"plan-close-stale","remaining":3000}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        closedOnce (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:56:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:84:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: K2 karışık: Taksit Tahsilatı 1.000 + cari kartından 500 → pencere 1.500 → tek onay
+    not ok 2 - K2 karışık: Taksit Tahsilatı 1.000 + cari kartından 500 → pencere 1.500 → tek onay
+      ---
+      duration_ms: 90.24757
+      type: 'test'
+      location: '/dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:89:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        K2: tek onayla kapanmalı — 409 {"ok":false,"error":"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 2.000,00 TL. Kartı Kapat yeniden sorulacak.","code":"plan-close-stale","remaining":2000}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        closedOnce (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:56:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:96:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K3 tahsilat silinir: eski onay 409 KALIR; güncel kalan pencerenin yeni sayısı
+    not ok 3 - K3 tahsilat silinir: eski onay 409 KALIR; güncel kalan pencerenin yeni sayısı
+      ---
+      duration_ms: 93.861046
+      type: 'test'
+      location: '/dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:99:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        K3a kart tahsilatı silindi: güncel kalan pencerenin yeniden göstereceği sayı
+        
+        3000 !== 2500
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2500
+      actual: 3000
+      operator: 'strictEqual'
+      stack: |-
+        stale (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:63:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:107:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K4 tutar değişir: eski onay 409; güncel kalan pencerenin sayısı
+    not ok 4 - K4 tutar değişir: eski onay 409; güncel kalan pencerenin sayısı
+      ---
+      duration_ms: 73.255203
+      type: 'test'
+      location: '/dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:120:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        K4: güncel kalan pencerenin yeniden göstereceği sayı
+        
+        3600 !== 3100
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 3100
+      actual: 3600
+      operator: 'strictEqual'
+      stack: |-
+        stale (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:63:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:129:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K5 kalansız kart (pencere 0, kartın kendisi 600) tek onayla; tutar büyüyünce onay 0 → 409
+    not ok 5 - K5 kalansız kart (pencere 0, kartın kendisi 600) tek onayla; tutar büyüyünce onay 0 → 409
+      ---
+      duration_ms: 56.475736
+      type: 'test'
+      location: '/dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:133:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        K5a: tek onayla kapanmalı — 409 {"ok":false,"error":"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 600,00 TL. Kartı Kapat yeniden sorulacak.","code":"plan-close-stale","remaining":600}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        closedOnce (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:56:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:139:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K6 Mevcut Borç kartı (taksitli ve taksitsiz): pencerenin kalanıyla tek onay
+    not ok 6 - K6 Mevcut Borç kartı (taksitli ve taksitsiz): pencerenin kalanıyla tek onay
+      ---
+      duration_ms: 64.619554
+      type: 'test'
+      location: '/dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:152:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        K6a: tek onayla kapanmalı — 409 {"ok":false,"error":"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 3.000,00 TL. Kartı Kapat yeniden sorulacak.","code":"plan-close-stale","remaining":3000}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        closedOnce (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:56:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:161:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K7 Borçta Kalsın ile kapanmış kart Yeniden Aç → yine Kartı Kapat: pencerenin kalanıyla tek onay
+    not ok 7 - K7 Borçta Kalsın ile kapanmış kart Yeniden Aç → yine Kartı Kapat: pencerenin kalanıyla tek onay
+      ---
+      duration_ms: 45.108106
+      type: 'test'
+      location: '/dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:173:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        K7 ilk kapanış: tek onayla kapanmalı — 409 {"ok":false,"error":"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 3.000,00 TL. Kartı Kapat yeniden sorulacak.","code":"plan-close-stale","remaining":3000}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        closedOnce (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:56:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:177:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K8 iki kart aynı caride: her kart kendi pencere sayısıyla tek onay
+    not ok 8 - K8 iki kart aynı caride: her kart kendi pencere sayısıyla tek onay
+      ---
+      duration_ms: 72.672809
+      type: 'test'
+      location: '/dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:185:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        K8 yeni kart: tek onayla kapanmalı — 409 {"ok":false,"error":"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 1.000,00 TL. Kartı Kapat yeniden sorulacak.","code":"plan-close-stale","remaining":1000}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        closedOnce (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:56:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:193:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K9 eski istemci (closeRemaining yok): bugünkü gibi kapanır
+    ok 9 - K9 eski istemci (closeRemaining yok): bugünkü gibi kapanır
+      ---
+      duration_ms: 54.724703
+      type: 'test'
+      ...
+    # Subtest: değişmez: Mutabakat Testi temiz
+    ok 10 - değişmez: Mutabakat Testi temiz
+      ---
+      duration_ms: 16.148804
+      type: 'test'
+      ...
+    1..10
+not ok 2 - Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A)
+  ---
+  duration_ms: 1163.885442
+  type: 'suite'
+  location: '/dev/shm/c7bfix-a66/eski/test/c7bfix-kart-kapat-kuyruk-250.test.mjs:30:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 12
+# suites 2
+# pass 4
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1583.956516

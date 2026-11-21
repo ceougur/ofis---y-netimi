@@ -41,9 +41,11 @@ const triggersOf = store => store.all("SELECT name FROM sqlite_master WHERE type
 async function seed(admin, query = "") {
   const q = query ? `?${query}` : "";
   const customer = await must("müşteri", admin.post(`/api/workspace/accounts${q}`, { name: "Cem Kara", registeredOn: "2026-02-01" }));
-  await must("açılış", admin.post(`/api/workspace/accounts/${customer.id}/entries${q}`, { kind: "debt", amount: "800", date: "2026-02-01", note: "Devir borcu" })); // 2.5.0 Ç5-A (G3): Ç3 mekaniği verisi iki kuralda da AYNI türetilsin diye açılış dışı açıklama ("Açılış…" Borç Yaz 2.4.9 kuralında 500, güncel kuralda 602 — K8-1; o ayrışma kural tuzağı ve test/acilis-*-250 testlerinin konusu)
+  // 2.5.0 Ç7b tur 2c — BİLEREK DEĞİŞTİ (Ç5-A G3'ün ilkesi: Ç3 mekaniği verisi iki kuralda da AYNI; Ç7b C-01 Borç Yaz 602 → 602.90, K-01 carisiz Kasa girişi 649 → 649.90): borç satış
+  // faturasıyla (F-01 — iki kuralda aynı), Kasa girişleri carinin nakit tahsilatıyla (B 100 / A 120; tutar ve günler aynen).
+  await must("devir borcu (fatura)", admin.post(`/api/workspace/invoices${q}`, { scenario: "service_sale", accountId: customer.id, issueDate: "2026-02-01", lines: [{ name: "Devir Borcu", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } })); // 2.5.0 Ç5-A (G3): Ç3 mekaniği verisi iki kuralda da AYNI türetilsin diye açılış dışı açıklama ("Açılış…" Borç Yaz 2.4.9 kuralında 500, güncel kuralda 602 — K8-1; o ayrışma kural tuzağı ve test/acilis-*-250 testlerinin konusu)
   for (const [day, amount] of [["2026-03-01", "100"], ["2026-05-01", "200"], ["2026-08-01", "300"], ["2026-10-01", "400"], ["2026-12-31", "500"], ["2027-01-02", "600"]]) {
-    await must(`kasa ${day}`, admin.post(`/api/workspace/cash${q}`, { kind: "in", amount, date: day, description: `Giriş ${day}` }));
+    await must(`kasa ${day}`, admin.post(`/api/workspace/accounts/${customer.id}/entries${q}`, { kind: "in", amount, date: day, method: "cash", note: `Giriş ${day}` }));
   }
   await must("tahsilat", admin.post(`/api/workspace/accounts/${customer.id}/entries${q}`, { kind: "in", amount: "250", date: "2026-11-15", method: "cash", note: "Tahsilat" }));
   return customer;
@@ -318,7 +320,7 @@ describe("2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm
       assert.equal(server.app.store.get("SELECT GROUP_CONCAT(DISTINCT rule_version) AS v FROM ledger_snapshots").v, "2.4.9");
       assert.deepEqual(canon(S.entries()), canon(upTo(buildRule249(server.app.store), LOCK)), "donmuş = 2.4.9 kopyası");
       assert.deepEqual(canon(S.entries()), canon(upTo(server.app.ledger.build(), LOCK)), "bugün güncel kural = 2.4.9 (tutarda)");
-      assert.equal(server.app.store.get("PRAGMA user_version").user_version, 50); // 2.5.0 Ç5-A (G3): 46 → 47 (donmuş defter) → 48, 49 (Ç5-A); tur 1e: 50
+      assert.equal(server.app.store.get("PRAGMA user_version").user_version, 53); // Ç7b tur 3b — BEKLENTİ BİLEREK DEĞİŞTİ (karar (6), B-11 = A): göç 53 (Kartı Kapat kural işareti); 2.5.0 Ç5-A (G3): 46 → 47 (donmuş defter) → 48, 49 (Ç5-A); tur 1e: 50; Ç7b tur 2c — BEKLENTİ BİLEREK DEĞİŞTİ (B-8 = A): göç 51; Ç7b tur 2d — BEKLENTİ BİLEREK DEĞİŞTİ (KG-7 = A): göç 52
     } finally {
       await server.close();
     }

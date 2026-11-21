@@ -1,0 +1,32 @@
+{
+  "ad": "c7b2e-yeni-ist",
+  "komut": "node --test test/c7b-kdv-ozeti-donem-250.test.mjs test/c7b-sifirla-kdv-mahsup-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/c7b-goc52-kilit-izi-250.test.mjs test/acilis-onarimi-hiz-250.test.mjs test/c7b-kdv-donemi-250.test.mjs test/kilit-izi-alanlar-250.test.mjs",
+  "commit": "a9aad798471b4ccc8c165ceae4fef200d1841609",
+  "dal": "worktree-agent-a91bbac2a6427046a",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T11:27:53.128Z",
+  "sure_sn": 63.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 66,
+    "gecen": 66,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2e-ana/kanit/2026-11-19/c7b2e-yeni-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a",
+  "ham_cikti_sha256": "614ace055f9430806cc8bd705e4f740807d0c15661ee3321d7ea98f0be1d397a",
+  "ham_cikti_bayt": 42334
+}

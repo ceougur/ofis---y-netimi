@@ -1,0 +1,14 @@
+d49-c5-s15-s25-iptal-ve-fazla.json: 8 elle beklenti değişti
+    elleYok eklendi        k1:kart:KA1:mevcutBorc: "" → "yok"
+    elleYok eklendi        k1:kart:KA1:toplam: "" → "yok"
+    elleYok eklendi        k1:kart:KA1:var: "" → "yok"
+    elleYok eklendi        k2:kart:KA1:mevcutBorc: "" → "yok"
+    elleYok eklendi        k2:kart:KA1:toplam: "" → "yok"
+    elleYok eklendi        k2:kart:KA1:var: "" → "yok"
+    elleBelirsiz kalktı    ["cari A1 tanımsız", "C13.4 (11)"]: "" → ""
+    elleBelirsiz eklendi   ["kart KA1", "S206 = A"]: "" → ""
+yeni elle senaryo: d50-c5-s206-s25c-b1-iptal-havale.json
+# tests 103
+# pass 103
+# fail 0
+103/103 denetim geçti

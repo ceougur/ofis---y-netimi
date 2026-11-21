@@ -73,6 +73,9 @@ DILLER = ("destekofis-cari/1", "destekofis-cari/2", DIL)
 # 2.5.0 Ç5 bakımı 18 (13.11.2026; kodu görmeyen AYRI el — KARARLAR.md §29; çok küçük bakım): S165 A + S118 B OKUMASI — kart tahsilatının sınırı TEK sayı K (kart tutarı − karta doğrudan bağlı
 # tahsilatlar); avansla ödenmiş kısım ve para dışı pay (iade / Değersiz) K'yı küçültmez — K' okuması ve SK-36 susması kalktı (tutar ≤ K kabul, seçenek etkisiz); S154 B para dışı paylı kartta da
 # (avansla ödenmiş kartta S144 = C SUS aynen); S166 = B — S162'nin satış kartı kolu BİLİNEN SINIR (SK-37 metni kalktı).
+# 2.5.0 Ç5 bakımı 21 (19.11.2026; kodu görmeyen AYRI el — KARARLAR.md §32): C1 KG-3 = A — kayıt tahsilatının karşılığı 336.90 (mizan ana hesap düzeyi: B 100 / A 336; 2.4.9 ve öncesi A 602 aynen);
+# C2 kural geçiş günü — dil kilitli eski sürüm + güncellemeyi kuramaz: her senaryo kilitsiz güncelleme (geçiş yok; sonradan konan kilit / yeniden açılış geçiş koymaz); C3 Kartı Kapat dilde yok;
+# C4 S15 ve C5 S25 (a) / (b) bakım 20'nin kurallarıyla zaten modelleniyor (yeni kural yok — yalnız elle senaryo d49 ve mutantlar 320–322).
 KURALLAR =("2.4.4", "2.4.5", "2.4.6", "2.4.9", "2.5.0")
 VARSAYILAN_KURAL = "2.5.0"
 BIRINCIL = {"KULLANICI", "PLAN", "GIB", "EDM", "BAŞ MİMAR"}
@@ -400,6 +403,21 @@ MUTASYONLAR = {
     314: "Ç5 C31 (pay yok sayılır — tamamı): faturaya bağlı tahsilat / evrak bağsız gibi açık şüphelinin tamamından düşer",
     315: "Ç5 C31 (bağlı evrak bakım 19): faturaya bağlı evrak payına bakılmadan tamamıyla şüpheliden düşer",
     316: "Ç5 C31 (SK-38 susması yok): payı tanımsız adım ve S181 ↔ S159 alanı değerle (pay 0 / S159 kabul)",
+    # bakım 21 (KARARLAR.md §32 — C1 KG-3, C2 geçiş günü, C4 S15, C5 S25)
+    317: "Ç5 C32 (KG-3 eski yön): kayıt tahsilatı 2.5.0'da da B 100 / A 602 (336 yok)",
+    318: "Ç5 C32 (geçiş günü = o anki kilit): güncellemeden SONRA konan dönem kilidinin tarihine kadarki kayıt tahsilatları 602'de",
+    319: "Ç5 C32 (geçiş günü yeniden açılışta): programın yeniden açıldığı andaki kilit geçiş günü sayılır — o tarihe kadarki kayıt tahsilatları 602'de",
+    320: "Ç5 C32 (S25 (b) fazla şüpheliden): çekin / tahsilatın faturanın açık kısmını aşan fazlası bağsız gibi şüpheliden düşer (120'ye değil)",
+    321: "Ç5 C32 (S25 (a) önce 120): kısmen şüpheli faturaya bağlı adım önce faturanın normal (görünen) kısmından, kalanı şüpheliden düşer",
+    322: "Ç5 C32 (S15 iptalde kart tahsilatı kaybolur): faturayı içine alan kartın tahsilatları fatura iptalinde carinin alacağından düşer",
+    # bakım 21b (KARARLAR.md §33 — C6 S206 = A, S25 (c))
+    323: "Ç5 C33 (S206 B — bakım 21 davranışı): Mevcut Borç kartının içine aldığı faturanın iptalinde kart açık kalır (tahsilatı kartta; carinin kuyruğu C13.4 (11) tanımsız)",
+    324: "Ç5 C33 / C34 (kapanmış kartın göstergesi SUS değil): S206 / S210 / S211 ile kapanan kartın göstergesi yazılır (var = false) — bakım 22'den beri yalnız bu",
+    325: "Ç5 C33 (S25 (c) havale): şüpheliye aktarılmış faturaya bağlı HAVALE tahsilatı şüpheliden düşmez (yalnız nakit / çek payı kadar düşer)",
+    # bakım 22 (KARARLAR.md §34 — S210 = A, S211 = A)
+    326: "Ç5 C34 (S210 B / bakım 21b davranışı): çok kalemli kartın içine aldığı faturanın iptalinde kart açık kalır (SK-41 (a) susması; carinin kuyruğu tanımsız)",
+    327: "Ç5 C34 (S211 B / bakım 21b davranışı): tahsilatsız kartın içine aldığı faturanın iptalinde kart borçsuz açık kalır (SK-41 (b) susması)",
+    328: "Ç5 C34 (S210: kapanan kartın tahsilatı avans olmaz): çok kalemli / tahsilatsız kart kapanır ama kartın Taksit Tahsilatları carinin alacağından düşer",
 }
 # 2.4.9 C1.6: silinmiş cariye yazılamayan para adımları (hedef cari adımın `cari`'si) ve carisi silinmişken yapılamayan Silinenler geri yüklemeleri (hedef kaydın carisi)
 # bakım 15 (§26 Y15-6) S145: denetlenmeyen adımlar (durumu kendi kuralıyla kuran / para satırı yazmayan) ve geri alma kopyasının dışında kalan alanlar (yedek_al ile aynı)
@@ -1674,6 +1692,12 @@ class Model:
                 # bakım 6 (S101): kartın avansla ödenmiş sayılan kısmı tüketilen kalemin ödemesi değildir
                 acik[x_ad] += max(0, x_t - (sum(kart_pay.get(no, [])) - onceden.get(no, 0)))
         for no in eksik:
+            sk41_ = (self.kartlar.get(no) or {}).get("_sk41")
+            if sk41_:
+                # bakım 21b (§33 Y21b-8): kartın içine aldığı fatura iptal edildi, ama kart çok kalemli (a) / tahsilatsız (b) — S206 = A bu alanı söylemiyor; bugünkü susma, nedeni SK-41
+                neden.add("Mevcut Borç kartı %s içine aldığı fatura iptal edildi ve kart %s — S206 = A ('kart kapanır, tahsilatı avans') bu karta da mı, kararda yok — KULLANICIYA SORULMALI %s (§33 Y21b-8; "
+                          "kart açık borçtan büyük — EK-2B 32)" % (no, "başka kalem de içine almış" if sk41_ == "SK-41 (a)" else "tahsilatsız", sk41_))
+                continue
             neden.add("Mevcut Borç kartı %s açık borçtan büyük (EK-2B 32)" % no + (" — eksik kısım avansla kapanmış borçtan karşılanmıyor (S101 kurulmaz)" if s101 else ""))
         for no, kt in self.kartlar.items():
             # bakım 7 (§19 Y7-2 (5)): satışla açılan kartlı caride başka Mevcut Borç kartı ya da kuyrukta açık elle kayıt / taksitsiz satış faturası / karşılıksız kalemi varsa
@@ -3315,7 +3339,18 @@ class Model:
         if x is None or x.get("tur") != "n" or x.get("kart"):
             self._s168_sus[aid] = (cari, "SK-38 (b)", "fatura %s kuyrukta düz kalem değil (taksitli / karta alınmış / kapanmış) — pay tanımsız" % fatura)
             return 0
+        self._m32x = (t["kuyruk"].get(fatura, 0), g["gorunen"].get(fatura, t["kuyruk"].get(fatura, 0)))  # bakım 21 mutantları 320 / 321 için (kuyruk kalanı, görünen); sonucu değiştirmez
         return max(0, t["kuyruk"].get(fatura, 0) - g["gorunen"].get(fatura, t["kuyruk"].get(fatura, 0)))
+
+    def _s25_dusen(self, pay168, tutar):
+        """Bakım 21 (§32 Y21-5) [KULLANICI S25 = A (a) / (b)] — bakım 20'nin kuralı AYNEN: şüpheliden düşen = min(tutar, Pay); kalanı (faturanın açık kısmını aşan fazlası dahil) 120.
+        Mutantlar 320 (fazla da şüpheliden), 321 (önce faturanın görünen / normal kısmı, kalanı şüpheliden)."""
+        kalan_, gorunen_ = getattr(self, "_m32x", (0, 0))
+        if self.mut == 320:
+            return min(tutar, pay168 + max(0, tutar - kalan_))
+        if self.mut == 321:
+            return min(pay168, max(0, tutar - gorunen_))
+        return min(pay168, tutar)
 
     def tahsilat(self, a):
         f = a.get("fatura")
@@ -3323,8 +3358,9 @@ class Model:
         pay168 = self._s168_pay(a["id"], a["cari"], f, a.get("tarih", self.bugun))
         self.tahsilatlar[a["id"]] = {"cari": a["cari"], "tutar": kurus(a["tutar"]), "tarih": a.get("tarih", self.bugun),
                                      "seq": self.yeni_seq(), "fatura": f, "kart": None, "aktif": True, "nakit": nakit}
-        if pay168 is not None:
-            self.tahsilatlar[a["id"]]["s168"] = min(pay168, kurus(a["tutar"]))  # bakım 20 (§31 Y20-2): şüpheliden düşen kısım
+        if pay168 is not None and not (self.mut == 325 and not nakit):
+            # bakım 20 (§31 Y20-2): şüpheliden düşen kısım (bakım 21: S25 (a) / (b) — aynı); bakım 21b (§33 Y21b-5) S25 (c): yolundan bağımsız (nakit / havale) — mutant 325: havale düşmez
+            self.tahsilatlar[a["id"]]["s168"] = self._s25_dusen(pay168, kurus(a["tutar"]))
         # /3: hareket kaydı (silme / geri yükleme; K6.1 tahsilat Vade alanı taşımaz — gönderilirse kaydedilmez)
         self.hareketler[a["id"]] = {"cari": a["cari"], "tur": "tahsilat", "ref": self.tahsilatlar[a["id"]], "aktif": True,
                                     "gonderilen": bool(a.get("vade") or a.get("beklenen"))}
@@ -3905,6 +3941,8 @@ class Model:
         if self.kural != "2.4.4":
             self.anahtar = {"legacyCasePayments": False, "legacyTableTransfer": False, "legacyTableDues": False}
             self.anahtar.update({k: bool(v) for k, v in (a.get("anahtar") or {}).items()})
+        if self.mut == 319 and getattr(self, "kilit", "") and not getattr(self, "_m319_gecis", ""):
+            self._m319_gecis = self.kilit  # mutant 319 (bakım 21): yeniden açılıştaki kilit geçiş günü sayılır (doğrusu: geçiş yalnız güncellemede — §32 Y21-2 (ii))
         return "ok"
 
     def yedek_al(self, a):
@@ -4089,6 +4127,18 @@ class Model:
         if not self.v3:
             self.mizanBilinir = False  # /1–/2: karşı hesap o kâhinde yoktu; /3: B 100 / A 602 (madde 1 "defterde (A 602)")
         return "ok"
+
+    def _kg3_hesap(self, o):
+        """Bakım 21 (§32 Y21-1 / Y21-2) [KULLANICI KG-3 = A; BAŞ MİMAR KARARI 19.11 kural geçiş günü]: kayıt tahsilatının mizan karşı hesabı. 2.4.9 ve öncesi 602 (C1.4 aynen). 2.5.0'da 336
+        (336.90 — ana hesap düzeyi). Geçiş günü = güncellemedeki kilit tarihi; bu kâhinin her senaryosu kilitsiz güncellemedir (dil eski sürümü kuramaz) → geçiş YOK, hepsi 336; sonradan
+        konan kilit ve yeniden açılış geçiş koymaz. Mutantlar 317 (hep 602), 318 (o anki kilit geçiş sayılır), 319 (yeniden açılıştaki kilit geçiş sayılır)."""
+        if not self.k250 or self.mut == 317:
+            return "602"
+        if self.mut == 318 and getattr(self, "kilit", "") and o["tarih"] <= self.kilit:
+            return "602"
+        if self.mut == 319 and getattr(self, "_m319_gecis", "") and o["tarih"] <= self._m319_gecis:
+            return "602"
+        return "336"
 
     def kayit_tahsilat_duzenle(self, a):
         """K1: eski kayıt tahsilatının düzeltmesi (PUT /api/workspace/payments/:id) KAPALI — kullanıcı "düzeltme kapalı" + K1 kodu. Mutant 105: açık."""
@@ -4365,7 +4415,7 @@ class Model:
                                   "durum": "portfoy", "ciroCari": None, "kendi": False}
         if pay168 is not None:
             # bakım 20 (§31 Y20-2 (b)): faturaya bağlı evrak payı kadar şüpheliden (mutant 315: bağına bakılmadan tamamı — bakım 19)
-            self.evraklar[a["ad"]]["s168"] = min(pay168, kurus(a["tutar"]))
+            self.evraklar[a["ad"]]["s168"] = self._s25_dusen(pay168, kurus(a["tutar"]))
         return "ok"
 
     def karsiliksiz(self, a):
@@ -4439,15 +4489,73 @@ class Model:
         self.etiketCari[e["cari"]].add("bag-degisti")
         return "ok"
 
+    def _s206_kartlar(self, fad, f):
+        """Bakım 21b (§33 Y21b-7 / Y21b-8): iptal edilecek satış faturasını İÇİNE ALMIŞ Taksitler'den açılmış Mevcut Borç kartları (stok satışıyla açılan kart değil) — [(kart, kod)]: "s206" (yalnız bu
+        faturayı içine almış + Taksit Tahsilatı var — S206 = A), "SK-41 (a)" (başka kalem de içine almış), "SK-41 (b)" (tahsilatsız). Carinin kuyruğu iptalden önce tanımsızsa (C13.4 (11)) boş — bugünkü susma
+        aynen. Durumu değiştirmez (önbellek boşalır)."""
+        if f.get("tur", "satis") != "satis" or f["durum"] != "kesildi":
+            return []
+        cari = f["cari"]
+        self._onbellek = {}
+        t = self.tyk250(cari)
+        self._onbellek = {}
+        if t["neden"]:
+            return []
+        out = []
+        for no, tk in sorted((t.get("tuketilen") or {}).items()):
+            kt = self.kartlar.get(no)
+            if fad not in tk or not kt or not kt["aktif"] or kt["cari"] != cari or not kt.get("api") or not kt["mevcut"] or kt.get("satis") is not None:
+                continue
+            if set(tk) != {fad}:
+                out.append((no, "SK-41 (a)"))
+            elif not any(x["aktif"] for x in kt["tasinan"]):
+                out.append((no, "SK-41 (b)"))
+            else:
+                out.append((no, "s206"))
+        return out
+
     def fatura_iptal(self, a):
         f = self.faturalar[a["fatura"]]
         kendi = [e for e in self.evraklar.values() if e["kendi"] and e["fatura"] == a["fatura"] and e["durum"] != "silindi"]
         if any(e["durum"] != "portfoy" for e in kendi):
             return ("ret", "YAYGIN")  # faturayla alınan evrak işlem görmüşse önce o geri alınır
+        s206 = self._s206_kartlar(a["fatura"], f) if self.k250 else []  # bakım 21b (§33 Y21b-7 / Y21b-8): iptalden ÖNCE — faturayı içine alan Taksitler kartları
         for e in kendi:
             e["durum"] = "silindi"  # faturanın kendi evrakı faturayla birlikte kalkar [YAYGIN]
             self.etiketCari[f["cari"]].add("kendi-evrak-iptal")
         f["durum"] = "iptal"
+        if self.mut == 322:
+            # mutant 322 (bakım 21 — §32 Y21-4): iptal edilen faturanın carisinin kart tahsilatları kaybolur (doğrusu: S15 = A — kartın tahsilatları carinin bağsız alacağı olur)
+            for t in self.tahsilatlar.values():
+                if t["cari"] == f["cari"] and t.get("kart") and t["aktif"]:
+                    t["aktif"] = False
+        for no, kod in s206:
+            # bakım 21b (§33 Y21b-7) [KULLANICI KURALIYLA ÖNERİ UYGULANDI S206 = A; S15 = A]: kart KAPANIR, kartın Taksit Tahsilatları carinin bağsız alacağı (kendi tarihinde — C13.4 (3) / (4)).
+            # Y21b-8: çok kalemli (SK-41 (a)) / tahsilatsız (SK-41 (b)) kart kararda yok — kart açık kalır, carinin kuyruğu bugünkü C13.4 (11) susmasıyla (nedeni SK-41). Mutantlar 323 (S206 B: kart açık
+            # kalır), 324 (sınır yok: SK-41 kartı da kapanır).
+            # bakım 22 (§34 Y22-1 / Y22-2) [KULLANICI KURALIYLA ÖNERİ UYGULANDI S210 = A, S211 = A]: çok kalemli (SK-41 (a)) ve tahsilatsız (SK-41 (b)) kart da KAPANIR — kartın tükettiği
+            # öbür kalemler (elle Borç) kendi vadesiyle carinin kuyruğunda, tahsilatları avans (bakım 21b'nin SK-41 susması kalktı). Mutantlar 326 / 327 (bakım 21b davranışı: açık kalır),
+            # 328 (kapanan kartın tahsilatı düşer).
+            kt = self.kartlar[no]
+            if kod == "s206" and self.mut == 323:
+                continue
+            if (kod == "SK-41 (a)" and self.mut == 326) or (kod == "SK-41 (b)" and self.mut == 327):
+                kt["_sk41"] = kod
+                self._iz15[f["cari"]].add("sk41")
+                continue
+            kt["aktif"] = False
+            kt["s206"] = True
+            kt["s206kod"] = {"s206": "S206 = A", "SK-41 (a)": "S210 = A", "SK-41 (b)": "S211 = A"}[kod]
+            for t in kt["tasinan"]:
+                if t["aktif"] and t.get("kart") == no:
+                    if kod != "s206" and self.mut == 328:
+                        t["aktif"] = False  # mutant 328: kapanan kartın tahsilatı carinin alacağından düşer
+                        continue
+                    t["kart"] = None
+                    t["s206kart"] = no
+            self._iz15[f["cari"]].add("s206" if kod == "s206" else "s210")
+        if s206:
+            self._onbellek = {}
         if any(e["fatura"] == a["fatura"] and e["durum"] != "silindi" for e in self.evraklar.values()):
             self.etiketCari[f["cari"]].add("iptal-bag-duser")
         return "ok"
@@ -5358,6 +5466,11 @@ class Model:
                     self.d("%s:fatura:%s:durum" % (k, fad), "iptal", "PLAN", "B2.5 iptal")
         for no, kt in self.kartlar.items():
             if not kt["aktif"]:
+                if kt.get("s206") and self.mut != 324:
+                    # bakım 21b (§33 Y21b-7): S206 = A ile kapanan kartın göstergeleri (listede mi, Tahsil Edilen / Kalan / taksitler) kararda yok — SUS (mutant 324: B1.6 gibi var = false)
+                    self.belirsiz.append("%s: kart %s %s ile kapandı (içine aldığı fatura iptal edildi; tahsilatı carinin avansı) — kapanmış kartın göstergeleri kararda yok (§33 Y21b-7, §34 Y22-1 / Y22-2; "
+                                         "SÜRÜCÜ İÇİN)" % (k, no, kt.get("s206kod", "S206 = A")))
+                    continue
                 if kt.get("silindi"):
                     self.d("%s:kart:%s:var" % (k, no), False, "YAYGIN", "C1.4 dil eki: silinen taksit kartı listede yok (Silinenler'de)")
                 else:
@@ -5473,10 +5586,10 @@ class Model:
             if getattr(self, "kasa_gider", 0):
                 m["770"] += self.kasa_gider
                 m["100"] -= self.kasa_gider
-            for o in self.kayitOdeme.values():  # /3 madde 1: eski kayıt tahsilatı Kasa'da ve defterde (A 602) aynen [BAŞ MİMAR]
+            for o in self.kayitOdeme.values():  # /3 madde 1: eski kayıt tahsilatı Kasa'da ve defterde (A 602) aynen [BAŞ MİMAR]; 2.5.0 bakım 21 (§32 Y21-1): A 336 [KULLANICI KG-3]
                 if o["aktif"]:
                     m["100"] += o["tutar"]
-                    m["602"] -= o["tutar"]
+                    m[self._kg3_hesap(o)] -= o["tutar"]
             for e in self.evraklar.values():
                 if e["durum"] == "silindi":
                     continue
@@ -5510,6 +5623,10 @@ class Model:
                     continue
                 if kod == "602":
                     self.d("%s:mizan:%s" % (k, kod), m.get(kod, 0), "BAŞ MİMAR", "madde 1: kayıt tahsilatı B 100 / A 602 (eski satırlar defterde aynen)")
+                    continue
+                if self.k250 and kod == "336":
+                    self.d("%s:mizan:%s" % (k, kod), m.get(kod, 0), "KULLANICI",
+                           "§32 Y21-1 KG-3 = A (05.11 'hepsi A'): kayıt tahsilatı B 100 / A 336 (336.90 Sınıflandırılmamış Tahsilatlar — gelir değil); C2 geçiş günü yok (kilitsiz güncelleme — Y21-2)")
                     continue
                 self.d("%s:mizan:%s" % (k, kod), m.get(kod, 0), "PLAN", "B2.6 §3.11a yevmiye")
         # 5c: Tablodaki Kişiler — bir dosya no'nun tahsilatı bir kez (kayıt tahsilatı + bağlı carinin bütün tahsilatları, kartta olanlar dahil)

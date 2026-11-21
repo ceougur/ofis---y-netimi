@@ -1,0 +1,109 @@
+TAP version 13
+# (node:21033) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir
+    # Subtest: öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı küçük
+    not ok 1 - öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı küçük
+      ---
+      duration_ms: 21.851555
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a16e6df818485d98e/test/acilis-onarimi-hiz-250.test.mjs:40:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ikinci koşu: onarılan 0 (beklenen 0), kilitli 4 (beklenen 3)
+        (sayım: {"statements":281,"detail":4})
+        + actual - expected
+        
+        + [
+        +   'ikinci koşu: onarılan 0 (beklenen 0), kilitli 4 (beklenen 3)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'ikinci koşu: onarılan 0 (beklenen 0), kilitli 4 (beklenen 3)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a16e6df818485d98e/test/acilis-onarimi-hiz-250.test.mjs:79:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # sayım: {"statements":281,"detail":4} · aday 83 · onarım kararı 4
+# (node:21033) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda
+    not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda
+      ---
+      duration_ms: 702.76449
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a16e6df818485d98e/test/acilis-onarimi-hiz-250.test.mjs:82:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        repair: yeni {"fixed":[{"invoiceId":"invoice-cadc6573-4215-4ab9-a4c7-25cae959028f","number":"FIS2026000000002","planId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","from":800,"to":100},{"invoiceId":"invoice-4d829619-0fd4-4d47-88a1-0e94837a583b","number":"FIS2026000000003","planId":"plan-6e6830e4-6d40-4f68-840d-4 ↔ eski {"fixed":[{"invoiceId":"invoice-cadc6573-4215-4ab9-a4c7-25cae959028f","number":"FIS2026000000002","planId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","from":800,"to":100},{"invoiceId":"invoice-4d829619-0fd4-4d47-88a1-0e94837a583b","number":"FIS2026000000003","planId":"plan-6e6830e4-6d40-4f68-840d-4
+        izler: yeni [{"type":"plan.trimmed","entityId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","actorId":"user-d7ad762c-5720-47ad-ab29-f8e632323220","payload":{"accountId":"account-94452b9a-b236-46eb-a28e-336093bb441e","from":1000,"to":900,"reason":"İade IAD2026000000002"},"createdAt":"2026-11-06T06:04:59.081Z"},{" ↔ eski [{"type":"plan.trimmed","entityId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","actorId":"user-d7ad762c-5720-47ad-ab29-f8e632323220","payload":{"accountId":"account-94452b9a-b236-46eb-a28e-336093bb441e","from":1000,"to":900,"reason":"İade IAD2026000000002"},"createdAt":"2026-11-06T06:04:59.081Z"},{"
+        kartlar: yeni [{"id":"plan-0098be65-a415-429b-b0af-af94e9dafdaf","accountId":"account-0ba1c225-dc24-4c1d-9805-ac273b2405c1","total":2000,"status":"active","deletedAt":null,"updatedAt":"2026-11-06T06:05:07.631Z"},{"id":"plan-062d0271-7256-40f8-99a8-4a19c0e097e1","accountId":"account-f0faabad-d031-4fc5-a975-6c288c3 ↔ eski [{"id":"plan-0098be65-a415-429b-b0af-af94e9dafdaf","accountId":"account-0ba1c225-dc24-4c1d-9805-ac273b2405c1","total":2000,"status":"active","deletedAt":null,"updatedAt":"2026-11-06T06:05:07.631Z"},{"id":"plan-062d0271-7256-40f8-99a8-4a19c0e097e1","accountId":"account-f0faabad-d031-4fc5-a975-6c288c3
+        taksitler: yeni [{"id":"item-02bda72e-eb6f-4c18-a4f5-c5bb63d04b4f","planId":"plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86","seq":1,"dueDate":"2026-10-13","amount":466.66,"updatedAt":"2026-11-06T06:05:07.161Z"},{"id":"item-03fa1bfe-fd43-45ad-afaa-ec66eb794526","planId":"plan-49a17e6d-ab21-49b9-810b-1e18101217ef","seq": ↔ eski [{"id":"item-02bda72e-eb6f-4c18-a4f5-c5bb63d04b4f","planId":"plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86","seq":1,"dueDate":"2026-10-13","amount":466.66,"updatedAt":"2026-11-06T06:05:07.161Z"},{"id":"item-03fa1bfe-fd43-45ad-afaa-ec66eb794526","planId":"plan-49a17e6d-ab21-49b9-810b-1e18101217ef","seq":
+        faturaDurumlari: yeni [["invoice-013a4186-3d43-4e09-b778-e11d93f037f1",{"payable":2500,"paid":2500,"open":0,"excess":225,"state":"paid","coveredBy":{}}],["invoice-03b2a812-8356-4e8c-86d8-028ee8cad49e",{"payable":2250,"paid":2250,"open":0,"excess":0,"state":"return","coveredBy":{}}],["invoice-03ebcbe7-50bc-47e9-b2bd-92960 ↔ eski [["invoice-013a4186-3d43-4e09-b778-e11d93f037f1",{"payable":2500,"paid":2500,"open":0,"excess":225,"state":"paid","coveredBy":{}}],["invoice-03b2a812-8356-4e8c-86d8-028ee8cad49e",{"payable":2250,"paid":2250,"open":0,"excess":0,"state":"return","coveredBy":{}}],["invoice-03ebcbe7-50bc-47e9-b2bd-92960
+        cariler: yeni [{"id":"account-94452b9a-b236-46eb-a28e-336093bb441e","debit":7650,"credit":7350,"balance":300,"planRemaining":600,"overdue":500},{"id":"account-e67e0d37-a733-4e33-8c71-31f3bad886e7","debit":4400,"credit":2000,"balance":2400,"planRemaining":2400,"overdue":733.32},{"id":"account-4ab90932-3173-4165-94 ↔ eski [{"id":"account-94452b9a-b236-46eb-a28e-336093bb441e","debit":7650,"credit":7350,"balance":300,"planRemaining":600,"overdue":500},{"id":"account-e67e0d37-a733-4e33-8c71-31f3bad886e7","debit":4400,"credit":2000,"balance":2400,"planRemaining":2400,"overdue":733.32},{"id":"account-4ab90932-3173-4165-94
+        adayKartlar: yeni [{"planId":"plan-2c9602db-06df-4ca3-8dfb-96ffa1542206","total":100,"paid":100,"remaining":0,"overdue":0},{"planId":"plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff","total":1125,"paid":250,"remaining":875,"overdue":875},{"planId":"plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1","total":1100,"paid":1100,"remain ↔ eski [{"planId":"plan-2c9602db-06df-4ca3-8dfb-96ffa1542206","total":100,"paid":100,"remaining":0,"overdue":0},{"planId":"plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff","total":1125,"paid":250,"remaining":875,"overdue":875},{"planId":"plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1","total":1100,"paid":1100,"remain
+        + actual - expected
+        
+        + [
+        +   'repair: yeni {"fixed":[{"invoiceId":"invoice-cadc6573-4215-4ab9-a4c7-25cae959028f","number":"FIS2026000000002","planId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","from":800,"to":100},{"invoiceId":"invoice-4d829619-0fd4-4d47-88a1-0e94837a583b","number":"FIS2026000000003","planId":"plan-6e6830e4-6d40-4f68-840d-4 ↔ eski {"fixed":[{"invoiceId":"invoice-cadc6573-4215-4ab9-a4c7-25cae959028f","number":"FIS2026000000002","planId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","from":800,"to":100},{"invoiceId":"invoice-4d829619-0fd4-4d47-88a1-0e94837a583b","number":"FIS2026000000003","planId":"plan-6e6830e4-6d40-4f68-840d-4',
+        +   'izler: yeni [{"type":"plan.trimmed","entityId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","actorId":"user-d7ad762c-5720-47ad-ab29-f8e632323220","payload":{"accountId":"account-94452b9a-b236-46eb-a28e-336093bb441e","from":1000,"to":900,"reason":"İade IAD2026000000002"},"createdAt":"2026-11-06T06:04:59.081Z"},{" ↔ eski [{"type":"plan.trimmed","entityId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","actorId":"user-d7ad762c-5720-47ad-ab29-f8e632323220","payload":{"accountId":"account-94452b9a-b236-46eb-a28e-336093bb441e","from":1000,"to":900,"reason":"İade IAD2026000000002"},"createdAt":"2026-11-06T06:04:59.081Z"},{"',
+        +   'kartlar: yeni [{"id":"plan-0098be65-a415-429b-b0af-af94e9dafdaf","accountId":"account-0ba1c225-dc24-4c1d-9805-ac273b2405c1","total":2000,"status":"active","deletedAt":null,"updatedAt":"2026-11-06T06:05:07.631Z"},{"id":"plan-062d0271-7256-40f8-99a8-4a19c0e097e1","accountId":"account-f0faabad-d031-4fc5-a975-6c288c3 ↔ eski [{"id":"plan-0098be65-a415-429b-b0af-af94e9dafdaf","accountId":"account-0ba1c225-dc24-4c1d-9805-ac273b2405c1","total":2000,"status":"active","deletedAt":null,"updatedAt":"2026-11-06T06:05:07.631Z"},{"id":"plan-062d0271-7256-40f8-99a8-4a19c0e097e1","accountId":"account-f0faabad-d031-4fc5-a975-6c288c3',
+        +   'taksitler: yeni [{"id":"item-02bda72e-eb6f-4c18-a4f5-c5bb63d04b4f","planId":"plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86","seq":1,"dueDate":"2026-10-13","amount":466.66,"updatedAt":"2026-11-06T06:05:07.161Z"},{"id":"item-03fa1bfe-fd43-45ad-afaa-ec66eb794526","planId":"plan-49a17e6d-ab21-49b9-810b-1e18101217ef","seq": ↔ eski [{"id":"item-02bda72e-eb6f-4c18-a4f5-c5bb63d04b4f","planId":"plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86","seq":1,"dueDate":"2026-10-13","amount":466.66,"updatedAt":"2026-11-06T06:05:07.161Z"},{"id":"item-03fa1bfe-fd43-45ad-afaa-ec66eb794526","planId":"plan-49a17e6d-ab21-49b9-810b-1e18101217ef","seq":',
+        +   'faturaDurumlari: yeni [["invoice-013a4186-3d43-4e09-b778-e11d93f037f1",{"payable":2500,"paid":2500,"open":0,"excess":225,"state":"paid","coveredBy":{}}],["invoice-03b2a812-8356-4e8c-86d8-028ee8cad49e",{"payable":2250,"paid":2250,"open":0,"excess":0,"state":"return","coveredBy":{}}],["invoice-03ebcbe7-50bc-47e9-b2bd-92960 ↔ eski [["invoice-013a4186-3d43-4e09-b778-e11d93f037f1",{"payable":2500,"paid":2500,"open":0,"excess":225,"state":"paid","coveredBy":{}}],["invoice-03b2a812-8356-4e8c-86d8-028ee8cad49e",{"payable":2250,"paid":2250,"open":0,"excess":0,"state":"return","coveredBy":{}}],["invoice-03ebcbe7-50bc-47e9-b2bd-92960',
+        +   'cariler: yeni [{"id":"account-94452b9a-b236-46eb-a28e-336093bb441e","debit":7650,"credit":7350,"balance":300,"planRemaining":600,"overdue":500},{"id":"account-e67e0d37-a733-4e33-8c71-31f3bad886e7","debit":4400,"credit":2000,"balance":2400,"planRemaining":2400,"overdue":733.32},{"id":"account-4ab90932-3173-4165-94 ↔ eski [{"id":"account-94452b9a-b236-46eb-a28e-336093bb441e","debit":7650,"credit":7350,"balance":300,"planRemaining":600,"overdue":500},{"id":"account-e67e0d37-a733-4e33-8c71-31f3bad886e7","debit":4400,"credit":2000,"balance":2400,"planRemaining":2400,"overdue":733.32},{"id":"account-4ab90932-3173-4165-94',
+        +   'adayKartlar: yeni [{"planId":"plan-2c9602db-06df-4ca3-8dfb-96ffa1542206","total":100,"paid":100,"remaining":0,"overdue":0},{"planId":"plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff","total":1125,"paid":250,"remaining":875,"overdue":875},{"planId":"plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1","total":1100,"paid":1100,"remain ↔ eski [{"planId":"plan-2c9602db-06df-4ca3-8dfb-96ffa1542206","total":100,"paid":100,"remaining":0,"overdue":0},{"planId":"plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff","total":1125,"paid":250,"remaining":875,"overdue":875},{"planId":"plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1","total":1100,"paid":1100,"remain'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'repair: yeni {"fixed":[{"invoiceId":"invoice-cadc6573-4215-4ab9-a4c7-25cae959028f","number":"FIS2026000000002","planId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","from":800,"to":100},{"invoiceId":"invoice-4d829619-0fd4-4d47-88a1-0e94837a583b","number":"FIS2026000000003","planId":"plan-6e6830e4-6d40-4f68-840d-4 ↔ eski {"fixed":[{"invoiceId":"invoice-cadc6573-4215-4ab9-a4c7-25cae959028f","number":"FIS2026000000002","planId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","from":800,"to":100},{"invoiceId":"invoice-4d829619-0fd4-4d47-88a1-0e94837a583b","number":"FIS2026000000003","planId":"plan-6e6830e4-6d40-4f68-840d-4'
+        1: 'izler: yeni [{"type":"plan.trimmed","entityId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","actorId":"user-d7ad762c-5720-47ad-ab29-f8e632323220","payload":{"accountId":"account-94452b9a-b236-46eb-a28e-336093bb441e","from":1000,"to":900,"reason":"İade IAD2026000000002"},"createdAt":"2026-11-06T06:04:59.081Z"},{" ↔ eski [{"type":"plan.trimmed","entityId":"plan-66f1024e-dc87-4d89-ba5b-fee1f63d4544","actorId":"user-d7ad762c-5720-47ad-ab29-f8e632323220","payload":{"accountId":"account-94452b9a-b236-46eb-a28e-336093bb441e","from":1000,"to":900,"reason":"İade IAD2026000000002"},"createdAt":"2026-11-06T06:04:59.081Z"},{"'
+        2: 'kartlar: yeni [{"id":"plan-0098be65-a415-429b-b0af-af94e9dafdaf","accountId":"account-0ba1c225-dc24-4c1d-9805-ac273b2405c1","total":2000,"status":"active","deletedAt":null,"updatedAt":"2026-11-06T06:05:07.631Z"},{"id":"plan-062d0271-7256-40f8-99a8-4a19c0e097e1","accountId":"account-f0faabad-d031-4fc5-a975-6c288c3 ↔ eski [{"id":"plan-0098be65-a415-429b-b0af-af94e9dafdaf","accountId":"account-0ba1c225-dc24-4c1d-9805-ac273b2405c1","total":2000,"status":"active","deletedAt":null,"updatedAt":"2026-11-06T06:05:07.631Z"},{"id":"plan-062d0271-7256-40f8-99a8-4a19c0e097e1","accountId":"account-f0faabad-d031-4fc5-a975-6c288c3'
+        3: 'taksitler: yeni [{"id":"item-02bda72e-eb6f-4c18-a4f5-c5bb63d04b4f","planId":"plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86","seq":1,"dueDate":"2026-10-13","amount":466.66,"updatedAt":"2026-11-06T06:05:07.161Z"},{"id":"item-03fa1bfe-fd43-45ad-afaa-ec66eb794526","planId":"plan-49a17e6d-ab21-49b9-810b-1e18101217ef","seq": ↔ eski [{"id":"item-02bda72e-eb6f-4c18-a4f5-c5bb63d04b4f","planId":"plan-d5b8f0d5-e559-4638-989a-ca7a0fd9aa86","seq":1,"dueDate":"2026-10-13","amount":466.66,"updatedAt":"2026-11-06T06:05:07.161Z"},{"id":"item-03fa1bfe-fd43-45ad-afaa-ec66eb794526","planId":"plan-49a17e6d-ab21-49b9-810b-1e18101217ef","seq":'
+        4: 'faturaDurumlari: yeni [["invoice-013a4186-3d43-4e09-b778-e11d93f037f1",{"payable":2500,"paid":2500,"open":0,"excess":225,"state":"paid","coveredBy":{}}],["invoice-03b2a812-8356-4e8c-86d8-028ee8cad49e",{"payable":2250,"paid":2250,"open":0,"excess":0,"state":"return","coveredBy":{}}],["invoice-03ebcbe7-50bc-47e9-b2bd-92960 ↔ eski [["invoice-013a4186-3d43-4e09-b778-e11d93f037f1",{"payable":2500,"paid":2500,"open":0,"excess":225,"state":"paid","coveredBy":{}}],["invoice-03b2a812-8356-4e8c-86d8-028ee8cad49e",{"payable":2250,"paid":2250,"open":0,"excess":0,"state":"return","coveredBy":{}}],["invoice-03ebcbe7-50bc-47e9-b2bd-92960'
+        5: 'cariler: yeni [{"id":"account-94452b9a-b236-46eb-a28e-336093bb441e","debit":7650,"credit":7350,"balance":300,"planRemaining":600,"overdue":500},{"id":"account-e67e0d37-a733-4e33-8c71-31f3bad886e7","debit":4400,"credit":2000,"balance":2400,"planRemaining":2400,"overdue":733.32},{"id":"account-4ab90932-3173-4165-94 ↔ eski [{"id":"account-94452b9a-b236-46eb-a28e-336093bb441e","debit":7650,"credit":7350,"balance":300,"planRemaining":600,"overdue":500},{"id":"account-e67e0d37-a733-4e33-8c71-31f3bad886e7","debit":4400,"credit":2000,"balance":2400,"planRemaining":2400,"overdue":733.32},{"id":"account-4ab90932-3173-4165-94'
+        6: 'adayKartlar: yeni [{"planId":"plan-2c9602db-06df-4ca3-8dfb-96ffa1542206","total":100,"paid":100,"remaining":0,"overdue":0},{"planId":"plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff","total":1125,"paid":250,"remaining":875,"overdue":875},{"planId":"plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1","total":1100,"paid":1100,"remain ↔ eski [{"planId":"plan-2c9602db-06df-4ca3-8dfb-96ffa1542206","total":100,"paid":100,"remaining":0,"overdue":0},{"planId":"plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff","total":1125,"paid":250,"remaining":875,"overdue":875},{"planId":"plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1","total":1100,"paid":1100,"remain'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a16e6df818485d98e/test/acilis-onarimi-hiz-250.test.mjs:130:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: parça parça eleme: carileri 7'şerli parçalarla okuyan eleme, tek parçalık elemeyle ve cari başına yolla her adayda aynı (parça sınırında cari düşmez)
+    ok 3 - parça parça eleme: carileri 7'şerli parçalarla okuyan eleme, tek parçalık elemeyle ve cari başına yolla her adayda aynı (parça sınırında cari düşmez)
+      ---
+      duration_ms: 90.870932
+      type: 'test'
+      ...
+    1..3
+not ok 1 - 2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir
+  ---
+  duration_ms: 1249.533975
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a16e6df818485d98e/test/acilis-onarimi-hiz-250.test.mjs:27:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 1
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1585.453948

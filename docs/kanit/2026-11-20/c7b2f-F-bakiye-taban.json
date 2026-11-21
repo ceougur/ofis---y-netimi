@@ -1,0 +1,216 @@
+{
+ "11": {
+  "cari": [
+   {
+    "name": "Dizi Müşteri Bir",
+    "dueDays": 0,
+    "debit": 2800,
+    "credit": 1400,
+    "balance": 1400,
+    "planCount": 1,
+    "activePlans": 1,
+    "planRemaining": 400,
+    "planOwnRemaining": 400,
+    "overdue": 1000,
+    "overdueCount": 2,
+    "overdueInstallments": 0,
+    "overdueInstallmentCount": 0,
+    "planOverdueCount": 0,
+    "doubtfulOpen": 0
+   },
+   {
+    "name": "Dizi Müşteri İki",
+    "dueDays": 0,
+    "debit": 8470,
+    "credit": 2360,
+    "balance": 6110,
+    "planCount": 5,
+    "activePlans": 5,
+    "planRemaining": 1750,
+    "planOwnRemaining": 1750,
+    "overdue": 4360,
+    "overdueCount": 9,
+    "overdueInstallments": 0,
+    "overdueInstallmentCount": 0,
+    "planOverdueCount": 0,
+    "doubtfulOpen": 0
+   },
+   {
+    "name": "Dizi Tedarikçi",
+    "dueDays": 0,
+    "debit": 1320,
+    "credit": 52640,
+    "balance": -51320,
+    "planCount": 0,
+    "activePlans": 0,
+    "planRemaining": 0,
+    "planOwnRemaining": 0,
+    "overdue": 0,
+    "overdueCount": 0,
+    "overdueInstallments": 0,
+    "overdueInstallmentCount": 0,
+    "planOverdueCount": 0,
+    "doubtfulOpen": 0
+   }
+  ],
+  "kasa": {
+   "in": 102700,
+   "out": 3050,
+   "balance": 99650
+  },
+  "kasaAnahtar": [
+   "entries",
+   "opening",
+   "period",
+   "totals",
+   "byMethod",
+   "method",
+   "methods",
+   "canManage"
+  ],
+  "stok": [
+   {
+    "name": "Dizi Ürün",
+    "minQty": 0,
+    "unitPrice": 50,
+    "salePrice": 0,
+    "vatRate": 20,
+    "qtyIn": 1006,
+    "qtyOut": 6,
+    "qty": 1000,
+    "value": 50000
+   }
+  ],
+  "taksit": [
+   {
+    "name": "Dizi planCovers 3",
+    "itemCount": 1
+   },
+   {
+    "name": "Dizi planCovers 4",
+    "itemCount": 2
+   },
+   {
+    "name": "Dizi planCovers 9",
+    "itemCount": 2
+   },
+   {
+    "name": "Dizi planNew 10",
+    "itemCount": 2
+   },
+   {
+    "name": "Dizi planNew 14",
+    "itemCount": 2
+   },
+   {
+    "name": "Dizi planNew 15",
+    "itemCount": 2
+   }
+  ]
+ },
+ "23": {
+  "cari": [
+   {
+    "name": "Dizi Müşteri Bir",
+    "dueDays": 0,
+    "debit": 2820,
+    "credit": 2210,
+    "balance": 610,
+    "planCount": 4,
+    "activePlans": 4,
+    "planRemaining": 250,
+    "planOwnRemaining": 850,
+    "overdue": 510,
+    "overdueCount": 3,
+    "overdueInstallments": 0,
+    "overdueInstallmentCount": 0,
+    "planOverdueCount": 0,
+    "doubtfulOpen": 0
+   },
+   {
+    "name": "Dizi Müşteri İki",
+    "dueDays": 0,
+    "debit": 5030,
+    "credit": 840,
+    "balance": 4190,
+    "planCount": 2,
+    "activePlans": 2,
+    "planRemaining": 400,
+    "planOwnRemaining": 400,
+    "overdue": 3790,
+    "overdueCount": 7,
+    "overdueInstallments": 0,
+    "overdueInstallmentCount": 0,
+    "planOverdueCount": 0,
+    "doubtfulOpen": 0
+   },
+   {
+    "name": "Dizi Tedarikçi",
+    "dueDays": 0,
+    "debit": 1800,
+    "credit": 53600,
+    "balance": -51800,
+    "planCount": 0,
+    "activePlans": 0,
+    "planRemaining": 0,
+    "planOwnRemaining": 0,
+    "overdue": 0,
+    "overdueCount": 0,
+    "overdueInstallments": 0,
+    "overdueInstallmentCount": 0,
+    "planOverdueCount": 0,
+    "doubtfulOpen": 0
+   }
+  ],
+  "kasa": {
+   "in": 102800,
+   "out": 2500,
+   "balance": 100300
+  },
+  "kasaAnahtar": [
+   "entries",
+   "opening",
+   "period",
+   "totals",
+   "byMethod",
+   "method",
+   "methods",
+   "canManage"
+  ],
+  "stok": [
+   {
+    "name": "Dizi Ürün",
+    "minQty": 0,
+    "unitPrice": 50,
+    "salePrice": 0,
+    "vatRate": 20,
+    "qtyIn": 1006,
+    "qtyOut": 6,
+    "qty": 1000,
+    "value": 50000
+   }
+  ],
+  "taksit": [
+   {
+    "name": "Dizi planCovers 4",
+    "itemCount": 0
+   },
+   {
+    "name": "Dizi planCovers 5",
+    "itemCount": 2
+   },
+   {
+    "name": "Dizi planCovers 8",
+    "itemCount": 0
+   },
+   {
+    "name": "Dizi planNew 2",
+    "itemCount": 2
+   },
+   {
+    "name": "Dizi planNew 9",
+    "itemCount": 2
+   }
+  ]
+ }
+}

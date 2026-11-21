@@ -2,7 +2,7 @@
 // Kasa'dan düşen hareket ana defterde de yoktur), yevmiyeyi ve mizanı kurar, mutabakat kapısını çalıştırır.
 //   GET /api/workspace/ledger?from=&to=  → mizan + mutabakat (Finans raporları yetkisi)
 // Rapor merkezi "Hesap Planı Mizanı", "Yevmiye Defteri" ve "Defter Mutabakatı" raporlarını bu servisten üretir.
-import { ACCOUNT_PLAN, CHART, journal, moneyAccount, reconcile, trialBalance } from "../lib/general-ledger.mjs";
+import { ACCOUNT_PLAN, CHART, EXPORT_EXEMPTIONS, journal, moneyAccount, reconcile, trialBalance } from "../lib/general-ledger.mjs";
 import { DOUBTFUL_GL } from "../lib/doubtful-gl.mjs";
 import { doubtfulExpected, doubtfulRows, doubtfulUsed } from "../lib/bank/doubtful.mjs";
 import { systemClock } from "../lib/clock.mjs";
@@ -15,6 +15,8 @@ import { leanAll } from "../lib/lean-rows.mjs";
 import { coverBounds } from "../lib/bank/opening-cover.mjs";
 import { commissionGlOf, commissionReady, salesSql as commissionSalesSql, settledSql as commissionSettledSql } from "../lib/bank/pos-commission.mjs";
 import { roundMoney } from "../lib/money.mjs";
+import { CLOSE_RULE_WAIVE, waivedOf, waivesSql } from "../lib/accounts.mjs";
+import { oldCollectionSql, oldReturnVatSql, ruleShiftOf } from "../lib/ledger-rule-shift.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // Carisiz evrak satırlarının yazım sırası tabanı (MM8): cari satırlarının rowid'lerinden büyük (aynı gün aynı sınıfta onlardan sonra gelir).
@@ -144,8 +146,10 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       // 2.5.0 Ç5-A (KG-5; B5): yüklenen kart (import_id) — yükleme damgası (plan_imports.created_at; yerel günü journal()'da) ve açılış satırlarının toplamı (P). Eski dosyada: yok.
       const imported = hasColumn("plans", "import_id") && has("plan_imports");
       const planKeys = [[set?.parties, "SELECT id FROM plans WHERE account_id IN $"], [set?.plans, own("plans")]];
+      // 2.5.0 Ç7b tur 3b: kapatma kuralı (göç 53; lib/accounts.mjs waivedOf) — sütun yoksa (göç öncesi depo) eski veri = eski kural.
+      const closeRule = hasColumn("plans", "close_rule") ? "p.close_rule" : `'${CLOSE_RULE_WAIVE}'`;
       out.plans = all(
-        `SELECT p.id, p.rowid AS seq, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
+        `SELECT p.id, p.rowid AS seq, p.total, p.status, ${closeRule} AS closeRule, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
                 COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE ${X}p.deleted_at IS NULL${where("p", planKeys, "AND")}`,
@@ -202,10 +206,18 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       }
     }
     // Fatura (v2.0.15): yalnız kesilmiş olanlar (taslak ve iptal deftere girmez). Carisi silinmiş fatura olamaz (silme engelli).
+    // 2.5.0 Ç7b (KG-24 = A; BAŞ MİMAR KARARI B-3 = A): satış / SMM'nin ihracat istisna kodlu kalem payı (general-ledger exportSplit) — yalnız ihracat kalemi olan faturada, hesap
+    // başına [ihracat kalemleri neti, bütün kalemlerin neti] (kuruş, belge para birimi); öbür faturada NULL. invoice_lines(invoice_id, seq) indeksiyle fatura başına bir arama.
+    const exportCodes = EXPORT_EXEMPTIONS.map(code => `'${code}'`).join(", ");
+    const exportJson = has("invoice_lines")
+      ? `CASE WHEN i.kind IN ('sale', 'smm') AND EXISTS (SELECT 1 FROM invoice_lines l WHERE l.invoice_id = i.id AND l.exemption_code IN (${exportCodes}))
+              THEN (SELECT json_group_object(acc, json_array(e, t)) FROM (SELECT l.gl_account AS acc, SUM(CASE WHEN l.exemption_code IN (${exportCodes}) THEN CAST(ROUND(l.net * 100) AS INTEGER) ELSE 0 END) AS e,
+                    SUM(CAST(ROUND(l.net * 100) AS INTEGER)) AS t FROM invoice_lines l WHERE l.invoice_id = i.id GROUP BY l.gl_account)) END AS exportJson`
+      : "NULL AS exportJson";
     if (has("invoices")) {
       out.invoices = all(
         `SELECT i.id, i.rowid AS seq, i.kind, i.issue_date AS date, i.number, i.gl_json AS glJson, i.try_vat AS tryVat, i.try_withheld AS tryWithheld, i.try_stoppage AS tryStoppage,
-                i.try_payable AS tryPayable, a.type AS accountType, a.id AS party
+                i.try_payable AS tryPayable, a.type AS accountType, a.id AS party, ${exportJson}
          FROM invoices i ${J} accounts a ON a.id = i.account_id AND a.deleted_at IS NULL WHERE ${X}i.status = 'issued'${where("i", [[set?.parties, "SELECT id FROM invoices WHERE account_id IN $"], [set?.invoices, own("invoices")]], "AND")}`,
         wanted(set?.parties, set?.invoices),
       );
@@ -293,6 +305,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     // düşer (integrity-scope FULL_TABLES). Alt defter hesabına (beklenen bakiyesi olan her hesap: cari kontrol hesapları dahil) fiş yazılmaz — Ç2 tur 1: fiş denetiminde
     // 400 (aşağıda subledgerAccounts); kapı ikinci katman (C2-FIS-DEFTERI-TASARIM.md §11).
     if (!filter) out.vouchers = voucherJournalRows(store);
+    // 2.5.0 Ç7b tur 2c (KURAL GEÇİŞ GÜNÜ; lib/ledger-rule-shift.mjs): KG-3 / KG-8 / F-08'in eski ↔ yeni yönü — süzgeçli kurulumda da aynı (tek tanım; iki küçük sorgu).
+    out.ruleShift = ruleShiftOf(store);
     return out;
   }
   // 2.5.0 Ç5-A: carisiz evrakın karşı hesabı journal()'da (açılış evrakı 519, formdan carisiz 649.90 / 770.90 — S49); 2.4.9'da burada 602 / 770'e çevriliyordu.
@@ -334,6 +348,10 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       const code = { customer: "120", supplier: "320", other: "336" }[account.type] || "120";
       out[code] = roundMoney(out[code] + (Number(account.balance) || 0));
     }
+    // 2.5.0 Ç7b (KG-3 = A; B-2): kayıt (dosya) tahsilatları 336.90'ın alacağındadır (cari değil) — 336'nın beklenenine kayıt alt defterinin kendi toplamıyla katılır.
+    // Tur 2c (KURAL GEÇİŞ GÜNÜ; lib/ledger-rule-shift.mjs): geçiş gününde / öncesinde tarihli tahsilat eski yönde (602) — 336'ya katılmaz.
+    const shift = ruleShiftOf(store);
+    if (has("payments")) out[336] = roundMoney(out[336] - Number(store.get(`SELECT COALESCE(SUM(CAST(ROUND(amount * 100) AS INTEGER)), 0) AS n FROM payments WHERE NOT ${oldCollectionSql(shift, "date")}`).n) / 100);
     // Çek/senet alt defteri (2.2.0 İz 4.2, plan §3.11a): portföydeki alınan çek 101, senet 121; ödenecek verilen çek 103, senet 321. 121/321
     // satırı yalnız senet girilmişse (silinmiş olsa da) açılır: senet kullanmayan kurulumun Defter Mutabakatı ve Mutabakat Testi'nin denetim
     // listesi 2.1.0 ile aynı kalır (300/309 kuralı gibi). Senedi olmayan veride yevmiye 121/321'e satır yazmaz.
@@ -358,25 +376,33 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     // kartın kalanı vazgeçilen alacaktır (sıfırlanır). Carili kartların alacağı cari bakiyesinin içindedir (120/320/336).
     if (has("plans")) {
       let open = 0;
+      // 2.5.0 Ç7b tur 3b: düşülen kalan TEK yardımcıdan (lib/accounts.mjs waivedOf; Borçta Kalsın kartında 0 — kalan 127'de kalır).
+      const closeRule = hasColumn("plans", "close_rule") ? "p.close_rule" : `'${CLOSE_RULE_WAIVE}'`;
       for (const plan of store.all(
-        `SELECT p.total, p.status, p.covers_balance AS coversBalance,
+        `SELECT p.total, p.status, ${closeRule} AS closeRule, p.covers_balance AS coversBalance,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND a.id IS NULL`,
       )) {
         const total = plan.coversBalance ? 0 : Number(plan.total) || 0;
-        const left = roundMoney((Number(plan.total) || 0) - (Number(plan.paid) || 0));
-        open = roundMoney(open + total - (Number(plan.paid) || 0) - (plan.status === "closed" ? Math.max(0, left) : 0));
+        open = roundMoney(open + total - (Number(plan.paid) || 0) - waivedOf(plan, plan.paid));
       }
       out[127] = open;
     }
-    // Vergi hesapları (v2.0.15) — fatura alt defterinin kendi toplamları: 191 İndirilecek KDV (alış − alıştan iade), 391
-    // Hesaplanan KDV (satış − satıştan iade; tevkifat düşülmüş), 360 tevkifat ve stopaj (alıcı olarak kestiklerimiz),
+    // Vergi hesapları (v2.0.15) — fatura alt defterinin kendi toplamları: 191 İndirilecek KDV (alış + satıştan iade; Ç7b KG-8), 391
+    // Hesaplanan KDV (satış + alıştan iade; tevkifat düşülmüş; Ç7b F-08), 360 tevkifat ve stopaj (alıcı olarak kestiklerimiz),
     // 193 stopaj (müşterinin bizden kestiği). Borç bakiyesi artı.
     if (has("invoices")) {
+      // Tur 2c (KURAL GEÇİŞ GÜNÜ; lib/ledger-rule-shift.mjs): geçiş gününde / öncesinde ya da güncellemeden önce mahsup edilmiş (etkin) ayda iade KDV'si ESKİ yönde (satıştan iade 391'in
+      // borcunda, alıştan iade 191'in alacağında) — türetmeyle (journal) aynı tanım.
+      const old = oldReturnVatSql(shift, "i.issue_date");
       const sums = store.get(
-        `SELECT COALESCE(SUM(CASE kind WHEN 'purchase' THEN CAST(ROUND(try_vat * 100) AS INTEGER) WHEN 'purchase_return' THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v191,
+        // 2.5.0 Ç7b (KG-8 = A, F-07 / F-08; B-2): satıştan iade KDV'si 191'in borcunda (Ç7b öncesi 391'in borcunda), alıştan iade KDV'si 391'in alacağında (Ç7b öncesi 191'in alacağında).
+        `SELECT COALESCE(SUM(CASE WHEN kind = 'purchase' THEN CAST(ROUND(try_vat * 100) AS INTEGER)
+                                  WHEN kind = 'sale_return' AND NOT ${old} THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER)
+                                  WHEN kind = 'purchase_return' AND ${old} THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v191,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER))
-                                  WHEN kind = 'sale_return' THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER) END), 0) AS v391,
+                                  WHEN kind = 'sale_return' AND ${old} THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER)
+                                  WHEN kind = 'purchase_return' AND NOT ${old} THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v391,
                 COALESCE(SUM(CASE kind WHEN 'purchase' THEN -(CAST(ROUND(try_withheld * 100) AS INTEGER) + CAST(ROUND(try_stoppage * 100) AS INTEGER))
                                        WHEN 'purchase_return' THEN CAST(ROUND(try_withheld * 100) AS INTEGER) + CAST(ROUND(try_stoppage * 100) AS INTEGER) END), 0) AS v360,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN CAST(ROUND(try_stoppage * 100) AS INTEGER) END), 0) AS v193
@@ -781,7 +807,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
           WHEN e.kind IN ('credit', 'in') THEN -${c("e.amount")}
           ELSE 0 END) FROM account_entries e WHERE e.account_id = a.id), 0)` : "0",
       has("plans") ? `COALESCE((SELECT SUM(CASE WHEN p.covers_balance THEN 0 ELSE ${c("p.total")} END
-          - CASE WHEN p.status = 'closed' THEN MAX(0, ${c(`(p.total - COALESCE((SELECT SUM(CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) FROM plan_entries x WHERE x.plan_id = p.id), 0))`)}) ELSE 0 END)
+          - CASE WHEN ${waivesSql("p", { column: hasColumn("plans", "close_rule") })} THEN MAX(0, ${c(`(p.total - COALESCE((SELECT SUM(CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) FROM plan_entries x WHERE x.plan_id = p.id), 0))`)}) ELSE 0 END)
           FROM plans p WHERE p.account_id = a.id AND +p.deleted_at IS NULL), 0)` : "0",
       has("plans") && has("plan_entries") ? `COALESCE((SELECT SUM(CASE WHEN pe.kind = 'in' THEN -${c("pe.amount")} ELSE ${c("pe.amount")} END) FROM plans p CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE p.account_id = a.id AND +p.deleted_at IS NULL), 0)` : "0",
       has("invoices") ? `COALESCE((SELECT SUM(CASE WHEN ${c("i.try_payable")} <= 0 THEN 0 WHEN i.kind IN ('sale', 'smm', 'purchase_return') THEN ${c("i.try_payable")} WHEN i.kind IN ('sale_return', 'purchase') THEN -${c("i.try_payable")} ELSE 0 END) FROM invoices i WHERE i.account_id = a.id AND +i.status = 'issued'), 0)` : "0",

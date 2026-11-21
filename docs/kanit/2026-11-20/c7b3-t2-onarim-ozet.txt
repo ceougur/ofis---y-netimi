@@ -1,0 +1,16 @@
+başta 07:05:21 · 3.54 3.29 3.14 2/176 20898 · yeni 451f9828
+acilis-onarimi-hiz-250 yeni UTC çıkış 1
+acilis-onarimi-hiz-250 taban UTC çıkış 0
+acilis-onarimi-hiz-250 yeni Europe/Istanbul çıkış 1
+acilis-onarimi-hiz-250 taban Europe/Istanbul çıkış 0
+== acilis-onarimi-hiz-250-taban-Europe-Istanbul.tap # tests 3 # pass 3 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-acilis-onarimi-hiz-250-taban-Europe-Istanbul: GEÇTİ · çıkış 0 · 3/3 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b85d9e2 +4 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node
+== acilis-onarimi-hiz-250-taban-UTC.tap # tests 3 # pass 3 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-acilis-onarimi-hiz-250-taban-UTC: GEÇTİ · çıkış 0 · 3/3 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b85d9e2 +4 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+== acilis-onarimi-hiz-250-yeni-Europe-Istanbul.tap # tests 3 # pass 1 # fail 2 # cancelled 0 # skipped 0  [kanit] c7b3-acilis-onarimi-hiz-250-yeni-Europe-Istanbul: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 1/3 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 451f982 +1 izlenm
+    not ok 1 - öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı küçük
+    not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda
+not ok 1 - 2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir
+== acilis-onarimi-hiz-250-yeni-UTC.tap # tests 3 # pass 1 # fail 2 # cancelled 0 # skipped 0  [kanit] c7b3-acilis-onarimi-hiz-250-yeni-UTC: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 1/3 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 451f982 +1 izlenmeyen · linu
+    not ok 1 - öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı küçük
+    not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda
+not ok 1 - 2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir
+BİTTİ 07:05:27 · 3.42 3.27 3.13 3/179 21137

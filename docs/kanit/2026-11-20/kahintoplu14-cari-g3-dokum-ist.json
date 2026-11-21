@@ -1,0 +1,548 @@
+{
+ "ozet": {
+  "GENEL/yeni": 4,
+  "S210-S211/kalkan": 15,
+  "S210-S211/yeni": 40
+ },
+ "senaryo": {
+  "d50-c5-s206-s25c-b1-iptal-havale": {
+   "GENEL/yeni": 2,
+   "S210-S211/kalkan": 6,
+   "S210-S211/yeni": 14
+  },
+  "d51-c5-s210-s211-kart-kapanir": {
+   "GENEL/yeni": 2,
+   "S210-S211/kalkan": 9,
+   "S210-S211/yeni": 26
+  }
+ },
+ "etiket_degisen": 0,
+ "dokum": [
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:cari:I2:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": true,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:cari:I2:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:cari:I2:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:cari:I3:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": true,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:cari:I3:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:cari:I3:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:hareket:i2b:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:hareket:i2b:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:hareket:i2b:vade",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:kart:KI2:mevcutBorc",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:kart:KI2:toplam",
+   "eski": 90000,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:kart:KI2:var",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:kart:KI3:mevcutBorc",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:kart:KI3:toplam",
+   "eski": 90000,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:kart:KI3:var",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 1,
+   "sinif": "GENEL",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:projeksiyon:hareket:i2b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 10000,
+    "date": "2026-03-01",
+    "direction": "in"
+   },
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 1,
+   "sinif": "GENEL",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:takvim:fatura:FI2",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:takvim:fatura:FI3",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:takvim:hareket:i2b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 10000,
+    "dueDate": "2026-03-01",
+    "direction": "in",
+    "label": "Tahsil Edilecek Borç",
+    "state": "overdue",
+    "days": -106,
+    "cari": "I2",
+    "person": "İpek Çok Kalemli"
+   },
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:vadeTakip:hareket:i2b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 10000,
+    "date": "2026-03-01",
+    "direction": "in"
+   },
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:cari:J1:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": true,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:cari:J1:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:cari:J1:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:cari:J2:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": true,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:cari:J2:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 50000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:cari:J2:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 50000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:cari:J3:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": true,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:cari:J3:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 20000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:cari:J3:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 20000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:fatura:FJ2b:acik",
+   "eski": "(denetim yok)",
+   "yeni": 50000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:hareket:j1b:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:hareket:j1b:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:hareket:j1b:vade",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:hareket:j3b:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:hareket:j3b:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 20000,
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:hareket:j3b:vade",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:kart:KJ1:mevcutBorc",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:kart:KJ1:toplam",
+   "eski": 90000,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:kart:KJ1:var",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:kart:KJ2:mevcutBorc",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:kart:KJ2:toplam",
+   "eski": 90000,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:kart:KJ2:var",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:kart:KJ3:mevcutBorc",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:kart:KJ3:toplam",
+   "eski": 60000,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:kart:KJ3:var",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S210-S211",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 2,
+   "sinif": "GENEL",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:projeksiyon:hareket:j1b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 10000,
+    "date": "2026-03-01",
+    "direction": "in"
+   },
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:projeksiyon:hareket:j3b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 20000,
+    "date": "2026-03-01",
+    "direction": "in"
+   },
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 2,
+   "sinif": "GENEL",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:takvim:fatura:FJ1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:takvim:fatura:FJ2",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:takvim:fatura:FJ2b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 50000,
+    "direction": "in"
+   },
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:takvim:fatura:FJ3",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:takvim:hareket:j1b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 10000,
+    "dueDate": "2026-03-01",
+    "direction": "in",
+    "label": "Tahsil Edilecek Borç",
+    "state": "overdue",
+    "days": -50,
+    "cari": "J1",
+    "person": "Jale Çok Kalemli"
+   },
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:takvim:hareket:j3b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 20000,
+    "dueDate": "2026-03-01",
+    "direction": "in",
+    "label": "Tahsil Edilecek Borç",
+    "state": "overdue",
+    "days": -50,
+    "cari": "J3",
+    "person": "Jeyan Çok Kalemli Tahsilatsız"
+   },
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:vadeTakip:hareket:j1b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 10000,
+    "date": "2026-03-01",
+    "direction": "in"
+   },
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "anahtar": "k1:vadeTakip:hareket:j3b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 20000,
+    "date": "2026-03-01",
+    "direction": "in"
+   },
+   "sinif": "S210-S211",
+   "tur": "yeni"
+  }
+ ]
+}

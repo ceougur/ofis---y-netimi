@@ -1,0 +1,32 @@
+{
+  "ad": "c7bfix-e2e-tur3-yeni",
+  "komut": "node test/e2e/senaryo-c7b-tur3-250.mjs",
+  "commit": "552d477722442263f5af2a0b66941b4c71fd5cd2",
+  "dal": "worktree-agent-aa660861cba7cd284",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T23:51:19.498Z",
+  "sure_sn": 215.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bfix-a66/kanit/2026-11-20/c7bfix-e2e-tur3-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa660861cba7cd284",
+  "ham_cikti_sha256": "abaf3105d4a4e9b7af0fa39bd34037eb92b7af4041fb622148d10816d0157d35",
+  "ham_cikti_bayt": 4369
+}

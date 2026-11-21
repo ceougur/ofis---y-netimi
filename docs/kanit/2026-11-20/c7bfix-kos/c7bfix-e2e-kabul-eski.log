@@ -1,0 +1,66 @@
+(node:17589) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17589) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ A) Kural Farkı Düzeltme: Ç7b satırları (fiş satırları elle), farkı doğuran 6 kayıt, onay Tab + Boşluk, Fişi Kaydet → Düzeltildi
+  ✓ Mutabakat satırında kural farkı uyarısı (Mutabakat: 62 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı. Uyarı (yeni işlemleri engellemez): Kural Değişikliği Farkı (Kil)
+  satırlar: 600Yurt İçi Satışlar (Stok)₺6.200,00 | 600.90Yurt İçi Satışlar (Stok)₺7.200,00 | 601Yurt Dışı Satışlar₺5.000,00 | 602Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)₺6.500,00 | 602.90Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)₺500,00 | 649Diğer Olağan Gelir ve Kârlar₺300,00 | 649.90Diğer Olağan Gelir ve Kârlar₺300,00 | 770Genel Yönetim Giderleri₺200,00 | 770.90Genel Yönetim Giderleri₺200,00 | Toplam₺13.200,00₺13.200,00
+  ✓ fiş satırları elle (A 600.90 7200, A 601 5000, A 602.90 500, A 649.90 300, A 770 200, B 600 6200, B 602 6500, B 649 300, B 770.90 200)
+  ✓ Toplam 13.200 / 13.200 (Toplam₺13.200,00₺13.200,00)
+  kaynaklar: 02.09.2026KasaHurda satışı649 +₺300,00 · 649 −₺300,00 | 02.09.2026KasaÇay ocağı770 −₺200,00 · 770 +₺200,00 | 03.09.2026Cari (borç yaz)Hizmet bedeli602 +₺500,00 · 602 −₺500,00 | 04.09.2026Stok (veresiye satış)Stok satışı: Vida Kutusu 4 Adet × 300,00 TL · Veresiye satış600 +₺1.200,00 · 600 −₺1.200,00 | 05.09.2026Taksit kartıTaksitli satış / hizmet602 +₺6.000,00 · 600 −₺6.000,00 | 11.09.2026Satış faturasıFIS2026000000002600 +₺5.000,00 · 601 −₺5.000,00
+  ✓ farkı doğuran kayıt 6 (6)
+  ! GÖZLEM (ürün davranışı — raporda): 'Farkı Doğuran Kayıtlar'ın 'Hesap Farkı' sütunu alt hesabı göstermiyor — Kasa + satırı: "02.09.2026KasaHurda satışı649 +₺300,00 · 649 −₺300,00" (ana hesap 649 iki kez, biri −, biri +; hangisinin 649.90 olduğu okunmuyor)
+  ✓ onaysız Fişi Kaydet pasif
+  ✓ pasifliğin nedeni görünür yazı
+  ✓ onay kutusuna Tab ile ulaşıldı
+  ✓ onaydan sonra Fişi Kaydet etkin
+  ✓ fiş yazıldı (veri tabanı)
+
+■ B1) Yevmiye Defteri — her süzgeç: Borç TOPLAM = Alacak TOPLAM = satırlar; .90 alt hesapları ve 601 görünür
+  ✓ Bu Ay: boş dönem (ipucu; elle — 10.11–10.12 arasında kayıt yok)
+  ✓ Geçen Ay: 6 satır, TOPLAM Borç ₺3.000,00 = Alacak ₺3.000,00 = satırlar
+  ✓ Son 30 Gün: boş dönem (ipucu; elle — 10.11–10.12 arasında kayıt yok)
+  ✓ Bu Yıl: 43 satır, TOPLAM Borç ₺48.800,00 = Alacak ₺48.800,00 = satırlar
+  ✓ Bu Yıl: Hesap sütununda 649.90, 770.90, 602.90, 600.90, 601 (600.90, 601, 602.90, 649.90, 770.90)
+  ✓ Tüm Zamanlar: 43 satır, TOPLAM Borç ₺48.800,00 = Alacak ₺48.800,00 = satırlar
+
+■ B2) Hesap Planı Mizanı — her süzgeç: TOPLAM = satırlar; 601 Yurt Dışı Satışlar 5.000 Alacak
+  ✓ Bu Ay: TOPLAM = satırlar (boş ay — yalnız devir)
+  ✓ Geçen Ay: 11 hesap, TOPLAM Borç ₺3.000,00 / Alacak ₺3.000,00 = satırlar
+  ✓ Son 30 Gün: 11 hesap, TOPLAM Borç ₺0,00 / Alacak ₺0,00 = satırlar
+  ✓ Bu Yıl: 11 hesap, TOPLAM Borç ₺48.800,00 / Alacak ₺48.800,00 = satırlar
+  ✓ 601 satırı: ["601","Yurt Dışı Satışlar","₺0,00","₺0,00","₺5.000,00","₺5.000,00","Alacak"]
+  ✓ Tüm Zamanlar: 11 hesap, TOPLAM Borç ₺48.800,00 / Alacak ₺48.800,00 = satırlar
+
+■ B3) KDV Özeti — her süzgeç: TOPLAM = satırlar; KDV elle (Bu Yıl 3.500, Geçen Ay 500, Bu Ay / Son 30 Gün boş)
+  ✓ Bu Ay: boş dönem (ipucu)
+  ✓ Geçen Ay: 2 satır, KDV Σ 500 (elle 500); TOPLAM Satış 400 ↔ satırlar 400 · TOPLAM Alış 100 ↔ satırlar 100 · Net KDV (Ödenecek) 300 ↔ satırlardan 300
+  ✓ Son 30 Gün: boş dönem (ipucu)
+  ✓ Bu Yıl: 7 satır, KDV Σ 3500 (elle 3500); TOPLAM Satış 3000 ↔ satırlar 3000 · TOPLAM Alış 500 ↔ satırlar 500 · Net KDV (Ödenecek) 2500 ↔ satırlardan 2500
+  ✓ Tüm Zamanlar: 7 satır, KDV Σ 3500 (elle 3500); TOPLAM Satış 3000 ↔ satırlar 3000 · TOPLAM Alış 500 ↔ satırlar 500 · Net KDV (Ödenecek) 2500 ↔ satırlardan 2500
+
+■ C) Banka → Alt Hesap Mizanı: .90 alt hesapları yok (B-10 = B), TOPLAM satırı
+  ✓ banka Alt Hesap Mizanı'nda .90 alt hesabı yok (boş)
+
+■ E) Kartı Kapat — eskimiş 'Kalan' onayı (YB-1): pencere kendini yeniler (E0); soru ekrandayken tahsilat girilir → onay reddedilir, GÜNCEL kalanla yeniden sorulur, kart kapanır
+  ✓ kart penceresi Kalan ₺900,00: ₺900,00
+  ✓ E0: pencere ikinci oturumun tahsilatından sonra kendini yeniler (Kalan ₺800,00): ₺800,00
+  ✓ ilk soru penceredeki kalanla:  × ONAY Kartı Kapat Kalan ₺800,00 açıkken “Ayşe Kapanış Kartı” kartı kapatılsın mı? Ödeme planı biter; kalan borç carinin borcunda kalır, ya
+  ✓ ön koşul: tahsilat soru ekrandayken yazıldı (veri tabanı)
+    [soru] "Kartı Kapat" → Kartı Kapat (eskimiş kalanla — sunucu reddetmeli; ders 34)
+  ✓ yeniden soru GÜNCEL kalanla:  × ONAY Kartı Kapat Kalan ₺500,00 açıkken “Ayşe Kapanış Kartı” kartı kapatılsın mı? Ödeme planı biter; kalan borç carinin borcunda kalır, ya
+  ✓ ilk onay sunucuda reddedildi (409; gelen [409]) — ön koşul oluştu
+  ✓ reddedilen ilk onay kartı kapatmadı (veri tabanı)
+    [soru] "Kartı Kapat" → Kartı Kapat (güncel kalan 500 — beklenen soru)
+  ✓ kart kapandı (veri tabanı)
+  ✓ ikinci onay 200 (gelen [409,200])
+
+■ D) Telefon genişliği (390 px): KDV Özeti açılır, sayfa yatay kaymaz, TOPLAM görünür
+  ✓ sayfa yatay kaymıyor (scrollWidth 390 ≤ 390)
+  ✓ TOPLAM satırı görünür
+  ✓ sayfa hatası yok
+
+GÖZLEM (1): 'Farkı Doğuran Kayıtlar'ın 'Hesap Farkı' sütunu alt hesabı göstermiyor — Kasa + satırı: "02.09.2026KasaHurda satışı649 +₺300,00 · 649 −₺300,00" (ana hesap 649 iki kez, biri −, biri +; hangisinin 649.90 olduğu okunmuyor)
+
+✓ senaryo-c7b-kabul-250: 39 geçti, 0 kaldı

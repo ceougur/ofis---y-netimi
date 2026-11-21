@@ -1,0 +1,53 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "d48-c5-kg3-kayit-tahsilati-336",
+ "aciklama": "Bakım 21 (§32): C1 KG-3 = A — kayıt tahsilatının karşılığı gelir değil, 336.90 Sınıflandırılmamış Tahsilatlar (mizan ana hesap düzeyinde 336; 602 yok). C2 kural geçiş günü — kâhinin her senaryosu kilitsiz güncellemedir (geçiş yok): güncellemeden SONRA konan dönem kilidi, programın yeniden açılması, kilidin açılıp yeniden konması geçiş günü koymaz; bütün kayıt tahsilatları 336 (Y21-2 (i) / (ii)). Anahtar kapatılınca eski satırlar yerinde kalır.",
+ "dayanak": "KARARLAR.md §32 (Y21-1, Y21-2), §8 C1 (C1.1–C1.5); kural kitabı §9 KG-3, §3-T T-14",
+ "bugun": "2026-06-15",
+ "anahtar": {
+  "legacyCasePayments": true
+ },
+ "adimlar": [
+  {"id": "t", "islem": "tablo_yukle", "sekmeler": [{"ad": "İcra", "tur": "icra", "kayitlar": [{"no": "2026/1", "isim": "Kemal Kaya", "alacak": "5000", "kalan": "5000"}, {"no": "2026/2", "isim": "Leyla Ak", "alacak": "3000", "kalan": "3000"}]}]},
+  {"id": "p1", "islem": "kayit_tahsilat", "kayit": "2026/1", "tutar": "400", "tarih": "2026-06-08"},
+  {"id": "p2", "islem": "kayit_tahsilat", "kayit": "2026/2", "tutar": "250", "tarih": "2026-06-10"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "dk1", "islem": "donem_kilitle", "tarih": "2026-06-09"},
+  {"id": "p3", "islem": "kayit_tahsilat", "kayit": "2026/1", "tutar": "100", "tarih": "2026-06-12"},
+  {"id": "k2", "islem": "kontrol"},
+  {"id": "r1", "islem": "sunucu_yeniden", "anahtar": {"legacyCasePayments": true}},
+  {"id": "k3", "islem": "kontrol"},
+  {"id": "dk2", "islem": "donem_kilitle", "tarih": ""},
+  {"id": "dk3", "islem": "donem_kilitle", "tarih": "2026-06-14"},
+  {"id": "k4", "islem": "kontrol"},
+  {"id": "r2", "islem": "sunucu_yeniden", "anahtar": {}},
+  {"id": "k5", "islem": "kontrol"}
+ ],
+ "elleBeklenen": {
+  "adim:p1:durum": "ok",
+  "adim:p2:durum": "ok",
+  "adim:dk1:durum": "ok",
+  "adim:p3:durum": "ok",
+  "adim:r1:durum": "ok",
+  "adim:dk2:durum": "ok",
+  "adim:dk3:durum": "ok",
+  "adim:r2:durum": "ok",
+  "k1:kasa": 65000,
+  "k1:mizan:100": 65000,
+  "k1:mizan:336": -65000,
+  "k1:mizan:120": 0,
+  "k2:kasa": 75000,
+  "k2:mizan:100": 75000,
+  "k2:mizan:336": -75000,
+  "k3:kasa": 75000,
+  "k3:mizan:100": 75000,
+  "k3:mizan:336": -75000,
+  "k4:kasa": 75000,
+  "k4:mizan:100": 75000,
+  "k4:mizan:336": -75000,
+  "k5:kasa": 75000,
+  "k5:mizan:100": 75000,
+  "k5:mizan:336": -75000
+ },
+ "elleYok": ["k1:mizan:602", "k2:mizan:602", "k3:mizan:602", "k4:mizan:602", "k5:mizan:602"]
+}

@@ -1646,6 +1646,58 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 51,
+    name: "v2.5.0 Ç7b kural geçiş günü ve eski KDV mahsuplarının kural sürümü (yalnız işaret; para dışı)",
+    up(store, { now = systemClock } = {}) {
+      // 2.5.0 Ç7b tur 2c (docs/erp/C7B-FATURA-TASARIM.md §13; BAŞ MİMAR KARARI 19.11 04:35 B-6 ve 05:07 B-8 = A; lib/ledger-rule-shift.mjs): KG-3 (kayıt tahsilatı 336.90) ve KG-8 / F-08
+      // (iade KDV'si 191 ↔ 391) yeni yönü KURAL GEÇİŞ GÜNÜ'nden sonraki kayıtlara. YALNIZ İŞARET — tutar, yön, tarih DEĞİŞMEZ (saklı KDV mahsubu dahil: verilmiş beyan ile defter aynı kalır).
+      //   (1) settings 'ledger.ruleShiftThrough' = o anki dönem kilidi (tam tarih değilse '' — kilitsiz dosyada geçiş yok). INSERT OR IGNORE: yeniden koşan göç var olan değeri DEĞİŞTİRMEZ
+      //       (sonradan konan / taşınan kilit geçiş günü olmaz — tek tanım).
+      //   (2) vat_offsets.rule_version ('' = güncel kural; sütunun varsayılanı, yazım yolu değişmez). Sütun BU GÖÇTE eklendiyse var olan bütün mahsuplar (etkin + geri alınmış) '2.4.9'
+      //       — güncellemeden önce yazılmıştır; yeniden koşuda (sütun var) işaretlenmez (yeni mahsup eski sayılmaz).
+      // Göç öncesi (≤ 50) yedeğin geri yüklenmesi bu göçü o yedeğin kilidiyle yeniden koşar. Kilit izine girmez (lib/integrity.mjs; kapı dışı değişiklik kilitli dönemde Kural Değişikliği
+      // Farkı olarak görünür). Eşgüçlü.
+      store.raw("migration.v51", () => {
+        if (columnExists(store, "settings", "value")) {
+          const lock = String(store.get("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")?.value || "");
+          store.run("INSERT OR IGNORE INTO settings (key, value, updated_at) VALUES ('ledger.ruleShiftThrough', ?, ?)", isFullDate(lock) ? lock : "", now().toISOString());
+        }
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'vat_offsets'") || columnExists(store, "vat_offsets", "rule_version")) return;
+        addColumn(store, "vat_offsets", "rule_version", "TEXT NOT NULL DEFAULT ''");
+        store.run("UPDATE vat_offsets SET rule_version = '2.4.9'");
+      });
+    },
+  },
+  {
+    version: 52,
+    name: "v2.5.0 Ç7b KG-7 alış faturasının KDV İndirim Dönemi (invoices.vat_period; boş = belge ayı; para dışı)",
+    up(store) {
+      // 2.5.0 Ç7b tur 2d (KG-7 = A, KDVK 29/3; EK-1 M8 (1); docs/erp/C7B-FATURA-TASARIM.md §2.6, §14.1): alış faturasının 191'inin hangi ayın KDV mahsubuna girdiği. YYYY-AA; '' = belge ayı.
+      // Yalnız ekleyici: var olan faturalara değer YAZILMAZ ('' = bugünkü davranış — mahsup tutarları göçten önceki gibi). Defter maddesi okumaz (191 belge tarihinde); okuyan routes/tax.mjs
+      // figureTable. Eşgüçlü (sütun varsa dokunulmaz).
+      store.raw("migration.v52", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoices'") || columnExists(store, "invoices", "vat_period")) return;
+        addColumn(store, "invoices", "vat_period", "TEXT NOT NULL DEFAULT ''");
+      });
+    },
+  },
+  {
+    version: 53,
+    name: "v2.5.0 Ç7b Kartı Kapat kuralının kart başına işareti (plans.close_rule; var olan kapalı kartlar eski kural; para dışı)",
+    up(store) {
+      // 2.5.0 Ç7b tur 3b (karar (6) 2B-S5 / S10 = A "Borçta Kalsın", KG-23 = A, B-11 = A; docs/erp/C7B-FATURA-TASARIM.md §17.1): Kartı Kapat artık kalanı carinin borcundan DÜŞMEZ
+      // (madde yok); "önceden kapatılmış kartlar olduğu gibi kalır" → sütun BU göçte eklendiyse var olan kapalı kartlar (silinmişler dahil — Silinenler'den dönen kart da eski kuralla)
+      // '2.4.9' = eski kural (kalan düşülmüş; cari ekstresinde "kalan düşüldü", defterde 689). '' = Borçta Kalsın (sütunun varsayılanı; Kartı Kapat / Yeniden Aç yazar). YALNIZ İŞARET —
+      // tutar, tarih, durum DEĞİŞMEZ. Okuyucular TEK yardımcıdan (lib/accounts.mjs waivesRemaining / waivedOf / waivesSql). Kilit izine girer (lib/integrity.mjs plans_close_rule_lock).
+      // Eşgüçlü: yeniden koşuda (sütun var) dokunulmaz — sonradan Borçta Kalsın ile kapatılmış kart eski sayılmaz.
+      store.raw("migration.v53", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'plans'") || columnExists(store, "plans", "close_rule")) return;
+        addColumn(store, "plans", "close_rule", "TEXT NOT NULL DEFAULT ''");
+        store.run("UPDATE plans SET close_rule = '2.4.9' WHERE status = 'closed'");
+      });
+    },
+  },
 ];
 /** Excel / Sheets "Açılış portföyü" evrakının ilk olay notu (routes/cheques.mjs OPENING_PORTFOLIO_NOTE ile AYNI metin; göç 49). */
 const OPENING_PORTFOLIO_NOTE = "Açılış portföyü (Excel/Sheets)";

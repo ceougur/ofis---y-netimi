@@ -1,0 +1,194 @@
+başta 06:39:06 · 4.09 2.87 1.93 10/209 3837 · a74dd35e
+mutant 1 küçülme son taksitten (eski yön)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+  m1 koşu 1 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+          not ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 
+          not ok 3 - S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı 
+  m1 koşu 1 c7b-tur3-eski-surum-250 UTC çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+  m1 koşu 1 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+          not ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 
+          not ok 3 - S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı 
+  m1 koşu 1 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+  m1 koşu 2 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+          not ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 
+          not ok 3 - S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı 
+  m1 koşu 2 c7b-tur3-eski-surum-250 UTC çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+  m1 koşu 2 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+          not ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 
+          not ok 3 - S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı 
+  m1 koşu 2 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+mutant 2 küçülme ödenmiş kısmı da keser
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+  m2 koşu 1 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+          not ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 
+          not ok 3 - S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı 
+  m2 koşu 1 c7b-tur3-eski-surum-250 UTC çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+  m2 koşu 1 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+          not ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 
+          not ok 3 - S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı 
+  m2 koşu 1 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+  m2 koşu 2 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+          not ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 
+          not ok 3 - S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı 
+  m2 koşu 2 c7b-tur3-eski-surum-250 UTC çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+  m2 koşu 2 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+          not ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 
+          not ok 3 - S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı 
+  m2 koşu 2 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+mutant 3 S15 iptali yine reddedilir
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+  m3 koşu 1 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 7 # fail 2 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+  m3 koşu 1 c7b-tur3-eski-surum-250 UTC çıkış 1 · # tests 5 # pass 3 # fail 2 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m3 koşu 1 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 7 # fail 2 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+  m3 koşu 1 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 1 · # tests 5 # pass 3 # fail 2 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m3 koşu 2 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 7 # fail 2 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+  m3 koşu 2 c7b-tur3-eski-surum-250 UTC çıkış 1 · # tests 5 # pass 3 # fail 2 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m3 koşu 2 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 7 # fail 2 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+  m3 koşu 2 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 1 · # tests 5 # pass 3 # fail 2 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+mutant 4 iptalde kartın tahsilatı silinir
+ 1 file changed, 1 insertion(+)
+  m4 koşu 1 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 7 # fail 2 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m4 koşu 1 c7b-tur3-eski-surum-250 UTC çıkış 1 · # tests 5 # pass 2 # fail 3 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m4 koşu 1 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 7 # fail 2 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m4 koşu 1 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 1 · # tests 5 # pass 2 # fail 3 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m4 koşu 2 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 7 # fail 2 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m4 koşu 2 c7b-tur3-eski-surum-250 UTC çıkış 1 · # tests 5 # pass 2 # fail 3 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m4 koşu 2 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 7 # fail 2 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m4 koşu 2 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 1 · # tests 5 # pass 2 # fail 3 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+mutant 5 kart küçültülmeden kapanır (kalan düşülür — 689)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+  m5 koşu 1 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m5 koşu 1 c7b-tur3-eski-surum-250 UTC çıkış 1 · # tests 5 # pass 2 # fail 3 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m5 koşu 1 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m5 koşu 1 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 1 · # tests 5 # pass 2 # fail 3 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m5 koşu 2 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m5 koşu 2 c7b-tur3-eski-surum-250 UTC çıkış 1 · # tests 5 # pass 2 # fail 3 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m5 koşu 2 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+          not ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m5 koşu 2 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 1 · # tests 5 # pass 2 # fail 3 # skipped 0 
+          not ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+mutant 6 önceden kapatılmış tahsilatlı kartın faturası iptal edilir (kalan iki kez düşülür)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+  m6 koşu 1 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 8 # fail 1 # skipped 0 
+          not ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+  m6 koşu 1 c7b-tur3-eski-surum-250 UTC çıkış 1 · # tests 5 # pass 4 # fail 1 # skipped 0 
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m6 koşu 1 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 8 # fail 1 # skipped 0 
+          not ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+  m6 koşu 1 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 1 · # tests 5 # pass 4 # fail 1 # skipped 0 
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m6 koşu 2 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 8 # fail 1 # skipped 0 
+          not ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+  m6 koşu 2 c7b-tur3-eski-surum-250 UTC çıkış 1 · # tests 5 # pass 4 # fail 1 # skipped 0 
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+  m6 koşu 2 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 8 # fail 1 # skipped 0 
+          not ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+  m6 koşu 2 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 1 · # tests 5 # pass 4 # fail 1 # skipped 0 
+          not ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeni
+mutant 7 kapsayan kart açık kalır (S206)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+  m7 koşu 1 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 8 # fail 1 # skipped 0 
+          not ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (
+  m7 koşu 1 c7b-tur3-eski-surum-250 UTC çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+  m7 koşu 1 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 8 # fail 1 # skipped 0 
+          not ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (
+  m7 koşu 1 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+  m7 koşu 2 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 8 # fail 1 # skipped 0 
+          not ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (
+  m7 koşu 2 c7b-tur3-eski-surum-250 UTC çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+  m7 koşu 2 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 8 # fail 1 # skipped 0 
+          not ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (
+  m7 koşu 2 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 0 · # tests 5 # pass 5 # fail 0 # skipped 0 
+mutant 8 iptalde kapsayan kart küçülmez / kapanmaz
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+  m8 koşu 1 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+          not ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m8 koşu 1 c7b-tur3-eski-surum-250 UTC çıkış 1 · # tests 5 # pass 4 # fail 1 # skipped 0 
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+  m8 koşu 1 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+          not ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m8 koşu 1 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 1 · # tests 5 # pass 4 # fail 1 # skipped 0 
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+  m8 koşu 2 c7b-tur3-kart-250 UTC çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+          not ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m8 koşu 2 c7b-tur3-eski-surum-250 UTC çıkış 1 · # tests 5 # pass 4 # fail 1 # skipped 0 
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+  m8 koşu 2 c7b-tur3-kart-250 Europe/Istanbul çıkış 1 · # tests 9 # pass 6 # fail 3 # skipped 0 
+          not ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+          not ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (
+          not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+  m8 koşu 2 c7b-tur3-eski-surum-250 Europe/Istanbul çıkış 1 · # tests 5 # pass 4 # fail 1 # skipped 0 
+          not ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle bo
+BİTTİ 06:42:10 · 6.07 4.45 2.73 4/184 6695

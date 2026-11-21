@@ -32,7 +32,9 @@ import { collectionProblems } from "./bank/collections.mjs";
 import { doubtfulProblems, doubtfulSummary, doubtfulUsed } from "./bank/doubtful.mjs";
 import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentWanted } from "./cheque-gl.mjs";
 import { moneyAccount, partyBalances, subBalances } from "./general-ledger.mjs";
+import { oldReturnVatSql, ruleShiftOf } from "./ledger-rule-shift.mjs";
 import { toCents } from "./money.mjs";
+import { CLOSE_RULE_WAIVE, waivedOf, waivesRemaining } from "./accounts.mjs";
 
 const AUDITOR = { id: "integrity", role: "admin", permissions: [] };
 const MONEY_ACCOUNTS = new Set(["100", "102", "108", "309", "300"]);
@@ -391,20 +393,22 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         if (rule && (inTrace(pre ? rule.date(pre) : null) || inTrace(post ? rule.date(post) : null)) && differs(pre, post, rule.fields)) return `${table} kilitli dönem`;
         if (table === "plans") {
           const plain = row => row && !row.deleted_at && Number(row.covers_balance) === 0 && row.registered_on && locked(row.registered_on);
-          const closedOn = row => (row.status === "closed" && !row.deleted_at ? [day(row.closed_at || row.updated_at), day(row.registered_on || row.created_at)].sort().at(-1) : "");
+          // 2.5.0 Ç7b tur 3b (§17.1): yalnız kalanı düşülen (eski kural, close_rule '2.4.9') kartın kapanışı kilitli maddedir (689) — Borçta Kalsın kartının kapanışı defter olayı değil
+          // (lib/accounts.mjs waivesRemaining; satır ham — alan adı close_rule). Kural işareti alan listesinde: kapı dışı değişim kilitli dönemde reddedilir.
+          const closedOn = row => (row.status === "closed" && row.close_rule === CLOSE_RULE_WAIVE && !row.deleted_at ? [day(row.closed_at || row.updated_at), day(row.registered_on || row.created_at)].sort().at(-1) : "");
           // 2.5.0 Ç5-A tur 1e: yükleme bağı (LOCK_SQL plans_import_lock).
           if ((plain(pre) || plain(post)) && differs(pre, post, ["total", "account_id", "registered_on", "covers_balance", "deleted_at", "import_id"])) return "kart kilitli dönem";
           // 2.5.0 Ç5-A tur 1f (§16): Kayıt Tarihi BOŞ kart — madde tarihi oluşturma günü (LOCK_SQL plans_unregistered_lock).
           const unregistered = row => row && !row.deleted_at && Number(row.covers_balance) === 0 && !row.registered_on && locked(row.created_at);
           if ((unregistered(pre) || unregistered(post)) && differs(pre, post, ["total", "account_id", "registered_on", "covers_balance", "deleted_at", "created_at"])) return "kart kilitli dönem (Kayıt Tarihi boş)";
-          if ((locked(pre && closedOn(pre)) || locked(post && closedOn(post))) && differs(pre, post, ["account_id", "total", "status", "closed_at", "updated_at", "registered_on", "created_at", "deleted_at"])) return "kapatılmış kart kilitli dönem";
+          if ((locked(pre && closedOn(pre)) || locked(post && closedOn(post))) && differs(pre, post, ["account_id", "total", "status", "closed_at", "updated_at", "registered_on", "created_at", "deleted_at", "close_rule"])) return "kapatılmış kart kilitli dönem";
           const id = (post || pre).id;
           if (differs(pre, post, ["account_id", "deleted_at"]) && store.get("SELECT 1 AS found FROM plan_entries WHERE plan_id = ? AND date <= ? LIMIT 1", id, lock)) return "kartın kilitli tahsilatı";
         }
         if (table === "plan_entries") {
           // Kapatılmış kartın vazgeçilen kalanı (689) kapanış gününde yazılır; karta sonradan gelen tahsilat kilitli tutarı değiştirir.
-          const plan = store.get("SELECT status, closed_at AS closedAt, updated_at AS updatedAt, registered_on AS registeredOn, created_at AS createdAt, deleted_at AS deletedAt FROM plans WHERE id = ?", (post || pre).plan_id);
-          if (plan && plan.status === "closed" && !plan.deletedAt && locked([day(plan.closedAt || plan.updatedAt), day(plan.registeredOn || plan.createdAt)].sort().at(-1))) return "kapatılmış kartın tahsilatı";
+          const plan = store.get("SELECT status, close_rule AS closeRule, closed_at AS closedAt, updated_at AS updatedAt, registered_on AS registeredOn, created_at AS createdAt, deleted_at AS deletedAt FROM plans WHERE id = ?", (post || pre).plan_id);
+          if (plan && waivesRemaining(plan) && !plan.deletedAt && locked([day(plan.closedAt || plan.updatedAt), day(plan.registeredOn || plan.createdAt)].sort().at(-1))) return "kapatılmış kartın tahsilatı";
         }
         if (table === "accounts" && differs(pre, post, ["type", "deleted_at"])) {
           const id = (post || pre).id;
@@ -625,7 +629,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
     if (s.plans.size && has("plans")) {
       const list = json(s.plans);
       const orphanPlans = all(
-        `SELECT p.id, p.name, p.total, p.status, p.covers_balance AS coversBalance,
+        `SELECT p.id, p.name, p.total, p.status, p.close_rule AS closeRule, p.covers_balance AS coversBalance,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE +p.deleted_at IS NULL AND a.id IS NULL AND p.id IN ${IN}`,
         list,
@@ -634,8 +638,8 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         const balances = partyBalances(build({ plans: orphanPlans.map(plan => plan.id) }));
         for (const plan of orphanPlans) {
           const total = plan.coversBalance ? 0 : toCents(plan.total);
-          const left = toCents(plan.total) - toCents(plan.paid);
-          const want = total - toCents(plan.paid) - (plan.status === "closed" ? Math.max(0, left) : 0);
+          // 2.5.0 Ç7b tur 3b: düşülen kalan TEK yardımcıdan (lib/accounts.mjs waivedOf).
+          const want = total - toCents(plan.paid) - toCents(waivedOf(plan, plan.paid));
           const got = balances.get(`plan:${plan.id}`) || 0;
           if (got !== want) find("party:plans", `${plan.name}: defter ${got / 100} / kart ${want / 100}`);
         }
@@ -662,9 +666,14 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       const list = json(s.invoices);
       const c = column => `CAST(ROUND(${column} * 100) AS INTEGER)`;
       const fromLedger = build({ invoices: [...s.invoices] });
+      // 2.5.0 Ç7b tur 2c (B-9; KURAL GEÇİŞ GÜNÜ — lib/ledger-rule-shift.mjs): iade KDV'si türetmeyle (journal) ve beklenenle (routes/ledger.mjs expected) AYNI kuralla — KG-8 satıştan iade
+      // B 191, F-08 alıştan iade A 391; geçiş gününde / öncesinde ya da güncellemeden önce mahsup edilmiş (etkin) ayda eski yön (satıştan iade B 391, alıştan iade A 191).
+      const old = oldReturnVatSql(ruleShiftOf(store), "issue_date");
       const sums = store.get(
-        `SELECT COALESCE(SUM(CASE kind WHEN 'purchase' THEN ${c("try_vat")} WHEN 'purchase_return' THEN -${c("try_vat")} END), 0) AS v191,
-                COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(${c("try_vat")} - ${c("try_withheld")}) WHEN kind = 'sale_return' THEN ${c("try_vat")} - ${c("try_withheld")} END), 0) AS v391,
+        `SELECT COALESCE(SUM(CASE WHEN kind = 'purchase' THEN ${c("try_vat")} WHEN kind = 'purchase_return' AND ${old} THEN -${c("try_vat")}
+                                  WHEN kind = 'sale_return' AND NOT ${old} THEN ${c("try_vat")} - ${c("try_withheld")} END), 0) AS v191,
+                COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(${c("try_vat")} - ${c("try_withheld")}) WHEN kind = 'sale_return' AND ${old} THEN ${c("try_vat")} - ${c("try_withheld")}
+                                  WHEN kind = 'purchase_return' AND NOT ${old} THEN -${c("try_vat")} END), 0) AS v391,
                 COALESCE(SUM(CASE kind WHEN 'purchase' THEN -(${c("try_withheld")} + ${c("try_stoppage")}) WHEN 'purchase_return' THEN ${c("try_withheld")} + ${c("try_stoppage")} END), 0) AS v360,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN ${c("try_stoppage")} END), 0) AS v193
          FROM invoices i WHERE +i.status = 'issued' AND EXISTS (SELECT 1 FROM accounts a WHERE a.id = i.account_id AND a.deleted_at IS NULL) AND i.id IN ${IN}`,

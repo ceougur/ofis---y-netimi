@@ -1,0 +1,32 @@
+{
+  "ad": "c7b2f-sonra-kahin-cari-Europe-Istanbul",
+  "komut": "npm run test:kahin-cari",
+  "commit": "01352f29b464242bc1106890c25eb84d34f5e668",
+  "dal": "worktree-agent-a207e4248e7dd70da",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T02:42:52.068Z",
+  "sure_sn": 257.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17582,
+    "gecen": 17582,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-dv/abc/2026-11-20/c7b2f-sonra-kahin-cari-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a207e4248e7dd70da",
+  "ham_cikti_sha256": "025c937fab87437ec009f98cb3376342593aebb6e5341bfc4d4d47a294a9b8bc",
+  "ham_cikti_bayt": 71933
+}

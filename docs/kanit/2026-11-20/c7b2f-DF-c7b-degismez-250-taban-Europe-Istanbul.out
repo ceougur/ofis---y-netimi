@@ -1,0 +1,94 @@
+TAP version 13
+# (node:12177) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b tur 2f — kabul F: değişmezler (tohum 11)
+    # Subtest: her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391
+    not ok 1 - her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391
+      ---
+      duration_ms: 817.332342
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/c7b-degismez-250.test.mjs:32:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 11 adım 5 (cashSale 2026-10-11): 600.90 = belgesiz satış
+        
+        0 !== -100
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -100
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/c7b-degismez-250.test.mjs:50:18
+        apply (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/fixtures/c7b-degismez-dizi.mjs:132:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/c7b-degismez-250.test.mjs:42:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - Ç7b tur 2f — kabul F: değişmezler (tohum 11)
+  ---
+  duration_ms: 818.860579
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/c7b-degismez-250.test.mjs:31:3'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç7b tur 2f — kabul F: değişmezler (tohum 23)
+    # Subtest: her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391
+    not ok 1 - her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391
+      ---
+      duration_ms: 474.895242
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/c7b-degismez-250.test.mjs:32:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 23 adım 2 (cashSale 2026-09-13): 600.90 = belgesiz satış
+        
+        0 !== -400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -400
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/c7b-degismez-250.test.mjs:50:18
+        apply (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/fixtures/c7b-degismez-dizi.mjs:132:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/c7b-degismez-250.test.mjs:42:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - Ç7b tur 2f — kabul F: değişmezler (tohum 23)
+  ---
+  duration_ms: 475.454657
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2f-ag/tabanwt/test/c7b-degismez-250.test.mjs:31:3'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 2
+# suites 2
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1674.05092
+
+[kanit] başarısız testler (2):
+  ✖ Ç7b tur 2f — kabul F: değişmezler (tohum 11) › her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391 [test/c7b-degismez-250.test.mjs:32:5] — tohum 11 adım 5 (cashSale 2026-10-11): 600.90 = belgesiz satış · 0 !== -100 (beklenen -100, gelen 0)
+  ✖ Ç7b tur 2f — kabul F: değişmezler (tohum 23) › her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391 [test/c7b-degismez-250.test.mjs:32:5] — tohum 23 adım 2 (cashSale 2026-09-13): 600.90 = belgesiz satış · 0 !== -400 (beklenen -400, gelen 0)
+
+[kanit] c7b2f-c7b-degismez-250-taban-Europe-Istanbul: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 0/2 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit fc0d199 +4 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4

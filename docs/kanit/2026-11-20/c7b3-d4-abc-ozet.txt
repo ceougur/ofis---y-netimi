@@ -1,0 +1,12 @@
+defter-yeni-UTC başladı 08:25:57 · 2.66 3.21 2.94 6/305 19263 · 7645fe0d
+yeni defter UTC çıkış 0 · ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-yLtdt4 [kanit] c7b3-yeni-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7645fe0 +1 izlenmeyen · linux 6.18.44-fc-v726 x64
+defter-yeni-ist başladı 08:26:02 · 2.77 3.23 2.94 2/305 19374 · 7645fe0d
+yeni defter Europe/Istanbul çıkış 0 · ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-iXfrtZ [kanit] c7b3-yeni-kahin-defter-Europe-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7645fe0 +1 izlenmeyen · linux 6.18.44
+BİTTİ defter-yeni-UTC defter-yeni-ist 08:26:07 · 2.70 3.21 2.94 7/307 19731
+cari-yeni-UTC başladı 08:32:33 · 3.09 3.17 2.99 2/226 22464 · 7645fe0d
+yeni cari UTC çıkış 1 · [kanit] başarısız testler (2): [kanit] c7b3-yeni-kahin-cari-UTC: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 17580/17582 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 7645fe0 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4 
+cari-yeni-ist başladı 08:39:11 · 3.04 2.60 2.73 1/121 24584 · 7645fe0d
+yeni cari Europe/Istanbul çıkış 1 · [kanit] başarısız testler (2): [kanit] c7b3-yeni-kahin-cari-Europe-Istanbul: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 17580/17582 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 7645fe0 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4 
+surucu-yeni başladı 08:45:57 · 2.05 2.20 2.49 3/155 26047 · 7645fe0d
+sürücü yeni çıkış 1
+BİTTİ cari-yeni-UTC cari-yeni-ist surucu-yeni 08:55:23 · 4.14 3.81 3.30 1/155 29806

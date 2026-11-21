@@ -1,0 +1,152 @@
+rastgele-1 [Europe-Istanbul] RAPOR bil_arsiv ana:120 p 7319904 k 7420563 b 7420563 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR bil_arsiv ana:128 p 100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR bil_arsiv ana:129 p -100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR bil_canli_K ana:120 p 7319904 k 7420563 b 7420563 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR bil_canli_K ana:128 p 100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR bil_canli_K ana:129 p -100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR gt_arsiv ana:644 p -526257 k -626916 b -626916 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR gt_canli ana:644 p -526257 k -626916 b -626916 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR gt_yeni ana:644 p -100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR mz_arsiv ana:120 p 7319904 k 7420563 b 7420563 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR mz_arsiv ana:128 p 100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR mz_arsiv ana:129 p -100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] RAPOR mz_arsiv ana:644 p -526257 k -626916 b -626916 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [Europe-Istanbul] OLAY #818 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+rastgele-2 [Europe-Istanbul] OLAY #776 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+rastgele-3 [Europe-Istanbul] OLAY #748 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s04-gider-yansitma-stopaj-devir [Europe-Istanbul] OLAY #10 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s101-s72-soz-gunu [Europe-Istanbul] OLAY #4 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s101-s72-soz-gunu [Europe-Istanbul] OLAY #5 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s101-s72-soz-gunu [Europe-Istanbul] OLAY #6 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s101-s72-soz-gunu [Europe-Istanbul] OLAY #13 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s102-s73-soz-butun-borc [Europe-Istanbul] OLAY #7 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s102-s73-soz-butun-borc [Europe-Istanbul] OLAY #8 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s103-s79-olagan-bag-cari [Europe-Istanbul] OLAY #21 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s103-s79-olagan-bag-cari [Europe-Istanbul] OLAY #25 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s14-kdv-mahsup-360 [Europe-Istanbul] OLAY #18 gecikme_zammi api_yok → P gecikme zammı (V-03) tek başına girilemiyor: Vergi Ödemesi'nde vergi tutarı sıfırdan büyük olmalı (gecikme zammı yalnız vergiyle birlikte)
+s21-devir-ayni-adli-iki-cari [Europe-Istanbul] OLAY #4 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s22-devir-temel [Europe-Istanbul] OLAY #18 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s23-devir-pos-valor-kg6 [Europe-Istanbul] OLAY #3 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s24-devir-eksi-stok-kg9 [Europe-Istanbul] OLAY #5 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s25-devir-onceki-yil-kg12 [Europe-Istanbul] OLAY #9 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s26a-devir-borc-ve-alacaklari-aktar [Europe-Istanbul] OLAY #7 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s26b-devir-sadece-bakiyeyi-aktar [Europe-Istanbul] OLAY #7 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s27-devir-yoldaki-supheli-evrak-taksit [Europe-Istanbul] OLAY #13 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s28-devri-yenile-kg7 [Europe-Istanbul] OLAY #4 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s29-devri-geri-al [Europe-Istanbul] OLAY #4 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s29-devri-geri-al [Europe-Istanbul] OLAY #6 devri_geri_al uygulanmadi → U Devri Geri Al
+s31-eslestirme-sonra-devir [Europe-Istanbul] OLAY #5 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s32-yil-donumu-29-subat [Europe-Istanbul] OLAY #12 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s32-yil-donumu-29-subat [Europe-Istanbul] OLAY #13 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s32-yil-donumu-29-subat [Europe-Istanbul] OLAY #14 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s34-ocakta-aralik-iadesi [Europe-Istanbul] OLAY #5 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s39-mahsup-acik-kalem [Europe-Istanbul] OLAY #7 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s45-m2-devirde-gecikmis-ayni [Europe-Istanbul] OLAY #8 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s46-m3-m12-tek-net-satir-ekstre [Europe-Istanbul] OLAY #9 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s47-m4-onceki-yil-kilitli [Europe-Istanbul] OLAY #11 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s48-m5-eksi-stok-devri [Europe-Istanbul] OLAY #3 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s50-m13-supheli-devir [Europe-Istanbul] OLAY #4 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s56-r3-kilitli-bag [Europe-Istanbul] OLAY #18 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s63-s11-kilitli-karsiliksiz [Europe-Istanbul] OLAY #41 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s66-s18-avans-evrak-karsiliksiz [Europe-Istanbul] OLAY #23 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s72-s21-pos-valor-resmi-tatil [Europe-Istanbul] OLAY #19 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s73-s24-devir-k-kilidi [Europe-Istanbul] OLAY #26 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [Europe-Istanbul] OLAY #31 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [Europe-Istanbul] OLAY #32 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [Europe-Istanbul] OLAY #36 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s82-s45-bagli-geri-yuklenen-kayit-cari [Europe-Istanbul] RED #36 duzenle  kâhin None program {'ileti': 'taksit kartı tahsilatının Düzenle formunda Cari alanı yok (istek gönderilmedi)', 'kod': 'plan-entry-no-party', 'status': 'ekran'} → P
+s82-s45-bagli-geri-yuklenen-kayit-cari [Europe-Istanbul] OLAY #30 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s87-s51-geri-alinan-acilis [Europe-Istanbul] RED #21 acilis_onayla  kâhin None program {'ileti': 'Açılış Olabilir listesinde AC1 yok (listede 4 satır; istek gönderilmedi)', 'kod': 'opening-review-missing', 'status': 'ekran'} → OLCULEMEDI
+s87-s51-geri-alinan-acilis [Europe-Istanbul] RED #22 acilis_onayla  kâhin None program {'ileti': 'Açılış Olabilir listesinde AC4 yok (listede 4 satır; istek gönderilmedi)', 'kod': 'opening-review-missing', 'status': 'ekran'} → OLCULEMEDI
+s88-s52-odeme-sozu [Europe-Istanbul] OLAY #6 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s88-s52-odeme-sozu [Europe-Istanbul] OLAY #7 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s88-s52-odeme-sozu [Europe-Istanbul] OLAY #16 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s91-b5-kg5-yukleme-yerel-gunu [Europe-Istanbul] RAPOR g1b gecikmis:C1 p 0 k 500 b — → P bkz. P7-AYNI-ADLI-EXCEL-KARTI (C1'in kartı yok — gecikmiş 5,00 yok)
+s91-b5-kg5-yukleme-yerel-gunu [Europe-Istanbul] RAPOR kt1 kart:TE1 p Açık 2026-04-01 700/700 k Açık 2026-04-01 1000/500; 2026-05-01 1000/1000 b — → P bkz. P7-AYNI-ADLI-EXCEL-KARTI (C1'in kartı açılmadığından sürücünün ad ile bulduğu kart C2'nin kartıdır)
+s91-b5-kg5-yukleme-yerel-gunu [Europe-Istanbul] RAPOR mz2 ana:120 p 1200 k 3200 b 3200 → P kök neden (adım): P7-AYNI-ADLI-EXCEL-KARTI
+s91-b5-kg5-yukleme-yerel-gunu [Europe-Istanbul] RAPOR mz2 ana:519 p -1200 k -3200 b -3200 → P kök neden (adım): P7-AYNI-ADLI-EXCEL-KARTI
+s91-b5-kg5-yukleme-yerel-gunu [Europe-Istanbul] RAPOR mz2 cari:C1 p 0 k 2000 b 2000 → P kök neden (adım): P7-AYNI-ADLI-EXCEL-KARTI
+s91-b5-kg5-yukleme-yerel-gunu [Europe-Istanbul] SON ana:120 p 700 k 2700 b 2700 → P
+s91-b5-kg5-yukleme-yerel-gunu [Europe-Istanbul] SON ana:519 p -1200 k -3200 b -3200 → P
+s91-b5-kg5-yukleme-yerel-gunu [Europe-Istanbul] SON cari:C1 p -500 k 1500 b 1500 → P
+s92-b11-kasa-acilis-oncesi-duzeltme [Europe-Istanbul] RED #4 duzenle  kâhin {'kod': 'KASA_ACILIS_ONCE', 'neden': 'Kasa hareketi 2026-01-09 < Kasa açılışı 2026-01-10'} program None → OLCULEMEDI
+s92-b11-kasa-acilis-oncesi-duzeltme [Europe-Istanbul] RED #6 duzenle  kâhin {'kod': 'KASA_ACILIS_ONCE', 'neden': 'Kasa hareketi 2026-01-05 < Kasa açılışı 2026-01-10'} program None → OLCULEMEDI
+s92-b11-kasa-acilis-oncesi-duzeltme [Europe-Istanbul] RED #9 duzenle  kâhin {'kod': 'KASA_ACILIS_ONCE', 'neden': 'Kasa hareketi 2026-01-08 < Kasa açılışı 2026-01-10'} program None → OLCULEMEDI
+s94-s54-ayni-duzeltmede-bag-cari [Europe-Istanbul] OLAY #13 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+rastgele-1 [UTC] RAPOR bil_arsiv ana:120 p 7319904 k 7420563 b 7420563 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR bil_arsiv ana:128 p 100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR bil_arsiv ana:129 p -100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR bil_canli_K ana:120 p 7319904 k 7420563 b 7420563 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR bil_canli_K ana:128 p 100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR bil_canli_K ana:129 p -100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR gt_arsiv ana:644 p -526257 k -626916 b -626916 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR gt_canli ana:644 p -526257 k -626916 b -626916 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR gt_yeni ana:644 p -100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR mz_arsiv ana:120 p 7319904 k 7420563 b 7420563 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR mz_arsiv ana:128 p 100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR mz_arsiv ana:129 p -100659 k 0 b 0 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] RAPOR mz_arsiv ana:644 p -526257 k -626916 b -626916 → R kök neden (adım): R-S192-BAG-SONRA/r1
+rastgele-1 [UTC] OLAY #818 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+rastgele-2 [UTC] OLAY #776 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+rastgele-3 [UTC] OLAY #748 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s04-gider-yansitma-stopaj-devir [UTC] OLAY #10 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s101-s72-soz-gunu [UTC] OLAY #4 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s101-s72-soz-gunu [UTC] OLAY #5 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s101-s72-soz-gunu [UTC] OLAY #6 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s101-s72-soz-gunu [UTC] OLAY #13 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s102-s73-soz-butun-borc [UTC] OLAY #7 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s102-s73-soz-butun-borc [UTC] OLAY #8 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s103-s79-olagan-bag-cari [UTC] OLAY #21 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s103-s79-olagan-bag-cari [UTC] OLAY #25 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s14-kdv-mahsup-360 [UTC] OLAY #18 gecikme_zammi api_yok → P gecikme zammı (V-03) tek başına girilemiyor: Vergi Ödemesi'nde vergi tutarı sıfırdan büyük olmalı (gecikme zammı yalnız vergiyle birlikte)
+s21-devir-ayni-adli-iki-cari [UTC] OLAY #4 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s22-devir-temel [UTC] OLAY #18 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s23-devir-pos-valor-kg6 [UTC] OLAY #3 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s24-devir-eksi-stok-kg9 [UTC] OLAY #5 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s25-devir-onceki-yil-kg12 [UTC] OLAY #9 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s26a-devir-borc-ve-alacaklari-aktar [UTC] OLAY #7 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s26b-devir-sadece-bakiyeyi-aktar [UTC] OLAY #7 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s27-devir-yoldaki-supheli-evrak-taksit [UTC] OLAY #13 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s28-devri-yenile-kg7 [UTC] OLAY #4 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s29-devri-geri-al [UTC] OLAY #4 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s29-devri-geri-al [UTC] OLAY #6 devri_geri_al uygulanmadi → U Devri Geri Al
+s31-eslestirme-sonra-devir [UTC] OLAY #5 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s32-yil-donumu-29-subat [UTC] OLAY #12 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s32-yil-donumu-29-subat [UTC] OLAY #13 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s32-yil-donumu-29-subat [UTC] OLAY #14 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s34-ocakta-aralik-iadesi [UTC] OLAY #5 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s39-mahsup-acik-kalem [UTC] OLAY #7 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s45-m2-devirde-gecikmis-ayni [UTC] OLAY #8 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s46-m3-m12-tek-net-satir-ekstre [UTC] OLAY #9 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s47-m4-onceki-yil-kilitli [UTC] OLAY #11 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s48-m5-eksi-stok-devri [UTC] OLAY #3 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s50-m13-supheli-devir [UTC] OLAY #4 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s56-r3-kilitli-bag [UTC] OLAY #18 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s63-s11-kilitli-karsiliksiz [UTC] OLAY #41 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s66-s18-avans-evrak-karsiliksiz [UTC] OLAY #23 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s72-s21-pos-valor-resmi-tatil [UTC] OLAY #19 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s73-s24-devir-k-kilidi [UTC] OLAY #26 devir uygulanmadi → U yıl sonu devri (arşiv + yeni yıl açılışı)
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [UTC] OLAY #31 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [UTC] OLAY #32 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [UTC] OLAY #36 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s82-s45-bagli-geri-yuklenen-kayit-cari [UTC] RED #36 duzenle  kâhin None program {'ileti': 'taksit kartı tahsilatının Düzenle formunda Cari alanı yok (istek gönderilmedi)', 'kod': 'plan-entry-no-party', 'status': 'ekran'} → P
+s82-s45-bagli-geri-yuklenen-kayit-cari [UTC] OLAY #30 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s87-s51-geri-alinan-acilis [UTC] RED #21 acilis_onayla  kâhin None program {'ileti': 'Açılış Olabilir listesinde AC1 yok (listede 4 satır; istek gönderilmedi)', 'kod': 'opening-review-missing', 'status': 'ekran'} → OLCULEMEDI
+s87-s51-geri-alinan-acilis [UTC] RED #22 acilis_onayla  kâhin None program {'ileti': 'Açılış Olabilir listesinde AC4 yok (listede 4 satır; istek gönderilmedi)', 'kod': 'opening-review-missing', 'status': 'ekran'} → OLCULEMEDI
+s88-s52-odeme-sozu [UTC] OLAY #6 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s88-s52-odeme-sozu [UTC] OLAY #7 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s88-s52-odeme-sozu [UTC] OLAY #16 odeme_sozu uygulanmadi → U Ödeme Sözü yalnız Ödeme Hatırlatma elemesini değiştirir (S52 / S72 / S73) — hatırlatma Ç5-C'de; programda söz hareketin Beklenen Ödeme Tarihi (cari düzeyi yok)
+s91-b5-kg5-yukleme-yerel-gunu [UTC] RAPOR g1b gecikmis:C1 p 0 k 500 b — → P bkz. P7-AYNI-ADLI-EXCEL-KARTI (C1'in kartı yok — gecikmiş 5,00 yok)
+s91-b5-kg5-yukleme-yerel-gunu [UTC] RAPOR kt1 kart:TE1 p Açık 2026-04-01 700/700 k Açık 2026-04-01 1000/500; 2026-05-01 1000/1000 b — → P bkz. P7-AYNI-ADLI-EXCEL-KARTI (C1'in kartı açılmadığından sürücünün ad ile bulduğu kart C2'nin kartıdır)
+s91-b5-kg5-yukleme-yerel-gunu [UTC] RAPOR mz1 ana:120 p 1200 k 500 b 500 → R YALNIZ TZ=UTC: KG-5 maddesinin günü — program yükleme damgasının SÜRECİN yerel günü (server/lib/general-ledger.mjs local
+s91-b5-kg5-yukleme-yerel-gunu [UTC] RAPOR mz1 ana:519 p -1200 k -500 b -500 → R YALNIZ TZ=UTC: KG-5 maddesinin günü — program yükleme damgasının SÜRECİN yerel günü (server/lib/general-ledger.mjs local
+s91-b5-kg5-yukleme-yerel-gunu [UTC] RAPOR mz2 ana:120 p 1200 k 3200 b 3200 → P kök neden (adım): P7-AYNI-ADLI-EXCEL-KARTI
+s91-b5-kg5-yukleme-yerel-gunu [UTC] RAPOR mz2 ana:519 p -1200 k -3200 b -3200 → P kök neden (adım): P7-AYNI-ADLI-EXCEL-KARTI
+s91-b5-kg5-yukleme-yerel-gunu [UTC] RAPOR mz2 cari:C1 p 0 k 2000 b 2000 → P kök neden (adım): P7-AYNI-ADLI-EXCEL-KARTI
+s91-b5-kg5-yukleme-yerel-gunu [UTC] SON ana:120 p 700 k 2700 b 2700 → P
+s91-b5-kg5-yukleme-yerel-gunu [UTC] SON ana:519 p -1200 k -3200 b -3200 → P
+s91-b5-kg5-yukleme-yerel-gunu [UTC] SON cari:C1 p -500 k 1500 b 1500 → P
+s92-b11-kasa-acilis-oncesi-duzeltme [UTC] RED #4 duzenle  kâhin {'kod': 'KASA_ACILIS_ONCE', 'neden': 'Kasa hareketi 2026-01-09 < Kasa açılışı 2026-01-10'} program None → OLCULEMEDI
+s92-b11-kasa-acilis-oncesi-duzeltme [UTC] RED #6 duzenle  kâhin {'kod': 'KASA_ACILIS_ONCE', 'neden': 'Kasa hareketi 2026-01-05 < Kasa açılışı 2026-01-10'} program None → OLCULEMEDI
+s92-b11-kasa-acilis-oncesi-duzeltme [UTC] RED #9 duzenle  kâhin {'kod': 'KASA_ACILIS_ONCE', 'neden': 'Kasa hareketi 2026-01-08 < Kasa açılışı 2026-01-10'} program None → OLCULEMEDI
+s94-s54-ayni-duzeltmede-bag-cari [UTC] OLAY #13 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)

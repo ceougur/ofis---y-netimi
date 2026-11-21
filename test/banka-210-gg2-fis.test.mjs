@@ -156,7 +156,7 @@ describe("GG2 — kilitli dönemdeki KDV'li masraf: Ters Kaydet bugün tarihli i
     assert.match(text, /Ters Kaydet/);
   });
 
-  it("Ters Kaydet → 08.10 tarihli Alıştan İade + bankaya 120 giriş; 770, 191, 320 net 0; kilitli dönem değişmez", async () => {
+  it("Ters Kaydet → 08.10 tarihli Alıştan İade + bankaya 120 giriş; 770, 320 net 0, 191 + 391 net 0 (F-08); kilitli dönem değişmez", async () => {
     const trialBefore = await trialBalances(ctx.api, "?to=2026-10-06");
     const done = await must("Ters Kaydet", ctx.api.post(`${BANK}/events/${fee.id}/reverse`, { reason: "Banka masrafı iade etti" }));
     assert.equal(done.original.status, "reversed");
@@ -168,7 +168,10 @@ describe("GG2 — kilitli dönemdeki KDV'li masraf: Ters Kaydet bugün tarihli i
     assert.equal(returned.date, "2026-10-08");
     assert.equal(Math.round(returned.payable * 100), 12_000);
     const trial = await trialBalances(ctx.api);
-    for (const code of ["191", "320"]) assert.equal(Math.round((trial[code] || 0) * 100), 0, `${code} net 0`);
+    // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (F-08: alıştan iade KDV'si A 391): masrafın KDV'si 191'de kalır (+20), iadenin KDV'si 391'in alacağında (−20); KDV'nin neti 0 (mahsup sonucu aynı).
+    assert.equal(Math.round((trial["320"] || 0) * 100), 0, "320 net 0");
+    assert.equal(Math.round((trial["191"] || 0) * 100), 2000, "191: masrafın KDV'si (F-08: iade 191'i alacaklandırmaz)");
+    assert.equal(Math.round((trial["391"] || 0) * 100), -2000, "391: alıştan iadenin KDV'si (F-08)");
     assert.equal(Math.round((trial["770"] || 0) * 100), 1050, "770'te yalnız BSMV'li masraf kalır (KDV'li masrafın gideri iadeyle 0)");
     const subs = await subBalances(ctx.api);
     assert.equal(Math.round(subs[account.glSub].balance * 100), 10_000_000 - 1050, "yalnız BSMV'li masraf kalır");

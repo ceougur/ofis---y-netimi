@@ -64,6 +64,9 @@ describe("2.5.0 BİRLEŞİK TUR 5 — kapalı kartın \"Kart kapatıldı\" satı
       const account = await must(`cari ${key}`, ctx.api.post(ACC, { name: accountName, type: "customer", registeredOn: PAST }));
       const plan = await must(`kart ${key}`, ctx.api.post(PLANS, { accountId: account.id, name: cardName || `BT5 Kart ${key}`, total: String(total), mode: "auto", count: 2, firstDue: "2026-11-01", registeredOn: PAST }));
       await must(`Kartı Kapat ${key}`, ctx.api.put(`${PLANS}/${plan.id}`, { status: "closed" }));
+      // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3b, karar (6) "Borçta Kalsın"; docs/erp/C7B-FATURA-TASARIM.md §17): "Kart kapatıldı · kalan düşüldü" satırı / 689 artık YALNIZ eski kurallı
+      // (göç 53 '2.4.9' — v2.4.9'da kapatılmış) kartta; bu sınama o satırın gününü anlatır → kart göçün işaretiyle eski kurala alınır.
+      ctx.store.run("UPDATE plans SET close_rule = '2.4.9' WHERE id = ?", plan.id);
       cards[key] = { account, plan, total };
     };
     await open("Not", 1010);
@@ -105,6 +108,7 @@ describe("2.5.0 BİRLEŞİK TUR 5 — kapalı kartın \"Kart kapatıldı\" satı
       const account = await must(`cari ${key}`, ctx.api.post(ACC, { name: `BT5 Cari ${key}`, type: "customer", registeredOn: PAST }));
       const plan = await must(`kart ${key}`, ctx.api.post(PLANS, { accountId: account.id, name: `BT5 Kart ${key}`, total: String(total), mode: "auto", count: 2, firstDue: "2026-12-01", registeredOn: PAST }));
       await must(`Kartı Kapat ${key}`, ctx.api.put(`${PLANS}/${plan.id}`, { status: "closed" }));
+      ctx.store.run("UPDATE plans SET close_rule = '2.4.9' WHERE id = ?", plan.id); // aynı not (yukarıda)
       return { account, plan, total };
     };
     const problems = [];

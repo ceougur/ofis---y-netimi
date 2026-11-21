@@ -1,0 +1,152 @@
+{
+ "ad": "ek-bag-sonra",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [
+  "A"
+ ],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ },
+ "aciklama": "sürücü bakımı 4 en küçük örnek",
+ "kapsam": [],
+ "olaylar": [
+  {
+   "tur": "satis_faturasi",
+   "id": "F1",
+   "cari": "C1",
+   "tarih": "2026-01-05",
+   "M": 1000,
+   "K": 0,
+   "vade": "2026-01-10"
+  },
+  {
+   "tur": "satis_faturasi",
+   "id": "F2",
+   "cari": "C1",
+   "tarih": "2026-01-06",
+   "M": 1000,
+   "K": 0,
+   "vade": "2026-01-20"
+  },
+  {
+   "tur": "satis_faturasi",
+   "id": "F3",
+   "cari": "C1",
+   "tarih": "2026-01-07",
+   "M": 2000,
+   "K": 0,
+   "vade": "2026-03-31"
+  },
+  {
+   "tur": "tahsilat",
+   "id": "P1",
+   "cari": "C1",
+   "tarih": "2026-01-15",
+   "tutar": 1000,
+   "yol": "nakit"
+  },
+  {
+   "tur": "supheliye_al",
+   "id": "S1",
+   "cari": "C1",
+   "tarih": "2026-02-01",
+   "tutar": 1000
+  },
+  {
+   "tur": "rapor",
+   "ad": "af0205",
+   "rapor": "acik_faturalar",
+   "cari": "C1",
+   "tarih": "2026-02-05"
+  },
+  {
+   "tur": "tahsilat",
+   "id": "P2",
+   "cari": "C1",
+   "tarih": "2026-02-10",
+   "tutar": 1000,
+   "yol": "nakit",
+   "fatura": "F1"
+  },
+  {
+   "tur": "rapor",
+   "ad": "sk",
+   "rapor": "supheli_kayitlari",
+   "cari": "C1"
+  },
+  {
+   "tur": "rapor",
+   "ad": "mz",
+   "rapor": "mizan",
+   "bas": "2026-01-01",
+   "son": "2026-02-28"
+  }
+ ]
+}

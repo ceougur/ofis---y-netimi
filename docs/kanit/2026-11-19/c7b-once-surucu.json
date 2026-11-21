@@ -1,0 +1,32 @@
+{
+  "ad": "c7b-once-surucu",
+  "komut": "node test/bagimsiz/muhasebe-surucu/kos.mjs --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2/surucu-once",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T04:14:40.716Z",
+  "sure_sn": 351.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6426,
+    "gecen": 5836,
+    "basarisiz": 548,
+    "iptal": 0,
+    "atlanan": 42
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 548 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kanit/once/2026-11-19/c7b-once-surucu.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2/taban",
+  "ham_cikti_sha256": "6dd98f334fe56ca1829c14b550eecfe8a59b21139c6b3d5068f64472dfb7041e",
+  "ham_cikti_bayt": 111356
+}

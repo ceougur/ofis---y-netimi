@@ -1,0 +1,31 @@
+// Ç7b tur 3 devam 3 — hız tanısı (bilgi amaçlı; hüküm değil): yazımdan ÖNCE ve SONRA tek tek örnekler. Kullanım: node tani.mjs <kod kökü> <veri kopyası>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir] = process.argv.slice(2);
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+const { port } = await app.listen(0, "127.0.0.1");
+if (app.ledger.snapshots.state().pending) await app.ledger.snapshots.runPending();
+const client = createClient(`http://127.0.0.1:${port}`);
+await client.login("admin", PASS);
+const store = app.store;
+const acc = store.get("SELECT a.id FROM accounts a WHERE a.deleted_at IS NULL AND a.type = 'customer' ORDER BY (SELECT COUNT(*) FROM account_entries e WHERE e.account_id = a.id) DESC LIMIT 1").id;
+const covers = store.get("SELECT COUNT(*) AS n FROM plans WHERE account_id = ? AND deleted_at IS NULL AND status = 'active' AND covers_balance = 1 AND invoice_id = ''", acc).n;
+console.log(`kod ${root} · acc ${acc} · açık Mevcut Borç kartı ${covers} · onarım izi ${store.get("SELECT COUNT(*) AS n FROM audit_events WHERE type = 'plan.repaired'")?.n}`);
+const t = async (label, call) => { const s = performance.now(); const r = await call(); console.log(`  ${label}: ${r.status} ${(performance.now() - s).toFixed(1)} ms`); return r; };
+const idOf = res => res.data?.data?.id || res.data?.id;
+const inst = { rest: "installments", installments: { count: 3, firstDue: "2026-10-08" } };
+for (let i = 0; i < 3; i += 1) await t("Geciken (önce)", () => client.get("/api/workspace/plans?status=overdue&sort="));
+const ids = [];
+for (let i = 0; i < 3; i += 1) ids.push(idOf(await t("satış taksitli", () => client.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc, issueDate: "2026-10-08", lines: [{ name: "Tanı", qty: 1, unitPrice: 500, vatRate: 20 }], payment: inst }))));
+for (const id of ids) await t("fatura kartı", () => client.get(`/api/workspace/invoices/${id}`));
+for (const id of ids) await t("iptal", () => client.post(`/api/workspace/invoices/${id}/cancel`, { reason: "tanı", cashForce: true, negativeOk: true }));
+for (let i = 0; i < 3; i += 1) await t("Geciken (sonra)", () => client.get("/api/workspace/plans?status=overdue&sort="));
+await app.close();

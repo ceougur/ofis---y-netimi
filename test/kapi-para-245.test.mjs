@@ -18,6 +18,7 @@ import { okulServisiWorkbook } from "./fixtures/okul-servisi-ornek.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
 import { trialKg5As250Defter } from "./fixtures/c5a-acilis.mjs";
+import { CHART } from "../server/lib/general-ledger.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OLD = "v2.4.4";
@@ -148,9 +149,25 @@ describe(`2.4.5 madde 1–2: eski sürüm verisi (${OLD} gerçek kodu) yeni kodl
 
   // 2.5.0 Ç5-A tur 1 (G3: KG-5 = A, H-06; C5-ACILIS-TASARIM §2.2): Tablodan Aktar kartı yüklenen kart — eski defterin iki maddesi (B CH T / A 602 + B 500 P / A CH P) yeni kuralda
   // TEK madde B CH (T − P) / A 519. Eski mizan ve madde sayısı karar metninin dönüşümüyle (kart T / P veri tabanından); öbür olgular AYNEN.
+  // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (KG-3 = A, T-14; kullanıcı 05.11 17:16 (3)): kayıt (dosya) tahsilatı gelir değil — A 602 → A 336.90 "Sınıflandırılmamış Tahsilatlar" (336,
+  // "Diğer Cariler" ana hesabının altında). Eski mizanın 602'sinden kayıt tahsilatlarının toplamı (veri tabanından) 336'ya taşınır; madde sayısı aynı.
+  const kg3 = trial => {
+    const P = Math.round(Number(server.app.store.get("SELECT COALESCE(SUM(amount), 0) AS n FROM payments").n) * 100);
+    if (!P) return trial;
+    const rows = new Map(trial.accounts.map(row => [row.code, { ...row }]));
+    const c = value => Math.round((Number(value) || 0) * 100);
+    const tl = value => Math.round(value) / 100;
+    const at = code => rows.get(code) || rows.set(code, { code, name: CHART[code], opening: 0, debit: 0, credit: 0, balance: 0 }).get(code);
+    at("602").credit = tl(c(at("602").credit) - P);
+    at("602").balance = tl(c(at("602").balance) + P);
+    at("336").credit = tl(c(at("336").credit) + P);
+    at("336").balance = tl(c(at("336").balance) - P);
+    const accounts = [...rows.values()].filter(row => c(row.debit) || c(row.credit) || c(row.opening) || c(row.balance)).sort((a, b) => String(a.code).localeCompare(String(b.code)));
+    return { ...trial, accounts };
+  };
   const oldNow = () => {
     const { trial, entryCount } = trialKg5As250Defter(JSON.parse(old.trial), old.journal, server.app.store);
-    return { ...old, trial: JSON.stringify(trial), journal: entryCount };
+    return { ...old, trial: JSON.stringify(kg3(trial)), journal: entryCount };
   };
   it("eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı", async () => {
     assert.deepEqual(await facts(server, api), oldNow());

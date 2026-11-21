@@ -241,16 +241,20 @@ describe("2.0.24 ertelenen alanlar", () => {
       await integrity("iadeli asıl");
     });
 
-    test("nasıl bozarım: tahsilatı alınmış taksitli faturayı iptal → reddedilir, kart ve bakiye değişmez", async () => {
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3 — S15 = A, docs/erp/C7B-FATURA-TASARIM.md §16.4): tahsilatı alınmış taksitli faturanın İptal Et'i artık KABUL — kart kapanır, tahsilat
+    // carinin avansı (önceden 409 plan-has-payments). Sil bugünkü gibi reddedilir (muhasebe kâhini s58).
+    test("nasıl bozarım: tahsilatı alınmış taksitli faturayı sil → reddedilir; İptal Et kabul, tahsilat avans (S15 = A)", async () => {
       const acc = await account("Tahsilli Taksit");
       const doc = await invoice((await must("satış", sale(acc, d(), { rest: "installments", installments: { count: 2, firstDue: "2025-11-01", everyMonths: 1 } }, { qty: 2 }))).id);
       await must("taksit tahsilatı", api.post(`/api/workspace/plans/${doc.planId}/entries`, { kind: "in", amount: 500, date: d(), method: "cash" }));
       const c0 = await cash();
-      await refused("iptal", api.post(`/api/workspace/invoices/${doc.id}/cancel`, {}));
       await refused("sil", api.del(`/api/workspace/invoices/${doc.id}`));
       assert.deepEqual([await balance(acc), (await card(doc.planId)).remaining, await cash()], [1500, 1500, c0]);
-      await integrity("tahsilli taksit");
       assert.equal(await aging(acc), 1500);
+      await must("iptal (S15 = A)", api.post(`/api/workspace/invoices/${doc.id}/cancel`, {}));
+      assert.deepEqual([await balance(acc), await cash()], [-500, c0], "fatura borcu kalktı, 500 tahsilat avans; Kasa aynen");
+      await integrity("tahsilli taksit");
+      assert.equal(await aging(acc), 0);
     });
 
     test("nasıl bozarım: çeki tahsil edilmiş faturayı iptal → reddedilir", async () => {

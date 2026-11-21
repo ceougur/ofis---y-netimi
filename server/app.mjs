@@ -42,6 +42,7 @@ import { migrateBankGrants } from "./lib/bank/grants.mjs";
 import { markLegacyRows, repairBank } from "./lib/bank/repair.mjs";
 import { clearVouchers, repairLegacyReset } from "./lib/ledger-vouchers.mjs";
 import { clearSnapshots } from "./lib/ledger-snapshots.mjs";
+import { RULE_SHIFT_KEY } from "./lib/ledger-rule-shift.mjs";
 import { LOCK_KEY, createPeriod } from "./lib/period.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
@@ -1226,7 +1227,10 @@ function buildApp(overrides, opening) {
     "fin_events", "bank_lines", "pos_sales", "pos_items", "cheque_collections", "bank_statements", "bank_statement_lines", "bank_matches", "bank_plans", "bank_jobs", "request_keys",
     // 2.5.0 Ç3: "ledger_snapshots" (2.1.0'dan beri bu listedeydi) çıkarıldı — donmuş defter silme tetikleyicisi bu döngüyü düşürürdü; clearSnapshots siler (aşağıda).
     // 2.3.0 İz 1 (plan §3.11b/4 "Şirket Verisini Sıfırla listeleri"): şüpheli alacak kayıtları ve karşılıkları hareketle silinir.
-    "doubtful_receivables", "doubtful_provisions"];
+    "doubtful_receivables", "doubtful_provisions",
+    // 2.5.0 Ç7b tur 2e (SIFIRLA ↔ KDV MAHSUBU = HATA — BAŞ MİMAR KARARI 19.11 09:29; docs/erp/C7B-FATURA-TASARIM.md §15.3): KDV Mahsup Fişi (2.4.3) faturalar gibi hareket kaydıdır; listede
+    // yoktu → sıfırlanan şirkette faturasız 191 / 360 / 391 / 190 kalıyordu (iki kipte de).
+    "vat_offsets"];
   const CARD_TABLES = ["accounts", "stock_items", "plan_groups", "dataset_rows", "dataset_imports", "records", "overrides", "deleted_records", "notes", "phones", "liens", "tasks", "case_notes", "case_documents", "source_snapshots", "free_cells", "free_rows", "free_history", "free_sheets", "messages",
     "bank_accounts", "pos_terminals", "pos_rates",
     // 2.4.4 Personel Özlük: çalışan kartları kart verisidir — "Tümünü Sıfırla" siler, "Tüm Hareketleri Sil" dokunmaz.
@@ -1291,6 +1295,9 @@ function buildApp(overrides, opening) {
           if (Object.keys(kept).length !== Object.keys(invoice.start).length) store.setSetting("invoice.settings", JSON.stringify({ ...invoice, start: kept }));
         }
       }
+      // 2.5.0 Ç7b tur 2d (tur 2c kararı (3) — BAŞ MİMAR KARARI 19.11 06:39; docs/erp/C7B-FATURA-TASARIM.md §14.7): "Tüm Hareketleri Sil" kural geçiş gününü de siler — sıfırlanan dosyada eski
+      // veri kalmaz, eski yön anlamsız (bundan sonraki her kayıt yeni kuralla). "Tümünü Sıfırla" "ledger." ayarlarını zaten siler (KEEP_SETTINGS'te yok).
+      store.run("DELETE FROM settings WHERE key = ?", RULE_SHIFT_KEY);
       if (unlocked) {
         store.run("DELETE FROM settings WHERE key = ?", LOCK_KEY);
         audit(user, "ledger.period.unlocked", "period", { previous: unlocked, lockedUntil: "", reason: "company.reset", mode });

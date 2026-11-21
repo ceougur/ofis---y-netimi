@@ -1,5 +1,5 @@
 {
- "aciklama": "EK-2 36: 127 Diğer Ticari Alacaklar; alacaklı kart 340'ta, kart bazında brüt.",
+ "aciklama": "S198 A: 127 Açılış Eşleştirme'de hedef olamaz (red); EK-2 36'nın 127 brüt sınıflaması birim testte.",
  "ad": "s62-r16-127-ters-bakiye",
  "bankalar": {
   "B1": {
@@ -41,21 +41,21 @@
  "elle": {
   "A": {
    "bil/aktif/I.A": 100000,
-   "bil/aktif/I.C": 8000,
-   "bil/aktif_toplam": 108000,
-   "bil/detay/I.C/127.K2": 8000,
-   "bil/detay/III.D/127.K1": 5000,
+   "bil/aktif_toplam": 100000,
    "bil/kesin_degil": [],
-   "bil/pasif/III.D": 5000,
-   "bil/pasif/V.A": 103000,
-   "bil/pasif_toplam": 108000
+   "bil/pasif/V.A": 100000,
+   "bil/pasif_toplam": 100000,
+   "redler": [
+    "ESLESTIRME_HESAP"
+   ]
   }
  },
  "kapsam": [
   "EK-2 36",
   "E14",
   "M-11",
-  "§7.3"
+  "§7.3",
+  "S198"
  ],
  "kartlar": {
   "KK1": {
@@ -86,6 +86,16 @@
     },
     {
      "alacak": 103000,
+     "hesap": "500"
+    }
+   ],
+   "tarih": "2026-01-01",
+   "tur": "acilis_eslestir"
+  },
+  {
+   "satirlar": [
+    {
+     "alacak": 100000,
      "hesap": "500"
     }
    ],

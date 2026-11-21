@@ -120,7 +120,9 @@ describe("Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade)", () => {
     assert.equal(kurus(trial["653"] || 0), kurus(670), "653 = 250 + 420");
     assert.equal(kurus(trial["610"] || 0), kurus(2500), "610 Satıştan İadeler 2.500");
     assert.equal(kurus(trial["600"] || 0), -kurus(35000), "600 Satışlar 35.000 (A)");
-    assert.equal(kurus(trial["391"] || 0), -kurus(6500), "391 Hesaplanan KDV 6.500 (A)");
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b, KG-8 = A — kullanıcı 05.11 17:16: satıştan iade KDV'si B 191, KDVK 35): 391 = satışların KDV'si 7.000 (A); iadenin KDV'si 500 191'in borcunda.
+    assert.equal(kurus(trial["391"] || 0), -kurus(7000), "391 Hesaplanan KDV 7.000 (A)");
+    assert.equal(kurus(trial["191"] || 0), kurus(500), "191 satıştan iade KDV'si 500 (B)");
     const ledger = await must("mizan", ctx.api.get("/api/workspace/ledger"));
     assert.equal(kurus(ledger.trial.totals.debit), kurus(ledger.trial.totals.credit));
   });

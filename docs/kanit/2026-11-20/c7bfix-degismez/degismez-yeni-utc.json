@@ -1,0 +1,755 @@
+{
+ "log": [
+  {
+   "label": "S1 eski istemci",
+   "status": 200,
+   "shown": 2500,
+   "own": 3000
+  },
+  {
+   "label": "S2 closeRemaining (kodun kabul ettiği)",
+   "status": 200,
+   "shown": 2500,
+   "own": 3000
+  },
+  {
+   "label": "S3 kart tahsilatı",
+   "status": 200,
+   "shown": 2000,
+   "own": 2000
+  },
+  {
+   "label": "S2 yeniden kapanış",
+   "status": 200,
+   "shown": 2500,
+   "own": 3000
+  },
+  {
+   "label": "S4 Mevcut Borç",
+   "status": 200,
+   "shown": 2500,
+   "own": 3000
+  }
+ ],
+ "plans": [
+  {
+   "id": "#1",
+   "account_id": "#2",
+   "name": "Kart A",
+   "total": 3000,
+   "status": "closed",
+   "closed_at": "2026-10-08",
+   "close_rule": ""
+  },
+  {
+   "id": "#3",
+   "account_id": "#4",
+   "name": "Kart B",
+   "total": 3000,
+   "status": "closed",
+   "closed_at": "2026-10-08",
+   "close_rule": ""
+  },
+  {
+   "id": "#5",
+   "account_id": "#6",
+   "name": "Kart C",
+   "total": 3000,
+   "status": "closed",
+   "closed_at": "2026-10-08",
+   "close_rule": ""
+  },
+  {
+   "id": "#7",
+   "account_id": "#8",
+   "name": "Kart D",
+   "total": 3000,
+   "status": "closed",
+   "closed_at": "2026-10-08",
+   "close_rule": ""
+  }
+ ],
+ "planEntries": [
+  {
+   "plan_id": "#5",
+   "kind": "in",
+   "amount": 1000,
+   "date": "2026-09-10",
+   "method": "cash"
+  }
+ ],
+ "accountEntries": [
+  {
+   "account_id": "#2",
+   "kind": "in",
+   "amount": 500,
+   "date": "2026-09-10",
+   "note": ""
+  },
+  {
+   "account_id": "#4",
+   "kind": "in",
+   "amount": 500,
+   "date": "2026-09-10",
+   "note": ""
+  },
+  {
+   "account_id": "#8",
+   "kind": "debt",
+   "amount": 3000,
+   "date": "2026-09-01",
+   "note": "Önceki borç"
+  },
+  {
+   "account_id": "#8",
+   "kind": "in",
+   "amount": 500,
+   "date": "2026-09-10",
+   "note": ""
+  }
+ ],
+ "accounts": {
+  "A": {
+   "balance": 2500,
+   "overdue": 0,
+   "lines": [
+    {
+     "date": "2026-09-01",
+     "kind": "plan",
+     "debit": 3000,
+     "credit": 0,
+     "balance": 3000,
+     "label": "Taksit Planı"
+    },
+    {
+     "date": "2026-09-10",
+     "kind": "in",
+     "debit": 0,
+     "credit": 500,
+     "balance": 2500,
+     "label": "Tahsilat"
+    }
+   ]
+  },
+  "B": {
+   "balance": 2500,
+   "overdue": 0,
+   "lines": [
+    {
+     "date": "2026-09-01",
+     "kind": "plan",
+     "debit": 3000,
+     "credit": 0,
+     "balance": 3000,
+     "label": "Taksit Planı"
+    },
+    {
+     "date": "2026-09-10",
+     "kind": "in",
+     "debit": 0,
+     "credit": 500,
+     "balance": 2500,
+     "label": "Tahsilat"
+    }
+   ]
+  },
+  "C": {
+   "balance": 2000,
+   "overdue": 0,
+   "lines": [
+    {
+     "date": "2026-09-01",
+     "kind": "plan",
+     "debit": 3000,
+     "credit": 0,
+     "balance": 3000,
+     "label": "Taksit Planı"
+    },
+    {
+     "date": "2026-09-10",
+     "kind": "plan-in",
+     "debit": 0,
+     "credit": 1000,
+     "balance": 2000,
+     "label": "Taksit Tahsilatı"
+    }
+   ]
+  },
+  "D": {
+   "balance": 2500,
+   "overdue": 0,
+   "lines": [
+    {
+     "date": "2026-09-01",
+     "kind": "debt",
+     "debit": 3000,
+     "credit": 0,
+     "balance": 3000,
+     "label": "Borç"
+    },
+    {
+     "date": "2026-09-01",
+     "kind": "plan",
+     "debit": 0,
+     "credit": 0,
+     "balance": 3000,
+     "label": "Taksit Planı (mevcut borç)"
+    },
+    {
+     "date": "2026-09-10",
+     "kind": "in",
+     "debit": 0,
+     "credit": 500,
+     "balance": 2500,
+     "label": "Tahsilat"
+    }
+   ]
+  }
+ },
+ "trial": [
+  [
+   "100",
+   2500
+  ],
+  [
+   "120",
+   9500
+  ],
+  [
+   "600",
+   -9000
+  ],
+  [
+   "602",
+   -3000
+  ]
+ ],
+ "integrity": true,
+ "defter": {
+  "id": "defter-mutabakati",
+  "group": "Ana Defter",
+  "title": "Defter Mutabakatı",
+  "subtitle": "Tüm hesaplar tutarlı; borç toplamı alacak toplamına eşit. Her kayıt yazılmadan önce bu denetimden geçer.",
+  "headers": [
+   "Hesap",
+   "Hesap Adı",
+   "Ana Defter",
+   "Alt Defter",
+   "Fark",
+   "Durum"
+  ],
+  "types": [
+   "",
+   "",
+   "money",
+   "money",
+   "money",
+   ""
+  ],
+  "rows": [
+   [
+    "100",
+    "Kasa (Nakit)",
+    "2.500,00 TL",
+    "2.500,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "101",
+    "Alınan Çekler",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "102",
+    "Bankalar (Havale / EFT)",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "103",
+    "Verilen Çekler ve Ödeme Emirleri (−)",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "108",
+    "Kredi Kartı Tahsilatları (POS)",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "120",
+    "Alıcılar (Müşteri Carileri)",
+    "9.500,00 TL",
+    "9.500,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "127",
+    "Carisiz Taksit Kartları",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "191",
+    "İndirilecek KDV",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "193",
+    "Peşin Ödenen Vergiler (Stopaj)",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "320",
+    "Satıcılar (Tedarikçi Carileri)",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "336",
+    "Diğer Cariler (Personel vb.)",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "360",
+    "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "391",
+    "Hesaplanan KDV",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Cari bazında mutabakat (her cari ayrı)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Carisiz taksit kartları (kart bazında)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Taksit kartları (tutar, tahsilat, kalan)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Stok miktarı (girişler − çıkışlar)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Kayıt Tahsilatları)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Kasa Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Cari Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Taksit Kartları)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Taksitler)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Taksit Tahsilatları)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Stok Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Çek/Senet)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Çek/Senet Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Faturalar)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Faturalar)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Faturalar)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Faturalar)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Faturalar)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Faturalar)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Fatura Kalemleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kuruş ve işaret (Fatura Kalemleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Stok ↔ cari bağı (açık hesap)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Stok hareketi silinmiş cari satırı",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Stok miktarı (sıfırdan büyük)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Çek/senet ↔ cari bağı",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Fatura toplamı = kalemlerin toplamı",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Fatura TL karşılığı (matrah + KDV − tevkifat − stopaj)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Fatura ↔ cari bağı",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Faturası olmayan cari satırı",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Fatura kapama bağı ve mahsup fişleri",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Fatura ↔ stok bağı",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Fatura ↔ çek/senet bağı",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Fatura ↔ taksit kartı bağı",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "İade miktarı ≤ faturadaki miktar",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Tarihsiz ya da geçersiz tarihli hareket (Kayıt Tahsilatları)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "İleri tarihli hareket (Kayıt Tahsilatları)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Tarihsiz ya da geçersiz tarihli hareket (Kasa Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "İleri tarihli hareket (Kasa Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Tarihsiz ya da geçersiz tarihli hareket (Cari Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "İleri tarihli hareket (Cari Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Tarihsiz ya da geçersiz tarihli hareket (Stok Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "İleri tarihli hareket (Stok Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Tarihsiz ya da geçersiz tarihli hareket (Taksit Tahsilatları)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "İleri tarihli hareket (Taksit Tahsilatları)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Tarihsiz ya da geçersiz tarihli hareket (Çek/Senet Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "İleri tarihli hareket (Çek/Senet Hareketleri)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Tanınmayan ödeme yolu (nakit, havale/EFT, POS/kredi kartı dışında)",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ],
+   [
+    "Denetim",
+    "Kayıt Tarihi'nden önceki taksit vadesi",
+    "",
+    "",
+    "",
+    "Tutarlı"
+   ]
+  ],
+  "total": 61,
+  "footer": null,
+  "footers": [],
+  "summary": [
+   [
+    "Çift Yönlü Denge",
+    "Borç = Alacak"
+   ],
+   [
+    "Sonuç",
+    "Tutarlı"
+   ]
+  ],
+  "tabs": null,
+  "query": {}
+ }
+}

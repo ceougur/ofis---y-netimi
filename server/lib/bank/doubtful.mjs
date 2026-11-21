@@ -18,6 +18,7 @@ import { newEventId, nextEventNo } from "./event-no.mjs";
 // iki yön de değerleri YALNIZ işlev içinde okur (modül düzeyinde okuma yok), hangisi önce yüklenirse yüklensin çalışır (test/supheli-kuyruk-defter-250.test.mjs ayrı süreçte sınar).
 import { createObligationInput } from "../obligation-input.mjs";
 import { createAccountLines } from "../account-lines.mjs";
+import { waivesSql } from "../accounts.mjs";
 import { doubtfulBefore } from "../obligation-queue.mjs";
 
 export const DOUBTFUL_TABLES = Object.freeze(["doubtful_receivables", "doubtful_provisions"]);
@@ -110,11 +111,12 @@ export function doubtfulCredits(store, parties) {
     const openedOn = "CASE WHEN p.covers_balance = 1 THEN '' ELSE COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) END";
     parts.push(`SELECT 'plan-entry:' || pe.id, p.account_id, pe.date, ${c("pe.amount")}, '', ${openedOn}, COALESCE(pe.created_at, ''), pe.rowid FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE pe.kind = 'in'`);
     // Vazgeçilen kalan kuruşla: kart tutarı (kuruş) − net tahsilat (her satır kuruşa çevrilip toplanır; banka kodunda REAL toplam yok).
+    // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın"): YALNIZ kalanı düşülen (eski kural, göç 53 '2.4.9') kart — yevmiyenin 689'uyla aynı yardımcı (lib/accounts.mjs waivesSql).
     parts.push(
       `SELECT 'plan-close:' || p.id, p.account_id, MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), ${openedOn}),
               MAX(0, ${c("p.total")} - COALESCE((SELECT SUM(CAST(ROUND((CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) * 100) AS INTEGER)) FROM plan_entries x WHERE x.plan_id = p.id), 0)), '', ${openedOn},
               COALESCE(p.updated_at, p.created_at, ''), p.rowid
-       FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL WHERE p.status = 'closed'`,
+       FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL WHERE ${waivesSql("p")}`,
     );
   }
   // Tek aday düzeltme turu (B1 hız; ders 47, 53 (a)): durum / tür koşulu dizin DIŞINDA (+) — planlayıcı carinin dizinini (idx_invoices_account) kullanır. Önceden idx_invoices_status'u

@@ -1,0 +1,32 @@
+{
+  "ad": "c7b-once-kahin-cari",
+  "komut": "npm run test:kahin-cari",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T04:09:31.284Z",
+  "sure_sn": 309.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17253,
+    "gecen": 17253,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kanit/once/2026-11-19/c7b-once-kahin-cari.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2/taban",
+  "ham_cikti_sha256": "589f2ea6dac7df03c92dd4a90f635221b7116a11a1f184667cef141386bd6c14",
+  "ham_cikti_bayt": 69341
+}

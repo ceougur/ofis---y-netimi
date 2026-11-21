@@ -1,0 +1,30 @@
+MUTASYON c7b3b · 12:17:41 · başta 3.58 3.62 3.94 5/162 22366
+uygulandı M3f-kapanis-kilidi-yardimcidan-kopuk
+M3f-kapanis-kilidi-yardimcidan-kopuk · UTC · çıkış 1 · pass 124 · fail 1 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         Borçta Kalsın kartı kilitli kapanışta Yeniden Aç ({"ok":false,"error":"Bu kart 08.10.2026 tarihinde kapatıldı (kalan alacaktan vazgeçildi); 09.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Kart yeniden açılamaz. Gerekirs
+M3f-kapanis-kilidi-yardimcidan-kopuk · Europe/Istanbul · çıkış 1 · pass 124 · fail 1 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         Borçta Kalsın kartı kilitli kapanışta Yeniden Aç ({"ok":false,"error":"Bu kart 08.10.2026 tarihinde kapatıldı (kalan alacaktan vazgeçildi); 09.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Kart yeniden açılamaz. Gerekirs
+geri alındı
+uygulandı M4-gecikme-kalem-vadesinden
+M4-gecikme-kalem-vadesinden · UTC · çıkış 1 · pass 122 · fail 3 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         09.10: kalanın tamamı gecikmiş (S205)                  0 !== 600          
+M4-gecikme-kalem-vadesinden · Europe/Istanbul · çıkış 1 · pass 122 · fail 3 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         09.10: kalanın tamamı gecikmiş (S205)                  0 !== 600          
+geri alındı
+uygulandı M5-vade-kapanis-ertesi
+M5-vade-kapanis-ertesi · UTC · çıkış 1 · pass 121 · fail 4 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         09.10: kalanın tamamı gecikmiş (S205)                  0 !== 600          
+M5-vade-kapanis-ertesi · Europe/Istanbul · çıkış 1 · pass 121 · fail 4 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         09.10: kalanın tamamı gecikmiş (S205)                  0 !== 600          
+geri alındı
+uygulandı M6-isaret-kilit-izinden-cikar
+M6-isaret-kilit-izinden-cikar · UTC · çıkış 0 · pass 125 · fail 0 · YAŞIYOR · ilk: 
+M6-isaret-kilit-izinden-cikar · Europe/Istanbul · çıkış 0 · pass 125 · fail 0 · YAŞIYOR · ilk: 
+geri alındı
+uygulandı M7-yeniden-acta-isaret-sifirlanmaz
+M7-yeniden-acta-isaret-sifirlanmaz · UTC · çıkış 1 · pass 123 · fail 2 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         işaret sıfırlandı                  '2.4.9' !== ''          
+M7-yeniden-acta-isaret-sifirlanmaz · Europe/Istanbul · çıkış 1 · pass 123 · fail 2 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         işaret sıfırlandı                  '2.4.9' !== ''          
+geri alındı
+uygulandı M8-goc-isaretlemez
+M8-goc-isaretlemez · UTC · çıkış 1 · pass 122 · fail 3 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         göçten önce kapatılmış kart eski kural                  '' !== '2.4.9'          
+M8-goc-isaretlemez · Europe/Istanbul · çıkış 1 · pass 122 · fail 3 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         göçten önce kapatılmış kart eski kural                  '' !== '2.4.9'          
+geri alındı
+uygulandı M9-zil-kapali-karti-almaz
+M9-zil-kapali-karti-almaz · UTC · çıkış 1 · pass 123 · fail 2 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         hatırlatma (zil) gider         + actual - expected                  + [] 
+M9-zil-kapali-karti-almaz · Europe/Istanbul · çıkış 1 · pass 123 · fail 2 · YAKALANDI · ilk:       failureType: 'testCodeFailure'       error: |-         hatırlatma (zil) gider         + actual - expected                  + [] 
+geri alındı
+bitti 12:27:15

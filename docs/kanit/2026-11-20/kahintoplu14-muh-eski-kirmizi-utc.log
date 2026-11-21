@@ -1,0 +1,267 @@
+...............F...FF.FFF.............F............................FF.FF...............................................F.......................................................................................................
+======================================================================
+FAIL: test_A7_S120_elle_borclar (__main__.Bakim13.test_A7_S120_elle_borclar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1272, in test_A7_S120_elle_borclar
+    r = kart([B("E", "2026-01-05", 300), F("2026-01-10", 600)], 500)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1251, in kart
+    return M.kos(senaryo(ols + [o("taksit_karti", "2026-02-01", id="TK", cari="C1", kaynak="mevcut_borc", toplam=toplam,
+           ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                  taksitler=[{"vade": "2026-03-01", "tutar": toplam}]),
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                E.R("ak", "acik_kalemler", cari="C1", tarih="2026-02-02")]))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 4190, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2751, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2768, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 3351, in rapor
+    "tarih": a["tarih"]} for a in d.acik_kalemler(o["cari"], o["tarih"])]
+                                  ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2575, in acik_kalemler
+    return self.kuyruk(c, t).acik_ogeler()
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2563, in kuyruk
+    q = self._oynat(c, olaylar, rezerv, fg, fifo)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2489, in _oynat
+    q.kart_ac(x, g.kart[x], g.kart[x]["tarih"], sira)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 1717, in kart_ac
+    raise AssertionError("senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_S200_elle_once_eksik_faturadan (__main__.Bakim14.test_S200_elle_once_eksik_faturadan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1309, in test_S200_elle_once_eksik_faturadan
+    r = kart([self.B("E", "2026-01-05", 300), self.F("F", "2026-01-10", 600)], 500)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1305, in kart
+    return M.kos(senaryo(ols + [o("taksit_karti", "2026-02-01", id="TK", cari="C1", kaynak="mevcut_borc", toplam=toplam,
+           ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                  taksitler=[{"vade": "2026-03-01", "tutar": toplam}]),
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                E.R("ak", "acik_kalemler", cari="C1", tarih="2026-02-02"), E.R("af", "acik_faturalar", cari="C1", tarih="2026-02-02")]))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 4190, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2751, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2768, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 3351, in rapor
+    "tarih": a["tarih"]} for a in d.acik_kalemler(o["cari"], o["tarih"])]
+                                  ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2575, in acik_kalemler
+    return self.kuyruk(c, t).acik_ogeler()
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2563, in kuyruk
+    q = self._oynat(c, olaylar, rezerv, fg, fifo)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2489, in _oynat
+    q.kart_ac(x, g.kart[x], g.kart[x]["tarih"], sira)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 1717, in kart_ac
+    raise AssertionError("senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_S210_S211_kart_kapanir (__main__.Bakim14.test_S210_S211_kart_kapanir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1338, in test_S210_S211_kart_kapanir
+    self.assertEqual(self.kalemler(r, "ak"), [("borc:BY", 100)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('kart:TK', 100)] != [('borc:BY', 100)]
+
+First differing element 0:
+('kart:TK', 100)
+('borc:BY', 100)
+
+- [('kart:TK', 100)]
++ [('borc:BY', 100)]
+
+======================================================================
+FAIL: test_S210_sinir_susar (__main__.Bakim14.test_S210_sinir_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1373, in test_S210_sinir_susar
+    self.sus(self._s210([o("taksit_kapat", "2026-04-10", kart="TK"), o("iptal", kaynak="F")]), "S210")
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1290, in sus
+    with self.assertRaises(AssertionError) as c:
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_S213_acik_faturalar_supheli_ve_degersiz_susmasi (__main__.Bakim14.test_S213_acik_faturalar_supheli_ve_degersiz_susmasi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1387, in test_S213_acik_faturalar_supheli_ve_degersiz_susmasi
+    self.assertEqual([(x["fatura"], x["kalan"]) for x in r["raporlar"]["af1"]], [("F1", 1000), ("F2", 500)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('F2', 300)] != [('F1', 1000), ('F2', 500)]
+
+First differing element 0:
+('F2', 300)
+('F1', 1000)
+
+Second list contains 1 additional elements.
+First extra element 1:
+('F2', 500)
+
+- [('F2', 300)]
++ [('F1', 1000), ('F2', 500)]
+
+======================================================================
+FAIL: test_S220_kismen_odenmis_ve_ayni_gun_vadeli (__main__.Bakim14.test_S220_kismen_odenmis_ve_ayni_gun_vadeli)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1400, in test_S220_kismen_odenmis_ve_ayni_gun_vadeli
+    self.assertEqual((r["raporlar"]["g0"]["gecikmis"], r["raporlar"]["g0"]["detay"]),
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     (200, [{"kalem": "kart_kalani:TK", "vade": "2026-04-01", "kalan": 200}]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0, []) != (200, [{'kalem': 'kart_kalani:TK', 'vade': '2026-04-01', 'kalan': 200}])
+
+First differing element 0:
+0
+200
+
+- (0, [])
++ (200, [{'kalan': 200, 'kalem': 'kart_kalani:TK', 'vade': '2026-04-01'}])
+
+======================================================================
+FAIL: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1681, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+                     ~~~~~~~^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/uret_beklenen.py", line 54, in main
+    for yol, icerik in ((os.path.join(SEN, s["ad"] + ".json"), metin(s)), (os.path.join(BEK, s["ad"] + ".json"), metin(beklenen(s)))):
+                                                                                                                       ~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/uret_beklenen.py", line 41, in beklenen
+    r = M.kos(s, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 4190, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2751, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2768, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 3351, in rapor
+    "tarih": a["tarih"]} for a in d.acik_kalemler(o["cari"], o["tarih"])]
+                                  ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2575, in acik_kalemler
+    return self.kuyruk(c, t).acik_ogeler()
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2563, in kuyruk
+    q = self._oynat(c, olaylar, rezerv, fg, fifo)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2489, in _oynat
+    q.kart_ac(x, g.kart[x], g.kart[x]["tarih"], sira)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 1717, in kart_ac
+    raise AssertionError("senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_s118_a1_s200_elle_once_sonra_fatura (__main__.ElleSenaryolar.test_s118_a1_s200_elle_once_sonra_fatura)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1416, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 4190, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2751, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2768, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 3351, in rapor
+    "tarih": a["tarih"]} for a in d.acik_kalemler(o["cari"], o["tarih"])]
+                                  ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2575, in acik_kalemler
+    return self.kuyruk(c, t).acik_ogeler()
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2563, in kuyruk
+    q = self._oynat(c, olaylar, rezerv, fg, fifo)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 2489, in _oynat
+    q.kart_ac(x, g.kart[x], g.kart[x]["tarih"], sira)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/model.py", line 1717, in kart_ac
+    raise AssertionError("senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_s119_a2_s210_s211_kart_kapanir (__main__.ElleSenaryolar.test_s119_a2_s210_s211_kart_kapanir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1419, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 10000 : s119-a2-s210-s211-kart-kapanir [A] g1/gecikmis
+
+======================================================================
+FAIL: test_s120_a3_s213_acik_faturalar_supheli (__main__.ElleSenaryolar.test_s120_a3_s213_acik_faturalar_supheli)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1419, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'fatura': 'F2', 'kalan': 30000, 'vade': '2026-04-10',[19 chars]10'}] != [{'fatura': 'F1', 'kalan': 100000, 'vade': '2026-03-01'[99 chars]10'}]
+
+First differing element 0:
+{'fatura': 'F2', 'kalan': 30000, 'vade': '2026-04-10', 'tarih': '2026-02-10'}
+{'fatura': 'F1', 'kalan': 100000, 'vade': '2026-03-01', 'tarih': '2026-02-01'}
+
+Second list contains 1 additional elements.
+First extra element 1:
+{'fatura': 'F2', 'kalan': 50000, 'vade': '2026-04-10', 'tarih': '2026-02-10'}
+
++ [{'fatura': 'F1', 'kalan': 100000, 'tarih': '2026-02-01', 'vade': '2026-03-01'},
+- [{'fatura': 'F2', 'kalan': 30000, 'tarih': '2026-02-10', 'vade': '2026-04-10'}]
+? ^                          ^
+
++  {'fatura': 'F2', 'kalan': 50000, 'tarih': '2026-02-10', 'vade': '2026-04-10'}]
+? ^                          ^
+ : s120-a3-s213-acik-faturalar-supheli [A] af1a
+
+======================================================================
+FAIL: test_s121_a5_s220_kart_kapat_onceden_gecikmis (__main__.ElleSenaryolar.test_s121_a5_s220_kart_kapat_onceden_gecikmis)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1419, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 30000 : s121-a5-s220-kart-kapat-onceden-gecikmis [A] g1a/gecikmis
+
+======================================================================
+FAIL: test_s58_r9_kartli_fatura_sil_iptal (__main__.ElleSenaryolar.test_s58_r9_kartli_fatura_sil_iptal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahintoplu14-kirmizi-utc/muhasebe/test_model.py", line 1419, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2000 : s58-r9-kartli-fatura-sil-iptal [A] g2a/gecikmis
+
+----------------------------------------------------------------------
+Ran 223 tests in 35.520s
+
+FAILED (failures=12)
+# tests 223
+# pass 211
+# fail 12
+# skipped 0

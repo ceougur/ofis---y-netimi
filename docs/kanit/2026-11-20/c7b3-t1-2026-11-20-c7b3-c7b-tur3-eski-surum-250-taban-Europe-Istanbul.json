@@ -1,0 +1,48 @@
+{
+  "ad": "c7b3-c7b-tur3-eski-surum-250-taban-Europe-Istanbul",
+  "komut": "node --test --test-reporter=tap test/c7b-tur3-eski-surum-250.test.mjs",
+  "commit": "b85d9e27d841f7db99e7dacf21505364a156f3c7",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T06:36:50.959Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 2,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen › eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır",
+      "konum": "test/c7b-tur3-eski-surum-250.test.mjs:100:3",
+      "hata": "S15 iptal: 409 {\"ok\":false,\"error\":\"Faturanın taksit kartında (“Eski Tahsilatlı”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.\",\"code\":\"plan-has-payments\",\"planId\":\"plan-980f888f-c7a4-46a8-b6b3-634785dabe89\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen › S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle borç kendi vadesiyle",
+      "konum": "test/c7b-tur3-eski-surum-250.test.mjs:112:3",
+      "hata": "kart kapalı, tutar = tahsilat · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen › S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeniden Aç → İptal Et → kalan bir kez düşülür",
+      "konum": "test/c7b-tur3-eski-surum-250.test.mjs:123:3",
+      "hata": "The input did not match the regular expression /Önce kartı Yeniden Aç ile açın\\.$/. Input: · 'Faturanın taksit kartında (“Eski Kapalı Faturalı”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.' (beklenen , gelen Faturanın taksit kartında (“Eski Kapalı Faturalı”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.)"
+    }
+  ],
+  "ham_cikti": "../../c7b3-d3/t1/2026-11-20/c7b3-c7b-tur3-eski-surum-250-taban-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git",
+  "ham_cikti_sha256": "c31f6691af7a96ecb0ed33c135b01abcd85dc97a6f3231c7d06f2611178e237f",
+  "ham_cikti_bayt": 5957
+}

@@ -1,0 +1,336 @@
+{
+ "adim_farklari": [],
+ "bugun_dal": "A",
+ "dal": "A",
+ "degismezler": {
+  "kahin_mizan_toplam_sifir": true,
+  "program_her_adimda_dengeli": true,
+  "program_her_adimda_mutabakat": true,
+  "program_mizan_toplam_sifir": true,
+  "program_mutabakat_testi": true
+ },
+ "etiketler": {
+  "C7b6-KAPAT": {
+   "dayanak": "kullanıcı kararı 05.11 21:30 (6) 'Kartı Kapat yalnız ödeme planını bitirir; kalan carinin borcunda kalır … BUGÜNKÜ DAVRANIŞ DEĞİŞİR (kalan 689'la borçtan düşüyordu)'; kâhin README R6 `eski` = 2.4.9 davranışı B 689 / A CH",
+   "is": "Ç7b (iş listesi D İŞ ATAMASI (4)(6) → Ç7b)"
+  },
+  "F06-FINANSMAN-251": {
+   "dayanak": "kitap F-06 / M14 'finansman türü 780'; Ç7b tasarım notu §9 B-1 (BAŞ MİMAR KARARI 19.11 04:03) B-1 = B: '780 türü ve tanınmayan türün 770.90'ı 2.5.1' — programın gider türü listesinde finansman yok, 770'e düşer",
+   "is": "2.5.1 (Ç7b B-1; iş listesi B)"
+  },
+  "SURUCU-CARI-ACILIS-YOLU": {
+   "dayanak": "SÜRÜCÜ YOLU (karar değil): programda cari açılışı yalnız cari açılırken (routes/accounts.mjs POST openingBalance); sürücü cariyi açılış olayından ÖNCE başka olayla açmak zorunda kaldıysa açılış Borç / Alacak Yaz satırıdır (602.90 / 770.90)",
+   "is": "sürücü sınırı (eşleme)"
+  }
+ },
+ "olay_durumlari": {
+  "faturada": 3,
+  "rapor": 8,
+  "yapildi": 24
+ },
+ "oz_denetim": {
+  "raporlar_ayni": true,
+  "redler_ayni": true
+ },
+ "ozet": {
+  "AYNI": 20,
+  "K": 0,
+  "OLCULEMEDI": 0,
+  "P": 0,
+  "R": 0,
+  "SINIFLANMADI": 0,
+  "SUSMA": 0,
+  "U": 1,
+  "adim_sinifsiz": 0,
+  "adim_susma": 0,
+  "ara_susma": 0
+ },
+ "raporlar": {
+  "ak2": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 0,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 1
+   },
+   "satirlar": [
+    {
+     "aciklama": "programda bu görünüm yok (planlı iş)",
+     "alan": "acik_kalem",
+     "anahtar": "C2",
+     "bugun": null,
+     "kahin": "[{\"k\": \"iade:I4\", \"kalan\": -1000, \"tarih\": \"2026-03-25\", \"tur\": \"iade\", \"vade\": \"2026-03-25\"}]",
+     "kimlik": [
+      "GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)"
+     ],
+     "program": null,
+     "sinif": "U"
+    }
+   ],
+   "tur": "acik_kalemler"
+  },
+  "g1": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C1",
+     "bugun": 6000,
+     "kahin": 3000,
+     "program": 3000,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "g1b": {
+   "dosya": "canli",
+   "gecmis_gunlu": "2026-04-10",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C1",
+     "bugun": 6000,
+     "kahin": 6000,
+     "program": 6000,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "g2": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C2",
+     "bugun": 0,
+     "kahin": 0,
+     "program": 0,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "g3": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C3",
+     "bugun": 0,
+     "kahin": 5000,
+     "program": 5000,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "g3b": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C3",
+     "bugun": 3000,
+     "kahin": 8000,
+     "program": 8000,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "kt1": {
+   "dosya": "canli",
+   "gecmis_gunlu": "2026-06-02",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "kart",
+     "anahtar": "TK1",
+     "bugun": "Açık 2026-02-01 3000/3000; 2026-03-01 3000/3000",
+     "kahin": "Açık 2026-03-01 3000/3000; 2026-04-01 3000/3000",
+     "program": "Açık 2026-03-01 3000/3000; 2026-04-01 3000/3000",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "kartlar"
+  },
+  "mz": {
+   "brut": {
+    "kahin": {
+     "alacak": 48000,
+     "borc": 48000
+    },
+    "program": {
+     "alacak": 48000,
+     "borc": 48000
+    }
+   },
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 7,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "program_dengeli": true,
+   "program_mutabakat": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "100",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "120",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "519",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "600",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "610",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C3",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "mizan"
+  }
+ },
+ "redler": [],
+ "senaryo": "s57-r4-kart-kucultme",
+ "son": [
+  {
+   "alan": "ana",
+   "anahtar": "100",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "120",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "519",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "600",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "610",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "C1",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "C3",
+   "sinif": "AYNI"
+  }
+ ],
+ "tz": "Europe/Istanbul",
+ "uyarilar": [],
+ "uygulanamayan": []
+}

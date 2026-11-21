@@ -1,0 +1,96 @@
+HIZ c7b3 devam 3 · kilitsiz · tekrar 5 · kilit 08:56:04 · başta 2.80 3.50 3.22 2/122 30168 · nproc 4 · yeni 6fccbf94 0 kirli
+=== taban · başta 1.44 3.06 3.08 1/121 30241 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban · yük (başta) 1.29 2.89 3.02 · TZ Europe/Istanbul
+cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 · kapsayan kartlı cari account-3a242abd-c8f7-43a7-842c-efa084fc8841~105 · stok kalemi stock-d2151f86-e596-40f0-a678-0e040eba309f
+  Taksitler Geciken listesi — yazımdan önce (GET plans?status=overdue): durum 200 · en iyi 808.3 ms · ortanca 918 ms · olay döngüsü en çok 1733.3 ms (n=5)
+  Cari kartı / ekstre + gecikmiş (GET accounts/:id): durum 200 · en iyi 241.4 ms · ortanca 266.3 ms · olay döngüsü en çok 301.7 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3722.6 ms · ortanca 3955 ms · olay döngüsü en çok 4265.6 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7928.1 ms · ortanca 8163.1 ms · olay döngüsü en çok 8455.7 ms (n=5)
+  YAZIM taksitli satış faturası: durum 200 · en iyi 240.5 ms · ortanca 253.5 ms · olay döngüsü en çok 0 ms (n=5)
+  Fatura kartı (GET invoices/:id, İptal Et notu): durum 200 · en iyi 129.9 ms · ortanca 137.4 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM taksit tahsilatı: durum 200 · en iyi 1295.1 ms · ortanca 1328 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satıştan iade (taksitli — kart küçülmesi): durum 200 · en iyi 776.3 ms · ortanca 862.7 ms · olay döngüsü en çok 923.3 ms (n=5)
+  YAZIM taksitli satış (tahsilatsız): durum 200 · en iyi 248.4 ms · ortanca 264.7 ms · olay döngüsü en çok 329.8 ms (n=5)
+  YAZIM fatura iptali (taksitli, tahsilatsız): durum 200 · en iyi 137 ms · ortanca 150.9 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satış faturası (açık, kapsayan kartlı cari): durum 200 · en iyi 200.5 ms · ortanca 219.3 ms · olay döngüsü en çok 247.3 ms (n=5)
+  YAZIM fatura iptali (açık, kapsayan kartlı cari): durum 200 · en iyi 126.6 ms · ortanca 134.5 ms · olay döngüsü en çok 131.5 ms (n=5)
+  YAZIM satış faturası (açık, kapsayan kartlı cari) — silme için: durum 200 · en iyi 205 ms · ortanca 222.3 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura silme (açık, kapsayan kartlı cari): durum 200 · en iyi 157.7 ms · ortanca 168.6 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM faturasız stok iadesi (cariye, kapsayan kartlı cari — trimCovers): durum 200 · en iyi 299.6 ms · ortanca 306.3 ms · olay döngüsü en çok 297.8 ms (n=5)
+  YAZIM fatura iptali (tahsilatlı kendi kart — S15; tabanda 409): durum 409 · en iyi 41.1 ms · ortanca 41.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Taksitler Geciken listesi (GET plans?status=overdue): durum 200 · en iyi 780.4 ms · ortanca 848.3 ms · olay döngüsü en çok 10.3 ms (n=5)
+  Kapsayan kartlı cari kartı (GET accounts/:id): durum 200 · en iyi 229.9 ms · ortanca 237.9 ms · olay döngüsü en çok 245.2 ms (n=5)
+gövde (200 değil) YAZIM fatura iptali (tahsilatlı kendi kart — S15; tabanda 409): {"ok":false,"error":"Faturanın taksit kartında (“Müşteri 1 T11”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.","code":"plan-has-payments","planId":"plan-52f42b74-b2b
+yük (sonda) 1.05 2.33 2.80
+çıkış 0 · sonda 1.05 2.33 2.80 1/124 31221
+=== yeni · başta 1.05 2.33 2.80 1/124 31228 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-abcab14e726c6a077 · yük (başta) 1.15 2.25 2.76 · TZ Europe/Istanbul
+cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 · kapsayan kartlı cari account-3a242abd-c8f7-43a7-842c-efa084fc8841~105 · stok kalemi stock-d2151f86-e596-40f0-a678-0e040eba309f
+  Taksitler Geciken listesi — yazımdan önce (GET plans?status=overdue): durum 200 · en iyi 817.3 ms · ortanca 957.2 ms · olay döngüsü en çok 1784.7 ms (n=5)
+  Cari kartı / ekstre + gecikmiş (GET accounts/:id): durum 200 · en iyi 222.5 ms · ortanca 241.6 ms · olay döngüsü en çok 277.9 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3376.4 ms · ortanca 3433 ms · olay döngüsü en çok 3655.3 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7682.3 ms · ortanca 7688.6 ms · olay döngüsü en çok 8589.9 ms (n=5)
+  YAZIM taksitli satış faturası: durum 200 · en iyi 245.5 ms · ortanca 261.7 ms · olay döngüsü en çok 0 ms (n=5)
+  Fatura kartı (GET invoices/:id, İptal Et notu): durum 200 · en iyi 128.1 ms · ortanca 143.6 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM taksit tahsilatı: durum 200 · en iyi 1243.3 ms · ortanca 1313.9 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satıştan iade (taksitli — kart küçülmesi): durum 200 · en iyi 527 ms · ortanca 543.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM taksitli satış (tahsilatsız): durum 200 · en iyi 226.6 ms · ortanca 243.3 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali (taksitli, tahsilatsız): durum 200 · en iyi 163.5 ms · ortanca 176.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satış faturası (açık, kapsayan kartlı cari): durum 200 · en iyi 204.8 ms · ortanca 221.3 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali (açık, kapsayan kartlı cari): durum 200 · en iyi 154.5 ms · ortanca 158.8 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satış faturası (açık, kapsayan kartlı cari) — silme için: durum 200 · en iyi 202.8 ms · ortanca 214.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura silme (açık, kapsayan kartlı cari): durum 200 · en iyi 181.2 ms · ortanca 188.4 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM faturasız stok iadesi (cariye, kapsayan kartlı cari — trimCovers): durum 200 · en iyi 101.4 ms · ortanca 103.6 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali (tahsilatlı kendi kart — S15; tabanda 409): durum 200 · en iyi 164.2 ms · ortanca 182.7 ms · olay döngüsü en çok 0 ms (n=5)
+  Taksitler Geciken listesi (GET plans?status=overdue): durum 200 · en iyi 1855.5 ms · ortanca 1878.6 ms · olay döngüsü en çok 11.3 ms (n=5)
+  Kapsayan kartlı cari kartı (GET accounts/:id): durum 200 · en iyi 194.9 ms · ortanca 211.7 ms · olay döngüsü en çok 250 ms (n=5)
+yük (sonda) 1.11 1.92 2.59
+çıkış 0 · sonda 1.11 1.92 2.59 1/118 31291
+=== taban · başta 1.11 1.92 2.59 1/118 31298 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban · yük (başta) 1.31 1.91 2.57 · TZ Europe/Istanbul
+cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 · kapsayan kartlı cari account-3a242abd-c8f7-43a7-842c-efa084fc8841~105 · stok kalemi stock-d2151f86-e596-40f0-a678-0e040eba309f
+  Taksitler Geciken listesi — yazımdan önce (GET plans?status=overdue): durum 200 · en iyi 780.2 ms · ortanca 892.1 ms · olay döngüsü en çok 1820.3 ms (n=5)
+  Cari kartı / ekstre + gecikmiş (GET accounts/:id): durum 200 · en iyi 252.2 ms · ortanca 285.8 ms · olay döngüsü en çok 340.3 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3491.8 ms · ortanca 3667.9 ms · olay döngüsü en çok 3810.5 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7879.8 ms · ortanca 8204.1 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM taksitli satış faturası: durum 200 · en iyi 243.1 ms · ortanca 270.1 ms · olay döngüsü en çok 0 ms (n=5)
+  Fatura kartı (GET invoices/:id, İptal Et notu): durum 200 · en iyi 126.7 ms · ortanca 131.1 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM taksit tahsilatı: durum 200 · en iyi 1239.3 ms · ortanca 1348.6 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satıştan iade (taksitli — kart küçülmesi): durum 200 · en iyi 740.8 ms · ortanca 773.1 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM taksitli satış (tahsilatsız): durum 200 · en iyi 230.7 ms · ortanca 240.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali (taksitli, tahsilatsız): durum 200 · en iyi 134.1 ms · ortanca 143 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satış faturası (açık, kapsayan kartlı cari): durum 200 · en iyi 198.4 ms · ortanca 208.6 ms · olay döngüsü en çok 232 ms (n=5)
+  YAZIM fatura iptali (açık, kapsayan kartlı cari): durum 200 · en iyi 129 ms · ortanca 133.8 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satış faturası (açık, kapsayan kartlı cari) — silme için: durum 200 · en iyi 203.4 ms · ortanca 234 ms · olay döngüsü en çok 248.9 ms (n=5)
+  YAZIM fatura silme (açık, kapsayan kartlı cari): durum 200 · en iyi 155.6 ms · ortanca 159.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM faturasız stok iadesi (cariye, kapsayan kartlı cari — trimCovers): durum 200 · en iyi 280.6 ms · ortanca 285.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali (tahsilatlı kendi kart — S15; tabanda 409): durum 409 · en iyi 41.4 ms · ortanca 42 ms · olay döngüsü en çok 40.2 ms (n=5)
+  Taksitler Geciken listesi (GET plans?status=overdue): durum 200 · en iyi 793.1 ms · ortanca 939 ms · olay döngüsü en çok 6.6 ms (n=5)
+  Kapsayan kartlı cari kartı (GET accounts/:id): durum 200 · en iyi 212.1 ms · ortanca 249.8 ms · olay döngüsü en çok 276.8 ms (n=5)
+gövde (200 değil) YAZIM fatura iptali (tahsilatlı kendi kart — S15; tabanda 409): {"ok":false,"error":"Faturanın taksit kartında (“Müşteri 1 T11”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.","code":"plan-has-payments","planId":"plan-c25cf174-ed3
+yük (sonda) 1.33 1.71 2.43
+çıkış 0 · sonda 1.33 1.71 2.43 1/118 31391
+=== yeni · başta 1.30 1.69 2.41 1/118 31402 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-abcab14e726c6a077 · yük (başta) 1.29 1.66 2.38 · TZ Europe/Istanbul
+cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 · kapsayan kartlı cari account-3a242abd-c8f7-43a7-842c-efa084fc8841~105 · stok kalemi stock-d2151f86-e596-40f0-a678-0e040eba309f
+  Taksitler Geciken listesi — yazımdan önce (GET plans?status=overdue): durum 200 · en iyi 797.5 ms · ortanca 854.6 ms · olay döngüsü en çok 1728.1 ms (n=5)
+  Cari kartı / ekstre + gecikmiş (GET accounts/:id): durum 200 · en iyi 235.7 ms · ortanca 256.1 ms · olay döngüsü en çok 295.4 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3701.8 ms · ortanca 3834.4 ms · olay döngüsü en çok 3860.9 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 8078.3 ms · ortanca 8273.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM taksitli satış faturası: durum 200 · en iyi 253.7 ms · ortanca 271.4 ms · olay döngüsü en çok 0 ms (n=5)
+  Fatura kartı (GET invoices/:id, İptal Et notu): durum 200 · en iyi 128.6 ms · ortanca 133.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM taksit tahsilatı: durum 200 · en iyi 1336.4 ms · ortanca 1372.3 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satıştan iade (taksitli — kart küçülmesi): durum 200 · en iyi 524 ms · ortanca 551.1 ms · olay döngüsü en çok 673.7 ms (n=5)
+  YAZIM taksitli satış (tahsilatsız): durum 200 · en iyi 236.5 ms · ortanca 303.8 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali (taksitli, tahsilatsız): durum 200 · en iyi 171.4 ms · ortanca 208.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satış faturası (açık, kapsayan kartlı cari): durum 200 · en iyi 207.6 ms · ortanca 243.8 ms · olay döngüsü en çok 278.4 ms (n=5)
+  YAZIM fatura iptali (açık, kapsayan kartlı cari): durum 200 · en iyi 160.4 ms · ortanca 168.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satış faturası (açık, kapsayan kartlı cari) — silme için: durum 200 · en iyi 215.2 ms · ortanca 224.6 ms · olay döngüsü en çok 287.3 ms (n=5)
+  YAZIM fatura silme (açık, kapsayan kartlı cari): durum 200 · en iyi 191.8 ms · ortanca 204.4 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM faturasız stok iadesi (cariye, kapsayan kartlı cari — trimCovers): durum 200 · en iyi 106.3 ms · ortanca 125.5 ms · olay döngüsü en çok 138.4 ms (n=5)
+  YAZIM fatura iptali (tahsilatlı kendi kart — S15; tabanda 409): durum 200 · en iyi 167.1 ms · ortanca 172.6 ms · olay döngüsü en çok 170.7 ms (n=5)
+  Taksitler Geciken listesi (GET plans?status=overdue): durum 200 · en iyi 1812.2 ms · ortanca 1995.5 ms · olay döngüsü en çok 13.3 ms (n=5)
+  Kapsayan kartlı cari kartı (GET accounts/:id): durum 200 · en iyi 207.1 ms · ortanca 211.3 ms · olay döngüsü en çok 241.2 ms (n=5)
+yük (sonda) 1.13 1.48 2.23
+çıkış 0 · sonda 1.13 1.48 2.23 1/116 31687
+bitti 09:05:29 · 0 geçersiz blok

@@ -118,7 +118,9 @@ describe("2.0.23 Bulgu 2: taksit kartı ↔ fatura kapama", () => {
     await planIn(card.id, "2025-02-08", 3000);
     await must("kartı kapat", api.put(`/api/workspace/plans/${card.id}`, { status: "closed" }));
     const s = await state(acc, inv.id, null);
-    assert.deepEqual([s.paid, s.open, s.balance], [0, 12720, 12720]);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3b, karar (6) "Borçta Kalsın"): Kartı Kapat kartın kalanını (6.000) carinin borcunda bırakır — bakiye 12.720 → 18.720; faturanın
+    // açığı (12.720, sınamanın konusu) aynen.
+    assert.deepEqual([s.paid, s.open, s.balance], [0, 12720, 18720]);
   });
 
   test("ayrı kartın borcunu aşan tahsilat artanı faturaya sayılır (para kaybolmaz)", async () => {

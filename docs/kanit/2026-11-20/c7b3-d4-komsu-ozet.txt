@@ -1,0 +1,4 @@
+komşu UTC başladı 07:58:26 · 3.19 2.52 1.58 5/303 3847 · 41d11469 · 54 dosya
+komşu UTC çıkış 0 · # tests 727 # pass 727 # fail 0 # cancelled 0 # skipped 0  · 08:02:57 · 4.89 4.10 2.52 3/258 6104
+komşu Europe/Istanbul başladı 08:02:57 · 4.89 4.10 2.52 3/257 6109 · 41d11469 · 54 dosya
+komşu Europe/Istanbul çıkış 0 · # tests 727 # pass 727 # fail 0 # cancelled 0 # skipped 0  · 08:06:56 · 3.52 3.80 2.76 1/241 10049

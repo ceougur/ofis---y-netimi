@@ -1,0 +1,24 @@
+#!/bin/bash
+# Ç7b tur 3 devam 3 — S218 karşı mutantları (yerinde; her mutanttan sonra git checkout ile geri). Kullanım: bash mut.sh
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-abcab14e726c6a077
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d4
+N=$S/mut
+mkdir -p $N
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$N
+F=server/routes/invoices.mjs
+OZ=$N/ozet.txt; echo "başta $(date -u +%H:%M:%S) · $(cat /proc/loadavg) · $(cd $W && git rev-parse --short HEAD)" > $OZ
+for m in A:1 A:2 B:1 C:1; do
+  mm=${m%%:*}; k=${m#*:}
+  (cd $W && git checkout -q -- $F) || exit 1
+  python3 -I $S/mutant.py $W/$F $mm || { echo "mutant $mm uygulanamadı" >> $OZ; exit 1; }
+  echo "mutant $mm koşu $k: $(cd $W && git diff --stat -- $F | tail -1)" >> $OZ
+  for tz in UTC Europe/Istanbul; do
+    t=${tz//\//-}
+    for f in acilis-onarimi-hiz-250 acilis-onarimi-savunma-250 c7b-tur3-kart-250; do
+      (cd $W && TZ=$tz node --test --test-reporter=tap test/$f.test.mjs > $N/m$mm-k$k-$f-$t.tap 2>&1)
+      echo "  $mm k$k $f $tz: $(grep -E '^# (pass|fail)' $N/m$mm-k$k-$f-$t.tap | tr '\n' ' ') $(grep -E '^    not ok' $N/m$mm-k$k-$f-$t.tap | head -2 | cut -c1-160 | tr '\n' '|')" >> $OZ
+    done
+  done
+done
+(cd $W && git checkout -q -- $F) && echo "geri alındı: $(cd $W && git status --porcelain server | wc -l) kirli" >> $OZ
+echo "BİTTİ $(date -u +%H:%M:%S) · $(cat /proc/loadavg)" >> $OZ

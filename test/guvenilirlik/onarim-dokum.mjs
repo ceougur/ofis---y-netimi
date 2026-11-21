@@ -29,7 +29,8 @@ export async function openWith(root, { dataDir, backupDir, today, overrides = {}
  * Açılmış uygulamadan döküm. hash: büyük bölümler yalnız sayı + sha256 (100.000'lik veri). screen: aday başına toplu ↔ cari başına durum
  * karşılaştırması (onarımın elemesinin dayandığı değişmez; pahalı — cari başına yol, eski onarımın maliyeti).
  */
-export async function dumpRepair(app, { hash = false, screen = false, password = ADMIN_PASSWORD } = {}) {
+// afterDump (2.5.0 Ç7b tur 2e; isteğe bağlı): döküm alındıktan SONRA aynı oturumla çağrılır ({ client, get }) — dökümü değiştirmez (yalnız sonraki adımlar: ör. Kural Farkı Düzeltme Fişi).
+export async function dumpRepair(app, { hash = false, screen = false, password = ADMIN_PASSWORD, afterDump = null } = {}) {
   const store = app.store;
   const out = {};
   const put = (key, value) => {
@@ -94,6 +95,7 @@ export async function dumpRepair(app, { hash = false, screen = false, password =
   put("adayKartlar", cards);
   const integrity = await get("/api/workspace/ledger/integrity");
   out.mutabakat = { ok: integrity.ok, failures: (integrity.failures || []).map(item => item.code) };
+  if (afterDump) await afterDump({ client, get });
   return out;
 }
 

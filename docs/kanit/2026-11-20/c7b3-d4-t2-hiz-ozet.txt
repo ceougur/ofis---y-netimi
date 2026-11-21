@@ -1,0 +1,22 @@
+başta 08:16:11 · 1.31 2.38 2.57 1/231 15037 · yeni 4b568420 +3 değişmiş
+c7b-tur3-hiz-250 yeni UTC çıkış 0
+c7b-tur3-hiz-250 eski (4b568420) UTC çıkış 1
+c7b-tur3-hiz-250 yeni Europe/Istanbul çıkış 0
+c7b-tur3-hiz-250 eski (4b568420) Europe/Istanbul çıkış 1
+== c7b-tur3-hiz-250-eski-Europe-Istanbul.tap # tests 3 # pass 2 # fail 1 # cancelled 0 # skipped 0 
+    not ok 2 - dişi: fatura kartı ve iptal — carinin defteri en çok bir kez ve kuyruksuz okunur (kapsamda olmayan fatura, açık Mevcut Borç kartlı cari)
+not ok 1 - Ç7b tur 3 devam 3 — iptal / fatura kartının kapsam okuması ve trimCovers (hız düzeltmesinin eşdeğerliği)
+        fatura kartı: defter yalnız durum için bir kez (kapsam okuması yok); iptal: kapsam okuması yok, trimCovers kuyruksuz (bir kez)
+            faturaKarti: [
+            iptal: [
+        faturaKarti:
+== c7b-tur3-hiz-250-eski-UTC.tap # tests 3 # pass 2 # fail 1 # cancelled 0 # skipped 0 
+    not ok 2 - dişi: fatura kartı ve iptal — carinin defteri en çok bir kez ve kuyruksuz okunur (kapsamda olmayan fatura, açık Mevcut Borç kartlı cari)
+not ok 1 - Ç7b tur 3 devam 3 — iptal / fatura kartının kapsam okuması ve trimCovers (hız düzeltmesinin eşdeğerliği)
+        fatura kartı: defter yalnız durum için bir kez (kapsam okuması yok); iptal: kapsam okuması yok, trimCovers kuyruksuz (bir kez)
+            faturaKarti: [
+            iptal: [
+        faturaKarti:
+== c7b-tur3-hiz-250-yeni-Europe-Istanbul.tap # tests 3 # pass 3 # fail 0 # cancelled 0 # skipped 0 
+== c7b-tur3-hiz-250-yeni-UTC.tap # tests 3 # pass 3 # fail 0 # cancelled 0 # skipped 0 
+BİTTİ 08:16:17 · 1.28 2.36 2.56 1/231 15243

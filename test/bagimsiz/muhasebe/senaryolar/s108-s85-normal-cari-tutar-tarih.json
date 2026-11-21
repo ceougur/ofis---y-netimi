@@ -1,5 +1,5 @@
 {
- "aciklama": "S85: şüpheli kaydı açık caride Normal Cari Hesaba İşle'li kaydın yalnız tutarı / tarihi düzeltilip 120 bakiyesi aşılırsa SUPHELI_NORMAL_ASIM (S56 ölçüsü; bir kuruş üstü red, altı ve eşitlik kabul); tarih değişirse sınır yeni günde (geri ve ileri red, aradaki gün kabul); Normal Cari olmayan ve şüphelisiz carinin kaydı kabul.",
+ "aciklama": "S85: şüpheli kaydı açık caride Normal Cari Hesaba İşle'li kaydın yalnız tutarı / tarihi düzeltilip 120 bakiyesi aşılırsa SUPHELI_NORMAL_ASIM (S56 ölçüsü; bir kuruş üstü red, altı ve eşitlik kabul); tarih değişirse sınır yeni günde (geri red, ileri ve aradaki gün kabul); Normal Cari olmayan ve şüphelisiz carinin kaydı kabul; S155 (bakım 13): taksit kartı tahsilatının 120'ye düşen kısmı da sınırda (PKT red).",
  "ad": "s108-s85-normal-cari-tutar-tarih",
  "bankalar": {
   "B1": {
@@ -41,35 +41,43 @@
  "elle": {
   "A": {
    "ak2": [],
-   "ak3": [],
+   "ak3": [
+    {
+     "k": "kart:TK3",
+     "kalan": 250,
+     "tarih": "2026-01-12",
+     "tur": "taksit",
+     "vade": "2026-02-12"
+    }
+   ],
    "g2/gecikmis": 0,
    "g2/supheli": 500,
-   "g3/gecikmis": 0,
+   "g3/gecikmis": 250,
    "g3/supheli": 800,
-   "mz0/satirlar/102.B1/bakiye": 1000,
+   "mz0/satirlar/102.B1/bakiye": 750,
    "mz0/satirlar/120|C1/bakiye": 400,
    "mz0/satirlar/120|C2/bakiye": 50,
-   "mz0/satirlar/120|C3/bakiye": -50,
+   "mz0/satirlar/120|C3/bakiye": 200,
    "mz0/satirlar/128|C2/bakiye": 600,
    "mz0/satirlar/128|C3/bakiye": 800,
-   "mz1/satirlar/102.B1/bakiye": 1550,
+   "mz1/satirlar/102.B1/bakiye": 1300,
    "mz1/satirlar/120|C1/bakiye": 0,
    "mz1/satirlar/120|C2/bakiye": 0,
    "mz1/satirlar/128|C2/bakiye": 500,
-   "mz2/satirlar/102.B1/bakiye": 1550,
-   "mz2/satirlar/120|C3/bakiye": -50,
+   "mz2/satirlar/102.B1/bakiye": 1300,
+   "mz2/satirlar/120|C3/bakiye": 200,
    "mz2/satirlar/128|C3/bakiye": 800,
-   "mz3/satirlar/102.B1/bakiye": 1500,
+   "mz3/satirlar/102.B1/bakiye": 1250,
    "mz3/satirlar/120|C2/bakiye": 0,
-   "mz3/satirlar/120|C3/bakiye": 0,
+   "mz3/satirlar/120|C3/bakiye": 250,
    "mz3/satirlar/128|C2/bakiye": 500,
    "mz3/satirlar/128|C3/bakiye": 800,
-   "mza/satirlar/102.B1/bakiye": 1000,
+   "mza/satirlar/102.B1/bakiye": 750,
    "mza/satirlar/120|C2/bakiye": 50,
    "mzb/satirlar/102.B1/bakiye": 1000,
    "mzb/satirlar/120|C3/bakiye": 500,
-   "mzc/satirlar/102.B1/bakiye": 1300,
-   "mzc/satirlar/120|C3/bakiye": 200,
+   "mzc/satirlar/102.B1/bakiye": 1000,
+   "mzc/satirlar/120|C3/bakiye": 500,
    "redler": [
     "SUPHELI_NORMAL_ASIM",
     "SUPHELI_NORMAL_ASIM",
@@ -91,7 +99,9 @@
   "§3.11b/2",
   "G-7",
   "Ö7",
-  "Ö9"
+  "Ö9",
+  "S155",
+  "Ü20"
  ],
  "kartlar": {
   "KK1": {

@@ -1,0 +1,41 @@
+s103-s79-olagan-bag-cari [UTC] (2)
+  OLAY 21 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 25 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s118-a1-s200-elle-once-sonra-fatura [UTC] (3)
+  af1 fatura:F1 program 50000 · kâhin 20000 · bugün "—" → R ['SORU (sürücü bakımı 5 — S200 × Açık Faturalar)']
+  af3 fatura:F2 program 40000 · kâhin 30000 · bugün "—" → R ['SORU (sürücü bakımı 5 — S200 × Açık Faturalar)']
+  af3 fatura:F3 program 20000 · kâhin 0 · bugün "—" → R ['SORU (sürücü bakımı 5 — S200 × Açık Faturalar)']
+s14-kdv-mahsup-360 [UTC] (1)
+  OLAY 18 gecikme_zammi api_yok → P gecikme zammı (V-03) tek başına girilemiyor: Vergi Ödemesi'nde vergi tutarı sıfırdan büyük olmalı (gecikme zammı yalnız vergiyle birlikte)
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [UTC] (3)
+  OLAY 31 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 32 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 36 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s82-s45-bagli-geri-yuklenen-kayit-cari [UTC] (2)
+  RED 36 duzenle  kâhin None program {'ileti': 'taksit kartı tahsilatının Düzenle formunda Cari alanı yok (istek gönderilmedi)', 'kod': 'plan-entry-no-party', 'status': 'ekran'} → P
+  OLAY 30 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s91-b5-kg5-yukleme-yerel-gunu [UTC] (4)
+  mz0 ana:120 program 3200 · kâhin 1200 · bugün 1200 → R 
+  mz0 ana:519 program -3200 · kâhin -1200 · bugün -1200 → R 
+  mz1 ana:120 program 1200 · kâhin 500 · bugün 500 → R 
+  mz1 ana:519 program -1200 · kâhin -500 · bugün -500 → R 
+s94-s54-ayni-duzeltmede-bag-cari [UTC] (1)
+  OLAY 13 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s103-s79-olagan-bag-cari [Europe-Istanbul] (2)
+  OLAY 21 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 25 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s118-a1-s200-elle-once-sonra-fatura [Europe-Istanbul] (3)
+  af1 fatura:F1 program 50000 · kâhin 20000 · bugün "—" → R ['SORU (sürücü bakımı 5 — S200 × Açık Faturalar)']
+  af3 fatura:F2 program 40000 · kâhin 30000 · bugün "—" → R ['SORU (sürücü bakımı 5 — S200 × Açık Faturalar)']
+  af3 fatura:F3 program 20000 · kâhin 0 · bugün "—" → R ['SORU (sürücü bakımı 5 — S200 × Açık Faturalar)']
+s14-kdv-mahsup-360 [Europe-Istanbul] (1)
+  OLAY 18 gecikme_zammi api_yok → P gecikme zammı (V-03) tek başına girilemiyor: Vergi Ödemesi'nde vergi tutarı sıfırdan büyük olmalı (gecikme zammı yalnız vergiyle birlikte)
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [Europe-Istanbul] (3)
+  OLAY 31 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 32 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  OLAY 36 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s82-s45-bagli-geri-yuklenen-kayit-cari [Europe-Istanbul] (2)
+  RED 36 duzenle  kâhin None program {'ileti': 'taksit kartı tahsilatının Düzenle formunda Cari alanı yok (istek gönderilmedi)', 'kod': 'plan-entry-no-party', 'status': 'ekran'} → P
+  OLAY 30 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+s94-s54-ayni-duzeltmede-bag-cari [Europe-Istanbul] (1)
+  OLAY 13 duzenle api_yok → P taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)

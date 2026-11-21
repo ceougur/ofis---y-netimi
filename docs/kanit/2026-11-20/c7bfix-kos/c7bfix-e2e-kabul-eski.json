@@ -1,0 +1,32 @@
+{
+  "ad": "c7bfix-e2e-kabul-eski",
+  "komut": "node test/e2e/senaryo-c7b-kabul-250.mjs",
+  "commit": "317e507ef006388bf854d8f0ffba68938ade207e",
+  "dal": "worktree-agent-aa660861cba7cd284",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T00:01:12.659Z",
+  "sure_sn": 27.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bfix-a66/kanit/2026-11-21/c7bfix-e2e-kabul-eski.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa660861cba7cd284",
+  "ham_cikti_sha256": "e439699588e6b2ab2cef8189c946207ebc1cc84b8eea140f7f8733aa3fb424ce",
+  "ham_cikti_bayt": 6341
+}

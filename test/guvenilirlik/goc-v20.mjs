@@ -92,7 +92,9 @@ export function compareSnapshots(before, after, { hub }) {
     }
     if (name === "settings") {
       const keyAt = table.cols.indexOf("key");
-      const strip = rows => rows.filter(row => JSON.parse(row)[keyAt] !== "meta.schema.v20At");
+      // 2.5.0 Ç7b tur 2c — BEKLENTİ BİLEREK DEĞİŞTİ (BAŞ MİMAR KARARI 19.11 05:07 B-8 = A): göç 51 YALNIZ işaret olarak YENİ bir ayar satırı yazar (ledger.ruleShiftThrough = güncellemedeki
+      // kilit; kilitsizse ''); var olan ayar satırları yine değişmez.
+      const strip = rows => rows.filter(row => !["meta.schema.v20At", "ledger.ruleShiftThrough"].includes(JSON.parse(row)[keyAt]));
       if (JSON.stringify(strip(table.rows)) !== JSON.stringify(strip(next.rows))) problems.push("settings: meta.schema.v20At dışında ayar değişti");
       continue;
     }

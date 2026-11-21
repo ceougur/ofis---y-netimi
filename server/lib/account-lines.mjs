@@ -116,11 +116,11 @@ export function createAccountLines({ store }) {
     }
     return out;
   }
-  // Mizan (v2.0.7): tüm carilerin kartları, hareketleriyle; carinin defteri (accountLedger) Cari kartıyla aynı girdiyi alır.
+  // Mizan (v2.0.7): tüm carilerin kartları, hareketleriyle; carinin defteri (accountLedger) Cari kartıyla aynı girdiyi alır. closeRule (2.5.0 Ç7b tur 3b): kapatma kuralı (lib/accounts.mjs waivedOf).
   function ledgerPlansByAccount() {
     const out = new Map();
     // import_id: Excel / Tablodan Aktar kartı (2.5.0 Ç5-B tur 2b-2 — S110 / S120 bu kartlara uygulanmaz; lib/accounts.mjs coverSource).
-    const plans = store.all("SELECT id, account_id AS accountId, name, total, status, covers_balance AS coversBalance, registered_on AS registeredOn, created_at AS createdAt, updated_at AS updatedAt, closed_at AS closedAt, import_id AS importId FROM plans WHERE deleted_at IS NULL AND account_id <> ''");
+    const plans = store.all("SELECT id, account_id AS accountId, name, total, status, covers_balance AS coversBalance, registered_on AS registeredOn, created_at AS createdAt, updated_at AS updatedAt, closed_at AS closedAt, close_rule AS closeRule, import_id AS importId FROM plans WHERE deleted_at IS NULL AND account_id <> ''");
     if (!plans.length) return out;
     const seqs = new Map();
     const counts = new Map();
@@ -151,7 +151,7 @@ export function createAccountLines({ store }) {
   function ledgerPlansOf(ids) {
     const out = new Map();
     const list = JSON.stringify([...new Set((ids || []).map(String))]);
-    const plans = store.all("SELECT p.id, p.account_id AS accountId, p.name, p.total, p.status, p.covers_balance AS coversBalance, p.registered_on AS registeredOn, p.created_at AS createdAt, p.updated_at AS updatedAt, p.closed_at AS closedAt, p.import_id AS importId FROM json_each(?) j CROSS JOIN plans p ON p.account_id = j.value WHERE p.deleted_at IS NULL AND p.account_id <> '' ORDER BY p.rowid", list);
+    const plans = store.all("SELECT p.id, p.account_id AS accountId, p.name, p.total, p.status, p.covers_balance AS coversBalance, p.registered_on AS registeredOn, p.created_at AS createdAt, p.updated_at AS updatedAt, p.closed_at AS closedAt, p.close_rule AS closeRule, p.import_id AS importId FROM json_each(?) j CROSS JOIN plans p ON p.account_id = j.value WHERE p.deleted_at IS NULL AND p.account_id <> '' ORDER BY p.rowid", list);
     if (!plans.length) return out;
     const planIds = JSON.stringify(plans.map(plan => plan.id));
     const seqs = new Map();

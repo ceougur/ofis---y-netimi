@@ -1,0 +1,32 @@
+{
+  "ad": "c7bt-mutabakat-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs --islem 400 --tohum 11 --tohumlar 2 --her 20",
+  "commit": "7856d294efaba2799a265e1b82925fca6e81998d",
+  "dal": "worktree-agent-ab1c286758106cc24",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T12:55:59.262Z",
+  "sure_sn": 35.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-ana/kanit/2026-11-20/c7bt-mutabakat-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab1c286758106cc24",
+  "ham_cikti_sha256": "5cdd338c61f1b59efbef22dbbf2173112ab62b26cd449cc21593a83bc6f621aa",
+  "ham_cikti_bayt": 4453
+}

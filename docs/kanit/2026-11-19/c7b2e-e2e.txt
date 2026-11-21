@@ -1,0 +1,121 @@
+# Ç7b tur 2e — ekran senaryoları (taramayla: tur 2d'nin 46 fatura / KDV senaryosu ∪ KDV Özeti|KDV Mahsup|vat-offset|Sıfırla|/reset|KDV İndirim ∪ Verisini Sıfırla|Hareketleri Sil|Tümünü Sıfırla|Tüm Raporlar|report-center) = 58 dosya × 2 TZ, her dosya ayrı (timeout 900)
+## c7b2e-e2e-ist
+test/e2e/banka-210-ekran-aciklama-yetki.mjs çıkış 0 süre 11 sn | ✓ banka-210-ekran-aciklama-yetki: 11 geçti, 0 kaldı 
+test/e2e/banka-210-kart-onbellek-yaris.mjs çıkış 0 süre 75 sn | ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı 
+test/e2e/baslarken-244.mjs çıkış 0 süre 25 sn | 60 geçti, 0 kaldı 
+test/e2e/fatura-243-daha-fazla-yaris.mjs çıkış 0 süre 54 sn | ✓ fatura-243-daha-fazla-yaris: 9 geçti, 0 kaldı 
+test/e2e/fatura-243-duzen-kaymasi.mjs çıkış 0 süre 14 sn | ✓ fatura-243-duzen-kaymasi: 7 geçti, 0 kaldı 
+test/e2e/gg243-dar2-ekran.mjs çıkış 0 süre 8 sn | ✓ gg243-dar2-ekran: 21 geçti, 0 kaldı 
+test/e2e/gg243-odak-dugme.mjs çıkış 0 süre 8 sn | ✓ gg243-odak-dugme: 11 geçti, 0 kaldı 
+test/e2e/gg243-odak-kalem-sil.mjs çıkış 0 süre 7 sn | ✓ gg243-odak-kalem-sil: 16 geçti, 0 kaldı 
+test/e2e/gg243-odak-silme-diger.mjs çıkış 0 süre 31 sn | ✓ gg243-odak-silme-diger: 61 geçti, 0 kaldı 
+test/e2e/gg243-tumunu-gonder.mjs çıkış 0 süre 56 sn | ✓ gg243-tumunu-gonder: 17 geçti, 0 kaldı 
+test/e2e/gg244-esmm-gonder.mjs çıkış 0 süre 71 sn | 66 geçti, 0 kaldı 
+test/e2e/gg244-numara-tarih-onay.mjs çıkış 0 süre 58 sn | ✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı 
+test/e2e/gg244-secilenleri-gonder.mjs çıkış 0 süre 19 sn | ✓ gg244-secilenleri-gonder: 45 geçti, 0 kaldı 
+test/e2e/run.mjs çıkış 0 süre 163 sn | 
+test/e2e/senaryo-211.mjs çıkış 0 süre 101 sn | 
+test/e2e/senaryo-214.mjs çıkış 0 süre 58 sn | 
+test/e2e/senaryo-215.mjs çıkış 0 süre 95 sn | 
+test/e2e/senaryo-216.mjs çıkış 0 süre 96 sn | 
+test/e2e/senaryo-217.mjs çıkış 0 süre 77 sn | 
+test/e2e/senaryo-220-yedek.mjs çıkış 0 süre 14 sn | Senaryo 2.0.20 (yedek): 38 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-yedek 
+test/e2e/senaryo-221.mjs çıkış 0 süre 7 sn | Senaryo 2.0.21: 28 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-221 
+test/e2e/senaryo-222.mjs çıkış 0 süre 122 sn | Senaryo 2.0.22: 60 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-222 
+test/e2e/senaryo-223.mjs çıkış 0 süre 80 sn | 
+test/e2e/senaryo-224.mjs çıkış 0 süre 74 sn | 
+test/e2e/senaryo-225.mjs çıkış 0 süre 31 sn | Senaryo 2.0.25: 57 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-225 
+test/e2e/senaryo-banka-210-eski-satir.mjs çıkış 0 süre 28 sn | ✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-banka-210-eski-satir 
+test/e2e/senaryo-banka-210-temel.mjs çıkış 0 süre 66 sn | ✓ senaryo-banka-210-temel: 80 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-banka-210-temel 
+test/e2e/senaryo-banka-210.mjs çıkış 0 süre 313 sn | 
+test/e2e/senaryo-banka-210b.mjs çıkış 0 süre 97 sn | ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-banka-210b 
+test/e2e/senaryo-banka-220.mjs çıkış 0 süre 83 sn | ✓ senaryo-banka-220: 76 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-banka-220 
+test/e2e/senaryo-banka-rapor-243.mjs çıkış 0 süre 49 sn | ✓ senaryo-banka-rapor-243: 38 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-banka-rapor-243 
+test/e2e/senaryo-cari-243.mjs çıkış 0 süre 73 sn | 70 geçti, 0 kaldı 
+test/e2e/senaryo-defter-243.mjs çıkış 0 süre 31 sn | ✓ senaryo-defter-243: 33 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-defter-243 
+test/e2e/senaryo-defter-turu-250.mjs çıkış 0 süre 16 sn | 28 geçti, 0 kaldı 
+test/e2e/senaryo-ebelge-242.mjs çıkış 0 süre 48 sn | 21 geçti, 0 kaldı 
+test/e2e/senaryo-ebelge-243.mjs çıkış 0 süre 19 sn | 20 geçti, 0 kaldı 
+test/e2e/senaryo-ekstre-ayrinti-247.mjs çıkış 0 süre 13 sn | 34 geçti, 0 kaldı 
+test/e2e/senaryo-entegrator-240.mjs çıkış 0 süre 72 sn | ✓ senaryo-entegrator-240: 81 geçti, 0 kaldı 
+test/e2e/senaryo-fatura-243.mjs çıkış 0 süre 66 sn | 61 geçti, 0 kaldı 
+test/e2e/senaryo-form-izolasyon-243.mjs çıkış 0 süre 248 sn | 188 geçti, 0 kaldı 
+test/e2e/senaryo-iz32-230.mjs çıkış 0 süre 39 sn | ✓ senaryo-iz32-230: 41 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-iz32-230 
+test/e2e/senaryo-iz5-230.mjs çıkış 0 süre 39 sn | SONUÇ: 44 geçti, 0 kaldı 
+test/e2e/senaryo-kasa-acilis-uyari-250.mjs çıkış 0 süre 9 sn | # pass 20 # fail 0 
+test/e2e/senaryo-kdv-donemi-250.mjs çıkış 0 süre 19 sn | ✓ senaryo-kdv-donemi-250: 22 geçti, 0 kaldı 
+test/e2e/senaryo-mobil-247.mjs çıkış 0 süre 19 sn | 77 geçti, 0 kaldı 
+test/e2e/senaryo-netten-brute-244.mjs çıkış 0 süre 34 sn | 43 geçti, 0 kaldı 
+test/e2e/senaryo-pil-karti-245.mjs çıkış 0 süre 39 sn | 85 geçti, 0 kaldı 
+test/e2e/senaryo-portal-244.mjs çıkış 0 süre 14 sn | ✓ senaryo-portal-244: 32 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-portal-244 
+test/e2e/senaryo-pos-220.mjs çıkış 0 süre 115 sn | ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-pos-220 
+test/e2e/senaryo-raporlar.mjs çıkış 0 süre 38 sn | 
+test/e2e/senaryo-supheli-230.mjs çıkış 0 süre 41 sn | ✓ senaryo-supheli-230: 67 geçti, 0 kaldı 
+test/e2e/senaryo-tyk-tur2a-250.mjs çıkış 0 süre 38 sn | SONUÇ: 51 geçti, 0 kaldı 
+test/e2e/senaryo-ux18-244.mjs çıkış 0 süre 14 sn | 27 geçti, 0 kaldı 
+test/e2e/suzgec-cubugu-yaris.mjs çıkış 0 süre 38 sn | 
+test/e2e/uiux-244-ux9-ux10.mjs çıkış 0 süre 67 sn | ✓ uiux-244-ux9-ux10: 74 geçti, 0 kaldı 
+test/e2e/uiux-a-243.mjs çıkış 0 süre 39 sn | ✓ uiux-a-243: 51 geçti, 0 kaldı 
+test/e2e/uiux-b-243.mjs çıkış 0 süre 47 sn | ✓ uiux-b-243: 58 geçti, 0 kaldı 
+test/e2e/uiux-ui11-244.mjs çıkış 0 süre 9 sn | 153 geçti, 0 kaldı 
+BİTTİ
+## c7b2e-e2e-utc
+test/e2e/banka-210-ekran-aciklama-yetki.mjs çıkış 0 süre 10 sn | ✓ banka-210-ekran-aciklama-yetki: 11 geçti, 0 kaldı 
+test/e2e/banka-210-kart-onbellek-yaris.mjs çıkış 0 süre 73 sn | ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı 
+test/e2e/baslarken-244.mjs çıkış 0 süre 23 sn | 60 geçti, 0 kaldı 
+test/e2e/fatura-243-daha-fazla-yaris.mjs çıkış 0 süre 50 sn | ✓ fatura-243-daha-fazla-yaris: 9 geçti, 0 kaldı 
+test/e2e/fatura-243-duzen-kaymasi.mjs çıkış 0 süre 14 sn | ✓ fatura-243-duzen-kaymasi: 7 geçti, 0 kaldı 
+test/e2e/gg243-dar2-ekran.mjs çıkış 0 süre 8 sn | ✓ gg243-dar2-ekran: 21 geçti, 0 kaldı 
+test/e2e/gg243-odak-dugme.mjs çıkış 0 süre 7 sn | ✓ gg243-odak-dugme: 11 geçti, 0 kaldı 
+test/e2e/gg243-odak-kalem-sil.mjs çıkış 0 süre 7 sn | ✓ gg243-odak-kalem-sil: 16 geçti, 0 kaldı 
+test/e2e/gg243-odak-silme-diger.mjs çıkış 0 süre 30 sn | ✓ gg243-odak-silme-diger: 61 geçti, 0 kaldı 
+test/e2e/gg243-tumunu-gonder.mjs çıkış 0 süre 56 sn | ✓ gg243-tumunu-gonder: 17 geçti, 0 kaldı 
+test/e2e/gg244-esmm-gonder.mjs çıkış 0 süre 69 sn | 66 geçti, 0 kaldı 
+test/e2e/gg244-numara-tarih-onay.mjs çıkış 0 süre 53 sn | ✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı 
+test/e2e/gg244-secilenleri-gonder.mjs çıkış 0 süre 17 sn | ✓ gg244-secilenleri-gonder: 45 geçti, 0 kaldı 
+test/e2e/run.mjs çıkış 0 süre 152 sn | 
+test/e2e/senaryo-211.mjs çıkış 0 süre 92 sn | 
+test/e2e/senaryo-214.mjs çıkış 0 süre 60 sn | 
+test/e2e/senaryo-215.mjs çıkış 0 süre 86 sn | 
+test/e2e/senaryo-216.mjs çıkış 0 süre 91 sn | 
+test/e2e/senaryo-217.mjs çıkış 0 süre 78 sn | 
+test/e2e/senaryo-220-yedek.mjs çıkış 0 süre 13 sn | Senaryo 2.0.20 (yedek): 38 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-yedek 
+test/e2e/senaryo-221.mjs çıkış 0 süre 7 sn | Senaryo 2.0.21: 28 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-221 
+test/e2e/senaryo-222.mjs çıkış 0 süre 122 sn | Senaryo 2.0.22: 60 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-222 
+test/e2e/senaryo-223.mjs çıkış 0 süre 81 sn | 
+test/e2e/senaryo-224.mjs çıkış 0 süre 80 sn | 
+test/e2e/senaryo-225.mjs çıkış 0 süre 33 sn | Senaryo 2.0.25: 57 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-225 
+test/e2e/senaryo-banka-210-eski-satir.mjs çıkış 0 süre 28 sn | ✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-banka-210-eski-satir 
+test/e2e/senaryo-banka-210-temel.mjs çıkış 0 süre 67 sn | ✓ senaryo-banka-210-temel: 80 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-banka-210-temel 
+test/e2e/senaryo-banka-210.mjs çıkış 0 süre 313 sn | 
+test/e2e/senaryo-banka-210b.mjs çıkış 0 süre 92 sn | ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-banka-210b 
+test/e2e/senaryo-banka-220.mjs çıkış 0 süre 78 sn | ✓ senaryo-banka-220: 76 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-banka-220 
+test/e2e/senaryo-banka-rapor-243.mjs çıkış 0 süre 43 sn | ✓ senaryo-banka-rapor-243: 38 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-banka-rapor-243 
+test/e2e/senaryo-cari-243.mjs çıkış 0 süre 68 sn | 70 geçti, 0 kaldı 
+test/e2e/senaryo-defter-243.mjs çıkış 0 süre 31 sn | ✓ senaryo-defter-243: 33 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-defter-243 
+test/e2e/senaryo-defter-turu-250.mjs çıkış 0 süre 17 sn | 28 geçti, 0 kaldı 
+test/e2e/senaryo-ebelge-242.mjs çıkış 0 süre 48 sn | 21 geçti, 0 kaldı 
+test/e2e/senaryo-ebelge-243.mjs çıkış 0 süre 19 sn | 20 geçti, 0 kaldı 
+test/e2e/senaryo-ekstre-ayrinti-247.mjs çıkış 0 süre 13 sn | 34 geçti, 0 kaldı 
+test/e2e/senaryo-entegrator-240.mjs çıkış 0 süre 72 sn | ✓ senaryo-entegrator-240: 81 geçti, 0 kaldı 
+test/e2e/senaryo-fatura-243.mjs çıkış 0 süre 68 sn | 61 geçti, 0 kaldı 
+test/e2e/senaryo-form-izolasyon-243.mjs çıkış 0 süre 221 sn | 188 geçti, 0 kaldı 
+test/e2e/senaryo-iz32-230.mjs çıkış 0 süre 32 sn | ✓ senaryo-iz32-230: 41 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-iz32-230 
+test/e2e/senaryo-iz5-230.mjs çıkış 0 süre 36 sn | SONUÇ: 44 geçti, 0 kaldı 
+test/e2e/senaryo-kasa-acilis-uyari-250.mjs çıkış 0 süre 7 sn | # pass 20 # fail 0 
+test/e2e/senaryo-kdv-donemi-250.mjs çıkış 0 süre 20 sn | ✓ senaryo-kdv-donemi-250: 22 geçti, 0 kaldı 
+test/e2e/senaryo-mobil-247.mjs çıkış 0 süre 16 sn | 77 geçti, 0 kaldı 
+test/e2e/senaryo-netten-brute-244.mjs çıkış 0 süre 34 sn | 43 geçti, 0 kaldı 
+test/e2e/senaryo-pil-karti-245.mjs çıkış 0 süre 37 sn | 85 geçti, 0 kaldı 
+test/e2e/senaryo-portal-244.mjs çıkış 0 süre 13 sn | ✓ senaryo-portal-244: 32 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-portal-244 
+test/e2e/senaryo-pos-220.mjs çıkış 0 süre 111 sn | ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a91bbac2a6427046a/test/e2e/artifacts/senaryo-pos-220 
+test/e2e/senaryo-raporlar.mjs çıkış 0 süre 35 sn | 
+test/e2e/senaryo-supheli-230.mjs çıkış 0 süre 41 sn | ✓ senaryo-supheli-230: 67 geçti, 0 kaldı 
+test/e2e/senaryo-tyk-tur2a-250.mjs çıkış 0 süre 37 sn | SONUÇ: 51 geçti, 0 kaldı 
+test/e2e/senaryo-ux18-244.mjs çıkış 0 süre 13 sn | 27 geçti, 0 kaldı 
+test/e2e/suzgec-cubugu-yaris.mjs çıkış 0 süre 37 sn | 
+test/e2e/uiux-244-ux9-ux10.mjs çıkış 0 süre 67 sn | ✓ uiux-244-ux9-ux10: 74 geçti, 0 kaldı 
+test/e2e/uiux-a-243.mjs çıkış 0 süre 38 sn | ✓ uiux-a-243: 51 geçti, 0 kaldı 
+test/e2e/uiux-b-243.mjs çıkış 0 süre 48 sn | ✓ uiux-b-243: 58 geçti, 0 kaldı 
+test/e2e/uiux-ui11-244.mjs çıkış 0 süre 10 sn | 153 geçti, 0 kaldı 
+BİTTİ

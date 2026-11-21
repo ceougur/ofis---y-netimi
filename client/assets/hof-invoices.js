@@ -674,6 +674,9 @@
       orderDate: draft?.orderDate || "",
       despatchNo: draft?.despatchNo || "",
       despatchDate: draft?.despatchDate || "",
+      // 2.5.0 Ç7b tur 2d (KG-7): alış faturasının KDV İndirim Dönemi ('' = fatura ayı). Taslak / Düzenle'den gelir; Kopyala almaz (tarih bugüne alınır).
+      vatPeriod: kind === "purchase" ? draft?.vatPeriod || "" : "",
+      vatPeriodNote: "",
       pricesIncludeVat: source ? Boolean(source.pricesIncludeVat) : d.pricesIncludeVat === true,
       discountRate: source?.discountRate ? amountText(source.discountRate) : "",
       stoppageRate: source && ["smm", "purchase"].includes(kind) ? amountText(source.stoppageRate) : "",
@@ -740,6 +743,41 @@
     }
   }
 
+  // 2.5.0 Ç7b tur 2d (KG-7 = A, KDVK 29/3; tasarım notu C7B §14.5): "KDV İndirim Dönemi" seçenekleri — fatura ayı ('' — varsayılan) … fatura yılını izleyen yılın Aralık'ı (sunucuyla aynı sınır).
+  const PERIOD_MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+  const periodLabel = month => `${PERIOD_MONTHS[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
+  function vatPeriodMonths(date) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date || ""))) return [];
+    let [y, m] = date.split("-").map(Number);
+    const out = [];
+    const lastYear = y + 1;
+    while (y < lastYear || (y === lastYear && m <= 12)) {
+      out.push(`${y}-${String(m).padStart(2, "0")}`);
+      m += 1;
+      if (m > 12) {
+        m = 1;
+        y += 1;
+      }
+    }
+    return out;
+  }
+  const vatPeriodOptions = form => vatPeriodMonths(form.issueDate).map((month, index) => (index === 0 ? `<option value="" ${form.vatPeriod ? "" : "selected"}>${esc(periodLabel(month))} (Fatura Ayı)</option>` : `<option value="${esc(month)}" ${form.vatPeriod === month ? "selected" : ""}>${esc(periodLabel(month))}</option>`)).join("");
+  // Tarih değişince: seçili dönem yeni aralıkta değilse fatura ayına döner ve bunu söyleyen görünür yazı çıkar (sessiz değişiklik yok).
+  function syncVatPeriod() {
+    const form = view.form;
+    const field = body()?.querySelector("[data-vat-period-field]");
+    if (!form || form.kind !== "purchase" || !field) return;
+    const months = vatPeriodMonths(form.issueDate);
+    // Yazı, kullanıcı dönemi kendisi seçene dek kalır (aynı tarihin ikinci "change" olayı onu silmez).
+    if (form.vatPeriod && (form.vatPeriod === months[0] || !months.includes(form.vatPeriod))) {
+      if (form.vatPeriod !== months[0]) form.vatPeriodNote = `Seçili dönem (${periodLabel(form.vatPeriod)}) yeni fatura tarihinin aralığında değil; KDV İndirim Dönemi fatura ayına alındı.`;
+      form.vatPeriod = "";
+    }
+    field.querySelector("select").innerHTML = vatPeriodOptions(form);
+    const note = field.querySelector("[data-vat-period-note]");
+    if (note) note.textContent = form.vatPeriodNote || VAT_PERIOD_HINT;
+  }
+  const VAT_PERIOD_HINT = "Faturanın KDV'si hangi ayın KDV mahsubunda indirilecek: varsayılan fatura ayı; geç gelen faturayı deftere kaydettiğiniz aya alabilirsiniz (en geç izleyen yılın sonu).";
   const formTitle = form => form.modifyId ? `Düzenleme: ${kindLabel(form.kind)} ${form.modifyNumber}` : `${form.id ? "Taslak: " : "Yeni "}${kindLabel(form.kind)}${form.scenario && meta.scenarios[form.scenario] && meta.scenarios[form.scenario].label !== kindLabel(form.kind) ? ` · ${meta.scenarios[form.scenario].label}` : ""}`;
   // v2.0.16: Stok Kodu kolonu (müşteri). Alışta ek "Gider Türü" kolonu.
   const hasExpenseCol = form => form.side === "purchase" && form.kind === "purchase";
@@ -779,6 +817,7 @@
         ${ret ? "" : `<label class="hof-field"><span>Para Birimi</span><select data-f="currency">${currencies}</select></label>`}
         <label class="hof-field" data-rate-field ${form.currency === "TRY" ? "hidden" : ""}><span>Kur (1 ${esc(form.currency)} = ? TL) <i aria-hidden="true">*</i></span><input data-f="rate" inputmode="decimal" value="${esc(form.rate)}" ${ret ? "readonly" : ""} placeholder="ör. 34,25"></label>
         ${numberField}
+        ${form.kind === "purchase" ? `<label class="hof-field" data-vat-period-field style="grid-column: span 2"><span>KDV İndirim Dönemi</span><select data-f="vatPeriod">${vatPeriodOptions(form)}</select><small data-vat-period-note>${esc(form.vatPeriodNote || VAT_PERIOD_HINT)}</small></label>` : ""}
       </section>
       <p class="hof-muted hof-inv-paper-note" data-paper-note hidden></p>
       <p class="hof-muted hof-inv-paper-note" data-kind-note hidden></p>
@@ -859,7 +898,7 @@
   }
   // Sunucunun ya da formun hatası bir alanı söylüyorsa (data.field) odak o alana: kalem hatasında ("N. kalem: …") o kalemin alanı (N, boş
   // satırlar sayılmadan gönderilen kalemlerin sırası). Bilinmeyen alanda odak değişmez.
-  const HEAD_FOCUS = new Set(["issueDate", "issueTime", "profile", "currency", "rate", "number", "paperNo", "orderNo", "orderDate", "despatchNo", "despatchDate", "stoppageRate", "note"]);
+  const HEAD_FOCUS = new Set(["issueDate", "issueTime", "profile", "currency", "rate", "number", "paperNo", "orderNo", "orderDate", "despatchNo", "despatchDate", "stoppageRate", "note", "vatPeriod"]);
   const LINE_FOCUS = new Set(["qty", "unitPrice", "discountRate", "vatRate", "name", "code", "unit", "lines", "withholdingCode", "exemptionCode", "expenseCode"]);
   function focusFailure(form, data, message = "") {
     const field = String(data?.field || "");
@@ -1794,6 +1833,7 @@
     orderDate: form.orderDate,
     despatchNo: form.despatchNo,
     despatchDate: form.despatchDate,
+    ...(form.kind === "purchase" ? { vatPeriod: form.vatPeriod || "" } : {}),
     note: form.note,
     lines: usedLines(form).map(lineBody),
   });
@@ -1970,7 +2010,7 @@
 
   // ---------- Form olayları ----------
   const NUMERIC_LINE_FIELDS = new Set(["qty", "unitPrice", "discountRate", "newSalePrice"]);
-  const HEAD_FIELDS = new Set(["issueDate", "issueTime", "profile", "currency", "rate", "number", "paperNo", "orderNo", "orderDate", "despatchNo", "despatchDate", "discountRate", "stoppageRate", "note"]);
+  const HEAD_FIELDS = new Set(["issueDate", "issueTime", "profile", "currency", "rate", "number", "paperNo", "orderNo", "orderDate", "despatchNo", "despatchDate", "discountRate", "stoppageRate", "note", "vatPeriod"]);
   // 2.4.3 (uzman UX12): eski doğrulama iletisi ("Müşteriyi (cariyi) seçin.") kullanıcı formda bir alanı değiştirince temizlenir; yeniden
   // kaydedince gerekiyorsa yine yazılır (önceden cari seçilip kalem değişse de kırmızı ileti kalıyor, form hâlâ hatalı sanılıyordu).
   const clearFormError = () => {
@@ -2157,7 +2197,13 @@
     }
     if (target.dataset.f && HEAD_FIELDS.has(target.dataset.f)) {
       form[target.dataset.f] = target.value;
+      if (target.dataset.f === "vatPeriod") {
+        form.vatPeriodNote = "";
+        const note = body()?.querySelector("[data-vat-period-note]");
+        if (note) note.textContent = VAT_PERIOD_HINT;
+      }
       if (target.dataset.f === "issueDate") {
+        syncVatPeriod();
         renderPay();
         // 2.7: seçicideki bakiyeler fatura tarihindeki bakiyedir.
         reloadInvoiceBalances();
@@ -2735,6 +2781,7 @@
         ${fact("Para Birimi", cur !== "TRY" ? `${esc(cur)} · kur ${esc(String(doc.rate).replace(".", ","))}` : "")}
         ${fact("Asıl Fatura", doc.originalId ? `<a href="#" data-open-invoice="${esc(doc.originalId)}">${esc(doc.originalNumber || "")}</a> · ${esc(HOF.formatDate(doc.originalDate))}` : "")}
         ${fact("Sipariş", doc.orderNo ? `${esc(doc.orderNo)}${doc.orderDate ? ` · ${esc(HOF.formatDate(doc.orderDate))}` : ""}` : "")}
+        ${fact("KDV İndirim Dönemi", doc.kind === "purchase" && doc.vatPeriod ? esc(periodLabel(doc.vatPeriod)) : "")}
         ${fact("İrsaliye", doc.despatchNo ? `${esc(doc.despatchNo)}${doc.despatchDate ? ` · ${esc(HOF.formatDate(doc.despatchDate))}` : ""}` : "")}
         ${fact(doc.kind === "smm" ? "Kâğıt Makbuz No" : "Kâğıt Fatura No", esc(doc.paperNo || ""))}
         ${fact("ETTN", edoc() && doc.profile !== "KAGIT" ? `<small>${esc(doc.ettn)}</small>` : "")}

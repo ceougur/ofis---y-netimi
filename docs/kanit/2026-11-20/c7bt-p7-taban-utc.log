@@ -1,0 +1,280 @@
+TAP version 13
+# (node:8659) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kişi
+    # Subtest: (1) iki ayrı cari aynı ad + farklı telefon: satır sırası iki yönde, her kişiye kendi kartı ve borcu
+    not ok 1 - (1) iki ayrı cari aynı ad + farklı telefon: satır sırası iki yönde, her kişiye kendi kartı ve borcu
+      ---
+      duration_ms: 163.378658
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:43:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        atlanan satır olmamalı: [{"row":3,"reason":"Aynı adla açık kart var"}]
+        + actual - expected
+        
+        + [
+        +   'Aynı adla açık kart var'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'Aynı adla açık kart var'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:48:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (yalnız ASCII harfler katlanır; I/ı ayrımı BİLİNEN SINIR)
+    ok 2 - (2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (yalnız ASCII harfler katlanır; I/ı ayrımı BİLİNEN SINIR)
+      ---
+      duration_ms: 26.806001
+      type: 'test'
+      ...
+    # Subtest: (3) telefonsuz satır + aynı adlı iki (telefonlu) kişi: kişi kesin değil → atlanır, yeni neden; kart / cari / borç açılmaz
+    not ok 3 - (3) telefonsuz satır + aynı adlı iki (telefonlu) kişi: kişi kesin değil → atlanır, yeni neden; kart / cari / borç açılmaz
+      ---
+      duration_ms: 18.505195
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:80:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'Aynı adla açık kart var'
+        -   'Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin'
+      actual:
+        0: 'Aynı adla açık kart var'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:85:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (4) telefonlu satır + aynı adlı TELEFONSUZ carinin kartı: kişi kesin değil → atlanır (çift borç yok)
+    not ok 4 - (4) telefonlu satır + aynı adlı TELEFONSUZ carinin kartı: kişi kesin değil → atlanır (çift borç yok)
+      ---
+      duration_ms: 63.021454
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:90:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'Aynı adla açık kart var'
+        -   'Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin'
+      actual:
+        0: 'Aynı adla açık kart var'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:97:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (5) aynı dosyada aynı kişi iki satır: ikinci satır atlanır; telefonu farklı üçüncü kişi yeni carisiyle açılır
+    not ok 5 - (5) aynı dosyada aynı kişi iki satır: ikinci satır atlanır; telefonu farklı üçüncü kişi yeni carisiyle açılır
+      ---
+      duration_ms: 26.643381
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        1 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:104:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (6) grup: telefonsuz satır yalnız aynı gruptaki telefonsuz cariyi bulur; başka gruptaki aynı adlı kart denetime girmez
+    not ok 6 - (6) grup: telefonsuz satır yalnız aynı gruptaki telefonsuz cariyi bulur; başka gruptaki aynı adlı kart denetime girmez
+      ---
+      duration_ms: 54.666065
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:113:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'Aynı adla açık kart var'
+        -   'Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin'
+      actual:
+        0: 'Aynı adla açık kart var'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:126:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (7) telefonsuz satır + aynı adlı tek telefonsuz cari (aynı grup, kartsız) ve telefonlu başka kişinin kartı: kişi kesin → kendi carisiyle açılır
+    not ok 7 - (7) telefonsuz satır + aynı adlı tek telefonsuz cari (aynı grup, kartsız) ve telefonlu başka kişinin kartı: kişi kesin → kendi carisiyle açılır
+      ---
+      duration_ms: 59.578636
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:129:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'Aynı adla açık kart var'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'Aynı adla açık kart var'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:135:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (9) Geri Al: yalnız bu yüklemenin açtığı kart ve cari kalkar; önceden var olan aynı adlı carinin kartı ve borcu kalır
+    not ok 8 - (9) Geri Al: yalnız bu yüklemenin açtığı kart ve cari kalkar; önceden var olan aynı adlı carinin kartı ve borcu kalır
+      ---
+      duration_ms: 49.436017
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:142:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'Aynı adla açık kart var',
+        +   'Aynı adla açık kart var'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'Aynı adla açık kart var'
+        1: 'Aynı adla açık kart var'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:148:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:8659) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: (10) kilitli dönem: aynı adlı ikinci kişinin satırı KİLİT nedeniyle atlanır, cari açılmaz; yükleme durmaz
+    not ok 9 - (10) kilitli dönem: aynı adlı ikinci kişinin satırı KİLİT nedeniyle atlanır, cari açılmaz; yükleme durmaz
+      ---
+      duration_ms: 296.427419
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:164:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /kapatılmış \(kilitli\) dönemde/. Input:
+        
+        'Aynı adla açık kart var'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Aynı adla açık kart var'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:174:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (8) carisiz eski kart: kartın kendi telefonu aynıysa aynı kişi (atlanır), 7+ hane ve farklıysa başka kişi (açılır)
+    not ok 10 - (8) carisiz eski kart: kartın kendi telefonu aynıysa aynı kişi (atlanır), 7+ hane ve farklıysa başka kişi (açılır)
+      ---
+      duration_ms: 60.457609
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:181:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'Aynı adla açık kart var'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'Aynı adla açık kart var'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:191:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..10
+not ok 1 - Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kişi
+  ---
+  duration_ms: 1356.681823
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-taban/test/c7bt-ayni-adli-excel-karti-250.test.mjs:20:1'
+  failureType: 'subtestsFailed'
+  error: '9 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 10
+# suites 1
+# pass 1
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1817.908622

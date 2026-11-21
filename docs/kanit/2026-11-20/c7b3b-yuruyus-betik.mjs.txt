@@ -1,0 +1,173 @@
+// Ç7b tur 3b — EKRAN YÜRÜYÜŞÜ (kabul G; ders 11, 12, 28, 34, 39): Taksitler → kart → Kartı Kapat (gerçek tıklama + Tab + Enter, insan hızı) → onay metni → veri tabanı →
+// cari kartı (bakiye, ekstrede "kalan düşüldü" satırı yok, Gecikmiş Borç) → ertesi gün (sayfa + sunucu saati) Gecikmiş Borç, zil, Vade Takip; vazgeçme Alacak Yaz ekrandan.
+// Kalıp: ana oturumun ana-kabul/betik/yuruyus.mjs'i (okundu). Kullanım: ROOT=<kod kökü> OUT=<klasör> node yuruyus-c7b3b.mjs
+import fs, { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const OUT = process.env.OUT;
+fs.mkdirSync(OUT, { recursive: true });
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { chromium } = await import(pathToFileURL(path.join(ROOT, "node_modules/playwright/index.mjs")).href);
+const { createApp } = await imp("server/app.mjs");
+const { createClient, installPageClock, moveClock } = await imp("test/helpers.mjs");
+const { escClose } = await imp("test/e2e/esc-kapat.mjs");
+const PASS = "Prova-Admin-2026!";
+const TODAY = "2026-10-08";
+const NOW = `${TODAY}T12:00:00+03:00`;
+const MODAL = ".hof-modal-backdrop.is-visible";
+const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
+const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+const must = async (label, p) => { const r = await p; if (r.status !== 200) throw new Error(`${label}: ${r.status} ${JSON.stringify(r.data).slice(0, 300)}`); return unwrap(r); };
+const note = (...a) => console.log(...a);
+const problems = [];
+const expect = (cond, what) => { note(`  ${cond ? "✓" : "✗"} ${what}`); if (!cond) problems.push(what); };
+const root = mkdtempSync(path.join(tmpdir(), "yuruyus-c7b3b-"));
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: { time: NOW, fixed: true }, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" }, startLicenseTimers: false, integrityScan: false, analysisWorker: false });
+const { port } = await app.listen(0, "127.0.0.1");
+const BASE = `http://127.0.0.1:${port}`;
+const api = createClient(BASE);
+const browser = await chromium.launch();
+let page = null; let n = 0;
+const shot = async name => { n += 1; const f = path.join(OUT, `${String(n).padStart(2, "0")}-${name}.png`); await page.screenshot({ path: f }).catch(() => null); note(`  [görüntü] ${f}`); return f; };
+const closeAll = async () => { for (let i = 0; i < 6 && (await page.$(MODAL)); i += 1) { await escClose(page); await page.waitForTimeout(250); } };
+const text = sel => page.$$eval(sel, ns => ns.map(x => x.textContent.replace(/\s+/g, " ").trim()));
+const step = async (title, fn) => { note(`\n■ ${title}`); try { await fn(); } catch (e) { problems.push(`${title}: ${String(e?.message || e).split("\n")[0]}`); note(`  ✗ ADIM YARIDA: ${String(e?.message || e).split("\n")[0]}`); await shot("hata"); await closeAll().catch(() => null); } };
+try {
+  await api.login("admin", PASS);
+  await must("banka", api.post("/api/workspace/bank/setup/dismiss", {}));
+  const acc = await must("cari", api.post("/api/workspace/accounts", { name: "Yürüyüş Borçta Kalsın", type: "customer", registeredOn: "2026-08-01", phone: "0500 261 11 01" }));
+  const plan = await must("kart", api.post("/api/workspace/plans", { accountId: acc.id, name: "Yürüyüş Borçta Kalsın Kartı", total: "900", registeredOn: "2026-08-01", mode: "auto", count: 3, firstDue: "2026-10-05" }));
+  await must("tahsilat", api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "300", date: "2026-10-05", method: "cash" }));
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR", deviceScaleFactor: 1 });
+  page = await context.newPage();
+  await installPageClock(page, app.config.now);
+  const errors = [];
+  page.on("pageerror", e => errors.push(`pageerror ${e.message}`));
+  await page.goto(`${BASE}/`);
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", PASS);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+  await page.waitForFunction(() => Boolean(window.HOF?.plans?.open && window.HOF?.accounts?.open && window.HOF?.dues), null, { timeout: 60000 });
+  await page.waitForTimeout(1000);
+  await closeAll();
+
+  await step("1 Taksitler → kart → Kartı Kapat (tıklama; onay penceresinde Tab ile Kartı Kapat'a, Enter)", async () => {
+    await page.evaluate(() => window.HOF.plans.open());
+    await page.waitForSelector(`${TOP} tr[data-plan="${plan.id}"]`, { timeout: 15000 });
+    await page.waitForTimeout(500);
+    await page.click(`${TOP} tr[data-plan="${plan.id}"]`);
+    await page.waitForSelector(`${TOP} [data-act="close"]`, { timeout: 15000 });
+    const title = await page.getAttribute(`${TOP} [data-act="close"]`, "title");
+    note(`  düğmenin ipucu: “${title}”`);
+    expect(/kalan borç carinin borcunda kalır/.test(title || ""), "Kartı Kapat düğmesinin ipucu sonucu söylüyor");
+    await shot("kart-penceresi-oncesi");
+    await page.waitForTimeout(400);
+    await page.click(`${TOP} [data-act="close"]`);
+    await page.waitForSelector(`${TOP} [data-answer="yes"]`, { timeout: 5000 });
+    const msg = (await text(`${TOP} .hof-modal-body, ${TOP} p`)).join(" ").slice(0, 600);
+    note(`  onay penceresi: “${msg}”`);
+    expect(/Kalan ₺?600,00|Kalan 600,00/.test(msg) || /600,00/.test(msg), "onay kalan tutarı (600,00) söylüyor");
+    expect(/kalan borç carinin borcunda kalır, yarından itibaren gecikmiş sayılır/.test(msg), "onay: kalan borç carinin borcunda kalır, yarından itibaren gecikmiş");
+    expect(/Alacak Yaz/.test(msg), "onay: vazgeçmek için Alacak Yaz");
+    await shot("kartı-kapat-onayi");
+    const focused0 = await page.evaluate(() => document.activeElement?.textContent?.trim());
+    note(`  ilk odak: “${focused0}”`);
+    let reached = false;
+    for (let i = 0; i < 6 && !reached; i += 1) {
+      await page.keyboard.press("Tab");
+      await page.waitForTimeout(150);
+      reached = await page.evaluate(() => document.activeElement?.getAttribute?.("data-answer") === "yes");
+    }
+    expect(reached, "Tab ile onay düğmesine ulaşıldı");
+    await page.keyboard.press("Enter");
+    await page.waitForSelector(`${TOP} [data-act="reopen"]`, { timeout: 10000 });
+    await page.waitForTimeout(600);
+    const row = app.store.get("SELECT status, close_rule AS rule, closed_at AS closedAt FROM plans WHERE id = ?", plan.id);
+    note(`  veri tabanı: ${JSON.stringify(row)}`);
+    expect(row.status === "closed" && row.rule === "" && row.closedAt === TODAY, "kart kapalı, kural Borçta Kalsın (''), kapanış 08.10");
+    const items = await page.$$eval(`${TOP} tr[data-item]`, rs => rs.map(r => [...r.querySelectorAll("td")].map(td => td.textContent.replace(/\s+/g, " ").trim()).join(" | ")));
+    for (const r of items) note(`     ${r}`);
+    await shot("kart-penceresi-kapandi");
+    await closeAll();
+  });
+
+  await step("2 Cari kartı (kapanış günü): bakiye 600, ekstrede 'kalan düşüldü' yok, Gecikmiş Borç 0", async () => {
+    await page.evaluate(id => window.HOF.accounts.open(id), acc.id);
+    await page.waitForSelector(`${MODAL} [data-acc-overdue]`, { timeout: 15000 }).catch(() => null);
+    await page.waitForTimeout(800);
+    const body = (await text(`${TOP}`)).join(" ");
+    expect(!/kalan düşüldü/.test(body), "ekstrede 'Kart kapatıldı · kalan düşüldü' satırı yok");
+    const kpis = await text(`${MODAL} .hof-kpi, ${MODAL} [data-acc-overdue]`);
+    note(`  göstergeler: ${JSON.stringify(kpis.slice(0, 8))}`);
+    const c = await must("cari", api.get(`/api/workspace/accounts/${acc.id}`));
+    expect(c.totals.balance === 600, `API bakiye 600 (${c.totals.balance})`);
+    expect(c.totals.overdueDebt === 0, `API gecikmiş 0 (${c.totals.overdueDebt})`);
+    expect(/600,00\s*Bakiye/.test(body), "ekranda Bakiye · Borçlu 600,00");
+    await shot("cari-kapanis-gunu");
+    await closeAll();
+  });
+
+  await step("3 Ertesi gün (09.10): Gecikmiş Borç 600, zil, Vade Takip", async () => {
+    await moveClock(app.config.now, [page], "2026-10-09T12:00:00+03:00");
+    await page.reload();
+    await page.waitForFunction(() => Boolean(window.HOF?.accounts?.open && window.HOF?.dues), null, { timeout: 60000 });
+    await page.waitForTimeout(1000);
+    await closeAll();
+    await page.evaluate(id => window.HOF.accounts.open(id), acc.id);
+    await page.waitForSelector(`${MODAL} [data-acc-overdue]`, { timeout: 15000 }).catch(() => null);
+    await page.waitForTimeout(800);
+    const od = await text(`${MODAL} [data-acc-overdue]`);
+    note(`  Gecikmiş Borç göstergesi: ${JSON.stringify(od)}`);
+    expect(od.some(t => /600,00/.test(t)), "ekranda Gecikmiş Borç 600,00");
+    const c = await must("cari", api.get(`/api/workspace/accounts/${acc.id}`));
+    expect(c.totals.overdueDebt === 600, `API gecikmiş 600 (${c.totals.overdueDebt})`);
+    await shot("cari-ertesi-gun");
+    await closeAll();
+    await page.click(".topbar .top-actions > .icon-button"); await page.waitForSelector(".hof-alert-list"); await page.waitForTimeout(500);
+    const bell = (await text(".hof-alert-list li")).filter(t => t.includes("Yürüyüş"));
+    for (const i of bell) note(`     zil: ${i.slice(0, 200)}`);
+    expect(bell.length >= 1, `zilde kapalı kartın kalanı (${bell.length} kalem)`);
+    await shot("zil-ertesi-gun"); await page.keyboard.press("Escape"); await page.waitForTimeout(300);
+    const v = await must("vade", api.get("/api/workspace/overview/vade-takip?preset=late"));
+    const mine = (v.rows || []).filter(r => String(r.party || "").includes("Yürüyüş"));
+    note(`  Vade Takip (gecikmiş): ${JSON.stringify(mine.map(r => `${r.date}:${r.amount}`))}`);
+    expect(mine.reduce((s, r) => s + r.amount, 0) === 600, "Vade Takip gecikmiş 600");
+    await page.evaluate(() => window.HOF.overview.openReports("vade")); await page.waitForTimeout(2000);
+    await shot("vade-takip"); await closeAll();
+  });
+
+  await step("4 Vazgeçme ayrı ve görünür: cari kartında Alacak Yaz 600 (ekrandan, insan hızı) → bakiye 0, gecikmiş 0", async () => {
+    await page.evaluate(id => window.HOF.accounts.open(id), acc.id);
+    await page.waitForTimeout(1000);
+    const btn = await page.$(`${TOP} [data-act="credit"], ${TOP} button:has-text("Alacak Yaz")`);
+    if (!btn) throw new Error("Alacak Yaz düğmesi bulunamadı");
+    await btn.click();
+    await page.waitForSelector(`${TOP} input[name="amount"]`, { timeout: 10000 });
+    await page.click(`${TOP} input[name="amount"]`); await page.keyboard.press("Control+A");
+    for (const ch of "600") await page.keyboard.type(ch, { delay: 70 });
+    await page.keyboard.press("Tab");
+    const noteField = await page.$(`${TOP} [name="note"]`);
+    if (noteField) { await noteField.click(); for (const ch of "Kalan alacaktan vazgeçildi") await page.keyboard.type(ch, { delay: 15 }); }
+    await shot("alacak-yaz-formu");
+    await page.click(`${TOP} button[type="submit"]`);
+    await page.waitForTimeout(1500);
+    const still = await page.$(`${TOP} input[name="amount"]`);
+    if (still) { note("  pencere metni:", JSON.stringify((await text(`${TOP}`)).map(t => t.slice(0, 300)))); await shot("alacak-yaz-soru"); }
+    const c = await must("cari", api.get(`/api/workspace/accounts/${acc.id}`));
+    expect(c.totals.balance === 0 && c.totals.overdueDebt === 0, `vazgeçmeden sonra bakiye ${c.totals.balance}, gecikmiş ${c.totals.overdueDebt}`);
+    const rows = app.store.all("SELECT kind, amount, note FROM account_entries WHERE account_id = ?", acc.id);
+    note(`  veri tabanı cari satırları: ${JSON.stringify(rows)}`);
+    await shot("cari-vazgecme-sonrasi");
+    await closeAll();
+  });
+  const mt = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+  expect(mt.ok === true, `Mutabakat Testi temiz (${JSON.stringify(mt.failures || []).slice(0, 200)})`);
+  note(`\nsayfa hatası: ${errors.length ? errors.slice(0, 5).join(" | ") : "yok"}`);
+  if (errors.length) problems.push(`sayfa hatası ${errors.length}`);
+  await context.close();
+} catch (e) { console.error("HATA:", e); problems.push(`HATA ${e?.message}`); } finally { await browser.close(); await app.close(); fs.rmSync(root, { recursive: true, force: true }); }
+note(`\nSONUÇ: ${problems.length ? `SORUN ${problems.length}: ${problems.join(" | ")}` : "SORUNSUZ"}`);
+process.exitCode = problems.length ? 1 : 0;

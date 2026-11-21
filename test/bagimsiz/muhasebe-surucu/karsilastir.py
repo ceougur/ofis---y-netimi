@@ -65,27 +65,20 @@ OZ = oz_denetim()
 ETIKET = {
     # SÜRÜCÜ BAKIMI 3 (19.11.2026): programa girmiş kuralların satırları kalktı — C5-ACILIS-519, C5-EVRAK-ACILIS, C5-EVRAK-KARSILIKSIZ, C5-CARI-ACIKLAMA, KG5-EXCEL, KG16-ACIKLAMA
     # (Ç5-K / Ç5-A açılış düzeni), KG15-DUZELTME (Ç5-A tur 2 / 2e / 2f), KG6-POS-TARIH / KG19-YOLDAKI / K14-HESAPSIZ (Ç7a tur 2 / 2b), C1-ALT-90 (program '.90' alt hesaplarını yazar).
-    "KG2-H03": ("kitap H-03 / KG-2 A (ürün sahibi 05.11 'hepsi A'): taksit Yeni Borç 600.90; bugün CHART 602 'Taksitli Satış'", "KG-2 (D bölümü (2); iş kodu atanmamış)"),
-    "KG3-KAYIT": ("iş listesi D (3): 'KG-3 kayıt (dosya) tahsilatı gelir değil → Sınıflandırılmamış Tahsilatlar'; bugün CHART 602 'Kayıt Tahsilatları'", "KG-3 (iş kodu atanmamış)"),
-    "KG7-INDIRIM": ("iş listesi D (6): 'KG-7 alış faturasında KDV İndirim Dönemi'; kitap KG-7 B = hep belge ayı (bugünkü)", "KG-7 (iş kodu atanmamış; kesme çizgisinde 2.5.1'e kayabilir)"),
-    "KG8-IADE-KDV": ("kitap KG-8 (K değil; 'baş mimar + mali müşavir A'): satıştan iade KDV'si B 191; B seçeneği 391", "KG-8 (iş kodu atanmamış)"),
-    "KG24-IHRACAT": ("kitap KG-24 A (K değil): ihracat 601; B 600 (bugün CHART'ta 601 yok — çekirdek §1)", "Ç1 + türetme (iş kodu atanmamış)"),
-    "F06-GIDER-TURU": ("kitap F-06: 'Gider türü → hesap eşlemesi Ç1'de yazılır (DOĞRULANMADI)' — finansman 780", "Ç1"),
-    "C7b6-KAPAT": ("kullanıcı kararı 05.11 21:30 (6) 'Kartı Kapat yalnız ödeme planını bitirir; kalan carinin borcunda kalır … BUGÜNKÜ DAVRANIŞ DEĞİŞİR (kalan 689'la borçtan düşüyordu)'; kâhin README R6 `eski` = 2.4.9 davranışı B 689 / A CH", "Ç7b (iş listesi D İŞ ATAMASI (4)(6) → Ç7b)"),
+    # SÜRÜCÜ BAKIMI 4 (19.11.2026; Ç7b tur 2–2e + kâhin bakımı 13): Ç7b'nin koda giren kuralları (KG-2 belgesiz 600.90 / 610.90, KG-3 kayıt tahsilatı 336.90 + kural geçiş günü,
+    # KG-4, KG-7 KDV İndirim Dönemi, KG-8 / F-08 iade KDV'si + geçiş günü + B-6, KG-24 ihracat 601, F-06 / M14 gider türleri, 649.90) programda — KG2-H03, KG3-KAYIT, KG7-INDIRIM,
+    # KG8-IADE-KDV, KG24-IHRACAT, F06-GIDER-TURU BUGÜN dönüşümleri kalktı (program = kâhin olmalı; değilse fark önce HATADIR — ders 6). Kalan: Kartı Kapat 'Borçta Kalsın' (Ç7b tur 3).
+    # SÜRÜCÜ BAKIMI 5 (20.11.2026; Ç7b tur 3b + taksit küçük turu + kâhin bakımı 14): C7b6-KAPAT dönüşümü KALKTI — Kartı Kapat 'Borçta Kalsın' (karar (6), S205 / S220 = A) programda
+    # (Ç7b tur 3b; kartın kapanış kuralı işareti). Kâhinin `eski: true` kartı programda göç 53'ün işaretiyle ('2.4.9') kurulur (program.mjs taksit_kapat). BUGÜN görünümünde Kartı Kapat = kâhin.
+    "F06-FINANSMAN-251": ("kitap F-06 / M14 'finansman türü 780'; Ç7b tasarım notu §9 B-1 (BAŞ MİMAR KARARI 19.11 04:03) B-1 = B: '780 türü ve tanınmayan türün 770.90'ı 2.5.1' — programın gider türü listesinde finansman yok, 770'e düşer", "2.5.1 (Ç7b B-1; iş listesi B)"),
     "SURUCU-CARI-ACILIS-YOLU": ("SÜRÜCÜ YOLU (karar değil): programda cari açılışı yalnız cari açılırken (routes/accounts.mjs POST openingBalance); sürücü cariyi açılış olayından ÖNCE başka olayla açmak zorunda kaldıysa açılış Borç / Alacak Yaz satırıdır (602.90 / 770.90)", "sürücü sınırı (eşleme)"),
 }
 
 # G5 (iş listesi D, 05.11 21:48): HENÜZ KODA GİRMEMİŞ kurallardan gelen her fark KURAL KİMLİĞİYLE durur. Etiket → kimlik (iş listesi A satırlarındaki
 # atamadan; Ç7b: fatura / KDV / taksit / kayıt türetmesi, D4: devir). Kimliksiz etiket = ATANMAMIŞ (rapora).
 KIMLIK = {
-    "BUGUN-DALI": "BUGÜN-DALI (KG-7 = B)",
-    "KG2-H03": "Ç7b-KG2",
-    "KG3-KAYIT": "Ç7b-KG3",
-    "KG7-INDIRIM": "Ç7b-KG7",
-    "KG8-IADE-KDV": "Ç7b-KG8 (P2)",
-    "KG24-IHRACAT": "Ç7b-KG24",
-    "F06-GIDER-TURU": "Ç7b-F06",
-    "C7b6-KAPAT": "Ç7b-(6)",
+    "BUGUN-DALI": "BUGÜN-DALI",
+    "F06-FINANSMAN-251": "2.5.1-Ç7b-B1 (F-06 finansman 780)",
     "SURUCU-CARI-ACILIS-YOLU": "SÜRÜCÜ-YOLU (açık cariye açılış)",
 }
 # Tek Yükümlülük Kuyruğu (gecikmiş / hatırlatma / kart / açık fatura) farklarının kimliği: senaryonun kâhin `kapsam`ındaki karar (kullanıcı 21:08 / 21:30)
@@ -106,8 +99,6 @@ def degistir(m, k, d):
     v = k.v if k is not None else {}
     et = set()
     out = []
-    if tur == "taksit_kapat" and v.get("bugun_eski"):
-        et.add("C7b6-KAPAT")        # BUGÜN modelinde Kartı Kapat 2.4.9 kuralıyla (kâhin `eski`): kalan 689 / CH — karar (6) "Borçta Kalsın" Ç7b'de
     for s in m.satirlar:
         h = s["h"]
         n = h
@@ -121,21 +112,11 @@ def degistir(m, k, d):
         # KG-5 Excel kartı 519; KG-16 'Açılış…' açıklamalı yeni Borç / Alacak Yaz sıradan C-01 / C-02) — C5-ACILIS-519, C5-EVRAK-ACILIS, C5-EVRAK-KARSILIKSIZ, KG16-ACIKLAMA,
         # KG5-EXCEL BUGÜN dönüşümleri kalktı (program = kâhin olmalı; değilse fark önce HATADIR — ders 6). K-14 / K-15 (S179 = A) Ç7a tur 2 ile ve KG-19 = C (S175; kâhin bakımı
         # 12 108.90'ı kaldırdı) programda (14.11.2026): BUGÜN dönüşümleri kalktı.
-        elif tur == "taksit_karti" and h == M.BELGESIZ_GELIR:
-            n = "602"
-            et.add("KG2-H03")
-        elif tur == "kayit_tahsilati" and h in (M.CARISIZ_PASIF, M.CARISIZ_GELIR):
-            n = "602"
-            et.add("KG3-KAYIT")
-        elif tur == "satis_iade_faturasi" and h == "191":
-            n = "391"
-            et.add("KG8-IADE-KDV")
-        elif h == M.IHRACAT_GELIR:
-            n = "600"
-            et.add("KG24-IHRACAT")
+        # SÜRÜCÜ BAKIMI 4: KG2-H03 / KG3-KAYIT / KG8-IADE-KDV / KG24-IHRACAT / F06-GIDER-TURU dönüşümleri kalktı (Ç7b tur 2–2e programda). Finansman gider türü (780) Ç7b B-1 = B
+        # ile 2.5.1'de: BUGÜN görünümünde 770 (U, kimlik 2.5.1-Ç7b-B1).
         elif h == "780" and tur in ("alis_faturasi", "alis_iade_faturasi") and v.get("gider_turu") == "finansman":
             n = "770"
-            et.add("F06-GIDER-TURU")
+            et.add("F06-FINANSMAN-251")
         # SÜRÜCÜ BAKIMI 3: C1-ALT-90 kalktı — program '.90' alt hesaplarını yazar (general-ledger.mjs 600.90 / 602.90 / 649.90 / 770.90); karşılaştırma ana hesap düzeyinde.
         out.append(dict(s, h=n))
     return out, et
@@ -296,9 +277,19 @@ def bek_gorunum(model, ufuk, ceviri):
 # ------------------------------------------------------------------------------------------------ 3. adım adım koşu
 DAL = M.Kurallar.etiketten(A.dal)
 bugun_dal = dict(p.split("=") for p in A.dal.split(",") if "=" in p)
-bugun_dal.update({"KG7": "B"})   # KG-6 = A Ç7a tur 2b ile programda (14.11.2026): BUGÜN görünümü artık KG-6 B değil; SÜRÜCÜ BAKIMI 3: KG-15 = A (Kural Farkı
+# SÜRÜCÜ BAKIMI 4: KG-7 = B kalktı — KDV İndirim Dönemi programda (Ç7b tur 2d / 2e; invoices.vat_period); BUGÜN dalı = kâhinin dalı. Önceki not: KG-6 = A Ç7a tur 2b ile programda (14.11.2026): BUGÜN görünümü artık KG-6 B değil; SÜRÜCÜ BAKIMI 3: KG-15 = A (Kural Farkı
 #                                  Düzeltme Fişi Ç5-A tur 2 / 2e / 2f ile programda — S174 / S180 / S185 = A) — KG15 = B kalktı
 BUGUN = M.Kurallar(**bugun_dal)
+# SÜRÜCÜ BAKIMI 5 (kâhin bakımı 14 "Sürücü için" A6 — S219 / S221 / S222): Excel kartı kâhine PROGRAMIN EŞLEDİĞİ cariyle verilir (`taksit_excel {cari}`); program.mjs kartın
+# bağlandığı cariyi kâhin anahtarına çevirir (`esle_cari`). Programın atladığı satır (durum "atlandi") kâhine uygulanmaz (yalnız "yapildi" uygulanır). Öz denetim (OZ)
+# senaryonun kendi hâliyle yukarıda koştu; değişiklik yalnız bellekteki kopyada (kâhinin dosyasına yazılmaz).
+EXCEL_ESLE = {}
+for x in P["olaylar"]:
+    if x.get("tur") == "taksit_excel" and x.get("esle_cari"):
+        o_ = S["olaylar"][int(x["no"]) - 1]
+        if x["esle_cari"] != o_.get("cari"):
+            EXCEL_ESLE[int(x["no"])] = (o_.get("cari"), x["esle_cari"])
+            S["olaylar"][int(x["no"]) - 1] = dict(o_, cari=x["esle_cari"])
 mk = Izli(S, DAL)        # KÂHİN
 mb = Izli(S, BUGUN)      # BUGÜN
 olaylar = S["olaylar"]
@@ -363,9 +354,8 @@ TYK = {"gecikmis", "gecikmis_tumu", "hatirlatma", "acik_faturalar", "acik_kaleml
 
 
 def bugun_olay(o):
-    """BUGÜN modeli için olay: Kartı Kapat bugün (2.4.9) kalanı 689'la borçtan düşer — kâhinin kendi `eski` dalı (README R6; karar (6) Ç7b'de değişir)."""
-    if o.get("tur") == "taksit_kapat" and not o.get("eski"):
-        return dict(o, eski=True, bugun_eski=True)
+    """BUGÜN modeli için olay. SÜRÜCÜ BAKIMI 5: Kartı Kapat 'Borçta Kalsın' (karar (6), S205 / S220 = A) programda (Ç7b tur 3b) — önceki 2.4.9 dönüşümü (kalan 689;
+    kâhinin `eski` dalı) KALKTI; olay olduğu gibi (kâhinin `eski: true` kartı iki görünümde de eski kural — program.mjs göç 53 işaretiyle kurar)."""
     return o
 
 
@@ -477,7 +467,25 @@ def guvenli(f):
 # SÜRÜCÜ BAKIMI 3 — `susmalar` (kâhin bakımı 12 S168, README "Sürücü için"): listelenen carinin o tahsilattan (tarih) sonraki 120 / 128 ayrımı, 128 / 129 kalanları, karşılık
 # çözülmesi ve gecikmiş / şüpheli / hatırlatma raporları KARŞILAŞTIRILMAZ (sinif SUSMA); carinin toplamı (120 + 128) ve öbür anahtarlar karşılaştırılır. Devirsiz
 # eşdeğerde dosya ayrımı (canli / arsiv-<yıl>) yok: susma o günden sonra her raporda.
-SUSMALAR = [(x["cari"], x["tarih"], x.get("kaynak", ""), x.get("kural", "")) for x in (B["dallar"].get("A", {}).get("susmalar") or [])]
+# SÜRÜCÜ BAKIMI 5: kâhin bakımı 14'ün `susmalar` "S213" kaydı (Açık Faturalar ↔ Değersiz yazılmış şüpheli fatura; biçimi S192 ile aynı — README bakım 14 "Sürücü için" A3) S192 gibi
+# yalnız listelenen raporda; önceki sürücü S192 dışındaki her kaydı S168 sayardı (S213 o günden sonraki BÜTÜN raporlarda 120 / 128'i susturacaktı).
+RAPOR_SUSMALARI = ("S192", "S213")
+SUSMALAR = [(x["cari"], x["tarih"], x.get("kaynak", ""), x.get("kural", "")) for x in (B["dallar"].get("A", {}).get("susmalar") or []) if x.get("kural") not in RAPOR_SUSMALARI]
+# SÜRÜCÜ BAKIMI 4 — `susmalar` S192 (kâhin bakımı 13, README "Sürücü için" A5 / Ü14): {kural: "S192", rapor, cari, tarih, dosya} — o carinin o RAPORU (kalem / vade dağılımı)
+# karşılaştırılmaz, toplamlar karşılaştırılır. Yalnız listelenen raporda (S168 gibi o günden sonraki her raporda DEĞİL); atlanan anahtar SUSMA (# skipped) diye sayılır.
+# Açık faturalar raporunda carinin açık fatura TOPLAMI ayrıca karşılaştırılır (satır 'fatura_toplam').
+S192 = {(x["cari"], x["rapor"]): x for x in (B["dallar"].get("A", {}).get("susmalar") or []) if x.get("kural") in RAPOR_SUSMALARI}
+
+
+def s192_cariler(rapor_adi):
+    return {c for (c, r) in S192 if r == rapor_adi}
+
+
+def s192_aciklama(c, rapor_adi):
+    x = S192.get((c, rapor_adi)) or {}
+    if x.get("kural") == "S213":
+        return f"kâhin susar (S213; kâhin bakımı 14 `susmalar`): {c} {rapor_adi} {x.get('tarih', '')} — Değersiz yazılmış şüpheli faturalı carinin Açık Faturalar satırları karşılaştırılmaz (toplam karşılaştırılır)"
+    return f"kâhin susar (S192; kâhin bakımı 13 `susmalar`): {c} {rapor_adi} {x.get('tarih', '')} — kalem / vade dağılımı karşılaştırılmaz"
 SUS_ANA = {"120", "128", "129", "644"}
 
 
@@ -573,7 +581,7 @@ for x in P["olaylar"]:
 tam = Izli(S, DAL)
 tamb = Izli(S, BUGUN)
 # BUGÜN dalı kaynaklı red farkının kimliği (KG-7 KDV İndirim Dönemi / KG-6 POS komisyon günü / KG-15): senaryoda hangisi var.
-RED_DAL_KIMLIK = sorted({"Ç7b-KG7"} if any(o.get("indirim_ayi") or any(d.get("indirim_ayi") for d in o.get("duzeltmeler", [])) for o in S["olaylar"]) else set()) or ["BUGÜN-DALI (KG-7 = B)"]
+RED_DAL_KIMLIK = ["BUGÜN-DALI"]   # SÜRÜCÜ BAKIMI 4: KG-7 = B kalktı (bugün dalı kâhinin dalı)
 kred, bred = {}, {}
 for i, o in enumerate(olaylar, start=1):
     r = tam.adim(o, i)
@@ -676,7 +684,7 @@ def aciklanan_toplam(liste, son=None, bas=None, donemsel=False):
 
 
 # BUGÜN dalı (KG-6 = B, KG-7 = B) kaynaklı U satırlarının etiketi: senaryoda POS komisyonu / KDV indirim dönemi var mı.
-DAL_ETIKETI = sorted(({"KG7-INDIRIM"} if any(o.get("indirim_ayi") for o in S["olaylar"]) or any(d.get("indirim_ayi") for o in S["olaylar"] for d in o.get("duzeltmeler", [])) else set())) or ["BUGUN-DALI"]
+DAL_ETIKETI = ["BUGUN-DALI"]   # SÜRÜCÜ BAKIMI 4: KG7-INDIRIM kalktı
 
 
 RAPOR_GUNU = [None]   # o an karşılaştırılan raporun günü (susmalar)
@@ -775,7 +783,8 @@ def kart_metni(kk):
 # karşılığı kalktı (program = kâhin olmalı; değilse önce HATA — ders 6). Ödeme Hatırlatma (WhatsApp alıcı listesinin tutarı / şüpheli etiketi / elle seçimi) Ç5-C'de: ESKİ
 # anlamda (BAŞ MİMAR KARARI 06.11 19:26 B1-W "totals.overdue WhatsApp için ESKİ anlamında kalır … Ç5-C'de WhatsApp yeni alana geçer") — U, kimlik Ç5-C.
 YOK_BUGUN = "—"   # BUGÜN karşılığı yok (kural programda): hiçbir program değerine eşit değil
-BEKLEYEN_ONEK = ("Ç7b", "D4", "D2")   # henüz ana dala girmemiş paketler: bu kimlikli satırda eski kuralın (BUGÜN) karşılığı geçerli kalır (U)
+BEKLEYEN_ONEK = ("D4", "D2")   # henüz koda girmemiş paketler: bu kimlikli satırda eski kuralın (BUGÜN) karşılığı geçerli kalır (U). SÜRÜCÜ BAKIMI 5: "Ç7b" kalktı —
+# Ç7b'nin kuralları (karar (4) kart küçülmesi, S15 = A, karar (6) / S205 / S220 Borçta Kalsın, S210 / S211) sınanan kodda (c7b-aday); fark artık önce HATADIR (ders 6).
 
 
 def bugun_ya_da_yok(kim, deger):
@@ -783,7 +792,8 @@ def bugun_ya_da_yok(kim, deger):
 
 
 def tyk_susma(alan, anahtar, rapor_adi, cariler):
-    return {"alan": alan, "anahtar": anahtar, "sinif": "SUSMA", "aciklama": sus_aciklama(cariler)}
+    s192 = [c for c in cariler if (c, rapor_adi) in S192]
+    return {"alan": alan, "anahtar": anahtar, "sinif": "SUSMA", "aciklama": "; ".join([s192_aciklama(c, rapor_adi) for c in s192] + ([sus_aciklama(cariler)] if set(cariler) - set(s192) else []))}
 
 
 def tyk_karsilastir(o, r, an, rapor_adi):
@@ -795,7 +805,7 @@ def tyk_karsilastir(o, r, an, rapor_adi):
         return [{"alan": rr, "anahtar": "-", "sinif": "SUSMA", "aciklama": "kâhin bu ara raporda susar: " + an["susma"]}]
     if kah is None:
         return [{"alan": rr, "anahtar": "-", "sinif": "SINIFLANMADI", "aciklama": "kâhin değeri kurulamadı"}]
-    sus = sus_cariler(t)
+    sus = sus_cariler(t) | s192_cariler(rapor_adi)   # SÜRÜCÜ BAKIMI 4: S192 yalnız listelenen raporda
     if rr == "gecikmis":
         if o["cari"] in sus:
             return [tyk_susma("gecikmis", o["cari"], rapor_adi, {o["cari"]})]
@@ -839,7 +849,10 @@ def tyk_karsilastir(o, r, an, rapor_adi):
                     prg[x["fatura"]] = prg.get(x["fatura"], 0) + x["kalan"]
         kahd = {x["fatura"]: x["kalan"] for x in kah}
         if o["cari"] in sus:
-            return [tyk_susma("fatura", f, rapor_adi, {o["cari"]}) for f in sorted(set(prg) | set(kahd))]
+            out = [tyk_susma("fatura", f, rapor_adi, {o["cari"]}) for f in sorted(set(prg) | set(kahd))]
+            if (o["cari"], rapor_adi) in S192:   # S192: toplam karşılaştırılır
+                out.append(tyk_satir("fatura_toplam", o["cari"], sum(prg.values()), sum(kahd.values()), YOK_BUGUN, set(SENARYO_KIMLIK) or {"Ç5-B1"}, rapor_adi))
+            return out
         return [tyk_satir("fatura", f, prg.get(f, 0), kahd.get(f, 0), YOK_BUGUN, set(SENARYO_KIMLIK) or {"Ç5-B1"}, rapor_adi) for f in sorted(set(prg) | set(kahd))]
     if rr == "acik_kalemler":
         return [tyk_satir("acik_kalem", o["cari"], None, json.dumps(kah, ensure_ascii=False, sort_keys=True) if kah else None, None, {"GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)"}, rapor_adi, yok=True)]
@@ -986,7 +999,9 @@ sonuc = {
     "senaryo": S["ad"], "tz": P.get("tz"), "dal": A.dal, "bugun_dal": BUGUN.etiket(), "oz_denetim": {k: v for k, v in OZ.items() if k != "kahin_redler"},
     "olay_durumlari": dict(durumlar),
     "uygulanamayan": [dict({"no": x["no"], "tur": x["tur"], "id": x.get("id", ""), "durum": x["durum"], "neden": x.get("neden") or x.get("ileti"), "is": x.get("is")},
-                           **olay_sinifi(x)) for x in P["olaylar"] if x.get("durum") in ("api_yok", "uygulanmadi", "surucu_hatasi")],
+                           **olay_sinifi(x)) for x in P["olaylar"] if x.get("durum") in ("api_yok", "uygulanmadi", "surucu_hatasi", "atlandi")],
+    # SÜRÜCÜ BAKIMI 5: "atlandi" = programın Excel'den atladığı satır (kâhine uygulanmadı — kâhin bakımı 14 A6); sessizce geçmez: elle sınıf yoksa SINIFLANMADI (kâhinin her
+    # cari anahtarı ayrı kişidir — sürücü her cariye ayrı telefon yazar — S219 = A ile atlanmamalı).
     "uyarilar": [{"no": x["no"], "tur": x["tur"], "uyari": x.get("uyari") or x.get("eksik")} for x in P["olaylar"] if x.get("uyari") or x.get("eksik")],
     "redler": redler, "adim_farklari": adim_farklari, "raporlar": raporlar, "son": son, "degismezler": degismez, "ozet": ozet,
     "etiketler": {k: {"dayanak": v[0], "is": v[1]} for k, v in ETIKET.items()},

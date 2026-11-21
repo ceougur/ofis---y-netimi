@@ -1,0 +1,34 @@
+{
+ "aciklama": "Cari kâhini ↔ program YAPIM AŞAMASI listesi (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D). Ç5 paket paket ana dala girerken bugünkü farklar kararı / bekleyen paketiyle sabitlenir; kâhinin beklentisi DEĞİŞMEZ. Listede OLMAYAN fark, değeri DEĞİŞEN fark ve KAPANDIĞI hâlde listede duran kayıt kırmızıdır (liste yalnız küçülür). Yayın adayında liste BOŞ olmalı (tools/release.mjs). BİLİNEN.json'dan (kullanıcının ERTELEDİĞİ farklar) AYRIDIR.",
+ "kural": "2.5.0",
+ "uretim": "node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz (varsayılan koşu: bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem)",
+ "paketler": [
+  "Ç5-A",
+  "Ç5-B tur 2",
+  "Ç5-C",
+  "eşleme",
+  "AYRIŞTIRILMADI"
+ ],
+ "kayitlar": [
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:kart:KI2:toplam",
+   "beklenen": 90000,
+   "program": 30000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.3 kart tutarı = tablodaki kalan",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "anahtar": "k1:kart:KI3:toplam",
+   "beklenen": 90000,
+   "program": 0,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.3 kart tutarı = tablodaki kalan",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  }
+ ]
+}

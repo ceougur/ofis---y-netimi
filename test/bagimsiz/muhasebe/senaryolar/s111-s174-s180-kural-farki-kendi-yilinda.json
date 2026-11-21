@@ -1,5 +1,5 @@
 {
- "aciklama": "S174 A: yazılmış Kural Farkı Düzeltme Fişi kendi yılında düzeltilmiş sayılır — kilit yıl sonunu aşınca yeni fiş yok; S180 A: fişin sonraki yıldaki tersi asıl fişin yılına sayılır — kural farkı yeniden açılmaz.",
+ "aciklama": "S174 A: yazılmış Kural Farkı Düzeltme Fişi kendi yılında düzeltilmiş sayılır — kilit yıl sonunu aşınca yeni fiş yok; S197 = B (bakım 13): fişin sonraki yıldaki tersi farkı yeniden açar — yeni fiş ilk açık güne, önceki mali yılın farkı 671.",
  "ad": "s111-s174-s180-kural-farki-kendi-yilinda",
  "bankalar": {
   "B1": {
@@ -46,7 +46,11 @@
    },
    "fark1": {},
    "fark2": {},
-   "fark3": {},
+   "fark3": {
+    "500": 70000,
+    "602.90": -70000
+   },
+   "fark4": {},
    "mz26/satirlar/120|C2/bakiye": 70000,
    "mz26/satirlar/500/bakiye": 0,
    "mz26/satirlar/602.90/bakiye": -70000,
@@ -59,14 +63,14 @@
    "mz27/satirlar/602.90/devir": -70000,
    "mz27/satirlar/671/bakiye": 0,
    "mz27b/satirlar/500/alacak": 70000,
-   "mz27b/satirlar/500/bakiye": -70000,
+   "mz27b/satirlar/500/bakiye": 0,
+   "mz27b/satirlar/500/borc": 70000,
    "mz27b/satirlar/602.90/alacak": 0,
    "mz27b/satirlar/602.90/bakiye": 0,
    "mz27b/satirlar/602.90/borc": 70000,
-   "mz27b/satirlar/671/bakiye": 0,
+   "mz27b/satirlar/671/bakiye": -70000,
    "mz27b/satirlar/681/bakiye": 0,
    "redler": [
-    "KURAL_FARKI_YOK",
     "KURAL_FARKI_YOK"
    ]
   }
@@ -163,6 +167,11 @@
   },
   {
    "tur": "kural_farki_duzelt"
+  },
+  {
+   "ad": "fark4",
+   "rapor": "kural_farki",
+   "tur": "rapor"
   },
   {
    "ad": "mz26b",

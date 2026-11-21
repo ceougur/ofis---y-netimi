@@ -236,18 +236,22 @@ describe("Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla
   };
   it("routes/plans.mjs: kartın kendi biçimini (shape) okuyan yerler — detail (yazım içi), detailView (pencere, PDF; kuyruk), forCase (kayıt detayı; kuyruk), forAccount (cari kartı; queueSummaryOf)", () => {
     const text = read("server/routes/plans.mjs");
-    assert.deepEqual([...new Set([...callersOf(text, "shape(plan"), ...callersOf(text, "shape(planRow")])].sort(), ["detail", "detailView", "forAccount", "forCase"].sort(), "yeni bir 'shape(' çağıranı yer tablosuna (tasarım §15.1) ve bu teste eklenmeli");
+    assert.deepEqual([...new Set([...callersOf(text, "shape(plan"), ...callersOf(text, "shape(planRow")])].sort(), ["detail", "detailView", "forAccount", "forCase", "shownRemaining"].sort(), "yeni bir 'shape(' çağıranı yer tablosuna (tasarım §15.1) ve bu teste eklenmeli");
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b aday düzeltme turu, YB-1; docs/devir/2.5.0-DEVAM/c7bfix-istem.txt): shownRemaining — Kartı Kapat onayının denetimi kart penceresinin
+    // GÖSTERDİĞİ kalanı (detailView ile aynı kural, S129 = A) işlemin içinde okur; gösterim yeri değil, pencerenin sayısıyla karşılaştırma. Kuyruk görünümüne bağlı olmalı.
     const body = name => {
       const start = text.indexOf(`function ${name}(`) >= 0 ? text.indexOf(`function ${name}(`) : text.indexOf(`const ${name} = `);
       return text.slice(start, start + 1400);
     };
     assert.ok(body("forCase").includes("withQueue("), "kayıt detayı (forCase) kuyruk görünümünü verir — S129 = A");
     assert.ok(body("detailView").includes("withQueue("), "kart penceresi (detailView) kuyruk görünümünü verir");
+    assert.ok(body("shownRemaining").includes("withQueue("), "Kartı Kapat onayı denetimi (shownRemaining) pencerenin kuyruk görünümünü okur — YB-1");
   });
   it("routes/plans.mjs ve öbür yollar: kartın kendi hesabını (allocate) kuran her yer kuyruk görünümüne bağlı ya da iç çağıran olarak listede", () => {
     const allowed = new Map([
       // assertRoom: K8 sınırı / S118 = B (formun sınırı kartın KENDİ kalanından — yer tablosu 7, 19).
-      ["server/routes/plans.mjs", ["assertRoom", "dueItems", "list", "openItems", "shape", "summariesByAccount"]],
+      // cutTargets (2.5.0 Ç7b tur 3 — karar (4)): kart küçülmesinin İÇ hesabı (kesilecek taksitlerin açık kısmı kartın KENDİ hesabından); gösterim yeri değil.
+      ["server/routes/plans.mjs", ["assertRoom", "cutTargets", "dueItems", "list", "openItems", "shape", "summariesByAccount"]],
     ]);
     // Rapor Merkezi: kartın kendi hesabını kuran HER satır aynı satırda (viewOf) ya da hemen ardından (queueLedger) kuyruk görünümüne geçer.
     const rc = read("server/routes/report-center.mjs").split(/\r?\n/);

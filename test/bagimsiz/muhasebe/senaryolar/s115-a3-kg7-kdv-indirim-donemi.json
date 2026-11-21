@@ -1,0 +1,242 @@
+{
+ "aciklama": "A3 (KG-7 A): alış faturasının KDV'si KDV İndirim Dönemi'nin mahsubunda (madde belge tarihinde); dönem belge ayından önce ya da izleyen yılın Aralık'ından sonra RED; kilitli Aralık, açık Ocak.",
+ "ad": "s115-a3-kg7-kdv-indirim-donemi",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "mz01/satirlar/191/bakiye": 1000,
+   "mz01/satirlar/360/bakiye": -12000,
+   "mz01/satirlar/391/bakiye": 0,
+   "mz12/satirlar/191/bakiye": 7000,
+   "mz12/satirlar/320|T1/bakiye": -114000,
+   "mz12/satirlar/360/bakiye": -8000,
+   "mz12/satirlar/391/bakiye": 0,
+   "mz12/satirlar/770/bakiye": 95000,
+   "redler": [
+    "KDV_INDIRIM_DONEMI",
+    "KDV_INDIRIM_DONEMI"
+   ],
+   "yev0131/0/satirlar/0/b": 10000,
+   "yev0131/0/satirlar/1/a": 6000,
+   "yev0131/0/satirlar/1/h": "191",
+   "yev0131/0/satirlar/2/a": 4000,
+   "yev0131/0/satirlar/2/h": "360",
+   "yev0131/0/tur": "kdv_mahsup",
+   "yev1220/0/kaynak": "A2",
+   "yev1220/0/satirlar/1/b": 6000,
+   "yev1220/0/satirlar/1/e/donem": "2027-01",
+   "yev1220/0/satirlar/1/h": "191",
+   "yev1220/0/tarih": "2026-12-20",
+   "yev1231/0/satirlar/0/b": 20000,
+   "yev1231/0/satirlar/1/a": 12000,
+   "yev1231/0/satirlar/1/h": "191",
+   "yev1231/0/satirlar/2/a": 8000,
+   "yev1231/0/satirlar/2/h": "360",
+   "yev1231/0/tur": "kdv_mahsup"
+  }
+ },
+ "kapsam": [
+  "KG-7",
+  "F-05",
+  "F-06",
+  "V-01",
+  "M8",
+  "Ç3",
+  "Ü8"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 20000,
+   "M": 100000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-12-05",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": 10000,
+   "M": 50000,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "id": "A1",
+   "tarih": "2026-12-10",
+   "tur": "alis_faturasi"
+  },
+  {
+   "K": 6000,
+   "M": 30000,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "id": "A2",
+   "indirim_ayi": "2027-01",
+   "tarih": "2026-12-20",
+   "tur": "alis_faturasi"
+  },
+  {
+   "K": 2000,
+   "M": 10000,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "id": "A3",
+   "indirim_ayi": "2026-12",
+   "tarih": "2026-12-22",
+   "tur": "alis_faturasi"
+  },
+  {
+   "K": 200,
+   "M": 1000,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "id": "AX",
+   "indirim_ayi": "2026-11",
+   "tarih": "2026-12-23",
+   "tur": "alis_faturasi"
+  },
+  {
+   "K": 200,
+   "M": 1000,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "id": "AY",
+   "indirim_ayi": "2028-01",
+   "tarih": "2026-12-24",
+   "tur": "alis_faturasi"
+  },
+  {
+   "K": 1000,
+   "M": 5000,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "id": "A4",
+   "indirim_ayi": "2027-12",
+   "tarih": "2026-12-26",
+   "tur": "alis_faturasi"
+  },
+  {
+   "ay": "2026-12",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "ad": "yev1220",
+   "bas": "2026-12-20",
+   "rapor": "yevmiye",
+   "son": "2026-12-20",
+   "tur": "rapor"
+  },
+  {
+   "ad": "yev1231",
+   "bas": "2026-12-31",
+   "rapor": "yevmiye",
+   "son": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz12",
+   "bas": "2026-12-01",
+   "rapor": "mizan",
+   "son": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "tarih": "2026-12-31",
+   "tur": "donem_kilitle"
+  },
+  {
+   "K": 10000,
+   "M": 50000,
+   "cari": "C1",
+   "id": "F2",
+   "tarih": "2027-01-10",
+   "tur": "satis_faturasi"
+  },
+  {
+   "ay": "2027-01",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "ad": "yev0131",
+   "bas": "2027-01-31",
+   "rapor": "yevmiye",
+   "son": "2027-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz01",
+   "bas": "2027-01-01",
+   "rapor": "mizan",
+   "son": "2027-01-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

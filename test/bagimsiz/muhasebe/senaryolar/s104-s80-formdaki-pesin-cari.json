@@ -145,13 +145,8 @@
    "id": "F2",
    "tarih": "2026-01-06",
    "tur": "satis_faturasi",
-   "vade": "2026-01-31"
-  },
-  {
-   "id": "KA",
-   "tarih": "2026-01-08",
-   "tur": "kasa_acilis",
-   "tutar": 1000
+   "vade": "2026-01-31",
+   "yedekten": true
   },
   {
    "cari": "C1",
@@ -163,6 +158,13 @@
    "tutar": 200,
    "yedekten": true,
    "yol": "nakit"
+  },
+  {
+   "id": "KA",
+   "tarih": "2026-01-08",
+   "tur": "kasa_acilis",
+   "tutar": 1000,
+   "yedekten": true
   },
   {
    "K": 0,

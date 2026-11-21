@@ -1,0 +1,18 @@
+başta 07:55:24 · 1.93 1.91 1.21 2/306 1725 · yeni da458f89
+acilis-onarimi-hiz-250 yeni UTC çıkış 0
+acilis-onarimi-savunma-250 yeni UTC çıkış 0
+c7b-tur3-kart-250 yeni UTC çıkış 0
+c7b-tur3-eski-surum-250 yeni UTC çıkış 0
+acilis-onarimi-hiz-250 yeni Europe/Istanbul çıkış 0
+acilis-onarimi-savunma-250 yeni Europe/Istanbul çıkış 0
+c7b-tur3-kart-250 yeni Europe/Istanbul çıkış 0
+c7b-tur3-eski-surum-250 yeni Europe/Istanbul çıkış 0
+== acilis-onarimi-hiz-250-yeni-Europe-Istanbul.tap # tests 3 # pass 3 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-acilis-onarimi-hiz-250-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 3/3 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit da458f8 +2 değişmiş dosya +1 izlenmeyen · linux 6.18.44
+== acilis-onarimi-hiz-250-yeni-UTC.tap # tests 3 # pass 3 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-acilis-onarimi-hiz-250-yeni-UTC: GEÇTİ · çıkış 0 · 3/3 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit da458f8 +2 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v726 x64
+== acilis-onarimi-savunma-250-yeni-Europe-Istanbul.tap # tests 6 # pass 6 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-acilis-onarimi-savunma-250-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 6/6 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit da458f8 +2 değişmiş dosya +1 izlenmeyen · linux 6.1
+== acilis-onarimi-savunma-250-yeni-UTC.tap # tests 6 # pass 6 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-acilis-onarimi-savunma-250-yeni-UTC: GEÇTİ · çıkış 0 · 6/6 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit da458f8 +2 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v726
+== c7b-tur3-eski-surum-250-yeni-Europe-Istanbul.tap # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-c7b-tur3-eski-surum-250-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 5/5 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit da458f8 +2 değişmiş dosya +1 izlenmeyen · linux 6.18.4
+== c7b-tur3-eski-surum-250-yeni-UTC.tap # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-c7b-tur3-eski-surum-250-yeni-UTC: GEÇTİ · çıkış 0 · 5/5 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit da458f8 +2 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v726 x6
+== c7b-tur3-kart-250-yeni-Europe-Istanbul.tap # tests 9 # pass 9 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-c7b-tur3-kart-250-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 9/9 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit da458f8 +2 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v
+== c7b-tur3-kart-250-yeni-UTC.tap # tests 9 # pass 9 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-c7b-tur3-kart-250-yeni-UTC: GEÇTİ · çıkış 0 · 9/9 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit da458f8 +2 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · N
+BİTTİ 07:55:46 · 2.65 2.07 1.27 2/305 2268

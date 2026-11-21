@@ -1,0 +1,46 @@
+// Tanı: KDV Mahsup yollarının kilitsiz kipte yavaşlaması — ledger.build() mi, figureTable mi? Kullanım: node tani.mjs <kod kökü> <veri kopyası>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir] = process.argv.slice(2);
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const app = createApp({ dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: "Kapi-Olcum-2026!", HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false });
+await app.listen(0, "127.0.0.1");
+const monthEnd = m => { const [y, mo] = m.split("-").map(Number); return new Date(Date.UTC(y, mo, 0)).toISOString().slice(0, 10); };
+function oldFig(entries, month) {
+  const from = `${month}-01`, to = monthEnd(month); let out = 0, input = 0, carry = 0;
+  for (const entry of entries) {
+    const offset = entry.id.startsWith("vat-offset");
+    for (const line of entry.lines) {
+      if (line.account === "190" && entry.date < from) carry += line.debit - line.credit;
+      if (offset || entry.date < from || entry.date > to) continue;
+      if (line.account === "391") out += line.credit - line.debit;
+      if (line.account === "191") input += line.debit - line.credit;
+    }
+  }
+  return { out, input, carry: Math.max(0, carry) };
+}
+function newFig(entries, periods) {
+  const months = new Map(); const carries = [];
+  for (const entry of entries) {
+    const offset = entry.id.startsWith("vat-offset"); const month = String(entry.date).slice(0, 7); const period = periods.get(entry.id) || month;
+    for (const line of entry.lines) {
+      if (line.account === "190") carries.push([entry.date, line.debit - line.credit]);
+      if (offset || (line.account !== "391" && line.account !== "191")) continue;
+      const key = line.account === "191" ? period : month; const row = months.get(key) || { out: 0, input: 0 };
+      if (line.account === "391") row.out += line.credit - line.debit; else row.input += line.debit - line.credit; months.set(key, row);
+    }
+  }
+  return { of(month) { const from = `${month}-01`; const row = months.get(month) || { out: 0, input: 0 }; const carry = carries.reduce((s, [d, m]) => (d < from ? s + m : s), 0); return { out: row.out, input: row.input, carry: Math.max(0, carry) }; } };
+}
+const t = (label, fn, n = 7) => { const ms = []; let r; for (let i = 0; i < n; i++) { const s = performance.now(); r = fn(); ms.push(performance.now() - s); } ms.sort((a, b) => a - b); console.log(`${label}: en iyi ${ms[0].toFixed(1)} ms · ortanca ${ms[Math.floor(n / 2)].toFixed(1)} ms`); return r; };
+console.log(`kod ${root}`);
+const entries = t("ledger.build()", () => app.ledger.build());
+console.log(`madde ${entries.length} · satır ${entries.reduce((s, e) => s + e.lines.length, 0)}`);
+const a = t("eski monthFigures ×2 (ay + önceki ay)", () => [oldFig(entries, "2026-09"), oldFig(entries, "2026-08")]);
+const b = t("yeni figureTable tek geçiş + of ×2", () => { const tb = newFig(entries, new Map()); return [tb.of("2026-09"), tb.of("2026-08")]; });
+console.log("eşit:", JSON.stringify(a) === JSON.stringify(b), JSON.stringify(a));
+if (app.store.all("PRAGMA table_info(invoices)").some(c => c.name === "vat_period")) t("vatPeriods sorgusu", () => app.store.all("SELECT id, vat_period AS period FROM invoices WHERE kind = 'purchase' AND status = 'issued' AND vat_period <> '' AND vat_period <> substr(issue_date, 1, 7)"));
+await app.close();

@@ -1,0 +1,32 @@
+{
+  "ad": "c7b3b-kirik-yeni-UTC",
+  "komut": "node --test --test-concurrency=3 test/accounts-stock.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-kapi-kapsam.test.mjs test/birlesik-tur2-yaris-250.test.mjs test/bulgu-223.test.mjs test/defter-kaynak-iz-250.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-yasam-250.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/kapali-kart-ekstre-tarihi-250.test.mjs test/kural-farki-kapi-disi-250.test.mjs test/obligation-input-250.test.mjs test/plans.test.mjs",
+  "commit": "9d656d5080ca8877832fc87cb17a1199e4ecff5f",
+  "dal": "worktree-agent-a7251f6b5e9ebfc97",
+  "kirli": 14,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T11:26:51.522Z",
+  "sure_sn": 60.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 228,
+    "gecen": 228,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/kanit/2026-11-20/c7b3b-kirik-yeni-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7251f6b5e9ebfc97",
+  "ham_cikti_sha256": "9be34aacec2241d75f442d22aed6b1d69df97a56bf275241e0197f7e2116ecf7",
+  "ham_cikti_bayt": 102189
+}

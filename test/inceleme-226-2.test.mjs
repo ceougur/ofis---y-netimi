@@ -74,6 +74,9 @@ async function closedCardWithTable() {
   // Taksitler → Yeni Kart (bağsız; carisiz), sonra kalandan vazgeçilerek kapatılır (689'a 01.09'da 20.000).
   const card = await must("kart", api.post("/api/workspace/plans", { name: "Ayşe Kaya", phone: "0532 444 55 66", total: "20000", registeredOn: dayOf(T0), mode: "auto", count: 4, firstDue: dayOf(T0) }));
   await must("kapat", api.put(`/api/workspace/plans/${card.id}`, { status: "closed" }));
+  // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3b, karar (6) "Borçta Kalsın" / B-11 = A; docs/erp/C7B-FATURA-TASARIM.md §17): kapanışın kilit kuralı (689) artık YALNIZ eski kurallı
+  // (göç 53 '2.4.9' — v2.4.9'da kapatılmış) kartta; bu sınama o kartı anlatır → kart göçün işaretiyle eski kurala alınır. Borçta Kalsın kartı: test/c7b-tur3b-borcta-kalsin-250 T4.
+  server.app.store.run("UPDATE plans SET close_rule = '2.4.9' WHERE id = ?", card.id);
   mock.timers.setTime(T1.getTime());
   const client = await loginAdmin(server);
   api = apiOf(client);

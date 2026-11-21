@@ -1,0 +1,27 @@
+s51-m1e-mevcut-borc-karti [TZ=Europe/Istanbul]: 16 olay · yapıldı 11 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 48 ms
+    AssertionError: senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)  (2 sn + 0 sn)
+s51-m1e-mevcut-borc-karti [TZ=UTC]: 16 olay · yapıldı 11 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 50 ms
+    AssertionError: senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)  (2 sn + 0 sn)
+
+AYNI 0 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara adım 0) · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 0 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 2
+Ölçüm (olay döngüsü en çok, ms): s51-m1e-mevcut-borc-karti [UTC] 50 (koşu 2 sn; GET ledger ort 6 / en çok 9 ms) · s51-m1e-mevcut-borc-karti [Europe/Istanbul] 48 (koşu 2 sn; GET ledger ort 6 / en çok 11 ms)
+BEKLEYEN KURAL FARKLARI (kimlik: senaryo / denetim [UTC]): 
+U etiketleri: 
+
+FARKLAR (2; ilk 200):
+  s51-m1e-mevcut-borc-karti [Europe/Istanbul] KOŞU HATASI: 0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-mut/test/bagimsiz/muhasebe/model.py", line 1717, in kart_ac
+    raise AssertionError("senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)
+
+  s51-m1e-mevcut-borc-karti [UTC] KOŞU HATASI: 0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-mut/test/bagimsiz/muhasebe/model.py", line 1717, in kart_ac
+    raise AssertionError("senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: S120 — elle borçlar kart tutarından az; kâhin susar (README bakım 13 Ü21, KULLANICIYA SORULMALI 1)
+
+
+# tests 2
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-ana/s200-yoklama

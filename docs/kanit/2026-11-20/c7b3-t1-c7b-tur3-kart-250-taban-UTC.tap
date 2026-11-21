@@ -1,0 +1,293 @@
+TAP version 13
+# (node:1367) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217
+    # Subtest: (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+    not ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+      ---
+      duration_ms: 142.924353
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:52:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        06.11 kesilir (en önce gelen açık), 06.12 kalır
+        + actual - expected
+        
+          [
+            '2026-10-06:300/0',
+        +   '2026-11-06:300/300'
+        -   '2026-12-06:300/300'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2026-10-06:300/0'
+        1: '2026-12-06:300/300'
+      actual:
+        0: '2026-10-06:300/0'
+        1: '2026-11-06:300/300'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:58:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 = A / S151 = B)
+    not ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 = A / S151 = B)
+      ---
+      duration_ms: 80.839031
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:69:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        küçülme kuyrukta açık kalan en önce gelen taksitten (01.07)
+        + actual - expected
+        
+          [
+            '2026-06-01:500/0',
+        +   '2026-07-01:500/500',
+        +   '2026-08-01:200/200'
+        -   '2026-07-01:200/200',
+        -   '2026-08-01:500/500'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2026-06-01:500/0'
+        1: '2026-07-01:200/200'
+        2: '2026-08-01:500/500'
+      actual:
+        0: '2026-06-01:500/0'
+        1: '2026-07-01:500/500'
+        2: '2026-08-01:200/200'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:79:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı geri gelir
+    not ok 3 - S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı geri gelir
+      ---
+      duration_ms: 76.886988
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:85:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iade: karar (4) — 06.11 kesildi
+        + actual - expected
+        
+          [
+            '2026-10-06:300/0',
+        +   '2026-11-06:300/300'
+        -   '2026-12-06:300/300'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2026-10-06:300/0'
+        1: '2026-12-06:300/300'
+      actual:
+        0: '2026-10-06:300/0'
+        1: '2026-11-06:300/300'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:91:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (4) iade kalanı aşarsa fazlası avans; parası geri verilen iade kartı küçültmez
+    ok 4 - (4) iade kalanı aşarsa fazlası avans; parası geri verilen iade kartı küçültmez
+      ---
+      duration_ms: 186.471012
+      type: 'test'
+      ...
+    # Subtest: S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+    not ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+      ---
+      duration_ms: 62.471901
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        İptal Et: {"ok":false,"error":"Faturanın taksit kartında (“Tur3 Müşteri 6”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.","code":"plan-has-payments","planId":"plan-98531699-bf8f-4735-80e2-2fcdd387ac5d"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:128:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+    not ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+      ---
+      duration_ms: 80.676691
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:147:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        S206: kart kapalı, tutar = tahsilat
+        + actual - expected
+        
+          {
+            deletedAt: null,
+        +   status: 'active',
+        +   total: 900
+        -   status: 'closed',
+        -   total: 300
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        status: 'closed'
+        total: 300
+        deletedAt: ~
+      actual:
+        status: 'active'
+        total: 900
+        deletedAt: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:153:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+    not ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+      ---
+      duration_ms: 60.152209
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:167:3'
+      failureType: 'testCodeFailure'
+      error: 'S217 = A iletisi'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Faturanın taksit kartında (“Tur3 Müşteri 8”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:177:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (borçsuz açık kart kalmaz)
+    not ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (borçsuz açık kart kalmaz)
+      ---
+      duration_ms: 72.22206
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:182:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart 400 küçüldü (tutar 0) ve kapandı
+        + actual - expected
+        
+          {
+            deletedAt: null,
+        +   status: 'active',
+        +   total: 400
+        -   status: 'closed',
+        -   total: 0
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        status: 'closed'
+        total: 0
+        deletedAt: ~
+      actual:
+        status: 'active'
+        total: 400
+        deletedAt: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:193:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+    not ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+      ---
+      duration_ms: 76.595132
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:198:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        S210: kart kapalı, tutar = tahsilat
+        + actual - expected
+        
+          {
+            deletedAt: null,
+        +   status: 'active',
+        +   total: 900
+        -   status: 'closed',
+        -   total: 300
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        status: 'closed'
+        total: 300
+        deletedAt: ~
+      actual:
+        status: 'active'
+        total: 900
+        deletedAt: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:210:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..9
+not ok 1 - Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217
+  ---
+  duration_ms: 1198.188724
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git/test/c7b-tur3-kart-250.test.mjs:23:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 1
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3457.201569
+
+[kanit] başarısız testler (8):
+  ✖ Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz [test/c7b-tur3-kart-250.test.mjs:52:3] — 06.11 kesilir (en önce gelen açık), 06.12 kalır · + actual - expected · [ (beklenen , gelen )
+  ✖ Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 = A / S151 = B) [test/c7b-tur3-kart-250.test.mjs:69:3] — küçülme kuyrukta açık kalan en önce gelen taksitten (01.07) · + actual - expected · [ (beklenen , gelen )
+  ✖ Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı geri gelir [test/c7b-tur3-kart-250.test.mjs:85:3] — iade: karar (4) — 06.11 kesildi · + actual - expected · [ (beklenen , gelen )
+  ✖ Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409 [test/c7b-tur3-kart-250.test.mjs:117:3] — İptal Et: {"ok":false,"error":"Faturanın taksit kartında (“Tur3 Müşteri 6”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.","code":"plan-has-payments","planId":"plan-98531699-bf8f-4735-80e2-2fcdd387ac5d"} · 409 !== 200 (beklenen 200, gelen 409)
+  ✖ Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır [test/c7b-tur3-kart-250.test.mjs:147:3] — S206: kart kapalı, tutar = tahsilat · + actual - expected · { (beklenen , gelen )
+  ✖ Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin) [test/c7b-tur3-kart-250.test.mjs:167:3] — S217 = A iletisi (beklenen , gelen Faturanın taksit kartında (“Tur3 Müşteri 8”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.)
+  ✖ Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (borçsuz açık kart kalmaz) [test/c7b-tur3-kart-250.test.mjs:182:3] — kart 400 küçüldü (tutar 0) ve kapandı · + actual - expected · { (beklenen , gelen )
+  ✖ Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner [test/c7b-tur3-kart-250.test.mjs:198:3] — S210: kart kapalı, tutar = tahsilat · + actual - expected · { (beklenen , gelen )
+
+[kanit] c7b3-c7b-tur3-kart-250-taban-UTC: BAŞARISIZ (çıkış 1; 8 başarısız, 0 iptal) · çıkış 1 · 1/9 geçti, 8 başarısız, 0 iptal, 0 atlanan · commit b85d9e2 +4 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4

@@ -293,6 +293,15 @@ export function c5aOpeningFold(ledger, store) {
       ];
     }
     const lines = entry.lines.map(line => {
+      // 2.5.0 Ç7b (docs/erp/C7B-FATURA-TASARIM.md §11): güncel kural → 2.4.9 düzeni — kayıt tahsilatı 336.90 → 602 (KG-3); belgesiz 600.90 → 600 (stok) / 602 (taksit Yeni Borç)
+      // ve 610.90 → 610 (KG-2); Borç Yaz 602.90, Alacak Yaz / Kasa çıkışı 770.90, Kasa girişi 649.90 → ana hesap (KG-4, K-01 / K-02); ihracat 601 → 600 (KG-24); satıştan iade
+      // KDV'si 191 → 391, alıştan iade KDV'si 391 → 191 (KG-8 / F-08).
+      if (!kind && line.sub === "336.90") return { ...line, account: "602", sub: undefined };
+      if (!kind && line.sub === "600.90") return { ...line, account: String(entry.id).startsWith("plan:") ? "602" : "600", sub: undefined };
+      if (!kind && ["610.90", "602.90", "649.90", "770.90"].includes(line.sub)) return { ...line, sub: undefined };
+      if (line.account === "601") return { ...line, account: "600" };
+      if (entry.source === "Satıştan iade faturası" && line.account === "191") return { ...line, account: "391" };
+      if (entry.source === "Alıştan iade faturası" && line.account === "391") return { ...line, account: "191" };
       if (kind && line.sub === "649.90") return { ...line, account: kind === "in" ? "602" : "770", sub: undefined };
       if (kind && line.sub === "770.90") return { ...line, sub: undefined };
       if (line.account !== "519") return line;
@@ -311,21 +320,26 @@ export function c5aOpeningFold(ledger, store) {
   const live = ledger.build();
   const delta = new Map();
   let entryDelta = 0;
-  const add = (lines, sign) => {
+  const addTo = (map, lines, sign) => {
     for (const line of lines) {
-      const row = delta.get(line.account) || { debit: 0, credit: 0 };
+      const row = map.get(line.account) || { debit: 0, credit: 0 };
       row.debit += sign * line.debit;
       row.credit += sign * line.credit;
-      delta.set(line.account, row);
+      map.set(line.account, row);
     }
   };
+  const add = (lines, sign) => addTo(delta, lines, sign);
+  const deltaAll = new Map();
   const legacyById = new Map();
   for (const entry of live) {
     const legacy = legacyOf(entry);
     for (const item of legacy) {
       legacyById.set(item.id, { date: entry.date, lines: item.lines });
-      for (const line of item.lines) if (line.account === "519" || line.sub === "649.90" || line.sub === "770.90") problems.push(`${item.id}: çevirmeden sonra ${line.sub || line.account} kaldı`);
+      for (const line of item.lines) if (line.account === "519" || line.account === "601" || ["649.90", "770.90", "336.90", "600.90", "610.90", "602.90"].includes(line.sub)) problems.push(`${item.id}: çevirmeden sonra ${line.sub || line.account} kaldı`);
     }
+    // 2.5.0 Ç7b: Defter Mutabakatı'nın alt defter denetimleri (336 / 191 / 391) donmuş dönemi değil BÜTÜN canlı türetmeyi okur — bütün zamanın farkı ayrıca (deltaAll).
+    addTo(deltaAll, entry.lines, -1);
+    for (const item of legacy) addTo(deltaAll, item.lines, 1);
     if (entry.date <= boundary) continue;
     add(entry.lines, -1);
     for (const item of legacy) add(item.lines, 1);
@@ -347,7 +361,7 @@ export function c5aOpeningFold(ledger, store) {
       }
     }
   }
-  return { active: delta.size > 0 || frozen > 0, delta, entryDelta, problems, ruleDiffExplained, frozen, boundary };
+  return { active: delta.size > 0 || frozen > 0, delta, deltaAll, entryDelta, problems, ruleDiffExplained, frozen, boundary };
 }
 /** Mizan hesapları (TL; GET ledger `trial.accounts`) Ç5-A katlamasıyla eski düzende (bütün zaman; kod sırası). */
 export function c5aTrialAccounts(accounts, fold, names = {}) {
@@ -362,6 +376,22 @@ export function c5aTrialAccounts(accounts, fold, names = {}) {
     rows.set(code, row);
   }
   return [...rows.values()].filter(row => cents(row.debit) || cents(row.credit) || cents(row.opening) || cents(row.balance)).sort((a, b) => String(a.code).localeCompare(String(b.code)));
+}
+/**
+ * 2.5.0 Ç7b (KG-3 = A, KG-8 = A / F-08; docs/erp/C7B-FATURA-TASARIM.md §11): Defter Mutabakatı denetimlerinin ALT DEFTER hesapları (336 / 191 / 391) yeni kuralla iki yanda da kayar
+ * (türetme ve expected() aynı turda — B-2). Eski düzene çevirme: katlamanın hesap farkı (borç − alacak) defter VE alt defter yanına birlikte eklenir; fark (difference) değişmez —
+ * alt defterin kayması defterinkinden ayrışırsa çevrilmiş fark sıfırdan sapar ve karşılaştırma onu GÖSTERİR.
+ */
+export const C7B_SUBLEDGER_CODES = Object.freeze(["191", "336", "391"]);
+export function c5aReconciliationChecks(checks, fold) {
+  if (!(fold?.deltaAll || fold?.delta)?.size) return checks;
+  const tl = value => Math.round(value) / 100;
+  return checks.map(check => {
+    const change = C7B_SUBLEDGER_CODES.includes(String(check.code)) ? (fold.deltaAll || fold.delta).get(String(check.code)) : null;
+    if (!change) return check;
+    const shift = change.debit - change.credit;
+    return { ...check, ledger: tl(cents(check.ledger) + shift), subledger: tl(cents(check.subledger) + shift) };
+  });
 }
 /** Hesap Planı Mizanı (bütün zaman) satırları: [kod, ad, devir, borç, alacak, |bakiye|, yön] + TOPLAM / özet. */
 export function c5aMizanReport(report, fold, names = {}) {
@@ -388,8 +418,17 @@ const C5A_CHECKS = new Set(["opening:519", "opening:500", "ledger:unlocked-years
 /** Mutabakat Testi yanıtı (checks / failures / ok): yeni denetimler tamamsa düşülür; kural farkı Ç5-A ile açıklanmışsa düşülür (açıklanmamışsa KALIR — fark görünür). */
 export function c5aIntegrity(data, fold) {
   const drop = check => (C5A_CHECKS.has(check.code) && check.ok) || (check.code === "ledger:rule-diff" && fold?.ruleDiffExplained === true);
-  const checks = (data.checks || []).filter(check => !drop(check));
-  const failures = (data.failures || []).filter(check => !drop(check));
+  // 2.5.0 Ç7b: Mutabakat Testi'nin alt defter denetimleri (gl:336 / gl:191 / gl:391; defter = alt defter) Defter Mutabakatı'yla aynı katlamayla (c5aReconciliationChecks).
+  const all = fold?.deltaAll || fold?.delta;
+  const shift = check => {
+    const code = /^gl:(\d{3})$/.exec(String(check.code))?.[1];
+    const change = code && C7B_SUBLEDGER_CODES.includes(code) ? all?.get(code) : null;
+    if (!change || !(change.debit - change.credit) || check.ledger === undefined) return check;
+    const tl = value => Math.round(value) / 100;
+    return { ...check, ledger: tl(cents(check.ledger) + change.debit - change.credit), subledger: tl(cents(check.subledger) + change.debit - change.credit) };
+  };
+  const checks = (data.checks || []).filter(check => !drop(check)).map(shift);
+  const failures = (data.failures || []).filter(check => !drop(check)).map(shift);
   const removedBlocking = (data.failures || []).filter(drop).length;
   return { ...data, checks, failures, ...(removedBlocking && !failures.some(check => !check.notice) ? { ok: true } : {}) };
 }
@@ -397,8 +436,16 @@ export function c5aIntegrity(data, fold) {
 export function c5aReconciliationReport(report, fold) {
   const ruleRow = row => fold?.ruleDiffExplained === true && (/^Kural Değişikliği Farkı/.test(String(row[1])) || /— Kilitli Dönem \(Donmuş Defter \/ Güncel Kural\)$/.test(String(row[1])));
   const newRow = row => row[0] === "Denetim" && (/^Açılış Karşılığı \(/.test(String(row[1])) || /^Kilitlenmemiş Geçmiş Yıl/.test(String(row[1]))) && row[5] === "Tutarlı";
-  const rows = report.rows.filter(row => !ruleRow(row) && !newRow(row));
-  if (rows.length === report.rows.length) return report;
+  // 2.5.0 Ç7b: alt defter hesaplarının (336 / 191 / 391) satırı — defter ve alt defter sütunları katlamanın farkıyla (c5aReconciliationChecks ile aynı kural).
+  const shifted = row => {
+    const change = C7B_SUBLEDGER_CODES.includes(String(row[0])) ? (fold?.deltaAll || fold?.delta)?.get(String(row[0])) : null;
+    if (!change || !(change.debit - change.credit)) return row;
+    const shift = change.debit - change.credit;
+    return [row[0], row[1], tlOf(minorOf(row[2]) + shift), tlOf(minorOf(row[3]) + shift), ...row.slice(4)];
+  };
+  const moved = report.rows.some(row => shifted(row) !== row);
+  const rows = report.rows.filter(row => !ruleRow(row) && !newRow(row)).map(shifted);
+  if (rows.length === report.rows.length && !moved) return report;
   const clean = rows.every(row => row[5] === "Tutarlı");
   const summary = report.summary ? report.summary.map(([key, cell]) => [key, key === "Sonuç" && clean ? "Tutarlı" : cell]) : report.summary;
   const subtitle = clean && report.rows.some(ruleRow) ? "Tüm hesaplar tutarlı; borç toplamı alacak toplamına eşit. Her kayıt yazılmadan önce bu denetimden geçer." : report.subtitle;
@@ -418,7 +465,7 @@ export async function ledgerFacts(api, { fold: foldOf = null } = {}) {
   const debitDelta = fold ? [...fold.delta.values()].reduce((sum, row) => sum + row.debit, 0) : 0;
   const creditDelta = fold ? [...fold.delta.values()].reduce((sum, row) => sum + row.credit, 0) : 0;
   const ledger = fold
-    ? { ...rawLedger, trial: { ...rawLedger.trial, accounts: c5aTrialAccounts(rawLedger.trial.accounts, fold, CHART), totals: { ...rawLedger.trial.totals, debit: (cents(rawLedger.trial.totals.debit) + debitDelta) / 100, credit: (cents(rawLedger.trial.totals.credit) + creditDelta) / 100, difference: (cents(rawLedger.trial.totals.difference) + debitDelta - creditDelta) / 100 } } }
+    ? { ...rawLedger, reconciliation: { ...rawLedger.reconciliation, checks: c5aReconciliationChecks(rawLedger.reconciliation.checks, fold) }, trial: { ...rawLedger.trial, accounts: c5aTrialAccounts(rawLedger.trial.accounts, fold, CHART), totals: { ...rawLedger.trial.totals, debit: (cents(rawLedger.trial.totals.debit) + debitDelta) / 100, credit: (cents(rawLedger.trial.totals.credit) + creditDelta) / 100, difference: (cents(rawLedger.trial.totals.difference) + debitDelta - creditDelta) / 100 } } }
     : rawLedger;
   const lock = must(await api.get("/api/workspace/ledger/lock"), "dönem kilidi");
   const cashAll = must(await api.get("/api/workspace/cash?method=all"), "Kasa (tüm yollar)");

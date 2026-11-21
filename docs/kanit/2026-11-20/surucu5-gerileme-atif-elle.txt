@@ -1,0 +1,20 @@
+Sürücü bakımı 5 — gerileme atıf aracının (surucu5-arac/gerileme-atif.py) AÇIKLANMAYAN dediği 10 koşunun elle atfı (5 senaryo × iki TZ; iki TZ'de aynı)
+Karşılaştırma: aynı sürücü (4959ab79), eski = c7b2-taban (fc0d1999, Ç7b'den önceki kod) ↔ yeni = c7b-aday (df7e93ca). Kaynak: /dev/shm/surucu5-a293/{eski,son}/<TZ>/*.fark.json + *.program.json.
+
+1. rastgele-1 olay 467 alacak_yaz [129, 644] ve olay 638 satis_iade_faturasi [120, 128, 129, 644] — cari C4.
+   Eski koddaki C4 adım farkları sırayla: 461 tahsilat 24.07 (120 −472.560 / 128 +472.560 / 129 −460.117 / 644 +460.117) — bu, sürücü bakımı 4'ün R-S192-BAG-SONRA
+   örneğidir (P308, F109'a bağlı; F109 şüpheliye almadan önce bağsızla kapanmıştı) → S212 = A (tek aday düzeltme 9db9b69d: bağlı tahsilatın kesiti bağın önceliğini taşır).
+   Sonraki 467, 469, 531, 537, 553, 638, 655, 686, 849 aynı carinin 128 / 129 / 644 dağılımının sonucu (ilk farkın ardılı). Yeni kodda rastgele-1 adım farkı 0 (program = kâhin).
+   rastgele-2'de aynı örüntü C3'te (414 tahsilat 07.08 = P253 → 426, 467); araç orada S212 ailesini kendisi buldu.
+2. s121 olay 13 tahsilat P3 → TK1 (Kartı Kapat'tan sonra kapalı karta tahsilat) [120, 689]: eski kodda kalanı 689'la düşülmüş karta tahsilat 689'u çözüyordu
+   (120 +20.000 / 689 −20.000); yeni kodda kalan borçta kaldığı için tahsilat yalnız 120'yi kapatır → Ç7b tur 3b (karar (6) 'Borçta Kalsın', KG-23, S220 — kâhin s121 C1
+   "kapalı karta sonradan tahsilat önce önceden gecikmiş kaleme"). Yeni kodda AYNI.
+3. s28 olay 7 kdv_mahsup durum red (vat-offset-blocked) → yapildi: Ç7b tur 2 S4 = A / KG-7 (sürücü bakımı 4 raporunda da: "s28'in Ocak mahsubu red → kabul"). Yeni kodda AYNI.
+4. s58 olay 11 iptal [120, 600] ve s69 olay 12 iptal [102, 120, 600]: eski kod iptali 409 plan-has-payments ile reddediyordu; yeni kod kabul eder → S15 = A (Ç7b tur 3, d461a24c).
+   Delta, iptalin kendi maddesidir (faturanın ters kaydı). Yeni kodda red farkı 0, AYNI.
+
+SONUÇ: 248 koşudan 72'si farklı (36 senaryo × iki TZ); hepsi bir kural / karara atfedildi — AÇIKLANMAYAN 0.
+Aile dağılımı (koşu): KG-2 600.90 (taksit Yeni Borç) · KG-24 601 · KG-3 336.90 / 602.90 · KG-8 / F-08 + B-6 / KG-7 · 649.90 · Ç7b tur 3 (karar (4), S15, S206 / S210 / S211) ·
+Ç7b tur 3b (Borçta Kalsın) · Ç7b taksit küçük turu (P7, S219 = A) · S212 = A / B1 (tek aday düzeltme; c7b3b-taban çalışma dalını içerdiği için bu aralıkta).
+s112 (iki TZ) aile '-' ve rapor farkı 0: tek fark olay 11'in ret İLETİSİ (durum, kod, delta aynı) — eski "Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür …",
+yeni "Evrakın normal cari hesaba işlenecek kısmı carinin şüpheli dışı borç bakiyesini …" → tek aday düzeltme DÜŞÜK (b) "S181 = B çek yolunun ret iletisi" (29eb3a5c). Açıklandı.

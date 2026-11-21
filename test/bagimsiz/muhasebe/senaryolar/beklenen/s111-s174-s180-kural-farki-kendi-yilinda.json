@@ -29,7 +29,11 @@
     },
     "fark1": {},
     "fark2": {},
-    "fark3": {},
+    "fark3": {
+     "500": 70000,
+     "602.90": -70000
+    },
+    "fark4": {},
     "mz26": {
      "ana": {
       "120": {
@@ -178,8 +182,8 @@
       },
       "500": {
        "alacak": 70000,
-       "bakiye": -70000,
-       "borc": 0,
+       "bakiye": 0,
+       "borc": 70000,
        "devir": 0
       },
       "602": {
@@ -187,6 +191,12 @@
        "bakiye": 0,
        "borc": 70000,
        "devir": -70000
+      },
+      "671": {
+       "alacak": 70000,
+       "bakiye": -70000,
+       "borc": 0,
+       "devir": 0
       }
      },
      "bas": "2027-01-01",
@@ -199,8 +209,8 @@
       },
       "500": {
        "alacak": 70000,
-       "bakiye": -70000,
-       "borc": 0,
+       "bakiye": 0,
+       "borc": 70000,
        "devir": 0
       },
       "602.90": {
@@ -208,13 +218,19 @@
        "bakiye": 0,
        "borc": 70000,
        "devir": -70000
+      },
+      "671": {
+       "alacak": 70000,
+       "bakiye": -70000,
+       "borc": 0,
+       "devir": 0
       }
      },
      "son": "2027-12-31",
      "toplam": {
-      "alacak": 70000,
+      "alacak": 140000,
       "bakiye": 0,
-      "borc": 70000,
+      "borc": 140000,
       "devir": 0
      }
     }
@@ -224,12 +240,6 @@
      "kod": "KURAL_FARKI_YOK",
      "neden": "",
      "olay": 8,
-     "tur": "kural_farki_duzelt"
-    },
-    {
-     "kod": "KURAL_FARKI_YOK",
-     "neden": "",
-     "olay": 14,
      "tur": "kural_farki_duzelt"
     }
    ]

@@ -198,7 +198,8 @@ describe("Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, 
       const v1 = await view();
       assert.equal(v1.disabled, false, v1.reason);
       assert.equal(v1.date, "2026-10-06");
-      assert.deepEqual(lineText(v1.lines), ["A 602 700", "B 500 700"], "fişin yılı 2026: aynı hesap (602)");
+      // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (C-01, KG-4 = A): reddedilen (işaretsiz) Borç Yaz'ın karşılığı 602.90 "Sınıflandırılmamış" (ana hesap 602 aynı).
+      assert.deepEqual(lineText(v1.lines), ["A 602.90 700", "B 500 700"], "fişin yılı 2026: aynı hesap (602; alt hesap 602.90)");
       const p1 = await must("fiş 1", api.post(URL, { requestId: rid(), digest: v1.digest, confirm: true }));
       assert.equal(p1.voucher.noText, "Fiş 2026-000001");
       assert.ok((await item())?.corrected, "fiş 1 sonrası Düzeltildi");
@@ -220,7 +221,7 @@ describe("Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, 
       const v3 = await view();
       assert.equal(v3.disabled, false, v3.reason);
       assert.equal(v3.date, "2026-12-31");
-      assert.deepEqual(lineText(v3.lines), ["A 602 300", "B 519 300"], "R2 reddi aynı yıl (2026): 602; fiş 1'in 602'si yeniden önerilmez");
+      assert.deepEqual(lineText(v3.lines), ["A 602.90 300", "B 519 300"], "R2 reddi aynı yıl (2026): 602 (602.90; Ç7b C-01); fiş 1'in 602'si yeniden önerilmez");
       same(v3, await item(), "kilit 30.12");
 
       // 3) Kilit 31.12.2026 (fiş 01.01.2027, yıl 2027): R2'nin 2026 farkı önceki yıl → 671; fiş 1 kendi yılında düzeltilmiş (S174 = A).
@@ -399,7 +400,7 @@ describe("Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, 
         await must("r2 geri al", c.api.post(`${REVIEW}/${ids.r2}`, { decision: "undo" }));
         await must("r2 ret", c.api.post(`${REVIEW}/${ids.r2}`, { decision: "reject" }));
         const v2 = await c.view();
-        assert.deepEqual(lineText(v2.lines), ["A 602 300", "B 519 300"]);
+        assert.deepEqual(lineText(v2.lines), ["A 602.90 300", "B 519 300"], "Ç7b C-01: reddedilen Borç Yaz 602.90");
         const i2 = await c.item();
         c.same(v2, i2, "yeni 2026 farkı");
         const p2 = await must("fiş 2026", c.api.post(URL, { requestId: rid(), digest: v2.digest, confirm: true }));

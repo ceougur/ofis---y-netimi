@@ -2044,19 +2044,25 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
       actions: [{ id: "vat-offset", label: "KDV Mahsup Fişi Oluştur", permission: "tax.manage" }],
       build(query) {
         const range = rangeOf(query, "thisYear");
+        // 2.5.0 Ç7b tur 2e (B-11 = A — BAŞ MİMAR KARARI 19.11 09:29; KG-7, KDVK 29/3; docs/erp/C7B-FATURA-TASARIM.md §15.1): alış faturasının KDV'si "KDV İndirim Dönemi"nin ayında
+        // (KDV Mahsup Fişi ile ay ay aynı — routes/tax.mjs figureTable). Belgenin KDV günü: dönemi belge ayından farklı alış faturasında dönem ayının İLK günü, öbürlerinde belge tarihi;
+        // ay grubu ve aralık süzgeci bu güne. Satış / SMM / iadeler belge tarihinde (§14.4). Sütun yoksa (göç 52 öncesi şema) belge tarihi.
+        const vatDay = store.all("PRAGMA table_info(invoices)").some(column => column.name === "vat_period")
+          ? "(CASE WHEN i.kind = 'purchase' AND i.vat_period <> '' AND i.vat_period <> substr(i.issue_date, 1, 7) THEN i.vat_period || '-01' ELSE i.issue_date END)"
+          : "i.issue_date";
         const list = store.all(
-          `SELECT substr(i.issue_date, 1, 7) AS month, i.kind, l.vat_rate AS rate, SUM(l.net * i.rate) AS net, SUM(l.vat * i.rate) AS vat, SUM(l.withheld * i.rate) AS withheld, COUNT(DISTINCT i.id) AS count
+          `SELECT substr(${vatDay}, 1, 7) AS month, i.kind, l.vat_rate AS rate, SUM(l.net * i.rate) AS net, SUM(l.vat * i.rate) AS vat, SUM(l.withheld * i.rate) AS withheld, COUNT(DISTINCT i.id) AS count
            FROM invoice_lines l JOIN invoices i ON i.id = l.invoice_id AND i.status = 'issued'
-           WHERE (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?) GROUP BY month, i.kind, l.vat_rate ORDER BY month, i.kind, l.vat_rate`,
+           WHERE (? = '' OR ${vatDay} >= ?) AND (? = '' OR ${vatDay} <= ?) GROUP BY month, i.kind, l.vat_rate ORDER BY month, i.kind, l.vat_rate`,
           range.from, range.from, range.to, range.to,
         );
         const KIND = { sale: "Satış", smm: "Serbest Meslek Makbuzu", sale_return: "Satıştan İade", purchase: "Alış", purchase_return: "Alıştan İade" };
         // Hesaplanan (391) ve indirilecek (191) KDV — Ana Defter'deki tutarların aynısı (faturanın TL başlığından).
         const heads = store.get(
-          `SELECT COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN try_vat - try_withheld WHEN kind = 'sale_return' THEN -(try_vat - try_withheld) ELSE 0 END), 0) AS output,
-                  COALESCE(SUM(CASE WHEN kind = 'purchase' THEN try_vat WHEN kind = 'purchase_return' THEN -try_vat ELSE 0 END), 0) AS input,
-                  COALESCE(SUM(CASE WHEN kind = 'purchase' THEN try_withheld WHEN kind = 'purchase_return' THEN -try_withheld ELSE 0 END), 0) AS withheld2
-           FROM invoices WHERE status = 'issued' AND (? = '' OR issue_date >= ?) AND (? = '' OR issue_date <= ?)`,
+          `SELECT COALESCE(SUM(CASE WHEN i.kind IN ('sale', 'smm') THEN i.try_vat - i.try_withheld WHEN i.kind = 'sale_return' THEN -(i.try_vat - i.try_withheld) ELSE 0 END), 0) AS output,
+                  COALESCE(SUM(CASE WHEN i.kind = 'purchase' THEN i.try_vat WHEN i.kind = 'purchase_return' THEN -i.try_vat ELSE 0 END), 0) AS input,
+                  COALESCE(SUM(CASE WHEN i.kind = 'purchase' THEN i.try_withheld WHEN i.kind = 'purchase_return' THEN -i.try_withheld ELSE 0 END), 0) AS withheld2
+           FROM invoices i WHERE i.status = 'issued' AND (? = '' OR ${vatDay} >= ?) AND (? = '' OR ${vatDay} <= ?)`,
           range.from, range.from, range.to, range.to,
         );
         const result = roundMoney(heads.output - heads.input);

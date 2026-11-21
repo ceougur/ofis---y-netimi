@@ -21,6 +21,7 @@ import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
 import { extractSchedules } from "../lib/insight/schedules.mjs";
 import { monthsInText } from "../lib/insight/installments.mjs";
 import { roundMoney } from "../lib/money.mjs";
+import { waivesRemaining } from "../lib/accounts.mjs";
 import { toMinor } from "../lib/minor.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
@@ -157,7 +158,8 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
     if (!detail) return { debt: 0, invoiced };
     let covered = 0;
     for (const plan of detail.plans || []) {
-      if (plan.status === "closed" || !store.get("SELECT covers_balance AS c FROM plans WHERE id = ?", plan.id)?.c) continue;
+      // 2.5.0 Ç7b tur 3b: Borçta Kalsın ile kapatılmış Mevcut Borç kartı borcu taşımayı sürdürür (routes/plans.mjs uncoveredDebt ile aynı kural; lib/accounts.mjs waivesRemaining).
+      if (waivesRemaining(plan) || !store.get("SELECT covers_balance AS c FROM plans WHERE id = ?", plan.id)?.c) continue;
       covered = roundMoney(covered + Math.max(0, (Number(plan.totals?.total) || 0) - (Number(plan.totals?.paid) || 0)));
     }
     const debt = roundMoney(Math.max(0, (Number(detail.totals?.balance) || 0) + moved - covered));

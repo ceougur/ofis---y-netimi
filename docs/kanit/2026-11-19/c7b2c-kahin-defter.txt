@@ -1,0 +1,33 @@
+# Defter kâhini (npm run test:kahin-defter) — YENİ kod UTC / Europe/Istanbul ve TABAN (c7b2c-taban) UTC
+## utc
+yük başında: 4.47 3.02 2.38 6/187 377
+183/187 denetim tuttu.
+FARKLAR:
+  ✗ mizan K_EYLUL 191: program 3.035,00 · kâhin 2.816,00
+  ✗ mizan K_EYLUL 391: program -2.274,00 · kâhin -2.055,00
+  ✗ mizan K_SON 191: program 800,00 · kâhin -400,00
+  ✗ mizan K_SON 391: program -400,00 · kâhin 800,00
+  mutasyon 1 (KDV dahil fiyatta KDV'yi brüt × oran ile hesapla): tam senaryoda YAKALANDI · bu koşuda yakalandı
+ÖZET: 187 denetim, 4 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2c-ag/kahin-cikti-utc
+rc=1
+## ist
+yük başında: 4.51 3.05 2.39 6/180 503
+183/187 denetim tuttu.
+FARKLAR:
+  ✗ mizan K_EYLUL 191: program 3.035,00 · kâhin 2.816,00
+  ✗ mizan K_EYLUL 391: program -2.274,00 · kâhin -2.055,00
+  ✗ mizan K_SON 191: program 800,00 · kâhin -400,00
+  ✗ mizan K_SON 391: program -400,00 · kâhin 800,00
+  mutasyon 1 (KDV dahil fiyatta KDV'yi brüt × oran ile hesapla): tam senaryoda YAKALANDI · bu koşuda yakalandı
+ÖZET: 187 denetim, 4 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2c-ag/kahin-cikti-ist
+rc=1
+## taban-utc
+183/187 denetim tuttu.
+FARKLAR:
+  ✗ mizan K_EYLUL 191: program 3.035,00 · kâhin 2.816,00
+  ✗ mizan K_EYLUL 391: program -2.274,00 · kâhin -2.055,00
+  ✗ mizan K_SON 191: program 800,00 · kâhin -400,00
+  ✗ mizan K_SON 391: program -400,00 · kâhin 800,00
+  mutasyon 1 (KDV dahil fiyatta KDV'yi brüt × oran ile hesapla): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 2 (satıştan iade 610 yerine 600): tam senaryoda YAKALANDI · bu koşuda yakalandı
+ÖZET: 187 denetim, 4 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2c-ag/kahin-cikti-taban

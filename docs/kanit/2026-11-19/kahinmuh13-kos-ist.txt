@@ -1,0 +1,602 @@
+commit aab202235d58794230da5c73a00587b38312e7df · TZ=Europe/Istanbul · 2026-11-19T19:12:02Z · yük 3.49 3.89 3.75 3/119 25088
+.....................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 213 tests in 40.321s
+
+OK
+güncel
+# tests 213
+# pass 213
+# fail 0
+# skipped 0
+
+[kanit] kahinmuh13-muh-test-ist: GEÇTİ · çıkış 0 · 213/213 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit aab2022 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+== muh-test: çıkış 0
+....FF...FFF.FFFFF.F............F.................F...F..FFFF.........................................F..........F.........................................F.........................................................
+======================================================================
+FAIL: test_S179_silinmis_acilis_susar (__main__.Bakim12.test_S179_silinmis_acilis_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1041, in test_S179_silinmis_acilis_susar
+    self.sus([o("banka_acilis", "2026-01-01", banka="B1", tutar=1000), o("banka_acilis", "2026-03-01", id="BA2", banka="B2", tutar=500), o("sil", kaynak="BA2"),
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              o("hesapsiz_hareket", "2026-02-10", cari="C1", yon="tahsilat", tutar=70)], "Hesabı Atanmamış")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1016, in sus
+    self.assertIn(metin, str(c.exception))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Hesabı Atanmamış' not found in "senaryo hatası: S179 — silinmiş / iptal banka_acilis (2026-02-10'ten sonra) sınırı değiştirebilirdi; kâhin susar (README bakım 12 Ş6, KULLANICIYA SORULMALI 3)"
+
+======================================================================
+FAIL: test_S181_S168_bagli_tahsilat (__main__.Bakim12.test_S181_S168_bagli_tahsilat)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1093, in test_S181_S168_bagli_tahsilat
+    r = M.kos(senaryo([o("satis_faturasi", "2026-01-10", id="F1", cari="C1", M=1000, K=0), o("supheliye_al", "2026-02-01", id="S1", cari="C1", tutar=1000),
+                       o("satis_faturasi", "2026-02-10", id="F2", cari="C1", M=500, K=0),
+                       o("tahsilat", "2026-02-12", cari="C1", yol="nakit", tutar=400, normal_cari=True),
+                       o("tahsilat", "2026-02-15", cari="C1", yol=yol, evrak="CK1", tutar=300, fatura="F2"), E.MZ("mz", "2026-01-01", "2026-02-28")]))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 4043, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2646, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2671, in uygula
+    return self.kaynak(o, d)
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2681, in kaynak
+    self._denetle(tur, tarih, v, d, yedek)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2729, in _denetle
+    self._s181_sinir(d, tarih, v, bak)       # S181 = B (README bakım 12 Ş13, Ş15): 128 payı dışındaki kısım (fazla dahil) sınırda
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2751, in _s181_sinir
+    raise AssertionError(f"senaryo hatası: S168 — 120'ye düşen kâhinin kuyruğunda (M13) {normal}, kararın örneğindeki tek kuyrukta {normal_tek}: kabul / ret ayrışıyor; kâhin "
+                         "susar (README bakım 12 Ş14, KULLANICIYA SORULMALI 5)")
+AssertionError: senaryo hatası: S168 — 120'ye düşen kâhinin kuyruğunda (M13) 300, kararın örneğindeki tek kuyrukta 0: kabul / ret ayrışıyor; kâhin susar (README bakım 12 Ş14, KULLANICIYA SORULMALI 5)
+
+======================================================================
+FAIL: test_A3_kdv_indirim_donemi_sinirlari (__main__.Bakim13.test_A3_kdv_indirim_donemi_sinirlari)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1162, in test_A3_kdv_indirim_donemi_sinirlari
+    self.assertEqual([x["kod"] for x in r["redler"]], ["KDV_INDIRIM_DONEMI", "KDV_INDIRIM_DONEMI"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['KDV_INDIRIM_DONEMI', 'KDV_INDIRIM_DONEMI']
+
+Second list contains 2 additional elements.
+First extra element 0:
+'KDV_INDIRIM_DONEMI'
+
+- []
++ ['KDV_INDIRIM_DONEMI', 'KDV_INDIRIM_DONEMI']
+
+======================================================================
+FAIL: test_A4_S189_ayni_gun (__main__.Bakim13.test_A4_S189_ayni_gun)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1167, in test_A4_S189_ayni_gun
+    yev, _ = yevmiye([o("kart_acilis", "2026-02-01", kart="KK1", tutar=1000), o("kart_borcuna_aktar", "2026-02-01", cari="T1", kart="KK1", tutar=20)])
+             ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 55, in yevmiye
+    r = M.kos(senaryo(olaylar + [E.R("yev", "yevmiye")], **ek), kurallar)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 4043, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2646, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2663, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 3220, in rapor
+    x = [m.sozluk() for m in d.maddeler() if o.get("bas", "0000") <= m.tarih <= o.get("son", "9999")]
+                             ~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 1911, in maddeler
+    ms = list(self.gecis().maddeler)
+              ~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 1855, in gecis
+    self._g, self._m, self._kq = Gecis(self, s14=plan).kos(), None, {}
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 548, in kos
+    getattr(self, "_" + k.tur)(k)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 978, in _kart_borcuna_aktar
+    once = self._s179_sinif(k, "kart_acilis", kart=kk)    # S179 A (README bakım 12 Ş4): kart hesaplarının en geç açılışından önce → G (kitap K-15)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 951, in _s179_sinif
+    once = sinif(ac)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 948, in sinif
+    raise AssertionError(f"senaryo hatası: S179 — hareket ({k.tarih}) en geç {tur} ile aynı gün; kâhin susar (README bakım 12 Ş5, KULLANICIYA SORULMALI 2)")
+AssertionError: senaryo hatası: S179 — hareket (2026-02-01) en geç kart_acilis ile aynı gün; kâhin susar (README bakım 12 Ş5, KULLANICIYA SORULMALI 2)
+
+======================================================================
+FAIL: test_A5_S192_kalem_raporu_susmasi_s42 (__main__.Bakim13.test_A5_S192_kalem_raporu_susmasi_s42)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1194, in test_A5_S192_kalem_raporu_susmasi_s42
+    self.assertEqual(sus, ["acik", "g2", "g3", "h2", "h3"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['acik', 'g2', 'g3', 'h2', 'h3']
+
+Second list contains 5 additional elements.
+First extra element 0:
+'acik'
+
+- []
++ ['acik', 'g2', 'g3', 'h2', 'h3']
+
+======================================================================
+FAIL: test_A6_S198_127_eslestirme_hedefi_olamaz (__main__.Bakim13.test_A6_S198_127_eslestirme_hedefi_olamaz)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1201, in test_A6_S198_127_eslestirme_hedefi_olamaz
+    self.assertEqual([x["kod"] for x in r["redler"]], ["ESLESTIRME_HESAP"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['ESLESTIRME_HESAP']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'ESLESTIRME_HESAP'
+
+- []
++ ['ESLESTIRME_HESAP']
+
+======================================================================
+FAIL: test_A7_P1b_kart_iadesi_kart_odemesi_gerekir (__main__.Bakim13.test_A7_P1b_kart_iadesi_kart_odemesi_gerekir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1225, in test_A7_P1b_kart_iadesi_kart_odemesi_gerekir
+    self.sus([f, o("tahsilat", "2026-03-05", cari="C1", yol="kart", kart="KK1", tutar=100)], "P1-b")
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1122, in sus
+    with self.assertRaises(AssertionError) as c:
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_A7_S120_elle_borclar (__main__.Bakim13.test_A7_S120_elle_borclar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1258, in test_A7_S120_elle_borclar
+    self.assertEqual(self.kalemler(r, "ak"), [("borc:Y", 300), ("fatura:F", 600), ("kart:TK", 900)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('borc:X', 200), ('borc:Y', 700), ('kart:TK', 900)] != [('borc:Y', 300), ('fatura:F', 600), ('kart:TK', 900)]
+
+First differing element 0:
+('borc:X', 200)
+('borc:Y', 300)
+
+- [('borc:X', 200), ('borc:Y', 700), ('kart:TK', 900)]
++ [('borc:Y', 300), ('fatura:F', 600), ('kart:TK', 900)]
+
+======================================================================
+FAIL: test_A7_S155_taksit_tahsilati_ve_oteki_turler (__main__.Bakim13.test_A7_S155_taksit_tahsilati_ve_oteki_turler)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1241, in test_A7_S155_taksit_tahsilati_ve_oteki_turler
+    self.assertEqual(([x["kod"] for x in r["redler"]], r["raporlar"]["mz"]["satirlar"]["120|C3"]["bakiye"]), (["SUPHELI_NORMAL_ASIM"], 500))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ([], -1) != (['SUPHELI_NORMAL_ASIM'], 500)
+
+First differing element 0:
+[]
+['SUPHELI_NORMAL_ASIM']
+
+- ([], -1)
++ (['SUPHELI_NORMAL_ASIM'], 500)
+
+======================================================================
+FAIL: test_A7_s93_2_4_9_S14_susar (__main__.Bakim13.test_A7_s93_2_4_9_S14_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1217, in test_A7_s93_2_4_9_S14_susar
+    self.sus([o("kasa_acilis", "2026-01-01", tutar=10000), o("satis_faturasi", "2026-02-01", id="F1", cari="C1", M=10000, K=0),
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              o("supheliye_al", "2026-03-01", id="SA1", cari="C1", tutar=10000),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              o("tahsilat", "2026-03-10", id="P1", cari="C1", yol="cek", evrak="CK1", tutar=4000, fatura="F1"),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              o("donem_kilitle", tarih="2026-03-31", kural="2.4.9"), o("kural_farki_duzelt")], "s93")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1122, in sus
+    with self.assertRaises(AssertionError) as c:
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_B14_yalniz_alt_defter_red_ve_kesisen_susar (__main__.DegismezDenetcileri.test_B14_yalniz_alt_defter_red_ve_kesisen_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1485, in test_B14_yalniz_alt_defter_red_ve_kesisen_susar
+    with self.assertRaises(AssertionError) as c:
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1555, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+                     ~~~~~~~^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/uret_beklenen.py", line 54, in main
+    for yol, icerik in ((os.path.join(SEN, s["ad"] + ".json"), metin(s)), (os.path.join(BEK, s["ad"] + ".json"), metin(beklenen(s)))):
+                                                                                                                       ~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/uret_beklenen.py", line 41, in beklenen
+    r = M.kos(s, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 4043, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2646, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2663, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 3199, in rapor
+    x = d.mizan(o["bas"], o["son"])
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2239, in mizan
+    for m in self.maddeler():
+             ~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 1911, in maddeler
+    ms = list(self.gecis().maddeler)
+              ~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 1855, in gecis
+    self._g, self._m, self._kq = Gecis(self, s14=plan).kos(), None, {}
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 548, in kos
+    getattr(self, "_" + k.tur)(k)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 978, in _kart_borcuna_aktar
+    once = self._s179_sinif(k, "kart_acilis", kart=kk)    # S179 A (README bakım 12 Ş4): kart hesaplarının en geç açılışından önce → G (kitap K-15)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 951, in _s179_sinif
+    once = sinif(ac)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 948, in sinif
+    raise AssertionError(f"senaryo hatası: S179 — hareket ({k.tarih}) en geç {tur} ile aynı gün; kâhin susar (README bakım 12 Ş5, KULLANICIYA SORULMALI 2)")
+AssertionError: senaryo hatası: S179 — hareket (2026-02-01) en geç kart_acilis ile aynı gün; kâhin susar (README bakım 12 Ş5, KULLANICIYA SORULMALI 2)
+
+======================================================================
+FAIL: test_s108_s85_normal_cari_tutar_tarih (__main__.ElleSenaryolar.test_s108_s85_normal_cari_tutar_tarih)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1293, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: -50 != 200 : s108-s85-normal-cari-tutar-tarih [A] mz0/satirlar/120|C3/bakiye
+
+======================================================================
+FAIL: test_s111_s174_s180_kural_farki_kendi_yilinda (__main__.ElleSenaryolar.test_s111_s174_s180_kural_farki_kendi_yilinda)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1293, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {} != {'500': 70000, '602.90': -70000}
+- {}
++ {'500': 70000, '602.90': -70000} : s111-s174-s180-kural-farki-kendi-yilinda [A] fark3
+
+======================================================================
+FAIL: test_s114_a2_kural_gecis_gunu (__main__.ElleSenaryolar.test_s114_a2_kural_gecis_gunu)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1293, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '191' != '391'
+- 191
+? ^
++ 391
+? ^
+ : s114-a2-kural-gecis-gunu [A] yev0310/0/satirlar/1/h
+
+======================================================================
+FAIL: test_s115_a3_kg7_kdv_indirim_donemi (__main__.ElleSenaryolar.test_s115_a3_kg7_kdv_indirim_donemi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1293, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['KDV_INDIRIM_DONEMI', 'KDV_INDIRIM_DONEMI']
+
+Second list contains 2 additional elements.
+First extra element 0:
+'KDV_INDIRIM_DONEMI'
+
+- []
++ ['KDV_INDIRIM_DONEMI', 'KDV_INDIRIM_DONEMI'] : s115-a3-kg7-kdv-indirim-donemi [A] redler
+
+======================================================================
+FAIL: test_s116_a4_s189_s190_sinir (__main__.ElleSenaryolar.test_s116_a4_s189_s190_sinir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1290, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 4043, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2646, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2663, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 3199, in rapor
+    x = d.mizan(o["bas"], o["son"])
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2239, in mizan
+    for m in self.maddeler():
+             ~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 1911, in maddeler
+    ms = list(self.gecis().maddeler)
+              ~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 1855, in gecis
+    self._g, self._m, self._kq = Gecis(self, s14=plan).kos(), None, {}
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 548, in kos
+    getattr(self, "_" + k.tur)(k)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 978, in _kart_borcuna_aktar
+    once = self._s179_sinif(k, "kart_acilis", kart=kk)    # S179 A (README bakım 12 Ş4): kart hesaplarının en geç açılışından önce → G (kitap K-15)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 951, in _s179_sinif
+    once = sinif(ac)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 948, in sinif
+    raise AssertionError(f"senaryo hatası: S179 — hareket ({k.tarih}) en geç {tur} ile aynı gün; kâhin susar (README bakım 12 Ş5, KULLANICIYA SORULMALI 2)")
+AssertionError: senaryo hatası: S179 — hareket (2026-02-01) en geç kart_acilis ile aynı gün; kâhin susar (README bakım 12 Ş5, KULLANICIYA SORULMALI 2)
+
+======================================================================
+FAIL: test_s117_a5_s192_tek_kuyruk_payi (__main__.ElleSenaryolar.test_s117_a5_s192_tek_kuyruk_payi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1290, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 4043, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2646, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2671, in uygula
+    return self.kaynak(o, d)
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2681, in kaynak
+    self._denetle(tur, tarih, v, d, yedek)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2729, in _denetle
+    self._s181_sinir(d, tarih, v, bak)       # S181 = B (README bakım 12 Ş13, Ş15): 128 payı dışındaki kısım (fazla dahil) sınırda
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2751, in _s181_sinir
+    raise AssertionError(f"senaryo hatası: S168 — 120'ye düşen kâhinin kuyruğunda (M13) {normal}, kararın örneğindeki tek kuyrukta {normal_tek}: kabul / ret ayrışıyor; kâhin "
+                         "susar (README bakım 12 Ş14, KULLANICIYA SORULMALI 5)")
+AssertionError: senaryo hatası: S168 — 120'ye düşen kâhinin kuyruğunda (M13) 300, kararın örneğindeki tek kuyrukta 0: kabul / ret ayrışıyor; kâhin susar (README bakım 12 Ş14, KULLANICIYA SORULMALI 5)
+
+======================================================================
+FAIL: test_s51_m1e_mevcut_borc_karti (__main__.ElleSenaryolar.test_s51_m1e_mevcut_borc_karti)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1293, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 30000 != 80000 : s51-m1e-mevcut-borc-karti [A] g1/gecikmis
+
+======================================================================
+FAIL: test_s62_r16_127_ters_bakiye (__main__.ElleSenaryolar.test_s62_r16_127_ters_bakiye)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 1293, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['ESLESTIRME_TERS'] != ['ESLESTIRME_HESAP']
+
+First differing element 0:
+'ESLESTIRME_TERS'
+'ESLESTIRME_HESAP'
+
+- ['ESLESTIRME_TERS']
+?              ^ -
+
++ ['ESLESTIRME_HESAP']
+?              ^  ++
+ : s62-r16-127-ters-bakiye [A] redler
+
+======================================================================
+FAIL: test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez (__main__.OlayMaddeleri.test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 929, in test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez
+    self.assertEqual(ozet(x), ozet(y), s["ad"])
+                     ~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/test_model.py", line 909, in ozet
+    m.kos()
+    ~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2646, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2671, in uygula
+    return self.kaynak(o, d)
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2681, in kaynak
+    self._denetle(tur, tarih, v, d, yedek)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2729, in _denetle
+    self._s181_sinir(d, tarih, v, bak)       # S181 = B (README bakım 12 Ş13, Ş15): 128 payı dışındaki kısım (fazla dahil) sınırda
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kirmizi-ist/muhasebe/model.py", line 2751, in _s181_sinir
+    raise AssertionError(f"senaryo hatası: S168 — 120'ye düşen kâhinin kuyruğunda (M13) {normal}, kararın örneğindeki tek kuyrukta {normal_tek}: kabul / ret ayrışıyor; kâhin "
+                         "susar (README bakım 12 Ş14, KULLANICIYA SORULMALI 5)")
+AssertionError: senaryo hatası: S168 — 120'ye düşen kâhinin kuyruğunda (M13) 300, kararın örneğindeki tek kuyrukta 0: kabul / ret ayrışıyor; kâhin susar (README bakım 12 Ş14, KULLANICIYA SORULMALI 5)
+
+----------------------------------------------------------------------
+Ran 213 tests in 16.153s
+
+FAILED (failures=21)
+# tests 213
+# pass 192
+# fail 21
+# skipped 0
+
+[kanit] kahinmuh13-muh-eski-kirmizi-ist: BAŞARISIZ (çıkış 1; 21 başarısız, 0 iptal) · çıkış 1 · 192/213 geçti, 21 başarısız, 0 iptal, 0 atlanan · commit aab2022 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+== muh-eski-kirmizi: çıkış 1
+beklenen  rastgele-1                                              A5-S192-pay  192
+beklenen  rastgele-1                                              A5-S192-susma 14
+beklenen  rastgele-2                                              A5-S192-susma 7
+beklenen  s108-s85-normal-cari-tutar-tarih                        A7-s108-S155 87
+beklenen  s111-s174-s180-kural-farki-kendi-yilinda                A6-S197      22
+beklenen  s114-a2-kural-gecis-gunu                                YENI         1
+beklenen  s115-a3-kg7-kdv-indirim-donemi                          YENI         1
+beklenen  s116-a4-s189-s190-sinir                                 YENI         1
+beklenen  s117-a5-s192-tek-kuyruk-payi                            YENI         1
+beklenen  s42-s3-supheli-hatirlatma                               A5-S192-susma 25
+beklenen  s51-m1e-mevcut-borc-karti                               A7-s51-S120  32
+beklenen  s62-r16-127-ters-bakiye                                 A6-S198      13
+beklenen  s78-s39-kart-iade-supheli                               A7-s78-P1b   46
+beklenen  s81-s44-geri-yuklenen-kasa-taksit-normal-cari           A5-S192-susma 15
+beklenen  s93-b14-alt-defter-kural-farki                          A7-s93-KALKTI 1
+senaryo   s104-s80-formdaki-pesin-cari                            A7-s104-sira 18
+senaryo   s108-s85-normal-cari-tutar-tarih                        A7-s108-S155 20
+senaryo   s111-s174-s180-kural-farki-kendi-yilinda                A6-S197      21
+senaryo   s114-a2-kural-gecis-gunu                                YENI         1
+senaryo   s115-a3-kg7-kdv-indirim-donemi                          YENI         1
+senaryo   s116-a4-s189-s190-sinir                                 YENI         1
+senaryo   s117-a5-s192-tek-kuyruk-payi                            YENI         1
+senaryo   s51-m1e-mevcut-borc-karti                               A7-s51-S120  12
+senaryo   s62-r16-127-ters-bakiye                                 A6-S198      19
+senaryo   s78-s39-kart-iade-supheli                               A7-s78-P1b   271
+senaryo   s93-b14-alt-defter-kural-farki                          A7-s93-KALKTI 1
+sınıflar: {"A5-S192-pay": 192, "A5-S192-susma": 61, "A6-S197": 43, "A6-S198": 32, "A7-s104-sira": 18, "A7-s108-S155": 107, "A7-s51-S120": 44, "A7-s78-P1b": 317, "A7-s93-KALKTI": 2, "YENI": 8}
+61837/61837 denetim geçti
+
+[kanit] kahinmuh13-muh-g3-ist: GEÇTİ · çıkış 0 · 61837/61837 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit aab2022 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+== muh-g3: çıkış 0
+rastgele-1: S192 benimsemesi kapalıyken eski beklenenle AYNI
+rastgele-2: S192 benimsemesi kapalıyken eski beklenenle AYNI
+rastgele-3: S192 benimsemesi kapalıyken eski beklenenle AYNI
+# tests 3
+# pass 3
+# fail 0
+3/3 denetim geçti
+
+[kanit] kahinmuh13-muh-g3-atif-ist: GEÇTİ · çıkış 0 · 3/3 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit aab2022 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+== muh-g3-atif: çıkış 0
+  mutasyon 14 (D1 (30.10 B): açılış karşı hesabı 500): YAKALANDI (senaryo.json, g1-goc-kilitsiz.json, g2-goc-kilitli.json)
+  mutasyon 15 (D2 (M-02 B): açıklaması 'açılış' ile başlayan yeni Borç / Alacak Yaz açılış sayılır): YAKALANDI (senaryo.json, g3-s51-b8-geri-alma.json, g4-yeni-kayitlar.json)
+  mutasyon 16 (D3 (30.10 (1) B): açılış evrakı 602 / 770'e): YAKALANDI (senaryo.json, g2-goc-kilitli.json, g4-yeni-kayitlar.json)
+  mutasyon 17 (D4 (S48 B): karşılıksız carisiz açılış evrakı gidere (770)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 18 (D4 (S48): cari seçilse de 519 (cari borçlanmaz)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 19 (D5 (S49 B): formdan carisiz evrak 519'a): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json, g7-s66-carisiz-karsiliksiz.json)
+  mutasyon 20 (D5 (S49 C): formdan carisiz evrak 602 / 770 (bugünkü)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json, g7-s66-carisiz-karsiliksiz.json)
+  mutasyon 21 (D9 (KG-5 B): Excel taksit kartı yeni satış (B CH T / A 600 T; B 519 P / A CH P)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 22 (D6 (S47 B): onay bekleyen aday 602 / 770'te): YAKALANDI (g1-goc-kilitsiz.json, g3-s51-b8-geri-alma.json, g6-s65-acilis-basi.json)
+  mutasyon 23 (D6 (KG-16 B): 'Açılış Olabilir' listesi yok (aday sessizce 602 / 770, onay etkisiz)): YAKALANDI (g1-goc-kilitsiz.json, g2-goc-kilitli.json, g3-s51-b8-geri-alma.json)
+  mutasyon 24 (D6 (B6 B): Türkçe katlama yok (yalnız 'Açılış' tam yazımı aday)): YAKALANDI (g1-goc-kilitsiz.json, g6-s65-acilis-basi.json)
+  mutasyon 25 (D6 (B6 B): 'Devir' / 'Devreden' de aday): YAKALANDI (g1-goc-kilitsiz.json, g6-s65-acilis-basi.json)
+  mutasyon 26 (D6 (S51 B): Silinenler'den geri alınan açılış (carinin başka açılışı varken) reddedilir): YAKALANDI (g3-s51-b8-geri-alma.json)
+  mutasyon 27 (D6 (S53 B): göçte son tamamlanmış yılın 31 Aralık'ına kendiliğinden kilit (eski kuralla donar)): YAKALANDI (g1-goc-kilitsiz.json, g6-s65-acilis-basi.json (çöktü))
+  mutasyon 28 (D7 (Ç3 yok): kilitli dönemin maddeleri de göçte yeni kurala geçer): YAKALANDI (g2-goc-kilitli.json, g8-s66-kilitli-donem.json)
+  mutasyon 29 (D8 (KG-15 B): Kural Farkı Düzeltme Fişi yazılmaz): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 30 (D8 (M7 B): önceki mali yılın farkı da 602 / 770'e (671 / 681 yok)): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 31 (D8 (B16 B): onay bekleyen aday varken Kural Farkı fişi yazılır): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 32 (D10 (S12 B): Kasa açılışından önce tarihli Kasa hareketi kabul): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json, g5-kasa-hareket-once.json)
+  mutasyon 33 (D10 (B11 B): Kasa hareketinin tarihini açılıştan önceye alan düzeltme kabul): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 34 (D10 (EK-2B 33 B): Kasa açılışının tarihi Kasa'nın ilk hareketinden sonra olabilir): YAKALANDI (g5-kasa-hareket-once.json)
+  mutasyon 35 (D6′ (S65 B): açıklamasında 'açılış' ORTADA geçen eski kayıt da aday): YAKALANDI (g6-s65-acilis-basi.json)
+  mutasyon 36 (D4′ (S66 B): carisiz evrakın karşılıksızı, cari seçilmezse gidere (B 770 / A 101)): YAKALANDI (g7-s66-carisiz-karsiliksiz.json, g8-s66-kilitli-donem.json)
+  mutasyon 37 (D4′ (S66): cari seçilse de cari borçlanmaz (B 649 / A 101)): YAKALANDI (g7-s66-carisiz-karsiliksiz.json, g8-s66-kilitli-donem.json)
+  mutasyon 38 (D4′ Y2 (G-7 B): kilitli dönem içinde tarihli karşılıksız kabul (madde donmuş döneme yazılır)): YAKALANDI (g8-s66-kilitli-donem.json)
+  mutasyon 40 (D11 (KG-8 B): satıştan iade KDV'si 391'de (eski yön her yerde)): YAKALANDI (senaryo.json, g10-a2-gecis-gunu-kilitli.json, g11-a2-gecis-kilitsiz-gocte-mahsup.json)
+  mutasyon 41 (D11 (F-08 eski): alıştan iade KDV'si 191'de (eski yön her yerde)): YAKALANDI (senaryo.json, g11-a2-gecis-kilitsiz-gocte-mahsup.json)
+  mutasyon 42 (D12 (B-8 yok): geçiş günü yok sayılır — kilitli eski kayıtlar da yeni yön): YAKALANDI (g10-a2-gecis-gunu-kilitli.json)
+  mutasyon 43 (D12 (B-6 yok): göç öncesi mahsubu yazılmış ay da yeni yön): YAKALANDI (g10-a2-gecis-gunu-kilitli.json, g11-a2-gecis-kilitsiz-gocte-mahsup.json)
+  mutasyon 44 (D12: göç öncesi mahsup ters kaydedilse de ay eski yönde kalır): YAKALANDI (g10-a2-gecis-gunu-kilitli.json, g11-a2-gecis-kilitsiz-gocte-mahsup.json)
+  mutasyon 45 (D12: göç öncesi dönem yeni yönle (eski mahsubun tutarları yeni yönle)): YAKALANDI (g10-a2-gecis-gunu-kilitli.json, g11-a2-gecis-kilitsiz-gocte-mahsup.json)
+  mutasyon 39 (ÖK-1 denetimi yok: açık taksit kartlı cariye Excel taksit kartı sessizce kurulur (sayı üretilir)): YAKALANDI (g9-ok1-acik-taksitli-fatura.json (beklenen çöküş kalktı), g9b-ok1-acik-excel-karti.json (beklenen çöküş kalktı))
+# tests 263
+# pass 263
+# fail 0
+263/263 denetim geçti
+
+[kanit] kahinmuh13-defter-oz-ist: GEÇTİ · çıkış 0 · 263/263 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit aab2022 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+== defter-oz: çıkış 0
+  mutasyon 14 (D1 (30.10 B): açılış karşı hesabı 500): YAKALANDI (senaryo.json, g1-goc-kilitsiz.json, g2-goc-kilitli.json)
+  mutasyon 15 (D2 (M-02 B): açıklaması 'açılış' ile başlayan yeni Borç / Alacak Yaz açılış sayılır): YAKALANDI (senaryo.json, g3-s51-b8-geri-alma.json, g4-yeni-kayitlar.json)
+  mutasyon 16 (D3 (30.10 (1) B): açılış evrakı 602 / 770'e): YAKALANDI (senaryo.json, g2-goc-kilitli.json, g4-yeni-kayitlar.json)
+  mutasyon 17 (D4 (S48 B): karşılıksız carisiz açılış evrakı gidere (770)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 18 (D4 (S48): cari seçilse de 519 (cari borçlanmaz)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 19 (D5 (S49 B): formdan carisiz evrak 519'a): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json, g7-s66-carisiz-karsiliksiz.json)
+  mutasyon 20 (D5 (S49 C): formdan carisiz evrak 602 / 770 (bugünkü)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json, g7-s66-carisiz-karsiliksiz.json)
+  mutasyon 21 (D9 (KG-5 B): Excel taksit kartı yeni satış (B CH T / A 600 T; B 519 P / A CH P)): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 22 (D6 (S47 B): onay bekleyen aday 602 / 770'te): YAKALANDI (g1-goc-kilitsiz.json, g3-s51-b8-geri-alma.json, g6-s65-acilis-basi.json)
+  mutasyon 23 (D6 (KG-16 B): 'Açılış Olabilir' listesi yok (aday sessizce 602 / 770, onay etkisiz)): YAKALANDI (g1-goc-kilitsiz.json, g2-goc-kilitli.json, g3-s51-b8-geri-alma.json)
+  mutasyon 24 (D6 (B6 B): Türkçe katlama yok (yalnız 'Açılış' tam yazımı aday)): YAKALANDI (g1-goc-kilitsiz.json, g6-s65-acilis-basi.json)
+  mutasyon 25 (D6 (B6 B): 'Devir' / 'Devreden' de aday): YAKALANDI (g1-goc-kilitsiz.json, g6-s65-acilis-basi.json)
+  mutasyon 26 (D6 (S51 B): Silinenler'den geri alınan açılış (carinin başka açılışı varken) reddedilir): YAKALANDI (g3-s51-b8-geri-alma.json)
+  mutasyon 27 (D6 (S53 B): göçte son tamamlanmış yılın 31 Aralık'ına kendiliğinden kilit (eski kuralla donar)): YAKALANDI (g1-goc-kilitsiz.json, g6-s65-acilis-basi.json (çöktü))
+  mutasyon 28 (D7 (Ç3 yok): kilitli dönemin maddeleri de göçte yeni kurala geçer): YAKALANDI (g2-goc-kilitli.json, g8-s66-kilitli-donem.json)
+  mutasyon 29 (D8 (KG-15 B): Kural Farkı Düzeltme Fişi yazılmaz): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 30 (D8 (M7 B): önceki mali yılın farkı da 602 / 770'e (671 / 681 yok)): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 31 (D8 (B16 B): onay bekleyen aday varken Kural Farkı fişi yazılır): YAKALANDI (g2-goc-kilitli.json)
+  mutasyon 32 (D10 (S12 B): Kasa açılışından önce tarihli Kasa hareketi kabul): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json, g5-kasa-hareket-once.json)
+  mutasyon 33 (D10 (B11 B): Kasa hareketinin tarihini açılıştan önceye alan düzeltme kabul): YAKALANDI (senaryo.json, g4-yeni-kayitlar.json)
+  mutasyon 34 (D10 (EK-2B 33 B): Kasa açılışının tarihi Kasa'nın ilk hareketinden sonra olabilir): YAKALANDI (g5-kasa-hareket-once.json)
+  mutasyon 35 (D6′ (S65 B): açıklamasında 'açılış' ORTADA geçen eski kayıt da aday): YAKALANDI (g6-s65-acilis-basi.json)
+  mutasyon 36 (D4′ (S66 B): carisiz evrakın karşılıksızı, cari seçilmezse gidere (B 770 / A 101)): YAKALANDI (g7-s66-carisiz-karsiliksiz.json, g8-s66-kilitli-donem.json)
+  mutasyon 37 (D4′ (S66): cari seçilse de cari borçlanmaz (B 649 / A 101)): YAKALANDI (g7-s66-carisiz-karsiliksiz.json, g8-s66-kilitli-donem.json)
+  mutasyon 38 (D4′ Y2 (G-7 B): kilitli dönem içinde tarihli karşılıksız kabul (madde donmuş döneme yazılır)): YAKALANDI (g8-s66-kilitli-donem.json)
+  mutasyon 39 (ÖK-1 denetimi yok: açık taksit kartlı cariye Excel taksit kartı sessizce kurulur (sayı üretilir)): YAKALANDI (g9-ok1-acik-taksitli-fatura.json (beklenen çöküş kalktı), g9b-ok1-acik-excel-karti.json (beklenen çöküş kalktı))
+BAŞARISIZ:
+  ✗ senaryo.json K_EYLUL 191 elle 303500 · kâhin 281600
+  ✗ senaryo.json K_EYLUL 391 elle -227400 · kâhin -205500
+  ✗ senaryo.json K_SON 191 elle 80000 · kâhin -40000
+  ✗ senaryo.json K_SON 391 elle -40000 · kâhin 80000
+  ✗ g10-a2-gecis-gunu-kilitli.json K1 191 elle 800 · kâhin 0
+  ✗ g10-a2-gecis-gunu-kilitli.json K1 391 elle -11600 · kâhin -10800
+  ✗ g10-a2-gecis-gunu-kilitli.json K2 191 elle 2800 · kâhin 0
+  ✗ g10-a2-gecis-gunu-kilitli.json K2 391 elle -21600 · kâhin -18800
+  ✗ g10-a2-gecis-gunu-kilitli.json K3 191 elle 800 · kâhin 0
+  ✗ g10-a2-gecis-gunu-kilitli.json K3 391 elle -11600 · kâhin -10800
+  ✗ g11-a2-gecis-kilitsiz-gocte-mahsup.json K1 191 elle 12800 · kâhin 8000
+  ✗ g11-a2-gecis-kilitsiz-gocte-mahsup.json K1 391 elle -30000 · kâhin -25200
+  ✗ g11-a2-gecis-kilitsiz-gocte-mahsup.json K2 191 elle 14800 · kâhin 8000
+  ✗ g11-a2-gecis-kilitsiz-gocte-mahsup.json K2 391 elle -40000 · kâhin -33200
+  ✗ g11-a2-gecis-kilitsiz-gocte-mahsup.json K3 191 elle 12800 · kâhin 8000
+  ✗ g11-a2-gecis-kilitsiz-gocte-mahsup.json K3 391 elle -30000 · kâhin -25200
+  ✗ g11-a2-gecis-kilitsiz-gocte-mahsup.json K4 191 elle 800 · kâhin 0
+  ✗ g11-a2-gecis-kilitsiz-gocte-mahsup.json K4 391 elle -8000 · kâhin -7200
+# tests 257
+# pass 239
+# fail 18
+239/257 denetim geçti
+
+[kanit] başarısız testler (18):
+  ✖ senaryo.json K_EYLUL 191 elle 303500 · kâhin 281600
+  ✖ senaryo.json K_EYLUL 391 elle -227400 · kâhin -205500
+  ✖ senaryo.json K_SON 191 elle 80000 · kâhin -40000
+  ✖ senaryo.json K_SON 391 elle -40000 · kâhin 80000
+  ✖ g10-a2-gecis-gunu-kilitli.json K1 191 elle 800 · kâhin 0
+  ✖ g10-a2-gecis-gunu-kilitli.json K1 391 elle -11600 · kâhin -10800
+  ✖ g10-a2-gecis-gunu-kilitli.json K2 191 elle 2800 · kâhin 0
+  ✖ g10-a2-gecis-gunu-kilitli.json K2 391 elle -21600 · kâhin -18800
+  ✖ g10-a2-gecis-gunu-kilitli.json K3 191 elle 800 · kâhin 0
+  ✖ g10-a2-gecis-gunu-kilitli.json K3 391 elle -11600 · kâhin -10800
+  ✖ g11-a2-gecis-kilitsiz-gocte-mahsup.json K1 191 elle 12800 · kâhin 8000
+  ✖ g11-a2-gecis-kilitsiz-gocte-mahsup.json K1 391 elle -30000 · kâhin -25200
+  ✖ g11-a2-gecis-kilitsiz-gocte-mahsup.json K2 191 elle 14800 · kâhin 8000
+  ✖ g11-a2-gecis-kilitsiz-gocte-mahsup.json K2 391 elle -40000 · kâhin -33200
+  ✖ g11-a2-gecis-kilitsiz-gocte-mahsup.json K3 191 elle 12800 · kâhin 8000
+  ✖ g11-a2-gecis-kilitsiz-gocte-mahsup.json K3 391 elle -30000 · kâhin -25200
+  ✖ g11-a2-gecis-kilitsiz-gocte-mahsup.json K4 191 elle 800 · kâhin 0
+  ✖ g11-a2-gecis-kilitsiz-gocte-mahsup.json K4 391 elle -8000 · kâhin -7200
+
+[kanit] kahinmuh13-defter-eski-kirmizi-ist: BAŞARISIZ (çıkış 1; 18 başarısız, 0 iptal) · çıkış 1 · 239/257 geçti, 18 başarısız, 0 iptal, 0 atlanan · commit aab2022 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+== defter-eski-kirmizi: çıkış 1
+senaryo.json 2.5.0 mut 0: D11-191-391 — 4 anahtar: kontroller/K_EYLUL/191 281600 → 303500; kontroller/K_EYLUL/391 -205500 → -227400; kontroller/K_SON/191 -40000 → 80000; kontroller/K_SON/391 80000 → -40000
+g10-a2-gecis-gunu-kilitli.json 2.5.0 mut 0: YENI — 6 anahtar: kontroller/K1/191 ∅ → 800; kontroller/K1/391 -10800 → -11600; kontroller/K2/191 ∅ → 2800; kontroller/K2/391 -18800 → -21600; kontroller/K3/191 ∅ → 800; kontroller/K3/391 -10800 → -11600
+g11-a2-gecis-kilitsiz-gocte-mahsup.json 2.5.0 mut 0: YENI — 8 anahtar: kontroller/K1/191 8000 → 12800; kontroller/K1/391 -25200 → -30000; kontroller/K2/191 8000 → 14800; kontroller/K2/391 -33200 → -40000; kontroller/K3/191 8000 → 12800; kontroller/K3/391 -25200 → -30000; kontroller/K4/191 ∅ → 800; kontroller/K4/391 -7200 → -8000
+sınıflar: {"D11-191-391": 40, "YENI": 80}
+# tests 1040
+# pass 1040
+# fail 0
+1040/1040 denetim geçti
+
+[kanit] kahinmuh13-defter-g3-ist: GEÇTİ · çıkış 0 · 1040/1040 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit aab2022 +1 izlenmeyen · linux 6.18.44-fc-v653 x64 · Node v22.23.4
+== defter-g3: çıkış 0
+temel (bozulmamış model): 207 test, 0 kırmızı

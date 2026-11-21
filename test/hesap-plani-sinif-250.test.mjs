@@ -34,7 +34,7 @@ const EXPECTED = {
   500: ["pasif", "V.A"], 501: ["pasif", "V.A"], 502: ["pasif", "V.A"], 503: ["pasif", "V.A"], 519: ["pasif", "V.G"],
   520: ["pasif", "V.B"], 521: ["pasif", "V.B"], 522: ["pasif", "V.B"], 523: ["pasif", "V.B"], 529: ["pasif", "V.B"],
   540: ["pasif", "V.C"], 541: ["pasif", "V.C"], 542: ["pasif", "V.C"], 548: ["pasif", "V.C"], 549: ["pasif", "V.C"], 570: ["pasif", "V.D"], 580: ["pasif", "V.E"], 590: ["pasif", "V.F"], 591: ["pasif", "V.F"],
-  600: ["gelir", "A"], 602: ["gelir", "A"], 610: ["gider", "B"], 621: ["gider", "D"], 631: ["gider", "E"], 632: ["gider", "E"],
+  600: ["gelir", "A"], 601: ["gelir", "A"], 602: ["gelir", "A"], 610: ["gider", "B"], 621: ["gider", "D"], 631: ["gider", "E"], 632: ["gider", "E"],
   642: ["gelir", "F"], 644: ["gelir", "F"], 646: ["gelir", "F"], 649: ["gelir", "F"],
   653: ["gider", "G"], 654: ["gider", "G"], 656: ["gider", "G"], 659: ["gider", "G"], 660: ["gider", "H"], 671: ["gelir", "I"], 681: ["gider", "J"], 689: ["gider", "J"],
   690: ["kapanis", null], 691: ["gider", "K"], 692: ["kapanis", null],
@@ -91,7 +91,7 @@ const NAMES_249 = {
   120: "Alıcılar (Müşteri Carileri)", 121: "Alacak Senetleri", 127: "Carisiz Taksit Kartları", 128: "Şüpheli Ticari Alacaklar", 129: "Şüpheli Ticari Alacaklar Karşılığı (−)",
   153: "Ticari Mallar (Stok Alımları)", 190: "Devreden KDV", 191: "İndirilecek KDV", 193: "Peşin Ödenen Vergiler (Stopaj)", 255: "Demirbaşlar", 300: "Banka Kredileri",
   309: "Diğer Mali Borçlar (Kredi Kartları)", 320: "Satıcılar (Tedarikçi Carileri)", 321: "Borç Senetleri", 336: "Diğer Cariler (Personel vb.)",
-  360: "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)", 391: "Hesaplanan KDV", 600: "Yurt İçi Satışlar (Stok)",
+  360: "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)", 391: "Hesaplanan KDV", 600: "Yurt İçi Satışlar (Stok)", 601: "Yurt Dışı Satışlar",
   602: "Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)", 610: "Satıştan İadeler", 642: "Faiz Gelirleri", 644: "Konusu Kalmayan Karşılıklar",
   646: "Kambiyo Kârları", 649: "Diğer Olağan Gelir ve Kârlar", 653: "Komisyon Giderleri", 654: "Karşılık Giderleri", 656: "Kambiyo Zararları",
   659: "Diğer Olağan Gider ve Zararlar", 689: "Diğer Olağandışı Gider ve Zararlar", 760: "Pazarlama, Satış ve Dağıtım Giderleri", 780: "Finansman Giderleri",
@@ -247,7 +247,8 @@ describe("2.5.0 Ç1 — hesap planı sınıflaması", () => {
     // Kaynak taraması: yevmiyeyi kuran iki dosyadaki hesap kodu sabitleri (tırnak içinde üç hane). Bütün metin üzerinde (satır bölünmez; CRLF fark etmez).
     for (const file of ["server/lib/general-ledger.mjs", "server/routes/ledger.mjs"]) {
       const source = readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
-      for (const [, code] of source.matchAll(/"(\d{3})"/g)) used.add(code);
+      // 2.5.0 Ç7b (KG-24): KDV istisna KODLARI (301 / 302 ihracat; general-ledger EXPORT_EXEMPTIONS) hesap kodu değildir — taramadan çıkar (adıyla, sabitin kendisinden).
+      for (const [, code] of source.matchAll(/"(\d{3})"/g)) if (!(gl.EXPORT_EXEMPTIONS || []).includes(code)) used.add(code);
     }
     const missing = [...used].map(String).filter(code => !Object.hasOwn(gl.CHART, code)).sort();
     assert.deepEqual(missing, [], "defterin yazabildiği ama planda olmayan hesap");

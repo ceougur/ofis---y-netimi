@@ -1,0 +1,43 @@
+{
+  "ad": "c7b3-yeni-kahin-cari-Europe-Istanbul",
+  "komut": "npm run test:kahin-cari",
+  "commit": "7645fe0d9c40078f766e06aba9b3fe14d6930aea",
+  "dal": "worktree-agent-abcab14e726c6a077",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T08:39:11.536Z",
+  "sure_sn": 406,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17582,
+    "gecen": 17580,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:kart:KI2:toplam: program 30000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:kart:KI3:toplam: program 0 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d4/abc/2026-11-20/c7b3-yeni-kahin-cari-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abcab14e726c6a077",
+  "ham_cikti_sha256": "0aa6d3fe14221bdca597e50920a5b9724ee7a867c605093dc55ebace2c22f008",
+  "ham_cikti_bayt": 72191
+}

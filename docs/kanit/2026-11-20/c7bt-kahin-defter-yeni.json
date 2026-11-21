@@ -1,0 +1,32 @@
+{
+  "ad": "c7bt-kahin-defter-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/defter/kos.mjs",
+  "commit": "3095abe868b2fc316639c5f5325d8488b0977d89",
+  "dal": "worktree-agent-ab1c286758106cc24",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T11:54:08.164Z",
+  "sure_sn": 5.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bt-ana/kanit/2026-11-20/c7bt-kahin-defter-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab1c286758106cc24",
+  "ham_cikti_sha256": "c728bc8dd7d9e6570cf277080b4ffd9230a1c9c9581a3c6210bd007dff8c33ec",
+  "ham_cikti_bayt": 2712
+}

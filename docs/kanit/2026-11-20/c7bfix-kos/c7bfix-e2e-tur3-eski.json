@@ -1,0 +1,53 @@
+{
+  "ad": "c7bfix-e2e-tur3-eski",
+  "komut": "node test/e2e/senaryo-c7b-tur3-250.mjs",
+  "commit": "552d477722442263f5af2a0b66941b4c71fd5cd2",
+  "dal": "worktree-agent-aa660861cba7cd284",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T23:55:04.298Z",
+  "sure_sn": 221.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 39,
+    "gecen": 36,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ikinci soru YOK:  × ONAY Kartı Kapat Kalan ₺3.000,00 açıkken “Ekran Kart Kapat Kartı” kartı kapatılsın mı? Ödeme planı biter; kalan borç carinin borcunda kalır, yarından itibaren gecikmiş sayılır. Vazgeçmek için cari",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kart kapandı (veri tabanı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TEK istek, 200 (gelen: [409])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-c7b-tur3-250: 36 geçti, 3 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bfix-a66/kanit/2026-11-20/c7bfix-e2e-tur3-eski.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa660861cba7cd284",
+  "ham_cikti_sha256": "47301deea0367c9666f53a75b6e541891506a7421dcdacd849d8294bb3ca083a",
+  "ham_cikti_bayt": 4596
+}

@@ -40,7 +40,9 @@ import { runScanWorker } from "./integrity-scan-runner.mjs";
 import { cashBeforeOpening, cashExplained, cashRestoreMark } from "./cash-opening.mjs";
 import { ledgerBalanceOf, openingCounterpart, openingMatchState, openingReviewDrift, unlockedPastYears } from "./ledger-opening.mjs";
 import { systemClock } from "./clock.mjs";
+import { RULE_SHIFT_KEY } from "./ledger-rule-shift.mjs";
 import { roundMoney, toCents } from "./money.mjs";
+import { closeDaySql, waivedOf, waivesSql } from "./accounts.mjs";
 
 const CHEQUE_BOND_SQL = `SELECT ev.id FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id LEFT JOIN invoices i ON i.id = ev.invoice_id WHERE ${CHEQUE_BOND_BAD} LIMIT 5`;
 const AMOUNT_COLUMNS = [
@@ -129,7 +131,10 @@ const TABLE_LABEL = {
 const labelOf = table => TABLE_LABEL[table] || table;
 // 2.5.0 Ç3: LOCK_SQL tanımının sürümü — en yeni girdinin "since"i (test/donmus-defter-250.test.mjs denetler). Donmuş defter koşusu kaynak izini bu tanımla saklar
 // (ledger_snapshot_runs.digest_version); tanım büyüyünce bu sürüm yükselir, eski koşunun izi kendi sürümüyle karşılaştırılır (lockDigestOf version).
-export const LOCK_SQL_VERSION = "2.5.0";
+// 2.5.0 Ç7b (B-7): "2.5.1" — kalem istisna kodu girdisi (invoice_lines_export_lock); 2.5.0'ın koşuları kendi tanımıyla karşılaştırılır.
+// 2.5.0 Ç7b tur 2d (tur 2c kararı (2)): "2.5.2" — kural geçiş günü ve eski KDV mahsubunun kural sürümü (rule_shift_lock, vat_offsets_rule_lock); 2.5.1 ve öncesinin koşuları kendi tanımıyla.
+// 2.5.0 Ç7b tur 2e (B-12): aynı sürüme faturanın KDV İndirim Dönemi (invoices_vat_period_lock) — 2.5.2 yayımlanmadığından numara değişmez.
+export const LOCK_SQL_VERSION = "2.5.2";
 // Kapanmış dönemin parmak izi: kilit tarihi ve öncesindeki her para satırı (tutar, yön, yol, tarih, cari/kalem bağı) ve
 // o dönemde cariye borç yazan kartlar. Kilit altındaki tek bir satır değişirse, silinirse ya da eklenirse iz değişir.
 const LOCK_SQL = {
@@ -171,14 +176,17 @@ const LOCK_SQL = {
   // 2.0.13 öncesi kapatılmışta son güncelleme günü; Kayıt Tarihi'nden önce değil — aynı ifade). Kartın yeniden açılması, silinmesi,
   // tutarı, carisi (ve carinin türü) ya da sonradan gelen tahsilatı kilitli mizanı değiştirir. Kart güncellenirken eski kartın
   // kapanış günü yazılır (plans.mjs FREEZE_CLOSE); gün aynı kaldığı için iz değişmez.
+  // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın"; docs/erp/C7B-FATURA-TASARIM.md §17.1): YALNIZ kalanı düşülen (eski kural, göç 53 '2.4.9') kart — Borçta Kalsın kartının kapanışı
+  // defter olayı değildir (689 yok), kilide girmez. Göç 53'ten sonra v2.4.9 verisinde bütün kapalı kartlar '2.4.9' → satırlar AYNEN (eski koşuların izi değişmez). Kural işaretinin
+  // kendisi ayrıca plans_close_rule_lock'ta.
   plans_close_lock: {
-    requires: ["plans", "plan_entries", "accounts"],
+    requires: ["plans", "plan_entries", "accounts", "plans.close_rule"],
     sql: `SELECT * FROM (
             SELECT p.id, p.account_id, COALESCE(a.type, '') AS party, p.total,
                    MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))) AS closed_on,
                    ROUND(p.total - COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0), 2) AS waived
             FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL
-            WHERE p.deleted_at IS NULL AND p.status = 'closed')
+            WHERE p.deleted_at IS NULL AND ${waivesSql("p")})
           WHERE closed_on <= ?1 ORDER BY id`,
   },
   // v2.1.0 (v20, §5.5): banka girdileri. Eski veride satır üretmezler (yeni kolonlar boş, yeni tablolar boş): göçten sonra kilit izi
@@ -277,6 +285,31 @@ const LOCK_SQL = {
     since: "2.5.0",
     sql: "SELECT id, gl_json, try_withheld, try_stoppage FROM invoices WHERE status <> 'draft' AND issue_date <= ?1 ORDER BY id",
   },
+  // 2.5.0 Ç7b (B-7 — BAŞ MİMAR KARARI 19.11 04:35; KG-24 = A, B-3 = A; docs/erp/C7B-FATURA-TASARIM.md §11.5): ihracat istisna kodlu kalemin 601 payı (routes/ledger.mjs rows exportJson)
+  // kesilmiş satış / SMM faturasının kalemlerinden okunur — kalemin hesabı, istisna kodu ve neti. Yalnız ihracat (301 / 302) kalemi OLAN faturanın kalemleri satır üretir (ihracatsız veride
+  // satır yok; bir kaleme ihracat kodu yazılırsa fatura izde belirir). Sürüme bağlı (since "2.5.1" — kilit izi TANIMININ sürümü, program sürümü değil): bu tanımdan önce kaydedilmiş
+  // donmuş defter koşusunun kaynak izi kendi sürümüyle (girdi atlanarak) karşılaştırılır → var olan kilitler güncellemede yanlış "değişti" alarmı vermez.
+  invoice_lines_export_lock: {
+    requires: ["invoices", "invoice_lines.exemption_code", "invoice_lines.gl_account", "invoice_lines.net"],
+    since: "2.5.1",
+    sql: `SELECT l.id, l.invoice_id, l.gl_account, l.exemption_code, l.net FROM invoices i JOIN invoice_lines l ON l.invoice_id = i.id
+          WHERE i.status <> 'draft' AND i.kind IN ('sale', 'smm') AND i.issue_date <= ?1
+            AND EXISTS (SELECT 1 FROM invoice_lines x WHERE x.invoice_id = i.id AND x.exemption_code IN ('301', '302'))
+          ORDER BY l.invoice_id, l.id`,
+  },
+  // 2.5.0 Ç7b tur 2d (tur 2c kararı (2) — BAŞ MİMAR KARARI 19.11 06:39; B-6 / B-8 = A; lib/ledger-rule-shift.mjs; docs/erp/C7B-FATURA-TASARIM.md §13, §14.6): kural geçiş günü (göç 51'in
+  // 'ledger.ruleShiftThrough' ayarı — tarihi ≤ geçiş günü olan kayıt tahsilatı / iade KDV'si eski yönde) ve güncellemeden önce yazılmış KDV mahsubunun işareti (rule_version '2.4.9' — etkin eski
+  // mahsubun ayında iade KDV'si eski yönde). İkisini de yalnız göç 51 yazar (Sıfırla siler, kilidi de kaldırır): program yolundan kilitli dönemde değişmez. Satır yalnız işaret VARSA (kilitsiz
+  // geçişsiz dosyada ve güncel kuralla yazılmış mahsupta satır yok). Sürüme bağlı (since "2.5.2"): önceki tanımla kaydedilmiş koşu kendi sürümüyle — yanlış alarm yok.
+  rule_shift_lock: { requires: ["settings"], since: "2.5.2", sql: `SELECT key, value FROM settings WHERE key = '${RULE_SHIFT_KEY}' AND value <> '' AND ?1 <> ''` },
+  vat_offsets_rule_lock: { requires: ["vat_offsets.rule_version"], since: "2.5.2", sql: "SELECT id, rule_version FROM vat_offsets WHERE rule_version <> '' AND date <= ?1 ORDER BY id" },
+  // 2.5.0 Ç7b tur 2e (B-12 = A — BAŞ MİMAR KARARI 19.11 09:29; KG-7; docs/erp/C7B-FATURA-TASARIM.md §15.2): alış faturasının "KDV İndirim Dönemi" (göç 52) — kilitli faturanın KDV'si
+  // dönem ayının mahsubuna girer (routes/tax.mjs figureTable; açık ay kilitli belgeye bağlı). Program yolundan kilitli belgede değişmez (Düzenle 409); kapı dışı değişiklik izde görünür.
+  // Yalnız DOLU dönemli faturalar satır üretir (dönemsiz veride iz aynı). Aynı tanım sürümü (2.5.2 yayımlanmadı): önceki tanımla kaydedilmiş koşu kendi sürümüyle — yanlış alarm yok.
+  // 2.5.0 Ç7b tur 3b (§17.1): Kartı Kapat kuralının kart başına işareti (göç 53) — yalnız eski kurallı (işaretli) kartlar satır üretir; kapı dışı '2.4.9' ↔ '' değişimi kilitli dönemde izi
+  // değiştirir. Sürüme bağlı (since "2.5.2"; tanım sürümü AYNI — 2.5.2 yayımlanmadı): önceki tanımla kaydedilmiş koşu kendi sürümüyle.
+  plans_close_rule_lock: { requires: ["plans.close_rule"], since: "2.5.2", sql: `SELECT p.id, p.close_rule FROM plans p WHERE p.close_rule <> '' AND ${closeDaySql("p")} <= ?1 ORDER BY p.id` },
+  invoices_vat_period_lock: { requires: ["invoices.vat_period"], since: "2.5.2", sql: "SELECT id, vat_period FROM invoices WHERE status <> 'draft' AND vat_period <> '' AND issue_date <= ?1 ORDER BY id" },
   // Bankaya Tahsile Ver kaydının işlem başlığı (101.01 / 101.02 maddesinin tutarı).
   cheque_collections_event_lock: { requires: ["cheque_collections.event_id"], since: "2.5.0", sql: "SELECT id, event_id FROM cheque_collections WHERE given_date <= ?1 ORDER BY id" },
   // Kayıt Tarihi BOŞ kartın oluşturma anı (madde tarihi = oluşturma günü; yukarıdaki plans girdisi yalnız dolu Kayıt Tarihli kartları kapsar). API boş Kayıt Tarihi yazmaz,
@@ -517,13 +550,13 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       if (has("plans")) {
         const wrong = [];
         for (const plan of store.all(
-          `SELECT p.id, p.name, p.total, p.status, p.covers_balance AS coversBalance,
+          `SELECT p.id, p.name, p.total, p.status, p.close_rule AS closeRule, p.covers_balance AS coversBalance,
                   COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
            FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND a.id IS NULL`,
         )) {
           const total = plan.coversBalance ? 0 : toCents(plan.total);
-          const left = toCents(plan.total) - toCents(plan.paid);
-          const want = total - toCents(plan.paid) - (plan.status === "closed" ? Math.max(0, left) : 0);
+          // 2.5.0 Ç7b tur 3b: düşülen kalan TEK yardımcıdan (lib/accounts.mjs waivedOf).
+          const want = total - toCents(plan.paid) - toCents(waivedOf(plan, plan.paid));
           const got = parties.get(`plan:${plan.id}`) || 0;
           if (got !== want) wrong.push(`${plan.name}: defter ${got / 100} / kart ${want / 100}`);
         }

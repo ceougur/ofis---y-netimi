@@ -1,0 +1,106 @@
+{
+ "ad": "ek-bag-sonra",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "af0205": [
+     {
+      "fatura": "F3",
+      "kalan": 2000,
+      "tarih": "2026-01-07",
+      "vade": "2026-03-31"
+     }
+    ],
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 2000,
+       "borc": 2000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 2000,
+       "bakiye": 2000,
+       "borc": 4000,
+       "devir": 0
+      },
+      "128": {
+       "alacak": 1000,
+       "bakiye": 0,
+       "borc": 1000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 4000,
+       "bakiye": -4000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 2000,
+       "borc": 2000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 2000,
+       "bakiye": 2000,
+       "borc": 4000,
+       "devir": 0
+      },
+      "128|C1": {
+       "alacak": 1000,
+       "bakiye": 0,
+       "borc": 1000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 4000,
+       "bakiye": -4000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-02-28",
+     "toplam": {
+      "alacak": 7000,
+      "bakiye": 0,
+      "borc": 7000,
+      "devir": 0
+     }
+    },
+    "sk": [
+     {
+      "id": "S1",
+      "kalan": 0,
+      "karsilik": 0,
+      "tarih": "2026-02-01"
+     }
+    ]
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}
