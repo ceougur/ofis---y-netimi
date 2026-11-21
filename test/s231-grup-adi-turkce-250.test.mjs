@@ -139,6 +139,16 @@ describe("S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katl
     assert.equal(groupCount(), groupsBefore + 1, "iki adaylı yazım bugünkü gibi yeni grup");
   });
 
+  it("(6b) S228 sırası — bugün NOCASE ile bulunan grup DEĞİŞMEZ: 'irmak yolu' (ASCII i) satırı 'Irmak Yolu' grubuna (Türkçe katlamada 'İrmak Yolu' ile aynı olsa da)", async () => {
+    const ascii = await newGroup("Irmak Yolu");
+    const dotted = await newGroup("İrmak Yolu");
+    assert.notEqual(ascii, dotted);
+    const groupsBefore = groupCount();
+    await loadPlans([planRow("Ufuk Ak", "", "100", "irmak yolu")], "s231-6b.xlsx");
+    assert.equal(cardOf("Ufuk Ak").groupId, ascii, "bugünkü (NOCASE) eşleşme korunmalı");
+    assert.equal(groupCount(), groupsBefore);
+  });
+
   it("(7) aynı dosyada iki yazım: ilk satırın açtığı 'Ilıca Yolu' ikinci ve üçüncü satıra görünür (tek grup)", async () => {
     const groupsBefore = groupCount();
     const report = await loadPlans([planRow("Mert Can", "", "100", "Ilıca Yolu"), planRow("Selin Ak", "", "100", "ILICA YOLU"), planRow("Tan Ak", "", "100", "ılıca yolu")], "s231-7.xlsx");

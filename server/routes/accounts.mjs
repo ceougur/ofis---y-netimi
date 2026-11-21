@@ -32,7 +32,7 @@ import { accountMovements, movementBlockText } from "../lib/account-movements.mj
 import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
 import { restoredOpeningReview } from "../lib/ledger-opening.mjs";
 import { recordingHidden } from "../lib/cash-opening.mjs";
-import { foldPersonName, foldedNameIndex } from "../lib/names.mjs";
+import { foldPersonName, foldedNameIndex, foldedNameLookup } from "../lib/names.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -1516,6 +1516,15 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   function personIndex() {
     return foldedNameIndex(() => store.all("SELECT id, name FROM accounts WHERE deleted_at IS NULL"));
   }
+  // 2.5.0 S231 (çek / senet içe aktarmasının hızı): adları önceden bilinen yükleme için personIndex'in eşdeğeri (lib/names.mjs foldedNameLookup) — silinmemiş
+  // cariler TEK metin olarak okunur, yalnız aranan adlarla aynı katlanan cariler haritaya girer; aranmamış ad ya da beklenmeyen metin personIndex'e düşer.
+  function personIndexFor(names) {
+    return foldedNameLookup(
+      names,
+      () => store.get("SELECT COUNT(*) AS n, COALESCE(SUM(instr(name, char(0)) > 0 OR instr(name, char(1)) > 0), 0) AS bad, COALESCE(group_concat(id || char(1) || name, char(0)), '') AS s FROM accounts WHERE deleted_at IS NULL"),
+      personIndex(),
+    );
+  }
   // Haritadaki adayların GÜNCEL satırları: silinmiş, geri alınmış iç işlemde açılmış ya da adı sonradan değişmiş cari düşer.
   function foldedCandidates(index, name) {
     const ids = index ? index.ids(name) : [];
@@ -2254,5 +2263,5 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, planDuplicate, personIndex, matchName, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, waFacts, list, allLedgers, assertUnlocked, invoiceLink, dueItems, openDueItems, dueFingerprint };
+  return { exists, accountRow, createFromPlan, matchPerson, planDuplicate, personIndex, personIndexFor, matchName, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, waFacts, list, allLedgers, assertUnlocked, invoiceLink, dueItems, openDueItems, dueFingerprint };
 }

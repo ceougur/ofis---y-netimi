@@ -852,7 +852,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     // (yükleme başına tek ad haritası). Önbellek ADIN KENDİSİYLE: iki yazımın sonucu ayrı olabilir (önceden Türkçe küçük harf anahtarı, NOCASE sorgusu —
     // aynı dosyada 'AHMET YILMAZ' ile 'Ahmet Yılmaz' ilk satırın sonucunu paylaşıyordu).
     const accountByName = new Map();
-    const people = accounts()?.personIndex ? accounts().personIndex() : null;
+    // S231 (hız; davranış aynen): yüklemenin keşideci / lehtar adları önceden bilinir → ad haritası yalnız bu adlarla (routes/accounts.mjs personIndexFor;
+    // cariler tek metin olarak okunur). Ölçülen neden: S223'ün haritası bütün carileri satır satır katlıyordu ('hepsi yeni ad' çek 500'de ~8 ms).
+    const drawers = col.drawer >= 0 ? rows.filter(Array.isArray).map(row => cell(row, col.drawer).slice(0, 160)) : [];
+    const people = accounts()?.personIndexFor ? accounts().personIndexFor(drawers) : accounts()?.personIndex ? accounts().personIndex() : null;
     const findAccount = name => {
       if (!name) return "";
       if (!accountByName.has(name)) {
