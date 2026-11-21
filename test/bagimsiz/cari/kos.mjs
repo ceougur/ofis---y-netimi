@@ -792,11 +792,23 @@ async function kos(senaryo) {
           break;
         }
         case "fatura_duzenle": {
-          // bakım 24 (§36 Y24-6; yalnız eşleme): faturanın Düzenle'si = PUT /invoices/:id (fatura kartının gövdesi, tek kalemin miktarı `adet`); yoklamada kesilmiş fatura 409 invoice-not-draft
-          // (girdi §1 (e) "programın henüz yapmadığı bilinen kısım") — gövde biçimi Düzenle kodlanınca kod ajanınca doğrulanır (SÜRÜCÜ İÇİN)
-          const g = (await api("GET", `/api/workspace/invoices/${ids.fatura[a.fatura]}`)).data || {};
-          const rd = await api("PUT", `/api/workspace/invoices/${ids.fatura[a.fatura]}`, { ...g, lines: (g.lines || []).map(l => ({ ...l, qty: a.adet })), updatedAt: g.updatedAt });
+          // bakım 25 (§37 Y25-1; yalnız eşleme — girdi §4 + kara kutu yoklaması kahin-cari25-arac/yokla*.mjs): KESİLMİŞ faturanın Düzenle'si = POST /invoices/:id/edit, gövde faturanın ayrıntısından
+          // (scenario, accountId, issueDate, lines — tek kalemin qty = adet, payment — ayrıntının ödeme bölümü, force); yalnız miktar farklı. Yanıt kodu + gövde durum()'da (ders 3: 409 / 4xx "yapıldı" sayılmaz).
+          // KAHIN_DUZENLE_UC=put: bakım 24'ün eski eşlemesi (PUT — yalnız taslak; bağdaştırıcı mutantı, kos'un dişi için)
+          const fid = ids.fatura[a.fatura];
+          const g = (await api("GET", `/api/workspace/invoices/${fid}`)).data || {};
+          const lines = (g.lines || []).map(l => ({ ...l, qty: a.adet }));
+          let rd;
+          if (process.env.KAHIN_DUZENLE_UC === "put") {
+            rd = await api("PUT", `/api/workspace/invoices/${fid}`, { ...g, lines, updatedAt: g.updatedAt });
+          } else {
+            const p0 = g.payment || {};
+            // yoklama 1 / 2: ayrıntının payment'ında biçim `mode` ("open" / "installments"), `rest` TUTARDIR — gövdede `rest` = biçim; vade ayrıntının dueDate'i
+            const payment = { cash: p0.cash || [], cheques: p0.cheques || [], endorse: p0.endorse || [], rest: p0.mode || "open", dueDate: g.dueDate || "", installments: p0.installments ?? null };
+            rd = await api("POST", `/api/workspace/invoices/${fid}/edit`, { scenario: g.scenario, accountId: g.accountId, issueDate: g.issueDate, lines, payment, force: false });
+          }
           durum(a, rd);
+          ham[`duzenle:${a.id}`] = { http: rd.status, yanit: rd.status === 200 ? undefined : rd.data };
           if (rd.status === 200) {
             ids.faturaTutar[a.fatura] = Math.round((ids.faturaTutar[a.fatura] * a.adet) / (ids.faturaAdet[a.fatura] || 1));
             ids.faturaAdet[a.fatura] = a.adet;

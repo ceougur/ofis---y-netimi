@@ -64,6 +64,8 @@
    d36 J14 SK-23; mutantlar 329–333 DEĞERLE (9. madde düzeni — her biri bir elle beklenen değerini değiştirmeli).
 24. Bakım 24 (§36; S234 = A, S237 = A, karar (4) 2B-S3 = A, KAPSAM (a)–(f)): Kartı Kapat 'Borçta Kalsın' dil eki ve kart küçülmesi — d53 (kapanmış kart: S234 / S237 örnekleri, iade iptali, Düzenle,
    kendi kartlı fatura, iki kart, Yeniden Aç), d54 (açık kart — aynı senaryolar), d55 (iade iptalinde geri gelen taksit kendi vadesiyle; küçülmenin fazlası avans) elle tabloları; mutantlar 334–340 DEĞERLE.
+25. Bakım 25 (§37; S238 / S239 / S240 / S241 / S242 = A, §3): d56 (S238 kapanmış kartta, S239 kısmen kartta faturaya iade — dış önce, S240 çok kalemli kart, §3 seçilmeyen faturanın iadesi / iptali; SK-45 / SK-46 SUS)
+   ve d57 (Düzenle — S241 fazlası avans açık / kapanmış / kendi kartı, S242 artış kartı değiştirmez) elle tabloları; mutantlar 341–347 (344 yok — bağdaştırıcı mutantı kos.mjs'te) DEĞERLE.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
@@ -333,7 +335,7 @@ def main():
         eski_sk = [b for b in _m.son_belirsiz if "SK-9 … SK-12" in b or "(SK-13;" in b]
         denetle("%s SK-9 … SK-13 susması yok (S102–S105 A, S99 A)" % ad, not eski_sk, json.dumps(eski_sk[:2], ensure_ascii=False))
     # 2. mutantlar 200–223 (… bakım 20: 313–316)
-    SUSMA_MUTANTLARI = {316, 324}  # bakım 20 (§31 C10x) / bakım 21b (§33 C10z): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
+    SUSMA_MUTANTLARI = {316, 324, 347}  # bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 25 (§37 — SK-45): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
     for n, ad in M.MUTASYONLAR.items():
         if n < 200:
             continue

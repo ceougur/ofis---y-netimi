@@ -215,9 +215,9 @@ A += [cari("cp3", "P3", "Pınar Artış Kapalı Kart"), fatura("fp3", "FP3", "P3
 A += [kontrol("k0")]
 cr("k0", "K1", 300, 0, 300); kr("k0", "KK1", 900, 600, 300); ft("k0", "FK1", 300, 0, 300, True)  # 05.12 açık, gecikmemiş
 cr("k0", "K2", 300, 0, 300); kr("k0", "KK2", 900, 600, 300, True); ft("k0", "FK2", 300, 0, 300, True)  # 05.12 → kapanış 20.11 (bugün) — gecikmemiş
-cr("k0", "K3", 300, 0, 300); ft("k0", "FK3", 300); fk("k0", "FK3", 900, 300)
+cr("k0", "K3", 300, 0, 300); ft("k0", "FK3", 300)  # SENARYO DÜZELTMESİ (açıkça — kural değil): kendi kartının göstergeleri kâhinde yalnız Kartı Kapat / Düzenle görmüş faturada yazılır (§36 Y24-1) — ilk tasarımdaki k0 satırları kaldırıldı
 cr("k0", "K5", 900, 900, 900); kr("k0", "KK5", 600, 0, 600); ft("k0", "FK5", 900, 300, 600, False)
-cr("k0", "P1", 300, 200, 300); ft("k0", "FP1", 300); fk("k0", "FP1", 300, 300)  # 05.10 + 05.11 = 200 gecikmiş
+cr("k0", "P1", 300, 200, 300); ft("k0", "FP1", 300)  # 05.10 + 05.11 = 200 gecikmiş (k0 kendi kartı satırları — K3 ile aynı senaryo düzeltmesi)
 cr("k0", "P2", 300, 200, 300); kr("k0", "KP2", 300, 0, 300); ft("k0", "FP2", 300, 0, 300, True)
 cr("k0", "P3", 300, 200, 300); kr("k0", "KP3", 300, 0, 300, True); ft("k0", "FP3", 300, 0, 300, True)
 A += [{"id": "dk1", "islem": "fatura_duzenle", "fatura": "FK1", "adet": 1}, {"id": "dk2", "islem": "fatura_duzenle", "fatura": "FK2", "adet": 1},
