@@ -1,0 +1,32 @@
+{
+  "ad": "ana-c6s-sinif-Europe-Istanbul",
+  "komut": "node --test test/c6h-v249-sinif.test.mjs",
+  "commit": "4deab70c05085198e646637ad2c7ea5fd3ae4c5c",
+  "dal": "c6-sinama",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T06:38:25.169Z",
+  "sure_sn": 58.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c6s/kanit/2026-11-21/ana-c6s-sinif-Europe-Istanbul.log",
+  "klasor": "/dev/shm/c6-sinama",
+  "ham_cikti_sha256": "2905e157f69030235d0761da1cb94c0246e0bb974115b797f3067e978ea1aa1e",
+  "ham_cikti_bayt": 5406
+}

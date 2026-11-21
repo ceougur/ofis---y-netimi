@@ -1,0 +1,32 @@
+{
+  "ad": "ana-c6s-kahin-cari-UTC",
+  "komut": "npm run test:kahin-cari",
+  "commit": "69e311861e51d1dce02d91c39d8ba144f4308db1",
+  "dal": "c6-sinama",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T06:48:49.353Z",
+  "sure_sn": 405.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17648,
+    "gecen": 17648,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c6s/kanit/2026-11-21/ana-c6s-kahin-cari-UTC.log",
+  "klasor": "/dev/shm/c6-sinama",
+  "ham_cikti_sha256": "1b018f428817e66d5c938acf23a912e02567c451a85ff0d50a210d76448ccf40",
+  "ham_cikti_bayt": 72924
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "ana-c6s-kahin-defter-UTC",
+  "komut": "npm run test:kahin-defter",
+  "commit": "69e311861e51d1dce02d91c39d8ba144f4308db1",
+  "dal": "c6-sinama",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T06:48:43.724Z",
+  "sure_sn": 5.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c6s/kanit/2026-11-21/ana-c6s-kahin-defter-UTC.log",
+  "klasor": "/dev/shm/c6-sinama",
+  "ham_cikti_sha256": "4b62bf50bdb4145cd822b368794d27341ffc94a27871d9416b6f9d1e3a44ecd4",
+  "ham_cikti_bayt": 2825
+}
