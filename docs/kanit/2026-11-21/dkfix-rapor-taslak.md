@@ -13,4 +13,5 @@ Taban dkfix-taban = 94a7b475. Not defteri: /tmp/claude-0/-home-user/de5e1cbf-7e6
    - motor testleri (mutabakat-cekirdek, fatura-model, mutabakat-yil-donumu) 8/8.
 4. 7b091d40 — S235 = B istemci metni + ekran senaryosu senaryo-dkfix-250 (21/21 yeni; tabanda 4 kırmızı) + ekran görüntüleri dkfix-ekran/.
    - GÖZLEM / BULGU: kaydedilmiş taksitli faturanın Düzenle formu kalan ödemeyi 'Açık Hesap (Vadeli)' seçili açıyor; değiştirmeden Kaydet → taksit kartı kalkıyor (önceden var).
-5. G2 komşu (54 dosya) iki TZ — sürüyor.
+5. G2 komşu (54 dosya; liste not defteri g2-liste.txt) — TZ İstanbul: g2-ist-1 268/268, g2-ist-2 432/432 (0 atlanan). TZ UTC: sürüyor.
+6. Mutasyon (mut.sh, mut/ kopyasında): M1 kapalıyı atla → 6 kırmızı; M2 ters (yalnız eski kurallı) → 7 kırmızı; M3 iptal yolunda kapalıyı da kırp → T6 kırmızı; M4 büyüme kapalıya yok → T4 / T7 kırmızı. Geri alındı (cmp).

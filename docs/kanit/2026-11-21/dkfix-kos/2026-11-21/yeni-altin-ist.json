@@ -1,0 +1,32 @@
+{
+  "ad": "yeni-altin-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-210-altin.test.mjs",
+  "commit": "03f30733a30e676fa686a592c63810e931420c1d",
+  "dal": "worktree-agent-ab2301e43d5e0964a",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T06:08:15.355Z",
+  "sure_sn": 30.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-21/dkfix-kos/2026-11-21/yeni-altin-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab2301e43d5e0964a",
+  "ham_cikti_sha256": "a2e7005ee7bc852107d32ff72af797284b8437dd6e39433c6891a1dd4d80c302",
+  "ham_cikti_bayt": 3009
+}
