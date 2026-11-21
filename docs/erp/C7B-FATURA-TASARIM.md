@@ -807,3 +807,21 @@ kapalı kart değişmez), sonra `trimCovers` (iadedeki gibi). Kesim kaydı Düze
 6. BULGU-2: değiştirmeden Kaydet → plan kimliği / kart no / taksitler / bakiye aynı; taksit sayısı değişince yeni kart (bugünkü); kapalı kart yeniden açılır (S235).
 7. Parası geri verilen iade kartı değiştirmez (G1) — kayıt da yazılmaz.
 8. Kilitli dönem: iadenin / iptalin tarih kilidi aynen; geri yazılan taksit Mutabakat Testi'ni bozmaz.
+
+### 19.10 Kod ve sonuç (kodla birlikte; kanıt docs/kanit/2026-11-21/izt-*)
+- `lib/obligation-queue.mjs`: `returnCutsOf` / `coverCutsAfter` (yeni, dışa açık); `coverForcing` ön geçişe `extraCap` + o anda bilinen iadeler (`cutList`); `queueOnce` `holds` (kart → faturanın tutulan kısmı; sıra 4 mahsubu
+  `target.left − held`; tutulan yüzünden mahsup edilemeyen pay `linkOverflow` sayılmaz); `coverEvent` kapasite `+ extra` (kırpma bugünkü kapasiteyle). `lib/obligation-input.mjs`: iki fatura sorgusuna `coverCuts` sütunu.
+- `routes/plans.mjs`: `cutPlan` / `shrinkPlan` `log`; `trimCovers` sonucu `items`; `growForInvoice` `items` (aynı taksitlere geri, kalan son taksite); `hasShrinkableCover`.
+- `routes/invoices.mjs`: `retarget` → `coverCutItems` / `ownCutItems`; `restoreCuts` / iade İptal Et → kayıtlı taksitlere; `ownCard` `log` / `restore`; `editInvoice` → `shrinkCoversByEdit` (YALNIZ tutar azalınca —
+  KOD SÜRERKEN DEĞİŞTİ: ilk hâli her Düzenle'de kapsam okuyordu, hız ölçümü 1'de 'Düzenle (aynı içerik)' +%20; ayrıca Düzenle'de eklenen peşin ödeme kartı küçültüyordu — ödeme iade değildir; sınama C2);
+  `ownPlanToKeep` / `samePlanShape` / `reverseEffects keepPlanId` / `writeIssued keepPlan` (BULGU-2); `ledgerFor` / `settledFor` önbelleği, `paymentStates` → `obligationsOf` (İş 6).
+- `client/assets/hof-invoices.js payFrom`: `mode === "installments"` → 'Taksitli'.
+- Sonuç (yoklama `izt-kos/iz.mjs`, sınama `test/izt-izleyen-tur-250.test.mjs` 16, ekran `test/e2e/senaryo-izt-250.mjs` 20): P-2 kart 600 / T600 / K0, iade açığı 300; P-1 taksitler iade öncesiyle aynı, 20.11 gecikmiş 300;
+  BULGU-1 gecikmiş 0 / 0 (kapalı q: 0 / 600); S234-c kart 300; BULGU-2 kart kimliği / no / taksitler aynı; fatura kartı GET 69,4 / 80,0 → 36,0 / 38,1 ms (Ç7b öncesi 42,9 / 44,4).
+- SK-42 (KULLANICIYA SORULMALI) bugünkü sayılar (yeni kod): (a) kart 900, tahsilat 600, Düzenle 900 → 300 → kart 600, kartın kendi hesabı Tahsil Edilen 600 / Kalan 0 ama kuyruk görünümü Tahsil Edilen 300 / Kalan 300,
+  bakiye −300 (Düzenle kesintisi iade kaydı gibi tutulmadığı için kuyruk kartı açıldığı andaki tutarla kuramıyor — P-2'nin Düzenle ikizi); (b) fatura 300 → kart 300 → Düzenle 300 → 900: kart 300 değişmez,
+  artan 600 faturanın vadesiyle kuyrukta (01.09 → 10.09'da gecikmiş 600).
+- KOD SÜRERKEN GÖRÜLDÜ (BAŞ MİMAR KARARI GEREKEN; önceden var, taban ve yeni kodda AYNI — yoklama `izt-kos/ayr.mjs`, `ayrisma-yeni-eski.txt`): carinin açık borcu kart tutarından fazlayken (S120 kolu)
+  kuyruk kartı EN ESKİ faturaya (s2), kapama defteri EN YENİ faturaya (newestFirst) bağlıyor. Örnek: A 600 (01.09), B 600 (02.09), kart 600 (03.09): ekranda A 'Taksitte', B 'Gecikti'; ama A'nın İptal Et'i kartı
+  değiştirmiyor, B'nin İptal Et'i kartı KAPATIYOR (0 / K0; bakiye 600 — A'nın borcu kartsız kalır); iade de aynı ayrışmayla yanlış kartı küçültür. Tek yardımcı (kapama defterinin seçimi S110 / S120'ye
+  getirilmeli) yazma yollarının (iade, iptal, Düzenle) davranışını değiştirir — bu turun kapsamı dışında.
