@@ -734,3 +734,76 @@ eklenirse açık kartla ayrışır; ikisine eklenirse açık kartın bugünkü d
       doğrusu 0) — kök neden kuyrukta (dosya sınırı dışı); S234 = A bunu kapalı karta da taşıyor → BULGU (ORTA aday) + BAŞ MİMAR KARARI GEREKEN.
   (c) Düzenle formu (önceden var, en az v2.4.9'dan): kaydedilmiş taksitli faturada kalan ödeme 'Açık Hesap (Vadeli)' seçili açılıyor (istemci `payFrom` payment.rest === "installments" arıyor; kaydedilmiş
       belgede rest tutar, mode "installments") → değiştirmeden Kaydet taksit kartını kaldırıyor (ekran senaryosu E gözlemi). S235'in onay cümlesi bu yüzden Açık Hesap seçiliyken 'kaldırılır' der → BULGU.
+
+## 19. İzleyen küçük tur (21.11.2026; görev metni `docs/devir/2.5.0-DEVAM/izt-istem.txt`) — P-2, P-1 / S238, S234-c, BULGU-1, BULGU-2, fatura kartı GET, S239 / S240 — KODDAN ÖNCE yazıldı
+Kararlar (görev metninden AYNEN): karar (4) 2B-S3 = A ("kart küçülmesi … vadesi en önce gelen açık taksitten başlar; küçülme kartın açık kalanını aşarsa fazlası carinin avansı; parası geri verilen iadede
+kart değişmez"), (6) 2B-S5 / S10 = A, S234 = A, S237 = A, S238 = A ("geri gelen tutar küçülmenin TERSİYLE, iadenin küçülttüğü AYNI taksite döner (iade hiç olmamış gibi)"), S239 = A ("iade önce faturanın kart
+DIŞINDAKİ açık kısmını kapatır"), S240 = A ("S126'daki dağılım sırası AYNEN kalır"); BAŞ MİMAR KARARI 21.11 12:50 (yedi iş). Bugünkü davranış programın kendisiyle üretildi (taban izt-taban = 44a1762d;
+yoklama not defteri `izt-a68/probe/iz.mjs`, çıktı `taban.txt`; kopyası docs/kanit/2026-11-21/izt-kos/).
+
+### 19.1 Bugünkü davranış (taban; örnek tutarla)
+| # | Örnek | Taban | Kararın istediği |
+|---|---|---|---|
+| P-2 (d55 B2) | fatura 900 → Mevcut Borç kartı 900 (05.10 / 05.11 / 05.12) → kart tahsilatı 600 → iade 600 | kart 600, **Tahsil Edilen 300, Kalan 300**; iade belgesinin açığı 0; bakiye −300 (kapalı kartta da aynı) | kart 600, Tahsil Edilen 600, Kalan 0; fazlası 300 carinin avansı (iade belgesinin açığı 300); bakiye −300 |
+| P-2 kendi kartı | taksitli fatura 900 → kart tahsilatı 600 → iade 600 | kart 600 / T600 / K0, iadenin açığı 300 (DOĞRU) | değişmez |
+| P-1 (d55 B1) | kart 900 → tahsilat 300 → 10.11 iade 300 (05.11 taksiti silinir) → 20.11 iade iptali | kart 900: 05.10 300 (ödendi) + **05.12 600**; 20.11 gecikmiş **0** (açık kart) | 05.11 taksiti 300 geri gelir; 20.11 gecikmiş 300; açık / kapalı / kendi kartı aynı |
+| BULGU-1 (T8) | fatura 900 (05.10) → kart q 900 → fatura 300 (06.10) → kart r 300 → ilk faturaya iade 300 | q 600, r 300 'Ödendi'; ikinci fatura kapsamsız 'Gecikti' → gecikmiş 08.10 **300** (açık) / kapalı q: 08.10 300, 09.10 **900** | açık: 0; kapalı q: 08.10 0, 09.10 600; bakiye 900 değişmez |
+| S234-c (D1) | fatura 900 → kart 900 → Düzenle 900 → 300 | kart **900 / Kalan 900**, bakiye 300 (açık ve kapalı kart) | kart iade gibi küçülür (300; kesim vadesi en önce gelen açık taksitten) |
+| SK-42 (a) (D2a) | kart 900, tahsilat 600 → Düzenle 900 → 300 | kart 900 / T300 / K600, bakiye −300 | (kararda yok — §19.8) |
+| SK-42 (b) (D2b) | fatura 300 → kart 300 → Düzenle 300 → 900 | kart 300 değişmez; artan 600 faturanın vadesiyle (01.09) kuyrukta → gecikmiş 600 | (kararda yok — §19.8) |
+| S239 | fatura 900 → kart 600 (faturanın 600'ü kartta) → iade 300 | kart 600 değişmez; dışarıdaki 300 kapanır | A ile AYNI (sınamayla kalıcı) |
+| S240 | elle borç 300 + fatura 900 → kart 1200 → tahsilat 300 → iade 300 (fatura) | kart 900 / T300 / K600; bakiye 600 | A ile AYNI (sınamayla kalıcı) |
+| BULGU-2 | kaydedilmiş taksitli fatura → Düzenle → değiştirmeden Kaydet | form 'Açık Hesap (Vadeli)' açılır; Kaydet kartı siler (bakiye aynı, borç faturanın vadesiyle) | form 'Taksitli' açılır; Kaydet kartı ve taksitleri AYNEN bırakır |
+
+### 19.2 Kök neden — P-2 ve BULGU-1 (Tek Yükümlülük Kuyruğu, `lib/obligation-queue.mjs`)
+Kapama defteri (`lib/invoice-settle.mjs`) Mevcut Borç kartının kapsamını kartın AÇILDIĞI ANDAKİ tutarla kurar (`coverTotal` = bugünkü tutar + iade kesintileri; yalnız karttan önce doğmuş satırlar); sonradan
+gelen iade kartın kapsadığı borcu kapatır. Kuyruk ise kartın kapsamını hem ön geçişte (`coverForcing`, kartın anındaki satırlar) hem asıl geçişte `min(coverTotal, bugünkü taksit toplamı)` ile kurar:
+(a) BULGU-1 — ön geçişte q'nun kapsamı iadeyle küçülmüş taksitlerden okunur (600); iade o anda bilinmediği için ilk faturanın 300'ü 'kapsamsız' görünür, sonraki kart r onu alır (S120 s2 sırası),
+ikinci fatura kapsamsız kalır. (b) P-2 — asıl geçişte iade (sıra 4) asıl faturayı kartın kapsamından ÖNCE kapatır (600); kart yalnız kalan 300'ü kapsar, kart tahsilatı 600 taksitleri kapatır, S101 ölçümü kartı
+kırpar → kart Kalan 300 / Tahsil Edilen 300 (carinin borcu yokken).
+TEK KURAL (iki hesap aynı okumaya): kartın kapsamı = AÇILDIĞI ANDAKİ tutarı (bugünkü tutar + o andan SONRA doğan iadelerin bu karttan kestiği tutar). Tek yardımcı `lib/obligation-queue.mjs`
+`coverCutsAfter` (iade belgelerinin `coverCuts`'ından; kapama defterinin `coverTotal`'ı aynı kesintileri ekler). Kuyrukta:
+1. Ön geçiş (kartın / sonraki kartın anı): kartın kapasitesi = bugünkü taksit toplamı + o andan SONRA doğan iadelerin bu karttan kestiği tutar (girdiye `coverCuts` alanı — `lib/obligation-input.mjs` iki fatura
+   sorgusu). Taksitler değişmez (kırpma bugünkü kapasiteyle — fazla kapsam kırpma doğurmaz).
+2. Asıl geçiş: iadenin asıl faturaya mahsubu (sıra 4) faturanın kartlarca TUTULAN kısmına dokunmaz — tutulan = kartın ön geçişteki kapsamı − o faturanın iadelerinin o karttan kestiği tutar (en çok kartın
+   kapasitesi). İadenin kalanı (mahsup edilemeyen) bağsız alacaktır (iade belgesinin açığı = carinin avansı; kapama defterinin 'excess'i ile aynı).
+Değişmeyen: S110 / S120 seçimi, S101 ön ödeme, Y-1, kilit, kart tahsilatı sırası, kendi kartı (taksitli fatura; P-2'de zaten doğru), iadesi olmayan her girdi (kesintisiz kartta 1 ve 2 etkisiz — eşdeğerlik).
+
+### 19.3 P-1 / S238 = A — iade iptalinde aynı taksite geri büyüme (`routes/plans.mjs`, `routes/invoices.mjs`)
+- Kesim kaydı: `cutPlan` kestiği her taksiti (kimlik, sıra, vade, not, kesilen) döndürür; iade (`retarget`: kapsayan kart + `trimCovers`; `ownCard`: kendi kartı) bunları iade belgesine yazar
+  (`payment_json.coverCutItems` — kart → taksitler; `ownCutItems` — kendi kart). `coverCuts` (tutar) aynen.
+- Büyüme (`growForInvoice`, yeni `items` seçeneği): kayıtlı taksitler TERS sırayla geri yazılır — taksit duruyorsa tutarı kesilen kadar artar, silinmişse aynı kimlik / sıra / vadeyle yeniden açılır; kayıtla
+  karşılanmayan büyüme (eski veri, kayıt yok) bugünkü gibi SON taksite. Sınır (`cap`) aynen. İade iptali (`cancel` → `restoreCuts` + `ownCard`) ve iade Düzenle'si (`restoreCuts`) kaydı okur.
+- Kapalı (Borçta Kalsın) kart: aynı (S234 = A'nın tersi); kalemin günü kuyrukta `keptDueOf` (S205) — geri gelen taksit kapanış ertesinden gecikmiş.
+
+### 19.4 P-2 kartın kendi hesabı
+`shrinkPlan` keseni kalanla sınırlar (bugünkü); kuyruk düzeltmesiyle kartın Tahsil Edilen / Kalan'ı (S129: kuyruktan) kartın kendi hesabıyla aynı olur: kart 600 / T600 / K0. İadenin kalan 300'ü carinin avansı.
+
+### 19.5 S234-c — Düzenle ile azaltma (`routes/invoices.mjs editInvoice`)
+EKRAN YOLU: fatura kartı → Düzenle → Kaydet = `POST /api/workspace/invoices/:id/edit` (gövde: `scenario, accountId, issueDate, lines[], payment{cash[], cheques[], endorse[], rest, dueDate, installments}, force…`);
+yalnız KAYDEDİLMİŞ (status 'issued') belgede (taslakta 409 `invoice-not-issued`). `PUT /api/workspace/invoices/:id` yalnız TASLAK içindir (kesilmişte 409 `invoice-not-draft`) — kâhinin yoklamadığı yol bu.
+Kural (S234 = A + kâhin KAPSAM (e) "azaltılan tutar iade gibi"): satış faturasının (iade belgesi değil, taksitsiz) Düzenle'sinde kapsayan Mevcut Borç kartlarının payı (`coverState(...).coveredBy`, kapama defteri)
+Düzenle'den ÖNCE okunur; yeni etkiler yazıldıktan sonra yeniden okunur; her kart payı ne kadar azaldıysa karar (4) ile küçülür (`shrinkPlan` — kalanla sınırlı; açık ve Borçta Kalsın kapalı kart, eski kurallı
+kapalı kart değişmez), sonra `trimCovers` (iadedeki gibi). Kesim kaydı Düzenle'de yazılmaz (iade belgesi yok). Carinin kartı yoksa okunmaz (ders 47).
+
+### 19.6 BULGU-2 — Düzenle formu (`client/assets/hof-invoices.js payFrom`) + değiştirmeden Kaydet (`routes/invoices.mjs`)
+- Form: kaydedilmiş belgenin ödemesi `mode: "installments"` ise kalan 'Taksitli' seçili; Taksit Sayısı / İlk Vade / Kaç Ayda Bir kayıttan.
+- Sunucu: Düzenle'de faturanın KENDİ kartı AÇIK, tahsilatsız ve yeni ödeme planı kayıtlıyla AYNI (kalan tutar = kart tutarı, taksit sayısı, ilk vade, aralık) ise kart kaldırılıp yeniden kurulmaz — kart ve
+  taksitleri (kimlik, kart no, vadeler, tutarlar) AYNEN kalır. Bir şey değiştiyse bugünkü gibi (eski kart kaldırılır, yeni kart). Kapalı kart (S235 = B): bugünkü gibi yeniden kurulur, kart açılır — onay
+  cümlesi "yeniden açılır" doğru kalır. Tahsilatlı kartta Düzenle bugünkü gibi 409.
+
+### 19.7 Fatura kartı GET (+26 ms; Ç7b) — `routes/invoices.mjs`
+İptal notunun kapsam okuması (`coverCancelText` → `coverState` → `settledFor`: carinin cari kartı + kapama defteri). Düzeltme ölçümle seçilir (önce / sonra aynı kopya); eşdeğerlik testiyle.
+
+### 19.8 KULLANICIYA SORULMALI (kodla karar verilmez — ders 43)
+- SK-42 (a) Düzenle ile kartın açık kalanından FAZLA azaltma; (b) Düzenle ile ARTIRMA. §19.5'in kodundan sonraki sayılar raporda.
+
+### 19.9 Nasıl bozulur? (önce yazıldı; testler buradan)
+1. P-2: açık / kapalı (Borçta Kalsın) Mevcut Borç kartı, tahsilat 600 + iade 600 → kart 600 / T600 / K0, iade açığı 300, bakiye −300; kendi kart değişmez.
+2. P-1: iade → iade iptali → kart taksitleri iade öncesiyle AYNI (vade, tutar); açık kartta gecikmiş geri gelir; kapalı kartta S205; kendi kartı; kaydı olmayan eski iade → son taksit.
+3. BULGU-1: iki kart (açık / kapalı q) → gecikmiş 0 / 0 ve 600; bakiye, Mutabakat Testi aynı; kartlar Kalan = borç.
+4. İadesi olmayan girdi: kuyruk sonucu AYNEN (eşdeğerlik — kesinti yoksa yeni dallar çalışmaz).
+5. S234-c: Düzenle 900 → 300 açık / kapalı kart → kart 300; Düzenle tahsilatlı kartta (SK-42 a) ve artırma (SK-42 b) sayıları yazılır; kendi kartlı fatura Düzenle'si bugünkü (S235).
+6. BULGU-2: değiştirmeden Kaydet → plan kimliği / kart no / taksitler / bakiye aynı; taksit sayısı değişince yeni kart (bugünkü); kapalı kart yeniden açılır (S235).
+7. Parası geri verilen iade kartı değiştirmez (G1) — kayıt da yazılmaz.
+8. Kilitli dönem: iadenin / iptalin tarih kilidi aynen; geri yazılan taksit Mutabakat Testi'ni bozmaz.
