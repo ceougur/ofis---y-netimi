@@ -1,0 +1,32 @@
+{
+  "ad": "ana-dkfix-yeni-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/dkfix-s234-kapali-kart-250.test.mjs test/banka-210-altin.test.mjs",
+  "commit": "de40391564656f13e374f1ea8948214e9cfd18eb",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T10:24:45.131Z",
+  "sure_sn": 29.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 15,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-dkfix/kanit/2026-11-21/ana-dkfix-yeni-Europe-Istanbul.log",
+  "klasor": "/dev/shm/ana-dkfix/yeni",
+  "ham_cikti_sha256": "dfec6c274496dc0fea8bc6156d2ef67870cd85b1baab01c0dd9d2c3151a68794",
+  "ham_cikti_bayt": 6532
+}

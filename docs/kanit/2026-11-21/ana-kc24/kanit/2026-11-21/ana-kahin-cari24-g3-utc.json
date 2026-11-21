@@ -1,0 +1,32 @@
+{
+  "ad": "ana-kahin-cari24-g3-utc",
+  "komut": "python3 -I -B docs/kanit/2026-11-21/kahin-cari24-arac/karsilastir.py --eski /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kc24/eski/test/bagimsiz/cari --yeni test/bagimsiz/cari --dokum /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kc24/kanit/kahin-cari24-g3-dokum-utc.json",
+  "commit": "12994e50b56e78f9840ccf2bae4b591b6eb49f80",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T12:48:59.445Z",
+  "sure_sn": 42.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 639,
+    "gecen": 639,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kc24/kanit/2026-11-21/ana-kahin-cari24-g3-utc.log",
+  "klasor": "/dev/shm/ana-kc24",
+  "ham_cikti_sha256": "134b313a3fff0ee1eab4ff1afcaf9c28c86ff17c431a8bad7ef7674e57c20de3",
+  "ham_cikti_bayt": 1781
+}

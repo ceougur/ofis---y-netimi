@@ -1,0 +1,84 @@
+ı ve kurala uygun (fatura önce, cari satırları yazım sırasıyla, ters kayıt asıl fişten sonra)
+      ---
+      duration_ms: 3.695125
+      type: 'test'
+      ...
+    # Subtest: Y4 birim: sınıf içi sıra toplamları değiştirmez — mizan ve cari bakiyeleri iki koşuda kuruşu kuruşuna aynı
+    ok 2 - Y4 birim: sınıf içi sıra toplamları değiştirmez — mizan ve cari bakiyeleri iki koşuda kuruşu kuruşuna aynı
+      ---
+      duration_ms: 1.671485
+      type: 'test'
+      ...
+    # Subtest: Y5 birim: yazım sırası taşımayan eski çağıranın satırları da belirlenimci (sınıf, sonra kimlik)
+    ok 3 - Y5 birim: yazım sırası taşımayan eski çağıranın satırları da belirlenimci (sınıf, sonra kimlik)
+      ---
+      duration_ms: 1.359464
+      type: 'test'
+      ...
+    # Subtest: Y6 birim: şüpheli alacak — aynı gün al → karşılık → tahsilat → çıkar (§4.15); tahsilat kimliği ne olursa olsun
+    ok 4 - Y6 birim: şüpheli alacak — aynı gün al → karşılık → tahsilat → çıkar (§4.15); tahsilat kimliği ne olursa olsun
+      ---
+      duration_ms: 1.909529
+      type: 'test'
+      ...
+    1..4
+ok 1481 - MM8 Yevmiye aynı gün sırası: olay sınıfı → yazım sırası (kimlikten bağımsız)
+  ---
+  duration_ms: 9.642598
+  type: 'suite'
+  ...
+# Subtest: MM8 Yevmiye Defteri raporu (program kendi yazdığı veriyle)
+    # Subtest: Y1/Y3 API: aynı gün yazılan 8 cari satırı Yevmiye Defteri'nde yazım sırasıyla; aynı günün faturası onlardan önce
+    ok 1 - Y1/Y3 API: aynı gün yazılan 8 cari satırı Yevmiye Defteri'nde yazım sırasıyla; aynı günün faturası onlardan önce
+      ---
+      duration_ms: 226.975208
+      type: 'test'
+      ...
+    1..1
+ok 1482 - MM8 Yevmiye Defteri raporu (program kendi yazdığı veriyle)
+  ---
+  duration_ms: 857.668545
+  type: 'suite'
+  ...
+# Subtest: ZIP yazma/okuma
+    # Subtest: yazdığını aynen okur (UTF-8 adlar, boş ve ikili dosyalar)
+    ok 1 - yazdığını aynen okur (UTF-8 adlar, boş ve ikili dosyalar)
+      ---
+      duration_ms: 3.576795
+      type: 'test'
+      ...
+    # Subtest: sistem unzip aracıyla uyumludur
+    ok 2 - sistem unzip aracıyla uyumludur
+      ---
+      duration_ms: 9.613501
+      type: 'test'
+      ...
+    # Subtest: zip-slip girişlerini reddeder
+    ok 3 - zip-slip girişlerini reddeder
+      ---
+      duration_ms: 1.141316
+      type: 'test'
+      ...
+    # Subtest: bozulmuş içeriği CRC ile yakalar
+    ok 4 - bozulmuş içeriği CRC ile yakalar
+      ---
+      duration_ms: 1.524312
+      type: 'test'
+      ...
+    1..4
+ok 1483 - ZIP yazma/okuma
+  ---
+  duration_ms: 17.145024
+  type: 'suite'
+  ...
+1..1483
+# tests 5985
+# suites 1415
+# pass 5985
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4171952.608861
+
+[kanit] ana-dkfix-tam: GEÇTİ · çıkış 0 · 5985/5985 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6554ff5 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
