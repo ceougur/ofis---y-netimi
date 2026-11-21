@@ -276,7 +276,16 @@ export function incomeStatement({ entries, valuation, from, to, bookType = "unse
     if (part.hesap === "770.90") cashExpenseMinor += part.tutarMinor;
   }
   const years = new Set([Number(from.slice(0, 4))]);
-  const ruleRows = (ruleDiff?.balances || []).filter(row => years.has(Number(row.year)) && (/^[67]/.test(row.account) || row.account === "153"));
+  // Tur 4 (ORTA-1): yıl × hesap × alt hesap (Bilanço'nun cari boyutlu satırları burada toplanır — Gelir Tablosu cari göstermez).
+  const ruleSums = new Map();
+  for (const row of ruleDiff?.balances || []) {
+    if (!years.has(Number(row.year)) || !(/^[67]/.test(row.account) || row.account === "153")) continue;
+    const key = `${row.year}|${row.account}|${row.sub || ""}`;
+    const item = ruleSums.get(key) || { year: row.year, account: row.account, sub: row.sub || "", differenceMinor: 0 };
+    item.differenceMinor += row.differenceMinor;
+    ruleSums.set(key, item);
+  }
+  const ruleRows = [...ruleSums.values()].filter(row => row.differenceMinor !== 0);
   const facts = {
     costEstimated: cost.estimated,
     unbalanced,
@@ -305,18 +314,21 @@ export function incomeStatement({ entries, valuation, from, to, bookType = "unse
 
 /**
  * Gelir Tablosu'nun Kural Değişikliği Farkı (Ç3; kitap §7.4): dönemin KİLİTLİ kısmında [from, to] (to ≤ kilit kapsamı) donmuş defterin ve güncel türetmenin gelir tablosu hesapları (6 / 7) ile
- * 153'ü (satışların maliyeti tahmini) için yıl × hesap toplamları. Tutar farkı olan satırlar döner (snapshots.ruleDiff'in balances biçimi). Madde eşleştirmesi yapılmaz — tabloyu değiştiren
- * yalnız hesap toplamıdır; bütün kilitli geçmişi karşılaştıran snapshots.ruleDiff 100.000 satırda ~2,7 sn (ölçüm: docs/kanit/2026-11-19/c6h1-hiz-parca) — Mutabakat Testi'nin "ledger:rule-diff"
+ * 153'ü (satışların maliyeti tahmini) için yıl × hesap × alt hesap (party: × cari — Bilanço) toplamları. Tutar farkı olan satırlar döner (snapshots.ruleDiff'in balances biçimi). Madde
+ * eşleştirmesi yapılmaz — tabloyu değiştiren hesap, alt hesap (.90 satırları, dipnot 3 / 6) ve Bilanço'da cari toplamıdır (tur 4, ORTA-1: önceki "yalnız hesap toplamı" okuması yanlıştı); bütün kilitli geçmişi karşılaştıran snapshots.ruleDiff 100.000 satırda ~2,7 sn (ölçüm: docs/kanit/2026-11-19/c6h1-hiz-parca) — Mutabakat Testi'nin "ledger:rule-diff"
  * denetimi o işi yapar. Saklanan fişler (voucher-*) iki tarafta da karşılaştırılmaz (snapshots.ruleDiff ile aynı).
  */
-export function periodRuleDiff({ frozen, live, from, to, accounts = account => account === "153" || /^[67]/.test(account), frozenSums: summary = null }) {
+export function periodRuleDiff({ frozen, live, from, to, accounts = account => account === "153" || /^[67]/.test(account), frozenSums: summary = null, party = false }) {
   const sums = new Map();
+  // Tur 4 (ORTA-1; tasarım §11.1): anahtar yıl × hesap × ALT HESAP (party: Bilanço — × cari); snapshots.ruleDiff'in balances anahtarıyla aynı.
+  const keyOf = (year, account, sub, who) => `${year}|${account}|${sub || ""}${party ? `|${who || ""}` : ""}`;
   // B-g (b): donmuş taraf toplamlardan (frozenPartOf — [from, to] aralığının TAMAMI; kimliği "voucher" ile başlayan maddeler hariç); frozen o zaman yalnız kapsam sonrası maddeler (aralık dışı).
   if (summary) {
     for (const [year, part] of summary.years) {
-      for (const [account, net] of part.rule) {
+      for (const [cell, net] of part.rule) {
+        const [account, sub, who] = cell.split("|");
         if (!accounts(account)) continue;
-        const key = `${String(year).padStart(4, "0")}|${account}`;
+        const key = keyOf(String(year).padStart(4, "0"), account, sub, who);
         const row = sums.get(key) || { frozen: 0, live: 0 };
         row.frozen += net;
         sums.set(key, row);
@@ -328,7 +340,7 @@ export function periodRuleDiff({ frozen, live, from, to, accounts = account => a
       if (entry.date < from || entry.date > to || String(entry.id).startsWith("voucher")) continue;
       for (const line of entry.lines) {
         if (!accounts(line.account)) continue;
-        const key = `${entry.date.slice(0, 4)}|${line.account}`;
+        const key = keyOf(entry.date.slice(0, 4), line.account, line.sub, line.party);
         const row = sums.get(key) || { frozen: 0, live: 0 };
         row[side] += (Number(line.debit) || 0) - (Number(line.credit) || 0);
         sums.set(key, row);
@@ -340,10 +352,10 @@ export function periodRuleDiff({ frozen, live, from, to, accounts = account => a
   const balances = [];
   for (const [key, row] of sums) {
     if (row.frozen === row.live) continue;
-    const [year, account] = key.split("|");
-    balances.push({ year: Number(year), account, sub: "", party: "", frozenMinor: row.frozen, liveMinor: row.live, differenceMinor: row.live - row.frozen });
+    const [year, account, sub, who = ""] = key.split("|");
+    balances.push({ year: Number(year), account, sub, party: who, frozenMinor: row.frozen, liveMinor: row.live, differenceMinor: row.live - row.frozen });
   }
-  balances.sort((a, b) => a.year - b.year || a.account.localeCompare(b.account));
+  balances.sort((a, b) => a.year - b.year || a.account.localeCompare(b.account) || a.sub.localeCompare(b.sub) || a.party.localeCompare(b.party));
   return { through: to, balances };
 }
 
@@ -401,7 +413,10 @@ export function frozenPartOf(sums) {
     else cells.set(key, { account: row.account, sub: row.sub, party: row.party, net: row.net });
     if (/^[67]/.test(row.account)) part.any67 = true;
     if (balanceAccount(row.account) && !balanceSheetItemOf(row.account)) candidates.add(row.account);
-    if (!row.voucher) part.rule.set(row.account, (part.rule.get(row.account) || 0) + row.net);
+    if (!row.voucher) {
+      const ruleKey = `${row.account}|${row.sub}|${row.party}`; // tur 4 (ORTA-1): alt hesap ve cari boyutu (periodRuleDiff seçer)
+      part.rule.set(ruleKey, (part.rule.get(ruleKey) || 0) + row.net);
+    }
     if (cls === CLOSING_CLASS) {
       if (row.last > closingDay) closingDay = row.last;
       continue;
@@ -718,7 +733,7 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
       ...failedChecks.map(check => `${check.code} ${check.name}: defter ${tlText(Math.round(Number(check.ledger) * 100))}, alt defter ${tlText(Math.round(Number(check.subledger) * 100))} (fark ${tlText(Math.round(Number(check.difference) * 100))})`),
     ],
     balanceDiffMinor: farkMinor,
-    ruleDiff: (ruleDiff?.balances || []).filter(row => Number(row.year) <= year).map(row => `${row.year} · ${row.account}${row.sub ? ` (${row.sub})` : ""}: ${tlText(row.differenceMinor)}`),
+    ruleDiff: (ruleDiff?.balances || []).filter(row => Number(row.year) <= year).map(row => `${row.year} · ${row.account}${row.sub ? ` (${row.sub})` : ""}${row.party ? ` · ${nameOf(row.party)}` : ""}: ${tlText(row.differenceMinor)}`),
     negativeStock: [...negativeStock.values()],
     clippedCost: stockAt.clipped,
     negativeBalances: impossible.map(fmt),
@@ -778,7 +793,7 @@ export function balanceSheetOf({ store, ledger, date }) {
   const frozen = cover ? frozenPartOf(frozenSums(store, { from: "", through })) : null;
   const entries = !cover ? ledger.book({ to: date, live }) : date > cover ? ledger.book({ from: dayAfter(cover), to: date, live }) : [];
   // Kural Değişikliği Farkı (Ç3): kilitli kısmın [başlangıç, min(t, kapsam)] donmuş ↔ güncel türetme yıl × hesap toplamı, BÜTÜN hesaplar (Bilanço 1–5'i, hesaplanmış satırlar 6 / 7'yi okur).
-  const ruleDiff = cover ? periodRuleDiff({ frozen: entries, frozenSums: frozen, live, from: "", to: through, accounts: () => true }) : null;
+  const ruleDiff = cover ? periodRuleDiff({ frozen: entries, frozenSums: frozen, live, from: "", to: through, accounts: () => true, party: true }) : null;
   const valuation = createStockValuation(loadValuationInput(store));
   const names = new Map();
   const partyNames = {

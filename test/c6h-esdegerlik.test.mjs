@@ -30,7 +30,8 @@ function oldBalance(store, ledger, date) {
   const live = checked.entries;
   const entries = ledger.book({ to: date, live });
   const cover = ledger.snapshots?.state?.().coverage || "";
-  const ruleDiff = cover ? periodRuleDiff({ frozen: entries, live, from: "", to: date < cover ? date : cover, accounts: () => true }) : null;
+  // Tur 4 (ORTA-1): Bilanço'nun kural farkı cari boyutlu (party) — iki okuma aynı saf işlevi aynı seçenekle çağırır.
+  const ruleDiff = cover ? periodRuleDiff({ frozen: entries, live, from: "", to: date < cover ? date : cover, accounts: () => true, party: true }) : null;
   const valuation = createStockValuation(loadValuationInput(store));
   const names = new Map();
   const partyNames = { get: id => (names.has(id) ? names.get(id) : (names.set(id, store.get("SELECT name FROM accounts WHERE id = ?", id)?.name || ""), names.get(id))) };
