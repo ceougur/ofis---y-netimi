@@ -1,0 +1,5 @@
+cari UTC çıkış 0 14:12:06
+defter UTC çıkış 0 14:12:13
+cari Europe/Istanbul çıkış 0 14:20:17
+defter Europe/Istanbul çıkış 0 14:20:21
+yapim çıkış 0 14:28:00

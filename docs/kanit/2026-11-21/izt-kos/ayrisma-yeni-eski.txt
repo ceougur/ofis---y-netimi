@@ -1,0 +1,6 @@
+kuyruk: A installment inPlan 600 · B overdue inPlan 0 | kapama defteri coveredBy: A {} · B {"plan-53953968-b92c-43f0-8668-426f6bb545dd":600} | A İptal Et → kart active 600/K600; bakiye 600
+kuyruk: A installment inPlan 600 · B overdue inPlan 0 | kapama defteri coveredBy: A {} · B {"plan-d8b34236-0e38-4bbf-b09a-a631d14b1cc6":600} | B İptal Et → kart closed 0/K0; bakiye 600
+kuyruk: A installment inPlan 600 · B overdue inPlan 0 | kapama defteri coveredBy: A {} · B {"plan-7c8a7ea8-5b73-4fa3-bd7a-cca636b749e3":600} | A İptal Et → kart active 600/K600; bakiye 600
+kuyruk: A installment inPlan 600 · B overdue inPlan 0 | kapama defteri coveredBy: A {} · B {"plan-b62701fd-50d9-46df-a7a2-2d7861d3998b":600} | B İptal Et → kart closed 0/K0; bakiye 600
+
+[exited with code 0]

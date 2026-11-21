@@ -1,0 +1,4 @@
+=== /home/user/ofis---y-netimi/.claude/worktrees/agent-a685ea99951e1d5f9 başta 2.99 4.00 3.12 3/162 31098 15:58:29
+--- senaryo-c7b-tur3-250 15:58:29 yük 2.99
+çıkış 0 · ✓ senaryo-c7b-tur3-250: 39 geçti, 0 kaldı
+bitti 16:02:06

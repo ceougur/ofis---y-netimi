@@ -1,0 +1,200 @@
+HIZ · nproc 4 · başta 1.39 2.62 2.88 1/131 1538 · 16:05:28
+=== tur 1 · oncesi · başta 1.39 2.62 2.88 1/131 1546 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/oncesi · yük başta 1.77 2.60 2.86
+aday 12
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+SONUÇ | kart penceresi GET | n 10 | en iyi 2.1 | ortanca 44.0 | olay döngüsü en çok 151.8 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 10 | en iyi 44.6 | ortanca 56.8 | olay döngüsü en çok 97.0 | 200 dışı 0
+SONUÇ | cari kartı GET | n 10 | en iyi 137.2 | ortanca 168.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 128.4 | ortanca 138.4 | olay döngüsü en çok 148.4 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 7 | en iyi 978.6 | ortanca 1270.8 | olay döngüsü en çok 1585.4 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 7 | en iyi 2.9 | ortanca 6.2 | olay döngüsü en çok 0.0 | 200 dışı 4
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 34.8 | ortanca 38.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 66.6 | ortanca 67.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 302.5 | ortanca 317.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 59.1 | ortanca 61.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 330.6 | ortanca 379.2 | olay döngüsü en çok 140.0 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1102.5 | ortanca 1194.2 | olay döngüsü en çok 1366.3 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 630.9 | ortanca 669.8 | olay döngüsü en çok 877.1 | 200 dışı 0
+yük sonda 1.00 1.42 2.21
+çıkış 0 · sonda 1.00 1.42 2.21 1/128 1819
+=== tur 1 · eski · başta 1.00 1.42 2.21 1/136 1836 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/eski · yük başta 1.00 1.38 2.17
+aday 12
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+SONUÇ | kart penceresi GET | n 10 | en iyi 1.8 | ortanca 42.2 | olay döngüsü en çok 58.6 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 10 | en iyi 72.1 | ortanca 73.3 | olay döngüsü en çok 169.2 | 200 dışı 0
+SONUÇ | cari kartı GET | n 10 | en iyi 134.7 | ortanca 142.2 | olay döngüsü en çok 138.7 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 130.3 | ortanca 135.0 | olay döngüsü en çok 154.3 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 7 | en iyi 1013.7 | ortanca 1076.2 | olay döngüsü en çok 1251.0 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 7 | en iyi 2.9 | ortanca 4.4 | olay döngüsü en çok 155.2 | 200 dışı 4
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 37.4 | ortanca 39.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 58.4 | ortanca 63.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 143.3 | ortanca 145.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 57.5 | ortanca 57.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 302.7 | ortanca 348.8 | olay döngüsü en çok 10.4 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1072.7 | ortanca 1174.7 | olay döngüsü en çok 1197.5 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 594.1 | ortanca 630.9 | olay döngüsü en çok 661.7 | 200 dışı 0
+yük sonda 1.16 1.15 1.78
+çıkış 0 · sonda 1.16 1.15 1.78 1/115 2261
+=== tur 1 · yeni · başta 1.16 1.15 1.78 1/115 2268 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a685ea99951e1d5f9 · yük başta 1.25 1.17 1.77
+aday 12
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+SONUÇ | kart penceresi GET | n 10 | en iyi 1.7 | ortanca 40.4 | olay döngüsü en çok 126.2 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 10 | en iyi 36.0 | ortanca 38.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | cari kartı GET | n 10 | en iyi 133.1 | ortanca 139.8 | olay döngüsü en çok 175.1 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 149.6 | ortanca 162.1 | olay döngüsü en çok 181.9 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 7 | en iyi 1033.6 | ortanca 1137.0 | olay döngüsü en çok 1128.3 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 7 | en iyi 3.2 | ortanca 6.2 | olay döngüsü en çok 0.0 | 200 dışı 4
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 1.7 | ortanca 1.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 56.9 | ortanca 58.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 138.7 | ortanca 140.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 55.7 | ortanca 55.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 290.4 | ortanca 354.7 | olay döngüsü en çok 11.2 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1114.6 | ortanca 1221.6 | olay döngüsü en çok 1260.4 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 618.0 | ortanca 634.9 | olay döngüsü en çok 719.8 | 200 dışı 0
+yük sonda 1.00 1.04 1.50
+çıkış 0 · sonda 1.00 1.04 1.50 1/114 2326
+=== tur 2 · oncesi · başta 1.00 1.04 1.49 1/114 2333 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/oncesi · yük başta 1.00 1.03 1.48
+aday 12
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+SONUÇ | kart penceresi GET | n 10 | en iyi 1.9 | ortanca 44.8 | olay döngüsü en çok 223.5 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 10 | en iyi 46.2 | ortanca 55.3 | olay döngüsü en çok 91.5 | 200 dışı 0
+SONUÇ | cari kartı GET | n 10 | en iyi 143.1 | ortanca 151.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 108.9 | ortanca 114.4 | olay döngüsü en çok 174.6 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 7 | en iyi 1031.1 | ortanca 1159.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 7 | en iyi 3.3 | ortanca 5.9 | olay döngüsü en çok 0.0 | 200 dışı 4
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 35.1 | ortanca 38.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 70.8 | ortanca 82.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 289.0 | ortanca 298.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 57.1 | ortanca 58.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 296.4 | ortanca 343.4 | olay döngüsü en çok 9.8 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 987.7 | ortanca 1166.8 | olay döngüsü en çok 1114.6 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 583.6 | ortanca 614.9 | olay döngüsü en çok 710.4 | 200 dışı 0
+yük sonda 1.39 1.09 1.34
+çıkış 0 · sonda 1.39 1.09 1.34 1/114 2386
+=== tur 2 · eski · başta 1.39 1.09 1.34 1/114 2393 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/eski · yük başta 1.26 1.08 1.33
+aday 12
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+SONUÇ | kart penceresi GET | n 10 | en iyi 1.7 | ortanca 40.5 | olay döngüsü en çok 199.0 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 10 | en iyi 71.6 | ortanca 77.7 | olay döngüsü en çok 73.3 | 200 dışı 0
+SONUÇ | cari kartı GET | n 10 | en iyi 133.4 | ortanca 137.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 129.3 | ortanca 145.2 | olay döngüsü en çok 163.1 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 7 | en iyi 995.1 | ortanca 1112.6 | olay döngüsü en çok 1094.7 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 7 | en iyi 2.8 | ortanca 4.4 | olay döngüsü en çok 0.0 | 200 dışı 4
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 35.3 | ortanca 37.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 57.4 | ortanca 58.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 140.0 | ortanca 147.5 | olay döngüsü en çok 147.3 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 58.4 | ortanca 62.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 317.0 | ortanca 365.2 | olay döngüsü en çok 9.1 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1085.1 | ortanca 1165.0 | olay döngüsü en çok 1592.8 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 677.8 | ortanca 726.7 | olay döngüsü en çok 814.2 | 200 dışı 0
+yük sonda 1.00 1.02 1.21
+çıkış 0 · sonda 1.00 1.02 1.21 1/114 2449
+=== tur 2 · yeni · başta 1.00 1.01 1.21 1/114 2456 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a685ea99951e1d5f9 · yük başta 1.00 1.01 1.20
+aday 12
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+SONUÇ | kart penceresi GET | n 10 | en iyi 1.8 | ortanca 43.5 | olay döngüsü en çok 185.5 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 10 | en iyi 37.6 | ortanca 42.3 | olay döngüsü en çok 71.1 | 200 dışı 0
+SONUÇ | cari kartı GET | n 10 | en iyi 139.5 | ortanca 146.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 150.1 | ortanca 155.6 | olay döngüsü en çok 223.2 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 7 | en iyi 1050.7 | ortanca 1184.0 | olay döngüsü en çok 1239.4 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 7 | en iyi 3.1 | ortanca 5.2 | olay döngüsü en çok 0.0 | 200 dışı 4
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 1.9 | ortanca 2.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 56.4 | ortanca 61.7 | olay döngüsü en çok 73.2 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 149.4 | ortanca 150.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 58.0 | ortanca 60.1 | olay döngüsü en çok 60.7 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 310.5 | ortanca 331.9 | olay döngüsü en çok 9.0 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1059.7 | ortanca 1116.9 | olay döngüsü en çok 1204.8 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 575.6 | ortanca 637.4 | olay döngüsü en çok 685.2 | 200 dışı 0
+yük sonda 1.00 1.00 1.13
+çıkış 0 · sonda 1.00 1.00 1.13 1/114 2509
+=== tur 3 · oncesi · başta 1.00 1.00 1.13 1/114 2516 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/oncesi · yük başta 1.13 1.03 1.13
+aday 12
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+SONUÇ | kart penceresi GET | n 10 | en iyi 1.8 | ortanca 44.7 | olay döngüsü en çok 306.7 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 10 | en iyi 47.6 | ortanca 56.1 | olay döngüsü en çok 47.6 | 200 dışı 0
+SONUÇ | cari kartı GET | n 10 | en iyi 138.9 | ortanca 149.8 | olay döngüsü en çok 190.6 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 105.9 | ortanca 112.7 | olay döngüsü en çok 149.3 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 7 | en iyi 1069.3 | ortanca 1147.8 | olay döngüsü en çok 1562.4 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 7 | en iyi 3.2 | ortanca 4.4 | olay döngüsü en çok 0.0 | 200 dışı 4
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 36.4 | ortanca 39.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 62.5 | ortanca 82.1 | olay döngüsü en çok 79.8 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 292.9 | ortanca 299.8 | olay döngüsü en çok 300.2 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 61.0 | ortanca 62.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 285.1 | ortanca 386.2 | olay döngüsü en çok 11.1 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1123.6 | ortanca 1231.7 | olay döngüsü en çok 1198.5 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 583.6 | ortanca 683.3 | olay döngüsü en çok 778.6 | 200 dışı 0
+yük sonda 1.32 1.07 1.10
+çıkış 0 · sonda 1.32 1.07 1.10 1/114 2573
+=== tur 3 · eski · başta 1.32 1.07 1.10 1/114 2580 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/eski · yük başta 1.21 1.06 1.09
+aday 12
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+SONUÇ | kart penceresi GET | n 10 | en iyi 1.7 | ortanca 41.9 | olay döngüsü en çok 109.3 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 10 | en iyi 69.3 | ortanca 74.1 | olay döngüsü en çok 90.0 | 200 dışı 0
+SONUÇ | cari kartı GET | n 10 | en iyi 133.5 | ortanca 153.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 126.6 | ortanca 135.1 | olay döngüsü en çok 185.1 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 7 | en iyi 1018.3 | ortanca 1075.9 | olay döngüsü en çok 1173.4 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 7 | en iyi 3.0 | ortanca 5.5 | olay döngüsü en çok 0.0 | 200 dışı 4
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 35.6 | ortanca 36.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 58.6 | ortanca 59.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 142.2 | ortanca 191.2 | olay döngüsü en çok 190.8 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 57.2 | ortanca 61.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 314.4 | ortanca 378.0 | olay döngüsü en çok 159.5 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1128.3 | ortanca 1165.3 | olay döngüsü en çok 1136.7 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 606.8 | ortanca 676.1 | olay döngüsü en çok 726.1 | 200 dışı 0
+yük sonda 1.06 1.02 1.06
+çıkış 0 · sonda 1.06 1.02 1.06 1/117 2640
+=== tur 3 · yeni · başta 1.06 1.02 1.06 1/117 2647 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a685ea99951e1d5f9 · yük başta 1.10 1.04 1.06
+aday 12
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+  iade yazımı (KAPALI kart): durum 400 {"ok":false,"error":"1. kalem asıl faturada yok; iade kalemleri asıl faturadan seçilir.","code":"invoice-invalid","field":"lines"}
+SONUÇ | kart penceresi GET | n 10 | en iyi 1.6 | ortanca 40.3 | olay döngüsü en çok 134.5 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 10 | en iyi 35.8 | ortanca 37.7 | olay döngüsü en çok 37.5 | 200 dışı 0
+SONUÇ | cari kartı GET | n 10 | en iyi 132.9 | ortanca 137.7 | olay döngüsü en çok 158.5 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 153.2 | ortanca 165.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 7 | en iyi 1018.4 | ortanca 1103.5 | olay döngüsü en çok 1318.1 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 7 | en iyi 2.9 | ortanca 4.3 | olay döngüsü en çok 0.0 | 200 dışı 4
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 1.7 | ortanca 1.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 55.9 | ortanca 57.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 140.6 | ortanca 141.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 55.1 | ortanca 55.3 | olay döngüsü en çok 55.1 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 288.0 | ortanca 368.7 | olay döngüsü en çok 9.0 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1149.7 | ortanca 1282.6 | olay döngüsü en çok 1263.5 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 588.6 | ortanca 635.1 | olay döngüsü en çok 739.2 | 200 dışı 0
+yük sonda 1.08 1.02 1.03
+çıkış 0 · sonda 1.08 1.02 1.03 1/114 2697
+bitti 17:05:18

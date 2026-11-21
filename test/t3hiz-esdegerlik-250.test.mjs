@@ -20,6 +20,9 @@ import { resolveDbPath } from "../server/lib/db-path.mjs";
 import * as D from "../server/lib/bank/doubtful.mjs";
 import { createObligationInput } from "../server/lib/obligation-input.mjs";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
+// BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 İzleyen küçük tur — tasarım docs/erp/C7B-FATURA-TASARIM.md §19.2): kuyruk girdisinin fatura satırları iade belgesinin kesintisini (coverCuts) da taşır — hakem aynı sütunu okur
+// (lib/obligation-input.mjs ile AYNI ifade; öbür alanlar ve sıra aynen).
+const COVER_CUTS = "CASE WHEN kind = 'sale_return' AND status = 'issued' AND payment_json LIKE '%coverCuts%' THEN json_extract(payment_json, '$.coverCuts') END AS coverCuts";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const HAKEM = path.join(HERE, "fixtures", "t3hiz-esdegerlik-250-hakem.json");
@@ -38,7 +41,7 @@ const OLD_CHEQUE_PARTIES_SQL = "SELECT DISTINCT j.value AS id FROM json_each(?) 
 const OLD_DATED_ONE_SQL = "SELECT id, account_id AS accountId, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND (due_date <> '' OR expected_date <> '') AND account_id = ?";
 // lib/obligation-input.mjs accountSettleInput (9c09f18d) — offsetLabel / chequeLinks modülün kendisinden (bu düzeltmede değişmediler).
 function oldAccountSettleInput(store, input, accountId, ledger, day) {
-  const all = store.all("SELECT id, kind, status, try_payable AS payable, original_id AS originalId, due_date AS dueDate, plan_id AS planId, COALESCE(NULLIF(issued_at, ''), created_at) AS issuedAt FROM invoices WHERE account_id = ?", accountId);
+  const all = store.all(`SELECT id, kind, status, try_payable AS payable, original_id AS originalId, due_date AS dueDate, plan_id AS planId, COALESCE(NULLIF(issued_at, ''), created_at) AS issuedAt, ${COVER_CUTS} FROM invoices WHERE account_id = ?`, accountId);
   const links = new Map();
   for (const entry of store.all("SELECT id, source_id AS invoiceId FROM account_entries WHERE account_id = ? AND source = 'invoice' AND kind IN ('in', 'out')", accountId)) links.set(entry.id, entry.invoiceId);
   const planned = new Set(all.filter(item => item.planId).map(item => item.id));
@@ -77,7 +80,9 @@ function plain(value, seen = new WeakSet()) {
   else if (Array.isArray(value)) result = value.map(v => plain(v, seen));
   else {
     result = {};
-    for (const k of Object.keys(value)) result[k] = plain(value[k], seen);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (İzleyen küçük tur §19.2): fatura satırının yeni coverCuts sütunu kesintisi olmayan belgede null — hakem dökümü (o sütundan önce üretildi) bu alanı taşımaz; null
+    // değer atlanır, dolu değer dökümde kalır (kesinti varsa fark görünür).
+    for (const k of Object.keys(value)) if (!(k === "coverCuts" && value[k] === null)) result[k] = plain(value[k], seen);
   }
   seen.delete(value);
   return result;
