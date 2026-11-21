@@ -259,6 +259,8 @@ def yalin_saf(m, cari):
     """saf_net'in alanı: yalnız fatura (satış — bakım 6: taksitli dahil — / alış), elle kayıt, Açılış, stok veresiye, tahsilat, ödeme — kart, evrak, iade / değersiz kapatıcı, şüpheli, tablo bağı YOK."""
     if m.cariler[cari].get("kayit") is not None or any(kt["cari"] == cari for kt in m.kartlar.values()):
         return False
+    if any(f["cari"] == cari and (f.get("planTutar") is not None or f.get("artis") or f.get("duzFazla")) for f in m.faturalar.values()):
+        return False  # bakım 25 (§37): Düzenle görmüş fatura saf simülasyonun alanı dışında (artış / fazla avans / plan tutarı — 2.5.1'e)
     if any(f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] not in ("satis", "alis") for f in m.faturalar.values()):
         return False
     if any(e["cari"] == cari or e.get("ciroCari") == cari or e.get("karsiliksizCari") == cari for e in m.evraklar.values()):

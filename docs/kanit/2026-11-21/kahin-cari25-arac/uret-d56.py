@@ -143,6 +143,9 @@ A += [cari("cq1", "Q1", "Kader Dış Açıklı Çok Kalem"), borc("bq1", "Q1", 3
       kart("kq1", "KQ1", "Q1", 1000, 2, "2026-10-05", "2026-09-03")]
 A += [cari("cq2", "Q2", "Kerem Sınıf Değişen Kart"), borc("bq2", "Q2", 300, "2026-09-01"), fatura("fq2", "FQ2", "Q2", 900, 9, "2026-09-02"),
       kart("kq2", "KQ2", "Q2", 1000, 2, "2026-10-05", "2026-09-03")]
+# SENARYO DÜZELTMESİ (açıkça — kural değil): seriden numara alan faturalar senaryoda tarih sırasıyla yazılmalı (§19 Y7-1) — kurulum adımları tarihe göre (eşit tarihte yazım sırası) dizilir; tarihsiz
+# Kartı Kapat kurulumun sonunda (kapanış bugün). İlk tasarımda cari blokları sırayla yazılmıştı (oz-test Y7-1 denetimi kırmızı).
+A = sorted([x for x in A if x.get("tarih")], key=lambda x: x["tarih"]) + [x for x in A if not x.get("tarih")]
 A += [kontrol("k0")]
 # k0 (bugün 20.11; iadeler yok)
 cr("k0", "G1", 600, 300, 600); kr("k0", "KG1", 900, 300, 600, True); ft("k0", "FG1", 600, 0, 600, True)  # 05.11 taksiti gecikmiş (S220 kendi vadesi), 05.12 → kapanış 20.11 (bugün) gecikmemiş

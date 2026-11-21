@@ -386,29 +386,6 @@
    "tarih": "2026-09-01"
   },
   {
-   "id": "kg1",
-   "islem": "kart_ac",
-   "ad": "KG1",
-   "cari": "G1",
-   "tutar": "900",
-   "taksit": 3,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-02",
-   "mevcut": true
-  },
-  {
-   "id": "tg1",
-   "islem": "kart_tahsilat",
-   "kayit": "KG1",
-   "tutar": "300",
-   "tarih": "2026-09-03"
-  },
-  {
-   "id": "kkg1",
-   "islem": "kart_kapat",
-   "kart": "KG1"
-  },
-  {
    "id": "ch1",
    "islem": "cari_ac",
    "ad": "H1",
@@ -424,17 +401,6 @@
    "tutar": "900",
    "adet": 3,
    "tarih": "2026-09-01"
-  },
-  {
-   "id": "kh1",
-   "islem": "kart_ac",
-   "ad": "KH1",
-   "cari": "H1",
-   "tutar": "600",
-   "taksit": 2,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-02",
-   "mevcut": true
   },
   {
    "id": "ch2",
@@ -454,17 +420,6 @@
    "tarih": "2026-09-01"
   },
   {
-   "id": "kh2",
-   "islem": "kart_ac",
-   "ad": "KH2",
-   "cari": "H2",
-   "tutar": "600",
-   "taksit": 2,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-02",
-   "mevcut": true
-  },
-  {
    "id": "cj1",
    "islem": "cari_ac",
    "ad": "J1",
@@ -477,34 +432,6 @@
    "cari": "J1",
    "tutar": "400",
    "tarih": "2026-09-01"
-  },
-  {
-   "id": "fj1",
-   "islem": "fatura",
-   "ad": "FJ1",
-   "cari": "J1",
-   "tur": "satis",
-   "tutar": "500",
-   "adet": 5,
-   "tarih": "2026-09-02"
-  },
-  {
-   "id": "kj1",
-   "islem": "kart_ac",
-   "ad": "KJ1",
-   "cari": "J1",
-   "tutar": "900",
-   "taksit": 3,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-03",
-   "mevcut": true
-  },
-  {
-   "id": "tj1",
-   "islem": "kart_tahsilat",
-   "kayit": "KJ1",
-   "tutar": "300",
-   "tarih": "2026-09-04"
   },
   {
    "id": "cj2",
@@ -524,34 +451,6 @@
    "tarih": "2026-09-01"
   },
   {
-   "id": "fj2b",
-   "islem": "fatura",
-   "ad": "FJ2B",
-   "cari": "J2",
-   "tur": "satis",
-   "tutar": "500",
-   "adet": 5,
-   "tarih": "2026-09-02"
-  },
-  {
-   "id": "kj2",
-   "islem": "kart_ac",
-   "ad": "KJ2",
-   "cari": "J2",
-   "tutar": "900",
-   "taksit": 3,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-03",
-   "mevcut": true
-  },
-  {
-   "id": "tj2",
-   "islem": "kart_tahsilat",
-   "kayit": "KJ2",
-   "tutar": "300",
-   "tarih": "2026-09-04"
-  },
-  {
    "id": "cl1",
    "islem": "cari_ac",
    "ad": "L1",
@@ -566,34 +465,6 @@
    "tarih": "2026-09-01"
   },
   {
-   "id": "fl1",
-   "islem": "fatura",
-   "ad": "FL1",
-   "cari": "L1",
-   "tur": "satis",
-   "tutar": "600",
-   "adet": 2,
-   "tarih": "2026-09-02"
-  },
-  {
-   "id": "kl1",
-   "islem": "kart_ac",
-   "ad": "KL1",
-   "cari": "L1",
-   "tutar": "900",
-   "taksit": 3,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-03",
-   "mevcut": true
-  },
-  {
-   "id": "tl1",
-   "islem": "kart_tahsilat",
-   "kayit": "KL1",
-   "tutar": "300",
-   "tarih": "2026-09-04"
-  },
-  {
    "id": "cl2",
    "islem": "cari_ac",
    "ad": "L2",
@@ -606,34 +477,6 @@
    "cari": "L2",
    "tutar": "900",
    "tarih": "2026-09-01"
-  },
-  {
-   "id": "fl2",
-   "islem": "fatura",
-   "ad": "FL2",
-   "cari": "L2",
-   "tur": "satis",
-   "tutar": "600",
-   "adet": 2,
-   "tarih": "2026-09-02"
-  },
-  {
-   "id": "kl2",
-   "islem": "kart_ac",
-   "ad": "KL2",
-   "cari": "L2",
-   "tutar": "900",
-   "taksit": 3,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-03",
-   "mevcut": true
-  },
-  {
-   "id": "tl2",
-   "islem": "kart_tahsilat",
-   "kayit": "KL2",
-   "tutar": "300",
-   "tarih": "2026-09-04"
   },
   {
    "id": "cm1",
@@ -653,31 +496,6 @@
    "tarih": "2026-09-01"
   },
   {
-   "id": "xm1",
-   "islem": "borc",
-   "cari": "M1",
-   "tutar": "500",
-   "tarih": "2026-09-02"
-  },
-  {
-   "id": "ym1",
-   "islem": "borc",
-   "cari": "M1",
-   "tutar": "700",
-   "tarih": "2026-09-03"
-  },
-  {
-   "id": "km1",
-   "islem": "kart_ac",
-   "ad": "KM1",
-   "cari": "M1",
-   "tutar": "900",
-   "taksit": 3,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-04",
-   "mevcut": true
-  },
-  {
    "id": "cm2",
    "islem": "cari_ac",
    "ad": "M2",
@@ -693,31 +511,6 @@
    "tutar": "600",
    "adet": 2,
    "tarih": "2026-09-01"
-  },
-  {
-   "id": "xm2",
-   "islem": "borc",
-   "cari": "M2",
-   "tutar": "500",
-   "tarih": "2026-09-02"
-  },
-  {
-   "id": "ym2",
-   "islem": "borc",
-   "cari": "M2",
-   "tutar": "700",
-   "tarih": "2026-09-03"
-  },
-  {
-   "id": "km2",
-   "islem": "kart_ac",
-   "ad": "KM2",
-   "cari": "M2",
-   "tutar": "900",
-   "taksit": 3,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-04",
-   "mevcut": true
   },
   {
    "id": "cn1",
@@ -737,27 +530,6 @@
    "tarih": "2026-09-01"
   },
   {
-   "id": "fn1b",
-   "islem": "fatura",
-   "ad": "FN1B",
-   "cari": "N1",
-   "tur": "satis",
-   "tutar": "600",
-   "adet": 2,
-   "tarih": "2026-09-02"
-  },
-  {
-   "id": "kn1",
-   "islem": "kart_ac",
-   "ad": "KN1",
-   "cari": "N1",
-   "tutar": "600",
-   "taksit": 2,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-05",
-   "mevcut": true
-  },
-  {
    "id": "cn2",
    "islem": "cari_ac",
    "ad": "N2",
@@ -775,27 +547,6 @@
    "tarih": "2026-09-01"
   },
   {
-   "id": "fn2b",
-   "islem": "fatura",
-   "ad": "FN2B",
-   "cari": "N2",
-   "tur": "satis",
-   "tutar": "600",
-   "adet": 2,
-   "tarih": "2026-09-02"
-  },
-  {
-   "id": "kn2",
-   "islem": "kart_ac",
-   "ad": "KN2",
-   "cari": "N2",
-   "tutar": "600",
-   "taksit": 2,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-05",
-   "mevcut": true
-  },
-  {
    "id": "cq1",
    "islem": "cari_ac",
    "ad": "Q1",
@@ -808,27 +559,6 @@
    "cari": "Q1",
    "tutar": "300",
    "tarih": "2026-09-01"
-  },
-  {
-   "id": "fq1",
-   "islem": "fatura",
-   "ad": "FQ1",
-   "cari": "Q1",
-   "tur": "satis",
-   "tutar": "900",
-   "adet": 9,
-   "tarih": "2026-09-02"
-  },
-  {
-   "id": "kq1",
-   "islem": "kart_ac",
-   "ad": "KQ1",
-   "cari": "Q1",
-   "tutar": "1000",
-   "taksit": 2,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-03",
-   "mevcut": true
   },
   {
    "id": "cq2",
@@ -845,6 +575,123 @@
    "tarih": "2026-09-01"
   },
   {
+   "id": "kg1",
+   "islem": "kart_ac",
+   "ad": "KG1",
+   "cari": "G1",
+   "tutar": "900",
+   "taksit": 3,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-02",
+   "mevcut": true
+  },
+  {
+   "id": "kh1",
+   "islem": "kart_ac",
+   "ad": "KH1",
+   "cari": "H1",
+   "tutar": "600",
+   "taksit": 2,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-02",
+   "mevcut": true
+  },
+  {
+   "id": "kh2",
+   "islem": "kart_ac",
+   "ad": "KH2",
+   "cari": "H2",
+   "tutar": "600",
+   "taksit": 2,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-02",
+   "mevcut": true
+  },
+  {
+   "id": "fj1",
+   "islem": "fatura",
+   "ad": "FJ1",
+   "cari": "J1",
+   "tur": "satis",
+   "tutar": "500",
+   "adet": 5,
+   "tarih": "2026-09-02"
+  },
+  {
+   "id": "fj2b",
+   "islem": "fatura",
+   "ad": "FJ2B",
+   "cari": "J2",
+   "tur": "satis",
+   "tutar": "500",
+   "adet": 5,
+   "tarih": "2026-09-02"
+  },
+  {
+   "id": "fl1",
+   "islem": "fatura",
+   "ad": "FL1",
+   "cari": "L1",
+   "tur": "satis",
+   "tutar": "600",
+   "adet": 2,
+   "tarih": "2026-09-02"
+  },
+  {
+   "id": "fl2",
+   "islem": "fatura",
+   "ad": "FL2",
+   "cari": "L2",
+   "tur": "satis",
+   "tutar": "600",
+   "adet": 2,
+   "tarih": "2026-09-02"
+  },
+  {
+   "id": "xm1",
+   "islem": "borc",
+   "cari": "M1",
+   "tutar": "500",
+   "tarih": "2026-09-02"
+  },
+  {
+   "id": "xm2",
+   "islem": "borc",
+   "cari": "M2",
+   "tutar": "500",
+   "tarih": "2026-09-02"
+  },
+  {
+   "id": "fn1b",
+   "islem": "fatura",
+   "ad": "FN1B",
+   "cari": "N1",
+   "tur": "satis",
+   "tutar": "600",
+   "adet": 2,
+   "tarih": "2026-09-02"
+  },
+  {
+   "id": "fn2b",
+   "islem": "fatura",
+   "ad": "FN2B",
+   "cari": "N2",
+   "tur": "satis",
+   "tutar": "600",
+   "adet": 2,
+   "tarih": "2026-09-02"
+  },
+  {
+   "id": "fq1",
+   "islem": "fatura",
+   "ad": "FQ1",
+   "cari": "Q1",
+   "tur": "satis",
+   "tutar": "900",
+   "adet": 9,
+   "tarih": "2026-09-02"
+  },
+  {
    "id": "fq2",
    "islem": "fatura",
    "ad": "FQ2",
@@ -853,6 +700,82 @@
    "tutar": "900",
    "adet": 9,
    "tarih": "2026-09-02"
+  },
+  {
+   "id": "tg1",
+   "islem": "kart_tahsilat",
+   "kayit": "KG1",
+   "tutar": "300",
+   "tarih": "2026-09-03"
+  },
+  {
+   "id": "kj1",
+   "islem": "kart_ac",
+   "ad": "KJ1",
+   "cari": "J1",
+   "tutar": "900",
+   "taksit": 3,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-03",
+   "mevcut": true
+  },
+  {
+   "id": "kj2",
+   "islem": "kart_ac",
+   "ad": "KJ2",
+   "cari": "J2",
+   "tutar": "900",
+   "taksit": 3,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-03",
+   "mevcut": true
+  },
+  {
+   "id": "kl1",
+   "islem": "kart_ac",
+   "ad": "KL1",
+   "cari": "L1",
+   "tutar": "900",
+   "taksit": 3,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-03",
+   "mevcut": true
+  },
+  {
+   "id": "kl2",
+   "islem": "kart_ac",
+   "ad": "KL2",
+   "cari": "L2",
+   "tutar": "900",
+   "taksit": 3,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-03",
+   "mevcut": true
+  },
+  {
+   "id": "ym1",
+   "islem": "borc",
+   "cari": "M1",
+   "tutar": "700",
+   "tarih": "2026-09-03"
+  },
+  {
+   "id": "ym2",
+   "islem": "borc",
+   "cari": "M2",
+   "tutar": "700",
+   "tarih": "2026-09-03"
+  },
+  {
+   "id": "kq1",
+   "islem": "kart_ac",
+   "ad": "KQ1",
+   "cari": "Q1",
+   "tutar": "1000",
+   "taksit": 2,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-03",
+   "mevcut": true
   },
   {
    "id": "kq2",
@@ -864,6 +787,83 @@
    "ilkVade": "2026-10-05",
    "tarih": "2026-09-03",
    "mevcut": true
+  },
+  {
+   "id": "tj1",
+   "islem": "kart_tahsilat",
+   "kayit": "KJ1",
+   "tutar": "300",
+   "tarih": "2026-09-04"
+  },
+  {
+   "id": "tj2",
+   "islem": "kart_tahsilat",
+   "kayit": "KJ2",
+   "tutar": "300",
+   "tarih": "2026-09-04"
+  },
+  {
+   "id": "tl1",
+   "islem": "kart_tahsilat",
+   "kayit": "KL1",
+   "tutar": "300",
+   "tarih": "2026-09-04"
+  },
+  {
+   "id": "tl2",
+   "islem": "kart_tahsilat",
+   "kayit": "KL2",
+   "tutar": "300",
+   "tarih": "2026-09-04"
+  },
+  {
+   "id": "km1",
+   "islem": "kart_ac",
+   "ad": "KM1",
+   "cari": "M1",
+   "tutar": "900",
+   "taksit": 3,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-04",
+   "mevcut": true
+  },
+  {
+   "id": "km2",
+   "islem": "kart_ac",
+   "ad": "KM2",
+   "cari": "M2",
+   "tutar": "900",
+   "taksit": 3,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-04",
+   "mevcut": true
+  },
+  {
+   "id": "kn1",
+   "islem": "kart_ac",
+   "ad": "KN1",
+   "cari": "N1",
+   "tutar": "600",
+   "taksit": 2,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-05",
+   "mevcut": true
+  },
+  {
+   "id": "kn2",
+   "islem": "kart_ac",
+   "ad": "KN2",
+   "cari": "N2",
+   "tutar": "600",
+   "taksit": 2,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-05",
+   "mevcut": true
+  },
+  {
+   "id": "kkg1",
+   "islem": "kart_kapat",
+   "kart": "KG1"
   },
   {
    "id": "k0",
