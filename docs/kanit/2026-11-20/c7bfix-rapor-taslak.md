@@ -86,3 +86,8 @@ tutarlı'. Bakiyeler A 2.500 · B 2.500 · C 2.000 · D 2.500 (Borçta Kalsın).
 | test:kahin-defter | 187 / 187, 0 fark, 0 yakalanmayan mutasyon | 187 / 187 | 187 / 187 | 187 / 187 |
 | test:kahin-cari | 17.648 / 17.648, 0 fark, 0 yapım aşaması | 17.648 / 17.648 | 17.648 / 17.648, 0 yapım aşaması | 17.648 / 17.648, 0 yapım aşaması |
 Sayılar taban ↔ son AYNI; yapım aşaması listesi BOŞ (0).
+
+## 8. B — muhasebe sürücüsü (DEĞİŞTİRİLMEDİ) taban (fce3d272) ↔ son (db290c39 kodu), iki TZ (sürücünün varsayılanı)
+- taban: 7.756 / 7.926 geçti, 28 başarısız, 142 atlanan; son: AYNI sayılar (surucu5'in kendi son koşusu da 28). Son 25 satırlık sınıf dökümü (R / OLCULEMEDI / P satırları) iki tarafta BİREBİR
+  (yalnız çıktı klasörü adı farklı) — 28 bu turun farkı değil, tabanın bilinen sürücü sınıfları.
+- gerileme.py: 248 / 248 BİREBİR, 0 fark (surucu-gerileme.txt). Beklenen: sürücü Kartı Kapat'ı closeRemaining'siz gönderir (program.mjs H-07) → YB-1 denetimi girmez; fark beklenmezdi, çıkmadı.
