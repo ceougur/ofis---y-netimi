@@ -91,3 +91,14 @@ Sayılar taban ↔ son AYNI; yapım aşaması listesi BOŞ (0).
 - taban: 7.756 / 7.926 geçti, 28 başarısız, 142 atlanan; son: AYNI sayılar (surucu5'in kendi son koşusu da 28). Son 25 satırlık sınıf dökümü (R / OLCULEMEDI / P satırları) iki tarafta BİREBİR
   (yalnız çıktı klasörü adı farklı) — 28 bu turun farkı değil, tabanın bilinen sürücü sınıfları.
 - gerileme.py: 248 / 248 BİREBİR, 0 fark (surucu-gerileme.txt). Beklenen: sürücü Kartı Kapat'ı closeRemaining'siz gönderir (program.mjs H-07) → YB-1 denetimi girmez; fark beklenmezdi, çıkmadı.
+
+## 9. D — HIZ (c7bfix-hiz/; temiz-100k kendi kopyamda /dev/shm/c7bfix-a66/kopya, her ölçüm taze kopya; eski ↔ yeni dönüşümlü 3 + 3 blok × 5 tekrar; ÖZEL ölçüm kilidi; TZ İstanbul; 0 geçersiz)
+Kart B = en çok satırlı carinin (100 cari satırı) açık Yeni Borç kartı (olc-c7b3b.mjs'in seçimi). Eski kod closeRemaining = kartın kendi kalanı (tabanın kabul ettiği), yeni kod = pencerenin kalanı.
+Tablo ana oturumun tablo.py'si (oran = yeni ortancaların küçüğü / eski ortancaların küçüğü).
+| Yol | kilitsiz ortanca oranı / en iyi oranı | kilitli (2026-06-30) |
+|---|---|---|
+| YAZIM Kartı Kapat closeRemaining (değişen yol) | 1,04 / 1,06 (eski 1004 · 1026 · 992 ms ↔ yeni 1036 · 1092 · 1160) | 1,01 / 1,03 |
+| İLK Kartı Kapat closeRemaining | 1,02 / 1,02 | 1,09 / 1,09 |
+| kart GET açık / kapalı | 1,23 / 0,95 (2 ↔ 3 ms; en iyi değil) · 1,00 / 1,00 | 1,00 / 1,00 · 1,05 / 1,00 |
+| Yeniden Aç, Kartı Kapat eski istemci | 0,95–1,03 | 0,97–1,04 |
+KÖTÜ (ortanca VE en iyi > %10): 0 / 0. Ek maliyet işlem içinde tek carinin kuyruğu (~30–60 ms, istek ~1 sn — çoğu yazım sonrası bütün carilerin kuyruk taraması, değişmedi).

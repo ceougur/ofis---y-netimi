@@ -1,0 +1,15 @@
+geçersiz ölçüm: 0
+betik · yol                                                                  eski ortanca       yeni ortanca  oran en iyi oranı  olay d. e/y durum
+c7bfix · İLK kart GET (açık kart B)                                             4 / 4 / 5          6 / 5 / 4  1.00         1.00          0/0 200
+c7bfix · İLK YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın)  1020 / 1082 / 1137 1180 / 1201 / 1111  1.09         1.09       0/1195 200
+c7bfix · İLK kart GET (kapalı kart B)                                           3 / 3 / 3          3 / 3 / 4  1.00         1.00          0/0 200
+c7bfix · İLK YAZIM Yeniden Aç (kart B)                                  989 / 1104 / 1019  991 / 1064 / 1042  1.00         1.00     1017/987 200
+c7bfix · İLK YAZIM Kartı Kapat eski istemci (kart C)                    1025 / 1027 / 980   980 / 995 / 1002  1.00         1.00    1024/1000 200
+c7bfix · İLK YAZIM Yeniden Aç (kart C)                                 1012 / 1021 / 1013   978 / 1044 / 993  0.97         0.97          0/0 200
+c7bfix · kart GET (açık kart B)                                                 2 / 2 / 2          2 / 2 / 2  1.00         1.00          0/0 200
+c7bfix · YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın)      1079 / 1032 / 1021 1070 / 1148 / 1034  1.01         1.03    1146/1423 200
+c7bfix · kart GET (kapalı kart B)                                               2 / 2 / 2          2 / 3 / 2  1.05         1.00          0/0 200
+c7bfix · YAZIM Yeniden Aç (kart B)                                     1001 / 1037 / 1000  1021 / 1055 / 987  0.99         1.01     999/1054 200
+c7bfix · YAZIM Kartı Kapat eski istemci (kart C)                        1075 / 1037 / 990  1065 / 1035 / 978  0.99         1.00        977/0 200
+c7bfix · YAZIM Yeniden Aç (kart C)                                      1050 / 979 / 1026 1015 / 1056 / 1079  1.04         0.99       1051/0 200
+KÖTÜ (ortanca VE en iyi > %10): 0

@@ -1,0 +1,116 @@
+HIZ c7bfix · kilitsiz · tekrar 5 · kilit 01:36:23 · başta 1.06 2.21 2.62 5/121 8573 · nproc 4 · eski fce3d272 · yeni db290c39
+=== eski · 01:36:23
+--- eski · başta 1.06 2.21 2.62 2/125 8592 
+kod /dev/shm/c7bfix-a66/eski · kip own · yük (başta) 1.38 2.20 2.61 · TZ Europe/Istanbul · açılış 24201.3 ms
+veri: 102295 cari satırı, 11448 kart, kilit (yok); kart B plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66, 100 cari satırı; pencere kalan 12575.39, kendi 12575.39), kart C plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f~1 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1)
+  İLK kart GET (açık kart B): durum 200 · 3.9 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · 1098.8 ms · olay döngüsü en çok 0 ms
+  İLK kart GET (kapalı kart B): durum 200 · 3.2 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart B): durum 200 · 1070 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Kartı Kapat eski istemci (kart C): durum 200 · 1047.2 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart C): durum 200 · 1080.4 ms · olay döngüsü en çok 1079 ms
+  kart GET (açık kart B): durum 200 · en iyi 2.1 ms · ortanca 2.3 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · en iyi 973.1 ms · ortanca 1004 ms · olay döngüsü en çok 0 ms (n=5)
+  kart GET (kapalı kart B): durum 200 · en iyi 2 ms · ortanca 2.1 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Yeniden Aç (kart B): durum 200 · en iyi 972.6 ms · ortanca 1005.3 ms · olay döngüsü en çok 1012.9 ms (n=5)
+  YAZIM Kartı Kapat eski istemci (kart C): durum 200 · en iyi 960 ms · ortanca 982.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Yeniden Aç (kart C): durum 200 · en iyi 964.1 ms · ortanca 985.5 ms · olay döngüsü en çok 0 ms (n=5)
+son durum: kart B active, kart C active
+yük (sonda) 1.56 2.18 2.59
+çıkış 0 · sonda 1.56 2.18 2.59 2/122 8807
+=== yeni · 01:37:13
+--- yeni · başta 1.47 2.14 2.58 2/125 8838 
+kod /dev/shm/c7bfix-a66/yeni · kip shown · yük (başta) 1.78 2.16 2.57 · TZ Europe/Istanbul · açılış 21913.4 ms
+veri: 102295 cari satırı, 11448 kart, kilit (yok); kart B plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66, 100 cari satırı; pencere kalan 12575.39, kendi 12575.39), kart C plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f~1 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1)
+  İLK kart GET (açık kart B): durum 200 · 3.8 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · 1117.7 ms · olay döngüsü en çok 0 ms
+  İLK kart GET (kapalı kart B): durum 200 · 3.5 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart B): durum 200 · 1029.8 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Kartı Kapat eski istemci (kart C): durum 200 · 1094.2 ms · olay döngüsü en çok 1091.6 ms
+  İLK YAZIM Yeniden Aç (kart C): durum 200 · 1019.5 ms · olay döngüsü en çok 0 ms
+  kart GET (açık kart B): durum 200 · en iyi 2 ms · ortanca 2.9 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · en iyi 1029.3 ms · ortanca 1036.5 ms · olay döngüsü en çok 1040.7 ms (n=5)
+  kart GET (kapalı kart B): durum 200 · en iyi 2 ms · ortanca 2.1 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Yeniden Aç (kart B): durum 200 · en iyi 988.6 ms · ortanca 1019.6 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kartı Kapat eski istemci (kart C): durum 200 · en iyi 957.1 ms · ortanca 1006.7 ms · olay döngüsü en çok 1005.6 ms (n=5)
+  YAZIM Yeniden Aç (kart C): durum 200 · en iyi 1004.7 ms · ortanca 1016.5 ms · olay döngüsü en çok 0 ms (n=5)
+son durum: kart B active, kart C active
+yük (sonda) 1.86 2.15 2.55
+çıkış 0 · sonda 1.86 2.15 2.55 2/123 8930
+=== eski · 01:38:10
+--- eski · başta 1.44 2.00 2.49 2/126 8999 
+kod /dev/shm/c7bfix-a66/eski · kip own · yük (başta) 1.94 2.08 2.50 · TZ Europe/Istanbul · açılış 21524.4 ms
+veri: 102295 cari satırı, 11448 kart, kilit (yok); kart B plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66, 100 cari satırı; pencere kalan 12575.39, kendi 12575.39), kart C plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f~1 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1)
+  İLK kart GET (açık kart B): durum 200 · 5 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · 1027.6 ms · olay döngüsü en çok 0 ms
+  İLK kart GET (kapalı kart B): durum 200 · 3.4 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart B): durum 200 · 1033.4 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Kartı Kapat eski istemci (kart C): durum 200 · 999.2 ms · olay döngüsü en çok 994.1 ms
+  İLK YAZIM Yeniden Aç (kart C): durum 200 · 1007.3 ms · olay döngüsü en çok 1005.1 ms
+  kart GET (açık kart B): durum 200 · en iyi 2.1 ms · ortanca 2.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · en iyi 966.5 ms · ortanca 1026 ms · olay döngüsü en çok 1625.3 ms (n=5)
+  kart GET (kapalı kart B): durum 200 · en iyi 2.4 ms · ortanca 2.9 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Yeniden Aç (kart B): durum 200 · en iyi 964.3 ms · ortanca 1082.1 ms · olay döngüsü en çok 1710.2 ms (n=5)
+  YAZIM Kartı Kapat eski istemci (kart C): durum 200 · en iyi 975.5 ms · ortanca 1116.6 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Yeniden Aç (kart C): durum 200 · en iyi 968 ms · ortanca 1023.2 ms · olay döngüsü en çok 0 ms (n=5)
+son durum: kart B active, kart C active
+yük (sonda) 1.97 2.07 2.48
+çıkış 0 · sonda 1.97 2.07 2.48 2/123 9013
+=== yeni · 01:39:42
+--- yeni · başta 1.49 1.94 2.42 2/127 9037 
+kod /dev/shm/c7bfix-a66/yeni · kip shown · yük (başta) 1.67 1.94 2.41 · TZ Europe/Istanbul · açılış 22114.1 ms
+veri: 102295 cari satırı, 11448 kart, kilit (yok); kart B plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66, 100 cari satırı; pencere kalan 12575.39, kendi 12575.39), kart C plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f~1 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1)
+  İLK kart GET (açık kart B): durum 200 · 4.5 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · 1047.6 ms · olay döngüsü en çok 0 ms
+  İLK kart GET (kapalı kart B): durum 200 · 3.3 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart B): durum 200 · 983 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Kartı Kapat eski istemci (kart C): durum 200 · 1119.7 ms · olay döngüsü en çok 1117.8 ms
+  İLK YAZIM Yeniden Aç (kart C): durum 200 · 1042.8 ms · olay döngüsü en çok 0 ms
+  kart GET (açık kart B): durum 200 · en iyi 2.2 ms · ortanca 2.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · en iyi 1033.9 ms · ortanca 1092.5 ms · olay döngüsü en çok 1092.6 ms (n=5)
+  kart GET (kapalı kart B): durum 200 · en iyi 2.1 ms · ortanca 2.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Yeniden Aç (kart B): durum 200 · en iyi 968.8 ms · ortanca 1019.4 ms · olay döngüsü en çok 1015.5 ms (n=5)
+  YAZIM Kartı Kapat eski istemci (kart C): durum 200 · en iyi 963.8 ms · ortanca 1032.9 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Yeniden Aç (kart C): durum 200 · en iyi 975.1 ms · ortanca 1040.8 ms · olay döngüsü en çok 973.6 ms (n=5)
+son durum: kart B active, kart C active
+yük (sonda) 1.78 1.95 2.40
+çıkış 0 · sonda 1.78 1.95 2.40 2/124 9050
+=== eski · 01:41:10
+--- eski · başta 1.47 1.86 2.35 2/120 9067 
+kod /dev/shm/c7bfix-a66/eski · kip own · yük (başta) 2.10 1.98 2.38 · TZ Europe/Istanbul · açılış 22304.4 ms
+veri: 102295 cari satırı, 11448 kart, kilit (yok); kart B plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66, 100 cari satırı; pencere kalan 12575.39, kendi 12575.39), kart C plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f~1 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1)
+  İLK kart GET (açık kart B): durum 200 · 3.9 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · 1107 ms · olay döngüsü en çok 1101 ms
+  İLK kart GET (kapalı kart B): durum 200 · 4 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart B): durum 200 · 1076.8 ms · olay döngüsü en çok 1074.8 ms
+  İLK YAZIM Kartı Kapat eski istemci (kart C): durum 200 · 1007.7 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart C): durum 200 · 1047.6 ms · olay döngüsü en çok 1045.4 ms
+  kart GET (açık kart B): durum 200 · en iyi 2.1 ms · ortanca 2.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · en iyi 974.7 ms · ortanca 992.5 ms · olay döngüsü en çok 988.3 ms (n=5)
+  kart GET (kapalı kart B): durum 200 · en iyi 2.1 ms · ortanca 2.1 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Yeniden Aç (kart B): durum 200 · en iyi 1000.1 ms · ortanca 1070.2 ms · olay döngüsü en çok 1088.4 ms (n=5)
+  YAZIM Kartı Kapat eski istemci (kart C): durum 200 · en iyi 1017.5 ms · ortanca 1061.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Yeniden Aç (kart C): durum 200 · en iyi 969.5 ms · ortanca 1071.8 ms · olay döngüsü en çok 1070.6 ms (n=5)
+son durum: kart B active, kart C active
+yük (sonda) 2.06 1.98 2.37
+çıkış 0 · sonda 2.06 1.98 2.37 2/120 9084
+=== yeni · 01:42:29
+--- yeni · başta 1.46 1.84 2.30 1/110 9109 
+kod /dev/shm/c7bfix-a66/yeni · kip shown · yük (başta) 1.30 1.77 2.26 · TZ Europe/Istanbul · açılış 24227.2 ms
+veri: 102295 cari satırı, 11448 kart, kilit (yok); kart B plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66, 100 cari satırı; pencere kalan 12575.39, kendi 12575.39), kart C plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f~1 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1)
+  İLK kart GET (açık kart B): durum 200 · 4.1 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · 1145.3 ms · olay döngüsü en çok 0 ms
+  İLK kart GET (kapalı kart B): durum 200 · 3.2 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart B): durum 200 · 1115.5 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Kartı Kapat eski istemci (kart C): durum 200 · 991.4 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart C): durum 200 · 984.4 ms · olay döngüsü en çok 982.5 ms
+  kart GET (açık kart B): durum 200 · en iyi 2.1 ms · ortanca 2.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kartı Kapat closeRemaining (kart B; Borçta Kalsın): durum 200 · en iyi 1082.9 ms · ortanca 1159.6 ms · olay döngüsü en çok 1230 ms (n=5)
+  kart GET (kapalı kart B): durum 200 · en iyi 2.1 ms · ortanca 2.4 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Yeniden Aç (kart B): durum 200 · en iyi 987.5 ms · ortanca 1043.9 ms · olay döngüsü en çok 1042.3 ms (n=5)
+  YAZIM Kartı Kapat eski istemci (kart C): durum 200 · en iyi 1052.9 ms · ortanca 1098.3 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Yeniden Aç (kart C): durum 200 · en iyi 1017.2 ms · ortanca 1063.6 ms · olay döngüsü en çok 0 ms (n=5)
+son durum: kart B active, kart C active
+yük (sonda) 1.20 1.71 2.23
+çıkış 0 · sonda 1.20 1.71 2.23 1/109 9281
+bitti 01:44:00 · 0 geçersiz ölçüm
