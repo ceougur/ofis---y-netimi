@@ -1,5 +1,5 @@
 {
- "aciklama": "v2.4.9 (fikstür v249.json) → bugünkü kod (Ç6-HESAP tur 3) farkları; her biri karar numarasıyla. Kilitli kopyada açılışlar 2.4.9 kuralıyla donar (Ç3 — 500 kalır); stok ve kâr farkları iki kipte aynı.",
+ "aciklama": "v2.4.9 (fikstür v249.json) → bugünkü kod (Ç6-HESAP tur 3) farkları; her biri karar numarasıyla. Kilitli kopyada açılışlar 2.4.9 kuralıyla donar (Ç3 — 500 kalır); stok ve kâr farkları iki kipte aynı. Ç7b birleşimiyle (21.11): iade KDV yönü (KG-8 / F-08) ve taksit kartı Yeni Borç 600.90 (KG-2) farkları eklendi.",
  "farklar": [
   {
    "sinif": "satis-fatura",
@@ -640,6 +640,146 @@
    "yeni": "0",
    "karar": "BANKA-MODULU-PLAN §3.11b (12.10.2026)",
    "not": "şüpheli alacağa alınan cari v2.4.9 Cari Listesi'nde borçlu; defterde iki sürümde de 128 → Bilanço I.C'de 128 satırında, 120 satırında değil (sayı aynı: 128 = 1.500,00)"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.191",
+   "eski": "0",
+   "yeni": "2000",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da satıştan iadenin KDV'si 391'i azaltıyordu; Ç7b'de 191 İndirilecek KDV'ye borç (iade 2026-07-15, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.391",
+   "eski": "-16000",
+   "yeni": "-18000",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da satıştan iadenin KDV'si 391'i azaltıyordu; Ç7b'de 191 İndirilecek KDV'ye borç (iade 2026-07-15, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "mizan.191",
+   "eski": "0",
+   "yeni": "2000",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da satıştan iadenin KDV'si 391'i azaltıyordu; Ç7b'de 191 İndirilecek KDV'ye borç (iade 2026-07-15, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "mizan.391",
+   "eski": "-16000",
+   "yeni": "-18000",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da satıştan iadenin KDV'si 391'i azaltıyordu; Ç7b'de 191 İndirilecek KDV'ye borç (iade 2026-07-15, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.191",
+   "eski": "26800",
+   "yeni": "29400",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da alıştan iadenin KDV'si 191'i azaltıyordu; Ç7b'de 391 Hesaplanan KDV'ye alacak (iade 2026-08-10, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.391",
+   "eski": "0",
+   "yeni": "-2600",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da alıştan iadenin KDV'si 191'i azaltıyordu; Ç7b'de 391 Hesaplanan KDV'ye alacak (iade 2026-08-10, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "mizan.191",
+   "eski": "26800",
+   "yeni": "29400",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da alıştan iadenin KDV'si 191'i azaltıyordu; Ç7b'de 391 Hesaplanan KDV'ye alacak (iade 2026-08-10, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "mizan.391",
+   "eski": "0",
+   "yeni": "-2600",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da alıştan iadenin KDV'si 191'i azaltıyordu; Ç7b'de 391 Hesaplanan KDV'ye alacak (iade 2026-08-10, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "donem.600",
+   "eski": "0",
+   "yeni": "-120000",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "donem.602",
+   "eski": "-120000",
+   "yeni": "0",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "donem.600",
+   "eski": "0",
+   "yeni": "-90000",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "donem.602",
+   "eski": "-90000",
+   "yeni": "0",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "donem.600",
+   "eski": "0",
+   "yeni": "-90000",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "donem.602",
+   "eski": "-90000",
+   "yeni": "0",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
   }
  ]
 }
