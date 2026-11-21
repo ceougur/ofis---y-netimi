@@ -1,0 +1,158 @@
+{
+  "ad": "kahin-cari25-program-ist",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc25/program-ist",
+  "commit": "1178aea49aeb4e15d859497156f546bf1e3bd1d9",
+  "dal": "worktree-agent-a24e3718cfe7459df",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T21:00:20.935Z",
+  "sure_sn": 500.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 24062,
+    "gecen": 23976,
+    "basarisiz": 86,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 86 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:dz4:durum: program \"tuttu\" · kâhin \"ok\" (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program \"ret\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:dza4:durum: program \"tuttu\" · kâhin \"ok\" (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program \"ret\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:A4:acikToplam: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:A4:bakiye: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:P4:acikToplam: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:P4:bakiye: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:fatura:FA4:acik: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:fatura:FA4:kartta: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:fatura:FP4:acik: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:fatura:FP4:kartta: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KA4:kalan: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KA4:toplam: program \"tuttu\" · kâhin 60000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 90000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KP4:kalan: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KP4:toplam: program \"tuttu\" · kâhin 60000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 90000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:cari:A4:acikToplam: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:cari:A4:bakiye: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:cari:P4:acikToplam: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:cari:P4:bakiye: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:fatura:FA4:acik: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:fatura:FA4:kartta: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:fatura:FP4:acik: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:fatura:FP4:kartta: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:kart:KA4:kalan: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:kart:KA4:toplam: program \"tuttu\" · kâhin 60000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 90000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:kart:KP4:kalan: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc25/kanit/2026-11-21/kahin-cari25-program-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a24e3718cfe7459df",
+  "ham_cikti_sha256": "b2dd89529194331f4c2e3cf5c313fc9340ae1f25ae1d58d28fdce9a2bbb7e939",
+  "ham_cikti_bayt": 96669
+}
