@@ -282,3 +282,22 @@ Kaynak: dar kontrol raporu `docs/devir/2.5.0-DEVAM/dk-c6h-rapor.md` (inceleme uc
 - (BAŞ MİMAR — dosya sınırı) Göç 54 var olan üç testin göç numarası beklentisini (53) değiştirir (`test/donmus-defter-250.test.mjs`, `test/donmus-defter-yasam-250.test.mjs`,
   `test/kural-farki-kapi-disi-250.test.mjs`); dosya sınırı yeni test dosyası ve `test/c6h-*` diyor — ajan bu üç satırı "BEKLENTİ BİLEREK DEĞİŞTİ" desenine göre AYRI commit'te değiştirdi
   (geri alınabilir); baş mimar onaylamazsa o commit düşer ve göç 54 yerine başka saklama gerekir.
+
+### 11.6 Tur 5 (21.11.2026; BAŞ MİMAR KARARI 21.11 13:59 (1) seçenek (b)) — KALAN'ın kapsam okuması tablonun kendi okumasıyla TEK çağrıda (yalnız hız; davranış DEĞİŞMEZ) — koddan ÖNCE yazıldı
+- SORUN (tur 4 ölçümü): fiş [a, b] içindeyken Gelir Tablosu iki donmuş toplam okur — kendi dönemi [1 Ocak, min(b, kapsam)] ve KALAN için kapsamın tamamı ["", kapsam] (ikincisi madde sayımı alt sorgusu ve kimlik öneki dahil
+  bütün geçmişi tarar; 100 binde ~1,2–1,3 sn). Ayrıca alt defter hesap listesi her istekte yeniden kurulur (~70 ms).
+- YOL: `frozenSums(store, { from, through, split, ruleThrough })` — ruleThrough (= kapsam; ≥ through) verilince gruplar sorgusu TEK SQL ile ["", ruleThrough] okur: [from, through] içindeki satırlar
+  eskisiyle AYNI gruplarda (yıl × kısım × önek × 'voucher' × hesap × alt × cari; kısım ve önek aynı ifadeyle) `groups`'a, dışındakiler (from'dan önce ya da through'dan sonra, ≤ ruleThrough) kaba
+  gruplarda (yıl × 'voucher' × hesap × alt × cari; önek hesaplanmaz) `outside`'a. Madde sayımı (`entries`) ve `firstSeen` [from, through] ile AYNEN (bütün geçmişte madde sayılmaz). ruleThrough
+  verilmezse SQL ve çıktı birebir eski (öbür çağıranlar değişmez).
+- NEDEN EŞDEĞER: (1) `groups` — aynı WHERE kümesi ([from, through]) aynı GROUP BY anahtarıyla; anahtarın ilk terimi ifade (substr) olduğundan SQLite sıralayıcıyla gruplar → çıktı anahtar sırasında; dışarıdaki
+  satırlar ayrı kısım değeriyle (−1) ayrı gruplarda, süzülünce kalan dizi eskisinin aynısı. (2) KALAN'ın donmuş tarafı = frozenPartOf'un `rule`'u (yıl × hesap|alt|cari, 'voucher' hariç) — kısım ve önekten
+  bağımsız bir toplamdır; ["", kapsam] = [from, through] ∪ dışarısı (through ≤ kapsam) olduğundan tablonun kendi `rule`'u + `outside`'ın 'voucher' olmayan satırları = tur 4'ün kapsam okumasının `rule`'u
+  (aynı yıl × anahtar toplamları; periodRuleDiff çıktıyı tam anahtarla sıralar, Map sırası sonucu değiştirmez). (3) tur 4'ün kapsam okumasındaki madde sayımı ve firstSeen KALAN'a girmiyordu (yalnız `rule`
+  okunuyordu) → bırakılması sonucu değiştirmez. (4) Alt defter hesapları `ledger.expected([], [], { every: true })`'nin ANAHTARLARI — routes/ledger.mjs subledgerAccounts'ın kendi notu: "anahtarlar yalnız
+  şemaya bağlıdır → örnek başına bir kez" (aynı hatırlama orada da var) → ledger nesnesi başına bir kez (WeakMap); küme aynı.
+- KAPSAM: Gelir Tablosu (fiş dönemin içindeyken) ve Bilanço'nun t < kapsam iken fişli yolu (aynı yardımcı). Fiş yokken / dönemin dışındayken SQL değişmez (ruleThrough verilmez). Para / tablo kuralı
+  DEĞİŞMEZ; yanıtların bütün alanları (sayılar, Kesin Değil, bilgi) tur 4 ile BAYT BAYT aynı olmalı — eşdeğerlik testi (tur 4'ün iki okumalı yolu testte başvuru olarak; bütün kilitli fikstürler × fişten
+  önce / sonra, kilit ilerletilince through < kapsam, kilit geri çekilince KALAN ≠ 0, ters kayıt; iki saat dilimi) + not defterinde tur 4'ün GERÇEK koduyla yanıt karşılaştırması (fikstürler + temiz 100 bin).
+- Nasıl bozulur (testler buradan): dışarıdaki satırlardan through'dan SONRAKİLERİN unutulması (t < kapsam); from sınırının kayması (from günü iki kez ya da hiç); 'voucher' satırlarının KALAN'a girmesi;
+  tablonun kendi gruplarına dışarıdaki satırın karışması (yıl başı tutarı değişir); alt defter kümesinin hatırlanırken yanlış (boş) kurulması.
