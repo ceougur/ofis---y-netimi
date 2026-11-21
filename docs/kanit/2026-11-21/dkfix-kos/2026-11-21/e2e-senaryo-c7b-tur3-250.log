@@ -1,0 +1,53 @@
+
+■ A) S15 = A — tahsilatlı taksitli faturanın İptal Et'i ekrandan; Sil kapalı ve nedeni görünür
+  ✓ Sil kapalı, nedeni ve İptal Et yolu görünür: Düzenle kapalı: Faturanın taksit kartında tahsilat var; düzenlenmez. İptal Et ile iptal edin (tahsilat carinin avansı olur) ya da borcu düşürmek için iade faturası kaydedin.Sil kapalı: Faturanın taksit kartında tahsilat var; silinmez. İptal Et ile iptal edin (tahsilat carinin avansı olur), tahsilatları silin ya da iade faturası kaydedin.
+  ✓ İptal Et kapalı değil
+  ✓ Tab ile İptal Et düğmesine gelinir
+  ✓ pencere kartın ne olacağını söyler:  × İPTAL Satış Faturası FIS2026000000001 İptal Edilsin mi? Belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numara korunur; belge "İptal Edildi" olarak kalır. Taksit kartına alınan 300,00 TL tahsilat iptalden sonra carinin 
+  ✓ fatura iptal edildi (veri tabanı)
+  ✓ kart kapalı, tutar 0, faturadan ayrıldı (veri tabanı: {"status":"closed","total":0,"invoiceId":""})
+  ✓ carinin bakiyesi −300 (avans)
+  ✓ Kasa değişmedi
+
+■ B) Karar (4) + S216 = C — iade kartı en önce gelen açık taksitten küçültür; iade ekrandan İptal Et → kart son taksitte büyür
+  ✓ 08.12 taksiti duruyor
+  ✓ 08.11 taksiti kesildi (en önce gelen açık)
+  ✓ Tab ile İptal Et düğmesine gelinir
+  ✓ iade iptal edildi (veri tabanı)
+  ✓ S216 = C: 300 son taksite (kart: 2026-10-08:300 · 2026-12-08:600)
+  ✓ bakiye 600
+  ✓ kart penceresi 08.12 600 gösterir
+
+■ C) S210 = A — çok kalemli Mevcut Borç kartının içindeki faturanın İptal Et'i ekrandan; kart kapanır, elle borç kendi vadesiyle
+  ✓ Tab ile İptal Et düğmesine gelinir
+  ✓ pencere kartın kapanacağını söyler:  × İPTAL Satış Faturası FIS2026000000003 İptal Edilsin mi? Belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numara korunur; belge "İptal Edildi" olarak kalır. Bu faturayı içine alan “Ekran Çok Kalemli Kart” taksit kartı iptalde kapanır; karta alınan 300,00 TL tahsilat carinin avansı
+  ✓ fatura iptal edildi (veri tabanı)
+  ✓ kart kapalı, tutar 300 (veri tabanı: {"status":"closed","total":300,"invoiceId":""})
+  ✓ kart Taksitler → Kapalı sekmesinde, Yeniden Aç görünür
+  ✓ bakiye 100 (400 + 500 − 300 − 500)
+  ✓ 09.10: gecikmiş 100 (elle borç kendi vadesiyle — 08.10)
+
+■ D) S217 = A — Kartı Kapat'la kapatılmış tahsilatlı kartın faturası: İptal Et reddedilir; Yeniden Aç → İptal Et kabul
+  ✓ Tab ile İptal Et düğmesine gelinir
+  ✓ pencere reddin nedenini yazar:  × İPTAL Satış Faturası FIS2026000000004 İptal Edilsin mi? Belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numara korunur; belge "İptal Edildi" olarak kalır.İptal NedeniFaturanın tak
+  ✓ belge kesilmiş kaldı (veri tabanı)
+  ✓ bakiye değişmedi
+    [soru] Kaydedilmemiş Değişiklik → Kaydetmeden Kapat (beklenen: reddedilen iptal penceresinde İptal Nedeni dolu)
+  ✓ Yeniden Aç: kart açık (veri tabanı)
+  ✓ Tab ile İptal Et düğmesine gelinir
+  ✓ Yeniden Aç'tan sonra İptal Et kabul (veri tabanı)
+  ✓ bakiye −300 (tahsilat avans; kalan bir kez düşüldü)
+
+■ E) YB-1 — cari kartından tahsilat 500 → Kartı Kapat 'Kalan ₺2.500,00' TEK soruyla kapanır; carinin borcu 2.500 kalır
+  ✓ carinin borcu 2.500 (2500)
+  ✓ kart penceresi Kalan ₺2.500,00 (S129 = A): ₺2.500,00
+  ✓ soru pencerenin kalanıyla:  × ONAY Kartı Kapat Kalan ₺2.500,00 açıkken “Ekran Kart Kapat Kartı” kartı kapatılsın mı? Ödeme planı biter; kalan borç carinin borcunda kalır, yarından itibare
+    [soru] "Kartı Kapat" → Kartı Kapat (beklenen tek soru)
+  ✓ ikinci soru YOK
+  ✓ kart kapandı (veri tabanı)
+  ✓ TEK istek, 200 (gelen: [200])
+  ✓ Borçta Kalsın: carinin borcu 2.500 kalır
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+✓ senaryo-c7b-tur3-250: 39 geçti, 0 kaldı
