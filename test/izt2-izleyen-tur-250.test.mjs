@@ -88,6 +88,7 @@ async function world(start, fn) {
       return { paid: p.totals.paid, left: p.totals.remaining };
     },
     rows: planId => ctx.store.all("SELECT due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", planId).map(row => `${row.dueDate}:${row.amount}`),
+    full: planId => ctx.store.all("SELECT id, seq, due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", planId).map(row => ({ ...row })),
     account: async A => (await must("cari", api.get(`${W}/accounts/${A}`))).totals,
     ok: async () => (await must("Mutabakat Testi", api.get(`${W}/ledger/integrity`))).ok,
     invoice: async id => (await must("faturalar", api.get(`${W}/invoices?tab=all`))).invoices.find(x => x.id === id),
@@ -257,6 +258,60 @@ describe("İzleyen tur 2 — kapsam seçimi tek yardımcıda (S110 = A, S120 = A
       assert.deepEqual(await h.card(k), { status: "active", total: 900, paid: 0, left: 900 });
       const t = await h.account(acc);
       assert.equal(t.balance, 1200);
+      assert.equal(await h.ok(), true);
+    }));
+});
+
+describe("İzleyen tur 2 — İş 5 (faturasız stok iadesi: kesinti kaydı; silme / düzeltme / geri yükleme)", () => {
+  const setup = async h => {
+    const A = await h.acc();
+    const mal = (await must("mal", h.api.post(`${W}/stock`, { kind: "goods", code: "IZT2-MAL", name: "İzt2 Malı", unit: "Adet", openingQty: "100", salePrice: "300" }))).id;
+    await h.debt(A, "2026-09-01", 900);
+    const k = await h.cover(A, 900, "2026-10-05", "2026-09-02");
+    h.at("2026-09-03");
+    await h.pay(k, 300);
+    const before = h.full(k);
+    h.at("2026-11-10");
+    const move = await must("stok iadesi", h.api.post(`${W}/stock/${mal}/moves`, { kind: "in", reason: "return", qty: "1", unitPrice: "300", pay: "account", accountId: A, date: "2026-11-10" }));
+    return { A, mal, k, before, moveId: move.moveId, after: h.full(k) };
+  };
+  it("S1: stok iadesi 300 kartı küçültür; hareket silinince kart AYNI taksitlere geri büyür (S238 = A — iade hiç olmamış gibi); 20.11 gecikmiş 300", () =>
+    world("2026-09-02", async h => {
+      const s = await setup(h);
+      assert.equal(h.own(s.k).total, 600, "iade kartı küçültür (karar (4))");
+      h.at("2026-11-20");
+      const gone = await h.api.del(`${W}/stock/${s.mal}/moves/${s.moveId}`);
+      assert.equal(gone.status, 200, "hareket silindi");
+      assert.deepEqual(h.full(s.k), s.before, "taksitler iade öncesiyle AYNI (kimlik, sıra, vade, tutar)");
+      assert.deepEqual(h.own(s.k), { total: 900, paid: 300, left: 600 });
+      const t = await h.account(s.A);
+      assert.equal(t.balance, 600);
+      assert.equal(t.overdueDebt, 300, "05.11 taksiti yeniden açık ve vadesi geçmiş");
+      assert.equal(await h.ok(), true, "Mutabakat Testi");
+    }));
+  it("S2: silinen stok iadesi Silinenler'den geri yüklenince kart iadeden sonraki hâline döner", () =>
+    world("2026-09-02", async h => {
+      const s = await setup(h);
+      h.at("2026-11-20");
+      assert.equal((await h.api.del(`${W}/stock/${s.mal}/moves/${s.moveId}`)).status, 200);
+      const trash = await must("Silinenler", h.api.get("/api/admin/trash"));
+      const row = trash.find(x => x.kind === "stock-move" && x.ref === s.moveId);
+      assert.ok(row, "Silinenler'de");
+      await must("geri yükle", h.api.post("/api/admin/trash/restore", { id: row.id }));
+      assert.deepEqual(h.full(s.k).map(x => [x.dueDate, x.amount]), s.after.map(x => [x.dueDate, x.amount]), "kart yeniden küçüldü (iade sonrası vade / tutar)");
+      assert.equal((await h.account(s.A)).balance, 300);
+      assert.equal(await h.ok(), true);
+    }));
+  it("S3: stok iadesi düzeltmesi 1 → 2 kartı yeni iade gibi küçültür (kalanla sınırlı); 2 → 1 iadeden sonraki hâline döner", () =>
+    world("2026-09-02", async h => {
+      const s = await setup(h);
+      h.at("2026-11-12");
+      assert.equal((await h.api.put(`${W}/stock/${s.mal}/moves/${s.moveId}`, { qty: "2", unitPrice: "300" })).status, 200);
+      assert.deepEqual(h.own(s.k), { total: 300, paid: 300, left: 0 }, "borç 0 — kart kalanı 0 (karar (4))");
+      assert.equal((await h.account(s.A)).balance, 0);
+      assert.equal((await h.api.put(`${W}/stock/${s.mal}/moves/${s.moveId}`, { qty: "1", unitPrice: "300" })).status, 200);
+      assert.deepEqual(h.full(s.k).map(x => [x.dueDate, x.amount]), s.after.map(x => [x.dueDate, x.amount]), "iade 300 hâli");
+      assert.equal((await h.account(s.A)).balance, 300);
       assert.equal(await h.ok(), true);
     }));
 });
