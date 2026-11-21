@@ -62,6 +62,19 @@ export function createAccountLines({ store }) {
       }
       for (const [planId, cut] of Object.entries(cuts)) out.set(planId, roundMoney((out.get(planId) || 0) + (Number(cut) || 0)));
     }
+    // 2.5.0 İzleyen tur 2 (S241 = A; tasarım §20.1): Düzenle ile azaltmanın kestiği tutar da iade kesintisi gibi kapsama geri eklenir (kartın açıldığı andaki tutar) — satış faturasının
+    // payment_json.editCuts kayıtları (biçim lib/cover-scope.mjs editCutsOf ile aynı: [{ cuts: { kart: TL } }]).
+    for (const row of store.all("SELECT payment_json AS j FROM invoices WHERE kind IN ('sale', 'smm') AND status = 'issued' AND payment_json LIKE '%editCuts%'")) {
+      let records = [];
+      try {
+        records = JSON.parse(row.j || "{}").editCuts;
+      } catch {
+        records = [];
+      }
+      for (const record of Array.isArray(records) ? records : []) {
+        for (const [planId, cut] of Object.entries(record && typeof record.cuts === "object" && record.cuts ? record.cuts : {})) out.set(planId, roundMoney((out.get(planId) || 0) + (Number(cut) || 0)));
+      }
+    }
     return out;
   }
   // Ç5-B kapanış düzeltmesi (dar kontrol ORTA-1 — GERİLEME; S110 = A; S133 = C): satışla açılan Mevcut Borç kartının KAYNAĞI (hangi stok satışıyla açıldı) kalıcı bilgiden
