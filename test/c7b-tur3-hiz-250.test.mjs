@@ -81,8 +81,11 @@ describe("Ç7b tur 3 devam 3 — iptal / fatura kartının kapsam okuması ve tr
     const viewCalls = await counting(() => must("fatura kartı", api.get(`${W}/invoices/${f}`)));
     const cancelCalls = await counting(() => must("iptal", api.post(`${W}/invoices/${f}/cancel`, { reason: "hız" })));
     // İkisi birlikte: eski kodda ikisinin de nedeni iletide görünsün.
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 İzleyen küçük tur — İş 6, tasarım docs/erp/C7B-FATURA-TASARIM.md §19.7): fatura kartı GET'i kuyruğu tek cari önbelleğinden (obligationsOf) ve carinin
+    // defterini aynı veri durumunda bir kez (ledgerFor) okur — önbellek tazeyse defter HİÇ okunmaz (0), değilse bir kez. "En çok bir kez" kuralı aynen; kapsam okumasının dişi (eski kodda 2) aynen.
+    assert.ok(viewCalls.length <= 1 && viewCalls.every(call => call?.withRemaining === false), `fatura kartı: defter en çok bir kez, kuyruksuz (gelen ${JSON.stringify(viewCalls)})`);
     assert.deepEqual(
-      { faturaKarti: viewCalls, iptal: cancelCalls },
+      { faturaKarti: viewCalls.length ? viewCalls : [{ withRemaining: false }], iptal: cancelCalls },
       { faturaKarti: [{ withRemaining: false }], iptal: [{ withRemaining: false }] },
       "fatura kartı: defter yalnız durum için bir kez (kapsam okuması yok); iptal: kapsam okuması yok, trimCovers kuyruksuz (bir kez)",
     );

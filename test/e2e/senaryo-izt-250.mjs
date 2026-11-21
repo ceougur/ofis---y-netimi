@@ -174,6 +174,19 @@ try {
   await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
   await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
 
+  // Kurulum (API): fatura numarası ve tarih sırası uyuşmalı (kronoloji) — eski tarihli faturalar önce, kartlar kendi faturalarından sonra (kart yalnız açıldığı ana kadar doğmuş borcu kapsar).
+  const C = await acc("Ekran İzt İki Kart Müşterisi");
+  const cG = await goods(C, "2026-10-05", 3, { rest: "account" });
+  await cover(C, 900, "2026-10-10", "2026-10-05", "Ekran İzt Birinci Kart");
+  await goods(C, "2026-10-06", 1, { rest: "account" });
+  const cR = await cover(C, 300, "2026-10-20", "2026-10-06", "Ekran İzt İkinci Kart");
+  const B = await acc("Ekran İzt İade İptali Müşterisi");
+  const bG = await goods(B, "2026-10-07", 3, { rest: "account" });
+  const bP = await cover(B, 900, "2026-10-10", "2026-10-07", "Ekran İzt Kartı");
+  const D = await acc("Ekran İzt Düzenle Müşterisi");
+  const dF = await goods(D, "2026-10-07", 3, { rest: "account" });
+  const dP = await cover(D, 900, "2026-10-10", "2026-10-07", "Ekran İzt Düzenle Kartı");
+
   await step("A) BULGU-2 — kartı açık taksitli fatura: Düzenle 'Taksitli' açılır; değiştirmeden Kaydet kartı ve taksitleri aynen bırakır", async () => {
     const A = await acc("Ekran İzt Taksitli Müşteri");
     const f = await goods(A, "2026-10-08", 3, { rest: "installments", installments: { count: 3, firstDue: "2026-11-08" } });
@@ -189,9 +202,8 @@ try {
   });
 
   await step("B) S234 = A + S238 = A — kapalı kart + iade → Kalan ₺300,00; iade İptal Et → Kalan ₺600,00 ve 10.11 taksiti geri; Kartı Kapat sorusu ₺600,00", async () => {
-    const B = await acc("Ekran İzt İade İptali Müşterisi");
-    const g = await goods(B, "2026-10-07", 3, { rest: "account" });
-    const p = await cover(B, 900, "2026-10-10", "2026-10-07", "Ekran İzt Kartı");
+    const g = bG;
+    const p = bP;
     await pay(p, 300);
     await closeByApi(p);
     const before = itemRows(p);
@@ -204,7 +216,8 @@ try {
     await openPlanCard(p, "closed");
     ok(/₺600,00/.test(await kpi()), `iade iptali sonrası Kalan ₺600,00: ${await kpi()}`);
     const rows = await page.$$eval(".hof-plans .hof-plan-items tbody tr[data-item]", trs => trs.map(tr => tr.textContent.replace(/\s+/g, " ").trim()));
-    ok(rows.length === 3 && rows.some(row => row.includes("10.11.2026")), `üç taksit satırı, 10.11.2026 geri geldi: ${rows.join(" | ")}`);
+    // Borçta Kalsın kartında satırın günü kapanış günüdür (S205 — keptDueOf); vadesi veri tabanından okunur (aşağıda).
+    ok(rows.length === 3 && rows.every(row => (row.match(/₺300,00/g) || []).length >= 1) && !rows.some(row => row.includes("₺600,00")), `üç taksit satırı, her biri ₺300,00 (tabanda iki satır, son ₺600,00): ${rows.join(" | ")}`);
     ok(JSON.stringify(itemRows(p)) === JSON.stringify(before), "taksitler iade öncesiyle aynı (veri tabanı — kimlik, vade, tutar)");
     await shot("s238-iade-iptali-sonrasi");
     await page.click('.hof-plans [data-act="reopen"]');
@@ -223,12 +236,8 @@ try {
   });
 
   await step("C) BULGU-1 — iki kartlı caride ilk faturaya iade: ikinci kartın taksitleri açık, gecikmiş 0", async () => {
-    const C = await acc("Ekran İzt İki Kart Müşterisi");
-    const g = await goods(C, "2026-10-05", 3, { rest: "account" });
-    await cover(C, 900, "2026-10-10", "2026-10-05", "Ekran İzt Birinci Kart");
-    await goods(C, "2026-10-06", 1, { rest: "account" });
-    const r = await cover(C, 300, "2026-10-20", "2026-10-06", "Ekran İzt İkinci Kart");
-    await giveBack(g, C, 1);
+    const r = cR;
+    await giveBack(cG, C, 1);
     await openPlanCard(r, "active");
     ok(/₺300,00/.test(await kpi()), `ikinci kart Kalan ₺300,00: ${await kpi()}`);
     const states = await page.$$eval(".hof-plans .hof-plan-items tbody tr[data-item]", trs => trs.map(tr => tr.className));
@@ -239,9 +248,8 @@ try {
   });
 
   await step("D) S234-c — Düzenle ile 900 → 300: Mevcut Borç kartı 300'e küçülür", async () => {
-    const D = await acc("Ekran İzt Düzenle Müşterisi");
-    const f = await goods(D, "2026-10-07", 3, { rest: "account" });
-    const p = await cover(D, 900, "2026-10-10", "2026-10-07", "Ekran İzt Düzenle Kartı");
+    const f = dF;
+    const p = dP;
     await modifySave(f, { qty: "1" });
     ok((await totals(D)).balance === 300, "bakiye 300 (Düzenle kaydedildi)");
     ok(planRow(p).total === 300, `kart tutarı 300 (veri tabanı; tabanda 900): ${planRow(p).total}`);

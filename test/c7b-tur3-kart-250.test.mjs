@@ -82,7 +82,9 @@ describe("Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211,
     await integrity("faturasız stok iadesi");
   });
 
-  it("S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı geri gelir", async () => {
+  // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 İzleyen küçük tur — S238 = A, tasarım docs/erp/C7B-FATURA-TASARIM.md §19.3): "geri gelen tutar küçülmenin TERSİYLE, iadenin küçülttüğü AYNI taksite döner (iade hiç
+  // olmamış gibi)" — S216 = C'nin "son taksite" bilinen sınırı bu kararla KALKTI (kaydı olmayan eski iade son taksite: test/izt-izleyen-tur-250.test.mjs P1e).
+  it("S238 = A (önceden S216 = C): iade iptal edilince kart iadenin kestiği AYNI taksitte büyür (takvim ilk hâline döner); bakiye ve kart toplamı geri gelir", async () => {
     const A = await acc();
     const f = await goods(A, "2026-10-06", 3, installments);
     const p = planOf(f);
@@ -90,7 +92,7 @@ describe("Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211,
     const iade = await returnOf(A, f, 1);
     assert.deepEqual(await items(p), ["2026-10-06:300/0", "2026-12-06:300/300"], "iade: karar (4) — 06.11 kesildi");
     await must("iade İptal Et", api.post(`${W}/invoices/${iade.id}/cancel`, { reason: "S216" }));
-    assert.deepEqual(await items(p), ["2026-10-06:300/0", "2026-12-06:600/600"], "iade iptali: 300 SON taksite eklenir (S216 = C — bugünkü kod)");
+    assert.deepEqual(await items(p), ["2026-10-06:300/0", "2026-11-06:300/300", "2026-12-06:300/300"], "iade iptali: 06.11 taksiti geri gelir (S238 = A)");
     assert.equal((await must("kart", api.get(`${W}/plans/${p}`))).totals.remaining, 600);
     assert.equal((await totals(A)).balance, 600);
     await integrity("S216");

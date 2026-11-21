@@ -143,7 +143,8 @@ describe("S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kar
     assert.equal(await integrityOk(), true, "Mutabakat Testi temiz");
   });
 
-  it("T4 — iade → iade İptal Et: kapalı kart geri büyür (son taksite), Kalan 600; bakiye / gecikmiş tabanla aynı", async () => {
+  // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 İzleyen küçük tur — S238 = A, tasarım §19.3): büyüme iadenin kestiği AYNI taksite (önceden S216 = C: son taksite). Bakiye / gecikmiş aynen.
+  it("T4 — iade → iade İptal Et: kapalı kart geri büyür (S238 = A: kesilen 10.11 taksiti geri gelir), Kalan 600; bakiye / gecikmiş tabanla aynı", async () => {
     setDay("2026-10-08");
     const A = await acc();
     const g = await goods(A, "2026-10-07", 3, { rest: "account" });
@@ -153,10 +154,10 @@ describe("S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kar
     const ret = await giveBack(g, A, 1);
     assert.equal(total(q), 600, "iade sonrası 600");
     await cancel(ret);
-    assert.equal(total(q), 900, "iade iptali → 900 (büyüme son taksite — S216 = C)");
+    assert.equal(total(q), 900, "iade iptali → 900 (S238 = A — aynı taksite)");
     const shown = await shownEverywhere(A, q);
     assert.deepEqual([shown.window, shown.summary, shown.list], [600, 600, 600], "Kalan 600");
-    assert.deepEqual(shown.items.map(item => [item.planDueDate || item.dueDate, Number(item.amount)]), [["2026-10-10", 300], ["2026-12-10", 600]], "kesilen 10.11 geri gelmez; 10.12 600");
+    assert.deepEqual(shown.items.map(item => [item.planDueDate || item.dueDate, Number(item.amount)]), [["2026-10-10", 300], ["2026-11-10", 300], ["2026-12-10", 300]], "kesilen 10.11 geri gelir (S238 = A); 10.12 300");
     const a = await account(A);
     assert.deepEqual([Number(a.totals.balance), Number(a.totals.overdueDebt)], [600, 0], "08.10 bakiye 600, gecikmiş 0");
     setDay("2026-10-09");
