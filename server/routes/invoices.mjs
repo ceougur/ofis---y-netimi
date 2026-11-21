@@ -815,13 +815,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     const day = today();
     for (const [accountId, list] of byAccount) {
-      let ledger = [];
-      try {
-        ledger = accounts()?.detail ? accounts().detail(accountId, AUDITOR, { withRemaining: false }).ledger || [] : [];
-      } catch {
-        ledger = [];
-      }
-      const states = legacyClosing ? settle(accountSettleInput(accountId, ledger, day)) : obligationsFor(accountId, ledger, day).invoices;
+      // 2.5.0 İzleyen küçük tur — İş 6 (hız; ders 47, 53 (a); tasarım §19.7): carinin defteri aynı veri durumunda bir kez (ledgerFor); kuyruk tek cari önbelleğinden (obligationsOf — aynı anahtarda
+      // baştan kurulanla AYNI: test/tyk-onbellek-250.test.mjs). İşlem içinde ikisi de bugünkü gibi baştan kurulur.
+      const states = legacyClosing ? settle(accountSettleInput(accountId, ledgerFor(accountId), day)) : (obligationsOf(accountId, () => ledgerFor(accountId)) || obligationsFor(accountId, [], day)).invoices;
       for (const row of list) out.set(row.id, states.get(row.id) || { payable: row.tryPayable, paid: 0, open: row.tryPayable, state: "open", label: PAY_STATES.open });
     }
     return out;
@@ -841,14 +837,42 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
   // Ç5-B: YAZMA YOLLARI (taksitli faturanın kendi kartının hedefi — ownTarget; iade → kapsayan kartın küçülmesi — coverState) kart / bağ defterini lib/invoice-settle.mjs
   // ile AYNEN okur: kart tutarı ve kapsam payı TYK'nın bağsız dağılımından etkilenmesin (defter kuralı Ç5-B'de değişmez; karar (4) Ç7b). Görünüm (durum, Kalan, Kapatanlar) TYK.
-  function settledFor(row) {
+  // 2.5.0 İzleyen küçük tur — İş 6 (hız; tasarım §19.7): fatura kartı GET'i (iptal notu — coverCancelText → coverState) carinin defterini ve kapama defterini kuyruktan AYRI yeniden kuruyordu (Ç7b'den
+  // beri ~+26 ms). Aynı veri durumunda (settleKey: total_changes | data_version | gün — kuyruk önbelleğinin anahtarı) carinin defteri (ledgerFor) ve kapama defterinin sonucu (settledFor) bir kez kurulur;
+  // herhangi bir yazım ya da gün dönümü anahtarı değiştirir (bayat sonuç verilmez). Veri tabanı işleminin içinde okunmaz, yazılmaz (yazma yolları — iade, iptal, Düzenle — her çağrıda baştan kurar).
+  // Eşdeğerlik: test/izt-hiz-esdegerlik-250.test.mjs (önbellekli = baştan kurulan, her yazım türünden sonra).
+  const LEDGER_MAX = 16;
+  let ledgerMemo = { key: "", map: new Map() };
+  let settleMemo = { key: "", map: new Map() };
+  const memoKey = () => (store.inTransaction ? "" : settleKey(today()));
+  function ledgerFor(accountId) {
+    const key = memoKey();
+    if (key && ledgerMemo.key === key && ledgerMemo.map.has(accountId)) return ledgerMemo.map.get(accountId);
     let ledger = [];
     try {
-      ledger = accounts()?.detail ? accounts().detail(row.accountId, AUDITOR, { withRemaining: false }).ledger || [] : [];
+      ledger = accounts()?.detail ? accounts().detail(accountId, AUDITOR, { withRemaining: false }).ledger || [] : [];
     } catch {
       ledger = [];
     }
-    return settle(accountSettleInput(row.accountId, ledger, today())).get(row.id) || { payable: row.tryPayable, paid: 0, open: row.tryPayable, state: "open", label: PAY_STATES.open };
+    if (key) {
+      if (ledgerMemo.key !== key) ledgerMemo = { key, map: new Map() };
+      if (ledgerMemo.map.size >= LEDGER_MAX) ledgerMemo.map.clear();
+      ledgerMemo.map.set(accountId, ledger);
+    }
+    return ledger;
+  }
+  function settledFor(row) {
+    const key = memoKey();
+    let states = key && settleMemo.key === key ? settleMemo.map.get(row.accountId) : null;
+    if (!states) {
+      states = settle(accountSettleInput(row.accountId, ledgerFor(row.accountId), today()));
+      if (key) {
+        if (settleMemo.key !== key) settleMemo = { key, map: new Map() };
+        if (settleMemo.map.size >= LEDGER_MAX) settleMemo.map.clear();
+        settleMemo.map.set(row.accountId, states);
+      }
+    }
+    return states.get(row.id) || { payable: row.tryPayable, paid: 0, open: row.tryPayable, state: "open", label: PAY_STATES.open };
   }
   // Tek carinin kuyruğu (cari kartı, fatura kartı): carinin defteri çağırandan (accounts.detail → burası → accounts.detail döngüsü olmaz).
   function obligationsFor(accountId, ledger, day = today()) {
