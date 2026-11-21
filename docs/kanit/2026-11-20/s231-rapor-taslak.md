@@ -48,3 +48,10 @@
 - Fark = ilk NOCASE ıskasında kurulan ad haritası: 'SELECT id, name FROM accounts' ~3,0–3,8 ms + 5.484 adı tek tek foldPersonName ~2,3 ms + Map/Set ~1,4–1,6 ms.
 - Denenip BIRAKILAN: SQL'de daraltma (replace zinciri + GLOB güvensiz ad süzgeci) — 16 ms (daha yavaş).
 - DÜZELTME (commit e32985e6): foldedNameLookup (names.mjs, yeni) + personIndexFor (accounts.mjs) — adlar TEK metin (group_concat), TEK seferde katlanır, haritaya yalnız yüklemenin keşideci adlarıyla aynı katlananlar girer; aranmayan ad / ayraçlı metin → foldedNameIndex (yedek yol). Eşdeğerlik testi test/s231-cek-hiz-esdegerlik-250.test.mjs.
+
+## 5. HIZ ÖLÇÜMÜ 1 (kod e32985e6) — KÖTÜ; nedeni ölçüldü (docs/kanit/2026-11-20/s231-hiz/olcum1)
+- çek 500: c7b 76,0 / 79,2 → yeni 92,1 / 96,1 (1,21 / 1,21) — S223'ten (84,5 / 90,7) de kötü. grup kolonlu cari Excel 2.000: 317 / 318 → 351 / 384 (1,11 / 1,21).
+- Neden 1 (profil2): personIndexFor her yüklemede YEDEK YOLA düşüyordu — ayraç U+0000 iken veri tabanı sürücüsü birleşik metni ilk U+0000'da kesiyor (metin kısa geldi, parça sayısı tutmadı). Sonuç doğruydu (yedek yol), yalnız iş iki kez yapıldı. Test (3) bunu görmüyordu → 'satır satır okuma sayısı 0' denetimi eklendi.
+- Neden 2: ayraç düzeltilince de kimlik + ad metni ~400 bin karakter; katlama 3,3 ms + SQL 2,9 ms ≈ eski yol. → yalnız adlar (U+001F) + rowid'ler; eşleşenlerin kimliği ayrı okunur.
+- Neden 3 (grup kolonlu cari Excel): grup bulucusunun her NOCASE ıskasında json_each sorgusu (1.000 satır). → yalnız yüklemede açılan aday kimlikle okunur.
+- Düzeltme 2 = commit 6f6aff4a; ölçüm 2 sürüyor.
