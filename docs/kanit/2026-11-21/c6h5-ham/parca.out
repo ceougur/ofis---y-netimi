@@ -1,0 +1,42 @@
+kilit bekleniyor 14:42:30
+kilit alındı 14:42:39 · yük 1.17 1.21 1.97 · yeni 596253cf
+=== /home/user/ofis---y-netimi/.claude/worktrees/agent-a32c17a0bb8351975 · başta yük 1.17 1.21 1.97 · 14:42:39
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a32c17a0bb8351975 · yük 1.09 1.18 1.92 · fiş yazıldı
+  kapsam 2026-06-30
+  incomeStatementOf yıl 2026 (tam; ilk çağrı dahil 6 kez): en iyi 3301 · ortanca 3372 ms
+  incomeStatementOf 2026 H2 (07-01..12-31): en iyi 3380 · ortanca 3555 ms
+  frozenSums yıl [2026-01-01, kapsam] (tablonun kendi okuması): en iyi 127 · ortanca 133 ms
+  frozenSums kapsamın tamamı ['', kapsam] (tur 4'ün ikinci okuması): en iyi 1236 · ortanca 1309 ms
+  frozenSums yıl + ruleThrough (tur 5 tek çağrı): en iyi 506 · ortanca 576 ms
+  tek çağrı: groups 1091 · outside 2675
+  donmuş satır ≤ kapsam 314033 · bunların 2026'sı 40207
+  expected every (alt defter hesapları): en iyi 71 · ortanca 72 ms
+yük (sonda) 1.21 1.20 1.88
+çıkış 0
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kod-f73f4f5a · başta yük 1.21 1.20 1.88 · 14:44:27
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kod-f73f4f5a · yük 1.19 1.19 1.84 · fiş yazıldı
+  kapsam 2026-06-30
+  incomeStatementOf yıl 2026 (tam; ilk çağrı dahil 6 kez): en iyi 4136 · ortanca 4258 ms
+  incomeStatementOf 2026 H2 (07-01..12-31): en iyi 4066 · ortanca 4354 ms
+  frozenSums yıl [2026-01-01, kapsam] (tablonun kendi okuması): en iyi 126 · ortanca 130 ms
+  frozenSums kapsamın tamamı ['', kapsam] (tur 4'ün ikinci okuması): en iyi 1064 · ortanca 1111 ms
+  frozenSums yıl + ruleThrough (tur 5 tek çağrı): en iyi 518 · ortanca 551 ms
+  tek çağrı: groups 1091 · outside 2675
+  donmuş satır ≤ kapsam 314033 · bunların 2026'sı 40207
+  expected every (alt defter hesapları): en iyi 76 · ortanca 81 ms
+yük (sonda) 1.07 1.16 1.79
+çıkış 0
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kod-5ee4d99e · başta yük 1.07 1.16 1.79 · 14:46:22
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kod-5ee4d99e · yük 1.06 1.14 1.74 · fiş yazıldı
+  kapsam 2026-06-30
+  incomeStatementOf yıl 2026 (tam; ilk çağrı dahil 6 kez): en iyi 2850 · ortanca 3589 ms
+  incomeStatementOf 2026 H2 (07-01..12-31): en iyi 3393 · ortanca 3572 ms
+  frozenSums yıl [2026-01-01, kapsam] (tablonun kendi okuması): en iyi 129 · ortanca 134 ms
+  frozenSums kapsamın tamamı ['', kapsam] (tur 4'ün ikinci okuması): en iyi 1120 · ortanca 1223 ms
+  frozenSums yıl + ruleThrough (tur 5 tek çağrı): en iyi 600 · ortanca 648 ms
+  tek çağrı: groups 1091 · outside 2675
+  donmuş satır ≤ kapsam 314033 · bunların 2026'sı 40207
+  expected every (alt defter hesapları): en iyi 76 · ortanca 85 ms
+yük (sonda) 1.40 1.21 1.73
+çıkış 0
+bitti 14:48:13 · yük 1.40 1.21 1.73

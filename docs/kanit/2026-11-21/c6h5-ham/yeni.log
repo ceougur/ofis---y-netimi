@@ -1,0 +1,7 @@
+kilit bekleniyor 14:11:03
+başla 14:11:03 yük 5.20 4.70 3.42 commit 03c702af
+yeni UTC çıkış 0 · # tests 32 # pass 32 # fail 0 # cancelled 0 # skipped 0 
+yeni Europe/Istanbul çıkış 0 · # tests 32 # pass 32 # fail 0 # cancelled 0 # skipped 0 
+kırmızı (tur 4 kodu) UTC çıkış 1 · # tests 17 # pass 0 # fail 17 # cancelled 0 # skipped 0 
+kırmızı (tur 4 kodu) Europe/Istanbul çıkış 1 · # tests 17 # pass 0 # fail 17 # cancelled 0 # skipped 0 
+bitti 14:13:00 yük 9.21 6.63 4.30

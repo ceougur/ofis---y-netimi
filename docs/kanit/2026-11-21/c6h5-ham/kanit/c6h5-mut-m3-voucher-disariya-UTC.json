@@ -1,0 +1,88 @@
+{
+  "ad": "c6h5-mut-m3-voucher-disariya-UTC",
+  "komut": "node --test test/c6h-tek-okuma.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T18:23:39.439Z",
+  "sure_sn": 12.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 6,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "satis-fatura kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "kasa kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "banka kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "pos kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "cek-senet kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "taksit kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "elle-borc-alacak kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "stok kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "supheli kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4",
+      "konum": "test/c6h-tek-okuma.test.mjs:186:3",
+      "hata": "kasa kilit yeniden 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4",
+      "konum": "test/c6h-tek-okuma.test.mjs:198:3",
+      "hata": "taksit ters kayıt + kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    }
+  ],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kanit/2026-11-21/c6h5-mut-m3-voucher-disariya-UTC.log",
+  "klasor": "/dev/shm/c6h5-mut",
+  "ham_cikti_sha256": "0e6c74eae03ac4b347a96c700d7376686cc110e063d3ed8785831434f8b5e102",
+  "ham_cikti_bayt": 49583
+}

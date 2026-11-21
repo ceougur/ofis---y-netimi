@@ -1,0 +1,16 @@
+| İstek | eski en iyi / ortanca | tur 4 en iyi / ortanca | yeni en iyi / ortanca | yeni ÷ eski (en iyi / ortanca) | KÖTÜ? | olay döngüsü en çok (e / t4 / y) | yanıt özeti | n tur |
+|---|---|---|---|---|---|---|---|---|
+| kilitli Bilanço 2026-12-31 | 5646 / 5843 | 5549 / 6001 | 5528 / 6076 | 0.979 / 1.040 | hayır | 104 / 91 / 153 | tur4 = yeni · eski farklı | 3/3/3 |
+| kilitli GT yıl 2026 | 3194 / 3379 | 3279 / 3590 | 3190 / 3480 | 0.999 / 1.030 | hayır | 14 / 20 / 91 | tur4 = yeni · eski farklı | 3/3/3 |
+| kilitli GT ilk yarı 2026 | 3198 / 3395 | 3178 / 3437 | 3114 / 3469 | 0.974 / 1.022 | hayır | 20 / 199 / 13 | tur4 = yeni · eski farklı | 3/3/3 |
+| fişten sonra Bilanço 2026-12-31 | 5500 / 5786 | 5743 / 6360 | 5464 / 6115 | 0.993 / 1.057 | hayır | 35 / 36 / 17 | tur4 = yeni · eski farklı | 3/3/3 |
+| fişten sonra GT yıl 2026 (fiş içinde) | 3206 / 3352 | 4720 / 4932 | 3920 / 4084 | 1.222 / 1.218 | EVET | 11 / 16 / 377 | tur4 = yeni · eski farklı | 3/3/3 |
+| fişten sonra GT ikinci yarı 2026 (fiş içinde) | 3128 / 3661 | 4643 / 4962 | 3771 / 4457 | 1.205 / 1.217 | EVET | 33 / 134 / 132 | tur4 = yeni · eski farklı | 3/3/3 |
+| fişten sonra GT ilk yarı 2026 (fiş dışında) | 2908 / 3432 | 3251 / 3542 | 3110 / 3619 | 1.070 / 1.055 | hayır | 101 / 51 / 111 | tur4 = yeni · eski farklı | 3/3/3 |
+| kilitsiz Bilanço 2026-12-31 | 4931 / 5418 | 4620 / 5616 | 4786 / 5155 | 0.970 / 0.951 | hayır | 137 / 127 / 138 | tur4 = yeni · eski aynı | 3/3/3 |
+| kilitsiz GT yıl 2026 | 3223 / 3531 | 3011 / 3353 | 3172 / 3357 | 0.984 / 0.951 | hayır | 21 / 20 / 12 | tur4 = yeni · eski aynı | 3/3/3 |
+| kilitsiz GT ilk yarı 2026 | 2978 / 3424 | 3118 / 3270 | 3110 / 3436 | 1.044 / 1.003 | hayır | 12 / 19 / 14 | tur4 = yeni · eski aynı | 3/3/3 |
+dondurma koşusu eski: en iyi 9761 · ortanca 10363 ms (n=3)
+dondurma koşusu tur4: en iyi 8995 · ortanca 10326 ms (n=3)
+dondurma koşusu yeni: en iyi 10546 · ortanca 10860 ms (n=3)
+GEÇERSİZ / başarısız ölçümler: yok

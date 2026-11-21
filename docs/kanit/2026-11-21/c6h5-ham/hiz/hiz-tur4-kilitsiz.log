@@ -1,0 +1,24 @@
+=== tur 1 · tur4 · kilitsiz · başta yük 1.35 1.20 1.37 · GEÇERLİ · 15:03:04
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kod-f73f4f5a · kip kilitsiz · yük (başta) 1.23 1.19 1.36 · TZ UTC
+  donma: bekleyen koşu yok (kapsam —)
+  kilitsiz Bilanço 2026-12-31: ilk 5002.3 · en iyi 4620.1 · ortanca 4697 · en kötü 6132.3 ms · olay döngüsü en çok 101.7 ms (n=5) · özet 88bdb83d9510fcc0 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT yıl 2026: ilk 3231.8 · en iyi 3010.7 · ortanca 3115.2 · en kötü 3315.4 ms · olay döngüsü en çok 19.6 ms (n=5) · özet a9b13a9c44e05567 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT ilk yarı 2026: ilk 3179.1 · en iyi 3118.4 · ortanca 3213.6 · en kötü 3244 ms · olay döngüsü en çok 19.4 ms (n=5) · özet 273e254a7a473b64 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":2349410319}
+  bellek (rss) 640 MB · yük (sonda) 1.48 1.24 1.36
+çıkış 0 · sonda yük 1.48 1.24 1.36 · 15:04:37
+=== tur 2 · tur4 · kilitsiz · başta yük 1.31 1.23 1.27 · GEÇERLİ · 15:23:10
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kod-f73f4f5a · kip kilitsiz · yük (başta) 1.46 1.27 1.28 · TZ UTC
+  donma: bekleyen koşu yok (kapsam —)
+  kilitsiz Bilanço 2026-12-31: ilk 5393.3 · en iyi 5042.4 · ortanca 5633.6 · en kötü 6218.6 ms · olay döngüsü en çok 126.7 ms (n=5) · özet 88bdb83d9510fcc0 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT yıl 2026: ilk 3510.2 · en iyi 3261.5 · ortanca 3353.3 · en kötü 3932.8 ms · olay döngüsü en çok 12.9 ms (n=5) · özet a9b13a9c44e05567 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT ilk yarı 2026: ilk 3863.3 · en iyi 3516.3 · ortanca 3834.2 · en kötü 3979 ms · olay döngüsü en çok 10.5 ms (n=5) · özet 273e254a7a473b64 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":2349410319}
+  bellek (rss) 633 MB · yük (sonda) 1.24 1.26 1.27
+çıkış 0 · sonda yük 1.24 1.26 1.27 · 15:24:54
+=== tur 3 · tur4 · kilitsiz · başta yük 1.16 1.23 1.18 · GEÇERLİ · 15:40:51
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kod-f73f4f5a · kip kilitsiz · yük (başta) 1.21 1.24 1.19 · TZ UTC
+  donma: bekleyen koşu yok (kapsam —)
+  kilitsiz Bilanço 2026-12-31: ilk 5609 · en iyi 5096.6 · ortanca 5616.5 · en kötü 5682.9 ms · olay döngüsü en çok 96.4 ms (n=5) · özet 88bdb83d9510fcc0 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT yıl 2026: ilk 3448.3 · en iyi 3340.3 · ortanca 3518.5 · en kötü 3891.1 ms · olay döngüsü en çok 11.8 ms (n=5) · özet a9b13a9c44e05567 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT ilk yarı 2026: ilk 3346.4 · en iyi 3215.4 · ortanca 3269.9 · en kötü 3582.5 ms · olay döngüsü en çok 11.3 ms (n=5) · özet 273e254a7a473b64 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":2349410319}
+  bellek (rss) 662 MB · yük (sonda) 1.35 1.27 1.20
+çıkış 0 · sonda yük 1.35 1.27 1.20 · 15:42:34
