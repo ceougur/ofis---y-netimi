@@ -948,7 +948,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     payStateLabel: state?.label || (row.status === "draft" ? PAY_STATES.draft : row.status === "cancelled" ? PAY_STATES.cancelled : ""),
     paid: state?.paid ?? 0,
     open: state?.open ?? 0,
-    ...(state?.inPlan > 0.005 ? { ownOpen: state.ownOpen, inPlan: state.inPlan } : {}),
+    // ownPayState (Ç7b DK + S229 ALTIN, §18.5 — yalnız okuma): faturanın KENDİ kapama durumu (GÖSTERİLEN durumdan önceki ad; ownOpen gibi yalnız inPlan varken). Sınır / kapama / gösterim okumaz.
+    ...(state?.inPlan > 0.005 ? { ownOpen: state.ownOpen, ownPayState: rawState?.state || "", inPlan: state.inPlan } : {}),
     // v2.0.17: "Bu Faturayı Kapatanlar" — her ödenen kuruşun kaynağı (tarih, tür, tutar, bağlı/otomatik/mahsup).
     closers: (state?.closers || []).map(item => ({ ...item, modeLabel: CLOSER_MODES[item.mode] || item.mode, methodLabel: item.method ? methodLabel(item.method) : "" })),
     };
