@@ -1,0 +1,32 @@
+=== /home/user/ofis---y-netimi/.claude/worktrees/agent-a685ea99951e1d5f9 başta 1.34 2.19 3.21 5/138 19395 14:28:16
+--- senaryo-dkfix-250 14:28:16 yük 1.34
+çıkış 0 · ✓ senaryo-dkfix-250: 21 geçti, 0 kaldı
+--- senaryo-banka-210b 14:35:51 yük 0.60
+çıkış 0 · ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a685ea99951e1d5f9/test/e2e/artifacts/senaryo-banka-210b
+--- senaryo-banka-210-eski-satir 14:37:24 yük 1.70
+çıkış 0 · ✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a685ea99951e1d5f9/test/e2e/artifacts/senaryo-banka-210-eski-satir
+--- senaryo-pos-220 14:38:10 yük 1.43
+çıkış 0 · ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a685ea99951e1d5f9/test/e2e/artifacts/senaryo-pos-220
+--- senaryo-entegrator-240 14:40:14 yük 0.87
+çıkış 0 · ✓ senaryo-entegrator-240: 81 geçti, 0 kaldı
+--- senaryo-fatura-243 14:41:33 yük 1.22
+çıkış 0 · 61 geçti, 0 kaldı
+--- senaryo-kdv-donemi-250 14:42:39 yük 1.17
+çıkış 0 · ✓ senaryo-kdv-donemi-250: 22 geçti, 0 kaldı
+--- senaryo-c7b-kabul-250 14:48:34 yük 1.47
+çıkış 0 · ✓ senaryo-c7b-kabul-250: 39 geçti, 0 kaldı
+--- senaryo-c7b-tur3-250 15:06:35 yük 1.21
+çıkış 1 · ✗ senaryo-c7b-tur3-250: 38 geçti, 1 kaldı
+--- gg244-esmm-gonder 15:28:30 yük 0.32
+çıkış 0 · 66 geçti, 0 kaldı
+--- gg244-numara-tarih-onay 15:47:27 yük 3.84
+çıkış 0 · ✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı
+--- uiux-b-243 15:48:22 yük 4.60
+çıkış 0 · ✓ uiux-b-243: 58 geçti, 0 kaldı
+--- senaryo-217 15:49:11 yük 7.28
+çıkış 0 · 
+--- senaryo-216 15:50:34 yük 7.03
+çıkış 0 · 
+--- banka-210-kart-onbellek-yaris 15:52:11 yük 5.83
+çıkış 0 · ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı
+bitti 15:53:30

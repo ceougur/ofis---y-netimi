@@ -7,6 +7,8 @@
 //      tutar 0, faturadan ayrılmış; carinin bakiyesi −300 (avans); Kasa değişmez.
 //   B) Karar (4) + S216 = C: taksitli fatura 900 (aynı takvim), 08.10 tahsilat 300, iade 1 × 300 → Taksitler kart penceresinde 08.12 300 var, 08.11 YOK; iade belgesi ekrandan İptal Et → kart
 //      08.12 600 (son taksite; takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye 600.
+//      BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 İzleyen küçük tur — S238 = A, tasarım docs/erp/C7B-FATURA-TASARIM.md §19.3): iade iptalinde kesilen 08.11 taksiti AYNI taksite geri gelir (08.10 300 ·
+//      08.11 300 · 08.12 300); S216 = C'nin bilinen sınırı kalktı. Bakiye 600 aynen.
 //   C) S210 = A: elle Borç 400 (08.10) + fatura 500 → Mevcut Borç kartı 900 (10.10 / 10.11 / 10.12) → kart tahsilatı 300 → fatura ekrandan İptal Et; pencere "“…” taksit kartı iptalde kapanır;
 //      karta alınan 300,00 TL tahsilat carinin avansı olur; karttaki öbür borç kendi vadesiyle carinin borcunda kalır" der → kart Kapalı (Taksitler → Kapalı sekmesinde), tutar 300; bakiye 100;
 //      ertesi gün (09.10) gecikmiş 100 (elle borç kendi vadesiyle; kart açık kalsaydı borç 10.10 taksitinde — gecikmiş 0).
@@ -208,10 +210,10 @@ try {
     await cancelFromScreen(iade.id, "İade yanlış girildi");
     ok(invStatus(iade.id) === "cancelled", "iade iptal edildi (veri tabanı)");
     const items = (await must("kart", api.get(`${W}/plans/${p}`))).items.map(i => `${i.dueDate}:${i.amount}`);
-    ok(JSON.stringify(items) === JSON.stringify(["2026-10-08:300", "2026-12-08:600"]), `S216 = C: 300 son taksite (kart: ${items.join(" · ")})`);
+    ok(JSON.stringify(items) === JSON.stringify(["2026-10-08:300", "2026-11-08:300", "2026-12-08:300"]), `S238 = A: 300 kesilen 08.11 taksitine geri (kart: ${items.join(" · ")})`);
     ok((await totals(B)).balance === 600, "bakiye 600");
     await openPlanCard(p);
-    ok(/600,00/.test(await text(".hof-plans")), "kart penceresi 08.12 600 gösterir");
+    ok(/600,00/.test(await text(".hof-plans")), "kart penceresi Kalan 600 gösterir");
     await shot("iade-iptali-kart");
   });
 
