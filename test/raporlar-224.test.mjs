@@ -244,7 +244,7 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     // 13) 70: Ayşe'nin mevcut borcunun 150'si 3 taksitli karta; 60 gün önce 100 nakit.
     const firstDue = ago(40);
     const cover = await must("mevcut borç kartı", api.post("/api/workspace/plans", { name: accName.A, registeredOn: ago(70), total: "150", accountId: ids.A, mode: "auto", count: "3", firstDue, coversBalance: true }));
-    E.plans.push({ acc: "A", total: 150, items: [0, 1, 2].map(i => ({ due: addMonths(firstDue, i), amount: 50 })) });
+    E.plans.push({ acc: "A", total: 150, cover: true, items: [0, 1, 2].map(i => ({ due: addMonths(firstDue, i), amount: 50 })) });
     await must("kart tahsilatı", api.post(`/api/workspace/plans/${cover.id}/entries`, { kind: "in", amount: "100", date: ago(60), method: "cash" }));
     E.cash.push({ d: ago(60), amt: 100 });
     E.cari.push({ d: ago(60), acc: "A", debit: 0, credit: 100, tag: "plan" });
@@ -273,6 +273,8 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
   // ---------- Bağımsız beklenen hesaplar ----------
   const balanceOf = (acc, range) => sum(E.cari.filter(r => r.acc === acc && (!range?.to || r.d <= range.to)), r => r.debit - r.credit);
   const allBalance = acc => balanceOf(acc, null);
+  // S229 = A (20.11.2026): "Carinin Mevcut Borcu" kartının aldığı ve henüz ödenmemiş kısım (kartın kalanı) Açık Faturalar'da faturadan düşer — o kısım kartın taksitlerinde.
+  const coverLeft = acc => sum(E.plans.filter(p => p.cover && p.acc === acc), p => sum(p.items, it => it.remaining));
   const live = () => E.inv.filter(r => !r.cancelled);
   const movement = (list, range) => ({ opening: sum(list.filter(r => before_(r.d, range)), r => r.amt), in: sum(list.filter(r => within(r.d, range) && r.amt > 0), r => r.amt), out: sum(list.filter(r => within(r.d, range) && r.amt < 0), r => -r.amt) });
 
@@ -575,7 +577,7 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     "acik-faturalar"(data, c) {
       const filter = key => !c.account || c.account === key;
       // Taksitli fatura (Bora) taksit kartında izlenir; açık alacak = taksitsiz satışların kalanı = müşterinin bakiyesi (Cem, Ayşe).
-      assert.equal(summaryOf(data, "Açık Alacak"), sum(["A", "C"].filter(filter), k => allBalance(k)), "açık alacak");
+      assert.equal(summaryOf(data, "Açık Alacak"), sum(["A", "C"].filter(filter), k => r2(allBalance(k) - coverLeft(k))), "açık alacak (Mevcut Borç kartının kalanı düşülmüş — S229 = A)");
       assert.equal(summaryOf(data, "Açık Borç"), filter("S") ? -allBalance("S") : 0, "açık borç");
       for (const row of data.rows) if (c.account) assert.equal(row[col(data, "Cari")], accName[c.account], "cari süzgeci");
     },
@@ -755,7 +757,8 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     const stock = await must("stok", get("stok-durumu"));
     assert.deepEqual(stock.rows.filter(r => r[0] !== "HZM").map(r => [r[0], r[4]]).sort(), [["DFT", "30"], ["KLM", "102"]]);
     const open = await must("açık", get("acik-faturalar"));
-    assert.deepEqual([summaryOf(open, "Açık Alacak"), summaryOf(open, "Açık Borç")], [280, 5100]);
+    // S229 = A: Ayşe 160 − kartın kalanı 50 (kart 150, tahsil 100) = 110; Cem 120 → 230 (önceden 280: kartın 50'si hem faturada hem kartta).
+    assert.deepEqual([summaryOf(open, "Açık Alacak"), summaryOf(open, "Açık Borç")], [230, 5100]);
     const aging = await must("yaşlandırma", get("alacak-yaslandirma"));
     // 2.3.0 İz 1.6: "Şüpheli Alacak (dilimlere dahil)" kolonu Toplam'a ikinci kez girmez → Toplam kolonu adıyla okunur (karar 15.10.2026: Vade Gecikme (Gün) de var).
     assert.equal(moneyOf(aging.footer[col(aging, "Toplam")]), 4380, "780 müşteri bakiyesi + 3.600 portföydeki senet");

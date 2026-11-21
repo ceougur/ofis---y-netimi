@@ -1,0 +1,36 @@
+{
+ "ornek1": {
+  "acikFaturalar": [
+   {
+    "no": "FIS2026000000001",
+    "kalan": 20000,
+    "gecikme": "18 gün"
+   }
+  ],
+  "faturaKarti": {
+   "acik": 20000,
+   "durum": "Vadesi Geçti",
+   "kendiAcigi": 50000,
+   "taksitKartinda": [
+    "Örnek 1 Kartı · 30000"
+   ]
+  },
+  "listeKalan": 20000,
+  "bakiye": 80000,
+  "gecikmis": 20000
+ },
+ "ornek2": {
+  "acikFaturalar": [],
+  "faturaKarti": {
+   "acik": 0,
+   "durum": "Taksitte",
+   "kendiAcigi": 50000,
+   "taksitKartinda": [
+    "Örnek 2 Kartı · 50000"
+   ]
+  },
+  "listeKalan": 0,
+  "bakiye": 50000,
+  "gecikmis": 0
+ }
+}

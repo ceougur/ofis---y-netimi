@@ -1,0 +1,32 @@
+{
+  "ad": "g2-ist-2",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar2-gonderim.test.mjs test/gg243-gonderim.test.mjs test/iade-210.test.mjs test/iade-geri-odeme-246.test.mjs test/iade-kapama-k1.test.mjs test/iade-kesinti-tarama-249.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/kapama-rastgele-223.test.mjs test/kayit-bag-31e-birim.test.mjs test/kilit-izi-alanlar-250.test.mjs test/mutabakat-cekirdek.test.mjs test/mutabakat-yil-donumu.test.mjs test/netten-brute-244.test.mjs test/platform-tasinabilirlik.test.mjs test/s229-acik-fatura-kart-payi-250.test.mjs test/s229-eski-surum-250.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/tyk-kapanis-250.test.mjs test/tyk-kapanis-dis-250.test.mjs test/tyk-son-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-tur2b2-250.test.mjs test/ux18-cek-fatura-244.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "afcc9551e84bd7563f4d88035670081e7ceefad6",
+  "dal": "worktree-agent-ab2301e43d5e0964a",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T06:22:15.580Z",
+  "sure_sn": 349.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 432,
+    "gecen": 432,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-21/dkfix-kos/2026-11-21/g2-ist-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab2301e43d5e0964a",
+  "ham_cikti_sha256": "42cd53ea9cae32c0e4e96688ba005a50c703d6b6f1bc9b3691ae25331b6e30ce",
+  "ham_cikti_bayt": 174384
+}

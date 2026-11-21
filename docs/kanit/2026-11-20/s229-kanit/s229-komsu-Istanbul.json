@@ -1,0 +1,123 @@
+{
+  "ad": "s229-komsu-Istanbul",
+  "komut": "node --test test/asama0-226.test.mjs test/banka-210-asama5-cari.test.mjs test/banka-210-fis.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-istek-kimligi.test.mjs test/banka-210-kabul-mizan.test.mjs test/banka-210-rapor-bulgu.test.mjs test/banka-220-pos-kdv.test.mjs test/banka-230-46-iade-iptal.test.mjs test/bulgu-223.test.mjs test/c7b-kitap-turetme-250.test.mjs test/c7b-tur3-eski-surum-250.test.mjs test/c7b-tur3-hiz-250.test.mjs test/c7b-tur3-kart-250.test.mjs test/cari-hareket-249.test.mjs test/cari-vade-245.test.mjs test/defter-213.test.mjs test/defter-243-ux24-toplam.test.mjs test/defter-hiz-esdegerlik-250.test.mjs test/defter-hiz-esdegerlik-tur1d-250.test.mjs test/ebelge-243-gonderim.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/edoc-uretim.test.mjs test/einvoice-edm.test.mjs test/esmm-acik-244.test.mjs test/esmm-gonderim-244.test.mjs test/fatura-217.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar2-gonderim.test.mjs test/gg243-dar2-olcek.test.mjs test/gg243-gonderim.test.mjs test/goc-243-iade-ref.test.mjs test/goc-244-esmm-gonderim.test.mjs test/goc-244-iptal-suresi.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-geri-odeme-246.test.mjs test/iade-kapama-k1.test.mjs test/iade-kesinti-tarama-249.test.mjs test/inceleme-222.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/istek-kimligi-222.test.mjs test/kapama-ks7-245.test.mjs test/kapama-rastgele-223.test.mjs test/kural-farki-duzeltme-250.test.mjs test/mobil-yazma-247.test.mjs test/obligation-input-250.test.mjs test/odeme-yolu-222.test.mjs test/projeksiyon-vade-246.test.mjs test/rapor-220.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/stok-alis-iadesi-246.test.mjs test/supheli-230-kontrol2.test.mjs test/supheli-kuyruk-defter-250.test.mjs test/tablodan-aktar-244.test.mjs test/takvim-pil-kaynak.test.mjs test/tyk-api-250.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/tyk-birlesik8-iade-250.test.mjs test/tyk-goc-249-250.test.mjs test/tyk-kapanis-250.test.mjs test/tyk-kapanis-dis-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-son-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-tur2b1-250.test.mjs test/ux18-cek-fatura-244.test.mjs test/whatsapp-elle-alici-249.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/mobil-eslesme-247.test.mjs test/mobil-ozet-247.test.mjs",
+  "commit": "6e28069e80dfcc957d82f0d38582f2e7afb79adb",
+  "dal": "worktree-agent-a343eda2c3de7a0a1",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T23:39:22.621Z",
+  "sure_sn": 152.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1021,
+    "gecen": 1003,
+    "basarisiz": 18,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 18 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.0.23 Bulgu 2: taksit kartı ↔ fatura kapama › D: Mevcut Borç kartına bölünen fatura — fatura ve kart tutarlı; yaşlandırma, nakit akış, vade takip ve takvim bir kez sayar",
+      "konum": "test/bulgu-223.test.mjs:136:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.0.23 gözden geçirme: kapamanın kalan yolları › D (peşinatlı): peşinatı alınmış fatura Mevcut Borç kartına bölünür; fatura açığı = kart kalanı",
+      "konum": "test/bulgu-223.test.mjs:361:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.0.23 gözden geçirme: kapamanın kalan yolları › 2. tur: kapsanan fatura düzenlenip küçülünce kapsam ödenmiş faturaya kaymaz",
+      "konum": "test/bulgu-223.test.mjs:441:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 1500 (beklenen 1500, gelen 0)"
+    },
+    {
+      "ad": "2.0.23 gözden geçirme: kapamanın kalan yolları › 2. tur: geriye tarihli borç girilince kart, açık kalan faturayı kapsar; tahsilat başka faturaya kaymaz",
+      "konum": "test/bulgu-223.test.mjs:458:3",
+      "hata": "kart açılınca fatura ödenmiş görünmez (kapatanlar: []) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.0.23 gözden geçirme: kapamanın kalan yolları › 2. tur: peşin ödenmiş yeni fatura varken kart, açık eski faturayı kapsar (yaşlandırmada bir kez)",
+      "konum": "test/bulgu-223.test.mjs:471:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.1.0 Canlı Hata 2 — iade + peşin geri ödemesi taksit kartını büyütmez › K (korunur): peşinli açık fatura + Mevcut Borç kartı (500) → 500 + 250 geri, 500 + 250 geri → kart 250, sonra 0",
+      "konum": "test/iade-210.test.mjs:241:3",
+      "hata": "K iade-1: fatura açığı · 0 !== 250 (beklenen 250, gelen 0)"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › B1 (dar kontrol): satış 1.000 → stok iadesi 300 → bağsız Ödeme 300 → Mevcut Borcu Taksitlendir 1.000: borç kartla BİR kez — Vade Takip ve takvim 1.000 (fatura kalemi yok)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:547:3",
+      "hata": "fatura açığı 1.000 (iadenin geri ödemesi) — kartın kapsamında · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N16: Mevcut Borç kartı kapsadığı faturanın paralı iadesinde yalnız mahsup kadar küçülür (carinin başka açık borcu varken)",
+      "konum": "test/iade-kapama-k1.test.mjs:320:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "kapama, rastgele dizi (kisitli, tohum 7, 160 adım): liste = kart, değişmezler, yaşlandırma = bakiye",
+      "konum": "test/kapama-rastgele-223.test.mjs:191:3",
+      "hata": "9 sorun ({\"satış\":32,\"stoktan taksitli satış\":5,\"kart tahsilatı\":13,\"mevcut borç kartı\":6,\"bağsız tahsilat\":14}) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "kapama, rastgele dizi (kisitli, tohum 11, 160 adım): liste = kart, değişmezler, yaşlandırma = bakiye",
+      "konum": "test/kapama-rastgele-223.test.mjs:191:3",
+      "hata": "16 sorun ({\"stoktan taksitli satış\":9,\"satış\":37,\"kart tahsilatı\":8,\"bağsız tahsilat\":14,\"mevcut borç kartı\":10}) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "kapama, rastgele dizi (serbest, tohum 3, 200 adım): liste = kart, değişmezler",
+      "konum": "test/kapama-rastgele-223.test.mjs:191:3",
+      "hata": "14 sorun ({\"satış\":40,\"borç yaz\":22,\"bağsız tahsilat\":12,\"alış\":4,\"stoktan taksitli satış\":16,\"kart kapat\":3,\"mevcut borç kartı\":16,\"kart tahsilatı\":19,\"iptal\":5,\"iade\":5,\"mevcut borç kartı (400)\":9,\"borç yaz sil\":3,\"kart yeniden aç\":3,\"kart iadesi (400)\":2,\"kart sil\":3,\"bağlı tahsilat\":3,\"bağlı tahsilat (409)\":1,\"kart geri yükle\":1}) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütün süzgeçler × ekran/PDF/Excel, bağımsız beklenenle › acik-faturalar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)",
+      "konum": "test/raporlar-210-banka.test.mjs:732:5",
+      "hata": "acik-faturalar cari=tümü: açık alacak · 230 !== 280 (beklenen 280, gelen 230)"
+    },
+    {
+      "ad": "2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF/Excel, yetki › acik-faturalar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle",
+      "konum": "test/raporlar-224.test.mjs:687:5",
+      "hata": "acik-faturalar cari=tümü: açık alacak · 230 !== 280 (beklenen 280, gelen 230)"
+    },
+    {
+      "ad": "2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF/Excel, yetki › anahtar toplamlar bağımsız defterle (tüm zamanlar)",
+      "konum": "test/raporlar-224.test.mjs:741:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B kapanış — DÜŞÜK-2 gerçek program dişleri (K8, K22) › K8 dişi — S135 = C: F 600 + elle X 300 + ayrıca TAKSİTLİ fatura B 300; Mevcut Borç kartı 900; karta 300 ⇒ başka kartın açık taksitleri 'bütün açık borca' sayılır: X Kalan 0, F açık 600",
+      "konum": "test/tyk-kapanis-dis-250.test.mjs:99:3",
+      "hata": "F açık 600 (S126 okuması olsaydı: F 300, X 300) · 0 !== 600 (beklenen 600, gelen 0)"
+    },
+    {
+      "ad": "Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların okuduğu uçlardan (cari kartı, fatura kartı, taksit kartı, Vade Takip, zil) › S126 = A: F 600 + X 300, kart 900 (3 × 300) — Taksit Tahsilatı 300 ⇒ F açık 300, X Kalan 300; sonra bağsız tahsilat 400 ⇒ F 0, X Kalan 200; silinince geri döner, Silinenler'den geri yüklenince yine F 0, X Kalan 200",
+      "konum": "test/tyk-son-250.test.mjs:249:3",
+      "hata": "ödemeden önce · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T15 karşılıksızdan sonra bağsız tahsilat en eski açık faturayı kapatır (fatura kendi tarihiyle açılır); Mevcut Borç kartı arada açıldıysa kapsamı değişmez",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:409:3",
+      "hata": "kart G'yi kapsar (kartın taksitleriyle kapanır); bağsız 1.000 karşılıksızla açılan H'yi kapattı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T17 bağsız evrak karşılıksız dönünce kapattığı faturalar açılır (kısmi, geri al, sonraki ödeme en eskiye, ciro, iki karşılıksız, iade, taksitli, şüpheli, tahsildeki, Mevcut Borç kartı)",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:461:3",
+      "hata": "karşılıksız: X açık; Y kartın kapsamında · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/kanit/2026-11-20/s229-komsu-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a343eda2c3de7a0a1",
+  "ham_cikti_sha256": "7bcce4cc6d6a411c4f6abead48c9ff1a58a5c7cb97f540630df6df83f4b67037",
+  "ham_cikti_bayt": 449567
+}

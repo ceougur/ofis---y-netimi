@@ -1,0 +1,1393 @@
+{
+ "kip": "2.5.0",
+ "ozet": [
+  {
+   "ad": "b2-ux18-karsiliksiz",
+   "toplam": 121,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b2-ux18-retler",
+   "toplam": 94,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b2-ux18-sira",
+   "toplam": 101,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b2-ux18-temel",
+   "toplam": 207,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3b-k1-k4-donem-raporlar",
+   "toplam": 47,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3c-k2-donem-ayni-no",
+   "toplam": 36,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3d-c3-kisi-gruplama",
+   "toplam": 70,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3e-vergi-sutunu",
+   "toplam": 31,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3k-vergi-tek-kolon",
+   "toplam": 31,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3n-borc-kolonu-kisi-ozniteligi",
+   "toplam": 33,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3o-seyrek-kalan",
+   "toplam": 36,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3q-takvim-kalemi",
+   "toplam": 40,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3r-kalan-sifir-eksi",
+   "toplam": 32,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3s-soz-tutari-kalemi",
+   "toplam": 30,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3t-sozlesme-tutari",
+   "toplam": 36,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3u-sozlesme-tarihi-soz-basliklari",
+   "toplam": 36,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3v-taahhut-soz-miktari",
+   "toplam": 38,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3w-yalniz-soz-tutari",
+   "toplam": 36,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3x-yalin-soz-ve-tutar",
+   "toplam": 40,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "b3y-taahhut-alacak-bakiye",
+   "toplam": 34,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 7
+  },
+  {
+   "ad": "b5-u1-nihai-tuketici",
+   "toplam": 36,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c1-kayit-tahsilat-kapisi",
+   "toplam": 170,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c10-ks10-projeksiyon-cari-vade",
+   "toplam": 479,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c11-ks81-sa-mevcut-borc-karti",
+   "toplam": 66,
+   "fark": 3,
+   "bulgu": 3,
+   "bilinen": 0
+  },
+  {
+   "ad": "c12-ks81-sb-kalan-dagilimi",
+   "toplam": 160,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c13-ks83-ayni-gun-sira",
+   "toplam": 125,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c14a-c1-hareket-turleri",
+   "toplam": 442,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c14b-c1-silinenler-ve-geri-yukleme",
+   "toplam": 258,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c14c-c1-silinmis-cariye-yazim",
+   "toplam": 99,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c14d-c1-ayni-ad",
+   "toplam": 110,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c14e-c1-pasife-al",
+   "toplam": 99,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c14f-c1-geri-al-y2",
+   "toplam": 273,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c14g-c1-kayit-tahsilati",
+   "toplam": 78,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c2-tablodan-aktar-kapisi",
+   "toplam": 157,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c4-uyari-kapisi",
+   "toplam": 54,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c6-cari-vade-fifo",
+   "toplam": 1041,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c6b-cari-vade-dogrulama",
+   "toplam": 158,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c6c-mevcut-borc-karti",
+   "toplam": 128,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c7-ks7-bagsiz-kapaticilar",
+   "toplam": 209,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c7b-supheli-kalan",
+   "toplam": 48,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c8-ks8-iade-geri-odemesi",
+   "toplam": 592,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "c8b-ks8-bagli-iade-odemesi",
+   "toplam": 66,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d1-c5-acilis-519",
+   "toplam": 65,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d10-c5-s67-soz-takvim",
+   "toplam": 137,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d11-c5-s66-carisiz-karsiliksiz",
+   "toplam": 62,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d12-c5-s69-soz-gunu-ve-gecmis",
+   "toplam": 196,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d13-c5-s69-soz-ertesi-gun",
+   "toplam": 198,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d14-c5-s91-vadesiz-kayit-gunu",
+   "toplam": 161,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d15-c5-s91-vadesiz-ertesi-gun",
+   "toplam": 161,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d16-c5-s92-net-gorunum",
+   "toplam": 288,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d17-c5-s93-verilen-avans",
+   "toplam": 149,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d18-c5-s93-avans-ertesi-gun",
+   "toplam": 149,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d19-c5-s92-okuma-ayrisan",
+   "toplam": 134,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d2-c5-kg5-excel-kart",
+   "toplam": 92,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d20-c5-s95-netlesme-sonrasi-odeme",
+   "toplam": 170,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d21-c5-s95-ertesi-ay",
+   "toplam": 173,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d22-c5-s96-avans-kalemi",
+   "toplam": 121,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d23-c5-s96-avans-ertesi-gun",
+   "toplam": 121,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d24-c5-s97-ayni-gun",
+   "toplam": 134,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d25-c5-s98-avans-sirasi",
+   "toplam": 87,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d26-c5-bakim5-susan",
+   "toplam": 132,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d27-c5-s99-taksitli-avans",
+   "toplam": 71,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d28-c5-s99-taksit-vade-gunu",
+   "toplam": 46,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d29-c5-s99-taksit-ertesi-gun",
+   "toplam": 46,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d3-c5-carisiz-evrak",
+   "toplam": 37,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d30-c5-s101-bitti-kart",
+   "toplam": 224,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d31-c5-s101-taksit-vade-gunu",
+   "toplam": 39,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d32-c5-s101-taksit-ertesi-gun",
+   "toplam": 39,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d33-c5-s102-s105-sinirlar",
+   "toplam": 204,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d34-c5-s110-kendi-borcu",
+   "toplam": 361,
+   "fark": 3,
+   "bulgu": 3,
+   "bilinen": 0
+  },
+  {
+   "ad": "d35-c5-s120-elle-borclar",
+   "toplam": 546,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d36-c5-s122-kart-odemesi",
+   "toplam": 572,
+   "fark": 3,
+   "bulgu": 3,
+   "bilinen": 0
+  },
+  {
+   "ad": "d37-c5-s126-faturali-kart",
+   "toplam": 534,
+   "fark": 31,
+   "bulgu": 31,
+   "bilinen": 0
+  },
+  {
+   "ad": "d38-c5-s128-ozge-kalemli-kart",
+   "toplam": 439,
+   "fark": 6,
+   "bulgu": 6,
+   "bilinen": 0
+  },
+  {
+   "ad": "d39-c5-s130-supheli-kalemleri",
+   "toplam": 358,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d4-c5-s50-tek-kuyruk",
+   "toplam": 54,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d40-c5-s130-sus-bilinen-sinir",
+   "toplam": 151,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d41-c5-s136-s139-s145-s148",
+   "toplam": 287,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d42-c5-s140-s151-satis-karti-iade",
+   "toplam": 106,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d43-c5-bilinen-sinir-sus15",
+   "toplam": 124,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d44-c5-s155-s158",
+   "toplam": 281,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d45-c5-s159-s154-s162-s163",
+   "toplam": 440,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d46-c5-s165-s118-sinir",
+   "toplam": 226,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d47-c5-s168-s181-bagli-tahsilat",
+   "toplam": 124,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d48-c5-kg3-kayit-tahsilati-336",
+   "toplam": 164,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d49-c5-s15-s25-iptal-ve-fazla",
+   "toplam": 60,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d5-c5-s2-vade-sirasi",
+   "toplam": 40,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d50-c5-s206-s25c-b1-iptal-havale",
+   "toplam": 115,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d51-c5-s210-s211-kart-kapanir",
+   "toplam": 56,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d6-c5-aninda",
+   "toplam": 92,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d7-c5-s52-gecikmis",
+   "toplam": 80,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d8-c5-tanimsiz",
+   "toplam": 34,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "d9-c5-s68-borc-tarafi-vade",
+   "toplam": 142,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "rastgele-ux18-1",
+   "toplam": 771,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "rastgele-s1-1",
+   "toplam": 540,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "rastgele-ux18-2",
+   "toplam": 817,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  },
+  {
+   "ad": "rastgele-s1-2",
+   "toplam": 721,
+   "fark": 0,
+   "bulgu": 0,
+   "bilinen": 0
+  }
+ ],
+ "oncekiKural": "2.4.9",
+ "degisen": [
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "adet": 12
+  },
+  {
+   "senaryo": "b2-ux18-retler",
+   "adet": 6
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "adet": 10
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "adet": 18
+  },
+  {
+   "senaryo": "b3b-k1-k4-donem-raporlar",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3c-k2-donem-ayni-no",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3d-c3-kisi-gruplama",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3e-vergi-sutunu",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3k-vergi-tek-kolon",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3n-borc-kolonu-kisi-ozniteligi",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3o-seyrek-kalan",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3q-takvim-kalemi",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3r-kalan-sifir-eksi",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3s-soz-tutari-kalemi",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3t-sozlesme-tutari",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3u-sozlesme-tarihi-soz-basliklari",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3v-taahhut-soz-miktari",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3w-yalniz-soz-tutari",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3x-yalin-soz-ve-tutar",
+   "adet": 2
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "adet": 2
+  },
+  {
+   "senaryo": "b5-u1-nihai-tuketici",
+   "adet": 2
+  },
+  {
+   "senaryo": "c1-kayit-tahsilat-kapisi",
+   "adet": 15
+  },
+  {
+   "senaryo": "c10-ks10-projeksiyon-cari-vade",
+   "adet": 95
+  },
+  {
+   "senaryo": "c11-ks81-sa-mevcut-borc-karti",
+   "adet": 6
+  },
+  {
+   "senaryo": "c12-ks81-sb-kalan-dagilimi",
+   "adet": 11
+  },
+  {
+   "senaryo": "c13-ks83-ayni-gun-sira",
+   "adet": 18
+  },
+  {
+   "senaryo": "c14a-c1-hareket-turleri",
+   "adet": 51
+  },
+  {
+   "senaryo": "c14b-c1-silinenler-ve-geri-yukleme",
+   "adet": 6
+  },
+  {
+   "senaryo": "c14c-c1-silinmis-cariye-yazim",
+   "adet": 8
+  },
+  {
+   "senaryo": "c14d-c1-ayni-ad",
+   "adet": 18
+  },
+  {
+   "senaryo": "c14e-c1-pasife-al",
+   "adet": 27
+  },
+  {
+   "senaryo": "c14f-c1-geri-al-y2",
+   "adet": 24
+  },
+  {
+   "senaryo": "c14g-c1-kayit-tahsilati",
+   "adet": 6
+  },
+  {
+   "senaryo": "c2-tablodan-aktar-kapisi",
+   "adet": 32
+  },
+  {
+   "senaryo": "c4-uyari-kapisi",
+   "adet": 2
+  },
+  {
+   "senaryo": "c6-cari-vade-fifo",
+   "adet": 175
+  },
+  {
+   "senaryo": "c6b-cari-vade-dogrulama",
+   "adet": 20
+  },
+  {
+   "senaryo": "c6c-mevcut-borc-karti",
+   "adet": 24
+  },
+  {
+   "senaryo": "c7-ks7-bagsiz-kapaticilar",
+   "adet": 25
+  },
+  {
+   "senaryo": "c7b-supheli-kalan",
+   "adet": 10
+  },
+  {
+   "senaryo": "c8-ks8-iade-geri-odemesi",
+   "adet": 81
+  },
+  {
+   "senaryo": "c8b-ks8-bagli-iade-odemesi",
+   "adet": 3
+  },
+  {
+   "senaryo": "d1-c5-acilis-519",
+   "adet": 30
+  },
+  {
+   "senaryo": "d10-c5-s67-soz-takvim",
+   "adet": 19
+  },
+  {
+   "senaryo": "d11-c5-s66-carisiz-karsiliksiz",
+   "adet": 17
+  },
+  {
+   "senaryo": "d12-c5-s69-soz-gunu-ve-gecmis",
+   "adet": 25
+  },
+  {
+   "senaryo": "d13-c5-s69-soz-ertesi-gun",
+   "adet": 27
+  },
+  {
+   "senaryo": "d14-c5-s91-vadesiz-kayit-gunu",
+   "adet": 68
+  },
+  {
+   "senaryo": "d15-c5-s91-vadesiz-ertesi-gun",
+   "adet": 68
+  },
+  {
+   "senaryo": "d16-c5-s92-net-gorunum",
+   "adet": 87
+  },
+  {
+   "senaryo": "d17-c5-s93-verilen-avans",
+   "adet": 60
+  },
+  {
+   "senaryo": "d18-c5-s93-avans-ertesi-gun",
+   "adet": 60
+  },
+  {
+   "senaryo": "d19-c5-s92-okuma-ayrisan",
+   "adet": 40
+  },
+  {
+   "senaryo": "d2-c5-kg5-excel-kart",
+   "adet": 26
+  },
+  {
+   "senaryo": "d20-c5-s95-netlesme-sonrasi-odeme",
+   "adet": 41
+  },
+  {
+   "senaryo": "d21-c5-s95-ertesi-ay",
+   "adet": 41
+  },
+  {
+   "senaryo": "d22-c5-s96-avans-kalemi",
+   "adet": 52
+  },
+  {
+   "senaryo": "d23-c5-s96-avans-ertesi-gun",
+   "adet": 52
+  },
+  {
+   "senaryo": "d24-c5-s97-ayni-gun",
+   "adet": 39
+  },
+  {
+   "senaryo": "d25-c5-s98-avans-sirasi",
+   "adet": 45
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "adet": 51
+  },
+  {
+   "senaryo": "d27-c5-s99-taksitli-avans",
+   "adet": 22
+  },
+  {
+   "senaryo": "d28-c5-s99-taksit-vade-gunu",
+   "adet": 17
+  },
+  {
+   "senaryo": "d29-c5-s99-taksit-ertesi-gun",
+   "adet": 17
+  },
+  {
+   "senaryo": "d3-c5-carisiz-evrak",
+   "adet": 8
+  },
+  {
+   "senaryo": "d30-c5-s101-bitti-kart",
+   "adet": 65
+  },
+  {
+   "senaryo": "d31-c5-s101-taksit-vade-gunu",
+   "adet": 16
+  },
+  {
+   "senaryo": "d32-c5-s101-taksit-ertesi-gun",
+   "adet": 16
+  },
+  {
+   "senaryo": "d33-c5-s102-s105-sinirlar",
+   "adet": 73
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "adet": 111
+  },
+  {
+   "senaryo": "d35-c5-s120-elle-borclar",
+   "adet": 216
+  },
+  {
+   "senaryo": "d36-c5-s122-kart-odemesi",
+   "adet": 243
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "adet": 204
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "adet": 83
+  },
+  {
+   "senaryo": "d39-c5-s130-supheli-kalemleri",
+   "adet": 145
+  },
+  {
+   "senaryo": "d4-c5-s50-tek-kuyruk",
+   "adet": 8
+  },
+  {
+   "senaryo": "d40-c5-s130-sus-bilinen-sinir",
+   "adet": 21
+  },
+  {
+   "senaryo": "d41-c5-s136-s139-s145-s148",
+   "adet": 83
+  },
+  {
+   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
+   "adet": 22
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "adet": 19
+  },
+  {
+   "senaryo": "d44-c5-s155-s158",
+   "adet": 100
+  },
+  {
+   "senaryo": "d45-c5-s159-s154-s162-s163",
+   "adet": 116
+  },
+  {
+   "senaryo": "d46-c5-s165-s118-sinir",
+   "adet": 99
+  },
+  {
+   "senaryo": "d47-c5-s168-s181-bagli-tahsilat",
+   "adet": 70
+  },
+  {
+   "senaryo": "d48-c5-kg3-kayit-tahsilati-336",
+   "adet": 15
+  },
+  {
+   "senaryo": "d49-c5-s15-s25-iptal-ve-fazla",
+   "adet": 8
+  },
+  {
+   "senaryo": "d5-c5-s2-vade-sirasi",
+   "adet": 12
+  },
+  {
+   "senaryo": "d50-c5-s206-s25c-b1-iptal-havale",
+   "adet": 42
+  },
+  {
+   "senaryo": "d51-c5-s210-s211-kart-kapanir",
+   "adet": 17
+  },
+  {
+   "senaryo": "d6-c5-aninda",
+   "adet": 0
+  },
+  {
+   "senaryo": "d7-c5-s52-gecikmis",
+   "adet": 17
+  },
+  {
+   "senaryo": "d8-c5-tanimsiz",
+   "adet": 13
+  },
+  {
+   "senaryo": "d9-c5-s68-borc-tarafi-vade",
+   "adet": 48
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "adet": 14
+  },
+  {
+   "senaryo": "rastgele-s1-1",
+   "adet": 59
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "adet": 14
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "adet": 107
+  }
+ ],
+ "farkSinifi": {
+  "ic": 29,
+  "ks9": 0,
+  "dis": 17
+ },
+ "genelToplam": 17648,
+ "genelFark": 46,
+ "okumaHatasi": 0,
+ "kacan": 0,
+ "bilinen": 7,
+ "bilinenKayitlar": [
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:k4:akis",
+   "beklenen": 850000,
+   "program": 920000,
+   "etiket": "KULLANICI",
+   "kural": "TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu",
+   "sinif": "BİLİNEN",
+   "sinif246": "SINIF DIŞI",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:k4:kisiler",
+   "beklenen": 1150000,
+   "program": 720000,
+   "etiket": "KULLANICI",
+   "kural": "B4b K4 + TAKVİM KALEMİ: Tablodaki Kişiler satır borcunu gösterir",
+   "sinif": "BİLİNEN",
+   "sinif246": "SINIF DIŞI",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:k4:vade",
+   "beklenen": 850000,
+   "program": 920000,
+   "etiket": "KULLANICI",
+   "kural": "TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu",
+   "sinif": "BİLİNEN",
+   "sinif246": "SINIF DIŞI",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:rapor:2026/1012:borc",
+   "beklenen": 400000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı",
+   "sinif": "BİLİNEN",
+   "sinif246": "SINIF DIŞI",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:rapor:2026/1012:grup",
+   "beklenen": [
+    "2026/1012"
+   ],
+   "program": [],
+   "etiket": "KULLANICI",
+   "kural": "C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır",
+   "sinif": "BİLİNEN",
+   "sinif246": "SINIF DIŞI",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:rapor:2026/1013:borc",
+   "beklenen": 30000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı",
+   "sinif": "BİLİNEN",
+   "sinif246": "SINIF DIŞI",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:rapor:2026/1013:grup",
+   "beklenen": [
+    "2026/1013"
+   ],
+   "program": [],
+   "etiket": "KULLANICI",
+   "kural": "C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır",
+   "sinif": "BİLİNEN",
+   "sinif246": "SINIF DIŞI",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır"
+  }
+ ],
+ "bilinenListesiHatalari": [],
+ "atlanan": [
+  "b1-5a-bayat-ve-yeniden",
+  "b1-5a-tasima",
+  "b1-5b-borc",
+  "b1-5c-rapor",
+  "b3-u2-tablo-borcu",
+  "b3f-kayit-anahtari",
+  "b3g-tablo-bag-surekliligi",
+  "b3h-dosya-no-ve-devam",
+  "b3i-devam-ayni-icerik",
+  "b3j-ayni-ad-takas",
+  "b3m-dosya-no-degisimi",
+  "b3p-ayni-ad-telefon"
+ ],
+ "gecersizDenetim": [
+  {
+   "senaryo": "b2-ux18-karsiliksiz",
+   "adet": 12,
+   "ornek": [
+    "k1:nakit:kasaCikis",
+    "k1:nakit:kasaGiris",
+    "k2:nakit:kasaCikis"
+   ]
+  },
+  {
+   "senaryo": "b2-ux18-retler",
+   "adet": 6,
+   "ornek": [
+    "k1:nakit:kasaCikis",
+    "k1:nakit:kasaGiris",
+    "k2:nakit:kasaCikis"
+   ]
+  },
+  {
+   "senaryo": "b2-ux18-sira",
+   "adet": 10,
+   "ornek": [
+    "k1:nakit:kasaCikis",
+    "k1:nakit:kasaGiris",
+    "k2:nakit:kasaCikis"
+   ]
+  },
+  {
+   "senaryo": "b2-ux18-temel",
+   "adet": 18,
+   "ornek": [
+    "k1:nakit:kasaCikis",
+    "k1:nakit:kasaGiris",
+    "k2:nakit:kasaCikis"
+   ]
+  },
+  {
+   "senaryo": "b3b-k1-k4-donem-raporlar",
+   "adet": 18,
+   "ornek": [
+    "k1:acilis:2026/202",
+    "k1:acilis:2026/203",
+    "k1:acilis:2026/204"
+   ]
+  },
+  {
+   "senaryo": "b3c-k2-donem-ayni-no",
+   "adet": 6,
+   "ornek": [
+    "k1:acilis:2026/303",
+    "k1:k4:takvim",
+    "k1:kalem:2026/303"
+   ]
+  },
+  {
+   "senaryo": "b3d-c3-kisi-gruplama",
+   "adet": 2,
+   "ornek": [
+    "k1:nakit:kasaCikis",
+    "k1:nakit:kasaGiris"
+   ]
+  },
+  {
+   "senaryo": "b3e-vergi-sutunu",
+   "adet": 2,
+   "ornek": [
+    "k1:nakit:kasaCikis",
+    "k1:nakit:kasaGiris"
+   ]
+  },
+  {
+   "senaryo": "b3k-vergi-tek-kolon",
+   "adet": 10,
+   "ornek": [
+    "k1:acilis:2026/601",
+    "k1:acilis:2026/602",
+    "k1:acilis:2026/603"
+   ]
+  },
+  {
+   "senaryo": "b3n-borc-kolonu-kisi-ozniteligi",
+   "adet": 14,
+   "ornek": [
+    "k1:acilis:2026/701",
+    "k1:acilis:2026/702",
+    "k1:acilis:2026/703"
+   ]
+  },
+  {
+   "senaryo": "b3o-seyrek-kalan",
+   "adet": 14,
+   "ornek": [
+    "k1:acilis:2026/801",
+    "k1:acilis:2026/802",
+    "k1:acilis:2026/803"
+   ]
+  },
+  {
+   "senaryo": "b3q-takvim-kalemi",
+   "adet": 16,
+   "ornek": [
+    "k1:acilis:2026/901",
+    "k1:acilis:2026/902",
+    "k1:acilis:2026/903"
+   ]
+  },
+  {
+   "senaryo": "b3r-kalan-sifir-eksi",
+   "adet": 11,
+   "ornek": [
+    "k1:acilis:2026/953",
+    "k1:acilis:2026/955",
+    "k1:k4:takvim"
+   ]
+  },
+  {
+   "senaryo": "b3s-soz-tutari-kalemi",
+   "adet": 9,
+   "ornek": [
+    "k1:acilis:2026/956",
+    "k1:acilis:2026/957",
+    "k1:k4:takvim"
+   ]
+  },
+  {
+   "senaryo": "b3t-sozlesme-tutari",
+   "adet": 13,
+   "ornek": [
+    "k1:acilis:2026/961",
+    "k1:acilis:S1",
+    "k1:acilis:S2"
+   ]
+  },
+  {
+   "senaryo": "b3u-sozlesme-tarihi-soz-basliklari",
+   "adet": 13,
+   "ornek": [
+    "k1:acilis:2026/971",
+    "k1:acilis:2026/973",
+    "k1:acilis:2026/974"
+   ]
+  },
+  {
+   "senaryo": "b3v-taahhut-soz-miktari",
+   "adet": 16,
+   "ornek": [
+    "k1:acilis:2026/981",
+    "k1:acilis:2026/982",
+    "k1:acilis:2026/983"
+   ]
+  },
+  {
+   "senaryo": "b3w-yalniz-soz-tutari",
+   "adet": 22,
+   "ornek": [
+    "k1:acilis:2026/991",
+    "k1:acilis:2026/992",
+    "k1:acilis:2026/993"
+   ]
+  },
+  {
+   "senaryo": "b3x-yalin-soz-ve-tutar",
+   "adet": 19,
+   "ornek": [
+    "k1:acilis:2026/1001",
+    "k1:acilis:2026/1002",
+    "k1:acilis:2026/1003"
+   ]
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "adet": 15,
+   "ornek": [
+    "k1:acilis:2026/1011",
+    "k1:acilis:2026/1012",
+    "k1:acilis:2026/1013"
+   ]
+  },
+  {
+   "senaryo": "b5-u1-nihai-tuketici",
+   "adet": 2,
+   "ornek": [
+    "k1:nakit:kasaCikis",
+    "k1:nakit:kasaGiris"
+   ]
+  },
+  {
+   "senaryo": "rastgele-ux18-1",
+   "adet": 14,
+   "ornek": [
+    "k1:nakit:kasaCikis",
+    "k1:nakit:kasaGiris",
+    "k2:nakit:kasaCikis"
+   ]
+  },
+  {
+   "senaryo": "rastgele-ux18-2",
+   "adet": 14,
+   "ornek": [
+    "k1:nakit:kasaCikis",
+    "k1:nakit:kasaGiris",
+    "k2:nakit:kasaCikis"
+   ]
+  }
+ ],
+ "yapimAsamasi": 0,
+ "yapimAsamasiDenetim": 0,
+ "yapimAsamasiKayitlar": [],
+ "yapimAsamasiListesiHatalari": []
+}

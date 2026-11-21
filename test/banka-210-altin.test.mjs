@@ -164,6 +164,34 @@ function legacyOpenings(url, data) {
 }
 const unbilledTally = { count: 0 }; // 2.4.3 MM5: normalleştirmede çıkarılan faturasız cari alacağı kalemi sayısı (günlüğe yazılır)
 const roundCents = value => Math.round((Number(value) || 0) * 100) / 100;
+// BEKLENTİ BİLEREK DEĞİŞTİ — S230 = A (kullanıcı 20.11.2026 "önerini uygula"; BAŞ MİMAR YORUMU: "Anlık Durum'daki açık / vadesi geçen fatura toplamları Açık Faturalar raporuyla aynı listeden
+// okunur → S229 = A'yı izler"; Ç7b DK + S229 ALTIN turu, docs/erp/C7B-FATURA-TASARIM.md §18.5 (b)): ANLIK DURUM'un invoices.openSale / overdueSale'i Mevcut Borç kartının aldığı kısmı faturadan
+// düşer (GÖSTERİLEN açık). v2.0.26 faturanın kendi açığını topluyordu. Yeni tarafta, kart payı olan her satış faturasının (satış / serbest meslek; kendi kartı olmayan) düşülen kısmı
+// (kendi açık ownOpen − gösterilen açık open; overdueSale'de vadesi bugünden önce olanlar) geri eklenir; katlanan tutar sayılır (günlüğe yazılır). Öbür her alan birebir.
+const s230Tally = { folded: 0, open: 0, overdue: 0 };
+async function s230OverviewFold(api, data) {
+  if (!data?.invoices || !data.today) return data;
+  let open = 0;
+  let overdue = 0;
+  for (let offset = 0; ; offset += 5000) {
+    const page = await apiLike(api).get(`/api/workspace/invoices?tab=all&limit=5000&offset=${offset}`);
+    if (page.status !== 200) throw new Error(`S230 katlaması: fatura listesi ${page.status}`);
+    for (const doc of page.data.invoices || []) {
+      if (doc.status !== "issued" || !["sale", "smm"].includes(doc.kind) || doc.planId || !(Number(doc.inPlan) > 0.005) || doc.ownOpen === undefined) continue;
+      const cut = Math.round((Number(doc.ownOpen) - Number(doc.open)) * 100);
+      if (!(cut > 0)) continue;
+      open += cut;
+      if ((doc.dueDate || doc.issueDate) < data.today) overdue += cut;
+    }
+    if (!page.data.hasMore) break;
+  }
+  if (!open) return data;
+  s230Tally.folded += 1;
+  s230Tally.open += open;
+  s230Tally.overdue += overdue;
+  const add = (value, cents) => Math.round(Math.round((Number(value) || 0) * 100) + cents) / 100;
+  return { ...data, invoices: { ...data.invoices, openSale: add(data.invoices.openSale, open), overdueSale: add(data.invoices.overdueSale, overdue) } };
+}
 // company: yeni taraf PDF'inin şirket satırındaki unvan (2.2.0 İz 1.1); eski taraf aynı satırı (varsa) atar.
 async function fetchOne(api, request, side = "eski", company = null) {
   if (request.kind === "json") {
@@ -172,7 +200,7 @@ async function fetchOne(api, request, side = "eski", company = null) {
     if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview") {
       const { box, k10 } = await legacyBankBox(apiLike(api), data);
       if (k10 && k10.realBank + k10.unassigned + k10.unassignedFuture !== k10.legacyAll) k10Problems.push(`K10: Gerçek Banka ${k10.realBank} + Hesabı Atanmamış ${k10.unassigned} + ileri tarihli ${k10.unassignedFuture} ≠ eski Banka / POS ${k10.legacyAll}`);
-      data = { ...data, cash: { ...data.cash, bank: box } };
+      data = await s230OverviewFold(api, { ...data, cash: { ...data.cash, bank: box } });
     }
     if (side === "yeni" && response.status === 200 && request.url.includes("/report-center/banka-pos-hareketleri")) data = legacyBankPos(data);
     if (side === "yeni" && response.status === 200) data = legacyDocuments(request.url, legacyOpenings(request.url, data));
@@ -509,7 +537,7 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
       }
       assert.ok(companies.length >= 4, `şirketler: ${JSON.stringify(companies)}`);
       const { problems, compared, k1Changed } = await sideBySide(fixture.dataDir, fixture.backupDir, "zincir", companies);
-      console.log(`K1 zincir: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}; Nakit Akışı faturasız kalem (2.4.3 MM5) ${unbilledTally.count}`);
+      console.log(`K1 zincir: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}; Nakit Akışı faturasız kalem (2.4.3 MM5) ${unbilledTally.count}; ANLIK DURUM S230 katlaması ${s230Tally.folded} yanıt, açık ${s230Tally.open / 100} TL, vadesi geçen ${s230Tally.overdue / 100} TL`);
       assert.ok(compared >= 280, `karşılaştırılan yanıt sayısı ${compared}`);
       assert.deepEqual(problems, [], `${problems.length} fark:\n${problems.slice(0, 8).join("\n\n")}`);
     } finally {
@@ -561,7 +589,7 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
         await old.close();
       }
       const { problems, compared, k1Changed } = await sideBySide(dataDir, backupDir, "motor", [{ id: "sirket-001", code: "001" }]);
-      console.log(`K1 motor: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2, toplam) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}; Nakit Akışı faturasız kalem (2.4.3 MM5) ${unbilledTally.count}`);
+      console.log(`K1 motor: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2, toplam) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}; Nakit Akışı faturasız kalem (2.4.3 MM5) ${unbilledTally.count}; ANLIK DURUM S230 katlaması (toplam) ${s230Tally.folded} yanıt, açık ${s230Tally.open / 100} TL, vadesi geçen ${s230Tally.overdue / 100} TL`);
       assert.ok(compared >= 75, `karşılaştırılan yanıt sayısı ${compared}`);
       assert.deepEqual(problems, [], `${problems.length} fark:\n${problems.slice(0, 8).join("\n\n")}`);
     } finally {

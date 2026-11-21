@@ -649,3 +649,88 @@ WhatsApp hatırlatmasına Ç5-C'de (WhatsApp'ın kuyruğun gecikmişine geçişi
 7. v2.4.9 gerçek kodun verisi: kapatılmış kart göçten sonra eski kuralda — bakiye, ekstre, defter (689) AYNI; Kural Değişikliği Farkı çıkmaz.
 8. İki şirket: her dosyanın kendi işareti. Carisiz eski kart: 127 beklenen = defter.
 9. Aynı gün sıra (ders 31): kapanış günü tek; gecikme yüklemi yalnız tarih.
+
+## 18. Ç7b DK + S229 ALTIN birleşik küçük tur (21.11.2026; görev metni `docs/devir/2.5.0-DEVAM/dkfix-istem.txt`) — S234 = A, S235 = B, altın test uyarlaması — KODDAN ÖNCE yazıldı
+Kararlar (iş listesinden AYNEN; görev metni): S234 = A ("karar (4) kapalı (kalanı borçta kalan) karta da uygulanır — kart küçülür (vadesi en önce gelen açık taksitten), Kalan 300"), S235 = B ("bugünkü
+gibi — Düzenle yeni ödeme planı kurar, kart açılır; Düzenle penceresi kartın YENİDEN AÇILACAĞINI söyler"), karar (4) 2B-S3 = A, (6) 2B-S5 / S10 = A, S205 = A, S226 = C (iptalde DOKUNULMAZ), S229 = A,
+S230 = A. Bugünkü davranış programın KENDİSİYLE yeniden üretildi (ders 6; taban dkfix-taban = 94a7b475; sahte saat 08.10.2026; yoklama betikleri not defteri `dkfix-ab23/probe/` — Ç7b dar kontrolünün
+p2 / p3 / p4'ü + kendi kartı için p6).
+
+### 18.1 Bugünkü davranış (örnek tutarla; taban)
+| # | Örnek | Bugün (taban) | Kararın istediği |
+|---|---|---|---|
+| S234-a | fatura 900 (07.10, açık hesap) → Mevcut Borç kartı 900 (3 × 300; 10.10 / 10.11 / 10.12) → 08.10 kart tahsilatı 300 → 08.10 Kartı Kapat ('Kalan 600') → 08.10 iade 300 (borçtan) | bakiye 300; gecikmiş 08.10 0 / 09.10 300 (doğru); kart penceresi, cari kartı özeti, Taksitler listesi **Kalan 600** (satır kalanları 300; tutar 900); Yeniden Aç → Kartı Kapat onayı **'Kalan 600'** | kart 600'e küçülür (en önce gelen AÇIK taksitten), Kalan **300** her üç yerde; onay 300; bakiye / gecikmiş / defter AYNEN |
+| S234-a (kontrol, kart açık) | aynı, Kartı Kapat yok | kart 600 (10.11 taksiti silinir, 10.12 kalır), Kalan 300 | değişmez |
+| S234-b (kendi kartı) | taksitli fatura 900 (06.10; 06.10 / 06.11 / 06.12) → 08.10 kart tahsilatı 300 → Kartı Kapat → iade 300 → iade iptali | iade sonrası tutar 900, **Tahsil Edilen 600** (iade alacağı kuyrukta 'tahsil edilen'), Kalan 300; iade iptali → Kalan 600 | karar (4) kapalı karta da: tutar 600, Tahsil Edilen 300, Kalan 300 (açık kartla aynı); iade iptali → kart 900'e geri büyür (S216 = C: son taksite), Kalan 600; bakiye / gecikmiş AYNEN |
+| S234-c (Düzenle) | fatura 900 → Mevcut Borç kartı 900 → Kartı Kapat → faturayı Düzenle ile 300'e indir | bakiye 300; kart **Kalan 900** (satırlar 300) — **AÇIK kartta da aynı** (Kalan 900; Düzenle hiçbir kartı küçültmüyor) | §18.3 — DOSYA SINIRI |
+| S235 | taksitli fatura 900 (3 × 300; 06.10), tahsilatsız, 08.10 Kartı Kapat, 09.10 Düzenle (3 → 4 adet) | kapalı kart silinir, YENİ AÇIK kart 1.200; bakiye 1.200; gecikmiş 09.10 900 → 400 (kapanış sessizce kalkar); Düzenle onayı yalnız genel metin | davranış AYNEN; onay metni kartın yeniden açılacağını söyler |
+
+### 18.2 S234 = A — değişecek yer (`server/routes/plans.mjs`; DOSYA SINIRI: yalnız kart küçülmesinin kapalı karta uygulanması)
+- `shrinkPlan` (iade → faturanın kendi kartı `ownCard`, kapsayan Mevcut Borç kartı `retarget`): bugün `status === "closed"` → 0. Yeni: kalanı DÜŞÜLMEMİŞ (Borçta Kalsın — `!waivesRemaining`) kapalı kart da
+  karar (4) sırasıyla (`cutTargets` "due") küçülür; eski kurallı ('2.4.9', kalanı düşülmüş) kapalı kart bugünkü gibi 0 (kalanı zaten carinin borcunda değil). Açılış onarımı (`order: "tail"`, S218 = B)
+  kapalı kartı bugünkü gibi atlar (onarım 2.0.24–2.0.26'nın yanlış büyüttüğü kartlar içindir; değişmez).
+- `trimCovers` (iade sonrası carinin borcundan büyük kalan Mevcut Borç kartları; faturasız stok iadesi `stock.mjs`; iptal `settleCoverOnCancel`): bugün `status === "closed"` atlanır. Yeni: Borçta Kalsın
+  kapalı kart da kırpılır — YALNIZ iade / alacak yollarında; İPTAL yolu (`settleCoverOnCancel` → `trimCovers(..., { closed: false })`) kapalı kartı bugünkü gibi atlar (S226 = C: iptal BİLİNEN SINIR,
+  davranış AYNEN). Faturasız stok iadesi (`stock.mjs`, cariye alacak) iade yolu sayılır (karar (4) "iade borçtan düşülünce") — kodu değişmez, `trimCovers`'ın varsayılanını alır.
+- `growForInvoice` (küçülmenin TERSİ: iade iptali / iade düzenlemesi `restoreCuts`, kendi kartı `ownCard`): bugün kapalı kart büyümez. Küçülme kapalı karta uygulanınca tersi de uygulanmazsa iade → iade
+  iptali sonunda kart borçtan KÜÇÜK kalır (iade iptalinin geri getirdiği borç kartın dışında, faturanın kendi vadesiyle kuyruğa düşer → gecikmiş değişir). Yeni: Borçta Kalsın kapalı kart da büyür
+  (S216 = C: son taksite — bugünkü kural); eski kurallı kapalı kart bugünkü gibi büyümez. (Görev metnindeki 'doğrudan yardımcı' — küçülmenin kayıtlı tersi `coverCuts`; raporda ayrıca yazılır.)
+- Değişmeyen: `cutTargets` / `cutPlan` (sıra karar (4)), `closeForInvoice` (iptal kapanışı), Kartı Kapat / Yeniden Aç, kural işareti, kuyruk, defter. Kesim kalemlerin kendi vadesini değiştirmez; Borçta
+  Kalsın kartında kalemin günü `keptDueOf` = min(vade, kapanış günü) — en önce gelen açık taksitten kesmek kuyruğun alacağı FIFO kapamasıyla aynı kalemi kapatır → gecikmiş tutarı ve günü AYNI (§18.6 (2)).
+- Okuyucular (tarama `trimCovers|shrinkPlan|growForInvoice|coverCuts|plan.trimmed|plan.grown` server/** + test/**): `routes/invoices.mjs` retarget / restoreCuts / ownCard / repairOwnCards (açılış onarımı),
+  `routes/stock.mjs` (stok iadesi), `lib/account-lines.mjs` (kart olayları), kart penceresi / Taksitler / cari kartı özeti / zil / Vade Takip (withQueue — Borçta Kalsın kapalı kart kuyruktan), Kartı Kapat
+  onayı (shownRemaining), mutabakat motoru modeli `test/mutabakat/motor.mjs` (trimCovers / syncOwn / iade iptali büyümesi — model bu kurala göre güncellenir: iade / stok iadesi yolunda kapalı kart da;
+  iptal yolunda değil), testler (G2 komşu; tam liste raporda).
+
+### 18.3 S234-c — Düzenle ile azaltma: DOSYA SINIRI (KODLANMADI; BAŞ MİMAR KARARI GEREKİYOR)
+Fatura Düzenle (`routes/invoices.mjs editInvoice`: eski etkiler geri alınır → `writeIssued`) kapsayan Mevcut Borç kartına HİÇ dokunmaz — `retarget` / `trimCovers` yalnız iade belgesinde çağrılır. Tabanda
+AÇIK kartta da Düzenle 900 → 300 sonrası kart Kalan 900 / bakiye 300 (önceden var; Ç7b dar kontrolünün 'Açık kartta Alacak Yaz' gözlemiyle aynı aile). `plans.mjs` içinde Düzenle'nin geçtiği tek yer
+faturanın KENDİ kartını kaldıran `removeForInvoice`; kapsayan karta ulaşan çağrı ancak `invoices.mjs editInvoice`'a eklenebilir (görev metninde invoices.mjs YALNIZ `ownPayState`). Ayrıca yalnız kapalı karta
+eklenirse açık kartla ayrışır; ikisine eklenirse açık kartın bugünkü davranışı da değişir (karar (4) Düzenle'yi söylemiyor). → raporda BAŞ MİMAR KARARI GEREKEN (öneri: `editInvoice`'ta iadedeki gibi
+`coverState` önce / sonra farkı kadar kapsayan kartı küçült + `trimCovers` — açık ve Borçta Kalsın kapalı kartta aynı; ayrı küçük tur).
+
+### 18.4 S235 = B — Düzenle onayı (`client/assets/hof-invoices.js` YALNIZ onay metni)
+- Fatura kartı GET'i `plan` (faturanın KENDİ kartı: id, ad, tutar, durum) taşır — sunucu değişmez. Form `startForm({ modify })` kapalı kartı `form.modifyPlanClosed` olarak tutar; 'Değişiklikler
+  Kaydedilsin mi?' onayına YALNIZ bu durumda cümle eklenir: yeni ödeme Taksitlendir ise "Bu faturanın kapatılmış taksit kartı yeniden açılır; kalan borç yeni ödeme planına girer.", Açık Hesap'a
+  çevrildiyse "Bu faturanın kapatılmış taksit kartı kaldırılır; kalan borç faturanın vadesiyle açık hesapta izlenir." (ikisi de bugünkü davranış — p3 a1 'taksitsiz yap'). Kart açıksa / yoksa metin yok.
+  Tahsilatlı kapalı kartta Düzenle bugünkü gibi pasif (modifyBlock) — metin görünmez. Eski kurallı ('2.4.9') kapalı kartta da cümle doğrudur (kart kaldırılır, yeni kart açılır) — aynı metin.
+
+### 18.5 S229 ALTIN TEST UYARLAMASI (test + yalnız-okuma alan)
+- (a) `routes/invoices.mjs shape`: yalnız `inPlan` varken (ownOpen gibi) `ownPayState` = faturanın KENDİ kapama durumu (shownState'ten önceki ad). Sınır, kapama, gösterim DEĞİŞMEZ. K1 yardımcısı
+  (`test/guvenilirlik/kapama-k1-fark.mjs invoiceStates`) faturanın KENDİ açığını / durumunu okur (`ownOpen ?? open`, `ownPayState ?? payState`); ekran tutarlılığı S230'a göre: ödenen + GÖSTERİLEN açık +
+  inPlan = ödenecek (kendi açıkla: ödenen + kendi açık = ödenecek).
+- (b) `test/banka-210-altin.test.mjs`: yeni tarafın Anlık Durum'unda `invoices.openSale` / `overdueSale`'e S230 karar numaralı katlama — kartların aldığı açık kısım (satış faturası başına ownOpen −
+  open; overdueSale'de vadesi geçenler) geri eklenir, katlanan tutar sayılır ve günlüğe yazılır (bu veride 1.840,97 TL). Katlamadan sonra kalan her alan v2.0.26 ile birebir.
+- (c) `open` / `payState` okuyan öbür altın / göç / güvenilirlik testleri taranır (`test/` + `npm run` betikleri) ve koşulur.
+
+### 18.6 Nasıl bozulur? (önce yazıldı; testler buradan)
+1. Kapalı (Borçta Kalsın) Mevcut Borç kartı + iade (borçtan) → kart küçülür, Kalan = carinin karttaki borcu (pencere, cari kartı özeti, Taksitler listesi); bakiye / gecikmiş (kapanış günü ve ertesi) /
+   Mizan 120 / Mutabakat Testi önce / sonra AYNI.
+2. Kapanıştan ÖNCE vadesi geçmiş açık taksit varken iade: kesim o taksitten (en önce gelen açık) — kuyruğun FIFO'suyla aynı kalem → kapanış günü gecikmişi tabanla AYNI.
+3. İade kalanı aşar → kart kalanı 0, fazlası avans (kalanla sınırlı); parası geri verilen iade kartı küçültmez (G1).
+4. İade → iade iptali (ve iade Düzenle): kapalı kart geri büyür (son taksite); Kalan = borç; bakiye / gecikmiş AYNI.
+5. Yeniden Aç → Kartı Kapat onayı küçülmüş kalanı sorar (300); yeniden kapatma Borçta Kalsın.
+6. ESKİ kuralla (689; '2.4.9') kapanmış kart + iade: DEĞİŞMEZ (küçülmez, büyümez; 689 / bakiye aynı).
+7. İptal (S226 = C): kapalı kartlı caride faturanın İptal Et'i — kapalı kart DEĞİŞMEZ (açık Mevcut Borç kartı da varken bile).
+8. Silme (faturanın Sil'i iptali çağırır) — 7 ile aynı.
+9. İki kart aynı caride (biri açık, biri Borçta Kalsın kapalı) + iade: en yeni karttan (trimCovers sırası); iki kartın Kalan toplamı = borç.
+10. Kapalı karta sonradan tahsilat + iade: küçülme kartın KENDİ kalanıyla sınırlı.
+11. Kilitli dönem: kart küçülmesi Kartı Kapat'ın kilidine takılmaz (Borçta Kalsın kapanışı defter olayı değil — closeDayOf ''); iadenin kendi tarih kilidi aynen.
+12. v2.4.9 verisinden göç: bütün kapalı kartlar '2.4.9' → değişmez (6).
+13. Kendi kartı (taksitli fatura) Borçta Kalsın kapalı + iade → kart küçülür (karar (4)); faturanın açığı = kartın kalanı (v2.0.24 değişmezi).
+14. Açılış onarımı (order "tail"): kapalı kart bugünkü gibi atlanır.
+15. S235: kapalı kartlı taksitli faturada Düzenle → onayda cümle (Taksitlendir / Açık Hesap'a göre); açık kartta cümle YOK; davranış (yeni kart / kart kaldırılır) aynen.
+
+### 18.7 Kod ve sonuç (kodla birlikte; kanıt docs/kanit/2026-11-21/dkfix-*)
+- `routes/plans.mjs`: `shrinkable(row, order)` (açık kart; ya da kalanı düşülmemiş kapalı kart, order "tail" dışında) — `shrinkPlan`, `trimCovers` (yeni seçenek `{ closed = true }`; `settleCoverOnCancel`
+  `closed: false`), `growForInvoice` (+ FREEZE_CLOSE) aynı yüklemi okur. `routes/invoices.mjs shape`: `ownPayState` (yalnız inPlan varken). `client/assets/hof-invoices.js`: `form.modifyPlanClosed` + onay
+  cümlesi. Testler: `test/dkfix-s234-kapali-kart-250.test.mjs` (T1–T9), `test/e2e/senaryo-dkfix-250.mjs` (A–D + E gözlem), altın test S230 katlaması, K1 yardımcısı, mutabakat motoru.
+- KOD SÜRERKEN GÖRÜLDÜ (önce / sonra sayıyla, yoklama pk.mjs; ders 6):
+  (a) §18.6 (2) — kapanıştan önce vadesi geçmiş açık taksitli kapalı kartta iade: KAPANIŞ GÜNÜ gecikmişi taban 300 → yeni 0 (kuyruk tabanda iade alacağını kartın SON kalemine kapatıyordu; karar (4) en önce
+      gelen açık taksiti keser — açık kartla aynı); ertesi gün aynı (600). Kararın "gecikmiş her seçenekte AYNI" önermesi bu alt durumda tutmuyor → KULLANICIYA SORULMALI (uç durum).
+  (b) §18.6 (9) — iki Mevcut Borç kartı aynı caride (eski kapalı kart fatura 900'ü almış, yeni açık kart sonraki fatura 300'ü almış), ilk faturaya iade 300: kapalı kart 600'e küçülünce Tek Yükümlülük
+      Kuyruğu yeni kartın kapsamını kapama defterinden AYRI dağıtıyor — kapama defteri (cardLedgerState) ikinci faturayı yeni kartça kapsanmış sayıyor (covered 300), kuyruk ise ikinci faturayı kapsamsız
+      'Gecikti' ve yeni kartın taksitlerini 'Ödendi' gösteriyor → gecikmiş 08.10 0 → 300, 09.10 600 → 900. TABANDA AÇIK iki kartta da aynı (iade sonrası açık kart 600 + ikinci fatura 300 gecikmiş;
+      doğrusu 0) — kök neden kuyrukta (dosya sınırı dışı); S234 = A bunu kapalı karta da taşıyor → BULGU (ORTA aday) + BAŞ MİMAR KARARI GEREKEN.
+  (c) Düzenle formu (önceden var, en az v2.4.9'dan): kaydedilmiş taksitli faturada kalan ödeme 'Açık Hesap (Vadeli)' seçili açılıyor (istemci `payFrom` payment.rest === "installments" arıyor; kaydedilmiş
+      belgede rest tutar, mode "installments") → değiştirmeden Kaydet taksit kartını kaldırıyor (ekran senaryosu E gözlemi). S235'in onay cümlesi bu yüzden Açık Hesap seçiliyken 'kaldırılır' der → BULGU.

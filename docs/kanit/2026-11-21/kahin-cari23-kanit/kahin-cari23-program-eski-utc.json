@@ -1,0 +1,158 @@
+{
+  "ad": "kahin-cari23-program-eski-utc",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-cari23/eski/test/bagimsiz/cari/kos.mjs --mutasyonsuz --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-cari23/program-eski-utc",
+  "commit": "43bf5f07bb4871a7a678decdf81357d07e12ef61",
+  "dal": "worktree-agent-a86d75eced6cfa436",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T01:09:58.305Z",
+  "sure_sn": 138.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17648,
+    "gecen": 17602,
+    "basarisiz": 46,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 46 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k3:cari:M:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k3:cari:M:acikToplam: program 0 · kâhin 100000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k3:fatura:SA:acik: program 0 · kâhin 100000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9; K-b FIFO + KS8.1 artan): geri ödenen iade kapat",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:E3:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:E3:acikToplam: program 0 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI · SINIF DIŞI] k1:fatura:E3F:acik: program 0 · kâhin 60000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:J13:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:J13:acikToplam: program 30000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:J13F:acik: program 0 · kâhin 30000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:L11:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:L11:acikToplam: program 30000 · kâhin 90000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L12:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L12:acikToplam: program 0 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L13c:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L13c:acikToplam: program 0 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L15:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L15:acikToplam: program 0 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L16a:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L16a:acikToplam: program 30000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L1:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L1:acikToplam: program 30000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L6:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L6:acikToplam: program 0 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L7:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:L7:acikToplam: program 10000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-cari23/kanit/2026-11-21/kahin-cari23-program-eski-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a86d75eced6cfa436",
+  "ham_cikti_sha256": "158aea1c81a95b49654fb2fe82b636ec3639a0c4a55f03cc73a215a48539ffab",
+  "ham_cikti_bayt": 24822
+}

@@ -1,0 +1,714 @@
+{
+ "k1:cari:P1:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:P2:deleteBlock": "Bu carinin 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:P3:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:P4:deleteBlock": "Bu carinin 2 fatura / makbuz (taslak ve iptal dahil) ve 2 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:P5:deleteBlock": "Bu carinin 1 cari hareketi ve 1 fatura / makbuz (taslak ve iptal dahil) var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:P6:deleteBlock": "Bu carinin 1 fatura / makbuz (taslak ve iptal dahil) ve 2 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:P7:deleteBlock": "Bu carinin 1 cari hareketi ve 1 fatura / makbuz (taslak ve iptal dahil) var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:fatura:FP1": {
+  "open": 20000,
+  "ownOpen": 50000,
+  "inPlan": 30000,
+  "status": "issued"
+ },
+ "k1:fatura:FP2": {
+  "open": 0,
+  "ownOpen": 40000,
+  "inPlan": 40000,
+  "status": "issued"
+ },
+ "k1:fatura:FP3": {
+  "open": 0,
+  "ownOpen": 30000,
+  "inPlan": 30000,
+  "status": "issued"
+ },
+ "k1:fatura:FP4a": {
+  "open": 0,
+  "status": "issued"
+ },
+ "k1:fatura:FP5": {
+  "open": 6000,
+  "status": "issued"
+ },
+ "k1:fatura:FP6": {
+  "open": 0,
+  "ownOpen": 30000,
+  "inPlan": 30000,
+  "status": "issued"
+ },
+ "k1:fatura:FP7": {
+  "open": 3000,
+  "status": "issued"
+ },
+ "k1:fatura:FP4b": {
+  "open": 0,
+  "ownOpen": 20000,
+  "inPlan": 20000,
+  "status": "issued"
+ },
+ "k1:faturaListesi": {
+  "status": 200,
+  "anahtarlar": [
+   "invoices",
+   "totals",
+   "tabCounts",
+   "canManage",
+   "total",
+   "offset",
+   "limit",
+   "hasMore",
+   "restoreNotice"
+  ],
+  "ilk": {
+   "id": "invoice-a268bbc1-7e2a-4f1e-90a3-f298da63d076",
+   "kind": "sale",
+   "kindLabel": "Satış Faturası",
+   "scenario": "service_sale",
+   "scenarioLabel": "Hizmet Satışı",
+   "status": "issued",
+   "statusLabel": "Kaydedildi",
+   "number": "FIS2026000000007",
+   "displayNo": "FIS2026000000007",
+   "internalNumber": false,
+   "ettn": "5eaf8afc-3bfd-4b74-bbe8-f1c4d79967fd",
+   "issueDate": "2026-02-06",
+   "issueTime": "09:00",
+   "accountId": "account-6d0a59b2-a907-424e-afd3-ecdd5c55b3b4",
+   "accountName": "Perihan İki Kart",
+   "accountRef": "4",
+   "accountPhone": "",
+   "profile": "KAGIT",
+   "profileLabel": "Kâğıt Fatura",
+   "typeCode": "SATIS",
+   "currency": "TRY",
+   "rate": 1,
+   "netTotal": 20000,
+   "vatTotal": 0,
+   "withheldTotal": 0,
+   "stoppageTotal": 0,
+   "payableTotal": 20000,
+   "tryNet": 20000,
+   "tryVat": 0,
+   "tryPayable": 20000,
+   "dueDate": "2026-02-06",
+   "planId": "",
+   "originalId": "",
+   "originalNumber": "",
+   "originalDate": "",
+   "note": "",
+   "eStatus": "none",
+   "eStatusLabel": "Gönderilmedi",
+   "eUnsent": false,
+   "eTestLive": false,
+   "eTest": false,
+   "actorName": "Ofis yöneticisi",
+   "createdAt": "2026-02-16T09:00:01.023Z",
+   "payState": "installment",
+   "payStateLabel": "Taksitte",
+   "paid": 0,
+   "open": 0,
+   "ownOpen": 20000,
+   "inPlan": 20000,
+   "closers": [],
+   "posCash": false,
+   "eBlocked": false
+  }
+ },
+ "k1:takvim": [
+  {
+   "id": "invoice|invoice-3ba05410-c4c8-43eb-9a2b-b0ee36210c82",
+   "source": "invoice",
+   "invoiceId": "invoice-3ba05410-c4c8-43eb-9a2b-b0ee36210c82",
+   "direction": "out",
+   "person": "Pars Tedarik",
+   "caseNo": "",
+   "caseKey": "",
+   "tab": "",
+   "label": "Ödenecek Fatura KH-A1",
+   "kind": "date",
+   "dueDate": "2026-01-10",
+   "dueText": "10.01.2026",
+   "amount": 3000,
+   "partial": true,
+   "days": -37,
+   "state": "overdue"
+  },
+  {
+   "id": "invoice|invoice-90984799-e0f7-4c27-9c67-92d5a2164404",
+   "source": "invoice",
+   "invoiceId": "invoice-90984799-e0f7-4c27-9c67-92d5a2164404",
+   "direction": "in",
+   "person": "Pelin Kısmi Kart",
+   "caseNo": "",
+   "caseKey": "",
+   "tab": "",
+   "label": "Tahsil Edilecek Fatura FIS2026000000001",
+   "kind": "date",
+   "dueDate": "2026-01-10",
+   "dueText": "10.01.2026",
+   "amount": 20000,
+   "partial": true,
+   "days": -37,
+   "state": "overdue"
+  },
+  {
+   "id": "invoice|invoice-2211a6b1-5d7d-4b27-8e33-6ab2857dbf79",
+   "source": "invoice",
+   "invoiceId": "invoice-2211a6b1-5d7d-4b27-8e33-6ab2857dbf79",
+   "direction": "in",
+   "person": "Peker Kartsız",
+   "caseNo": "",
+   "caseKey": "",
+   "tab": "",
+   "label": "Tahsil Edilecek Fatura FIS2026000000005",
+   "kind": "date",
+   "dueDate": "2026-01-10",
+   "dueText": "10.01.2026",
+   "amount": 6000,
+   "partial": true,
+   "days": -37,
+   "state": "overdue"
+  }
+ ],
+ "k1:takvimV3": {
+  "items": [
+   {
+    "id": "invoice|invoice-3ba05410-c4c8-43eb-9a2b-b0ee36210c82",
+    "source": "invoice",
+    "invoiceId": "invoice-3ba05410-c4c8-43eb-9a2b-b0ee36210c82",
+    "direction": "out",
+    "person": "Pars Tedarik",
+    "caseNo": "",
+    "caseKey": "",
+    "tab": "",
+    "label": "Ödenecek Fatura KH-A1",
+    "kind": "date",
+    "dueDate": "2026-01-10",
+    "dueText": "10.01.2026",
+    "amount": 3000,
+    "partial": true,
+    "days": -37,
+    "state": "overdue"
+   },
+   {
+    "id": "invoice|invoice-90984799-e0f7-4c27-9c67-92d5a2164404",
+    "source": "invoice",
+    "invoiceId": "invoice-90984799-e0f7-4c27-9c67-92d5a2164404",
+    "direction": "in",
+    "person": "Pelin Kısmi Kart",
+    "caseNo": "",
+    "caseKey": "",
+    "tab": "",
+    "label": "Tahsil Edilecek Fatura FIS2026000000001",
+    "kind": "date",
+    "dueDate": "2026-01-10",
+    "dueText": "10.01.2026",
+    "amount": 20000,
+    "partial": true,
+    "days": -37,
+    "state": "overdue"
+   },
+   {
+    "id": "invoice|invoice-2211a6b1-5d7d-4b27-8e33-6ab2857dbf79",
+    "source": "invoice",
+    "invoiceId": "invoice-2211a6b1-5d7d-4b27-8e33-6ab2857dbf79",
+    "direction": "in",
+    "person": "Peker Kartsız",
+    "caseNo": "",
+    "caseKey": "",
+    "tab": "",
+    "label": "Tahsil Edilecek Fatura FIS2026000000005",
+    "kind": "date",
+    "dueDate": "2026-01-10",
+    "dueText": "10.01.2026",
+    "amount": 6000,
+    "partial": true,
+    "days": -37,
+    "state": "overdue"
+   }
+  ],
+  "deadlines": []
+ },
+ "k1:vadeTakip": [
+  {
+   "date": "2026-01-10",
+   "direction": "in",
+   "amount": 6000,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000005 (kalan)",
+   "party": "Peker Kartsız",
+   "phone": "",
+   "detail": "Fatura tarihi 10.01.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-2211a6b1-5d7d-4b27-8e33-6ab2857dbf79"
+   },
+   "days": -37,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-01-10",
+   "direction": "in",
+   "amount": 20000,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000001 (kalan)",
+   "party": "Pelin Kısmi Kart",
+   "phone": "",
+   "detail": "Fatura tarihi 10.01.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-90984799-e0f7-4c27-9c67-92d5a2164404"
+   },
+   "days": -37,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-01-10",
+   "direction": "out",
+   "amount": 3000,
+   "source": "invoice",
+   "label": "Alış faturası KH-A1 (kalan)",
+   "party": "Pars Tedarik",
+   "phone": "",
+   "detail": "Fatura tarihi 10.01.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-3ba05410-c4c8-43eb-9a2b-b0ee36210c82"
+   },
+   "days": -37,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-03-01",
+   "direction": "in",
+   "amount": 20000,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Pelin Kısmi Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-dc98a294-015e-4bb3-a85a-653c20213dfe"
+   },
+   "seq": 1,
+   "fullAmount": 20000,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-75c1045f-427d-41b9-a0b9-459e666f74d4",
+   "accountName": "Pelin Kısmi Kart",
+   "detail": "Kart 1",
+   "days": 13,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-03-01",
+   "direction": "in",
+   "amount": 20000,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Pınar Tam Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-aa46a605-2ada-401c-9c69-88052c111025"
+   },
+   "seq": 1,
+   "fullAmount": 20000,
+   "partial": false,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-3baf5344-e2b3-4c08-8da5-da41e20c8950",
+   "accountName": "Pınar Tam Kart",
+   "detail": "Kart 2",
+   "days": 13,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-03-01",
+   "direction": "in",
+   "amount": 10000,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Polat Ödenmiş Tam Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fda72d5c-0b8d-4a8e-8597-18aae4793e26"
+   },
+   "seq": 1,
+   "fullAmount": 10000,
+   "partial": false,
+   "phone": "",
+   "refNo": "3",
+   "accountId": "account-5a3422d2-9f10-4cc9-8c3c-9ed2e3c6cffd",
+   "accountName": "Polat Ödenmiş Tam Kart",
+   "detail": "Kart 3",
+   "days": 13,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-03-07",
+   "direction": "in",
+   "amount": 10000,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Pakize Faturası Bölünen",
+   "ref": {
+    "type": "plan",
+    "id": "plan-747d2210-53aa-4e89-a043-b5b00aa52e18"
+   },
+   "seq": 1,
+   "fullAmount": 10000,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-d17dc80a-55aa-4bd4-baa7-d4868a19ecd7",
+   "accountName": "Pakize Faturası Bölünen",
+   "detail": "Kart 7",
+   "days": 19,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-03-07",
+   "direction": "in",
+   "amount": 10000,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Perihan İki Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d7b702c-5d11-42bd-854e-f7194ecdbb04"
+   },
+   "seq": 1,
+   "fullAmount": 10000,
+   "partial": false,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-6d0a59b2-a907-424e-afd3-ecdd5c55b3b4",
+   "accountName": "Perihan İki Kart",
+   "detail": "Kart 6",
+   "days": 19,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-04-01",
+   "direction": "in",
+   "amount": 20000,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Pelin Kısmi Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-dc98a294-015e-4bb3-a85a-653c20213dfe"
+   },
+   "seq": 2,
+   "fullAmount": 20000,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-75c1045f-427d-41b9-a0b9-459e666f74d4",
+   "accountName": "Pelin Kısmi Kart",
+   "detail": "Kart 1",
+   "days": 44,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-04-01",
+   "direction": "in",
+   "amount": 20000,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Pınar Tam Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-aa46a605-2ada-401c-9c69-88052c111025"
+   },
+   "seq": 2,
+   "fullAmount": 20000,
+   "partial": false,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-3baf5344-e2b3-4c08-8da5-da41e20c8950",
+   "accountName": "Pınar Tam Kart",
+   "detail": "Kart 2",
+   "days": 44,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-04-01",
+   "direction": "in",
+   "amount": 10000,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Polat Ödenmiş Tam Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fda72d5c-0b8d-4a8e-8597-18aae4793e26"
+   },
+   "seq": 2,
+   "fullAmount": 10000,
+   "partial": false,
+   "phone": "",
+   "refNo": "3",
+   "accountId": "account-5a3422d2-9f10-4cc9-8c3c-9ed2e3c6cffd",
+   "accountName": "Polat Ödenmiş Tam Kart",
+   "detail": "Kart 3",
+   "days": 44,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-04-07",
+   "direction": "in",
+   "amount": 10000,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Pakize Faturası Bölünen",
+   "ref": {
+    "type": "plan",
+    "id": "plan-747d2210-53aa-4e89-a043-b5b00aa52e18"
+   },
+   "seq": 2,
+   "fullAmount": 10000,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-d17dc80a-55aa-4bd4-baa7-d4868a19ecd7",
+   "accountName": "Pakize Faturası Bölünen",
+   "detail": "Kart 7",
+   "days": 50,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-04-07",
+   "direction": "in",
+   "amount": 10000,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Perihan İki Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d7b702c-5d11-42bd-854e-f7194ecdbb04"
+   },
+   "seq": 2,
+   "fullAmount": 10000,
+   "partial": false,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-6d0a59b2-a907-424e-afd3-ecdd5c55b3b4",
+   "accountName": "Perihan İki Kart",
+   "detail": "Kart 6",
+   "days": 50,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-05-01",
+   "direction": "in",
+   "amount": 20000,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Pelin Kısmi Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-dc98a294-015e-4bb3-a85a-653c20213dfe"
+   },
+   "seq": 3,
+   "fullAmount": 20000,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-75c1045f-427d-41b9-a0b9-459e666f74d4",
+   "accountName": "Pelin Kısmi Kart",
+   "detail": "Kart 1",
+   "days": 74,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-05-01",
+   "direction": "in",
+   "amount": 10000,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Polat Ödenmiş Tam Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fda72d5c-0b8d-4a8e-8597-18aae4793e26"
+   },
+   "seq": 3,
+   "fullAmount": 10000,
+   "partial": false,
+   "phone": "",
+   "refNo": "3",
+   "accountId": "account-5a3422d2-9f10-4cc9-8c3c-9ed2e3c6cffd",
+   "accountName": "Polat Ödenmiş Tam Kart",
+   "detail": "Kart 3",
+   "days": 74,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-05-07",
+   "direction": "in",
+   "amount": 10000,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Pakize Faturası Bölünen",
+   "ref": {
+    "type": "plan",
+    "id": "plan-747d2210-53aa-4e89-a043-b5b00aa52e18"
+   },
+   "seq": 3,
+   "fullAmount": 10000,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-d17dc80a-55aa-4bd4-baa7-d4868a19ecd7",
+   "accountName": "Pakize Faturası Bölünen",
+   "detail": "Kart 7",
+   "days": 80,
+   "state": "upcoming"
+  }
+ ],
+ "k1:projeksiyon": [
+  {
+   "date": "2026-03-01",
+   "direction": "in",
+   "amount": 20000,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Pelin Kısmi Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-dc98a294-015e-4bb3-a85a-653c20213dfe"
+   },
+   "seq": 1,
+   "fullAmount": 20000,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-75c1045f-427d-41b9-a0b9-459e666f74d4",
+   "accountName": "Pelin Kısmi Kart",
+   "balance": 115000
+  },
+  {
+   "date": "2026-03-01",
+   "direction": "in",
+   "amount": 20000,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Pınar Tam Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-aa46a605-2ada-401c-9c69-88052c111025"
+   },
+   "seq": 1,
+   "fullAmount": 20000,
+   "partial": false,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-3baf5344-e2b3-4c08-8da5-da41e20c8950",
+   "accountName": "Pınar Tam Kart",
+   "balance": 135000
+  },
+  {
+   "date": "2026-03-01",
+   "direction": "in",
+   "amount": 10000,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Polat Ödenmiş Tam Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fda72d5c-0b8d-4a8e-8597-18aae4793e26"
+   },
+   "seq": 1,
+   "fullAmount": 10000,
+   "partial": false,
+   "phone": "",
+   "refNo": "3",
+   "accountId": "account-5a3422d2-9f10-4cc9-8c3c-9ed2e3c6cffd",
+   "accountName": "Polat Ödenmiş Tam Kart",
+   "balance": 145000
+  },
+  {
+   "date": "2026-03-07",
+   "direction": "in",
+   "amount": 10000,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Perihan İki Kart",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d7b702c-5d11-42bd-854e-f7194ecdbb04"
+   },
+   "seq": 1,
+   "fullAmount": 10000,
+   "partial": false,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-6d0a59b2-a907-424e-afd3-ecdd5c55b3b4",
+   "accountName": "Perihan İki Kart",
+   "balance": 155000
+  },
+  {
+   "date": "2026-03-07",
+   "direction": "in",
+   "amount": 10000,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Pakize Faturası Bölünen",
+   "ref": {
+    "type": "plan",
+    "id": "plan-747d2210-53aa-4e89-a043-b5b00aa52e18"
+   },
+   "seq": 1,
+   "fullAmount": 10000,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-d17dc80a-55aa-4bd4-baa7-d4868a19ecd7",
+   "accountName": "Pakize Faturası Bölünen",
+   "balance": 165000
+  },
+  {
+   "date": "2026-01-10",
+   "direction": "out",
+   "amount": 3000,
+   "source": "invoice",
+   "label": "Alış faturası KH-A1 (kalan)",
+   "party": "Pars Tedarik",
+   "phone": "",
+   "detail": "Fatura tarihi 10.01.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-3ba05410-c4c8-43eb-9a2b-b0ee36210c82"
+   }
+  },
+  {
+   "date": "2026-01-10",
+   "direction": "in",
+   "amount": 20000,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000001 (kalan)",
+   "party": "Pelin Kısmi Kart",
+   "phone": "",
+   "detail": "Fatura tarihi 10.01.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-90984799-e0f7-4c27-9c67-92d5a2164404"
+   }
+  },
+  {
+   "date": "2026-01-10",
+   "direction": "in",
+   "amount": 6000,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000005 (kalan)",
+   "party": "Peker Kartsız",
+   "phone": "",
+   "detail": "Fatura tarihi 10.01.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-2211a6b1-5d7d-4b27-8e33-6ab2857dbf79"
+   }
+  }
+ ]
+}

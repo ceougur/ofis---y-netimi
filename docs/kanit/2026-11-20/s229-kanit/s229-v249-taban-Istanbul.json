@@ -1,0 +1,43 @@
+{
+  "ad": "s229-v249-taban-Istanbul",
+  "komut": "node --test test/s229-eski-surum-250.test.mjs",
+  "commit": "fce3d2723c943a1a67342257dfa70fe69593154d",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T23:49:31.478Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 1,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "S229 / S230 — kabul D: v2.4.9 verisi (Mevcut Borç kartının içine aldığı faturalar) › güncel kod, yeni kapama (TYK): aynı veride S229 / S230 = A gösterimi",
+      "konum": "test/s229-eski-surum-250.test.mjs:95:5",
+      "hata": "yeni kapama (TYK): Açık Faturalar {\"P\":50000,\"T\":50000,\"I\":50000} · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "S229 / S230 — kabul D: v2.4.9 verisi (Mevcut Borç kartının içine aldığı faturalar) › güncel kod, eski kapama düzeni (legacyClosing): aynı veride S229 / S230 = A gösterimi",
+      "konum": "test/s229-eski-surum-250.test.mjs:95:5",
+      "hata": "eski kapama düzeni (legacyClosing): Açık Faturalar {\"P\":50000,\"T\":50000,\"I\":50000} · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/kanit/2026-11-20/s229-v249-taban-Istanbul.log",
+  "klasor": "/dev/shm/s229-a343-taban",
+  "ham_cikti_sha256": "26b3c98dc66389e74d2be945ec4cf5b8957fd7cdeab8c6c84581b495cd98932d",
+  "ham_cikti_bayt": 3504
+}

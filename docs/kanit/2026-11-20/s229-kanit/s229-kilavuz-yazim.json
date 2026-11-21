@@ -1,0 +1,32 @@
+{
+  "ad": "s229-kilavuz-yazim",
+  "komut": "node --test test/kilavuz-metin-denetle.test.mjs test/kilavuz-pdf-surum.test.mjs test/kilavuz-surum.test.mjs test/yazim-duzeni.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/gorunen-adres-247.test.mjs",
+  "commit": "fe564bffc4b39fb0d855cfe0de81584fb4eeddd7",
+  "dal": "worktree-agent-a343eda2c3de7a0a1",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T23:58:28.410Z",
+  "sure_sn": 2.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/kanit/2026-11-20/s229-kilavuz-yazim.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a343eda2c3de7a0a1",
+  "ham_cikti_sha256": "d5c53c898e48ee6f2007b6d9362431f4e33f85839c55dcfd407d61750167e04a",
+  "ham_cikti_bayt": 7267
+}

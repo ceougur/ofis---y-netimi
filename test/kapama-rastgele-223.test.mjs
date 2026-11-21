@@ -167,7 +167,9 @@ async function run({ mode, seed, steps }) {
       const card = await must("kart", api.get(`/api/workspace/invoices/${doc.id}`));
       if (key(doc) !== key(card)) problems.push(`${doc.displayNo}: liste ${key(doc)} ≠ kart ${key(card)}`);
       if (!["sale", "smm", "purchase"].includes(doc.kind)) continue;
-      if (Math.round((doc.paid + doc.open) * 100) !== Math.round(doc.tryPayable * 100)) problems.push(`${doc.displayNo}: ödenen ${doc.paid} + açık ${doc.open} ≠ ${doc.tryPayable}`);
+      // S229 = A + S230 = A (20.11.2026): Mevcut Borç kartının aldığı kısım (inPlan) gösterilen açıkta değildir → ödenen + açık + kartta = tutar.
+      if (Math.round((doc.paid + doc.open + (doc.inPlan || 0)) * 100) !== Math.round(doc.tryPayable * 100)) problems.push(`${doc.displayNo}: ödenen ${doc.paid} + açık ${doc.open} + kartta ${doc.inPlan || 0} ≠ ${doc.tryPayable}`);
+      if (doc.inPlan > 0.004 && Math.round(((doc.ownOpen ?? doc.open) - doc.inPlan) * 100) !== Math.round(doc.open * 100)) problems.push(`${doc.displayNo}: kendi açığı ${doc.ownOpen} − kartta ${doc.inPlan} ≠ gösterilen ${doc.open}`);
       const closed = Math.round((doc.closers || []).reduce((sum, c) => sum + c.amount, 0) * 100);
       if (closed !== Math.round(doc.paid * 100)) problems.push(`${doc.displayNo}: kapatanlar ${closed / 100} ≠ ödenen ${doc.paid}`);
       if (doc.open < -0.004) problems.push(`${doc.displayNo}: açık ${doc.open}`);

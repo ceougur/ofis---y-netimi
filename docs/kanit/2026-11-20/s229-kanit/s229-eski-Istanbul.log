@@ -1,0 +1,405 @@
+TAP version 13
+# (node:7283) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez
+    # Subtest: K1 kısmi (S200 = A sırası): Açık Faturalar 20.000 + TOPLAM; fatura kartı; liste; Anlık Durum; Mahsup önerisi 20.000, sınırı 50.000; bakiye / gecikmiş değişmez
+    not ok 1 - K1 kısmi (S200 = A sırası): Açık Faturalar 20.000 + TOPLAM; fatura kartı; liste; Anlık Durum; Mahsup önerisi 20.000, sınırı 50.000; bakiye / gecikmiş değişmez
+      ---
+      duration_ms: 152.563902
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:70:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Açık Faturalar F1: [{"no":"FIS2026000000001","kalan":50000,"taraf":"Alacak (Satış)","gecikme":"18 gün"}] (20.000 beklendi — kartın aldığı 30.000 düşülür)
+        + actual - expected
+        
+          [
+            {
+              gecikme: '18 gün',
+        +     kalan: 50000,
+        -     kalan: 20000,
+              no: 'FIS2026000000001',
+              taraf: 'Alacak (Satış)'
+            }
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          no: 'FIS2026000000001'
+          kalan: 20000
+          taraf: 'Alacak (Satış)'
+          gecikme: '18 gün'
+      actual:
+        0:
+          no: 'FIS2026000000001'
+          kalan: 50000
+          taraf: 'Alacak (Satış)'
+          gecikme: '18 gün'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:78:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: K2 tam: Açık Faturalar'da yok, Anlık Durum'a girmez, 'Taksitte'; Ödeme Durumu süzgeçleri; PDF / Excel
+    not ok 2 - K2 tam: Açık Faturalar'da yok, Anlık Durum'a girmez, 'Taksitte'; Ödeme Durumu süzgeçleri; PDF / Excel
+      ---
+      duration_ms: 74.253716
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:103:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kartın tamamını aldığı fatura listede: [{"no":"FIS2026000000002","kalan":50000,"taraf":"Alacak (Satış)","gecikme":"18 gün"}]
+        + actual - expected
+        
+        + [
+        +   {
+        +     gecikme: '18 gün',
+        +     kalan: 50000,
+        +     no: 'FIS2026000000002',
+        +     taraf: 'Alacak (Satış)'
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          no: 'FIS2026000000002'
+          kalan: 50000
+          taraf: 'Alacak (Satış)'
+          gecikme: '18 gün'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:110:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K2b Açık Faturalar PDF ve Excel TOPLAM'ı ekranla aynı (kısmi kart)
+    not ok 3 - K2b Açık Faturalar PDF ve Excel TOPLAM'ı ekranla aynı (kısmi kart)
+      ---
+      duration_ms: 68.040117
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:137:3'
+      failureType: 'testCodeFailure'
+      error: "PDF'te 20.000,00 0 kez"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:146:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K3 iki kart: gösterilen açık iki kartın payı düşülmüş; iki 'Taksit Kartında' satırı
+    not ok 4 - K3 iki kart: gösterilen açık iki kartın payı düşülmüş; iki 'Taksit Kartında' satırı
+      ---
+      duration_ms: 72.595377
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:158:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   50000
+        -   20000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 20000
+      actual:
+        0: 50000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:163:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K4 elle borç + iki fatura: kart önce elle borcu, sonra vadesi önce gelen faturayı alır
+    not ok 5 - K4 elle borç + iki fatura: kart önce elle borcu, sonra vadesi önce gelen faturayı alır
+      ---
+      duration_ms: 86.66458
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:170:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Açık Faturalar [{"no":"FIS2026000000005","kalan":30000,"taraf":"Alacak (Satış)","gecikme":"28 gün"},{"no":"FIS2026000000006","kalan":40000,"taraf":"Alacak (Satış)","gecikme":"8 gün"}]
+        + actual - expected
+        
+          [
+            [
+        +     'FIS2026000000005',
+        -     'FIS2026000000006',
+              30000
+            ],
+        +   [
+        +     'FIS2026000000006',
+        +     40000
+        +   ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'FIS2026000000006'
+          1: 30000
+      actual:
+        0:
+          0: 'FIS2026000000005'
+          1: 30000
+        1:
+          0: 'FIS2026000000006'
+          1: 40000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:177:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K5 kartın taksiti tahsil edilir: fatura gösterilen açığı DEĞİŞMEZ; kart payı azalır
+    not ok 6 - K5 kartın taksiti tahsil edilir: fatura gösterilen açığı DEĞİŞMEZ; kart payı azalır
+      ---
+      duration_ms: 99.880085
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:183:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Açık 40000
+        
+        40000 !== 20000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 20000
+      actual: 40000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:190:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K6 Alacak Yaz + alış faturası: karar (5) netleşmesi Açık Faturalar'a GİRMEZ
+    not ok 7 - K6 Alacak Yaz + alış faturası: karar (5) netleşmesi Açık Faturalar'a GİRMEZ
+      ---
+      duration_ms: 92.661202
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:196:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [{"no":"ALS8","kalan":6000,"taraf":"Borç (Alış)","gecikme":"36 gün"},{"no":"FIS2026000000008","kalan":50000,"taraf":"Alacak (Satış)","gecikme":"18 gün"}]
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              'ALS8',
+              'Borç (Alış)',
+              6000
+        ...
+              'Alacak (Satış)',
+        +     50000
+        -     30000
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'ALS8'
+          1: 'Borç (Alış)'
+          2: 6000
+        1:
+          0: 'FIS2026000000008'
+          1: 'Alacak (Satış)'
+          2: 30000
+      actual:
+        0:
+          0: 'ALS8'
+          1: 'Borç (Alış)'
+          2: 6000
+        1:
+          0: 'FIS2026000000008'
+          1: 'Alacak (Satış)'
+          2: 50000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:203:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K7 şüpheliye alınmış fatura listede kalır (S213 = B); kart payı yine düşer
+    not ok 8 - K7 şüpheliye alınmış fatura listede kalır (S213 = B); kart payı yine düşer
+      ---
+      duration_ms: 75.175723
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:207:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              'FIS2026000000009',
+        +     50000
+        -     30000
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'FIS2026000000009'
+          1: 30000
+      actual:
+        0:
+          0: 'FIS2026000000009'
+          1: 50000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:212:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K8 kart silinir → fatura kendi açığıyla; Kartı Kapat 'Borçta Kalsın' → kart payı sürer
+    not ok 9 - K8 kart silinir → fatura kendi açığıyla; Kartı Kapat 'Borçta Kalsın' → kart payı sürer
+      ---
+      duration_ms: 57.642675
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:215:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        50000 !== 20000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 20000
+      actual: 50000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:219:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K9 fatura iptali (S210 = A): Açık Faturalar'da yok, listede 'İptal'
+    ok 10 - K9 fatura iptali (S210 = A): Açık Faturalar'da yok, listede 'İptal'
+      ---
+      duration_ms: 98.408031
+      type: 'test'
+      ...
+    # Subtest: K12 Muhasebe kullanıcısı: Açık Faturalar ve fatura kartı yöneticiyle aynı
+    not ok 11 - K12 Muhasebe kullanıcısı: Açık Faturalar ve fatura kartı yöneticiyle aynı
+      ---
+      duration_ms: 151.702374
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:247:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        50000 !== 20000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 20000
+      actual: 50000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:262:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K11 mahsup edilmemiş iade belgesi kendi satırında (değişmez)
+    ok 12 - K11 mahsup edilmemiş iade belgesi kendi satırında (değişmez)
+      ---
+      duration_ms: 71.683053
+      type: 'test'
+      ...
+    1..12
+not ok 1 - S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez
+  ---
+  duration_ms: 1565.248086
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:62:1'
+  failureType: 'subtestsFailed'
+  error: '10 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: S229 / S230 — eski kapama düzeni (legacyClosing) aynı kural
+    # Subtest: K10 kısmi 20.000 ve tam 'Taksitte'
+    not ok 1 - K10 kısmi 20.000 ve tam 'Taksitte'
+      ---
+      duration_ms: 53.921983
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:286:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   50000
+        -   20000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 20000
+      actual:
+        0: 50000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:290:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - S229 / S230 — eski kapama düzeni (legacyClosing) aynı kural
+  ---
+  duration_ms: 394.962247
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski/test/s229-acik-fatura-kart-payi-250.test.mjs:279:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 13
+# suites 2
+# pass 2
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2355.017901
