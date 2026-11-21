@@ -59,6 +59,9 @@
 22. Bakım 21b (§33; C6 S206 = A, kesik girdinin tam metni — C1 B1 kolları, C4 S15 asıl durum, C5 S25 (c)): Mevcut Borç kartının içine aldığı faturanın iptalinde kart kapanır, tahsilatı avans (d50 I1 —
    kararın örneği; d49 A1 artık tanımlı, kapanmış kartın göstergeleri SUS); çok kalemli / tahsilatsız kart SUS (SK-41 (a) / (b) — d50 I2 / I3); faturaya bağlı havale / nakit şüpheliden payı kadar
    (d50 H1 … H3); B1 kolları (d50 G1); taksitli faturanın iptalinde S50 tahsilatı avans (d50 I4); mutantlar 323 / 325 DEĞERLE, 324 (SUS kuralı) `elleYok` / `elleBelirsiz` satırıyla.
+23. Bakım 23 (§35; S229 = A, S230 = A, S200 = A): Mevcut Borç kartının içine aldığı faturanın GÖSTERİLEN açığı (kart ve liste) = kendi açığı − kartın aldığı kısım, tamamı alınan 'Taksitte'; S200 sırası
+   (önce elle borçlar, eksik kısım faturalardan eskiden yeniye) — d52 elle tablosu (S229'un kendi örneği P1; kısmi / tam / iki kart / kartsız / alış / S110 kendi borcu / iki fatura), d35 H8 artık değerle,
+   d36 J14 SK-23; mutantlar 329–333 DEĞERLE (9. madde düzeni — her biri bir elle beklenen değerini değiştirmeli).
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util

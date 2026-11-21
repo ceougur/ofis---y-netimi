@@ -824,8 +824,30 @@ async function kos(senaryo) {
               hatalar.push(`${k} fatura ${ad} okunamadı (${r.status})`);
               continue;
             }
-            P[`${k}:fatura:${ad}:acik`] = kurus(r.data.open);
+            // bakım 23 (KARARLAR.md §35 — S229 / S230 = A; API sözleşmesi girdi §2): `fatura:acik` faturanın KENDİ açığıdır (kapama kuralıyla) — `ownOpen`; eski program sürümlerinde
+            // alan yoktur, orada `open` kendi açıktır. GÖSTERİLEN açık (`open`; Mevcut Borç kartının aldığı kısım düşülmüş), kartların aldığı kısım (`inPlan`) ve 'Taksitte' durumu
+            // (ödeme durumu `payState` = "installment" — yoklama 21.11: belge durumu `status` ayrı alandır) ayrı anahtarlar. `inPlan` yoksa: `ownOpen` de yoksa `open` kendi açıktır → kartın aldığı kısım 0
+            // (sözleşme: gösterilen = kendi − kartın aldığı); `ownOpen` varken `inPlan` yoksa "alan yok". Öbür alan yoksa "alan yok" (okunamayan boş değildir — ders 4).
+            const sahip = (o, x) => Boolean(o) && typeof o === "object" && x in o;
+            const kendi = sahip(r.data, "ownOpen") ? r.data.ownOpen : r.data.open;
+            P[`${k}:fatura:${ad}:acik`] = kurus(kendi);
+            P[`${k}:fatura:${ad}:gosterilen`] = sahip(r.data, "open") ? kurus(r.data.open) : "alan yok";
+            P[`${k}:fatura:${ad}:kartta`] = sahip(r.data, "inPlan") ? kurus(r.data.inPlan) : !sahip(r.data, "ownOpen") && sahip(r.data, "open") ? 0 : "alan yok";
+            P[`${k}:fatura:${ad}:taksitte`] = sahip(r.data, "payState") ? r.data.payState === "installment" : "alan yok";
+            ham[`${k}:fatura:${ad}`] = { open: r.data.open, ownOpen: r.data.ownOpen, inPlan: r.data.inPlan, status: r.data.status, payState: r.data.payState }; // ders 38: ham alanlar
             if (r.data.status === "cancelled") P[`${k}:fatura:${ad}:durum`] = "iptal";
+          }
+          {
+            // bakım 23 (S230 = A): Faturalar LİSTESİ'ndeki gösterilen açık ve durum — fatura kartıyla aynı olmalı (`liste:gosterilen` / `liste:taksitte`; satır bulunamazsa "satır yok")
+            const lr = await api("GET", "/api/workspace/invoices?limit=500");
+            const liste = Array.isArray(lr.data) ? lr.data : lr.data?.invoices || lr.data?.items || null;
+            ham[`${k}:faturaListesi`] = { status: lr.status, anahtarlar: lr.data && typeof lr.data === "object" ? Object.keys(lr.data).slice(0, 20) : null, ilk: Array.isArray(liste) ? liste[0] ?? null : null };
+            for (const [ad, id] of Object.entries(ids.fatura)) {
+              if (!id || P[`${k}:fatura:${ad}:gosterilen`] === undefined) continue;
+              const s = Array.isArray(liste) ? liste.find(x => x.id === id) : undefined;
+              P[`${k}:fatura:${ad}:liste:gosterilen`] = !Array.isArray(liste) ? "okunamadı" : !s ? "satır yok" : "open" in s ? kurus(s.open) : "alan yok";
+              P[`${k}:fatura:${ad}:liste:taksitte`] = !Array.isArray(liste) ? "okunamadı" : !s ? "satır yok" : "payState" in s ? s.payState === "installment" : "alan yok";
+            }
           }
           const planlar = (await api("GET", "/api/workspace/plans")).data?.plans || [];
           for (const [no, anahtar] of Object.entries(ids.anahtar)) {
