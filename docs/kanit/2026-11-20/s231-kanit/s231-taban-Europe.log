@@ -1,0 +1,229 @@
+TAP version 13
+# (node:12279) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası)
+    # Subtest: (1) S231 örneği: önce 'Elif Su' / 'Işık Servisi', sonra 'ELİF SU' / 'IŞIK SERVİSİ' (ikisi de telefonsuz) → AYNI grup, AYNI cari, TEK borç
+    not ok 1 - (1) S231 örneği: önce 'Elif Su' / 'Işık Servisi', sonra 'ELİF SU' / 'IŞIK SERVİSİ' (ikisi de telefonsuz) → AYNI grup, AYNI cari, TEK borç
+      ---
+      duration_ms: 93.713803
+      type: 'test'
+      location: '/dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:47:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni grup açıldı (çift grup 'IŞIK SERVİSİ'): rapor groups=1
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:57:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (2) grup adı varyantları (ı / I, İ / i, küçük harf, boşluk, karışık) var olan 'Işık Servisi' grubunu bulur; 'ŞUBE A' ↔ 'Şube A' bugün de aynı (denetim)
+    not ok 2 - (2) grup adı varyantları (ı / I, İ / i, küçük harf, boşluk, karışık) var olan 'Işık Servisi' grubunu bulur; 'ŞUBE A' ↔ 'Şube A' bugün de aynı (denetim)
+      ---
+      duration_ms: 24.846929
+      type: 'test'
+      location: '/dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:67:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni grup açıldı: 4
+        
+        6 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 6
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:73:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (3) telefonsuz kişi + aynı grup: büyük harfli grup yazımıyla var olan carisine bağlanır; aynı adlı iki kişi (iki ayrı grupta) kendi grubundaki carisine
+    not ok 3 - (3) telefonsuz kişi + aynı grup: büyük harfli grup yazımıyla var olan carisine bağlanır; aynı adlı iki kişi (iki ayrı grupta) kendi grubundaki carisine
+      ---
+      duration_ms: 82.701688
+      type: 'test'
+      location: '/dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:80:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni grup açıldı: 1
+        
+        8 !== 7
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 7
+      actual: 8
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:89:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (4) telefonlu kişi: grup eşleşmesi kişi eşleşmesini değiştirmez (telefonla var olan cariye); kart var olan gruba
+    not ok 4 - (4) telefonlu kişi: grup eşleşmesi kişi eşleşmesini değiştirmez (telefonla var olan cariye); kart var olan gruba
+      ---
+      duration_ms: 29.81668
+      type: 'test'
+      location: '/dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'group-aaf2c758-cf51-48b7-9490-5bb594282c27'
+        - 'group-51ac4341-7aee-4114-b4b1-1dbc6f42f4ca'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'group-51ac4341-7aee-4114-b4b1-1dbc6f42f4ca'
+      actual: 'group-aaf2c758-cf51-48b7-9490-5bb594282c27'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:107:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (5) alt grup: 'YILDIZ SİTESİ' / 'İÇ BLOK' var olan 'Yıldız Sitesi' › 'İç Blok'u bulur; aynı adlı alt grup BAŞKA ana grupta ayrı kalır
+    not ok 5 - (5) alt grup: 'YILDIZ SİTESİ' / 'İÇ BLOK' var olan 'Yıldız Sitesi' › 'İç Blok'u bulur; aynı adlı alt grup BAŞKA ana grupta ayrı kalır
+      ---
+      duration_ms: 32.214728
+      type: 'test'
+      location: '/dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:110:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni grup / alt grup açıldı: 3
+        
+        13 !== 10
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 10
+      actual: 13
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:118:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (6) S228 sırası — var olan ÇİFT grup ('Çınar Durağı' + 'ÇINAR DURAĞI', elle açılmış): birebir yazım bugünkü grubuna; iki adaylı yazım bugünkü gibi yeni grup; elle grup formu katlamasız (DEĞİŞMEDİ)
+    ok 6 - (6) S228 sırası — var olan ÇİFT grup ('Çınar Durağı' + 'ÇINAR DURAĞI', elle açılmış): birebir yazım bugünkü grubuna; iki adaylı yazım bugünkü gibi yeni grup; elle grup formu katlamasız (DEĞİŞMEDİ)
+      ---
+      duration_ms: 23.507603
+      type: 'test'
+      ...
+    # Subtest: (7) aynı dosyada iki yazım: ilk satırın açtığı 'Ilıca Yolu' ikinci ve üçüncü satıra görünür (tek grup)
+    not ok 7 - (7) aynı dosyada iki yazım: ilk satırın açtığı 'Ilıca Yolu' ikinci ve üçüncü satıra görünür (tek grup)
+      ---
+      duration_ms: 17.388217
+      type: 'test'
+      location: '/dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:142:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tek grup beklenirdi, açılan: 3
+        
+        19 !== 17
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 17
+      actual: 19
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:146:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (8) kilitli dönem: geri alınan satırın açtığı grup sonraki (başka yazımlı) satıra aday olmaz; kartın grubu var
+    ok 8 - (8) kilitli dönem: geri alınan satırın açtığı grup sonraki (başka yazımlı) satıra aday olmaz; kartın grubu var
+      ---
+      duration_ms: 315.778347
+      type: 'test'
+      ...
+    # Subtest: (9) Tablodan Aktar: sayfa adı 'IŞIL KAFE' var olan 'Işıl Kafe' grubunu bulur — ön izleme 'eşleşen cari', aktarım yeni grup / cari açmaz; Geri Al var olan grubu SİLMEZ
+    not ok 9 - (9) Tablodan Aktar: sayfa adı 'IŞIL KAFE' var olan 'Işıl Kafe' grubunu bulur — ön izleme 'eşleşen cari', aktarım yeni grup / cari açmaz; Geri Al var olan grubu SİLMEZ
+      ---
+      duration_ms: 45.275892
+      type: 'test'
+      location: '/dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:169:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön izleme: {"account":"new","accountName":"","groupName":"IŞIL KAFE"}
+        
+        'new' !== 'match'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'match'
+      actual: 'new'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:178:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (10) cari Excel'in grup kolonu: 'IŞIL KAFE' yazımı var olan 'Işıl Kafe' grubuna (yeni grup açılmaz)
+    not ok 10 - (10) cari Excel'in grup kolonu: 'IŞIL KAFE' yazımı var olan 'Işıl Kafe' grubuna (yeni grup açılmaz)
+      ---
+      duration_ms: 21.073345
+      type: 'test'
+      location: '/dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:199:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni grup açıldı: 1
+        
+        22 !== 21
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 21
+      actual: 22
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:204:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (11) elle grup formu ve yeniden adlandırma DEĞİŞMEDİ: 'IŞIK SERVİSİ' elle yeni grup açar; 'ılgaz hattı' adına yeniden adlandırma çakışma saymaz; NOCASE çakışması bugünkü gibi reddedilir
+    ok 11 - (11) elle grup formu ve yeniden adlandırma DEĞİŞMEDİ: 'IŞIK SERVİSİ' elle yeni grup açar; 'ılgaz hattı' adına yeniden adlandırma çakışma saymaz; NOCASE çakışması bugünkü gibi reddedilir
+      ---
+      duration_ms: 33.746936
+      type: 'test'
+      ...
+    1..11
+not ok 1 - S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası)
+  ---
+  duration_ms: 1181.135707
+  type: 'suite'
+  location: '/dev/shm/s231-a5ab/eski/test/s231-grup-adi-turkce-250.test.mjs:21:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 11
+# suites 1
+# pass 3
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1581.022681

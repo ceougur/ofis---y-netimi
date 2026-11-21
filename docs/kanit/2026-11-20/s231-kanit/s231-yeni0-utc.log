@@ -1,0 +1,87 @@
+TAP version 13
+# (node:12024) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası)
+    # Subtest: (1) S231 örneği: önce 'Elif Su' / 'Işık Servisi', sonra 'ELİF SU' / 'IŞIK SERVİSİ' (ikisi de telefonsuz) → AYNI grup, AYNI cari, TEK borç
+    ok 1 - (1) S231 örneği: önce 'Elif Su' / 'Işık Servisi', sonra 'ELİF SU' / 'IŞIK SERVİSİ' (ikisi de telefonsuz) → AYNI grup, AYNI cari, TEK borç
+      ---
+      duration_ms: 140.65295
+      type: 'test'
+      ...
+    # Subtest: (2) grup adı varyantları (ı / I, İ / i, küçük harf, boşluk, karışık) var olan 'Işık Servisi' grubunu bulur; 'ŞUBE A' ↔ 'Şube A' bugün de aynı (denetim)
+    ok 2 - (2) grup adı varyantları (ı / I, İ / i, küçük harf, boşluk, karışık) var olan 'Işık Servisi' grubunu bulur; 'ŞUBE A' ↔ 'Şube A' bugün de aynı (denetim)
+      ---
+      duration_ms: 47.264484
+      type: 'test'
+      ...
+    # Subtest: (3) telefonsuz kişi + aynı grup: büyük harfli grup yazımıyla var olan carisine bağlanır; aynı adlı iki kişi (iki ayrı grupta) kendi grubundaki carisine
+    ok 3 - (3) telefonsuz kişi + aynı grup: büyük harfli grup yazımıyla var olan carisine bağlanır; aynı adlı iki kişi (iki ayrı grupta) kendi grubundaki carisine
+      ---
+      duration_ms: 111.339099
+      type: 'test'
+      ...
+    # Subtest: (4) telefonlu kişi: grup eşleşmesi kişi eşleşmesini değiştirmez (telefonla var olan cariye); kart var olan gruba
+    ok 4 - (4) telefonlu kişi: grup eşleşmesi kişi eşleşmesini değiştirmez (telefonla var olan cariye); kart var olan gruba
+      ---
+      duration_ms: 28.053348
+      type: 'test'
+      ...
+    # Subtest: (5) alt grup: 'YILDIZ SİTESİ' / 'İÇ BLOK' var olan 'Yıldız Sitesi' › 'İç Blok'u bulur; aynı adlı alt grup BAŞKA ana grupta ayrı kalır
+    ok 5 - (5) alt grup: 'YILDIZ SİTESİ' / 'İÇ BLOK' var olan 'Yıldız Sitesi' › 'İç Blok'u bulur; aynı adlı alt grup BAŞKA ana grupta ayrı kalır
+      ---
+      duration_ms: 51.592529
+      type: 'test'
+      ...
+    # Subtest: (6) S228 sırası — var olan ÇİFT grup ('Çınar Durağı' + 'ÇINAR DURAĞI', elle açılmış): birebir yazım bugünkü grubuna; iki adaylı yazım bugünkü gibi yeni grup; elle grup formu katlamasız (DEĞİŞMEDİ)
+    ok 6 - (6) S228 sırası — var olan ÇİFT grup ('Çınar Durağı' + 'ÇINAR DURAĞI', elle açılmış): birebir yazım bugünkü grubuna; iki adaylı yazım bugünkü gibi yeni grup; elle grup formu katlamasız (DEĞİŞMEDİ)
+      ---
+      duration_ms: 22.794475
+      type: 'test'
+      ...
+    # Subtest: (7) aynı dosyada iki yazım: ilk satırın açtığı 'Ilıca Yolu' ikinci ve üçüncü satıra görünür (tek grup)
+    ok 7 - (7) aynı dosyada iki yazım: ilk satırın açtığı 'Ilıca Yolu' ikinci ve üçüncü satıra görünür (tek grup)
+      ---
+      duration_ms: 16.596149
+      type: 'test'
+      ...
+# (node:12024) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: (8) kilitli dönem: geri alınan satırın açtığı grup sonraki (başka yazımlı) satıra aday olmaz; kartın grubu var
+    ok 8 - (8) kilitli dönem: geri alınan satırın açtığı grup sonraki (başka yazımlı) satıra aday olmaz; kartın grubu var
+      ---
+      duration_ms: 263.585393
+      type: 'test'
+      ...
+    # Subtest: (9) Tablodan Aktar: sayfa adı 'IŞIL KAFE' var olan 'Işıl Kafe' grubunu bulur — ön izleme 'eşleşen cari', aktarım yeni grup / cari açmaz; Geri Al var olan grubu SİLMEZ
+    ok 9 - (9) Tablodan Aktar: sayfa adı 'IŞIL KAFE' var olan 'Işıl Kafe' grubunu bulur — ön izleme 'eşleşen cari', aktarım yeni grup / cari açmaz; Geri Al var olan grubu SİLMEZ
+      ---
+      duration_ms: 138.857678
+      type: 'test'
+      ...
+    # Subtest: (10) cari Excel'in grup kolonu: 'IŞIL KAFE' yazımı var olan 'Işıl Kafe' grubuna (yeni grup açılmaz)
+    ok 10 - (10) cari Excel'in grup kolonu: 'IŞIL KAFE' yazımı var olan 'Işıl Kafe' grubuna (yeni grup açılmaz)
+      ---
+      duration_ms: 22.468679
+      type: 'test'
+      ...
+    # Subtest: (11) elle grup formu ve yeniden adlandırma DEĞİŞMEDİ: 'IŞIK SERVİSİ' elle yeni grup açar; 'ılgaz hattı' adına yeniden adlandırma çakışma saymaz; NOCASE çakışması bugünkü gibi reddedilir
+    ok 11 - (11) elle grup formu ve yeniden adlandırma DEĞİŞMEDİ: 'IŞIK SERVİSİ' elle yeni grup açar; 'ılgaz hattı' adına yeniden adlandırma çakışma saymaz; NOCASE çakışması bugünkü gibi reddedilir
+      ---
+      duration_ms: 36.836625
+      type: 'test'
+      ...
+    1..11
+ok 1 - S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası)
+  ---
+  duration_ms: 1338.642195
+  type: 'suite'
+  ...
+1..1
+# tests 11
+# suites 1
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1723.452456
