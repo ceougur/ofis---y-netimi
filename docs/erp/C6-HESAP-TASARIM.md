@@ -105,7 +105,7 @@ Kaynak: kitap §4, §7.2, §7.3, §7.4, §8; KG-11 A, KG-12 A, KG-14 A; EK-1 M4;
   dengesiz madde sayısı) · Aktif ile Pasif Eşit Değil (kitap §4) · Kural Değişikliği Farkı (Ç3) · Eksi Stok (KG-9) · Eksi Birim Maliyet (S209 = B) · İmkânsız Ters Bakiye (eksi kasa dahil, §7.3) ·
   Borçlu Ödenecek Vergi (KG-14) · Kapanmamış Önceki Yıl (KG-12; yıllar) · Önceki Yıl KDV Mahsubu (toplayıcıda; besleyen yok — §10 B-e) · Sınıflandırılmamış Hesap · Bilgi Amaçlı (Defter Türü).
   Gelir Tablosu'nun nedenleri: satışların maliyeti tahmini; eksi stok (t = b ve a − 1); eksi birim maliyet; dengesiz madde (dönemin maddelerinde Σ B ≠ Σ A); Kural Değişikliği Farkı (kapsam
-  dönemin yılına değiyorsa: dönemin KİLİTLİ kısmında donmuş ↔ güncel türetmenin 6 / 7 ve 153 yıl × hesap toplamı — `periodRuleDiff`; bütün kilitli geçmişi madde madde karşılaştıran
+  dönemin yılına değiyorsa: dönemin KİLİTLİ kısmında donmuş ↔ güncel türetmenin 6 / 7 ve 153 yıl × hesap × ALT HESAP toplamı — `periodRuleDiff`; tur 4 (§11.1) DÜZELTMESİ: eski metin "tabloyu değiştiren yalnız hesap toplamıdır" YANLIŞTI — Gelir Tablosu .90 alt satırlarını ve dipnot 3 / 6 tutarlarını gösterir (kitap §7.1, §7.5), Bilanço alt hesap satırlarını ve cari brütleştirmesini; bütün kilitli geçmişi madde madde karşılaştıran
   `snapshots.ruleDiff` 100 bin satırda ~2,7 sn sürdüğü için kullanılmadı, o iş Mutabakat Testi'nin "ledger:rule-diff" denetimidir); sınıflandırılmamış hesap; Bilgi Amaçlı. Bilanço'nunkiler §6'da.
 - B-a (BAŞ MİMAR KARARI 19.11 22:45, tur 2): kapanmış yılın (N-01 / 621 yazılmış) 31.12'yi İÇERMEYEN parçasında satışların maliyeti tahminidir, T(b) − T(a − 1); N-01'in 621'i yalnız 31.12'yi
   içeren parçada, o parçada a > 1 Ocak ise T(a − 1) tahmini satırla düşülür ("Önceki Dönemlere Dağıtılan Maliyet (Tahmini)", eksi) → aylar toplamı = çeyrek = yıl = 621; o parça da tahmin taşıdığı
@@ -201,3 +201,84 @@ Kaynak: kitap §4, §7.2, §7.3, §7.4, §8; KG-11 A, KG-12 A, KG-14 A; EK-1 M4;
   tekrarı 4–11 ms; "az aşan" değil — kullanıcı ilk açılışta ~5–7 sn bekler); (b) donmuş dönemin (hesap, alt hesap, cari) ve yıl × 6 / 7 toplamlarını SQL ile okuyan bir `ledger-snapshots` işlevi (trial()
   deseni) — kilitli kipte ~−1,8 sn; (c) mutabakat sonucunu Mutabakat Testi'nin son tam taramasından okumak (integrity.mjs'e okuyucu; sonuç en çok 15 dk eski) — ~−1,2 sn; (d) B-c (b) ile canlı türetmeyi
   açık döneme kısmak. Öneri: (b) + (c) Ç6-EKRAN'dan önce dosya izniyle (kilitli ~3,6 sn, kilitsiz ~3,5 sn bekleniyor — ÖLÇÜLMEDİ), kalan aşım (d) ile; o zamana kadar (a). → BAŞ MİMAR KARARI 20.11 11:37: (b) tur 3'te (tasarım §8 'B-g (b) TASARIMI'); (c) REDDEDİLDİ; tur 3'ten sonra süre hâlâ bütçeyi aşıyorsa kullanıcıya sayıyla sorulur.
+
+## 11. Düzeltme turu (tur 4, 21.11.2026; Ç6-HESAP dar kontrolünün ORTA-1 / 2 / 3'ü — BAŞ MİMAR KARARI 21.11 09:49 ve 10:19; S236 = A) — koddan ÖNCE yazıldı
+Kaynak: dar kontrol raporu `docs/devir/2.5.0-DEVAM/dk-c6h-rapor.md` (inceleme ucu 01d82b6a), kararlar (2) ORTA-1 / ORTA-2 metin seçimi / S236 = A, (a) dosya sınırı, (b) süreklilik, (c) ORTA-2 hızı.
+
+### 11.1 ORTA-1 — kural farkı ALT HESAP (Bilanço'da cari) düzeyinde
+- Anahtar: Gelir Tablosu `yıl | hesap | alt hesap`; Bilanço `yıl | hesap | alt hesap | cari` (snapshots.ruleDiff'in `balances` anahtarıyla AYNI — Bilanço alt hesap satırlarını (102.NN …) ve cari
+  brütleştirmesini (120 / 320 / 336 …) gösterir; cari yalnız Bilanço'da — Gelir Tablosu cari göstermez, cari ayrımı tek başına tabloyu değiştirmez).
+- `frozenSums`'ün boyutu YETİYOR (GROUP BY … account, sub, party zaten var; tur 3): yeni okuma işlevi YOK. `frozenPartOf`'un `part.rule` anahtarı `hesap|alt|cari` olur; `periodRuleDiff`
+  isteğe bağlı `party` (Bilanço true) ile anahtarı kurar; satır biçimi `{ year, account, sub, party, frozenMinor, liveMinor, differenceMinor }` (snapshots.ruleDiff ile aynı).
+- Ayrıntı metni: `YYYY · hesap (alt hesap) · cari adı: tutar` (alt hesap / cari yoksa kısmı yazılmaz). Örnek pos 2026: "2026 · 602: 1.000,00 TL" + "2026 · 602 (602.90): −1.000,00 TL" (tutar =
+  güncel − donmuş, borç artı). Kilitli kısımda tablo ve dipnot 3 / 6 DONMUŞ tutarı göstermeye devam eder (Ç3: donmuş defter değişmez); fark yalnız Kesin Değil nedeninde görünür.
+- Gelir Tablosu'nun içinde (Bilanço'nun yıl çağrıları dahil) satırlar `yıl|hesap|alt` ile toplanır (cari boyutu düşer; aynı satır iki kez yazılmaz).
+
+### 11.2 ORTA-2 — Kural Farkı Düzeltme Fişi'nden sonra Kesin Değil
+- KALAN'ın tanımı Yönetim'in planıyla AYNI: `ruleDiffCorrectionPlan` (lib/ledger-opening.mjs — YALNIZ OKUMA, içe aktarılır; ikinci formül yok) — yıl `ruleDiffCorrectionYear({ lock, cover })`,
+  alt defter hesapları `ledger.expected([], [], { every: true })`'nin anahtarları (routes/ledger.mjs subledgerAccounts'ın AYNI tanımı), yazılmış fişler kendi yıllarıyla (S174 = A) — ama
+  fişler t gününe kadar: t'deki tablo t'ye kadar yazılmış fişleri içerir (t ≥ bütün fişlerin günü → Yönetim'in kalanı AYNEN). `postedRuleDiffCorrections`'ın sorgusu tarih süzgeciyle (`v.date ≤ t`,
+  ters kaydın günü ≤ t) Ç6 dosyasında; t = uzak gelecek iken çıktısı `postedRuleDiffCorrections`'la birebir (eşdeğerlik testi).
+- HIZ (karar (c); ders 47): `snapshots.ruleDiff` (madde madde, 100 bin satırda ~2,7 sn) mali tablolara GİRMEZ. Hızlı yol: planın girdisi, kapsamın TAMAMI [başlangıç, kapsam] için
+  `periodRuleDiff` (bütün hesaplar, cari dahil) satırlarından — her (yıl, hesap, alt, cari) anahtarı tek "madde" (sahte; `deltas` = o anahtar). EŞDEĞERLİK KANITI: planın
+  `expected` / `result` toplamları (yıl, hesap, alt) bazında delta TOPLAMIDIR, madde ayrımına bakmaz; madde ayrımı YALNIZ alt defter dışlamasında kullanılır ve dışlama ancak bir alt defter
+  anahtarının (hesap|alt|cari) BİRİKİMLİ farkı ≠ 0 iken başlar. Birikimli fark = Σ yıllar (güncel − donmuş) = periodRuleDiff'in anahtar toplamı (snapshots.ruleDiff'in balances'ı ile
+  aynı küme: kapsam içi, fiş maddeleri hariç). → Alt defter anahtarlarının hepsi 0 ise iki yolda da dışlama BOŞ, plan BİREBİR. Değilse (alt defter farkı — fişle düzeltilemez; Yönetim
+  "Kilidi Aç → Yeniden Kilitle" der) KALAN ≠ 0 KESİNDİR (o anahtarın farkı dışlananlarda kalır); ayrıntıyı madde düzeyinde bölmek yavaş yolu ister → neden BUGÜNKÜ gibi ham farkla yazılır
+  (geri alınabilir okuma; davranış değişmez).
+- KARAR (BAŞ MİMAR 21.11 09:49 metin seçimi): t'ye kadar yazılmış (etkin) Kural Farkı Düzeltme Fişi varsa ve KALAN = 0 (plan satırı yok, alt defter farkı yok, `ownYearOver` yok — Mutabakat
+  Testi'nin "Düzeltildi" ölçütüyle aynı) → "Kural Değişikliği Farkı" nedeni DÜŞER, yerine BİLGİ satırı `bilgi: [{ kod: "kural-farki-duzeltildi", baslik: "Kural Farkı Düzeltildi (Fiş 2026-000001)",
+  aciklama }]` (Kesin Değil sayılmaz; alan yalnız doluyken yanıtta — fişsiz şirketin yanıtı birebir eski). KALAN ≠ 0 → neden KALAN tutarla: ayrıntı planın satırları (`hesap (alt): borç − alacak`;
+  önceki yılların 6 / 7 farkı planın eşlemesiyle 671 / 681) + `ownYearOver` (yıl: fazla); açıklama "… farkın Kural Farkı Düzeltme Fişi'yle kapanmamış kısmı". Fiş YOKSA (ya da t fişten önce)
+  davranış AYNEN (ham fark, tur 3).
+- Fiş tarihinden ÖNCEKİ t'lerin tabloları AYNEN (t'ye kadar fiş yok → ham fark). Gelir Tablosu: fiş [a, b] İÇİNDEYSE (a ≤ fiş günü ≤ b; aynı mali yıl) aynı KALAN (yalnız 6 / 7 ve 153 satırları — tablonun
+  okuduğu hesaplar) → 0 ise neden düşer + bilgi satırı; dönemin DIŞINDAYSA (ör. kilitli yıl 2025 ya da [01.01, 30.06]) neden AYNEN: o dönemin tablosu donmuş tutarı gösterir, düzeltme fişin
+  dönemine yazılmıştır (fiş önceki yılın farkını 671 / 681 ile fişin yılına taşır — kitap EK-1 M7). Gelir Tablosu'nun KALAN'ı için kapsamın tamamının toplamı okunur (yalnız fiş dönemin
+  içindeyse; seyrek).
+- Değişmezler: Aktif = Pasif her t'de (tutar değişmez — yalnız neden / bilgi); fişin 6 / 7 satırları dönem kârını fişin 6 / 7 neti kadar değiştirir (programın yolunda 0).
+- KALAN ≠ 0 kurgusu (test): v2.4.9 kasa fikstürü (kilit 30.06.2026) → fiş (01.07.2026; 500 / 519, 671 / 681, 770 / 770.90) → kilit 31.12.2025'e geri çekilir (2026'nın donmuş dönemi çözülür, 770 farkı
+  kaybolur; fişin 770 / 770.90 satırı artık FAZLA) → Bilanço (t = 20.10.2026) Kesin Değil "Kural Değişikliği Farkı" KALAN ile (Yönetim ön izlemesinin satırlarıyla AYNI).
+
+### 11.3 S236 = A — kilitli dönemin değerlemesi kilit anında DONDURULUR
+- NE saklanır (seçim: KARTIN DEĞERLEMEYE GİREN GİRDİLERİ, hesaplanmış değer DEĞİL): ürün başına `kind` (Ürün / Hizmet), `unit_price` (kart alış fiyatı — KG-10 A dayanağı), `deleted_at` (silinme ve günü;
+  gün okumada `localDayOf` ile — bugünkü kodla aynı). Gerekçe: değerleme TEK işlev (§3) — donmuş girdiyle aynı formül her t ≤ kapsam için (yıl ortası tahmini, yıl sonu, D3 / D4 `yearEnd`) aynı sayıyı
+  verir; hesaplanmış değer saklamak her t için ayrı kayıt ya da ikinci formül isterdi. Hareketler saklanmaz: kilitli dönemin stok hareketleri kilitle yazılamaz (Ç3 §4). Kod / ad / birim saklanmaz
+  (sayı değil; görünen ad güncel).
+- NEREDE: yeni tablo `ledger_snapshot_items` (göç 54, YALNIZ EKLEYİCİ; WITHOUT ROWID; anahtar (run, item_id)) — Ç3'ün dondurma koşusunun AÇILDIĞI işlemde (`insertRun`, kind freeze: kilit
+  kancası, carryLock, continueAfter, açılış onarımının planı, freezeSync — hepsi bu işlevden geçer) TEK `INSERT … SELECT` (stock_items'ın bütün satırları; hizmet dahil — sonradan Ürün'e
+  çevrilen kalem kilitli yıla girmesin). Kilit ANI = koşunun açıldığı an (iş parçacığının bitişi değil: arada yapılan kart düzeltmesi kilitli yıla girmez).
+- DEĞİŞMEZLİK (Ç3 deseni; göç 54 tetikleyicileri `ledger_snapshot_items_*`): UPDATE yok; INSERT yalnız EN SON bekleyen freeze koşusuna ve aynı (run, item) ikinci kez yok (INSERT OR REPLACE);
+  DELETE yok, koşusu tamamlanmış ve kapsamın içindeyse (`from_date < kapsam`). Şirket Verisini Sıfırla `clearSnapshots` içinde (tetikleyiciler kaldırılır, tablo silinir, kurulur — app.mjs'e
+  dokunmadan; sayı `ledger_snapshot_items`).
+- YAŞAM DÖNGÜSÜ = Ç3'ün donmuş defteri: okuma t ≤ kapsam ise t'yi kapsayan (from_date < t ≤ through) EN SON tamamlanmış freeze koşusunun kartı; t > kapsam ya da koşuda o ürün yoksa (koşudan sonra
+  açılmış kart) güncel kart. Kilit ilerler → yeni koşu o anın kartıyla (yalnız yeni dönem); kilit geri çekilir / kaldırılır → kapsam iner, çözülen dönem güncel kartla; yeniden kilitlenince
+  yeni koşu yeni dondurma. Bırakılmış (abandoned) koşunun satırları okunmaz (yerinde kalır; küçük).
+- GÖÇLE GELEN KİLİTLİ VERİ: göç 54, kartı OLMAYAN her bırakılmamış freeze koşusuna (v2.4.9'dan göç 47'nin 'migration' koşusu dahil) GÖÇ ANINDAKİ kartı yazar (tetikleyicilerden önce, aynı göçte)
+  — eski sürüm kilit anının kartını saklamadı; elimizdeki en eski kart göç anınınkidir (BİLİNEN SINIR: 2.4.9'da kilitten sonra yapılmış kart düzeltmesi geri alınamaz). Açılış onarımının
+  yarım koşusu / planı `insertRun`'dan geçer → kendi kartını alır (onarımın yeniden dondurduğu dönem onarım anının kartını alır — BİLİNEN SINIR, yalnız eski sürümün bozduğu dosyada).
+- OKUMA: `loadValuationInput` bütün kartları (hizmet dahil) + donmuş kartları (`frozenValuationCards(store)` — ledger-snapshots'ta yeni okuyucu; tek sorgu, koşu × ürün) okur; `createStockValuation`
+  `cardAt(ürün, gün)` ile: dahil mi (tür ≠ Hizmet), alış fiyatı, silinme günü. SÜREKLİLİK (karar (b); plan §7 "dönem başı stok + o yılın alışları"): açık yılın dönem başı stoku = kilitli yılın
+  DONMUŞ girdiyle hesaplanan dönem sonu (yıl sonu `endOf(Y)` 31.12.Y ≤ kapsam ise donmuş kartla) → kilitten sonraki kart değişikliği açık yılda yalnız karta dayanan değerlemeyi (KG-10, tür,
+  silinme) etkiler. Yıl ortasında kilit (kapsam 30.06.2026): t ≤ 30.06 donmuş kart, t > 30.06 güncel kart; 2026 yıl sonu güncel kartla (yıl kilitli değil). Türü sonradan Hizmet'e çevrilen
+  kalem: açık yılda değerlemeye girmez, dönem başı değeri (donmuş) o yılın satışların maliyetine düşer (silinmiş ürün S207 = A ile aynı yön); dönem başı toplamına (DBS) sayılır.
+- Kart ile hareket ayrı kalmaz: donmuş kart yalnız girdinin karta bağlı alanlarıdır; ürünün hareketleri her zaman `stock_moves`'tan (hizmete çevrilen ürünün kilitli yıldaki hareketleri de okunur).
+- DEĞİŞMEZLER: Aktif = Pasif her t'de (153 = DSS_t ile hesaplanmış dönem sonucu aynı değerlemeden); mizan ↔ tablo (defter değişmez); kilitli dönemin tabloları kilitten sonra hiçbir kart
+  değişikliğiyle (fiyat, tür, silme, silmeyi geri alma) değişmez; donmuş kart yokken (kilitsiz şirket, kilit öncesi sürüm) sonuç birebir eski.
+- Sıfırlama / geri yükleme / şirket kopyalama / iki şirket: tablo şirketin dosyasında (VACUUM INTO taşır); sıfırlama clearSnapshots ile siler; ≤ 53 yedeğin geri yüklenmesi göç 54'ü yeniden
+  koşar (o yedeğin kartıyla); iki şirket ayrı dosya.
+- Mutabakat Testi'nin donmuş defter denetimleri (`ledger:snapshot` toplamları) değişmez (ayrı tablo; donmuş satır toplamlarına girmez).
+
+### 11.4 Nasıl bozulur? (§9'a ek; testler buradan)
+10. ORTA-1: kilitli kısmında yalnız alt hesabı değişen satır (602 → 602.90, 600 / 610 → .90, 649 / 770 → .90) — Gelir Tablosu ve Bilanço; kilitsiz kopyada neden YOK; tablo tutarları değişmez;
+    Bilanço'da cari boyutu (aynı hesap, farklı cari); Gelir Tablosu'nda cari ayrımı satırı çoğaltmaz.
+11. ORTA-2: fişten önce / sonra (t < fiş, t = fiş, t > fiş); fiş dönemin içinde / dışında (Gelir Tablosu); KALAN ≠ 0 (kilit geri çekildi → fiş fazla); fiş ters kaydedildi (KALAN geri gelir);
+    alt defter farkı (hızlı yol dışlamayı bilemez → ham fark); hızlı yol ↔ Yönetim planı EŞDEĞERLİK (dört sınıf, fişten önce ve sonra); yanlış yılla düşme; fişi düşmeme.
+12. S236: kilitten sonra kart fiyatı / tür / silme / silmeyi geri alma → kilitli yılın Gelir Tablosu, Bilanço 31.12, bugünkü Bilanço "Geçmiş Yıllar" DEĞİŞMEZ; açık yıl güncel kartla, dönem başı
+    donmuş dönem sonu; kilit geri çekilince çözülen yıl güncel kartla; yeniden kilitlenince yeni dondurma o anın kartıyla; aynı gün kilit + kart değişikliği (önce / sonra); kapsam sınırında
+    gün (t = kapsam, t = kapsam + 1); v2.4.9'dan göçle gelen kilitli veri (göç 54 kartı yazar); göç yeniden koşunca (tablo var) yinelenmez; tetikleyiciler (UPDATE / DELETE / bırakılmış koşuya
+    INSERT reddedilir); sıfırlama tabloyu boşaltır; yedek → geri yükleme aynı sayılar; iki şirket karışmaz; Aktif = Pasif her t'de.
+
+### 11.5 KULLANICIYA SORULMALI / BAŞ MİMAR KARARI GEREKİYOR (bu turda çıkan)
+- (BAŞ MİMAR — dosya sınırı) Göç 54 var olan üç testin göç numarası beklentisini (53) değiştirir (`test/donmus-defter-250.test.mjs`, `test/donmus-defter-yasam-250.test.mjs`,
+  `test/kural-farki-kapi-disi-250.test.mjs`); dosya sınırı yeni test dosyası ve `test/c6h-*` diyor — ajan bu üç satırı "BEKLENTİ BİLEREK DEĞİŞTİ" desenine göre AYRI commit'te değiştirdi
+  (geri alınabilir); baş mimar onaylamazsa o commit düşer ve göç 54 yerine başka saklama gerekir.
