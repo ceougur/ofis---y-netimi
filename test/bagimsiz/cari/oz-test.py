@@ -472,6 +472,7 @@ def main():
                         taraf.update({k_: v_ for k_, v_ in m.tyk250(cari)["kuyruk"].items() if k_.startswith("kars:")})
                         # bakım 6 (S99 A): taksitli faturanın taksitleri kendi tarafının kuyruğunda da "<fatura>#<n>" adıyla
                         taraf.update({k_: v_ for k_, v_ in m.tyk250(cari)["kuyruk"].items() if k_.split("#")[0] in m.faturalar})
+                        taraf.update({k_: v_ for k_, v_ in m.tyk250(cari)["kuyruk"].items() if k_.startswith("artis:")})  # bakım 25 (§37 Y25-6): taksitli faturanın Düzenle artışı
                         for kad, v in N["kalan"].items():
                             say["tek"] += 1
                             denetle("%s@%d %s %s tek yönde net = kendi tarafı" % (ad, kesim, cari, kad), taraf.get(kad) == v, "kendi tarafı %s · net %s" % (taraf.get(kad), v))

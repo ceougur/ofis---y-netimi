@@ -4492,6 +4492,8 @@ class Model:
                 dis_ = min(A, D_)
                 ic_ = min(A - dis_, P_)
             if ic_ <= 0:
+                if D_ > 0:
+                    self._iz15[cari].add("s239")  # iz — G3 sınıflaması (sonucu değiştirmez): S239 'önce dış açık' (bakım 24'te SK-43 susması)
                 return None  # yalnız dış açık — bugünkü iade bağı (kart değişmez)
             if set(tk) != {asil_ad}:
                 if no in (t.get("s120") or []) or D_ > 0:

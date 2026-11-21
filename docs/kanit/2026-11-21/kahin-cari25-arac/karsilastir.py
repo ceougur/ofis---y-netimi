@@ -202,6 +202,8 @@ def cari_of(anahtar, sen):
         return fc.get(":".join(p[2:-1])) or fc.get(p[2])  # bakım 23: `fatura:<ad>:liste:gosterilen` (iki parçalı alan)
     if len(p) >= 4 and p[1] == "cari":
         return ":".join(p[2:-1])
+    if len(p) >= 5 and p[1] == "kart" and p[2] == "fatura":
+        return fc.get(p[3])  # bakım 25: taksitli faturanın kendi kartı (`kart:fatura:<F>:<alan>`)
     if len(p) >= 4 and p[1] == "kart":
         return kc.get(p[2])
     return None
@@ -222,7 +224,9 @@ def sinif15(anahtar, c, t, supheli):
     if "s241" in t:
         return "S241"  # bakım 25 (§37 Y25-5): Düzenle fazlası avans (eski kâhinde SK-42 (a) SUS)
     if "s242" in t:
-        return "S242"  # bakım 25 (§37 Y25-6): Düzenle artışı (eski kâhinde SK-42 (b) SUS)
+        return "S242"
+    if "s239" in t:
+        return "S239"  # bakım 25 (§37 Y25-3): S239 'önce dış açık' — eski kâhinde SK-43 susması  # bakım 25 (§37 Y25-6): Düzenle artışı (eski kâhinde SK-42 (b) SUS)
     if "s234" in t:
         return "S234"  # bakım 24 / 25 (S239 / S240 ile genişleyen alan) (§36 Y24-3 … Y24-7): iade / Düzenle ile kartı küçülen carinin denetimleri (eski kâhinde C13.4 (11) tanımsızdı)
     if "kapat" in t:
