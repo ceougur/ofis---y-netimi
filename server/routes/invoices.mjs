@@ -1116,10 +1116,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       period?.assertOpen(existing.issueDate, "Bu fatura");
       // v2.0.24: eski iadenin küçülttüğü kartlar önce geri büyür; yeni iade kaydedilirken yeniden hesaplanır.
       if (existing.kind === "sale_return" && existing.originalId) restoreCuts(user, { id: existing.id }, touched, `İade düzenlendi ${existing.number}`);
-      reverseEffects(user, existing, touched, { force, edit: true });
+      // 2.5.0 İzleyen küçük tur — S234-c (S234 = A + karar (4); tasarım §19.5): taksitsiz satış faturasının Düzenle'si onu içine almış Mevcut Borç kartlarını iade gibi küçültür — kart payları
+      // Düzenle'den ÖNCE okunur (kapama defteri), yeni etkilerden sonra fark kadar karar (4) ile küçülür. Küçülebilecek kart yoksa okunmaz (ders 47).
+      const coverPre = (existing.kind === "sale" || existing.kind === "smm") && !existing.planId && plans()?.hasShrinkableCover?.(existing.accountId) ? coverState(existing.id) : null;
+      // BULGU-2 (§19.6): faturanın KENDİ kartı açık, tahsilatsız ve yeni ödeme planı kayıtlıyla aynıysa kart kaldırılıp yeniden kurulmaz (writeIssued karar verir).
+      const keepPlan = ownPlanToKeep(existing);
+      reverseEffects(user, existing, touched, { force, edit: true, keepPlanId: keepPlan?.id || "" });
       const pre = existing.kind === "sale_return" && existing.originalId ? coverState(existing.originalId) : null;
       const payment = paymentInput(body, doc, user, { previous: previousLines });
-      const written = writeIssued(user, doc, payment, { id: existing.id, force, edit: existing, pre, keepEvents });
+      const written = writeIssued(user, doc, payment, { id: existing.id, force, edit: existing, pre, keepEvents, keepPlan });
+      if (coverPre && Object.keys(coverPre.coveredBy).length) shrinkCoversByEdit(user, coverPre, touched, `Fatura düzenlendi ${existing.number}`);
       // Son durum denetimi — stok: düzenleme bir ürünü eksiye düşürdüyse (ya da eksiyi büyüttüyse) sorulur.
       if (!force.stock) {
         for (const [itemId, was] of stockBefore) {
@@ -2341,6 +2347,30 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       store.run("UPDATE invoices SET payment_json = ? WHERE id = ?", JSON.stringify({ ...payment, ...(Object.keys(cuts).length ? { coverCuts: cuts, coverCutItems: cutItems } : {}), ...(ownItems ? { ownCutItems: ownItems } : {}) }), returnId);
     }
   }
+  // 2.5.0 İzleyen küçük tur — S234-c (§19.5): Düzenle'den önceki kart payları (pre) ile sonrası arasındaki azalış kadar her kart karar (4) ile küçülür (shrinkPlan — kalanla sınırlı, fazlası avans);
+  // carinin borcundan büyük kalan kartlar iadedeki gibi kırpılır (trimCovers). Kesim kaydı yazılmaz (iade belgesi yok; artırma kartı büyütmez — SK-42 (b) bugünkü davranış).
+  function shrinkCoversByEdit(user, pre, touched, note) {
+    const post = coverState(pre.row.id);
+    if (!post) return;
+    for (const planId of Object.keys(pre.coveredBy)) {
+      const delta = roundMoney((pre.coveredBy[planId] || 0) - (post.coveredBy[planId] || 0));
+      if (!(delta > 0.005)) continue;
+      if (plans().shrinkPlan(user, planId, delta, note) > 0) touched.plans.add(planId);
+    }
+    if (plans()?.trimCovers) for (const plan of plans().trimCovers(pre.row.accountId, user, note)) touched.plans.add(plan.id);
+  }
+  // BULGU-2 (§19.6): Düzenle'de korunacak kendi kart adayı — AÇIK, tahsilatsız, faturanın kayıtlı ödemesi taksitli. Son karar writeIssued'da (yeni ödeme planı kayıtlıyla aynı mı).
+  function ownPlanToKeep(existing) {
+    if (!existing.planId) return null;
+    const plan = store.get("SELECT id, total, status FROM plans WHERE id = ? AND deleted_at IS NULL AND invoice_id = ?", existing.planId, existing.id);
+    if (!plan || plan.status !== "active" || store.get("SELECT 1 AS found FROM plan_entries WHERE plan_id = ? LIMIT 1", plan.id)) return null;
+    const saved = parseJson(existing.paymentJson, {});
+    if (saved.mode !== "installments" || !saved.installments) return null;
+    return { id: plan.id, total: Number(plan.total) || 0, installments: saved.installments };
+  }
+  const samePlanShape = (keep, payment) =>
+    Boolean(keep) && payment.mode === "installments" && Math.abs((Number(payment.rest) || 0) - keep.total) < 0.005 && Number(payment.installments?.count) === Number(keep.installments.count) &&
+    String(payment.installments?.firstDue || "") === String(keep.installments.firstDue || "") && Number(payment.installments?.everyMonths || 1) === Number(keep.installments.everyMonths || 1);
   // İadenin küçülttüğü Mevcut Borç kartları geri büyür (iade iptali / düzenlemesi).
   // S238 = A (§19.3): kayıtlı kesilen taksitler (coverCutItems) aynı taksitlere geri yazılır; kaydı olmayan eski iade son taksite (bugünkü).
   function restoreCuts(user, returnRow, touched, note) {
@@ -2361,7 +2391,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
   // MM1: yazılan referans 16 karakter ama harf/rakam dışı (ör. "/") ise ayrıca söylenir.
   const returnRefShape = doc => (doc.returnRef && doc.returnRef.length === 16 && !RETURN_REF.test(doc.returnRef) ? ["İade Edilen Belge No (e-Belge Referansı) yalnız harf (A–Z) ve rakam içermeli."] : []);
-  function writeIssued(user, doc, payment, { id = null, force = {}, defer = false, edit = null, pre = undefined, keepEvents = null } = {}) {
+  function writeIssued(user, doc, payment, { id = null, force = {}, defer = false, edit = null, pre = undefined, keepEvents = null, keepPlan = null } = {}) {
     const s = doc.settings;
     const meta = doc.meta;
     // "Kes, Sonra Gönder" (e-Belge): bütün etkiler şimdi işlenir; resmî numara entegratöre gönderilirken verilir.
@@ -2554,7 +2584,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       }
       // Kalan: taksit kartı (satış) ya da vadeli açık hesap.
       let planId = "";
-      if (payment.mode === "installments") {
+      // BULGU-2 (§19.6): Düzenle'de kart kayıtlıyla aynıysa AYNEN kalır (kimlik, kart no, taksitler); değilse korunmuş eski kart şimdi kaldırılır (bugünkü yol).
+      if (keepPlan && edit && doc.date === edit.issueDate && doc.account.id === edit.accountId && samePlanShape(keepPlan, payment)) {
+        planId = keepPlan.id;
+        store.run("UPDATE invoices SET plan_id = ? WHERE id = ?", planId, invoiceId);
+      } else if (keepPlan) {
+        for (const removed of plans().removeForInvoice(user, invoiceId, { paid: "reject" })) touched.plans.add(removed);
+      }
+      if (payment.mode === "installments" && !planId) {
         planId = plans().createForAccount(user, doc.account, { total: payment.rest, count: payment.installments.count, firstDue: payment.installments.firstDue, everyMonths: payment.installments.everyMonths, note: what, coversBalance: true, registeredOn: doc.date, invoiceId });
         store.run("UPDATE invoices SET plan_id = ? WHERE id = ?", planId, invoiceId);
         touched.plans.add(planId);
@@ -2666,9 +2703,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Taksit kartı, çek/senet (ve ciro), Kasa, stok hareketleri ve cari kaydı birebir geri alınır. Düzenlemede (edit) ara
   // durum denetlenmez (Kasa/stok eksi): yeni etkiler yazıldıktan sonra son durum denetlenir (editInvoice).
   // paidCard (2.5.0 Ç7b tur 3 — S15 = A): "close" yalnız İptal Et'te — tahsilatlı kendi kart kapanır, tahsilatları avans; Düzenle ve Sil'de "reject" (bugünkü 409).
-  function reverseEffects(user, invoice, touched, { force = {}, edit = false, paidCard = "reject" } = {}) {
+  // keepPlanId (2.5.0 İzleyen küçük tur — BULGU-2, §19.6): Düzenle'de korunabilecek kendi kart burada kaldırılmaz; writeIssued kayıtlıyla aynıysa tutar, değilse kaldırır.
+  function reverseEffects(user, invoice, touched, { force = {}, edit = false, paidCard = "reject", keepPlanId = "" } = {}) {
     touched.accounts.add(invoice.accountId);
-    for (const planId of plans()?.removeForInvoice ? plans().removeForInvoice(user, invoice.id, { paid: edit ? "reject" : paidCard }) : []) touched.plans.add(planId);
+    if (!keepPlanId) for (const planId of plans()?.removeForInvoice ? plans().removeForInvoice(user, invoice.id, { paid: edit ? "reject" : paidCard }) : []) touched.plans.add(planId);
     if (cheques()?.invoiceCheques) {
       const voided = cheques().invoiceCheques.voidFor(user, invoice.id);
       touched.cheques.accountIds.push(...voided.accountIds);

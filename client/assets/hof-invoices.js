@@ -627,7 +627,8 @@
     }),
     cheques: (payment?.cheques || []).map(item => ({ instrument: item.instrument || "cheque", amount: amountText(item.amount), dueDate: item.dueDate || "", serialNo: item.serialNo || "", bank: item.bank || "", drawer: item.drawer || "", bankAccountId: item.bankAccountId || "" })),
     endorse: [...(payment?.endorse || [])],
-    rest: payment?.rest === "installments" ? "installments" : "open",
+    // 2.5.0 İzleyen küçük tur — BULGU-2 (tasarım §19.6): kaydedilmiş belgede kalan tutardır (rest), ödeme biçimi mode'dadır ("installments") — Düzenle formu taksitli faturayı 'Taksitli' açar.
+    rest: payment?.rest === "installments" || payment?.mode === "installments" ? "installments" : "open",
     dueDate: payment?.dueDate || "",
     installments: { count: String(payment?.installments?.count || 3), firstDue: payment?.installments?.firstDue || "", everyMonths: String(payment?.installments?.everyMonths || 1) },
   });
