@@ -1589,7 +1589,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       if (report.skipped.length < 500) report.skipped.push({ row: headerAt + index + 2, reason });
       report.skippedTotal = skippedTotal;
     };
-    const ensure = (name, parentId = null) => (name && plans()?.resolveGroups ? plans().resolveGroups(parentId ? { groupId: parentId, subgroupName: name } : { groupName: name }, user)[parentId ? "subgroupId" : "groupId"] : null);
+    // S231 = A: yükleme başına grup bulucusu (routes/plans.mjs groupFinder) — grup / alt grup NOCASE bulunamazsa Türkçe harf katlamalı tek grup.
+    const folded = plans()?.groupFinder ? plans().groupFinder() : null;
+    const ensure = (name, parentId = null) => (name && plans()?.resolveGroups ? plans().resolveGroups(parentId ? { groupId: parentId, subgroupName: name } : { groupName: name }, user, folded)[parentId ? "subgroupId" : "groupId"] : null);
     const before = store.get("SELECT COUNT(*) AS n FROM plan_groups").n;
     const replayed = store.tx(() => {
       const prior = imports.replay(ticket);

@@ -216,7 +216,9 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
       freeHits.set(record.key, { hits, candidates });
       for (const plan of hits) claims.set(plan.id, (claims.get(plan.id) || 0) + 1);
     }
-    const groupExisting = name => (name ? store.get("SELECT id FROM plan_groups WHERE name = ? COLLATE NOCASE AND parent_id IS NULL", name)?.id || "" : "");
+    // S231 = A: ön izleme aktarımın grup bulmasıyla aynı sıra — önce NOCASE, bulamazsa Türkçe harf katlamalı tek grup (routes/plans.mjs groupFinder; okuma).
+    const groups = plans()?.groupFinder ? plans().groupFinder() : null;
+    const groupExisting = name => (name ? store.get("SELECT id FROM plan_groups WHERE name = ? COLLATE NOCASE AND parent_id IS NULL", name)?.id || groups?.find(name) || "" : "");
     // S223 = A: ön izlemenin ad haritası (aktarımdaki createFromPlan ile aynı kural: önce NOCASE, bulamazsa Türkçe katlamalı aynı ad).
     const people = accounts()?.personIndex ? accounts().personIndex() : null;
 
@@ -429,10 +431,14 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
         refs.add(String(autoRef));
         return String(autoRef);
       };
+      // S231 = A: NOCASE bulamazsa Türkçe harf katlamalı tek grup (routes/plans.mjs groupFinder); Geri Al listesine YALNIZ gerçekten açılan grup girer
+      // (katlamayla bulunan var olan grup Geri Al'da silinmez).
+      const folded = plansService.groupFinder ? plansService.groupFinder({ created: id => undo.groups.push(id) }) : null;
       const groupId = (name, parentId = null) => {
         if (!name) return null;
         const found = store.get("SELECT id FROM plan_groups WHERE name = ? COLLATE NOCASE AND COALESCE(parent_id, '') = ?", name, parentId || "");
         if (found) return found.id;
+        if (folded) return plansService.ensureGroup(user, name, parentId, folded);
         const id = plansService.ensureGroup(user, name, parentId);
         if (id) undo.groups.push(id);
         return id;

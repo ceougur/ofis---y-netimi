@@ -91,27 +91,71 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return groups;
   };
   // Aynı adlı grup ikinci kez açılmaz (Excel'den yüklemede de kullanılır); ad boşsa null döner.
-  function ensureGroup(user, name, parentId = null) {
+  // folded (isteğe bağlı; 2.5.0 S231 = A): içe aktarmanın grup bulucusu (groupFinder) — verilirse NOCASE bulamayınca Türkçe harf katlamalı TEK grup
+  // (S228 sırası); açılan grup bulucuya eklenir. Elle grup açma, tek kart ve tek cari formu bulucusuz çağırır (bugünkü kural DEĞİŞMEZ).
+  function ensureGroup(user, name, parentId = null, folded = null) {
     const clean = limited(name, 80, "Grup adı");
     if (!clean) return null;
     const found = store.get("SELECT id FROM plan_groups WHERE name = ? COLLATE NOCASE AND COALESCE(parent_id, '') = ?", clean, parentId || "");
     if (found) return found.id;
+    const similar = folded ? folded.find(clean, parentId) : "";
+    if (similar) return similar;
     const id = newId("group");
     const position = (store.get("SELECT COALESCE(MAX(position), 0) AS p FROM plan_groups WHERE COALESCE(parent_id, '') = ?", parentId || "")?.p || 0) + 1;
     store.run("INSERT INTO plan_groups (id, parent_id, name, position, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)", id, parentId, clean, position, user.id, now(), now());
     audit(user, "plan.group.created", id, { name: clean, parentId });
+    folded?.add(id, clean, parentId);
     return id;
   }
-  const resolveGroups = (body, user) => {
+  // 2.5.0 S231 = A (S228 sırası): içe aktarmalarda (taksit Excel / Sheets, cari Excel / Sheets, Tablodan Aktar) grup / alt grup adı, NOCASE (yalnız A–Z)
+  // karşılaştırması bulamazsa Türkçe harf katlamalı (lib/names.mjs foldPersonName: I / ı, İ / i, Ş Ğ Ü Ö Ç, boşluk) aynı üst gruptaki TEK gruba bağlanır;
+  // birden çok aday varsa bulunamaz (çağıran bugünkü gibi yeni grup açar). Ad haritası yükleme başına BİR KEZ, ilk sorulduğunda tek okumayla kurulur
+  // (ders 47); yüklemede açılan grup add ile eklenir (harita kurulmadan önceki add gereksiz: kurulurken güncel tablo okunur). Haritadaki aday geri
+  // alınmış iç işlemde açılmış olabilir: güncel satırı okunup adı yeniden denetlenir. created (isteğe bağlı): gerçekten açılan grubun kimliği bildirilir.
+  function groupFinder({ created = null } = {}) {
+    let map = null;
+    const keyOf = (name, parentId) => `${parentId || ""}\u0000${foldPersonName(name)}`;
+    const put = (id, name, parentId) => {
+      const key = keyOf(name, parentId);
+      let ids = map.get(key);
+      if (!ids) map.set(key, (ids = new Set()));
+      ids.add(id);
+    };
+    const ready = () => {
+      if (!map) {
+        map = new Map();
+        for (const row of store.all("SELECT id, parent_id AS parentId, name FROM plan_groups")) put(row.id, row.name, row.parentId);
+      }
+      return map;
+    };
+    return {
+      add(id, name, parentId = null) {
+        if (map && id) put(id, name, parentId);
+        if (id) created?.(id);
+      },
+      find(name, parentId = null) {
+        const wanted = foldPersonName(name);
+        if (!wanted) return "";
+        const ids = ready().get(keyOf(name, parentId));
+        if (!ids?.size) return "";
+        const rows = store
+          .all("SELECT id, name FROM plan_groups WHERE COALESCE(parent_id, '') = ? AND id IN (SELECT value FROM json_each(?))", parentId || "", JSON.stringify([...ids]))
+          .filter(row => foldPersonName(row.name) === wanted);
+        return rows.length === 1 ? rows[0].id : "";
+      },
+    };
+  }
+  // folded (isteğe bağlı; yalnız içe aktarma — cari Excel / Sheets): ensureGroup'a geçer. Tek kart ve tek cari formu vermez.
+  const resolveGroups = (body, user, folded = null) => {
     let groupId = text(body.groupId) || null;
     let subgroupId = text(body.subgroupId) || null;
     // Ad yazılmışsa (yeni grup) oluşturulur; kimlik verilmişse doğrulanır.
-    if (!groupId && text(body.groupName)) groupId = ensureGroup(user, body.groupName);
+    if (!groupId && text(body.groupName)) groupId = ensureGroup(user, body.groupName, null, folded);
     if (groupId && !groupOrNull(groupId)) throw new HttpError(400, "Seçilen grup artık yok; listeyi yenileyin.");
     if (groupId && groupOrNull(groupId).parentId) throw new HttpError(400, "Alt grup, grup olarak seçilemez.");
     if (!subgroupId && text(body.subgroupName)) {
       if (!groupId) throw new HttpError(400, "Alt grup için önce grup seçin.");
-      subgroupId = ensureGroup(user, body.subgroupName, groupId);
+      subgroupId = ensureGroup(user, body.subgroupName, groupId, folded);
     }
     if (subgroupId) {
       const sub = groupOrNull(subgroupId);
@@ -1445,6 +1489,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       const openCards = new Map();
       const foldedCards = new Map();
       const people = accounts()?.personIndex ? accounts().personIndex() : null;
+      const folded = groupFinder(); // S231 = A: yükleme başına grup bulucusu (NOCASE bulamazsa Türkçe harf katlamalı tek grup)
       const push = (map, key, card) => {
         if (!map.has(key)) map.set(key, []);
         map.get(key).push(card);
@@ -1510,8 +1555,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         let start;
         try {
           ({ person, outcome, accountId, start } = store.tx(() => {
-            const g = groupName ? ensureGroup(user, groupName) : null;
-            const sg = g && subgroupName ? ensureGroup(user, subgroupName, g) : null;
+            const g = groupName ? ensureGroup(user, groupName, null, folded) : null;
+            const sg = g && subgroupName ? ensureGroup(user, subgroupName, g, folded) : null;
             // 2.5.0 Ç7b P7 (S219 = A): aynı ad + aynı gruptaki açık kart yalnız AYNI KİŞİNİNSE satır atlanır; kişi kartın bağlanacağı cariyi bulan
             // kuralla (routes/accounts.mjs planDuplicate → planPerson / samePerson) belirlenir. Telefonu farklı aynı adlı kişinin kartı kendi carisiyle
             // açılır; kişi kesin seçilemiyorsa atlanır (çift kart / borç açılmaz). Önceden yalnız ada bakılıyordu (aynı adlı ikinci kişinin kartı açılmıyordu).
@@ -1968,5 +2013,5 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { shownTotalsOf, queueSummaryOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, cutTargets, settleCoverOnCancel, hasOpenCover, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
+  return { shownTotalsOf, queueSummaryOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, cutTargets, settleCoverOnCancel, hasOpenCover, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, groupFinder,createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
 }
