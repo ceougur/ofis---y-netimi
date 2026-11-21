@@ -394,9 +394,28 @@ function ruleFacts(rawRows, correction) {
   return { ruleDiff: lines, remainder: true, bilgi: [] };
 }
 
-/** Kapsamın TAMAMININ kural farkı (bütün hesaplar, cari boyutlu) — KALAN'ın girdisi. */
-const fullRuleDiff = (store, live, cover) => periodRuleDiff({ frozen: [], frozenSums: frozenPartOf(frozenSums(store, { from: "", through: cover })), live, from: "", to: cover, accounts: () => true, party: true });
-const subledgerOf = ledger => new Set(Object.keys(ledger.expected ? ledger.expected([], [], { every: true }) : {}));
+/**
+ * Kapsamın TAMAMININ kural farkı (bütün hesaplar, cari boyutlu) — KALAN'ın girdisi. Tur 5 (tasarım §11.6): donmuş taraf ikinci bir okuma DEĞİL — tablonun kendi okumasının (frozenSums ruleThrough =
+ * kapsam) [from, through] kısmının `rule`'u (part: frozenPartOf) + aynı çağrının dışarıdaki ('voucher' olmayan) satırları; ["", kapsam] = içerisi ∪ dışarısı → tur 4'ün kapsam okumasıyla aynı toplamlar.
+ */
+function fullRuleDiff(part, outside, live, cover) {
+  const years = new Map();
+  const add = (year, key, net) => {
+    let item = years.get(year);
+    if (!item) years.set(year, (item = { rule: new Map() }));
+    item.rule.set(key, (item.rule.get(key) || 0) + net);
+  };
+  for (const [year, item] of part.years) for (const [key, net] of item.rule) add(year, key, net);
+  for (const row of outside || []) if (!row.voucher) add(row.year, `${row.account}|${row.sub}|${row.party}`, row.net);
+  return periodRuleDiff({ frozen: [], frozenSums: { years }, live, from: "", to: cover, accounts: () => true, party: true });
+}
+// Alt defter hesapları: ledger.expected(every)'nin ANAHTARLARI — yalnız şemaya bağlı (routes/ledger.mjs subledgerAccounts'ın notu ve aynı hatırlaması) → ledger nesnesi başına bir kez (tur 5).
+const subledgerMemo = new WeakMap();
+function subledgerOf(ledger) {
+  let set = subledgerMemo.get(ledger);
+  if (!set) subledgerMemo.set(ledger, (set = new Set(Object.keys(ledger.expected ? ledger.expected([], [], { every: true }) : {}))));
+  return set;
+}
 
 /**
  * Gelir Tablosu'nun Kural Değişikliği Farkı (Ç3; kitap §7.4): dönemin KİLİTLİ kısmında [from, to] (to ≤ kilit kapsamı) donmuş defterin ve güncel türetmenin gelir tablosu hesapları (6 / 7) ile
@@ -461,15 +480,18 @@ export function incomeStatementOf({ store, ledger, from, to }) {
     const live = ledger.build();
     // B-g (b) (tasarım §8): dönemin kilitli kısmı [1 Ocak, min(b, kapsam)] donmuş TOPLAMLARDAN (kısım ayracı a), kapsamın sonrası karma yevmiyenin kuyruğundan.
     const through = to < cover ? to : cover;
-    const part = frozenPartOf(frozenSums(store, { from: start, through, split: from }));
+    // Tur 4 (ORTA-2; tasarım §11.2): Kural Farkı Düzeltme Fişi [a, b] İÇİNDEYSE KALAN (tablonun hesapları: 6 / 7 ve 153); dışındaysa neden AYNEN.
+    // Tur 5 (tasarım §11.6): KALAN gerekiyorsa kapsamın tamamı tablonun KENDİ okumasıyla aynı çağrıda (ruleThrough) — ikinci donmuş toplam okuması yok.
+    const posted = postedCorrectionsAt(store, to);
+    const needRemainder = posted.active.some(voucher => voucher.date >= from);
+    const sums = frozenSums(store, { from: start, through, split: from, ...(needRemainder ? { ruleThrough: cover } : {}) });
+    const part = frozenPartOf(sums);
     entries = to > cover ? ledger.book({ from: dayAfter(cover), to, live }) : [];
     ruleDiff = periodRuleDiff({ frozen: entries, frozenSums: part, live, from: start, to: through });
     frozen = part.years.get(Number(start.slice(0, 4))) || emptyFrozenYear(Number(start.slice(0, 4)), from);
-    // Tur 4 (ORTA-2; tasarım §11.2): Kural Farkı Düzeltme Fişi [a, b] İÇİNDEYSE KALAN (tablonun hesapları: 6 / 7 ve 153); dışındaysa neden AYNEN.
-    const posted = postedCorrectionsAt(store, to);
-    if (posted.active.some(voucher => voucher.date >= from)) {
+    if (needRemainder) {
       const lock = ledger.snapshots?.state?.().lock || "";
-      correction = ruleDiffRemainder({ diff: fullRuleDiff(store, live, cover), posted, subledger: subledgerOf(ledger), lock, cover, accounts: account => account === "153" || /^[67]/.test(account) });
+      correction = ruleDiffRemainder({ diff: fullRuleDiff(part, sums.outside, live, cover), posted, subledger: subledgerOf(ledger), lock, cover, accounts: account => account === "153" || /^[67]/.test(account) });
     }
   } else entries = ledger.book({ from: start, to });
   const valuation = createStockValuation(loadValuationInput(store));
@@ -887,18 +909,19 @@ export function balanceSheetOf({ store, ledger, date }) {
   const cover = ledger.snapshots?.state?.().coverage || "";
   // B-g (b) (tasarım §8): kilitli kısım [başlangıç, min(t, kapsam)] donmuş TOPLAMLARDAN (madde madde okunmaz), kapsamın sonrası karma yevmiyenin kuyruğundan (book; bekleyen koşunun ara dilimi dahil).
   const through = cover ? (date < cover ? date : cover) : "";
-  const frozen = cover ? frozenPartOf(frozenSums(store, { from: "", through })) : null;
+  // Tur 4 (ORTA-2; tasarım §11.2): t'ye kadar yazılmış Kural Farkı Düzeltme Fişi varsa KALAN; t ≥ kapsam ise ruleDiff zaten kapsamın tamamı. Tur 5 (§11.6): t < kapsam iken kapsamın tamamı
+  // tablonun kendi okumasıyla aynı çağrıda (ruleThrough) — ikinci donmuş toplam okuması yok.
+  const posted = cover ? postedCorrectionsAt(store, date) : null;
+  const wide = Boolean(posted?.active.length) && through !== cover;
+  const sums = cover ? frozenSums(store, { from: "", through, ...(wide ? { ruleThrough: cover } : {}) }) : null;
+  const frozen = sums ? frozenPartOf(sums) : null;
   const entries = !cover ? ledger.book({ to: date, live }) : date > cover ? ledger.book({ from: dayAfter(cover), to: date, live }) : [];
   // Kural Değişikliği Farkı (Ç3): kilitli kısmın [başlangıç, min(t, kapsam)] donmuş ↔ güncel türetme yıl × hesap toplamı, BÜTÜN hesaplar (Bilanço 1–5'i, hesaplanmış satırlar 6 / 7'yi okur).
   const ruleDiff = cover ? periodRuleDiff({ frozen: entries, frozenSums: frozen, live, from: "", to: through, accounts: () => true, party: true }) : null;
-  // Tur 4 (ORTA-2; tasarım §11.2): t'ye kadar yazılmış Kural Farkı Düzeltme Fişi varsa KALAN; t ≥ kapsam ise ruleDiff zaten kapsamın tamamı.
   let correction = null;
-  if (cover) {
-    const posted = postedCorrectionsAt(store, date);
-    if (posted.active.length) {
-      const lock = ledger.snapshots?.state?.().lock || "";
-      correction = ruleDiffRemainder({ diff: through === cover ? ruleDiff : fullRuleDiff(store, live, cover), posted, subledger: subledgerOf(ledger), lock, cover });
-    }
+  if (posted?.active.length) {
+    const lock = ledger.snapshots?.state?.().lock || "";
+    correction = ruleDiffRemainder({ diff: through === cover ? ruleDiff : fullRuleDiff(frozen, sums.outside, live, cover), posted, subledger: subledgerOf(ledger), lock, cover });
   }
   const valuation = createStockValuation(loadValuationInput(store));
   const names = new Map();
