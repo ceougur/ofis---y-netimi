@@ -11,7 +11,7 @@ import sys
 ESKI = os.path.join(os.path.abspath(sys.argv[sys.argv.index("--eski") + 1]), "senaryolar")
 YENI = os.path.join(os.path.abspath(sys.argv[sys.argv.index("--yeni") + 1]), "senaryolar")
 # bakım 23 (§35 Y23-5): S200 = A — d35 H8 değerle (SK-20 kalktı), d36 J14 SK-20 → SK-23 (elleBelirsiz)
-IZINLI = {"d35-c5-s120-elle-borclar.json": (":H8:", ":KH8:", ":h8x:", ":H8F:", "H8 "), "d36-c5-s122-kart-odemesi.json": ("J14 ",)}
+IZINLI = {"d35-c5-s120-elle-borclar.json": (":H8:", ":KH8:", ":h8x", ":H8F:", "H8 "), "d36-c5-s122-kart-odemesi.json": ("J14 ",)}
 ADIM_IZIN = set()  # bakım 21b: adımı değişen senaryo yok
 SECENEK = {}
 

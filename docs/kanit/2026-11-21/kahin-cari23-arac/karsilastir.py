@@ -215,6 +215,8 @@ def sinif15(anahtar, c, t, supheli):
     p = anahtar.split(":")
     if len(p) >= 4 and p[1] == "fatura" and ":".join(p[3:]) in ("gosterilen", "liste:gosterilen", "kartta", "taksitte", "liste:taksitte"):
         return "GÖSTERİM-YENİ"  # bakım 23 (§35 Y23-2 … Y23-4): yeni denetim (eski kâhinde yok)
+    if (t & {"s200", "s200e0"}) and p[0] == "adim":
+        return "S200-SK18"  # bakım 23: S200 carisinin adım sonucu — eski kâhinde cari tanımsızken kartın kabulü iki dünyalıydı (SK-18 susması), şimdi tek okuma
     if "s200e0" in t and p[0] != "adim":
         return "S200-E0"  # bakım 23 (§35 Y23-5): E = 0 okuması (kart yalnız faturalardan)
     if "s200" in t and p[0] != "adim":
