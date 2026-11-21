@@ -7,7 +7,9 @@
 // Tutarlar kuruş tamsayı (…Minor).
 import { bookTypeOf } from "./book-type.mjs";
 import { BALANCE_SHEET_ITEMS, CHART, JOURNAL_CLASS, PLAN_SUBS, balanceSheetItemOf, entryClass, reverseBalanceOf } from "./general-ledger.mjs";
+import { ruleDiffCorrectionPlan, ruleDiffCorrectionYear } from "./ledger-opening.mjs";
 import { frozenSums } from "./ledger-snapshots.mjs";
+import { voucherNoText } from "./ledger-vouchers.mjs";
 import { createStockValuation, loadValuationInput } from "./stock-valuation.mjs";
 
 const CLOSING_CLASS = JOURNAL_CLASS["voucher-close"];
@@ -157,7 +159,13 @@ export function notFinalReasons(facts = {}) {
     add("defter-farki", "Defter Mutabakatı Farkı ya da Dengesiz Madde", parts.join(" "), facts.reconciliationDetail);
   }
   if (facts.balanceDiffMinor) add("aktif-pasif-farki", "Aktif ile Pasif Eşit Değil", `Aktif toplamı pasif toplamından ${tlText(facts.balanceDiffMinor)} farklı; fark ayrı satırda gösterildi (denkleştirme kaydı yapılmaz).`);
-  if (facts.ruleDiff?.length) add("kural-farki", "Kural Değişikliği Farkı", "Kilitli dönemin donmuş defteri güncel kuralla türetilen defterden farklı; tablo donmuş defterdendir.", facts.ruleDiff);
+  if (facts.ruleDiff?.length) {
+    // Tur 4 (ORTA-2; tasarım §11.2): Kural Farkı Düzeltme Fişi'nden sonra kalan fark — ayrıntı Yönetim'in düzeltme planının KALANI (fiş satırı biçiminde).
+    const text = facts.ruleDiffRemainder
+      ? "Kilitli dönemin donmuş defteri ile güncel kural arasındaki farkın Kural Farkı Düzeltme Fişi'yle kapanmamış kısmı aşağıdadır (Yönetim › Sistem › Kural Farkı Düzeltme); tablo donmuş defterdendir."
+      : "Kilitli dönemin donmuş defteri güncel kuralla türetilen defterden farklı; tablo donmuş defterdendir.";
+    add("kural-farki", "Kural Değişikliği Farkı", text, facts.ruleDiff);
+  }
   if (facts.negativeStock?.length) add("eksi-stok", "Eksi Stok", "Eksi miktarlı ürünler dönem sonu stokuna 0 değerle girdi.", facts.negativeStock.map(row => `${row.name} (${row.qty} ${row.unit})`.trim()));
   if (facts.clippedCost?.length) {
     add("eksi-birim-maliyet", "Eksi Birim Maliyet", "Alış iadesi alışlarından değerli olan ürünlerin birim maliyeti 0 alındı; formülün verdiği eksi değer (aşağıda) stok değerine katılmadı.", facts.clippedCost.map(row => `${row.name}: ${tlText(row.clippedMinor)}`));
@@ -202,7 +210,7 @@ export function footnotes(facts = {}) {
  * Gelir Tablosu (kural kitabı §4, §7.1). entries: book({ from: yılın 1 Ocak'ı, to }) maddeleri (fazlası süzülür); valuation: createStockValuation; bookType: Defter Türü kodu;
  * ruleDiff: snapshots.ruleDiff() sonucu (ya da null — kilit kapsamı döneme değmiyorsa). Dönüş: kalemler (hesap → alt satır), ara toplamlar, satışların maliyeti, Kesin Değil, dipnotlar.
  */
-export function incomeStatement({ entries, valuation, from, to, bookType = "unset", ruleDiff = null, frozen = null }) {
+export function incomeStatement({ entries, valuation, from, to, bookType = "unset", ruleDiff = null, frozen = null, correction = null }) {
   checkRange(from, to);
   // B-g (b): frozen = donmuş dönemin bu yılının toplamları (frozenPartOf); entries o zaman yalnız kapsam sonrası maddeler. Kısım ayracı a olmalı (a = 1 Ocak'ta "" de olur).
   if (frozen && frozen.split !== from && !(from === yearStart(from) && frozen.split <= from)) throw new Error(`donmuş toplamın kısım ayracı (${frozen.split}) dönem başı (${from}) değil`);
@@ -286,10 +294,12 @@ export function incomeStatement({ entries, valuation, from, to, bookType = "unse
     ruleSums.set(key, item);
   }
   const ruleRows = [...ruleSums.values()].filter(row => row.differenceMinor !== 0);
+  const rule = ruleFacts(ruleRows.map(row => `${row.year} · ${row.account}${row.sub ? ` (${row.sub})` : ""}: ${tlText(row.differenceMinor)}`), correction);
   const facts = {
     costEstimated: cost.estimated,
     unbalanced,
-    ruleDiff: ruleRows.map(row => `${row.year} · ${row.account}${row.sub ? ` (${row.sub})` : ""}: ${tlText(row.differenceMinor)}`),
+    ruleDiff: rule.ruleDiff,
+    ruleDiffRemainder: rule.remainder,
     negativeStock: cost.negative,
     clippedCost: cost.clipped,
     unclassified: [...unclassified.entries()].filter(([, net]) => net !== 0).map(([code, net]) => `${code}: ${tlText(net)}`),
@@ -307,10 +317,86 @@ export function incomeStatement({ entries, valuation, from, to, bookType = "unse
     subtotals,
     smm: { estimated: cost.estimated, posted: cost.posted, minor: cost.estimated && !cost.posted ? cost.minor : of("D"), dssPrevMinor: cost.dssPrevMinor, dssMinor: cost.dssMinor, stockFlowMinor: cost.stockFlowMinor, stockMovesMinor: cost.stockMovesMinor, differenceMinor: cost.differenceMinor },
     kesinDegil: notFinalReasons(facts),
+    ...(rule.bilgi.length ? { bilgi: rule.bilgi } : {}),
     footnotes: footnotes({ cashExpenseMinor, unclassifiedIncomeMinor, unclassifiedCostMinor, bookType }),
     warnings,
   };
 }
+
+// ---------- Tur 4 (ORTA-2; tasarım §11.2): Kural Farkı Düzeltme Fişi'nden sonra KALAN (Yönetim'in planıyla AYNI tanım; hızlı yol) ----------
+
+/**
+ * t gününe kadar yazılmış Kural Farkı Düzeltme Fişleri: lib/ledger-opening.mjs postedRuleDiffCorrections'ın sorgusu AYNEN + tarih süzgeci (fiş ve ters kaydı t'ye kadar; t'deki tablo
+ * yalnız onları içerir). byYear: fişin KENDİ yılına göre hesap|alt hesap → kuruş (ters kaydın satırları asıl fişin yılına — S174 = A); active: ters kaydı t'ye kadar yazılmamış fişler.
+ * t uzak gelecekken postedRuleDiffCorrections ile birebir (eşdeğerlik testi).
+ */
+export function postedCorrectionsAt(store, date) {
+  const empty = { any: false, byYear: new Map(), active: [] };
+  if (!hasTableIn(store, "ledger_vouchers") || !hasTableIn(store, "ledger_voucher_lines")) return empty;
+  if (!store.get("SELECT 1 AS found FROM ledger_vouchers WHERE type = 'rule-diff-correction' AND date <= ? LIMIT 1", date)) return empty;
+  const byYear = new Map();
+  for (const row of store.all(
+    `SELECT CAST(substr(COALESCE(o.date, v.date), 1, 4) AS INTEGER) AS year, l.account, l.sub, SUM(l.debit_minor - l.credit_minor) AS net
+     FROM ledger_vouchers v CROSS JOIN ledger_voucher_lines l ON l.voucher_id = v.id LEFT JOIN ledger_vouchers o ON v.type = 'reversal' AND o.id = v.reversal_of
+     WHERE v.date <= ?1 AND (v.type = 'rule-diff-correction' OR (v.type = 'reversal' AND o.type = 'rule-diff-correction'))
+     GROUP BY 1, l.account, l.sub`,
+    date,
+  )) {
+    if (!Number(row.net)) continue;
+    const year = Number(row.year);
+    if (!byYear.has(year)) byYear.set(year, new Map());
+    byYear.get(year).set(`${row.account}|${row.sub || ""}`, Number(row.net));
+  }
+  const active = store
+    .all("SELECT v.id, v.year, v.no, v.date FROM ledger_vouchers v WHERE v.type = 'rule-diff-correction' AND v.date <= ?1 AND NOT EXISTS (SELECT 1 FROM ledger_vouchers r WHERE r.reversal_of = v.id AND r.date <= ?1) ORDER BY v.date, v.rowid", date)
+    .map(row => ({ id: row.id, year: Number(row.year), no: Number(row.no), date: row.date }));
+  return { any: true, byYear, active };
+}
+
+/**
+ * KALAN (saf). diff: periodRuleDiff({ party: true }) — kapsamın TAMAMI [başlangıç, kapsam], bütün hesaplar (snapshots.ruleDiff'in balances'ı ile aynı küme); posted: postedCorrectionsAt;
+ * subledger: alt defter hesapları (routes/ledger.mjs subledgerAccounts'ın tanımı: expected([], [], { every: true }) anahtarları); lock / cover: dönem kilidi ve kapsam; accounts: tablonun
+ * okuduğu hesaplar (Gelir Tablosu 6 / 7 ve 153). Planın girdisi anahtar başına tek "madde": plan toplamları (yıl, hesap, alt) bazında delta toplamıdır; madde ayrımı yalnız alt defter
+ * dışlamasında kullanılır ve o yalnız bir alt defter anahtarının birikimli farkı ≠ 0 iken başlar → o durumda KALAN ≠ 0 kesin, ayrıntı madde düzeyi ister (yavaş yol) → exact: false (çağıran
+ * ham farkı yazar). Etkin fiş yoksa null (davranış eski).
+ * Dönüş: { exact, corrected, vouchers: ["Fiş 2026-000001"], lines: [{ account, sub, debit, credit }], over: [{ year, minor }] }.
+ */
+export function ruleDiffRemainder({ diff, posted, subledger, lock = "", cover = "", accounts = () => true }) {
+  if (!posted?.active?.length) return null;
+  const vouchers = posted.active.map(voucher => voucherNoText(voucher.year, voucher.no));
+  const cumulative = new Map();
+  for (const row of diff?.balances || []) {
+    if (!subledger.has(row.account)) continue;
+    const key = `${row.account}|${row.sub || ""}|${row.party || ""}`;
+    cumulative.set(key, (cumulative.get(key) || 0) + row.differenceMinor);
+  }
+  if ([...cumulative.values()].some(minor => minor !== 0)) return { exact: false, corrected: false, vouchers, lines: [], over: [] };
+  const entries = (diff?.balances || []).map((row, index) => ({ id: `rule-diff-key:${index}`, date: "", deltas: [{ year: row.year, account: row.account, sub: row.sub || "", party: row.party || "", minor: row.differenceMinor }] }));
+  const plan = ruleDiffCorrectionPlan({ diff: { entries }, subledger, year: ruleDiffCorrectionYear({ lock, cover }), postedByYear: posted.byYear });
+  const lines = plan.lines.filter(line => accounts(line.account));
+  const over = plan.ownYearOver || [];
+  return { exact: true, corrected: !lines.length && !over.length, vouchers, lines, over };
+}
+
+/** Ham fark satırları + KALAN → Kesin Değil ayrıntısı ve bilgi satırı (Gelir Tablosu ve Bilanço AYNI işlev). */
+function ruleFacts(rawRows, correction) {
+  if (!correction?.exact) return { ruleDiff: rawRows, remainder: false, bilgi: [] };
+  if (correction.corrected) {
+    if (!rawRows.length) return { ruleDiff: [], remainder: false, bilgi: [] };
+    return {
+      ruleDiff: [],
+      remainder: false,
+      bilgi: [{ kod: "kural-farki-duzeltildi", baslik: `Kural Farkı Düzeltildi (${correction.vouchers.join(", ")})`, aciklama: "Kilitli dönemin kural değişikliği farkı Kural Farkı Düzeltme Fişi ile düzeltildi; kilitli dönemin tutarları donmuş defterdendir, düzeltme fişin tarihindedir." }],
+    };
+  }
+  const lines = correction.lines.map(line => `${line.account}${line.sub ? ` (${line.sub})` : ""}: ${tlText(line.debit - line.credit)}`);
+  for (const row of correction.over) lines.push(`${row.year} · Fazla Düzeltme (${correction.vouchers.join(", ")}): ${tlText(row.minor)}`);
+  return { ruleDiff: lines, remainder: true, bilgi: [] };
+}
+
+/** Kapsamın TAMAMININ kural farkı (bütün hesaplar, cari boyutlu) — KALAN'ın girdisi. */
+const fullRuleDiff = (store, live, cover) => periodRuleDiff({ frozen: [], frozenSums: frozenPartOf(frozenSums(store, { from: "", through: cover })), live, from: "", to: cover, accounts: () => true, party: true });
+const subledgerOf = ledger => new Set(Object.keys(ledger.expected ? ledger.expected([], [], { every: true }) : {}));
 
 /**
  * Gelir Tablosu'nun Kural Değişikliği Farkı (Ç3; kitap §7.4): dönemin KİLİTLİ kısmında [from, to] (to ≤ kilit kapsamı) donmuş defterin ve güncel türetmenin gelir tablosu hesapları (6 / 7) ile
@@ -370,6 +456,7 @@ export function incomeStatementOf({ store, ledger, from, to }) {
   let entries;
   let ruleDiff = null;
   let frozen = null;
+  let correction = null;
   if (cover && cover >= start) {
     const live = ledger.build();
     // B-g (b) (tasarım §8): dönemin kilitli kısmı [1 Ocak, min(b, kapsam)] donmuş TOPLAMLARDAN (kısım ayracı a), kapsamın sonrası karma yevmiyenin kuyruğundan.
@@ -378,9 +465,15 @@ export function incomeStatementOf({ store, ledger, from, to }) {
     entries = to > cover ? ledger.book({ from: dayAfter(cover), to, live }) : [];
     ruleDiff = periodRuleDiff({ frozen: entries, frozenSums: part, live, from: start, to: through });
     frozen = part.years.get(Number(start.slice(0, 4))) || emptyFrozenYear(Number(start.slice(0, 4)), from);
+    // Tur 4 (ORTA-2; tasarım §11.2): Kural Farkı Düzeltme Fişi [a, b] İÇİNDEYSE KALAN (tablonun hesapları: 6 / 7 ve 153); dışındaysa neden AYNEN.
+    const posted = postedCorrectionsAt(store, to);
+    if (posted.active.some(voucher => voucher.date >= from)) {
+      const lock = ledger.snapshots?.state?.().lock || "";
+      correction = ruleDiffRemainder({ diff: fullRuleDiff(store, live, cover), posted, subledger: subledgerOf(ledger), lock, cover, accounts: account => account === "153" || /^[67]/.test(account) });
+    }
   } else entries = ledger.book({ from: start, to });
   const valuation = createStockValuation(loadValuationInput(store));
-  return incomeStatement({ entries, valuation, from, to, bookType: bookTypeOf(store), ruleDiff, frozen });
+  return incomeStatement({ entries, valuation, from, to, bookType: bookTypeOf(store), ruleDiff, frozen, correction });
 }
 
 // ---------- B-g (b): donmuş dönemin toplamları (tur 3; tasarım §8 "B-g (b) TASARIMI") ----------
@@ -497,7 +590,7 @@ function closedYearOf(entries, date, closedOn, frozenDay = "") {
  * ruleDiff: periodRuleDiff sonucu (kilitli dönem varsa) ya da null; reconciliation: ledger.check()'in mutabakatı (reconcile) ya da undefined (denetlenmedi); partyNames: cari kimliği → ad.
  * Dönüş: aktif / pasif (gruplar → kalemler → hesaplar), hesaplanmış iki satır, toplamlar ve fark, hesap başına defter ↔ bilanço tutarı, Kesin Değil, dipnotlar, uyarılar.
  */
-export function balanceSheet({ entries, valuation, date, bookType = "unset", closedOn, ruleDiff = null, reconciliation, partyNames = null, frozen = null }) {
+export function balanceSheet({ entries, valuation, date, bookType = "unset", closedOn, ruleDiff = null, reconciliation, partyNames = null, frozen = null, correction = null }) {
   if (!isDay(date)) throw Object.assign(new Error("Geçerli bir tarih seçin."), { status: 400, code: "bilanco-tarih" });
   const year = Number(date.slice(0, 4));
   const upto = entries.filter(entry => entry.date <= date);
@@ -722,6 +815,8 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
     for (const reason of out.kesinDegil) if (reason.kod === "siniflandirilmamis-hesap") for (const text of reason.ayrinti || []) if (!unclassified.includes(text)) unclassified.push(text);
   }
   const failedChecks = reconciliation ? (reconciliation.checks || []).filter(check => !check.ok) : [];
+  // Tur 4 (ORTA-2): t'ye kadar yazılmış Kural Farkı Düzeltme Fişi varsa KALAN (Yönetim'in planı) — 0 ise neden yerine bilgi satırı.
+  const rule = ruleFacts((ruleDiff?.balances || []).filter(row => Number(row.year) <= year).map(row => `${row.year} · ${row.account}${row.sub ? ` (${row.sub})` : ""}${row.party ? ` · ${nameOf(row.party)}` : ""}: ${tlText(row.differenceMinor)}`), correction);
   const facts = {
     openingMinor: (accounts.get("519")?.minor || 0) !== 0,
     costEstimated: Boolean(current?.smm.estimated) || priorYears.some(row => row.out.smm.estimated),
@@ -733,7 +828,8 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
       ...failedChecks.map(check => `${check.code} ${check.name}: defter ${tlText(Math.round(Number(check.ledger) * 100))}, alt defter ${tlText(Math.round(Number(check.subledger) * 100))} (fark ${tlText(Math.round(Number(check.difference) * 100))})`),
     ],
     balanceDiffMinor: farkMinor,
-    ruleDiff: (ruleDiff?.balances || []).filter(row => Number(row.year) <= year).map(row => `${row.year} · ${row.account}${row.sub ? ` (${row.sub})` : ""}${row.party ? ` · ${nameOf(row.party)}` : ""}: ${tlText(row.differenceMinor)}`),
+    ruleDiff: rule.ruleDiff,
+    ruleDiffRemainder: rule.remainder,
     negativeStock: [...negativeStock.values()],
     clippedCost: stockAt.clipped,
     negativeBalances: impossible.map(fmt),
@@ -761,6 +857,7 @@ export function balanceSheet({ entries, valuation, date, bookType = "unset", clo
     accounts: accountRows,
     smm: { kesin: stockKesin, dssMinor: stockAt.totals.dssMinor, defter153Minor: accounts.get("153")?.minor || 0, closedYear: Number.isFinite(closedYear) ? closedYear : null },
     kesinDegil: notFinalReasons(facts),
+    ...(rule.bilgi.length ? { bilgi: rule.bilgi } : {}),
     footnotes: footnotes({ cashExpenseMinor, unclassifiedIncomeMinor: other?.gelirMinor || 0, unclassifiedCostMinor: other?.giderMinor || 0, bookType, balanceSheet: true }),
     warnings,
   };
@@ -794,6 +891,15 @@ export function balanceSheetOf({ store, ledger, date }) {
   const entries = !cover ? ledger.book({ to: date, live }) : date > cover ? ledger.book({ from: dayAfter(cover), to: date, live }) : [];
   // Kural Değişikliği Farkı (Ç3): kilitli kısmın [başlangıç, min(t, kapsam)] donmuş ↔ güncel türetme yıl × hesap toplamı, BÜTÜN hesaplar (Bilanço 1–5'i, hesaplanmış satırlar 6 / 7'yi okur).
   const ruleDiff = cover ? periodRuleDiff({ frozen: entries, frozenSums: frozen, live, from: "", to: through, accounts: () => true, party: true }) : null;
+  // Tur 4 (ORTA-2; tasarım §11.2): t'ye kadar yazılmış Kural Farkı Düzeltme Fişi varsa KALAN; t ≥ kapsam ise ruleDiff zaten kapsamın tamamı.
+  let correction = null;
+  if (cover) {
+    const posted = postedCorrectionsAt(store, date);
+    if (posted.active.length) {
+      const lock = ledger.snapshots?.state?.().lock || "";
+      correction = ruleDiffRemainder({ diff: through === cover ? ruleDiff : fullRuleDiff(store, live, cover), posted, subledger: subledgerOf(ledger), lock, cover });
+    }
+  }
   const valuation = createStockValuation(loadValuationInput(store));
   const names = new Map();
   const partyNames = {
@@ -802,7 +908,7 @@ export function balanceSheetOf({ store, ledger, date }) {
       return names.get(id);
     },
   };
-  return balanceSheet({ entries, valuation, date, bookType: bookTypeOf(store), closedOn: closingDayOf(store, date), ruleDiff, reconciliation: checked.reconciliation, partyNames, frozen });
+  return balanceSheet({ entries, valuation, date, bookType: bookTypeOf(store), closedOn: closingDayOf(store, date), ruleDiff, reconciliation: checked.reconciliation, partyNames, frozen, correction });
 }
 
 /** Değerleme okuma ucu (D3 / D4 / sürücü): t günü sonu, ürün ayrıntısıyla; önceki yıl sonunun toplamları (DBS). */
