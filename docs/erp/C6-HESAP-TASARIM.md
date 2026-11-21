@@ -244,12 +244,12 @@ Kaynak: dar kontrol raporu `docs/devir/2.5.0-DEVAM/dk-c6h-rapor.md` (inceleme uc
   gün okumada `localDayOf` ile — bugünkü kodla aynı). Gerekçe: değerleme TEK işlev (§3) — donmuş girdiyle aynı formül her t ≤ kapsam için (yıl ortası tahmini, yıl sonu, D3 / D4 `yearEnd`) aynı sayıyı
   verir; hesaplanmış değer saklamak her t için ayrı kayıt ya da ikinci formül isterdi. Hareketler saklanmaz: kilitli dönemin stok hareketleri kilitle yazılamaz (Ç3 §4). Kod / ad / birim saklanmaz
   (sayı değil; görünen ad güncel).
-- NEREDE: yeni tablo `ledger_snapshot_items` (göç 54, YALNIZ EKLEYİCİ; WITHOUT ROWID; anahtar (run, item_id)) — Ç3'ün dondurma koşusunun AÇILDIĞI işlemde (`insertRun`, kind freeze: kilit
+- NEREDE: yeni tablo `ledger_valuation_cards` (göç 54, YALNIZ EKLEYİCİ; WITHOUT ROWID; anahtar (run, item_id)) — Ç3'ün dondurma koşusunun AÇILDIĞI işlemde (`insertRun`, kind freeze: kilit
   kancası, carryLock, continueAfter, açılış onarımının planı, freezeSync — hepsi bu işlevden geçer) TEK `INSERT … SELECT` (stock_items'ın bütün satırları; hizmet dahil — sonradan Ürün'e
   çevrilen kalem kilitli yıla girmesin). Kilit ANI = koşunun açıldığı an (iş parçacığının bitişi değil: arada yapılan kart düzeltmesi kilitli yıla girmez).
-- DEĞİŞMEZLİK (Ç3 deseni; göç 54 tetikleyicileri `ledger_snapshot_items_*`): UPDATE yok; INSERT yalnız EN SON bekleyen freeze koşusuna ve aynı (run, item) ikinci kez yok (INSERT OR REPLACE);
+- DEĞİŞMEZLİK (Ç3 deseni; göç 54 tetikleyicileri `ledger_valuation_cards_*`): UPDATE yok; INSERT yalnız EN SON bekleyen freeze koşusuna ve aynı (run, item) ikinci kez yok (INSERT OR REPLACE);
   DELETE yok, koşusu tamamlanmış ve kapsamın içindeyse (`from_date < kapsam`). Şirket Verisini Sıfırla `clearSnapshots` içinde (tetikleyiciler kaldırılır, tablo silinir, kurulur — app.mjs'e
-  dokunmadan; sayı `ledger_snapshot_items`).
+  dokunmadan; sayı `ledger_valuation_cards`).
 - YAŞAM DÖNGÜSÜ = Ç3'ün donmuş defteri: okuma t ≤ kapsam ise t'yi kapsayan (from_date < t ≤ through) EN SON tamamlanmış freeze koşusunun kartı; t > kapsam ya da koşuda o ürün yoksa (koşudan sonra
   açılmış kart) güncel kart. Kilit ilerler → yeni koşu o anın kartıyla (yalnız yeni dönem); kilit geri çekilir / kaldırılır → kapsam iner, çözülen dönem güncel kartla; yeniden kilitlenince
   yeni koşu yeni dondurma. Bırakılmış (abandoned) koşunun satırları okunmaz (yerinde kalır; küçük).

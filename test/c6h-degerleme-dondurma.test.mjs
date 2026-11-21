@@ -98,23 +98,23 @@ describe("2.5.0 Ç6-HESAP tur 4 — S236 = A: kilitli dönemin değerlemesi kili
       const after = await readAll(api);
       assert.deepEqual(after.locked, unlocked.locked, "yeni dondurmadan sonra K 80 → 60: kilitli 2025 aynı (−700)");
       // Tablo düzeyi (göç 54; eski kodda tablo yok — buraya kadar API sınamaları beklenen nedenle kırmızı olur).
-      const runs = store.all("SELECT r.no, r.kind, r.state, COUNT(s.item_id) AS n FROM ledger_snapshot_runs r LEFT JOIN ledger_snapshot_items s ON s.run = r.no GROUP BY r.no ORDER BY r.no").map(row => [row.kind, row.state, row.n]);
+      const runs = store.all("SELECT r.no, r.kind, r.state, COUNT(s.item_id) AS n FROM ledger_snapshot_runs r LEFT JOIN ledger_valuation_cards s ON s.run = r.no GROUP BY r.no ORDER BY r.no").map(row => [row.kind, row.state, row.n]);
       assert.deepEqual(runs, [["freeze", "done", 2], ["thaw", "done", 0], ["freeze", "done", 2]], "her freeze koşusu kendi kartıyla");
-      const frozen = store.all("SELECT run, kind, unit_price AS price FROM ledger_snapshot_items WHERE item_id = ? ORDER BY run", K.id).map(row => [row.run, row.kind, row.price]);
+      const frozen = store.all("SELECT run, kind, unit_price AS price FROM ledger_valuation_cards WHERE item_id = ? ORDER BY run", K.id).map(row => [row.run, row.kind, row.price]);
       assert.deepEqual(frozen, [[1, "product", 50], [3, "product", 80]], "K'nın donmuş kartları: kilit anındaki fiyatlar");
 
       // Değişmezlik (göç 54 tetikleyicileri) ve Şirket Verisini Sıfırla.
-      assert.throws(() => store.run("UPDATE ledger_snapshot_items SET unit_price = 1 WHERE run = 3"), /değiştirilemez/);
-      assert.throws(() => store.run("DELETE FROM ledger_snapshot_items WHERE run = 3"), /silinemez/);
-      assert.throws(() => store.run("INSERT INTO ledger_snapshot_items (run, item_id, kind, unit_price) VALUES (3, 'yeni', 'product', 1)"), /eklenemez/);
-      assert.equal(store.get("SELECT COUNT(*) AS n FROM ledger_snapshot_items").n, 4);
+      assert.throws(() => store.run("UPDATE ledger_valuation_cards SET unit_price = 1 WHERE run = 3"), /değiştirilemez/);
+      assert.throws(() => store.run("DELETE FROM ledger_valuation_cards WHERE run = 3"), /silinemez/);
+      assert.throws(() => store.run("INSERT INTO ledger_valuation_cards (run, item_id, kind, unit_price) VALUES (3, 'yeni', 'product', 1)"), /eklenemez/);
+      assert.equal(store.get("SELECT COUNT(*) AS n FROM ledger_valuation_cards").n, 4);
       const rerun = MIGRATIONS.find(migration => migration.version === 54);
       rerun.up(store);
-      assert.equal(store.get("SELECT COUNT(*) AS n FROM ledger_snapshot_items").n, 4, "göç yeniden koşunca yazmaz");
+      assert.equal(store.get("SELECT COUNT(*) AS n FROM ledger_valuation_cards").n, 4, "göç yeniden koşunca yazmaz");
       const counts = store.tx(() => clearSnapshots(store));
-      assert.equal(counts.ledger_snapshot_items, 4);
-      assert.equal(store.get("SELECT COUNT(*) AS n FROM ledger_snapshot_items").n, 0, "sıfırlama tabloyu boşaltır");
-      assert.equal(store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'trigger' AND name LIKE 'ledger_snapshot_items_%'").n, 3, "tetikleyiciler yeniden kuruldu");
+      assert.equal(counts.ledger_valuation_cards, 4);
+      assert.equal(store.get("SELECT COUNT(*) AS n FROM ledger_valuation_cards").n, 0, "sıfırlama tabloyu boşaltır");
+      assert.equal(store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'trigger' AND name LIKE 'ledger_valuation_cards_%'").n, 3, "tetikleyiciler yeniden kuruldu");
     } finally {
       await ctx.server.close();
     }
@@ -141,9 +141,9 @@ describe("2.5.0 Ç6-HESAP tur 4 — S236 = A: kilitli dönemin değerlemesi kili
         };
         if (kip === "kilitli") {
           // Tablo düzeyi aşağıda (sayı sınamalarından SONRA — eski kodda tablo yok, kırmızının nedeni sayı farkı olsun).
-          const table = store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'ledger_snapshot_items'");
+          const table = store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'ledger_valuation_cards'");
           results.items = store.get("SELECT COUNT(*) AS n FROM stock_items").n;
-          results.cards = table ? store.all("SELECT run, COUNT(*) AS n FROM ledger_snapshot_items GROUP BY run").map(row => [row.run, row.n]) : null;
+          results.cards = table ? store.all("SELECT run, COUNT(*) AS n FROM ledger_valuation_cards GROUP BY run").map(row => [row.run, row.n]) : null;
         }
         const read = async () => ({
           gt25: (await get(`${FS}/income-statement?from=2025-01-01&to=2025-12-31`)).items.find(item => item.kod === "D").tutarMinor,
