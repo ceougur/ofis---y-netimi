@@ -812,6 +812,9 @@ async function kos(senaryo) {
           if (rd.status === 200) {
             ids.faturaTutar[a.fatura] = Math.round((ids.faturaTutar[a.fatura] * a.adet) / (ids.faturaAdet[a.fatura] || 1));
             ids.faturaAdet[a.fatura] = a.adet;
+            // bakım 25 (yoklama 2): taksitli faturanın kendi kartı Düzenle'den sonra ayrıntının `planId`'sinden yeniden okunur (program yeni kart kimliği verebiliyor); kontrol `kart:fatura:<F>:*` yazar
+            const pid2 = (await api("GET", `/api/workspace/invoices/${fid}`)).data?.planId;
+            if (pid2) (ids.faturaKart ||= {})[a.fatura] = pid2;
           }
           break;
         }
