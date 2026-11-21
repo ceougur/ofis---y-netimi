@@ -14,6 +14,8 @@ for line in open(sys.argv[1], encoding="utf-8"):
         invalid = "GEÇERSİZ" in line
     elif line.startswith("SONUC ") and current and not invalid:
         data = json.loads(line[6:])
+        if float(data.get("load", "0").split()[0]) > 2:  # koşu SONUNDA da yük > 2 ise geçersiz
+            continue
         for path, value in data["results"].items():
             runs.setdefault(current, {}).setdefault(path, []).append((value["ms"], value["loop"], value["status"]))
 paths = list(runs.get("c7b", {}).keys())
