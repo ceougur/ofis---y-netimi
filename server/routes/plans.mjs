@@ -685,8 +685,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return out;
   }
   // Kartı karar (4) sırasıyla küçültür (tahsilat bağlı taksit satırı silinmez, sıfırlanır). Yeni toplamı döndürür.
-  function cutPlan(plan, cut, user, { accountId = "", reason = "", open = null, order = "due" } = {}) {
+  // log (2.5.0 İzleyen küçük tur — S238 = A; tasarım §19.3): verilirse kesilen her taksit (kimlik, sıra, vade, not, kesilen) eklenir — iade belgesine yazılır, iade iptali aynı taksitlere geri yazar.
+  function cutPlan(plan, cut, user, { accountId = "", reason = "", open = null, order = "due", log = null } = {}) {
     for (const { item, take } of cutTargets(plan.id, cut, open, { order })) {
+      if (log && take > 0.005) log.push({ id: item.id, seq: item.seq, dueDate: item.dueDate, note: item.note || "", take: roundMoney(take) });
       const amount = roundMoney((Number(item.amount) || 0) - take);
       const linked = store.get("SELECT 1 AS found FROM plan_entries WHERE item_id = ?", item.id);
       if (amount <= 0.005 && !linked) store.run("DELETE FROM plan_items WHERE id = ?", item.id);
@@ -702,14 +704,14 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // 2.5.0 S234 = A (docs/erp/C7B-FATURA-TASARIM.md §18.2): karar (4) Borçta Kalsın ile kapatılmış (kalanı carinin borcunda) karta da uygulanır — kart küçülür, Kalan = carinin karttaki
   // borcu. Kalanı düşülmüş eski kurallı ('2.4.9') kapalı kart bugünkü gibi küçülmez (kalanı zaten borçta değil); açılış onarımı (order "tail") kapalı kartı bugünkü gibi atlar.
   const shrinkable = (row, order = "due") => Boolean(row) && (row.status !== "closed" || (order !== "tail" && !waivesRemaining(row)));
-  function shrinkPlan(user, planId, amount, note = "", { order = "due" } = {}) {
+  function shrinkPlan(user, planId, amount, note = "", { order = "due", log = null } = {}) {
     const row = store.get("SELECT id, name, total, status, close_rule AS closeRule, account_id AS accountId FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
     if (!shrinkable(row, order)) return 0;
     const plan = { id: row.id, name: row.name, total: Number(row.total) || 0 };
     const left = roundMoney(Math.max(0, plan.total - Math.max(0, netPaid(plan.id))));
     const cut = roundMoney(Math.min(Number(amount) || 0, left));
     if (!(cut > 0.005)) return 0;
-    cutPlan(plan, cut, user, { accountId: row.accountId, reason: note || "İade", order });
+    cutPlan(plan, cut, user, { accountId: row.accountId, reason: note || "İade", order, log });
     return cut;
   }
   function leftOf(planId) {
@@ -760,8 +762,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       if (!(cut > 0.005)) continue;
       // Kuyruk (in-tx, carinin defterinden — invoices.obligationsOf) yalnız gerçekten kesilecek kart varsa bir kez kurulur (ders 47).
       if (queue === undefined) queue = openByQueue(accountId, account.ledger);
-      const total = cutPlan(plan, cut, user, { accountId, reason: note || "İade / alacak", open: queue?.get(plan.id) || null });
-      changedPlans.push({ id: plan.id, name: plan.name, from: plan.total, to: total, cut });
+      const items = [];
+      const total = cutPlan(plan, cut, user, { accountId, reason: note || "İade / alacak", open: queue?.get(plan.id) || null, log: items });
+      changedPlans.push({ id: plan.id, name: plan.name, from: plan.total, to: total, cut, items });
       excess = roundMoney(excess - cut);
     }
     return changedPlans;
@@ -1803,21 +1806,36 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // faturanın taksitlendirilen kalanını aşmaz (cap). Kapatılmış kart değişmez.
   // 2.5.0 S234 = A (§18.2): küçülmenin tersi — Borçta Kalsın ile kapatılmış kart da (iade kapalı kartı küçültür; iade iptali / düzenlemesi geri büyütür, son taksite — S216 = C).
   // Kalanı düşülmüş eski kurallı kapalı kart bugünkü gibi değişmez.
-  function growForInvoice(user, planId, amount, cap, note = "") {
+  // items (2.5.0 İzleyen küçük tur — S238 = A, tasarım §19.3): iadenin kestiği taksitler (cutPlan log'u; iade belgesinde kayıtlı) — büyüme önce bunlara TERS sırayla geri yazılır (taksit duruyorsa tutarı
+  // artar, silinmişse aynı kimlik / sıra / vade / notla yeniden açılır: iade hiç olmamış gibi). Kayıtla karşılanmayan büyüme (kaydı olmayan eski iade) bugünkü gibi son taksite.
+  function growForInvoice(user, planId, amount, cap, note = "", { items = null } = {}) {
     const plan = store.get("SELECT id, name, total, status, close_rule AS closeRule FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
     if (!shrinkable(plan)) return null;
     const grow = roundMoney(Math.min(Number(amount) || 0, (Number(cap) || 0) - (Number(plan.total) || 0)));
     if (!(grow > 0.005)) return null;
-    const last = store.get("SELECT id, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date DESC, seq DESC LIMIT 1", plan.id);
     const stamp = now();
-    if (last) store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", roundMoney((Number(last.amount) || 0) + grow), stamp, last.id);
+    let rest = grow;
+    for (const row of Array.isArray(items) ? [...items].reverse() : []) {
+      if (!(rest > 0.005)) break;
+      const back = roundMoney(Math.min(rest, Number(row?.take) || 0));
+      if (!(back > 0.005) || !row?.id) continue;
+      const found = store.get("SELECT id, plan_id AS planId, amount FROM plan_items WHERE id = ?", row.id);
+      if (found && found.planId !== plan.id) continue;
+      if (found) store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", roundMoney((Number(found.amount) || 0) + back), stamp, found.id);
+      else store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", row.id, plan.id, Number(row.seq) || 1, String(row.dueDate || today()), back, String(row.note || ""), stamp, stamp);
+      rest = roundMoney(rest - back);
+    }
+    const last = rest > 0.005 ? store.get("SELECT id, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date DESC, seq DESC LIMIT 1", plan.id) : null;
+    if (!(rest > 0.005)) {
+      // kayıtlı taksitler büyümenin tamamını karşıladı
+    } else if (last) store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", roundMoney((Number(last.amount) || 0) + rest), stamp, last.id);
     else {
       // v2.0.17 (stres testi bulgusu): iade kartı tümüyle küçültmüşse (taksit satırı kalmamışsa) iade iptalinde borç
       // yeniden karta yazılır — yeni bir taksit satırı açılır (vade: son tahsilat tarihi ya da bugün). Aksi hâlde cari
       // borçlanır ama taksit kartı 0'da kalır (kart ile cari uyuşmaz).
       const lastEntry = store.get("SELECT MAX(date) AS date FROM plan_entries WHERE plan_id = ?", plan.id)?.date || "";
       const seq = (store.get("SELECT COALESCE(MAX(seq), 0) AS n FROM plan_items WHERE plan_id = ?", plan.id)?.n || 0) + 1;
-      store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", newId("item"), plan.id, seq, lastEntry > today() ? lastEntry : today(), grow, note || "İade iptali", stamp, stamp);
+      store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", newId("item"), plan.id, seq, lastEntry > today() ? lastEntry : today(), rest, note || "İade iptali", stamp, stamp);
     }
     store.run(`UPDATE plans SET ${FREEZE_CLOSE}, total = ?, updated_by = ?, updated_at = ? WHERE id = ?`, roundMoney((Number(plan.total) || 0) + grow), user.id, stamp, plan.id);
     audit(user, "plan.grown", plan.id, { from: plan.total, to: roundMoney((Number(plan.total) || 0) + grow), reason: note || "İade iptali" });
