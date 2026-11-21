@@ -885,3 +885,20 @@ BAŞ MİMAR KARARI 21.11 18:28 (1)–(7). Taban 288b91dc (izt-sinama). Bugünkü
 6. İade Düzenle'si kendi / kapsayan kart: kayıtlı taksitlere geri, yeni iadeyle yeniden kesim; kaydı olmayan eski iade bugünkü gibi.
 7. Kilitli dönem: Düzenle / iade / iptalin tarih kilidi aynen; yedek → geri yükleme: editCuts / ownCutItems / coverCutItems taşınıyor, geri yüklemeden sonra iade iptali aynı taksite büyüyor.
 8. Eşdeğerlik: kayıtsız / kesintisiz girdide kuyruk ve kapama sonucu AYNEN (withEditCuts girdiyi değiştirmez; seçim satışla açılan kartta aynı).
+
+### 20.7 Kod ve sonuç (kodla birlikte; kanıt docs/kanit/2026-11-21/izt2-*)
+- `lib/cover-scope.mjs` (YENİ, saf): `s2`, `ownSaleOf`, `chooseCover` (kuyruktan AYNEN taşınan seçim) + `editCutsOf`, `withEditCuts` (S241). `lib/obligation-queue.mjs`: `coverEvent` seçimi `chooseCover`'dan;
+  `buildObligations` / `doubtfulBefore` girdisi `withEditCuts`'tan (yapay belgeler sonuçtan silinir). `lib/invoice-settle.mjs`: `settleLedger` = `withEditCuts` + `settleLedgerOnce`; kapsam `coverChoice` (newestFirst KALKTI;
+  `dueDates` girdisi). `lib/obligation-input.mjs`: fatura sorgularına `editCuts` sütunu; `accountSettleInput(..., { withDue })`. `lib/account-lines.mjs returnCuts`: Düzenle kesintileri kapsama.
+  `routes/invoices.mjs`: `settledFor` withDue; `editInvoice` → `editCutsFor` / `putEditCuts` / `shrinkCoversByEdit` (kesim + taksit kaydı döner); `undoReturnCuts` (iade iptali + iade Düzenle'si — İş 4).
+  `routes/stock.mjs`: `trimReturn` / `undoReturnCuts` (iz `stock.return.cuts`; POST / PUT / DELETE / Silinenler'den geri yükleme — İş 5).
+- Sonuç (yoklama `izt2-kos/p1.mjs`; taban `p1-taban.txt` ↔ yeni `p1-yeni.txt`; sınama `test/izt2-izleyen-tur-250.test.mjs` 17; ekran `test/e2e/senaryo-izt2-250.mjs` 24):
+  S241 kart penceresi 300 / 300 → 600 / 600 / 0 (kendi hesap 600 / 600 / 0), bakiye −300; kapsam: A / B / elle kart 600 → kapama defteri A'yı kapsar (tabanda B), B'nin İptal Et'i kartı değiştirmez (tabanda
+  kapatıyordu), A'nın İptal Et'i kartı kapatır (tabanda değiştirmiyordu), A'ya iade kartı 300'e indirir, B'ye iade kartı değiştirmez (tabanda 300'e indiriyordu); iade Düzenle'si kendi kartta 10.10 600 → 10.10 300 +
+  10.12 300; stok iadesi silinince kart aynı taksitlere geri (tabanda geri büyümüyordu — 20.11 gecikmiş 600 → 300), düzeltme 1 → 2 kartı küçültür (tabanda küçültmüyordu), geri yükleme yeniden küçültür.
+- İş 3 (Düzenle azaltma hızı) KODLANMADI — kök neden dosya sınırı dışında (`lib/integrity-scope.mjs`): CPU profili 8,0 sn'nin ~7,1 sn'si kapının TAM denetimi (`integrity.mjs check → run`); neden
+  `stock_moves: kimlik değişti` — Düzenle faturanın stok hareketlerini silip yeniden yazar, son yazılan satırların rowid'i yeniden kullanılır, süzgeç aynı rowid'de farklı kimliği "bilinmeyen" sayıp tam kapıya
+  düşer (yeni kaydedilmiş faturanın Düzenle'si, aynı faturanın ikinci Düzenle'si). Öneri (prototip ölçüldü, kod değil): süzgeçte aynı rowid + farklı kimlik = silinen + eklenen iki satır → 8.004 → 228 ms, kapı
+  sınamaları 94 / 94 (gateVerify eşdeğerliği dahil). BAŞ MİMAR KARARI GEREKEN (rapor).
+- KOD SÜRERKEN GÖRÜLDÜ (kararların söylemediği; bugünkü davranış AYNEN — rapor 'KULLANICIYA SORULMALI'): iadeyle küçülen taksit sonradan elle düzenlenip / silinip iade iptal edilince geri gelen tutar
+  kaydedilmiş taksite yazılır (tutarı elle değişmişse üstüne eklenir, vadesi elle değişmişse yeni vadesiyle, silinmişse eski vadesiyle yeniden açılır); sayılar `p1-*.txt` ELLE-*.
