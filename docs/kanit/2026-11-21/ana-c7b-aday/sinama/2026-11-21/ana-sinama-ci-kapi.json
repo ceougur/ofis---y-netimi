@@ -1,0 +1,32 @@
+{
+  "ad": "ana-sinama-ci-kapi",
+  "komut": "node --test test/ci-kapi-listesi.test.mjs",
+  "commit": "ccd00100064df798a95ee19d4a5abb9b7ef3cb43",
+  "dal": "c7b-sinama",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T03:42:54.825Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-sinama/kanit/2026-11-21/ana-sinama-ci-kapi.log",
+  "klasor": "/dev/shm/c7b-sinama",
+  "ham_cikti_sha256": "9b0be94f4fd601e035dc06874c3e69844e94f5384fed843f5981985b84155fd1",
+  "ham_cikti_bayt": 1814
+}

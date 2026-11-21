@@ -1,0 +1,32 @@
+{
+  "ad": "ana-sinama-dar-Europe-Istanbul",
+  "komut": "node --test test/c7bfix-kart-kapat-kuyruk-250.test.mjs test/c7b-kart-kapat-onay-250.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/s229-acik-fatura-kart-payi-250.test.mjs test/s229-eski-surum-250.test.mjs test/bulgu-223.test.mjs test/iade-210.test.mjs test/iade-geri-odeme-246.test.mjs test/iade-kapama-k1.test.mjs test/kapama-rastgele-223.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/tyk-kapanis-dis-250.test.mjs test/tyk-son-250.test.mjs test/ux18-cek-fatura-244.test.mjs",
+  "commit": "ccd00100064df798a95ee19d4a5abb9b7ef3cb43",
+  "dal": "c7b-sinama",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T03:52:52.233Z",
+  "sure_sn": 45.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 303,
+    "gecen": 303,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-sinama/kanit/2026-11-21/ana-sinama-dar-Europe-Istanbul.log",
+  "klasor": "/dev/shm/c7b-sinama",
+  "ham_cikti_sha256": "8e4774d3c4fbf987194cf72dd9feabf760b4758b9b5f16a2e64aa120e9b6f179",
+  "ham_cikti_bayt": 112821
+}

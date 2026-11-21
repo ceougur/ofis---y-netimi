@@ -1,0 +1,302 @@
+HIZ ana-c7ba · kilitsiz · tekrar 5 · kilit 20:58:18 · başta 1.09 1.75 2.38 2/134 26247 · nproc 4 · eski af655afd af655afd · yeni c7b-aday df7e93ca
+=== eski · 20:58:18
+--- c7b · başta 1.09 1.75 2.38 1/136 26262 
+kod /dev/shm/ana-c7ba/eski · yük (başta) 1.12 1.71 2.35 · TZ Europe/Istanbul
+  AÇILIŞ (göç dahil): durum 200 · en iyi 22870.9 ms · ortanca 22871 ms · olay döngüsü en çok 0 ms (n=1)
+donma: bekleyen koşu yok (kapsam —)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3180.3 ms · ortanca 3408.2 ms · olay döngüsü en çok 3512.7 ms (n=5)
+  Yevmiye Defteri (rapor, yıl): durum 200 · en iyi 2267.8 ms · ortanca 2378.8 ms · olay döngüsü en çok 2422.2 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 3052.7 ms · ortanca 3132.7 ms · olay döngüsü en çok 0 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3118.1 ms · ortanca 3229.7 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 488 ms · ortanca 517.4 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 11575 ms · ortanca 11807.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7325.9 ms · ortanca 7639.1 ms · olay döngüsü en çok 0 ms (n=5)
+  KDV Özeti (rapor, yıl): durum 200 · en iyi 2264.3 ms · ortanca 2287.2 ms · olay döngüsü en çok 0 ms (n=5)
+  KDV Mahsup ön izleme (Eylül): durum 200 · en iyi 4299.1 ms · ortanca 4536.5 ms · olay döngüsü en çok 4643.1 ms (n=5)
+  KDV Mahsup listesi: durum 200 · en iyi 2166.9 ms · ortanca 2212 ms · olay döngüsü en çok 2292.2 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi: durum 200 · en iyi 3.1 ms · ortanca 3.4 ms · olay döngüsü en çok 73.9 ms (n=5)
+  YAZIM satış faturası (açık hesap): durum 200 · en iyi 93 ms · ortanca 114.7 ms · olay döngüsü en çok 118.4 ms (n=5)
+  YAZIM alış faturası (gider): durum 200 · en iyi 63.3 ms · ortanca 76 ms · olay döngüsü en çok 80.7 ms (n=5)
+  YAZIM satıştan iade: durum 200 · en iyi 338.9 ms · ortanca 356.4 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kasa + (carisiz): durum 200 · en iyi 9.2 ms · ortanca 11.3 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM KDV Mahsup fişi (Eylül): durum 200 · en iyi 4510.3 ms · ortanca 4612.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM KDV Mahsup Geri Al: durum 200 · en iyi 2243.3 ms · ortanca 2263.3 ms · olay döngüsü en çok 2338.3 ms (n=5)
+  YAZIM Alacak Yaz: durum 200 · en iyi 197.3 ms · ortanca 214.9 ms · olay döngüsü en çok 238.4 ms (n=5)
+  YAZIM Borç Yaz: durum 200 · en iyi 178.9 ms · ortanca 222.9 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM taksit kartı (Yeni Borç): durum 200 · en iyi 1060.3 ms · ortanca 1090.5 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kartı Kapat: durum 200 · en iyi 1003.5 ms · ortanca 1033.6 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali (alış): durum 200 · en iyi 59.8 ms · ortanca 62.4 ms · olay döngüsü en çok 0 ms (n=5)
+yük (sonda) 1.01 1.30 2.01
+çıkış 0 · sonda 1.01 1.30 2.01 1/131 26537
+--- c7b3b · başta 1.01 1.30 2.01 1/131 26544 
+kod /dev/shm/ana-c7ba/eski · yük (başta) 1.09 1.30 2.00 · TZ Europe/Istanbul · açılış 22705.1 ms
+veri: 102295 cari satırı, 11448 kart (2756 kapalı), kilit (yok); kart A plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66, kalan 12575.4), kart B plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f~1 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1)
+  İLK YAZIM Kartı Kapat (kart B; kapı): durum 200 · 1008 ms · olay döngüsü en çok 0 ms
+  İLK cari kartı (kart B'nin carisi; ekstre): durum 200 · 167.7 ms · olay döngüsü en çok 0 ms
+  İLK cari kartı (kapalı kart A'nın carisi): durum 200 · 157.3 ms · olay döngüsü en çok 0 ms
+  İLK kart GET (kapalı kart A): durum 200 · 3.1 ms · olay döngüsü en çok 0 ms
+  İLK Cari Listesi · Gecikmiş süzgeci: durum 200 · 948.6 ms · olay döngüsü en çok 946.3 ms
+  İLK Cari Listesi · ilk sayfa: durum 200 · 802 ms · olay döngüsü en çok 0 ms
+  İLK Taksitler · Geciken: durum 200 · 877.3 ms · olay döngüsü en çok 6.2 ms
+  İLK Taksitler · Kapalı: durum 200 · 675.7 ms · olay döngüsü en çok 654.3 ms
+  İLK zil / takvim (dues): durum 200 · 2045 ms · olay döngüsü en çok 1761.6 ms
+  İLK Vade Takip: durum 200 · 1595.8 ms · olay döngüsü en çok 1576 ms
+  İLK nakit akışı: durum 200 · 4706.7 ms · olay döngüsü en çok 4534 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 3482.6 ms · olay döngüsü en çok 3479.2 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 11801.4 ms · olay döngüsü en çok 0 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 2392.4 ms · olay döngüsü en çok 0 ms
+  İLK Şüpheli Alacaklar raporu: durum 200 · 5.2 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM cari tahsilatı (kart B'nin carisi; kapı): durum 200 · 195.4 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart B; kapı): durum 200 · 1103.1 ms · olay döngüsü en çok 0 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 7785.7 ms · olay döngüsü en çok 0 ms
+  YAZIM Kartı Kapat (kart B; kapı): durum 200 · en iyi 997.6 ms · ortanca 1012 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (kart B'nin carisi; ekstre): durum 200 · en iyi 148.1 ms · ortanca 150.9 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (kapalı kart A'nın carisi): durum 200 · en iyi 144.3 ms · ortanca 151.5 ms · olay döngüsü en çok 0 ms (n=5)
+  kart GET (kapalı kart A): durum 200 · en iyi 1.8 ms · ortanca 1.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi · Gecikmiş süzgeci: durum 200 · en iyi 697.2 ms · ortanca 737.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi · ilk sayfa: durum 200 · en iyi 692.6 ms · ortanca 800.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Taksitler · Geciken: durum 200 · en iyi 819.7 ms · ortanca 867 ms · olay döngüsü en çok 847.2 ms (n=5)
+  Taksitler · Kapalı: durum 200 · en iyi 668 ms · ortanca 731.8 ms · olay döngüsü en çok 811.1 ms (n=5)
+  zil / takvim (dues): durum 200 · en iyi 1930.1 ms · ortanca 2011.1 ms · olay döngüsü en çok 1901.1 ms (n=5)
+  Vade Takip: durum 200 · en iyi 1564.6 ms · ortanca 1686.2 ms · olay döngüsü en çok 1792 ms (n=5)
+  nakit akışı: durum 200 · en iyi 4434.5 ms · ortanca 4632.4 ms · olay döngüsü en çok 4722.8 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3203.3 ms · ortanca 3380.5 ms · olay döngüsü en çok 3533.7 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 10687.7 ms · ortanca 10842.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2206.4 ms · ortanca 2363.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Şüpheli Alacaklar raporu: durum 200 · en iyi 3.1 ms · ortanca 3.3 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM cari tahsilatı (kart B'nin carisi; kapı): durum 200 · en iyi 173.2 ms · ortanca 182.9 ms · olay döngüsü en çok 180.2 ms (n=5)
+  YAZIM Yeniden Aç (kart B; kapı): durum 200 · en iyi 1015.5 ms · ortanca 1035.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7209.8 ms · ortanca 7609.3 ms · olay döngüsü en çok 7788.8 ms (n=5)
+son durum: kart B active · A cari bakiyesi 149740.43
+yük (sonda) 1.06 1.18 1.79
+çıkış 0 · sonda 1.06 1.18 1.79 1/132 26798
+--- excel · başta 1.06 1.18 1.79 1/132 26805 
+kod /dev/shm/ana-c7ba/eski · kilitsiz · kilit '' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.04 1.17 1.77
+SONUÇ kilitsiz: durum 200 · yanıt 3394 ms · olay döngüsü en çok 3387 ms · satır 2000 · açılan 506 · bağlanan 0 · atlanan {"Aynı adla açık kart var":1494} · yük 1.04 1.17 1.77
+çıkış 0 · sonda 1.04 1.17 1.77 1/129 26819
+=== yeni · 21:07:45
+--- c7b · başta 1.04 1.17 1.77 1/129 26827 
+kod /dev/shm/ana-c7ba/yeni · yük (başta) 1.03 1.15 1.74 · TZ Europe/Istanbul
+  AÇILIŞ (göç dahil): durum 200 · en iyi 22108.2 ms · ortanca 22108.2 ms · olay döngüsü en çok 0 ms (n=1)
+donma: bekleyen koşu yok (kapsam —)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3236 ms · ortanca 3558 ms · olay döngüsü en çok 3640.7 ms (n=5)
+  Yevmiye Defteri (rapor, yıl): durum 200 · en iyi 2288.6 ms · ortanca 2363.1 ms · olay döngüsü en çok 2283.8 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 3167.2 ms · ortanca 3294.6 ms · olay döngüsü en çok 3212.8 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3243.8 ms · ortanca 3425 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 481.6 ms · ortanca 520.2 ms · olay döngüsü en çok 514.3 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 11743.9 ms · ortanca 12099.5 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7731.6 ms · ortanca 7856.8 ms · olay döngüsü en çok 7855.9 ms (n=5)
+  KDV Özeti (rapor, yıl): durum 200 · en iyi 2180.1 ms · ortanca 2388.5 ms · olay döngüsü en çok 0 ms (n=5)
+  KDV Mahsup ön izleme (Eylül): durum 200 · en iyi 4465.8 ms · ortanca 4603.4 ms · olay döngüsü en çok 4869.6 ms (n=5)
+  KDV Mahsup listesi: durum 200 · en iyi 2176.1 ms · ortanca 2279.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi: durum 200 · en iyi 3.1 ms · ortanca 3.5 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satış faturası (açık hesap): durum 200 · en iyi 87.1 ms · ortanca 96.6 ms · olay döngüsü en çok 97.6 ms (n=5)
+  YAZIM alış faturası (gider): durum 200 · en iyi 63.7 ms · ortanca 70.1 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satıştan iade: durum 200 · en iyi 160.1 ms · ortanca 164.5 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kasa + (carisiz): durum 200 · en iyi 9.3 ms · ortanca 9.9 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM KDV Mahsup fişi (Eylül): durum 200 · en iyi 4235.2 ms · ortanca 4555.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM KDV Mahsup Geri Al: durum 200 · en iyi 2140.5 ms · ortanca 2245 ms · olay döngüsü en çok 2275.4 ms (n=5)
+  YAZIM Alacak Yaz: durum 200 · en iyi 218 ms · ortanca 226 ms · olay döngüsü en çok 234.6 ms (n=5)
+  YAZIM Borç Yaz: durum 200 · en iyi 230.2 ms · ortanca 234.9 ms · olay döngüsü en çok 239.5 ms (n=5)
+  YAZIM taksit kartı (Yeni Borç): durum 200 · en iyi 1071.5 ms · ortanca 1155.7 ms · olay döngüsü en çok 1069 ms (n=5)
+  YAZIM Kartı Kapat: durum 200 · en iyi 960 ms · ortanca 1051.4 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali (alış): durum 200 · en iyi 58.9 ms · ortanca 62.6 ms · olay döngüsü en çok 57.5 ms (n=5)
+yük (sonda) 1.17 1.15 1.59
+çıkış 0 · sonda 1.17 1.15 1.59 1/132 27137
+--- c7b3b · başta 1.17 1.15 1.59 1/132 27144 
+kod /dev/shm/ana-c7ba/yeni · yük (başta) 1.11 1.13 1.57 · TZ Europe/Istanbul · açılış 22928.9 ms
+veri: 102295 cari satırı, 11448 kart (2756 kapalı), kilit (yok); kart A plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66, kalan 12575.4), kart B plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f~1 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1)
+  İLK YAZIM Kartı Kapat (kart B; kapı): durum 200 · 1292.8 ms · olay döngüsü en çok 0 ms
+  İLK cari kartı (kart B'nin carisi; ekstre): durum 200 · 161 ms · olay döngüsü en çok 155.3 ms
+  İLK cari kartı (kapalı kart A'nın carisi): durum 200 · 142.3 ms · olay döngüsü en çok 137.4 ms
+  İLK kart GET (kapalı kart A): durum 200 · 2.9 ms · olay döngüsü en çok 0 ms
+  İLK Cari Listesi · Gecikmiş süzgeci: durum 200 · 910.6 ms · olay döngüsü en çok 0 ms
+  İLK Cari Listesi · ilk sayfa: durum 200 · 793.9 ms · olay döngüsü en çok 0 ms
+  İLK Taksitler · Geciken: durum 200 · 921.3 ms · olay döngüsü en çok 11.9 ms
+  İLK Taksitler · Kapalı: durum 200 · 736.3 ms · olay döngüsü en çok 715.7 ms
+  İLK zil / takvim (dues): durum 200 · 2062.6 ms · olay döngüsü en çok 1789.9 ms
+  İLK Vade Takip: durum 200 · 1575.5 ms · olay döngüsü en çok 1556.1 ms
+  İLK nakit akışı: durum 200 · 4769.7 ms · olay döngüsü en çok 4605.3 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 3748 ms · olay döngüsü en çok 3745.5 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 11844.1 ms · olay döngüsü en çok 0 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 2413.1 ms · olay döngüsü en çok 0 ms
+  İLK Şüpheli Alacaklar raporu: durum 200 · 4.9 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM cari tahsilatı (kart B'nin carisi; kapı): durum 200 · 190.6 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart B; kapı): durum 200 · 970.4 ms · olay döngüsü en çok 968.9 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 8025.3 ms · olay döngüsü en çok 0 ms
+  YAZIM Kartı Kapat (kart B; kapı): durum 200 · en iyi 966.8 ms · ortanca 1111 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (kart B'nin carisi; ekstre): durum 200 · en iyi 153.8 ms · ortanca 169.2 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (kapalı kart A'nın carisi): durum 200 · en iyi 152.1 ms · ortanca 169 ms · olay döngüsü en çok 180 ms (n=5)
+  kart GET (kapalı kart A): durum 200 · en iyi 1.8 ms · ortanca 2 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi · Gecikmiş süzgeci: durum 200 · en iyi 739.3 ms · ortanca 773.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi · ilk sayfa: durum 200 · en iyi 789.5 ms · ortanca 806.4 ms · olay döngüsü en çok 0 ms (n=5)
+  Taksitler · Geciken: durum 200 · en iyi 791.9 ms · ortanca 872.1 ms · olay döngüsü en çok 16.1 ms (n=5)
+  Taksitler · Kapalı: durum 200 · en iyi 721.8 ms · ortanca 797.6 ms · olay döngüsü en çok 908.1 ms (n=5)
+  zil / takvim (dues): durum 200 · en iyi 1995.9 ms · ortanca 2106.9 ms · olay döngüsü en çok 2151.7 ms (n=5)
+  Vade Takip: durum 200 · en iyi 1641.2 ms · ortanca 1659.2 ms · olay döngüsü en çok 1943 ms (n=5)
+  nakit akışı: durum 200 · en iyi 4418.8 ms · ortanca 4631.8 ms · olay döngüsü en çok 4894.8 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3247.4 ms · ortanca 3414.5 ms · olay döngüsü en çok 3707.8 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 10520 ms · ortanca 11155.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2205.2 ms · ortanca 2307.9 ms · olay döngüsü en çok 2862.6 ms (n=5)
+  Şüpheli Alacaklar raporu: durum 200 · en iyi 3.1 ms · ortanca 3.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM cari tahsilatı (kart B'nin carisi; kapı): durum 200 · en iyi 180 ms · ortanca 191 ms · olay döngüsü en çok 242.2 ms (n=5)
+  YAZIM Yeniden Aç (kart B; kapı): durum 200 · en iyi 983.7 ms · ortanca 1084.4 ms · olay döngüsü en çok 1044.9 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7551.8 ms · ortanca 7842.6 ms · olay döngüsü en çok 0 ms (n=5)
+son durum: kart B active · A cari bakiyesi 162315.82
+yük (sonda) 1.04 1.11 1.46
+çıkış 0 · sonda 1.04 1.11 1.46 1/135 27409
+--- excel · başta 1.04 1.11 1.46 1/135 27416 
+kod /dev/shm/ana-c7ba/yeni · kilitsiz · kilit '' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.02 1.10 1.44
+SONUÇ kilitsiz: durum 200 · yanıt 3284 ms · olay döngüsü en çok 3272 ms · satır 2000 · açılan 906 · bağlanan 0 · atlanan {"Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yü":1094} · yük 1.02 1.09 1.44
+çıkış 0 · sonda 1.02 1.09 1.44 1/134 27455
+=== eski · 21:17:22
+--- c7b · başta 1.02 1.09 1.44 1/134 27463 
+kod /dev/shm/ana-c7ba/eski · yük (başta) 1.09 1.10 1.44 · TZ Europe/Istanbul
+  AÇILIŞ (göç dahil): durum 200 · en iyi 22738.5 ms · ortanca 22738.5 ms · olay döngüsü en çok 0 ms (n=1)
+donma: bekleyen koşu yok (kapsam —)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3187.4 ms · ortanca 3369.7 ms · olay döngüsü en çok 3265.3 ms (n=5)
+  Yevmiye Defteri (rapor, yıl): durum 200 · en iyi 2170.5 ms · ortanca 2289.1 ms · olay döngüsü en çok 2168.5 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 3097.6 ms · ortanca 3201.3 ms · olay döngüsü en çok 3120.6 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3084.6 ms · ortanca 3229.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 483.6 ms · ortanca 490.9 ms · olay döngüsü en çok 680 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 11412.7 ms · ortanca 12279.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7180.3 ms · ortanca 7613.6 ms · olay döngüsü en çok 0 ms (n=5)
+  KDV Özeti (rapor, yıl): durum 200 · en iyi 2233.1 ms · ortanca 2402.4 ms · olay döngüsü en çok 2227.2 ms (n=5)
+  KDV Mahsup ön izleme (Eylül): durum 200 · en iyi 4071.1 ms · ortanca 4623.8 ms · olay döngüsü en çok 4689.2 ms (n=5)
+  KDV Mahsup listesi: durum 200 · en iyi 2116.7 ms · ortanca 2208.1 ms · olay döngüsü en çok 2264.9 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi: durum 200 · en iyi 3.4 ms · ortanca 3.7 ms · olay döngüsü en çok 82.4 ms (n=5)
+  YAZIM satış faturası (açık hesap): durum 200 · en iyi 83.5 ms · ortanca 91.2 ms · olay döngüsü en çok 100.5 ms (n=5)
+  YAZIM alış faturası (gider): durum 200 · en iyi 64.6 ms · ortanca 70.8 ms · olay döngüsü en çok 68.9 ms (n=5)
+  YAZIM satıştan iade: durum 200 · en iyi 306 ms · ortanca 334 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kasa + (carisiz): durum 200 · en iyi 9.7 ms · ortanca 10.6 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM KDV Mahsup fişi (Eylül): durum 200 · en iyi 4141 ms · ortanca 4520.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM KDV Mahsup Geri Al: durum 200 · en iyi 2180.7 ms · ortanca 2234.8 ms · olay döngüsü en çok 2355.1 ms (n=5)
+  YAZIM Alacak Yaz: durum 200 · en iyi 200.2 ms · ortanca 220.2 ms · olay döngüsü en çok 267.3 ms (n=5)
+  YAZIM Borç Yaz: durum 200 · en iyi 207.7 ms · ortanca 222.2 ms · olay döngüsü en çok 245.8 ms (n=5)
+  YAZIM taksit kartı (Yeni Borç): durum 200 · en iyi 1036 ms · ortanca 1093.8 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kartı Kapat: durum 200 · en iyi 972.7 ms · ortanca 991.2 ms · olay döngüsü en çok 1112.5 ms (n=5)
+  YAZIM fatura iptali (alış): durum 200 · en iyi 59.3 ms · ortanca 63.6 ms · olay döngüsü en çok 73.1 ms (n=5)
+yük (sonda) 1.27 1.18 1.38
+çıkış 0 · sonda 1.27 1.18 1.38 1/122 27865
+--- c7b3b · başta 1.27 1.18 1.38 1/122 27872 
+kod /dev/shm/ana-c7ba/eski · yük (başta) 1.25 1.18 1.38 · TZ Europe/Istanbul · açılış 22481.5 ms
+veri: 102295 cari satırı, 11448 kart (2756 kapalı), kilit (yok); kart A plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66, kalan 12575.4), kart B plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f~1 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1)
+  İLK YAZIM Kartı Kapat (kart B; kapı): durum 200 · 1024.9 ms · olay döngüsü en çok 0 ms
+  İLK cari kartı (kart B'nin carisi; ekstre): durum 200 · 186.3 ms · olay döngüsü en çok 181.7 ms
+  İLK cari kartı (kapalı kart A'nın carisi): durum 200 · 190 ms · olay döngüsü en çok 0 ms
+  İLK kart GET (kapalı kart A): durum 200 · 3.4 ms · olay döngüsü en çok 0 ms
+  İLK Cari Listesi · Gecikmiş süzgeci: durum 200 · 954.5 ms · olay döngüsü en çok 0 ms
+  İLK Cari Listesi · ilk sayfa: durum 200 · 799.6 ms · olay döngüsü en çok 0 ms
+  İLK Taksitler · Geciken: durum 200 · 941.7 ms · olay döngüsü en çok 8 ms
+  İLK Taksitler · Kapalı: durum 200 · 774.9 ms · olay döngüsü en çok 746.1 ms
+  İLK zil / takvim (dues): durum 200 · 2092 ms · olay döngüsü en çok 1823.5 ms
+  İLK Vade Takip: durum 200 · 1648.8 ms · olay döngüsü en çok 1628.4 ms
+  İLK nakit akışı: durum 200 · 4671.9 ms · olay döngüsü en çok 4504.7 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 3483.3 ms · olay döngüsü en çok 3483.4 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 10913.9 ms · olay döngüsü en çok 0 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 2243.6 ms · olay döngüsü en çok 0 ms
+  İLK Şüpheli Alacaklar raporu: durum 200 · 5.3 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM cari tahsilatı (kart B'nin carisi; kapı): durum 200 · 198.5 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart B; kapı): durum 200 · 1079 ms · olay döngüsü en çok 0 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 7125 ms · olay döngüsü en çok 0 ms
+  YAZIM Kartı Kapat (kart B; kapı): durum 200 · en iyi 967.4 ms · ortanca 1035 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (kart B'nin carisi; ekstre): durum 200 · en iyi 142.6 ms · ortanca 150.7 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (kapalı kart A'nın carisi): durum 200 · en iyi 137.7 ms · ortanca 149.5 ms · olay döngüsü en çok 142.6 ms (n=5)
+  kart GET (kapalı kart A): durum 200 · en iyi 2 ms · ortanca 2 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi · Gecikmiş süzgeci: durum 200 · en iyi 706 ms · ortanca 796.6 ms · olay döngüsü en çok 813.7 ms (n=5)
+  Cari Listesi · ilk sayfa: durum 200 · en iyi 728.8 ms · ortanca 771.7 ms · olay döngüsü en çok 836.2 ms (n=5)
+  Taksitler · Geciken: durum 200 · en iyi 758.6 ms · ortanca 811.4 ms · olay döngüsü en çok 11.2 ms (n=5)
+  Taksitler · Kapalı: durum 200 · en iyi 666.6 ms · ortanca 699.9 ms · olay döngüsü en çok 781.7 ms (n=5)
+  zil / takvim (dues): durum 200 · en iyi 1834.3 ms · ortanca 1940.9 ms · olay döngüsü en çok 1779.4 ms (n=5)
+  Vade Takip: durum 200 · en iyi 1516.9 ms · ortanca 1586.6 ms · olay döngüsü en çok 1598 ms (n=5)
+  nakit akışı: durum 200 · en iyi 4383.1 ms · ortanca 4417.9 ms · olay döngüsü en çok 4286.6 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3118.1 ms · ortanca 3231.2 ms · olay döngüsü en çok 3284.1 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 10281.6 ms · ortanca 10493.5 ms · olay döngüsü en çok 0 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2171.5 ms · ortanca 2269.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Şüpheli Alacaklar raporu: durum 200 · en iyi 3 ms · ortanca 3.3 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM cari tahsilatı (kart B'nin carisi; kapı): durum 200 · en iyi 173 ms · ortanca 180.2 ms · olay döngüsü en çok 182.2 ms (n=5)
+  YAZIM Yeniden Aç (kart B; kapı): durum 200 · en iyi 986.3 ms · ortanca 1016.4 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7089 ms · ortanca 7476.9 ms · olay döngüsü en çok 0 ms (n=5)
+son durum: kart B active · A cari bakiyesi 149740.43
+yük (sonda) 1.27 1.22 1.35
+çıkış 0 · sonda 1.27 1.22 1.35 1/123 28063
+--- excel · başta 1.27 1.22 1.35 1/123 28072 
+kod /dev/shm/ana-c7ba/eski · kilitsiz · kilit '' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.35 1.23 1.35
+SONUÇ kilitsiz: durum 200 · yanıt 3259 ms · olay döngüsü en çok 3251 ms · satır 2000 · açılan 506 · bağlanan 0 · atlanan {"Aynı adla açık kart var":1494} · yük 1.32 1.23 1.35
+çıkış 0 · sonda 1.32 1.23 1.35 1/127 28099
+=== yeni · 21:26:37
+--- c7b · başta 1.32 1.23 1.35 1/127 28107 
+kod /dev/shm/ana-c7ba/yeni · yük (başta) 1.53 1.28 1.36 · TZ Europe/Istanbul
+  AÇILIŞ (göç dahil): durum 200 · en iyi 21378.1 ms · ortanca 21378.1 ms · olay döngüsü en çok 0 ms (n=1)
+donma: bekleyen koşu yok (kapsam —)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3205.4 ms · ortanca 3385.1 ms · olay döngüsü en çok 3646.9 ms (n=5)
+  Yevmiye Defteri (rapor, yıl): durum 200 · en iyi 2164 ms · ortanca 2370 ms · olay döngüsü en çok 2380.3 ms (n=5)
+  Yevmiye Defteri bütün zaman (rapor): durum 200 · en iyi 2997.8 ms · ortanca 3085.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3101.4 ms · ortanca 3211.2 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 479.7 ms · ortanca 508.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 11273.9 ms · ortanca 11654.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7202.6 ms · ortanca 7527.1 ms · olay döngüsü en çok 0 ms (n=5)
+  KDV Özeti (rapor, yıl): durum 200 · en iyi 2326 ms · ortanca 2354.5 ms · olay döngüsü en çok 0 ms (n=5)
+  KDV Mahsup ön izleme (Eylül): durum 200 · en iyi 4353.4 ms · ortanca 4431.6 ms · olay döngüsü en çok 4676.6 ms (n=5)
+  KDV Mahsup listesi: durum 200 · en iyi 2122.3 ms · ortanca 2210.1 ms · olay döngüsü en çok 2321.5 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi: durum 200 · en iyi 2.2 ms · ortanca 4.5 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satış faturası (açık hesap): durum 200 · en iyi 80.7 ms · ortanca 91.7 ms · olay döngüsü en çok 106.4 ms (n=5)
+  YAZIM alış faturası (gider): durum 200 · en iyi 61.8 ms · ortanca 75.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM satıştan iade: durum 200 · en iyi 161.2 ms · ortanca 170 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kasa + (carisiz): durum 200 · en iyi 7.7 ms · ortanca 10.1 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM KDV Mahsup fişi (Eylül): durum 200 · en iyi 4251.4 ms · ortanca 4423.7 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM KDV Mahsup Geri Al: durum 200 · en iyi 2042.1 ms · ortanca 2072.6 ms · olay döngüsü en çok 2191.5 ms (n=5)
+  YAZIM Alacak Yaz: durum 200 · en iyi 198 ms · ortanca 228.2 ms · olay döngüsü en çok 265 ms (n=5)
+  YAZIM Borç Yaz: durum 200 · en iyi 175.1 ms · ortanca 215.3 ms · olay döngüsü en çok 211.9 ms (n=5)
+  YAZIM taksit kartı (Yeni Borç): durum 200 · en iyi 1044.4 ms · ortanca 1080.5 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM Kartı Kapat: durum 200 · en iyi 1030.8 ms · ortanca 1060 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM fatura iptali (alış): durum 200 · en iyi 58.5 ms · ortanca 62 ms · olay döngüsü en çok 0 ms (n=5)
+yük (sonda) 1.10 1.17 1.30
+çıkış 0 · sonda 1.10 1.17 1.30 1/123 28267
+--- c7b3b · başta 1.10 1.17 1.30 1/123 28274 
+kod /dev/shm/ana-c7ba/yeni · yük (başta) 1.14 1.18 1.29 · TZ Europe/Istanbul · açılış 23243.6 ms
+veri: 102295 cari satırı, 11448 kart (2756 kapalı), kilit (yok); kart A plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66, kalan 12575.4), kart B plan-2ae1ec0a-8e66-43c2-8109-dcf9a076106f~1 (cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~1)
+  İLK YAZIM Kartı Kapat (kart B; kapı): durum 200 · 1068.2 ms · olay döngüsü en çok 0 ms
+  İLK cari kartı (kart B'nin carisi; ekstre): durum 200 · 163.8 ms · olay döngüsü en çok 0 ms
+  İLK cari kartı (kapalı kart A'nın carisi): durum 200 · 170.7 ms · olay döngüsü en çok 167.6 ms
+  İLK kart GET (kapalı kart A): durum 200 · 3.1 ms · olay döngüsü en çok 0 ms
+  İLK Cari Listesi · Gecikmiş süzgeci: durum 200 · 854.6 ms · olay döngüsü en çok 850.4 ms
+  İLK Cari Listesi · ilk sayfa: durum 200 · 839.6 ms · olay döngüsü en çok 837.8 ms
+  İLK Taksitler · Geciken: durum 200 · 938.5 ms · olay döngüsü en çok 12.3 ms
+  İLK Taksitler · Kapalı: durum 200 · 774.1 ms · olay döngüsü en çok 754.5 ms
+  İLK zil / takvim (dues): durum 200 · 2054.9 ms · olay döngüsü en çok 1788.9 ms
+  İLK Vade Takip: durum 200 · 1638.9 ms · olay döngüsü en çok 1618 ms
+  İLK nakit akışı: durum 200 · 4731 ms · olay döngüsü en çok 4567.6 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 3360.5 ms · olay döngüsü en çok 3359.6 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 10685.1 ms · olay döngüsü en çok 0 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 2198.5 ms · olay döngüsü en çok 0 ms
+  İLK Şüpheli Alacaklar raporu: durum 200 · 4.9 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM cari tahsilatı (kart B'nin carisi; kapı): durum 200 · 196.8 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM Yeniden Aç (kart B; kapı): durum 200 · 1034.9 ms · olay döngüsü en çok 0 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 7663.9 ms · olay döngüsü en çok 0 ms
+  YAZIM Kartı Kapat (kart B; kapı): durum 200 · en iyi 995.5 ms · ortanca 1107 ms · olay döngüsü en çok 1027.6 ms (n=5)
+  cari kartı (kart B'nin carisi; ekstre): durum 200 · en iyi 146.7 ms · ortanca 158.9 ms · olay döngüsü en çok 0 ms (n=5)
+  cari kartı (kapalı kart A'nın carisi): durum 200 · en iyi 146 ms · ortanca 151.7 ms · olay döngüsü en çok 146.8 ms (n=5)
+  kart GET (kapalı kart A): durum 200 · en iyi 1.9 ms · ortanca 2.1 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi · Gecikmiş süzgeci: durum 200 · en iyi 736.7 ms · ortanca 819.3 ms · olay döngüsü en çok 817.9 ms (n=5)
+  Cari Listesi · ilk sayfa: durum 200 · en iyi 702.3 ms · ortanca 797.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Taksitler · Geciken: durum 200 · en iyi 824.7 ms · ortanca 905 ms · olay döngüsü en çok 10.6 ms (n=5)
+  Taksitler · Kapalı: durum 200 · en iyi 749.2 ms · ortanca 786.7 ms · olay döngüsü en çok 909.1 ms (n=5)
+  zil / takvim (dues): durum 200 · en iyi 2055.6 ms · ortanca 2148.6 ms · olay döngüsü en çok 1981.8 ms (n=5)
+  Vade Takip: durum 200 · en iyi 1604 ms · ortanca 1698.3 ms · olay döngüsü en çok 1803.6 ms (n=5)
+  nakit akışı: durum 200 · en iyi 4510.3 ms · ortanca 4687.5 ms · olay döngüsü en çok 5008 ms (n=5)
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3396.7 ms · ortanca 3529.4 ms · olay döngüsü en çok 3741.3 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 10892.8 ms · ortanca 10927.1 ms · olay döngüsü en çok 0 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2211.4 ms · ortanca 2405.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Şüpheli Alacaklar raporu: durum 200 · en iyi 3 ms · ortanca 3.2 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM cari tahsilatı (kart B'nin carisi; kapı): durum 200 · en iyi 182.6 ms · ortanca 183.7 ms · olay döngüsü en çok 187.4 ms (n=5)
+  YAZIM Yeniden Aç (kart B; kapı): durum 200 · en iyi 1011.3 ms · ortanca 1107.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7352.2 ms · ortanca 7888.5 ms · olay döngüsü en çok 8069.8 ms (n=5)
+son durum: kart B active · A cari bakiyesi 162315.82
+yük (sonda) 1.39 1.21 1.27
+çıkış 0 · sonda 1.39 1.21 1.27 1/124 28443
+--- excel · başta 1.39 1.21 1.27 1/124 28450 
+kod /dev/shm/ana-c7ba/yeni · kilitsiz · kilit '' · veri: 1484 cari, 11448 açık kart, 102295 cari satırı · yük 1.45 1.24 1.28
+SONUÇ kilitsiz: durum 200 · yanıt 3371 ms · olay döngüsü en çok 3362 ms · satır 2000 · açılan 906 · bağlanan 0 · atlanan {"Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yü":1094} · yük 1.45 1.24 1.28
+çıkış 0 · sonda 1.45 1.24 1.28 1/124 28476
+bitti 21:36:01 · 0 geçersiz ölçüm
