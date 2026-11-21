@@ -1,0 +1,173 @@
+HIZ · nproc 4 · başta 1.78 1.35 1.18 1/116 6761 · 17:19:55
+=== tur 1 · oncesi · başta 1.27 1.26 1.16 1/113 6773 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/oncesi · yük başta 1.26 1.26 1.16
+aday 12
+SONUÇ | kart penceresi GET | n 6 | en iyi 40.4 | ortanca 42.8 | olay döngüsü en çok 71.3 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 42.9 | ortanca 43.6 | olay döngüsü en çok 75.9 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 132.1 | ortanca 135.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 103.1 | ortanca 105.2 | olay döngüsü en çok 173.9 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (azaltma) | n 4 | en iyi 6567.5 | ortanca 6715.2 | olay döngüsü en çok 7092.6 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 3 | en iyi 1047.1 | ortanca 1080.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 3 | en iyi 279.8 | ortanca 297.1 | olay döngüsü en çok 330.6 | 200 dışı 0
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 34.1 | ortanca 34.9 | olay döngüsü en çok 45.8 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 58.4 | ortanca 63.2 | olay döngüsü en çok 78.8 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 262.0 | ortanca 265.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 54.4 | ortanca 54.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 281.6 | ortanca 350.5 | olay döngüsü en çok 8.9 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 962.1 | ortanca 1069.7 | olay döngüsü en çok 1032.8 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 570.2 | ortanca 584.7 | olay döngüsü en çok 589.8 | 200 dışı 0
+yük sonda 1.29 1.16 1.14
+çıkış 0 · sonda 1.29 1.16 1.14 1/113 6831
+=== tur 1 · eski · başta 1.29 1.16 1.14 1/113 6838 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/eski · yük başta 1.32 1.18 1.14
+aday 12
+SONUÇ | kart penceresi GET | n 6 | en iyi 42.0 | ortanca 44.1 | olay döngüsü en çok 145.2 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 71.5 | ortanca 84.8 | olay döngüsü en çok 127.5 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 139.3 | ortanca 153.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 128.8 | ortanca 138.0 | olay döngüsü en çok 161.5 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (azaltma) | n 4 | en iyi 6527.1 | ortanca 7024.1 | olay döngüsü en çok 7063.2 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 3 | en iyi 1072.2 | ortanca 1174.4 | olay döngüsü en çok 1171.3 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 3 | en iyi 144.0 | ortanca 144.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 36.9 | ortanca 37.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 56.3 | ortanca 58.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 175.1 | ortanca 200.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 63.8 | ortanca 70.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 280.1 | ortanca 359.6 | olay döngüsü en çok 103.4 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1169.0 | ortanca 1259.9 | olay döngüsü en çok 1355.8 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 602.0 | ortanca 650.6 | olay döngüsü en çok 732.4 | 200 dışı 0
+yük sonda 1.07 1.05 1.08
+çıkış 0 · sonda 1.07 1.05 1.08 1/116 6903
+=== tur 1 · yeni · başta 1.07 1.05 1.08 1/116 6910 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a685ea99951e1d5f9 · yük başta 1.12 1.07 1.09
+aday 12
+SONUÇ | kart penceresi GET | n 6 | en iyi 42.3 | ortanca 44.6 | olay döngüsü en çok 152.8 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 37.4 | ortanca 37.6 | olay döngüsü en çok 61.7 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 135.0 | ortanca 141.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 112.4 | ortanca 117.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (azaltma) | n 4 | en iyi 6320.9 | ortanca 6331.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 3 | en iyi 1075.4 | ortanca 1077.2 | olay döngüsü en çok 1072.7 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 3 | en iyi 154.2 | ortanca 159.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 1.7 | ortanca 1.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 61.6 | ortanca 62.2 | olay döngüsü en çok 59.7 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 139.2 | ortanca 142.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 54.1 | ortanca 56.3 | olay döngüsü en çok 55.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 296.0 | ortanca 338.4 | olay döngüsü en çok 101.3 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1042.8 | ortanca 1082.3 | olay döngüsü en çok 1034.4 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 571.9 | ortanca 616.4 | olay döngüsü en çok 620.8 | 200 dışı 0
+yük sonda 1.05 1.03 1.06
+çıkış 0 · sonda 1.05 1.03 1.06 1/113 6970
+=== tur 2 · oncesi · başta 1.05 1.03 1.06 2/113 6977 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/oncesi · yük başta 1.10 1.04 1.06
+aday 12
+SONUÇ | kart penceresi GET | n 6 | en iyi 41.9 | ortanca 43.6 | olay döngüsü en çok 159.4 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 43.0 | ortanca 44.4 | olay döngüsü en çok 79.1 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 130.2 | ortanca 134.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 98.8 | ortanca 102.3 | olay döngüsü en çok 153.2 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (azaltma) | n 4 | en iyi 6209.2 | ortanca 6318.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 3 | en iyi 1003.9 | ortanca 1076.4 | olay döngüsü en çok 1000.3 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 3 | en iyi 284.6 | ortanca 298.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 33.8 | ortanca 34.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 57.5 | ortanca 57.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 259.9 | ortanca 279.0 | olay döngüsü en çok 277.6 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 54.5 | ortanca 54.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 283.7 | ortanca 410.6 | olay döngüsü en çok 107.3 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1021.2 | ortanca 1052.5 | olay döngüsü en çok 1136.7 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 588.1 | ortanca 606.3 | olay döngüsü en çok 698.9 | 200 dışı 0
+yük sonda 1.14 1.05 1.04
+çıkış 0 · sonda 1.14 1.05 1.04 1/116 7128
+=== tur 2 · eski · başta 1.21 1.06 1.05 1/116 7135 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/eski · yük başta 1.15 1.06 1.04
+aday 12
+SONUÇ | kart penceresi GET | n 6 | en iyi 41.0 | ortanca 47.9 | olay döngüsü en çok 77.1 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 69.4 | ortanca 80.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 133.4 | ortanca 141.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 127.7 | ortanca 129.7 | olay döngüsü en çok 188.4 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (azaltma) | n 4 | en iyi 7229.7 | ortanca 7305.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 3 | en iyi 1041.7 | ortanca 1108.0 | olay döngüsü en çok 1199.6 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 3 | en iyi 145.1 | ortanca 148.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 35.4 | ortanca 36.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 58.9 | ortanca 59.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 139.2 | ortanca 143.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 54.8 | ortanca 56.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 304.7 | ortanca 385.4 | olay döngüsü en çok 156.6 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1113.7 | ortanca 1154.1 | olay döngüsü en çok 1178.6 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 595.5 | ortanca 665.3 | olay döngüsü en çok 739.8 | 200 dışı 0
+yük sonda 1.00 1.00 1.00
+çıkış 0 · sonda 1.00 1.00 1.00 1/113 7200
+=== tur 2 · yeni · başta 1.00 1.00 1.00 1/113 7207 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a685ea99951e1d5f9 · yük başta 1.00 1.00 1.00
+aday 12
+SONUÇ | kart penceresi GET | n 6 | en iyi 42.1 | ortanca 43.3 | olay döngüsü en çok 89.0 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 37.1 | ortanca 38.1 | olay döngüsü en çok 62.2 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 135.7 | ortanca 138.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 112.8 | ortanca 113.1 | olay döngüsü en çok 168.4 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (azaltma) | n 4 | en iyi 6249.4 | ortanca 6664.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 3 | en iyi 994.6 | ortanca 1086.6 | olay döngüsü en çok 992.0 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 3 | en iyi 143.8 | ortanca 144.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 1.7 | ortanca 1.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 55.2 | ortanca 55.7 | olay döngüsü en çok 54.3 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 141.7 | ortanca 146.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 56.1 | ortanca 59.1 | olay döngüsü en çok 54.9 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 327.7 | ortanca 376.3 | olay döngüsü en çok 104.3 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1155.8 | ortanca 1318.3 | olay döngüsü en çok 1263.5 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 629.9 | ortanca 687.5 | olay döngüsü en çok 771.8 | 200 dışı 0
+yük sonda 1.00 1.00 1.00
+çıkış 0 · sonda 1.00 1.00 1.00 1/116 7274
+=== tur 3 · oncesi · başta 1.16 1.03 1.01 1/116 7281 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/oncesi · yük başta 1.18 1.05 1.01
+aday 12
+SONUÇ | kart penceresi GET | n 6 | en iyi 42.7 | ortanca 48.0 | olay döngüsü en çok 92.9 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 44.0 | ortanca 46.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 135.3 | ortanca 144.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 105.4 | ortanca 106.3 | olay döngüsü en çok 133.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (azaltma) | n 4 | en iyi 6215.2 | ortanca 6254.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 3 | en iyi 970.7 | ortanca 1058.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 3 | en iyi 308.2 | ortanca 320.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 34.8 | ortanca 38.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 62.0 | ortanca 63.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 271.4 | ortanca 278.3 | olay döngüsü en çok 277.1 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 56.4 | ortanca 56.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 299.3 | ortanca 367.4 | olay döngüsü en çok 100.8 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1077.1 | ortanca 1137.1 | olay döngüsü en çok 1180.7 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 567.9 | ortanca 628.9 | olay döngüsü en çok 654.8 | 200 dışı 0
+yük sonda 1.41 1.10 1.03
+çıkış 0 · sonda 1.41 1.10 1.03 1/113 7338
+=== tur 3 · eski · başta 1.41 1.10 1.03 1/113 7345 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt-a68/eski · yük başta 1.27 1.09 1.03
+aday 12
+SONUÇ | kart penceresi GET | n 6 | en iyi 42.2 | ortanca 46.6 | olay döngüsü en çok 208.0 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 72.9 | ortanca 76.2 | olay döngüsü en çok 129.4 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 139.6 | ortanca 156.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 141.3 | ortanca 158.1 | olay döngüsü en çok 208.4 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (azaltma) | n 4 | en iyi 6978.7 | ortanca 7007.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 3 | en iyi 1114.4 | ortanca 1166.1 | olay döngüsü en çok 1111.5 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 3 | en iyi 159.8 | ortanca 173.8 | olay döngüsü en çok 178.0 | 200 dışı 0
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 38.0 | ortanca 42.6 | olay döngüsü en çok 34.2 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 60.3 | ortanca 63.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 150.8 | ortanca 171.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 58.9 | ortanca 62.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 339.1 | ortanca 369.3 | olay döngüsü en çok 130.3 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1177.9 | ortanca 1318.8 | olay döngüsü en çok 1232.1 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 587.0 | ortanca 679.1 | olay döngüsü en çok 764.9 | 200 dışı 0
+yük sonda 1.04 1.03 1.00
+çıkış 0 · sonda 1.04 1.03 1.00 1/113 7408
+=== tur 3 · yeni · başta 1.04 1.03 1.00 1/113 7415 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a685ea99951e1d5f9 · yük başta 1.02 1.03 1.00
+aday 12
+SONUÇ | kart penceresi GET | n 6 | en iyi 44.8 | ortanca 45.6 | olay döngüsü en çok 159.9 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 36.0 | ortanca 38.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 133.1 | ortanca 137.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (aynı içerik) | n 4 | en iyi 110.9 | ortanca 117.7 | olay döngüsü en çok 151.3 | 200 dışı 0
+SONUÇ | fatura Düzenle kaydı (azaltma) | n 4 | en iyi 6318.0 | ortanca 6352.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Kartı Kapat PUT | n 3 | en iyi 1020.0 | ortanca 1082.5 | olay döngüsü en çok 1016.6 | 200 dışı 0
+SONUÇ | iade yazımı (KAPALI kart) | n 3 | en iyi 156.7 | ortanca 164.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | kart penceresi GET (iade sonrası) | n 6 | en iyi 1.8 | ortanca 2.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (KAPALI kart — büyüme) | n 3 | en iyi 56.3 | ortanca 62.3 | olay döngüsü en çok 64.7 | 200 dışı 0
+SONUÇ | iade yazımı (AÇIK kart) | n 3 | en iyi 141.6 | ortanca 149.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade İptal Et (AÇIK kart — büyüme) | n 3 | en iyi 53.7 | ortanca 59.7 | olay döngüsü en çok 52.6 | 200 dışı 0
+SONUÇ | zil / gecikmiş GET | n 5 | en iyi 291.8 | ortanca 393.4 | olay döngüsü en çok 102.6 | 200 dışı 0
+SONUÇ | Taksitler listesi GET | n 5 | en iyi 1033.9 | ortanca 1114.9 | olay döngüsü en çok 1095.8 | 200 dışı 0
+SONUÇ | Faturalar listesi GET | n 5 | en iyi 559.0 | ortanca 604.2 | olay döngüsü en çok 652.2 | 200 dışı 0
+yük sonda 1.05 1.01 1.00
+çıkış 0 · sonda 1.05 1.01 1.00 1/113 7476
+bitti 18:23:00
