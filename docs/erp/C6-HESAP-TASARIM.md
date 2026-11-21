@@ -301,3 +301,10 @@ Kaynak: dar kontrol raporu `docs/devir/2.5.0-DEVAM/dk-c6h-rapor.md` (inceleme uc
   önce / sonra, kilit ilerletilince through < kapsam, kilit geri çekilince KALAN ≠ 0, ters kayıt; iki saat dilimi) + not defterinde tur 4'ün GERÇEK koduyla yanıt karşılaştırması (fikstürler + temiz 100 bin).
 - Nasıl bozulur (testler buradan): dışarıdaki satırlardan through'dan SONRAKİLERİN unutulması (t < kapsam); from sınırının kayması (from günü iki kez ya da hiç); 'voucher' satırlarının KALAN'a girmesi;
   tablonun kendi gruplarına dışarıdaki satırın karışması (yıl başı tutarı değişir); alt defter kümesinin hatırlanırken yanlış (boş) kurulması.
+- ÖLÇÜMDEN SONRA DÜZELTME (tur 5, 21.11 14:3x; yalnız SQL biçimi — davranış ve eşdeğerlik gerekçesi aynı): parça ölçümü (100 bin, kilitli 30.06.2026, fişten sonra; c6h5-ham/parca.out) tablonun kendi
+  okumasının ~130 ms, tur 4'ün kapsam okumasının ~1,1–1,2 sn, yukarıdaki TEK SQL'in ~0,7–0,87 sn olduğunu gösterdi (kazanç yalnız madde sayımı alt sorgusu kadar); salt SQL karşılaştırması (sql-bench*.out)
+  bütün geçmişin önek / kısım ifadeli gruplanmasının pahalı olduğunu, dışarının kaba ve 'voucher' süzülü gruplanmasının ~0,36 sn olduğunu gösterdi. Bu yüzden `frozenSums` ruleThrough ile: groups / entries /
+  firstSeen eskisinin AYNI SQL'leri (eşdeğerlik (1) artık tanım gereği — sıra tartışması kalkar), `outside` ayrı kaba SQL: `WHERE date <= ruleThrough AND (date < from OR date > through) AND
+  substr(entry_id, 1, 7) <> 'voucher' GROUP BY yıl, hesap, alt, cari` ('voucher' satırları KALAN'a zaten girmez → WHERE'de süzülmesi (2)'yi değiştirmez). Tek frozenSums çağrısı korunur; tur 4'ün ikinci
+  kapsam okuması (önekli bütün geçmiş + bütün geçmişin madde sayımı + firstSeen) kalkar. Alt defter kümesinin hatırlanması geri alındı: üretimde mali tablolar her istekte YENİ iş parçacığında ve yeni
+  ledger nesnesiyle koşar (lib/financial-statements-worker.mjs) — hatırlama kazanç vermez, yalnız kod ekler.

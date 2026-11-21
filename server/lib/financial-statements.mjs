@@ -409,13 +409,7 @@ export function fullRuleDiff(part, outside, live, cover) {
   for (const row of outside || []) if (!row.voucher) add(row.year, `${row.account}|${row.sub}|${row.party}`, row.net);
   return periodRuleDiff({ frozen: [], frozenSums: { years }, live, from: "", to: cover, accounts: () => true, party: true });
 }
-// Alt defter hesapları: ledger.expected(every)'nin ANAHTARLARI — yalnız şemaya bağlı (routes/ledger.mjs subledgerAccounts'ın notu ve aynı hatırlaması) → ledger nesnesi başına bir kez (tur 5).
-const subledgerMemo = new WeakMap();
-function subledgerOf(ledger) {
-  let set = subledgerMemo.get(ledger);
-  if (!set) subledgerMemo.set(ledger, (set = new Set(Object.keys(ledger.expected ? ledger.expected([], [], { every: true }) : {}))));
-  return set;
-}
+const subledgerOf = ledger => new Set(Object.keys(ledger.expected ? ledger.expected([], [], { every: true }) : {}));
 
 /**
  * Gelir Tablosu'nun Kural Değişikliği Farkı (Ç3; kitap §7.4): dönemin KİLİTLİ kısmında [from, to] (to ≤ kilit kapsamı) donmuş defterin ve güncel türetmenin gelir tablosu hesapları (6 / 7) ile

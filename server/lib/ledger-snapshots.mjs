@@ -1210,41 +1210,29 @@ const FROZEN_PREFIX_SQL = "CASE WHEN instr(entry_id, ':') > 0 THEN substr(entry_
  * Dönüş: groups — [{ year, part, prefix, voucher, account, sub, party, net, lines, last }] (yıl × kısım × kimlik öneki × 'voucher' öneki × hesap × alt hesap × cari; net = Σ borç − alacak,
  * last = en geç tarih); entries — [{ year, part, entries, unbalanced }] (madde = run × entry_id × date — frozenTrial'ın "dengesiz madde" tanımı); firstSeen(hesaplar) — o hesapların
  * satırları yevmiye sırasıyla (ORDER BY date, run, run_seq = frozenEntries'in sırası): [{ account, year, part, prefix }] (seyrek: sınıflandırılmamış hesapların ilk görünüş sırası).
- * ruleThrough (Ç6-HESAP tur 5; tasarım §11.6; ≥ through — genelde kapsam): verilirse gruplar sorgusu TEK SQL ile ["", ruleThrough] okur — [from, through] içi `groups`'a eskisiyle AYNI gruplarla, dışı
- * `outside`'a kaba gruplarla [{ year, voucher, account, sub, party, net }] (önek / kısım hesaplanmaz; Kural Değişikliği Farkı'nın kapsamın tamamı okuması için). entries ve firstSeen [from, through] ile
- * AYNEN. Verilmezse SQL ve çıktı birebir eski (outside alanı yok).
+ * ruleThrough (Ç6-HESAP tur 5; tasarım §11.6; ≥ through — genelde kapsam): verilirse ayrıca `outside` — [from, through] DIŞINDAKİ (from'dan önce ya da through'dan sonra, ≤ ruleThrough) 'voucher'
+ * olmayan satırların kaba toplamları [{ year, voucher: false, account, sub, party, net }] (önek, kısım, madde sayımı yok; Kural Değişikliği Farkı'nın kapsamın tamamı okuması için — tur 4'ün ["", kapsam]
+ * okumasının yerine). groups / entries / firstSeen her durumda AYNI SQL (ruleThrough onlara dokunmaz). Verilmezse çıktı birebir eski (outside alanı yok).
  */
 export function frozenSums(store, { from = "", through = "", split = "", ruleThrough = "" } = {}) {
   const lower = from || "";
   const wide = Boolean(ruleThrough);
   if (wide && through && ruleThrough < through) throw new Error(`ruleThrough (${ruleThrough}) through'dan (${through}) önce olamaz`);
   if (!through || !has(store, "ledger_snapshots")) return { from: lower, through, split, groups: [], entries: [], firstSeen: () => [], ...(wide ? { outside: [] } : {}) };
-  const rowOf = row => ({ year: Number(row.year), part: Number(row.part), prefix: String(row.prefix), voucher: Number(row.voucher) === 1, account: String(row.account), sub: row.sub || "", party: row.party || "", net: Number(row.net), lines: Number(row.lines), last: String(row.last) });
-  let groups;
-  let outside;
-  if (!wide) {
-    groups = store.all(
-      `SELECT substr(date, 1, 4) AS year, CASE WHEN date >= ?3 THEN 1 ELSE 0 END AS part, ${FROZEN_PREFIX_SQL} AS prefix, CASE WHEN substr(entry_id, 1, 7) = 'voucher' THEN 1 ELSE 0 END AS voucher,
-              account, sub, party, SUM(debit_minor - credit_minor) AS net, COUNT(*) AS lines, MAX(date) AS last
-       FROM ledger_snapshots WHERE date >= ?1 AND date <= ?2 GROUP BY 1, 2, 3, 4, account, sub, party`,
-      lower, through, split,
-    ).map(rowOf);
-  } else {
-    // Tek SQL: [from, through] içi eskisinin ifadeleriyle (kısım 0 / 1, önek), dışı kısım −1 ve boş önekle ayrı gruplarda — süzülünce içerinin dizisi eskisinin aynısı (tasarım §11.6 (1)).
-    const inside = "date >= ?1 AND date <= ?2";
-    groups = [];
-    outside = [];
-    for (const row of store.all(
-      `SELECT substr(date, 1, 4) AS year, CASE WHEN ${inside} THEN (CASE WHEN date >= ?3 THEN 1 ELSE 0 END) ELSE -1 END AS part,
-              CASE WHEN ${inside} THEN ${FROZEN_PREFIX_SQL} ELSE '' END AS prefix, CASE WHEN substr(entry_id, 1, 7) = 'voucher' THEN 1 ELSE 0 END AS voucher,
-              account, sub, party, SUM(debit_minor - credit_minor) AS net, COUNT(*) AS lines, MAX(date) AS last
-       FROM ledger_snapshots WHERE date <= ?4 GROUP BY 1, 2, 3, 4, account, sub, party`,
-      lower, through, split, ruleThrough,
-    )) {
-      if (Number(row.part) !== -1) groups.push(rowOf(row));
-      else outside.push({ year: Number(row.year), voucher: Number(row.voucher) === 1, account: String(row.account), sub: row.sub || "", party: row.party || "", net: Number(row.net) });
-    }
-  }
+  const groups = store.all(
+    `SELECT substr(date, 1, 4) AS year, CASE WHEN date >= ?3 THEN 1 ELSE 0 END AS part, ${FROZEN_PREFIX_SQL} AS prefix, CASE WHEN substr(entry_id, 1, 7) = 'voucher' THEN 1 ELSE 0 END AS voucher,
+            account, sub, party, SUM(debit_minor - credit_minor) AS net, COUNT(*) AS lines, MAX(date) AS last
+     FROM ledger_snapshots WHERE date >= ?1 AND date <= ?2 GROUP BY 1, 2, 3, 4, account, sub, party`,
+    lower, through, split,
+  ).map(row => ({ year: Number(row.year), part: Number(row.part), prefix: String(row.prefix), voucher: Number(row.voucher) === 1, account: String(row.account), sub: row.sub || "", party: row.party || "", net: Number(row.net), lines: Number(row.lines), last: String(row.last) }));
+  // Dışarısı (tasarım §11.6): yıl × hesap × alt × cari, 'voucher' satırları WHERE'de dışarıda (Kural Değişikliği Farkı onları zaten karşılaştırmaz) — önek / kısım / madde sayımı hesaplanmaz.
+  const outside = !wide
+    ? null
+    : store.all(
+        `SELECT substr(date, 1, 4) AS year, account, sub, party, SUM(debit_minor - credit_minor) AS net
+         FROM ledger_snapshots WHERE date <= ?3 AND (date < ?1 OR date > ?2) AND substr(entry_id, 1, 7) <> 'voucher' GROUP BY 1, account, sub, party`,
+        lower, through, ruleThrough,
+      ).map(row => ({ year: Number(row.year), voucher: false, account: String(row.account), sub: row.sub || "", party: row.party || "", net: Number(row.net) }));
   const entries = store.all(
     `SELECT year, part, COUNT(*) AS entries, SUM(CASE WHEN net <> 0 THEN 1 ELSE 0 END) AS unbalanced FROM (
        SELECT substr(date, 1, 4) AS year, CASE WHEN date >= ?3 THEN 1 ELSE 0 END AS part, SUM(debit_minor - credit_minor) AS net

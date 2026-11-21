@@ -116,11 +116,13 @@ function assertSame(server, label) {
     const accounts = [...new Set(old.groups.map(row => row.account))];
     assert.deepEqual(wide.firstSeen(accounts), old.firstSeen(accounts), `${where}: firstSeen eski okumayla aynı`);
     assert.deepEqual(financial.fullRuleDiff(financial.frozenPartOf(wide), wide.outside, live, cover), reference, `${where}: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)`);
-    // İçeri + dışarı = ["", kapsam] ('voucher' satırları dahil; from / through günü iki kez ya da hiç sayılmaz): yıl × voucher × hesap × alt × cari toplamları.
+    // İçeri + dışarı = ["", kapsam] ('voucher' olmayan satırlar; from / through günü iki kez ya da hiç sayılmaz): yıl × hesap × alt × cari toplamları; dışarıda 'voucher' satırı yok.
+    assert.equal(wide.outside.filter(row => row.voucher).length, 0, `${where}: dışarıda 'voucher' satırı yok`);
     const totalsOf = rows => {
       const map = new Map();
       for (const row of rows) {
-        const key = `${row.year}|${row.voucher}|${row.account}|${row.sub}|${row.party}`;
+        if (row.voucher) continue;
+        const key = `${row.year}|${row.account}|${row.sub}|${row.party}`;
         map.set(key, (map.get(key) || 0) + row.net);
       }
       return [...map].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
