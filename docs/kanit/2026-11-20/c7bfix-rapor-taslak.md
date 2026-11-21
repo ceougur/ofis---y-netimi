@@ -74,3 +74,8 @@ Aynı istek dizisi (S1 eski istemci; S2 cari kartından 500 + closeRemaining —
 S2'nin kartı Yeniden Aç → yine Kapat; S4 Mevcut Borç taksitli + cari 500): plans (status / closed_at / close_rule), plan_entries, account_entries (veri tabanı), cari kartları (bakiye,
 gecikmiş, ekstre satırları), Mizan, Mutabakat Testi, Defter Mutabakatı — İstanbul ve UTC'de eski ↔ yeni HEPSİ AYNI; Mutabakat Testi temiz (true / true), Defter Mutabakatı 'Tüm hesaplar
 tutarlı'. Bakiyeler A 2.500 · B 2.500 · C 2.000 · D 2.500 (Borçta Kalsın).
+
+## 6. C + F — komşular (komsu.txt: Kartı Kapat / closeRemaining / plan-close-stale / status closed geçen testler ∪ plans uçlarına dokunan testler ∪ c7b* / c7bt* / c7bfix* / tyk*; 153 dosya, iki parça, concurrency 1)
+- UTC: parça 00 900 / 900; parça 01 1.130 / 1.131 — 1 kırmızı: test/tyk-birlesik8-ekranlar-250.test.mjs:237 'yeni bir shape( çağıranı yer tablosuna … eklenmeli' (BEKLENEN NEDEN: bu turun shownRemaining'i shape( çağırır). İstanbul: 900 / 900 + 1.130 / 1.131 (aynı tek kırmızı).
+- Düzeltme (commit 72fac9ac; BEKLENTİ BİLEREK DEĞİŞTİ, ders 28): beklenen listeye shownRemaining + 'shownRemaining kuyruk görünümünü (withQueue) okur' denetimi. Yeniden koşu UTC 12 / 12, İstanbul 12 / 12.
+- Ekran: senaryo-kdv-donemi-250 YENİ 22 / 0.
