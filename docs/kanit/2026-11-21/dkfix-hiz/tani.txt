@@ -1,0 +1,47 @@
+TANI · başta 1.55 1.64 1.94 1/141 11629
+=== tur 1 · mut · başta 1.55 1.64 1.94 1/141 11630
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dkfix-ab23/mut · yük başta 1.48 1.62 1.92
+aday 12
+SONUÇ | fatura kartı GET | n 30 | en iyi 67.3 | ortanca 71.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+yük sonda 1.00 1.22 1.65
+=== tur 1 · tA · başta 1.00 1.22 1.65 1/134 12383
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dkfix-ab23/tA · yük başta 1.00 1.20 1.63
+aday 12
+SONUÇ | fatura kartı GET | n 30 | en iyi 43.4 | ortanca 49.5 | olay döngüsü en çok 76.5 | 200 dışı 0
+yük sonda 1.00 1.06 1.43
+=== tur 1 · tB · başta 1.00 1.06 1.43 1/144 12840
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dkfix-ab23/tB · yük başta 1.00 1.05 1.42
+aday 12
+SONUÇ | fatura kartı GET | n 30 | en iyi 69.4 | ortanca 75.7 | olay döngüsü en çok 124.1 | 200 dışı 0
+yük sonda 1.06 1.03 1.29
+=== tur 2 · mut · başta 1.06 1.03 1.29 1/134 13310
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dkfix-ab23/mut · yük başta 1.04 1.03 1.28
+aday 12
+SONUÇ | fatura kartı GET | n 30 | en iyi 69.4 | ortanca 75.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+yük sonda 1.02 1.01 1.18
+=== tur 2 · tA · başta 1.02 1.01 1.18 2/148 15250
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dkfix-ab23/tA · yük başta 1.15 1.04 1.18
+aday 12
+SONUÇ | fatura kartı GET | n 30 | en iyi 42.1 | ortanca 45.2 | olay döngüsü en çok 74.5 | 200 dışı 0
+yük sonda 1.28 1.09 1.16
+=== tur 2 · tB · başta 1.28 1.09 1.16 1/147 16426
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dkfix-ab23/tB · yük başta 1.18 1.08 1.15
+aday 12
+SONUÇ | fatura kartı GET | n 30 | en iyi 69.7 | ortanca 82.2 | olay döngüsü en çok 87.0 | 200 dışı 0
+yük sonda 1.00 1.02 1.09
+=== tur 3 · mut · başta 1.00 1.02 1.09 1/145 17388
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dkfix-ab23/mut · yük başta 1.14 1.05 1.10
+aday 12
+SONUÇ | fatura kartı GET | n 30 | en iyi 70.6 | ortanca 75.7 | olay döngüsü en çok 94.2 | 200 dışı 0
+yük sonda 1.00 1.02 1.06
+=== tur 3 · tA · başta 1.00 1.02 1.06 1/134 18381
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dkfix-ab23/tA · yük başta 1.08 1.03 1.07
+aday 12
+SONUÇ | fatura kartı GET | n 30 | en iyi 42.3 | ortanca 48.9 | olay döngüsü en çok 84.7 | 200 dışı 0
+yük sonda 1.00 1.00 1.03
+=== tur 3 · tB · başta 1.00 1.00 1.03 1/133 18876
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dkfix-ab23/tB · yük başta 1.06 1.01 1.04
+aday 12
+SONUÇ | fatura kartı GET | n 30 | en iyi 69.5 | ortanca 81.0 | olay döngüsü en çok 122.6 | 200 dışı 0
+yük sonda 1.00 1.00 1.01
+bitti 1.00 1.00 1.01 1/133 19352
