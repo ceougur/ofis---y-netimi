@@ -1,0 +1,32 @@
+{
+  "ad": "c6h3-komsu-europe-istanbul-2",
+  "komut": "node --test --test-concurrency=3 test/inceleme-221.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/is-akisi.test.mjs test/iz1-kasa-acilis.test.mjs test/kalan-metin-246.test.mjs test/kapanis-zamanlayici-248.test.mjs test/kapi-para-245.test.mjs test/kart-faizi-250.test.mjs test/kasa-acilis-iz-250.test.mjs test/kasa-acilis-once-250.test.mjs test/kasa-acilis-uyari-artis-250.test.mjs test/kg16-geri-alma-250.test.mjs test/kilit-izi-alanlar-250.test.mjs test/koruma-taban-ailesi-250.test.mjs test/kullanici-yetki-210.test.mjs test/kural-farki-alarm-250.test.mjs test/kural-farki-duzeltme-250.test.mjs test/kural-farki-kapi-disi-250.test.mjs test/kural-farki-yil-250.test.mjs test/license.test.mjs test/maliyet-bagsizlik.test.mjs test/maliyet-cekirdek-246.test.mjs test/migrations.test.mjs test/mobil-247.test.mjs test/mobil-eslesme-247.test.mjs test/mobil-ozet-247.test.mjs test/mutabakat-cekirdek.test.mjs test/numara-silinen-tarih-244.test.mjs test/obligation-input-250.test.mjs test/personel-ozluk-244.test.mjs test/platform-tasinabilirlik.test.mjs test/pos-komisyon-v249-250.test.mjs test/projeksiyon-vade-246.test.mjs test/rapor-230-iz5.test.mjs test/raporlar-209.test.mjs test/raporlar-224.test.mjs test/raporlar-230-banka.test.mjs test/s127-tek-kez-250.test.mjs test/s160-iptal-yollari-250.test.mjs test/s160-kilitli-tahsilat-bagi-250.test.mjs test/sema-kapisi-bs7.test.mjs test/sheets-yedek.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/sirket-canli-olay-244.test.mjs test/sirket-yedeksiz-sil-249.test.mjs test/sirketler-217.test.mjs test/supervisor.test.mjs test/supheli-kuyruk-defter-250.test.mjs test/t3hiz-esdegerlik-250.test.mjs test/tablo-hucre-bicim.test.mjs test/tablodan-aktar-244.test.mjs test/takvim-govde-250.test.mjs test/takvim-pil-kaynak.test.mjs test/tunel-durum-248.test.mjs test/tunel-indirici-247.test.mjs test/tyk-api-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-tur2b1-250.test.mjs test/update-flow.test.mjs test/updater.test.mjs test/ux18-cek-fatura-244.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/whatsapp-b3-goc-249.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-dk7-belirsiz-ileti-248.test.mjs test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs test/whatsapp-dk8-g-ek-248.test.mjs test/whatsapp-g1-graph-surum-250.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs test/whatsapp-q5-son-kabul-248.test.mjs test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs test/whatsapp-t-durum-karar-tablosu-248.test.mjs test/whatsapp-t2-4-248.test.mjs test/whatsapp-t2dk-orta1-248.test.mjs test/whatsapp-tur2-kvkk-250.test.mjs test/whatsapp-tur3-hiz-250.test.mjs test/whatsapp-w-kok-ttl-249.test.mjs test/whatsapp-w1-baglanti.test.mjs test/whatsapp-w2-kaldir-250.test.mjs test/whatsapp-w2-veri-248.test.mjs test/whatsapp-w3-saklama-250.test.mjs test/whatsapp-we-webhook-bilgisi-250.test.mjs test/whatsapp-wt2-kod0-250.test.mjs test/yazim-duzeni.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-220.test.mjs test/yedek-denetim-221.test.mjs test/yetki-243-muhasebe-finans.test.mjs",
+  "commit": "6981a54195369c53fb81abd5916f474ddffc1ad0",
+  "dal": "worktree-agent-ab54e5fc492a09964",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T17:40:42.487Z",
+  "sure_sn": 520.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1154,
+    "gecen": 1154,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h3-ana/kanit/2026-11-20/c6h3-komsu-europe-istanbul-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab54e5fc492a09964",
+  "ham_cikti_sha256": "44bc6a48f8f440686ecc84b702c24012d8a7cdddef65753dd9e6881762a7392b",
+  "ham_cikti_bayt": 527391
+}

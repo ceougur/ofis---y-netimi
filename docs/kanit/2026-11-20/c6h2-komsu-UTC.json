@@ -1,0 +1,32 @@
+{
+  "ad": "c6h2-komsu-UTC",
+  "komut": "node --test --test-concurrency=3 test/backup.test.mjs test/banka-210-fis-kapi.test.mjs test/banka-210-goc.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-post-statik.test.mjs test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/banka-210-rapor-is-parcacigi.test.mjs test/banka-210-raporlar.test.mjs test/banka-210-saat.test.mjs test/banka-210-statik.test.mjs test/banka-210-yetki-matrisi.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli-ekran.test.mjs test/banka-rapor-243.test.mjs test/chat-archive.test.mjs test/cheques-overview.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/dataset.test.mjs test/db-acilis-kilit-250.test.mjs test/db-bozuk-dosya-tutamak-248.test.mjs test/db-tx-commit-hata-249.test.mjs test/defter-243-vergi.test.mjs test/devir-arsiv-wal-250.test.mjs test/devir-d2-arsiv-250.test.mjs test/devir-d2-arsiv-goc-kesinti-250.test.mjs test/devir-d2-bakim-250.test.mjs test/devir-d2-yedek-250.test.mjs test/documents.test.mjs test/donmus-defter-bellek-250.test.mjs test/drive-kaldirildi.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/edm-gercek-duzenek.test.mjs test/einvoice-240-resmi-gorunum.test.mjs test/gorunen-adres-247.test.mjs test/guvenilirlik-221-ariza.test.mjs test/guvenilirlik-221-bulgular.test.mjs test/is-akisi.test.mjs test/kalan-metin-246.test.mjs test/kapi-para-245.test.mjs test/koruma-taban-ailesi-250.test.mjs test/kullanici-yetki-210.test.mjs test/license.test.mjs test/maliyet-bagsizlik.test.mjs test/migrations.test.mjs test/mobil-247.test.mjs test/platform-tasinabilirlik.test.mjs test/projeksiyon-vade-246.test.mjs test/rapor-230-iz5.test.mjs test/raporlar-209.test.mjs test/raporlar-224.test.mjs test/raporlar-230-banka.test.mjs test/sema-kapisi-bs7.test.mjs test/sirket-yedeksiz-sil-249.test.mjs test/sirketler-217.test.mjs test/supervisor.test.mjs test/tablo-hucre-bicim.test.mjs test/takvim-pil-kaynak.test.mjs test/tunel-durum-248.test.mjs test/tunel-indirici-247.test.mjs test/update-flow.test.mjs test/updater.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/whatsapp-b3-goc-249.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-g1-graph-surum-250.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs test/whatsapp-q5-son-kabul-248.test.mjs test/whatsapp-t-durum-karar-tablosu-248.test.mjs test/whatsapp-tur2-kvkk-250.test.mjs test/whatsapp-tur3-hiz-250.test.mjs test/whatsapp-w1-baglanti.test.mjs test/whatsapp-w2-veri-248.test.mjs test/whatsapp-w3-saklama-250.test.mjs test/whatsapp-we-webhook-bilgisi-250.test.mjs test/yazim-duzeni.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-220.test.mjs test/yedek-denetim-221.test.mjs test/yetki-243-muhasebe-finans.test.mjs",
+  "commit": "f65e6d4286f05abb182cc3fc4e6788843eb83177",
+  "dal": "worktree-agent-a7236347e0f8b6e8c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T10:39:49.106Z",
+  "sure_sn": 272.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 938,
+    "gecen": 938,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h2-ana/2026-11-20/c6h2-komsu-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7236347e0f8b6e8c",
+  "ham_cikti_sha256": "55261e0fd019c223a34828fc121e5d1dfbf409e51c021a93535fdc93197cf6b0",
+  "ham_cikti_bayt": 384350
+}

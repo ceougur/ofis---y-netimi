@@ -1,0 +1,173 @@
+TAP version 13
+# Subtest: B-a — kapanmış yılın ara dönemi: 31.12'yi içermeyen parça T(b) − T(a − 1), N-01 yalnız 31.12 parçasında
+    # Subtest: yıl [01.01, 31.12] kesin: D = 621 266,67, tahmin yok
+    ok 1 - yıl [01.01, 31.12] kesin: D = 621 266,67, tahmin yok
+      ---
+      duration_ms: 3.152125
+      type: 'test'
+      ...
+    # Subtest: aylar (elle): Ocak 240,00, Şubat–Kasım 0, Aralık 26,67; toplam = yıl = 621
+    not ok 2 - aylar (elle): Ocak 240,00, Şubat–Kasım 0, Aralık 26,67; toplam = yıl = 621
+      ---
+      duration_ms: 3.693491
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-ba.test.mjs:45:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+        -   24000,
+            0,
+            0,
+            0,
+            0,
+            0,
+        ...
+            0,
+        +   0,
+        +   26667
+        -   2667
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 24000
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 2667
+      actual:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 26667
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-ba.test.mjs:47:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: çeyrekler (elle): Q1 240,00 · Q2 0 · Q3 0 · Q4 26,67; toplam = yıl; yarıyıl + yarıyıl = yıl
+    not ok 3 - çeyrekler (elle): Q1 240,00 · Q2 0 · Q3 0 · Q4 26,67; toplam = yıl; yarıyıl + yarıyıl = yıl
+      ---
+      duration_ms: 0.849645
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-ba.test.mjs:55:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        -   24000,
+            0,
+            0,
+        +   0,
+        +   26667
+        -   2667
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 24000
+        1: 0
+        2: 0
+        3: 2667
+      actual:
+        0: 0
+        1: 0
+        2: 0
+        3: 26667
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-ba.test.mjs:57:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yıl içi Bilanço (30.06): 153 = DSS_t 360,00 (N-01 31.12'de; t'den sonra), hesaplanmış = Gelir Tablosu [01.01, 30.06]; Aktif = Pasif
+    not ok 4 - yıl içi Bilanço (30.06): 153 = DSS_t 360,00 (N-01 31.12'de; t'den sonra), hesaplanmış = Gelir Tablosu [01.01, 30.06]; Aktif = Pasif
+      ---
+      duration_ms: 0.379968
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-ba.test.mjs:61:3'
+      failureType: 'testCodeFailure'
+      error: 'eski kodda balanceSheet yok'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        balanceSheet (file:///dev/shm/c6h2-eski/test/c6h-ba.test.mjs:15:36)
+        TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-ba.test.mjs:62:17)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 31.12 Bilanço (N-01 yazılmış): 153 defterden 733,33 (= DSS), satışların maliyeti kesin; Aktif = Pasif
+    not ok 5 - 31.12 Bilanço (N-01 yazılmış): 153 defterden 733,33 (= DSS), satışların maliyeti kesin; Aktif = Pasif
+      ---
+      duration_ms: 0.140984
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-ba.test.mjs:68:3'
+      failureType: 'testCodeFailure'
+      error: 'eski kodda balanceSheet yok'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        balanceSheet (file:///dev/shm/c6h2-eski/test/c6h-ba.test.mjs:15:36)
+        TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-ba.test.mjs:69:17)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - B-a — kapanmış yılın ara dönemi: 31.12'yi içermeyen parça T(b) − T(a − 1), N-01 yalnız 31.12 parçasında
+  ---
+  duration_ms: 9.392445
+  type: 'suite'
+  location: '/dev/shm/c6h2-eski/test/c6h-ba.test.mjs:38:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 1
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 84.6019

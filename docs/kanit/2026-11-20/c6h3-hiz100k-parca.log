@@ -1,0 +1,16 @@
+== kilitsiz · başta yük 1.01 1.07 1.27 1/127 8713 · 14:28:48
+yük (başta) 1.27 1.13 1.28 · kapsam —
+tekrar 1: canliTuretme 2605 ms · checkTamami 4178 ms · donmusToplamSql 0 ms · donmusBicim 0 ms · bookKuyruk 7 ms · kuralFarki 0 ms · degerlemeGirdi 420 ms · balanceSheetSaf 824 ms · balanceSheetOfTamami 5479 ms · kuyruk madde 153803, canlı 153803, donmuş grup 0
+tekrar 2: canliTuretme 2695 ms · checkTamami 4005 ms · donmusToplamSql 0 ms · donmusBicim 0 ms · bookKuyruk 6 ms · kuralFarki 0 ms · degerlemeGirdi 514 ms · balanceSheetSaf 863 ms · balanceSheetOfTamami 5189 ms · kuyruk madde 153803, canlı 153803, donmuş grup 0
+tekrar 3: canliTuretme 2904 ms · checkTamami 3475 ms · donmusToplamSql 0 ms · donmusBicim 0 ms · bookKuyruk 3 ms · kuralFarki 0 ms · degerlemeGirdi 552 ms · balanceSheetSaf 807 ms · balanceSheetOfTamami 4873 ms · kuyruk madde 153803, canlı 153803, donmuş grup 0
+yük (sonda) 1.19 1.13 1.27
+çıkış 0
+== kilitli · başta yük 1.19 1.13 1.27 1/124 8747 · 14:29:58
+kilit ('2026-06-30',)
+yük (başta) 1.17 1.13 1.27 · kapsam 2026-06-30
+tekrar 1: canliTuretme 2676 ms · checkTamami 4045 ms · donmusToplamSql 1157 ms · donmusBicim 20 ms · bookKuyruk 15 ms · kuralFarki 131 ms · degerlemeGirdi 465 ms · balanceSheetSaf 165 ms · balanceSheetOfTamami 5898 ms · kuyruk madde 13131, canlı 153803, donmuş grup 8777
+tekrar 2: canliTuretme 2262 ms · checkTamami 3614 ms · donmusToplamSql 1433 ms · donmusBicim 11 ms · bookKuyruk 15 ms · kuralFarki 108 ms · degerlemeGirdi 436 ms · balanceSheetSaf 133 ms · balanceSheetOfTamami 5006 ms · kuyruk madde 13131, canlı 153803, donmuş grup 8777
+tekrar 3: canliTuretme 2388 ms · checkTamami 3451 ms · donmusToplamSql 1624 ms · donmusBicim 22 ms · bookKuyruk 14 ms · kuralFarki 102 ms · degerlemeGirdi 481 ms · balanceSheetSaf 119 ms · balanceSheetOfTamami 6541 ms · kuyruk madde 13131, canlı 153803, donmuş grup 8777
+yük (sonda) 1.13 1.12 1.26
+çıkış 0
+sonda yük 1.13 1.12 1.26 1/126 8775 · 14:31:22

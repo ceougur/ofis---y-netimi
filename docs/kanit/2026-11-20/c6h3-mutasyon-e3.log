@@ -1,0 +1,6 @@
+başta yük 5.56 5.97 4.47 5/135 6550 · 16:49:48 · uç 1dd224f1
+E3-alt-hesap-atla · TZ=UTC · pass 75 fail 2 · YAKALANDI · ilk kırmızı:     not ok 1 - kilitsiz → boş donmuş dönem → kilit 31.03.2026 (kural farkıyla) → kilit kaldır + Kapanış Fi�     not ok 2 - uç (iş parçacığı) = iş parçacığısız yeni okuma = eski okuma — kilitli t (30.06.2026 kilidiy 
+E3-alt-hesap-atla · TZ=Europe/Istanbul · pass 75 fail 2 · YAKALANDI · ilk kırmızı:     not ok 1 - kilitsiz → boş donmuş dönem → kilit 31.03.2026 (kural farkıyla) → kilit kaldır + Kapanış Fi�     not ok 2 - uç (iş parçacığı) = iş parçacığısız yeni okuma = eski okuma — kilitli t (30.06.2026 kilidiy 
+E4-cari-atla · TZ=UTC · pass 74 fail 3 · YAKALANDI · ilk kırmızı:     not ok 6 - kilitli t DONMUŞ defterden (kural değişikliği benzetiminde değişmez), kilitsiz t canlı not ok 2 - Ç6-HESAP Bilanço okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket, yedek 
+E4-cari-atla · TZ=Europe/Istanbul · pass 74 fail 3 · YAKALANDI · ilk kırmızı:     not ok 6 - kilitli t DONMUŞ defterden (kural değişikliği benzetiminde değişmez), kilitsiz t canlı not ok 2 - Ç6-HESAP Bilanço okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket, yedek 
+sonda yük 6.24 6.11 4.60 5/132 7113 · 16:50:45

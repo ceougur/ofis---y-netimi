@@ -1,0 +1,16 @@
+başta yük 0.60 1.04 2.04 3/122 11555 · 22:08:48 · kip kilitli · uç d3ef7c92
+kilit ('2026-06-30',)
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a91ebf10c57360da7 · yük (başta) 0.87 1.07 2.02 · TZ (yerel) · açılış 25267 ms
+donma (bekleyen koşu): 8393 ms · kapsam 2026-06-30
+veri: {"moves":80136,"items":1060,"entries":102295,"cash":11554,"invoices":34026}
+  önbellekten (aynı istek): 5.9 ms · olay döngüsü en çok 0 ms
+  Gelir Tablosu yıl 2026 (uç, iş parçacığı): durum 200 · en iyi 3081.1 ms · ortanca 3112.3 ms · en kötü 3190.3 ms · olay döngüsü en çok 12.7 ms (n=5) · örnek {"donemNetKari":5124820044,"smm":271342170,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç1 2026 (uç, iş parçacığı): durum 200 · en iyi 2934.7 ms · ortanca 2966.5 ms · en kötü 3061.6 ms · olay döngüsü en çok 95.1 ms (n=5) · örnek {"donemNetKari":1728439164,"smm":989482257,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç2 2026 (uç, iş parçacığı): durum 200 · en iyi 3002.5 ms · ortanca 3103.3 ms · en kötü 3249.9 ms · olay döngüsü en çok 10.3 ms (n=5) · örnek {"donemNetKari":1083225870,"smm":-85145418,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç3 2026 (uç, iş parçacığı): durum 200 · en iyi 3072.1 ms · ortanca 3276.7 ms · en kötü 3335.6 ms · olay döngüsü en çok 13.7 ms (n=5) · örnek {"donemNetKari":2142620293,"smm":-78662556,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç4 2026 (uç, iş parçacığı): durum 200 · en iyi 3166 ms · ortanca 3189.8 ms · en kötü 3401 ms · olay döngüsü en çok 12.4 ms (n=5) · örnek {"donemNetKari":170534717,"smm":-554332113,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu yıl 2025 (uç, iş parçacığı): durum 200 · en iyi 3395.5 ms · ortanca 3474.5 ms · en kötü 3583.1 ms · olay döngüsü en çok 11.7 ms (n=5) · örnek {"donemNetKari":7054226673,"smm":433324944,"kesinDegil":["smm-tahmini","eksi-stok","bilgi-amacli"]}
+  Stok değerlemesi 30.09.2026 (uç, iş parçacığı): durum 200 · en iyi 727.8 ms · ortanca 743.7 ms · en kötü 810.2 ms · olay döngüsü en çok 11.1 ms (n=5) · örnek {"dss":34156318870,"products":1060,"negative":0,"warnings":0}
+yük (sonda) 1.12 1.09 1.92
+çıkış 0
+sonda yük 1.12 1.09 1.92 2/130 11852 · 22:11:06

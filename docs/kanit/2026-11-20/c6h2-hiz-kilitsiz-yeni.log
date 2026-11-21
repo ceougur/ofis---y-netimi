@@ -1,0 +1,13 @@
+başta yük 0.53 1.27 1.89 3/127 22529 · 10:58:05 · kip kilitsiz · kod yeni (/home/user/ofis---y-netimi/.claude/worktrees/agent-a7236347e0f8b6e8c)
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a7236347e0f8b6e8c · yük (başta) 0.89 1.30 1.89 · TZ (yerel) · açılış 24103.7 ms
+donma: bekleyen koşu yok (kapsam —)
+veri: {"moves":80136,"items":1060,"entries":102295,"cash":11554,"invoices":34026}
+  Bilanço önbellekten (aynı istek): 3.6 ms · olay döngüsü en çok 0 ms
+  Bilanço 2026-12-31 (uç, iş parçacığı): durum 200 · en iyi 4558.1 ms · ortanca 4709.8 ms · en kötü 4918.5 ms · olay döngüsü en çok 10.9 ms (n=5) · örnek {"aktif":60964560341,"pasif":60964560341,"fark":0,"dnk":5124820044,"gy":[[2022,1854646820],[2023,6722697254],[2024,6845014154],[2025,7054226673]],"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"]}
+  Bilanço 2026-06-30 (uç, iş parçacığı): durum 200 · en iyi 4639.3 ms · ortanca 4754.5 ms · en kötü 4886.7 ms · olay döngüsü en çok 13.7 ms (n=5) · örnek {"aktif":57023692908,"pasif":57023692908,"fark":0,"dnk":2811665034,"gy":[[2022,1854646820],[2023,6722697254],[2024,6845014154],[2025,7054226673]],"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"]}
+  Bilanço 2025-12-31 (uç, iş parçacığı): durum 200 · en iyi 4409.1 ms · ortanca 4658.6 ms · en kötü 4786.9 ms · olay döngüsü en çok 27 ms (n=5) · örnek {"aktif":49489089124,"pasif":49489089124,"fark":0,"dnk":7054226673,"gy":[[2022,1854646820],[2023,6722697254],[2024,6845014154]],"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","eksi-stok","kapanmamis-yil","bilgi-amacli"]}
+  Gelir Tablosu yıl 2026 (uç, iş parçacığı): durum 200 · en iyi 2959.2 ms · ortanca 3051.3 ms · en kötü 3458.4 ms · olay döngüsü en çok 105.3 ms (n=5) · örnek {"donemNetKari":5124820044,"smm":271342170,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç2 2026 (uç, iş parçacığı): durum 200 · en iyi 2885.1 ms · ortanca 3089.4 ms · en kötü 3207.5 ms · olay döngüsü en çok 20.5 ms (n=5) · örnek {"donemNetKari":1083225870,"smm":-85145418,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+yük (sonda) 1.18 1.29 1.82
+çıkış 0
+sonda yük 1.18 1.29 1.82 2/128 22893 · 11:00:16

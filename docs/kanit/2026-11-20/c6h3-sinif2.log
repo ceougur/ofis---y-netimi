@@ -1,0 +1,176 @@
+TAP version 13
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:9379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# sınıf testi: 13 sınıf × 2 kip; 64 fark; yazılı olmayan 64, değeri değişen 0, kapanmış ama listede duran 0
+#   karar başına: 
+# Subtest: 2.5.0 Ç6-HESAP — v2.4.9 GERÇEK verisinde sınıf sınıf (kilitsiz / kilitli) Gelir Tablosu, Bilanço, değerleme ↔ v2.4.9'un kendi sayıları (her fark karar numarasıyla)
+    # Subtest: fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok; her sınıfta Aktif = Pasif
+    not ok 1 - fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok; her sınıfta Aktif = Pasif
+      ---
+      duration_ms: 72252.721694
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ab54e5fc492a09964/test/c6h-v249-sinif.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        beklenen-farklar.json'da YAZILI OLMAYAN fark (karar numarasıyla açıklanmadı):
+          satis-fatura · kilitsiz · 2025-12-31 · mizan.500: -150000 → 0
+          satis-fatura · kilitsiz · 2025-12-31 · mizan.519: 0 → -150000
+          satis-fatura · kilitsiz · 2025-12-31 · kar: 20000 → 10000
+          satis-fatura · kilitsiz · 2025-12-31 · smm: 0 → 10000
+          satis-fatura · kilitsiz · 2026-06-30 · mizan.500: -150000 → 0
+          satis-fatura · kilitsiz · 2026-06-30 · mizan.519: 0 → -150000
+          satis-fatura · kilitsiz · 2026-06-30 · kar: 70000 → 35000
+          satis-fatura · kilitsiz · 2026-06-30 · smm: 0 → 35000
+          satis-fatura · kilitsiz · 2026-10-20 · mizan.500: -150000 → 0
+          satis-fatura · kilitsiz · 2026-10-20 · mizan.519: 0 → -150000
+          satis-fatura · kilitsiz · 2026-10-20 · kar: 75000 → 40000
+          satis-fatura · kilitsiz · 2026-10-20 · smm: 0 → 35000
+          satis-fatura · kilitli · 2025-12-31 · kar: 20000 → 10000
+          satis-fatura · kilitli · 2025-12-31 · smm: 0 → 10000
+          satis-fatura · kilitli · 2026-06-30 · kar: 70000 → 35000
+          satis-fatura · kilitli · 2026-06-30 · smm: 0 → 35000
+          satis-fatura · kilitli · 2026-10-20 · kar: 75000 → 40000
+          satis-fatura · kilitli · 2026-10-20 · smm: 0 → 35000
+          alis-fatura · kilitsiz · 2025-12-31 · stok: 65000 → 60000
+          alis-fatura · kilitsiz · 2026-06-30 · stok: 149500 → 147000
+          alis-fatura · kilitsiz · 2026-10-20 · stok: 136500 → 134000
+          alis-fatura · kilitli · 2025-12-31 · stok: 65000 → 60000
+          alis-fatura · kilitli · 2026-06-30 · stok: 149500 → 147000
+          alis-fatura · kilitli · 2026-10-20 · stok: 136500 → 134000
+          kasa · kilitsiz · 2025-12-31 · mizan.500: -500000 → 0
+          kasa · kilitsiz · 2025-12-31 · mizan.519: 0 → -500000
+          kasa · kilitsiz · 2026-06-30 · mizan.500: -500000 → 0
+          kasa · kilitsiz · 2026-06-30 · mizan.519: 0 → -500000
+          kasa · kilitsiz · 2026-10-20 · mizan.500: -500000 → 0
+          kasa · kilitsiz · 2026-10-20 · mizan.519: 0 → -500000
+          banka · kilitsiz · 2025-12-31 · mizan.500: -2500000 → 0
+          banka · kilitsiz · 2025-12-31 · mizan.519: 0 → -2500000
+          banka · kilitsiz · 2026-06-30 · mizan.500: -2500000 → 0
+          banka · kilitsiz · 2026-06-30 · mizan.519: 0 → -2500000
+          banka · kilitsiz · 2026-10-20 · mizan.500: -2500000 → 0
+          banka · kilitsiz · 2026-10-20 · mizan.519: 0 → -2500000
+          acilis · kilitsiz · 2025-12-31 · mizan.500: -690000 → 0
+          acilis · kilitsiz · 2025-12-31 · mizan.519: 0 → -690000
+          acilis · kilitsiz · 2026-06-30 · mizan.500: -690000 → 0
+          acilis · kilitsiz · 2026-06-30 · mizan.519: 0 → -690000
+          acilis · kilitsiz · 2026-10-20 · mizan.500: -690000 → 0
+          acilis · kilitsiz · 2026-10-20 · mizan.519: 0 → -690000
+          stok · kilitsiz · 2025-12-31 · stok: 118800 → 110492
+          stok · kilitsiz · 2025-12-31 · kar: 0 → 30692
+          stok · kilitsiz · 2025-12-31 · smm: 0 → -30692
+          stok · kilitsiz · 2026-06-30 · stok: 72600 → 67061
+          stok · kilitsiz · 2026-06-30 · kar: 30000 → -3531
+          stok · kilitsiz · 2026-06-30 · smm: 0 → 33531
+          stok · kilitsiz · 2026-10-20 · stok: 59400 → 54868
+          stok · kilitsiz · 2026-10-20 · kar: 52000 → 6276
+          stok · kilitsiz · 2026-10-20 · smm: 0 → 45724
+          stok · kilitli · 2025-12-31 · stok: 118800 → 110492
+          stok · kilitli · 2025-12-31 · kar: 0 → 30692
+          stok · kilitli · 2025-12-31 · smm: 0 → -30692
+          stok · kilitli · 2026-06-30 · stok: 72600 → 67061
+          stok · kilitli · 2026-06-30 · kar: 30000 → -3531
+          stok · kilitli · 2026-06-30 · smm: 0 → 33531
+          stok · kilitli · 2026-10-20 · stok: 59400 → 54868
+          stok · kilitli · 2026-10-20 · kar: 52000 → 6276
+          stok · kilitli · 2026-10-20 · smm: 0 → 45724
+          supheli · kilitsiz · bugün · cari.musteri.borclu: 150000 → 0
+          supheli · kilitsiz · bugün · cari.musteri.borcluSayisi: 1 → 0
+          supheli · kilitli · bugün · cari.musteri.borclu: 150000 → 0
+          supheli · kilitli · bugün · cari.musteri.borcluSayisi: 1 → 0
+        
+        64 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 64
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ab54e5fc492a09964/test/c6h-v249-sinif.test.mjs:163:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.5.0 Ç6-HESAP — v2.4.9 GERÇEK verisinde sınıf sınıf (kilitsiz / kilitli) Gelir Tablosu, Bilanço, değerleme ↔ v2.4.9'un kendi sayıları (her fark karar numarasıyla)
+  ---
+  duration_ms: 72254.284609
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ab54e5fc492a09964/test/c6h-v249-sinif.test.mjs:111:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 72764.336782

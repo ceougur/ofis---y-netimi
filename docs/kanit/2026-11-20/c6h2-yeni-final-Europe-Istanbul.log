@@ -1,0 +1,577 @@
+TAP version 13
+# Subtest: B-a — kapanmış yılın ara dönemi: 31.12'yi içermeyen parça T(b) − T(a − 1), N-01 yalnız 31.12 parçasında
+    # Subtest: yıl [01.01, 31.12] kesin: D = 621 266,67, tahmin yok
+    ok 1 - yıl [01.01, 31.12] kesin: D = 621 266,67, tahmin yok
+      ---
+      duration_ms: 4.524983
+      type: 'test'
+      ...
+    # Subtest: aylar (elle): Ocak 240,00, Şubat–Kasım 0, Aralık 26,67; toplam = yıl = 621
+    ok 2 - aylar (elle): Ocak 240,00, Şubat–Kasım 0, Aralık 26,67; toplam = yıl = 621
+      ---
+      duration_ms: 4.367571
+      type: 'test'
+      ...
+    # Subtest: çeyrekler (elle): Q1 240,00 · Q2 0 · Q3 0 · Q4 26,67; toplam = yıl; yarıyıl + yarıyıl = yıl
+    ok 3 - çeyrekler (elle): Q1 240,00 · Q2 0 · Q3 0 · Q4 26,67; toplam = yıl; yarıyıl + yarıyıl = yıl
+      ---
+      duration_ms: 1.219086
+      type: 'test'
+      ...
+    # Subtest: yıl içi Bilanço (30.06): 153 = DSS_t 360,00 (N-01 31.12'de; t'den sonra), hesaplanmış = Gelir Tablosu [01.01, 30.06]; Aktif = Pasif
+    ok 4 - yıl içi Bilanço (30.06): 153 = DSS_t 360,00 (N-01 31.12'de; t'den sonra), hesaplanmış = Gelir Tablosu [01.01, 30.06]; Aktif = Pasif
+      ---
+      duration_ms: 15.30557
+      type: 'test'
+      ...
+    # Subtest: 31.12 Bilanço (N-01 yazılmış): 153 defterden 733,33 (= DSS), satışların maliyeti kesin; Aktif = Pasif
+    ok 5 - 31.12 Bilanço (N-01 yazılmış): 153 defterden 733,33 (= DSS), satışların maliyeti kesin; Aktif = Pasif
+      ---
+      duration_ms: 4.737734
+      type: 'test'
+      ...
+    1..5
+ok 1 - B-a — kapanmış yılın ara dönemi: 31.12'yi içermeyen parça T(b) − T(a − 1), N-01 yalnız 31.12 parçasında
+  ---
+  duration_ms: 32.975893
+  type: 'suite'
+  ...
+# (node:31957) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:31957) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç6-HESAP Bilanço okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket, yedek
+    # Subtest: Bilanço 30.09.2026 elle hesaplanan sayılarla; aynı adlı iki cari brüt (biri 120'de, öbürü 340'ta); Aktif = Pasif
+    ok 1 - Bilanço 30.09.2026 elle hesaplanan sayılarla; aynı adlı iki cari brüt (biri 120'de, öbürü 340'ta); Aktif = Pasif
+      ---
+      duration_ms: 379.709094
+      type: 'test'
+      ...
+# (node:31957) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:31957) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: hesaplanmış Dönem Net Kârı = aynı t'nin Gelir Tablosu ucu (1 Ocak – t) — ay / çeyrek / yıl sonu, gelecek tarih; Aktif = Pasif her t'de
+    ok 2 - hesaplanmış Dönem Net Kârı = aynı t'nin Gelir Tablosu ucu (1 Ocak – t) — ay / çeyrek / yıl sonu, gelecek tarih; Aktif = Pasif her t'de
+      ---
+      duration_ms: 2429.734584
+      type: 'test'
+      ...
+    # Subtest: iç tutarlılık: hesap başına defter bakiyesi = aynı t'nin Hesap Planı Mizanı (1–5); bilançodaki tutar = defter (153 hariç: DSS_t)
+    ok 3 - iç tutarlılık: hesap başına defter bakiyesi = aynı t'nin Hesap Planı Mizanı (1–5); bilançodaki tutar = defter (153 hariç: DSS_t)
+      ---
+      duration_ms: 308.0391
+      type: 'test'
+      ...
+# (node:31957) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:31957) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: iş parçacığı ↔ iş parçacığısız sonuç birebir; varsayılan tarih bugün; geçersiz tarih 400
+    ok 4 - iş parçacığı ↔ iş parçacığısız sonuç birebir; varsayılan tarih bugün; geçersiz tarih 400
+      ---
+      duration_ms: 593.548177
+      type: 'test'
+      ...
+# (node:31957) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: yetki: Muhasebe görür; Personel ve Avukat 403
+    ok 5 - yetki: Muhasebe görür; Personel ve Avukat 403
+      ---
+      duration_ms: 605.176426
+      type: 'test'
+      ...
+# (node:31957) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:31957) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli t DONMUŞ defterden (kural değişikliği benzetiminde değişmez), kilitsiz t canlı
+    ok 6 - kilitli t DONMUŞ defterden (kural değişikliği benzetiminde değişmez), kilitsiz t canlı
+      ---
+      duration_ms: 1103.517194
+      type: 'test'
+      ...
+    # Subtest: iki şirket + yedek: ikinci şirketin Bilanço'su birinciyi görmez; 002'de yedek → kayıt → geri yükleme → Bilanço yedekteki gibi; 001'e dönünce sayılar aynı
+    ok 7 - iki şirket + yedek: ikinci şirketin Bilanço'su birinciyi görmez; 002'de yedek → kayıt → geri yükleme → Bilanço yedekteki gibi; 001'e dönünce sayılar aynı
+      ---
+      duration_ms: 2358.075476
+      type: 'test'
+      ...
+    1..7
+ok 2 - Ç6-HESAP Bilanço okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket, yedek
+  ---
+  duration_ms: 8974.470075
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Bilanço okuma ucu — Kapanış Fişi ve ters kaydı (programın fiş defteri)
+    # Subtest: kapanmamış 2025 → Geçmiş Yıllar 570 kısmı; Kapanış Fişi → 590 (V.F), Geçmiş Yıllar boş; ters kayıt → yeniden kapanmamış; her durumda Aktif = Pasif
+    ok 1 - kapanmamış 2025 → Geçmiş Yıllar 570 kısmı; Kapanış Fişi → 590 (V.F), Geçmiş Yıllar boş; ters kayıt → yeniden kapanmamış; her durumda Aktif = Pasif
+      ---
+      duration_ms: 1240.916142
+      type: 'test'
+      ...
+    1..1
+ok 3 - Ç6-HESAP Bilanço okuma ucu — Kapanış Fişi ve ters kaydı (programın fiş defteri)
+  ---
+  duration_ms: 1866.574746
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Bilanço — elle hesaplanmış örnek (30.06.2026; kapanmamış 2025)
+    # Subtest: kalemler: brütleştirme (alacaklı 120 → 340, borçlu 320 → 159, KMH 102 → 300, borçlu 360 → 198), düzenleyici 103 eksi, 153 = DSS_t, Aktif = Pasif
+    ok 1 - kalemler: brütleştirme (alacaklı 120 → 340, borçlu 320 → 159, KMH 102 → 300, borçlu 360 → 198), düzenleyici 103 eksi, 153 = DSS_t, Aktif = Pasif
+      ---
+      duration_ms: 106.428377
+      type: 'test'
+      ...
+    # Subtest: hesaplanmış Dönem Net Kârı = aynı t'nin Gelir Tablosu (1 Ocak – t) Dönem Net Kârı; Geçmiş Yıllar — Kapanmamış yıl yıl (2025 kâr → 570 kısmı)
+    ok 2 - hesaplanmış Dönem Net Kârı = aynı t'nin Gelir Tablosu (1 Ocak – t) Dönem Net Kârı; Geçmiş Yıllar — Kapanmamış yıl yıl (2025 kâr → 570 kısmı)
+      ---
+      duration_ms: 2.327682
+      type: 'test'
+      ...
+    # Subtest: Kesin Değil (TEK toplayıcı, kitap §7.4 sırası): açılış, tahmin, borçlu 360, kapanmamış yıl
+    ok 3 - Kesin Değil (TEK toplayıcı, kitap §7.4 sırası): açılış, tahmin, borçlu 360, kapanmamış yıl
+      ---
+      duration_ms: 1.622881
+      type: 'test'
+      ...
+    # Subtest: iç tutarlılık: hesap başına bilançoda gösterilen = defter bakiyesi (153 hariç: DSS_t); brütleştirme yalnız kalem değiştirir
+    ok 4 - iç tutarlılık: hesap başına bilançoda gösterilen = defter bakiyesi (153 hariç: DSS_t); brütleştirme yalnız kalem değiştirir
+      ---
+      duration_ms: 0.972755
+      type: 'test'
+      ...
+    # Subtest: yıl ortası t (2026-02-28): T(t) aynı işlevden; Aktif = Pasif
+    ok 5 - yıl ortası t (2026-02-28): T(t) aynı işlevden; Aktif = Pasif
+      ---
+      duration_ms: 0.61133
+      type: 'test'
+      ...
+    1..5
+ok 4 - Ç6-HESAP Bilanço — elle hesaplanmış örnek (30.06.2026; kapanmamış 2025)
+  ---
+  duration_ms: 113.435988
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Bilanço — kapanmış yıl, ters kayıt, boş veri, tarih
+    # Subtest: kapanmış 2025: Geçmiş Yıllar — Kapanmamış'a GİRMEZ, sonucu 590'da (V.F); Aktif = Pasif; kapanmamis-yil yok
+    ok 1 - kapanmış 2025: Geçmiş Yıllar — Kapanmamış'a GİRMEZ, sonucu 590'da (V.F); Aktif = Pasif; kapanmamis-yil yok
+      ---
+      duration_ms: 0.67437
+      type: 'test'
+      ...
+    # Subtest: kapanış fişi ters kaydedilmiş (closedOn boş): 2025 kapanmamış sayılır, sonucu 570 kısmında; 590 = 0; Aktif = Pasif
+    ok 2 - kapanış fişi ters kaydedilmiş (closedOn boş): 2025 kapanmamış sayılır, sonucu 570 kısmında; 590 = 0; Aktif = Pasif
+      ---
+      duration_ms: 1.362527
+      type: 'test'
+      ...
+    # Subtest: t = 31.12 ve yıl kapanmış: hesaplanmış satır YOK, 153 defterden (N-01 sonrası = DSS)
+    ok 3 - t = 31.12 ve yıl kapanmış: hesaplanmış satır YOK, 153 defterden (N-01 sonrası = DSS)
+      ---
+      duration_ms: 0.814187
+      type: 'test'
+      ...
+    # Subtest: boş veri: bütün kalemler 0, Aktif = Pasif = 0, Kesin Değil yok
+    ok 4 - boş veri: bütün kalemler 0, Aktif = Pasif = 0, Kesin Değil yok
+      ---
+      duration_ms: 0.457679
+      type: 'test'
+      ...
+    # Subtest: tek kayıt: yalnız Kasa açılışı → 100 = 519
+    ok 5 - tek kayıt: yalnız Kasa açılışı → 100 = 519
+      ---
+      duration_ms: 0.547273
+      type: 'test'
+      ...
+    # Subtest: t'den sonraki madde sayılmaz (ileri tarihli hareket); bir gün önce farklı
+    ok 6 - t'den sonraki madde sayılmaz (ileri tarihli hareket); bir gün önce farklı
+      ---
+      duration_ms: 0.996111
+      type: 'test'
+      ...
+    # Subtest: aynı gün kayıtlarının sırası sonucu değiştirmez (ders 31)
+    ok 7 - aynı gün kayıtlarının sırası sonucu değiştirmez (ders 31)
+      ---
+      duration_ms: 3.107478
+      type: 'test'
+      ...
+    # Subtest: geçersiz tarih 400 (29 Şubat 2026 yok); 29 Şubat 2028 geçerli
+    ok 8 - geçersiz tarih 400 (29 Şubat 2026 yok); 29 Şubat 2028 geçerli
+      ---
+      duration_ms: 1.010082
+      type: 'test'
+      ...
+    # Subtest: Bilgi Amaçlı: Defter Türü bilanço esası değil
+    ok 9 - Bilgi Amaçlı: Defter Türü bilanço esası değil
+      ---
+      duration_ms: 0.41425
+      type: 'test'
+      ...
+    1..9
+ok 5 - Ç6-HESAP Bilanço — kapanmış yıl, ters kayıt, boş veri, tarih
+  ---
+  duration_ms: 9.845866
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Bilanço — imkânsız ters bakiye, eksi stok, 127
+    # Subtest: eksi kasa ve borçlu 300 (kesinDegil kuralı): kendi kaleminde işaretli + İmkânsız Ters Bakiye
+    ok 1 - eksi kasa ve borçlu 300 (kesinDegil kuralı): kendi kaleminde işaretli + İmkânsız Ters Bakiye
+      ---
+      duration_ms: 0.462315
+      type: 'test'
+      ...
+    # Subtest: eksi stok (KG-9): ürün değeri 0, Kesin Değil; Aktif = Pasif (fark dönem sonucunda)
+    ok 2 - eksi stok (KG-9): ürün değeri 0, Kesin Değil; Aktif = Pasif (fark dönem sonucunda)
+      ---
+      duration_ms: 0.4113
+      type: 'test'
+      ...
+    # Subtest: alacaklı 127 (carisiz taksit kartı) kart bazında III.D 340'a (EK-2 S. 36; tasarım §10 B-f); borçlu kart 127'de kalır
+    ok 3 - alacaklı 127 (carisiz taksit kartı) kart bazında III.D 340'a (EK-2 S. 36; tasarım §10 B-f); borçlu kart 127'de kalır
+      ---
+      duration_ms: 0.377287
+      type: 'test'
+      ...
+    # Subtest: borçlu 336 cari (iki alt hesaplı satır) TEK grup: I.D 136'ya, kaynak adedi 1, alt hesap kırılımı korunur
+    ok 4 - borçlu 336 cari (iki alt hesaplı satır) TEK grup: I.D 136'ya, kaynak adedi 1, alt hesap kırılımı korunur
+      ---
+      duration_ms: 0.316464
+      type: 'test'
+      ...
+    1..4
+ok 6 - Ç6-HESAP Bilanço — imkânsız ters bakiye, eksi stok, 127
+  ---
+  duration_ms: 1.724388
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Bilanço — Kesin Değil'in tur 2 nedenleri (B-d, Aktif ≠ Pasif, Kural Değişikliği Farkı)
+    # Subtest: dengesiz madde: fark satırı (kayıt değil) + 'Defter Mutabakatı Farkı ya da Dengesiz Madde' + 'Aktif ile Pasif Eşit Değil' (elle: B 100 5,00 / A 600 4,00 → fark 1,00)
+    ok 1 - dengesiz madde: fark satırı (kayıt değil) + 'Defter Mutabakatı Farkı ya da Dengesiz Madde' + 'Aktif ile Pasif Eşit Değil' (elle: B 100 5,00 / A 600 4,00 → fark 1,00)
+      ---
+      duration_ms: 0.747211
+      type: 'test'
+      ...
+    # Subtest: B-d: Defter Mutabakatı başarısızsa (ledger.check() → reconcile) neden + ayrıntı; verilmezse denetlenmemiş (neden yok); başarılıysa yok
+    ok 2 - B-d: Defter Mutabakatı başarısızsa (ledger.check() → reconcile) neden + ayrıntı; verilmezse denetlenmemiş (neden yok); başarılıysa yok
+      ---
+      duration_ms: 1.618985
+      type: 'test'
+      ...
+    # Subtest: Kural Değişikliği Farkı (Ç3): t'ye kadarki yılların satırları; t'den sonraki yıl sayılmaz
+    ok 3 - Kural Değişikliği Farkı (Ç3): t'ye kadarki yılların satırları; t'den sonraki yıl sayılmaz
+      ---
+      duration_ms: 0.961353
+      type: 'test'
+      ...
+    1..3
+ok 7 - Ç6-HESAP Bilanço — Kesin Değil'in tur 2 nedenleri (B-d, Aktif ≠ Pasif, Kural Değişikliği Farkı)
+  ---
+  duration_ms: 3.470236
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP değerleme — hareket sınıfı (defterin 153 maddeleriyle aynı ayrım)
+    # Subtest: açılış / alış / alış iadesi / yalnız miktar
+    ok 1 - açılış / alış / alış iadesi / yalnız miktar
+      ---
+      duration_ms: 1.067622
+      type: 'test'
+      ...
+    1..1
+ok 8 - Ç6-HESAP değerleme — hareket sınıfı (defterin 153 maddeleriyle aynı ayrım)
+  ---
+  duration_ms: 2.376841
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP değerleme — dönemsel ağırlıklı ortalama, iki yıl (DBS = önceki yıl DSS, KG-12 A)
+    # Subtest: 2025 yıl sonu: DSS 108,00, SMM 1.242,00
+    ok 1 - 2025 yıl sonu: DSS 108,00, SMM 1.242,00
+      ---
+      duration_ms: 1.846995
+      type: 'test'
+      ...
+    # Subtest: 2026: DBS = 2025 DSS; 31.01 DSS 108,00; 31.03 DSS 448,00, SMM 320,00
+    ok 2 - 2026: DBS = 2025 DSS; 31.01 DSS 108,00; 31.03 DSS 448,00, SMM 320,00
+      ---
+      duration_ms: 0.780747
+      type: 'test'
+      ...
+    # Subtest: yıl sonu ile 31 Aralık 'at' aynı (tek işlev)
+    ok 3 - yıl sonu ile 31 Aralık 'at' aynı (tek işlev)
+      ---
+      duration_ms: 0.219371
+      type: 'test'
+      ...
+    1..3
+ok 9 - Ç6-HESAP değerleme — dönemsel ağırlıklı ortalama, iki yıl (DBS = önceki yıl DSS, KG-12 A)
+  ---
+  duration_ms: 3.282544
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP değerleme — G-1 yuvarlama, KG-9, KG-10, M5, 29 Şubat, silinen ürün, eksi birim maliyet
+    # Subtest: G-1: ürün başına kuruşa yarım yukarı, toplam = yuvarlanmış satırlar
+    ok 1 - G-1: ürün başına kuruşa yarım yukarı, toplam = yuvarlanmış satırlar
+      ---
+      duration_ms: 0.871585
+      type: 'test'
+      ...
+    # Subtest: KG-9 A: eksi miktar 0 değer + eksi stok listesi; M5: ertesi yıl eksi dönem başı ortalamada 0, miktar devri eksi dahil
+    ok 2 - KG-9 A: eksi miktar 0 değer + eksi stok listesi; M5: ertesi yıl eksi dönem başı ortalamada 0, miktar devri eksi dahil
+      ---
+      duration_ms: 0.655512
+      type: 'test'
+      ...
+    # Subtest: KG-10 A: alışı ve DBS'si olmayan ürün kartın alış fiyatıyla; fiyat da yoksa 0 + uyarı
+    ok 3 - KG-10 A: alışı ve DBS'si olmayan ürün kartın alış fiyatıyla; fiyat da yoksa 0 + uyarı
+      ---
+      duration_ms: 0.788713
+      type: 'test'
+      ...
+    # Subtest: 29 Şubat (artık yıl 2028): alış 29.02'de; 28.02'de stok yok, 29.02'de 30,00
+    ok 4 - 29 Şubat (artık yıl 2028): alış 29.02'de; 28.02'de stok yok, 29.02'de 30,00
+      ---
+      duration_ms: 0.498542
+      type: 'test'
+      ...
+    # Subtest: silinmiş ürün kartı silindiği günden itibaren envantere girmez (tasarım §3, S-a A); öncesinde girer
+    ok 5 - silinmiş ürün kartı silindiği günden itibaren envantere girmez (tasarım §3, S-a A); öncesinde girer
+      ---
+      duration_ms: 0.473426
+      type: 'test'
+      ...
+    # Subtest: alış iadesi alışlardan değerliyse birim maliyet 0'a kırpılır, kırpılan tutar listede (S209 = B; tur 1'in 'eksi değer + uyarı' beklentisi kararla değişti)
+    ok 6 - alış iadesi alışlardan değerliyse birim maliyet 0'a kırpılır, kırpılan tutar listede (S209 = B; tur 1'in 'eksi değer + uyarı' beklentisi kararla değişti)
+      ---
+      duration_ms: 0.604283
+      type: 'test'
+      ...
+    # Subtest: alış iadesi birim maliyeti DÜŞÜRÜR / YÜKSELTİR (iade fiyatı ortalamadan farklıysa)
+    ok 7 - alış iadesi birim maliyeti DÜŞÜRÜR / YÜKSELTİR (iade fiyatı ortalamadan farklıysa)
+      ---
+      duration_ms: 0.260428
+      type: 'test'
+      ...
+    # Subtest: sonradan açılan ürünün açılışı (M-07) kendi yılının dönem başıdır; boş veri 0
+    ok 8 - sonradan açılan ürünün açılışı (M-07) kendi yılının dönem başıdır; boş veri 0
+      ---
+      duration_ms: 0.391742
+      type: 'test'
+      ...
+    1..8
+ok 10 - Ç6-HESAP değerleme — G-1 yuvarlama, KG-9, KG-10, M5, 29 Şubat, silinen ürün, eksi birim maliyet
+  ---
+  duration_ms: 5.299433
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Gelir Tablosu — sınıflama hesap önekinden, planla tutarlı
+    # Subtest: planda gelir tablosu kalemi olan her hesap önek sınıflamasıyla AYNI kaleme ve satıra düşer
+    ok 1 - planda gelir tablosu kalemi olan her hesap önek sınıflamasıyla AYNI kaleme ve satıra düşer
+      ---
+      duration_ms: 2.903678
+      type: 'test'
+      ...
+    # Subtest: planda olmayan önekler: 601 A, 611 B, 661 H, 679 I; 690 / 692 / 650 sınıflanamaz; 1–5 sınıfı gelir tablosu dışı; alt hesap ana önekle
+    ok 2 - planda olmayan önekler: 601 A, 611 B, 661 H, 679 I; 690 / 692 / 650 sınıflanamaz; 1–5 sınıfı gelir tablosu dışı; alt hesap ana önekle
+      ---
+      duration_ms: 0.33082
+      type: 'test'
+      ...
+    1..2
+ok 11 - Ç6-HESAP Gelir Tablosu — sınıflama hesap önekinden, planla tutarlı
+  ---
+  duration_ms: 4.533507
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Gelir Tablosu — elle hesaplanmış örnek (Q1, Q2, yıl, aylar)
+    # Subtest: Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini satışların maliyeti
+    ok 1 - Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini satışların maliyeti
+      ---
+      duration_ms: 15.200024
+      type: 'test'
+      ...
+    # Subtest: Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) − T(31.03) = 0; kapanış sınıfı maddesi hiçbir dönemde yok
+    ok 2 - Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) − T(31.03) = 0; kapanış sınıfı maddesi hiçbir dönemde yok
+      ---
+      duration_ms: 0.961525
+      type: 'test'
+      ...
+    # Subtest: aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dahil — EK-1 M6)
+    ok 3 - aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dahil — EK-1 M6)
+      ---
+      duration_ms: 3.751244
+      type: 'test'
+      ...
+    # Subtest: dönem sınırı: 31.03 maddesi Q1'de, 01.04 maddesi Q2'de (bir gün kaydırma yakalanır)
+    ok 4 - dönem sınırı: 31.03 maddesi Q1'de, 01.04 maddesi Q2'de (bir gün kaydırma yakalanır)
+      ---
+      duration_ms: 0.549048
+      type: 'test'
+      ...
+    # Subtest: boş dönem: bütün kalemler 0, Kesin Değil yok (stok etkilenmedi), dipnotlar var
+    ok 5 - boş dönem: bütün kalemler 0, Kesin Değil yok (stok etkilenmedi), dipnotlar var
+      ---
+      duration_ms: 0.411604
+      type: 'test'
+      ...
+    # Subtest: tek kayıt: yalnız bir satış faturası
+    ok 6 - tek kayıt: yalnız bir satış faturası
+      ---
+      duration_ms: 0.421211
+      type: 'test'
+      ...
+    1..6
+ok 12 - Ç6-HESAP Gelir Tablosu — elle hesaplanmış örnek (Q1, Q2, yıl, aylar)
+  ---
+  duration_ms: 21.846861
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Gelir Tablosu — Kesin Değil, dipnotlar, hata
+    # Subtest: dengesiz madde, sınıflandırılmamış hesap (690 olağan maddede), Kural Değişikliği Farkı (yıl satırı), Bilgi Amaçlı — TEK toplayıcı sırası
+    ok 1 - dengesiz madde, sınıflandırılmamış hesap (690 olağan maddede), Kural Değişikliği Farkı (yıl satırı), Bilgi Amaçlı — TEK toplayıcı sırası
+      ---
+      duration_ms: 0.846618
+      type: 'test'
+      ...
+    # Subtest: eksi stok (KG-9) Kesin Değil nedeni
+    ok 2 - eksi stok (KG-9) Kesin Değil nedeni
+      ---
+      duration_ms: 0.474223
+      type: 'test'
+      ...
+    # Subtest: yılda 621 hareketi (N-01 yazılmış) varsa o yıl kesin: tahmin eklenmez, defterdeki 621 D kaleminde
+    ok 3 - yılda 621 hareketi (N-01 yazılmış) varsa o yıl kesin: tahmin eklenmez, defterdeki 621 D kaleminde
+      ---
+      duration_ms: 0.469132
+      type: 'test'
+      ...
+    # Subtest: dipnot 3 (770.90 tutarı) ve dipnot 6 (.90 gelir / gider)
+    ok 4 - dipnot 3 (770.90 tutarı) ve dipnot 6 (.90 gelir / gider)
+      ---
+      duration_ms: 0.446995
+      type: 'test'
+      ...
+    # Subtest: çapraz yıl ve geçersiz aralık 400 (kodlanmadı — tasarım §10 S-b)
+    ok 5 - çapraz yıl ve geçersiz aralık 400 (kodlanmadı — tasarım §10 S-b)
+      ---
+      duration_ms: 4.549694
+      type: 'test'
+      ...
+    # Subtest: dönemin Kural Değişikliği Farkı: donmuş ↔ güncel yıl × hesap toplamı (6 / 7 ve 153); fiş maddesi ve dönem dışı karşılaştırılmaz
+    ok 6 - dönemin Kural Değişikliği Farkı: donmuş ↔ güncel yıl × hesap toplamı (6 / 7 ve 153); fiş maddesi ve dönem dışı karşılaştırılmaz
+      ---
+      duration_ms: 0.790356
+      type: 'test'
+      ...
+    # Subtest: toplayıcı: verilmeyen bulgu neden yazmaz; Bilanço nedenleri aynı işlevden (tur 2)
+    ok 7 - toplayıcı: verilmeyen bulgu neden yazmaz; Bilanço nedenleri aynı işlevden (tur 2)
+      ---
+      duration_ms: 0.235045
+      type: 'test'
+      ...
+    1..7
+ok 13 - Ç6-HESAP Gelir Tablosu — Kesin Değil, dipnotlar, hata
+  ---
+  duration_ms: 8.37763
+  type: 'suite'
+  ...
+# Subtest: S209 = B — alış iadesi alışlardan değerliyse birim maliyet 0'a kırpılır + Kesin Değil (kırpılan tutar görünür)
+    # Subtest: değerleme: ürün değeri 0 (−50,00 değil), kırpılan −50,00 ürün ayrıntısında ve toplu listede
+    ok 1 - değerleme: ürün değeri 0 (−50,00 değil), kırpılan −50,00 ürün ayrıntısında ve toplu listede
+      ---
+      duration_ms: 4.769437
+      type: 'test'
+      ...
+    # Subtest: Gelir Tablosu: satışların maliyeti T = −50,00 − 0 = −50,00; Kesin Değil 'Eksi Birim Maliyet' + ayrıntı
+    ok 2 - Gelir Tablosu: satışların maliyeti T = −50,00 − 0 = −50,00; Kesin Değil 'Eksi Birim Maliyet' + ayrıntı
+      ---
+      duration_ms: 3.005786
+      type: 'test'
+      ...
+    # Subtest: Bilanço aynı değerlemeyi okur: 153 = 0, aynı neden; Aktif = Pasif
+    ok 3 - Bilanço aynı değerlemeyi okur: 153 = 0, aynı neden; Aktif = Pasif
+      ---
+      duration_ms: 12.463653
+      type: 'test'
+      ...
+    1..3
+ok 14 - S209 = B — alış iadesi alışlardan değerliyse birim maliyet 0'a kırpılır + Kesin Değil (kırpılan tutar görünür)
+  ---
+  duration_ms: 27.073931
+  type: 'suite'
+  ...
+# (node:31998) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:31998) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç6-HESAP okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket
+    # Subtest: Gelir Tablosu [01.01, 30.09] elle hesaplanan sayılarla; tahmini satışların maliyeti 1.242,00
+    ok 1 - Gelir Tablosu [01.01, 30.09] elle hesaplanan sayılarla; tahmini satışların maliyeti 1.242,00
+      ---
+      duration_ms: 312.129697
+      type: 'test'
+      ...
+# (node:31998) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: iç tutarlılık: kalemlerin defter tutarları Hesap Planı Mizanı'nın 6 / 7 hareketleriyle birebir (yıl, çeyrek, ay, boş ay)
+    ok 2 - iç tutarlılık: kalemlerin defter tutarları Hesap Planı Mizanı'nın 6 / 7 hareketleriyle birebir (yıl, çeyrek, ay, boş ay)
+      ---
+      duration_ms: 1380.2068
+      type: 'test'
+      ...
+# (node:31998) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: iş parçacığı ↔ iş parçacığısız sonuç birebir; değerleme ucu; önbellek veri değişince düşer
+    ok 3 - iş parçacığı ↔ iş parçacığısız sonuç birebir; değerleme ucu; önbellek veri değişince düşer
+      ---
+      duration_ms: 577.423041
+      type: 'test'
+      ...
+# (node:31998) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: varsayılan dönem Bu Yıl; çapraz yıl 400 gelir-tablosu-tek-yil; geçersiz tarih 400
+    ok 4 - varsayılan dönem Bu Yıl; çapraz yıl 400 gelir-tablosu-tek-yil; geçersiz tarih 400
+      ---
+      duration_ms: 1122.740939
+      type: 'test'
+      ...
+    # Subtest: yetki: Muhasebe görür; Personel ve Avukat 403 (Ana Defter raporlarıyla aynı)
+    ok 5 - yetki: Muhasebe görür; Personel ve Avukat 403 (Ana Defter raporlarıyla aynı)
+      ---
+      duration_ms: 685.294545
+      type: 'test'
+      ...
+# (node:31998) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:31998) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:31998) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönem DONMUŞ defterden, açık dönem canlı türetmeden; kural farkı Kesin Değil nedeni
+    ok 6 - kilitli dönem DONMUŞ defterden, açık dönem canlı türetmeden; kural farkı Kesin Değil nedeni
+      ---
+      duration_ms: 1125.402273
+      type: 'test'
+      ...
+# (node:31998) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: iki şirket: ikinci şirketin Gelir Tablosu boş, birinci şirketinkini görmez; geri dönünce sayılar aynı
+    ok 7 - iki şirket: ikinci şirketin Gelir Tablosu boş, birinci şirketinkini görmez; geri dönünce sayılar aynı
+      ---
+      duration_ms: 1275.550454
+      type: 'test'
+      ...
+    1..7
+ok 15 - Ç6-HESAP okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket
+  ---
+  duration_ms: 7731.59689
+  type: 'suite'
+  ...
+1..15
+# tests 71
+# suites 15
+# pass 71
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11572.792117

@@ -1,0 +1,12 @@
+başta yük 2.68 4.12 4.54 2/110 9496 · 17:06:03 · c6h3-komsu-utc-1
+# todo 0
+# duration_ms 449378.733765
+
+[kanit] c6h3-komsu-utc-1: GEÇTİ · çıkış 0 · 1033/1033 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 66e6806 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+sonda yük 7.16 6.55 5.58 5/137 11908 · 17:13:33
+başta yük 7.16 6.55 5.58 5/136 11919 · 17:13:33 · c6h3-komsu-utc-2
+# todo 0
+# duration_ms 523042.529397
+
+[kanit] c6h3-komsu-utc-2: GEÇTİ · çıkış 0 · 1154/1154 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 66e6806 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+sonda yük 6.30 7.03 6.34 5/138 13488 · 17:22:16

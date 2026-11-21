@@ -1,0 +1,3 @@
+[zorla 1/1] test/c6h-esdegerlik.test.mjs · [dondurma yarışı] kip gozlem · 1 örnek (açılışta bekliyor false · ilk adım yok · ilk adımda bekliyor null · ilk adımda kanca tutuyordu null · bırakma adımla false · kanca tuttu true · sonra bitti false · listen'dan önce bitti false): ön koşul GERÇEKLEŞMEDİ · test KIRMIZI (çıkış 1) · tests 6 pass 5 fail 0
+
+[zorla özet] test/c6h-esdegerlik.test.mjs · 1 yineleme · ön koşul gerçekleşti 0 · gerçekleşmedi 1 · ön koşullu yeşil 0 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilinmiyor 0

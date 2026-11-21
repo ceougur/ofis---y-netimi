@@ -1,0 +1,9 @@
+başta yük 1.64 1.98 1.68 2/125 23978
+yük (başta) 1.91 2.01 1.70 · kapsam —
+  eski balanceSheet: en iyi 526 ms · ortanca 589 ms · en kötü 652 ms (n=6; ilk 648)
+  yeni balanceSheet: en iyi 538 ms · ortanca 678 ms · en kötü 720 ms (n=6; ilk 782)
+  eski incomeStatement: en iyi 47 ms · ortanca 67 ms · en kötü 77 ms (n=6; ilk 55)
+  yeni incomeStatement: en iyi 47 ms · ortanca 56 ms · en kötü 74 ms (n=6; ilk 113)
+  eski balanceSheetOf: en iyi 4527 ms · ortanca 4793 ms · en kötü 5424 ms (n=6; ilk 5310)
+  yeni balanceSheetOf: en iyi 4527 ms · ortanca 4846 ms · en kötü 5022 ms (n=6; ilk 5443)
+aynı çıktı (balanceSheet): true · madde 153803 · yük (sonda) 2.01 2.02 1.74

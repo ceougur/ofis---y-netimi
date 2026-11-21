@@ -1188,3 +1188,43 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
 
 /** İç API hata biçimi (uçlar için). */
 export const snapshotError = (status, message, code) => new HttpError(status, message, { code });
+
+// Donmuş satırın kimlik öneki — classOf'un (general-ledger.mjs ve yukarıdaki) AYNI kuralı: ilk ':' öncesi; ':' yoksa son karakter hariç (String.slice(0, -1)). Donmuş madde yevmiye sınıfını
+// kimlik önekinden alır (frozenEntries `cls` vermez) — toplamlar da öyle.
+const FROZEN_PREFIX_SQL = "CASE WHEN instr(entry_id, ':') > 0 THEN substr(entry_id, 1, instr(entry_id, ':') - 1) ELSE substr(entry_id, 1, length(entry_id) - 1) END";
+
+/**
+ * Donmuş dönemin TOPLAMLARI (2.5.0 Ç6-HESAP tur 3, B-g (b); docs/erp/C6-HESAP-TASARIM.md §8 "B-g (b) TASARIMI"; BAŞ MİMAR KARARI 20.11 11:37): from ≤ tarih ≤ through donmuş satırları
+ * madde madde okunmadan, iki toplu SQL ile (ders 47; trial()'ın frozenTrial deseni). Çağıran through'u kapsamla sınırlar (book() ile aynı küme: tarih ≤ min(t, kapsam); kapsam sonrası
+ * bayat satırlar okunmaz). split: kısım ayracı (part = tarih ≥ split ? 1 : 0; "" → hepsi 1). Var olan işlevler değişmez; yalnız okur.
+ * Dönüş: groups — [{ year, part, prefix, voucher, account, sub, party, net, lines, last }] (yıl × kısım × kimlik öneki × 'voucher' öneki × hesap × alt hesap × cari; net = Σ borç − alacak,
+ * last = en geç tarih); entries — [{ year, part, entries, unbalanced }] (madde = run × entry_id × date — frozenTrial'ın "dengesiz madde" tanımı); firstSeen(hesaplar) — o hesapların
+ * satırları yevmiye sırasıyla (ORDER BY date, run, run_seq = frozenEntries'in sırası): [{ account, year, part, prefix }] (seyrek: sınıflandırılmamış hesapların ilk görünüş sırası).
+ */
+export function frozenSums(store, { from = "", through = "", split = "" } = {}) {
+  const lower = from || "";
+  if (!through || !has(store, "ledger_snapshots")) return { from: lower, through, split, groups: [], entries: [], firstSeen: () => [] };
+  const groups = store.all(
+    `SELECT substr(date, 1, 4) AS year, CASE WHEN date >= ?3 THEN 1 ELSE 0 END AS part, ${FROZEN_PREFIX_SQL} AS prefix, CASE WHEN substr(entry_id, 1, 7) = 'voucher' THEN 1 ELSE 0 END AS voucher,
+            account, sub, party, SUM(debit_minor - credit_minor) AS net, COUNT(*) AS lines, MAX(date) AS last
+     FROM ledger_snapshots WHERE date >= ?1 AND date <= ?2 GROUP BY 1, 2, 3, 4, account, sub, party`,
+    lower, through, split,
+  ).map(row => ({ year: Number(row.year), part: Number(row.part), prefix: String(row.prefix), voucher: Number(row.voucher) === 1, account: String(row.account), sub: row.sub || "", party: row.party || "", net: Number(row.net), lines: Number(row.lines), last: String(row.last) }));
+  const entries = store.all(
+    `SELECT year, part, COUNT(*) AS entries, SUM(CASE WHEN net <> 0 THEN 1 ELSE 0 END) AS unbalanced FROM (
+       SELECT substr(date, 1, 4) AS year, CASE WHEN date >= ?3 THEN 1 ELSE 0 END AS part, SUM(debit_minor - credit_minor) AS net
+       FROM ledger_snapshots WHERE date >= ?1 AND date <= ?2 GROUP BY run, entry_id, date)
+     GROUP BY year, part`,
+    lower, through, split,
+  ).map(row => ({ year: Number(row.year), part: Number(row.part), entries: Number(row.entries), unbalanced: Number(row.unbalanced) }));
+  const firstSeen = accounts => {
+    const list = [...new Set((accounts || []).map(String))];
+    if (!list.length) return [];
+    return store.all(
+      `SELECT account, substr(date, 1, 4) AS year, CASE WHEN date >= ? THEN 1 ELSE 0 END AS part, ${FROZEN_PREFIX_SQL} AS prefix
+       FROM ledger_snapshots WHERE date >= ? AND date <= ? AND account IN (${list.map(() => "?").join(", ")}) ORDER BY date, run, run_seq`,
+      split, lower, through, ...list,
+    ).map(row => ({ account: String(row.account), year: Number(row.year), part: Number(row.part), prefix: String(row.prefix) }));
+  };
+  return { from: lower, through, split, groups, entries, firstSeen };
+}
