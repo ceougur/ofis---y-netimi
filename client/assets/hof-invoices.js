@@ -691,6 +691,8 @@
       busy: false,
       modifyId: modify?.id || "",
       modifyNumber: modify?.number || "",
+      // 2.5.0 S235 = B: faturanın KENDİ taksit kartı kapatılmışsa (Kartı Kapat) Düzenle onayı kartın yeniden açılacağını / kaldırılacağını söyler (davranış değişmez).
+      modifyPlanClosed: Boolean(modify?.plan && modify.plan.status === "closed"),
       // 2.7: Düzenle'de kaydedilmiş peşin satırların hesaplardaki etkisi (bakiyede zaten var).
       payOriginal: modify ? payOriginalOf(modify) : null,
       // 2.4.4 (uzman UX10): ilk çizimde odak formun başlangıç alanına (focusFormStart); sonraki yeniden çizimler odağı oynatmaz.
@@ -2533,9 +2535,11 @@
         const stocklessText = stockless.length ? ` DİKKAT: ${stockless.map(line => `“${line.name.trim()}”`).join(", ")} stok kartı olmadan GİDER olarak kaydedilir, stoğa girmez. Mal ise Vazgeç'e basıp ürün adı kutusundaki listeden “+ Yeni Stok Kartı”nı seçin.` : "";
         const sendText = held ? ` ${held.text}` : eSend === "later" ? " Belge Gönderilecekler'de bekler; e-Belge numarası entegratöre gönderilirken verilir." : eSend === "now" ? " Belge kaydedilir kaydedilmez entegratöre (e-Belge) gönderilir." : "";
         if (form.modifyId) {
+          // 2.5.0 S235 = B (docs/erp/C7B-FATURA-TASARIM.md §18.4): kapatılmış kendi taksit kartı — Düzenle yeni ödeme planı kurar (kart açılır) ya da kartı kaldırır; onay bunu söyler.
+          const closedPlanText = form.modifyPlanClosed ? (form.pay.rest === "installments" ? " Bu faturanın kapatılmış taksit kartı yeniden açılır; kalan borç yeni ödeme planına girer." : " Bu faturanın kapatılmış taksit kartı kaldırılır; kalan borç faturanın vadesiyle açık hesapta izlenir.") : "";
           const sure = await HOF.confirm({
             title: "Değişiklikler Kaydedilsin mi?",
-            message: `${form.modifyNumber} numaralı ${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} yeni haliyle kaydedilecek: ${curMoney(c.totals.payable, c.currency)} (${who}). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır.${stocklessText}`,
+            message: `${form.modifyNumber} numaralı ${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} yeni haliyle kaydedilecek: ${curMoney(c.totals.payable, c.currency)} (${who}). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır.${closedPlanText}${stocklessText}`,
             confirmLabel: "Değişiklikleri Kaydet",
           });
           if (!sure) return;
