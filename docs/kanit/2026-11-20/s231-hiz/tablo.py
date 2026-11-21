@@ -17,6 +17,9 @@ for line in open(sys.argv[1], encoding="utf-8"):
         for path, value in data["results"].items():
             runs.setdefault(current, {}).setdefault(path, []).append((value["ms"], value["loop"], value["status"]))
 paths = list(runs.get("c7b", {}).keys())
+if not paths or not runs.get("yeni"):
+    print("VERİ YOK: geçerli koşu bulunamadı (ÖLÇÜLEMEDİ ya da hepsi GEÇERSİZ)")
+    sys.exit(1)
 print("| Yol | c7b-aday en iyi / ortanca | s223-uc en iyi / ortanca | yeni en iyi / ortanca | yeni ÷ c7b (en iyi / ortanca) | olay döngüsü en çok (c7b / s223 / yeni) | koşu (c7b/s223/yeni) | hüküm |")
 print("|---|---|---|---|---|---|---|---|")
 fails = 0
