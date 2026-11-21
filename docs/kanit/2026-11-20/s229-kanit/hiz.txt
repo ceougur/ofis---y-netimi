@@ -1,0 +1,194 @@
+HIZ S229 · nproc 4 · başta 1.18 1.62 2.37 5/120 24844 · 00:23:43
+=== tur 1 eski · başta 1.18 1.62 2.37 1/118 24855 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski · veri 1484 cari, 102295 cari satırı, 34026 fatura, 10600 Mevcut Borç kartı · kapsanan fatura invoice-d55ee8dc-a38e-499d-b0c1-738444706195 · sıradan YOK · yük 1.26 1.60 2.34
+ÖLÇÜM	eski	ilk: Açık Faturalar (soğuk)	1666.2	1655.7	200
+ÖLÇÜM	eski	Açık Faturalar	768.2	766	200
+ÖLÇÜM	eski	Anlık Durum	2707.4	0	200
+ÖLÇÜM	eski	Faturalar listesi	654.6	0	200
+ÖLÇÜM	eski	Faturalar listesi 'Açık'	506.1	501.2	200
+ÖLÇÜM	eski	fatura ayrıntısı (kapsanan)	86.9	81.9	200
+ÖLÇÜM	eski	Mahsup adayları (kapsanan)	33.7	32.3	200
+ÖLÇÜM	eski	Faturalar Excel	8338.6	41.8	200
+ÖLÇÜM	eski	Faturalar PDF	4054.3	4049.6	200
+ÖLÇÜM	eski	Açık Faturalar PDF	1248.4	0	200
+ÖLÇÜM	eski	Açık Faturalar	1547.5	0	200
+ÖLÇÜM	eski	Anlık Durum	138.6	0	200
+ÖLÇÜM	eski	Faturalar listesi	613.1	0	200
+ÖLÇÜM	eski	Faturalar listesi 'Açık'	528.7	0	200
+ÖLÇÜM	eski	fatura ayrıntısı (kapsanan)	81.8	0	200
+ÖLÇÜM	eski	Mahsup adayları (kapsanan)	31.2	0	200
+ÖLÇÜM	eski	Faturalar Excel	8219	4.3	200
+ÖLÇÜM	eski	Faturalar PDF	3887.6	0	200
+ÖLÇÜM	eski	Açık Faturalar PDF	1329.9	0	200
+ÖLÇÜM	eski	Açık Faturalar	1661.5	0	200
+ÖLÇÜM	eski	Anlık Durum	148.5	0	200
+ÖLÇÜM	eski	Faturalar listesi	616.2	0	200
+ÖLÇÜM	eski	Faturalar listesi 'Açık'	520.8	516.2	200
+ÖLÇÜM	eski	fatura ayrıntısı (kapsanan)	86.1	84.7	200
+ÖLÇÜM	eski	Mahsup adayları (kapsanan)	34.6	0	200
+ÖLÇÜM	eski	Faturalar Excel	8053.2	8048.9	200
+ÖLÇÜM	eski	Faturalar PDF	3796.3	3789.6	200
+ÖLÇÜM	eski	Açık Faturalar PDF	1248.8	1246.8	200
+yük (sonda) 1.11 1.50 2.27
+çıkış 0 · sonda 1.11 1.50 2.27 1/118 24877
+=== tur 1 yeni · başta 1.11 1.50 2.27 1/118 24882 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a343eda2c3de7a0a1 · veri 1484 cari, 102295 cari satırı, 34026 fatura, 10600 Mevcut Borç kartı · kapsanan fatura invoice-d55ee8dc-a38e-499d-b0c1-738444706195 · sıradan YOK · yük 1.30 1.52 2.26
+ÖLÇÜM	yeni	ilk: Açık Faturalar (soğuk)	1803.8	1797.3	200
+ÖLÇÜM	yeni	Açık Faturalar	711.3	709.4	200
+ÖLÇÜM	yeni	Anlık Durum	2530.6	0	200
+ÖLÇÜM	yeni	Faturalar listesi	627.1	5.2	200
+ÖLÇÜM	yeni	Faturalar listesi 'Açık'	501.3	0	200
+ÖLÇÜM	yeni	fatura ayrıntısı (kapsanan)	89.7	87.4	200
+ÖLÇÜM	yeni	Mahsup adayları (kapsanan)	33.7	0	200
+ÖLÇÜM	yeni	Faturalar Excel	8421.3	7.8	200
+ÖLÇÜM	yeni	Faturalar PDF	4116	4110.4	200
+ÖLÇÜM	yeni	Açık Faturalar PDF	1245.1	1234.2	200
+ÖLÇÜM	yeni	Açık Faturalar	1646.1	1645.2	200
+ÖLÇÜM	yeni	Anlık Durum	145.3	0	200
+ÖLÇÜM	yeni	Faturalar listesi	645.5	0	200
+ÖLÇÜM	yeni	Faturalar listesi 'Açık'	661.3	654.8	200
+ÖLÇÜM	yeni	fatura ayrıntısı (kapsanan)	80.4	79.2	200
+ÖLÇÜM	yeni	Mahsup adayları (kapsanan)	36.2	0	200
+ÖLÇÜM	yeni	Faturalar Excel	8317.1	8304.7	200
+ÖLÇÜM	yeni	Faturalar PDF	4229.6	0	200
+ÖLÇÜM	yeni	Açık Faturalar PDF	1338.9	1332.7	200
+ÖLÇÜM	yeni	Açık Faturalar	1605.5	1604.3	200
+ÖLÇÜM	yeni	Anlık Durum	156.3	0	200
+ÖLÇÜM	yeni	Faturalar listesi	624.8	0	200
+ÖLÇÜM	yeni	Faturalar listesi 'Açık'	523.2	0	200
+ÖLÇÜM	yeni	fatura ayrıntısı (kapsanan)	72.6	71.4	200
+ÖLÇÜM	yeni	Mahsup adayları (kapsanan)	32.3	0	200
+ÖLÇÜM	yeni	Faturalar Excel	8294.4	8237.6	200
+ÖLÇÜM	yeni	Faturalar PDF	3775.1	3770.7	200
+ÖLÇÜM	yeni	Açık Faturalar PDF	1533.7	1532	200
+yük (sonda) 1.59 1.57 2.23
+çıkış 0 · sonda 1.59 1.57 2.23 1/118 24903
+=== tur 2 eski · başta 1.59 1.57 2.23 1/118 24908 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski · veri 1484 cari, 102295 cari satırı, 34026 fatura, 10600 Mevcut Borç kartı · kapsanan fatura invoice-d55ee8dc-a38e-499d-b0c1-738444706195 · sıradan YOK · yük 1.42 1.53 2.20
+ÖLÇÜM	eski	ilk: Açık Faturalar (soğuk)	1619.1	1609.6	200
+ÖLÇÜM	eski	Açık Faturalar	724.7	722.5	200
+ÖLÇÜM	eski	Anlık Durum	2754.8	0	200
+ÖLÇÜM	eski	Faturalar listesi	610.9	0	200
+ÖLÇÜM	eski	Faturalar listesi 'Açık'	490.7	480.8	200
+ÖLÇÜM	eski	fatura ayrıntısı (kapsanan)	109.2	0	200
+ÖLÇÜM	eski	Mahsup adayları (kapsanan)	35.1	0	200
+ÖLÇÜM	eski	Faturalar Excel	8437.2	5.7	200
+ÖLÇÜM	eski	Faturalar PDF	3996.5	0	200
+ÖLÇÜM	eski	Açık Faturalar PDF	1283.2	1276.1	200
+ÖLÇÜM	eski	Açık Faturalar	1737.4	1736.4	200
+ÖLÇÜM	eski	Anlık Durum	140.2	0	200
+ÖLÇÜM	eski	Faturalar listesi	608.2	0	200
+ÖLÇÜM	eski	Faturalar listesi 'Açık'	517.8	0	200
+ÖLÇÜM	eski	fatura ayrıntısı (kapsanan)	73.6	72.4	200
+ÖLÇÜM	eski	Mahsup adayları (kapsanan)	37.4	0	200
+ÖLÇÜM	eski	Faturalar Excel	8330	4.1	200
+ÖLÇÜM	eski	Faturalar PDF	3989.3	0	200
+ÖLÇÜM	eski	Açık Faturalar PDF	1272.6	1267.7	200
+ÖLÇÜM	eski	Açık Faturalar	1804.9	1800.4	200
+ÖLÇÜM	eski	Anlık Durum	139.1	138	200
+ÖLÇÜM	eski	Faturalar listesi	603.5	0	200
+ÖLÇÜM	eski	Faturalar listesi 'Açık'	522	0	200
+ÖLÇÜM	eski	fatura ayrıntısı (kapsanan)	78.6	0	200
+ÖLÇÜM	eski	Mahsup adayları (kapsanan)	30.9	0	200
+ÖLÇÜM	eski	Faturalar Excel	7813.8	0	200
+ÖLÇÜM	eski	Faturalar PDF	4013.6	4011.9	200
+ÖLÇÜM	eski	Açık Faturalar PDF	1190.8	0	200
+yük (sonda) 1.45 1.53 2.16
+çıkış 0 · sonda 1.45 1.53 2.16 1/118 24931
+=== tur 2 yeni · başta 1.45 1.53 2.16 1/118 24936 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a343eda2c3de7a0a1 · veri 1484 cari, 102295 cari satırı, 34026 fatura, 10600 Mevcut Borç kartı · kapsanan fatura invoice-d55ee8dc-a38e-499d-b0c1-738444706195 · sıradan YOK · yük 1.40 1.51 2.14
+ÖLÇÜM	yeni	ilk: Açık Faturalar (soğuk)	1757.1	1746.9	200
+ÖLÇÜM	yeni	Açık Faturalar	764.8	759.2	200
+ÖLÇÜM	yeni	Anlık Durum	2709.9	2707.4	200
+ÖLÇÜM	yeni	Faturalar listesi	713.1	0	200
+ÖLÇÜM	yeni	Faturalar listesi 'Açık'	590.4	581.4	200
+ÖLÇÜM	yeni	fatura ayrıntısı (kapsanan)	88.3	0	200
+ÖLÇÜM	yeni	Mahsup adayları (kapsanan)	37.6	0	200
+ÖLÇÜM	yeni	Faturalar Excel	8411.2	5.1	200
+ÖLÇÜM	yeni	Faturalar PDF	4152.8	0	200
+ÖLÇÜM	yeni	Açık Faturalar PDF	1313.4	1308.6	200
+ÖLÇÜM	yeni	Açık Faturalar	1635.3	0	200
+ÖLÇÜM	yeni	Anlık Durum	137	0	200
+ÖLÇÜM	yeni	Faturalar listesi	700.7	693.1	200
+ÖLÇÜM	yeni	Faturalar listesi 'Açık'	537.2	0	200
+ÖLÇÜM	yeni	fatura ayrıntısı (kapsanan)	96.7	95.5	200
+ÖLÇÜM	yeni	Mahsup adayları (kapsanan)	33	0	200
+ÖLÇÜM	yeni	Faturalar Excel	8263.6	5.3	200
+ÖLÇÜM	yeni	Faturalar PDF	4204.4	0	200
+ÖLÇÜM	yeni	Açık Faturalar PDF	1344.2	1339	200
+ÖLÇÜM	yeni	Açık Faturalar	1649.7	1649.4	200
+ÖLÇÜM	yeni	Anlık Durum	145	0	200
+ÖLÇÜM	yeni	Faturalar listesi	660.3	0	200
+ÖLÇÜM	yeni	Faturalar listesi 'Açık'	583.6	579.9	200
+ÖLÇÜM	yeni	fatura ayrıntısı (kapsanan)	86.1	84.7	200
+ÖLÇÜM	yeni	Mahsup adayları (kapsanan)	41.4	0	200
+ÖLÇÜM	yeni	Faturalar Excel	8340.7	0	200
+ÖLÇÜM	yeni	Faturalar PDF	4138.9	4131.4	200
+ÖLÇÜM	yeni	Açık Faturalar PDF	1287.2	1281.4	200
+yük (sonda) 1.16 1.43 2.07
+çıkış 0 · sonda 1.16 1.43 2.07 1/117 24962
+=== tur 3 eski · başta 1.16 1.43 2.07 1/117 24967 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski · veri 1484 cari, 102295 cari satırı, 34026 fatura, 10600 Mevcut Borç kartı · kapsanan fatura invoice-d55ee8dc-a38e-499d-b0c1-738444706195 · sıradan YOK · yük 1.16 1.41 2.05
+ÖLÇÜM	eski	ilk: Açık Faturalar (soğuk)	1651.4	1642.1	200
+ÖLÇÜM	eski	Açık Faturalar	702.9	700.4	200
+ÖLÇÜM	eski	Anlık Durum	2592	0	200
+ÖLÇÜM	eski	Faturalar listesi	723.9	0	200
+ÖLÇÜM	eski	Faturalar listesi 'Açık'	535.3	530.3	200
+ÖLÇÜM	eski	fatura ayrıntısı (kapsanan)	88.3	83.4	200
+ÖLÇÜM	eski	Mahsup adayları (kapsanan)	34.6	33.2	200
+ÖLÇÜM	eski	Faturalar Excel	8493.3	44.5	200
+ÖLÇÜM	eski	Faturalar PDF	4149.8	4144	200
+ÖLÇÜM	eski	Açık Faturalar PDF	1231.7	1228.9	200
+ÖLÇÜM	eski	Açık Faturalar	1547.4	0	200
+ÖLÇÜM	eski	Anlık Durum	145.3	0	200
+ÖLÇÜM	eski	Faturalar listesi	596.8	0	200
+ÖLÇÜM	eski	Faturalar listesi 'Açık'	493.8	0	200
+ÖLÇÜM	eski	fatura ayrıntısı (kapsanan)	92	90.8	200
+ÖLÇÜM	eski	Mahsup adayları (kapsanan)	39.4	0	200
+ÖLÇÜM	eski	Faturalar Excel	8104.2	8099.2	200
+ÖLÇÜM	eski	Faturalar PDF	3980.3	3976.2	200
+ÖLÇÜM	eski	Açık Faturalar PDF	1400.3	1398.8	200
+ÖLÇÜM	eski	Açık Faturalar	1554.1	0	200
+ÖLÇÜM	eski	Anlık Durum	141.2	0	200
+ÖLÇÜM	eski	Faturalar listesi	610.8	0	200
+ÖLÇÜM	eski	Faturalar listesi 'Açık'	505.2	0	200
+ÖLÇÜM	eski	fatura ayrıntısı (kapsanan)	78.8	0	200
+ÖLÇÜM	eski	Mahsup adayları (kapsanan)	29.2	0	200
+ÖLÇÜM	eski	Faturalar Excel	8157.9	0	200
+ÖLÇÜM	eski	Faturalar PDF	3977.6	3969.9	200
+ÖLÇÜM	eski	Açık Faturalar PDF	1267.1	1265.6	200
+yük (sonda) 1.07 1.34 1.99
+çıkış 0 · sonda 1.07 1.34 1.99 3/111 24995
+=== tur 3 yeni · başta 1.07 1.34 1.99 1/111 25000 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a343eda2c3de7a0a1 · veri 1484 cari, 102295 cari satırı, 34026 fatura, 10600 Mevcut Borç kartı · kapsanan fatura invoice-d55ee8dc-a38e-499d-b0c1-738444706195 · sıradan YOK · yük 1.19 1.35 1.98
+ÖLÇÜM	yeni	ilk: Açık Faturalar (soğuk)	1831.9	1825.6	200
+ÖLÇÜM	yeni	Açık Faturalar	692.4	690.5	200
+ÖLÇÜM	yeni	Anlık Durum	2723.4	0	200
+ÖLÇÜM	yeni	Faturalar listesi	640.9	5.3	200
+ÖLÇÜM	yeni	Faturalar listesi 'Açık'	500.6	0	200
+ÖLÇÜM	yeni	fatura ayrıntısı (kapsanan)	88.7	86.8	200
+ÖLÇÜM	yeni	Mahsup adayları (kapsanan)	33.3	0	200
+ÖLÇÜM	yeni	Faturalar Excel	8181.5	6	200
+ÖLÇÜM	yeni	Faturalar PDF	4193	4188	200
+ÖLÇÜM	yeni	Açık Faturalar PDF	1221.1	1214.3	200
+ÖLÇÜM	yeni	Açık Faturalar	1626.8	1625.3	200
+ÖLÇÜM	yeni	Anlık Durum	142	0	200
+ÖLÇÜM	yeni	Faturalar listesi	622.9	0	200
+ÖLÇÜM	yeni	Faturalar listesi 'Açık'	550.3	0	200
+ÖLÇÜM	yeni	fatura ayrıntısı (kapsanan)	101.5	99.7	200
+ÖLÇÜM	yeni	Mahsup adayları (kapsanan)	38.6	0	200
+ÖLÇÜM	yeni	Faturalar Excel	8138.8	0	200
+ÖLÇÜM	yeni	Faturalar PDF	4182.2	4179.6	200
+ÖLÇÜM	yeni	Açık Faturalar PDF	1267.1	1265.6	200
+ÖLÇÜM	yeni	Açık Faturalar	1625.5	0	200
+ÖLÇÜM	yeni	Anlık Durum	141.3	0	200
+ÖLÇÜM	yeni	Faturalar listesi	584.9	0	200
+ÖLÇÜM	yeni	Faturalar listesi 'Açık'	511.2	0	200
+ÖLÇÜM	yeni	fatura ayrıntısı (kapsanan)	74.4	73.3	200
+ÖLÇÜM	yeni	Mahsup adayları (kapsanan)	33.7	0	200
+ÖLÇÜM	yeni	Faturalar Excel	8251.1	8246	200
+ÖLÇÜM	yeni	Faturalar PDF	4504.1	0	200
+ÖLÇÜM	yeni	Açık Faturalar PDF	1316.8	0	200
+yük (sonda) 1.08 1.29 1.92
+çıkış 0 · sonda 1.08 1.29 1.92 1/115 25023
+bitti 00:31:22

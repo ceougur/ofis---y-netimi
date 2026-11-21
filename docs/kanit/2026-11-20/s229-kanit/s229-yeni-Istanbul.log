@@ -1,0 +1,104 @@
+TAP version 13
+# (node:7253) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez
+    # Subtest: K1 kısmi (S200 = A sırası): Açık Faturalar 20.000 + TOPLAM; fatura kartı; liste; Anlık Durum; Mahsup önerisi 20.000, sınırı 50.000; bakiye / gecikmiş değişmez
+    ok 1 - K1 kısmi (S200 = A sırası): Açık Faturalar 20.000 + TOPLAM; fatura kartı; liste; Anlık Durum; Mahsup önerisi 20.000, sınırı 50.000; bakiye / gecikmiş değişmez
+      ---
+      duration_ms: 198.525465
+      type: 'test'
+      ...
+    # Subtest: K2 tam: Açık Faturalar'da yok, Anlık Durum'a girmez, 'Taksitte'; Ödeme Durumu süzgeçleri; PDF / Excel
+    ok 2 - K2 tam: Açık Faturalar'da yok, Anlık Durum'a girmez, 'Taksitte'; Ödeme Durumu süzgeçleri; PDF / Excel
+      ---
+      duration_ms: 139.960653
+      type: 'test'
+      ...
+    # Subtest: K2b Açık Faturalar PDF ve Excel TOPLAM'ı ekranla aynı (kısmi kart)
+    ok 3 - K2b Açık Faturalar PDF ve Excel TOPLAM'ı ekranla aynı (kısmi kart)
+      ---
+      duration_ms: 105.522996
+      type: 'test'
+      ...
+    # Subtest: K3 iki kart: gösterilen açık iki kartın payı düşülmüş; iki 'Taksit Kartında' satırı
+    ok 4 - K3 iki kart: gösterilen açık iki kartın payı düşülmüş; iki 'Taksit Kartında' satırı
+      ---
+      duration_ms: 103.286618
+      type: 'test'
+      ...
+    # Subtest: K4 elle borç + iki fatura: kart önce elle borcu, sonra vadesi önce gelen faturayı alır
+    ok 5 - K4 elle borç + iki fatura: kart önce elle borcu, sonra vadesi önce gelen faturayı alır
+      ---
+      duration_ms: 123.338884
+      type: 'test'
+      ...
+    # Subtest: K5 kartın taksiti tahsil edilir: fatura gösterilen açığı DEĞİŞMEZ; kart payı azalır
+    ok 6 - K5 kartın taksiti tahsil edilir: fatura gösterilen açığı DEĞİŞMEZ; kart payı azalır
+      ---
+      duration_ms: 145.212167
+      type: 'test'
+      ...
+    # Subtest: K6 Alacak Yaz + alış faturası: karar (5) netleşmesi Açık Faturalar'a GİRMEZ
+    ok 7 - K6 Alacak Yaz + alış faturası: karar (5) netleşmesi Açık Faturalar'a GİRMEZ
+      ---
+      duration_ms: 127.855259
+      type: 'test'
+      ...
+    # Subtest: K7 şüpheliye alınmış fatura listede kalır (S213 = B); kart payı yine düşer
+    ok 8 - K7 şüpheliye alınmış fatura listede kalır (S213 = B); kart payı yine düşer
+      ---
+      duration_ms: 102.807879
+      type: 'test'
+      ...
+    # Subtest: K8 kart silinir → fatura kendi açığıyla; Kartı Kapat 'Borçta Kalsın' → kart payı sürer
+    ok 9 - K8 kart silinir → fatura kendi açığıyla; Kartı Kapat 'Borçta Kalsın' → kart payı sürer
+      ---
+      duration_ms: 189.932091
+      type: 'test'
+      ...
+    # Subtest: K9 fatura iptali (S210 = A): Açık Faturalar'da yok, listede 'İptal'
+    ok 10 - K9 fatura iptali (S210 = A): Açık Faturalar'da yok, listede 'İptal'
+      ---
+      duration_ms: 98.161251
+      type: 'test'
+      ...
+    # Subtest: K12 Muhasebe kullanıcısı: Açık Faturalar ve fatura kartı yöneticiyle aynı
+    ok 11 - K12 Muhasebe kullanıcısı: Açık Faturalar ve fatura kartı yöneticiyle aynı
+      ---
+      duration_ms: 272.181467
+      type: 'test'
+      ...
+    # Subtest: K11 mahsup edilmemiş iade belgesi kendi satırında (değişmez)
+    ok 12 - K11 mahsup edilmemiş iade belgesi kendi satırında (değişmez)
+      ---
+      duration_ms: 99.178016
+      type: 'test'
+      ...
+    1..12
+ok 1 - S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez
+  ---
+  duration_ms: 2178.84225
+  type: 'suite'
+  ...
+# Subtest: S229 / S230 — eski kapama düzeni (legacyClosing) aynı kural
+    # Subtest: K10 kısmi 20.000 ve tam 'Taksitte'
+    ok 1 - K10 kısmi 20.000 ve tam 'Taksitte'
+      ---
+      duration_ms: 139.524817
+      type: 'test'
+      ...
+    1..1
+ok 2 - S229 / S230 — eski kapama düzeni (legacyClosing) aynı kural
+  ---
+  duration_ms: 555.124797
+  type: 'suite'
+  ...
+1..2
+# tests 13
+# suites 2
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3136.505612

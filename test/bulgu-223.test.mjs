@@ -77,7 +77,7 @@ describe("2.0.23 Bulgu 2: taksit kartı ↔ fatura kapama", () => {
     const inv = await must("fatura", api.get(`/api/workspace/invoices/${invoiceId}`));
     const card = planId ? await must("kart", api.get(`/api/workspace/plans/${planId}`)) : null;
     const account = (await must("cari", api.get(`/api/workspace/accounts?status=all&limit=50&q=${encodeURIComponent(acc.name)}`))).accounts.find(a => a.id === acc.id);
-    return { open: inv.open, paid: inv.paid, payState: inv.payState, cardLeft: card?.totals?.ownRemaining ?? card?.totals?.remaining, cardPaid: card?.totals?.ownPaid ?? card?.totals?.paid, balance: account.balance }; // kartın KENDİ hesabı (S129 = A: totals.paid / remaining gösterilen sayıdır)
+    return { open: inv.open, ownOpen: inv.ownOpen ?? inv.open, inPlan: inv.inPlan || 0, paid: inv.paid, payState: inv.payState, cardLeft: card?.totals?.ownRemaining ?? card?.totals?.remaining, cardPaid: card?.totals?.ownPaid ?? card?.totals?.paid, balance: account.balance }; // kartın KENDİ hesabı (S129 = A: totals.paid / remaining gösterilen sayıdır)
   };
 
   test("A: önce fatura, sonra ayrı kart — kartın tahsilatı faturayı kapatmaz", async () => {
@@ -139,7 +139,8 @@ describe("2.0.23 Bulgu 2: taksit kartı ↔ fatura kapama", () => {
     const card = await plan(acc, "2025-02-13", 12000, true);
     await planIn(card.id, "2025-02-14", 3000);
     const s = await state(acc, inv.id, card.id);
-    assert.deepEqual([s.open, s.cardLeft, s.balance], [9000, 9000, 9000]);
+    // S229 = A + S230 = A (20.11.2026): kartın aldığı kısım faturada açık görünmez — fatura 'Taksitte', kendi açığı (9.000) kartın kalanıyla aynı para.
+    assert.deepEqual([s.open, s.ownOpen, s.inPlan, s.payState, s.cardLeft, s.balance], [0, 9000, 9000, "installment", 9000, 9000]);
     const aging = await must("yaşlandırma", api.get("/api/workspace/report-center/alacak-yaslandirma"));
     const row = aging.rows.find(r => r[0] === acc.name);
     assert.ok(row, "yaşlandırmada satır var");
@@ -364,7 +365,8 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
     const k = await coverPlan(acc, "2025-05-11", 10000);
     await planIn(k.id, "2025-05-12", 3000);
     const s = await inv(f.id);
-    assert.deepEqual([s.paid, s.open, (await card(k.id)).totals.remaining], [5000, 7000, 7000]);
+    // S230 = A: faturanın kendi açığı (7.000) = kart kalanı; gösterilen açık 0 (Taksitte), taksit kartında 7.000.
+    assert.deepEqual([s.paid, s.open, s.ownOpen, s.inPlan, s.payState, (await card(k.id)).totals.remaining], [5000, 0, 7000, 7000, "installment", 7000]);
     assert.equal(await agingOf(acc), "7.000,00 TL");
   });
 
@@ -445,7 +447,9 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
     const edit = await api.post(`/api/workspace/invoices/${a.id}/edit`, { scenario: "service_sale", accountId: acc.id, issueDate: "2025-06-18", lines: [{ itemId: item.id, qty: 1, unitPrice: 1500, vatRate: 0 }], payment: { rest: "open", dueDate: "2025-06-18" } });
     assert.equal(edit.status, 200, JSON.stringify(edit.data).slice(0, 200));
     assert.deepEqual([(await inv(z.id)).paid, (await inv(z.id)).open], [1000, 0], "Z ödenmiş kalır");
-    assert.equal((await inv(a.id)).open, 1500);
+    // S230 = A: A'nın kendi açığı 1.500 (kapsam ödenmiş Z'ye kaymadı); kart A'nın tamamını aldığı için gösterilen açık 0, 'Taksitte'.
+    const shown = await inv(a.id);
+    assert.deepEqual([shown.ownOpen, shown.inPlan, shown.open, shown.payState], [1500, 1500, 0, "installment"]);
   });
   test("2. tur: kapsanan Borç Yaz silinince kapsam ödenmiş faturaya kaymaz", async () => {
     const { acc, z } = await paidOld("BorçSil", ["2025-06-20", "2025-06-21"]);
@@ -463,9 +467,10 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
     assert.deepEqual([(await inv(b.id)).paid, (await inv(b.id)).open], [0, 1000], "tahsilat en eski borcu (açılış) kapatır");
     await coverPlan(acc, "2025-06-27", 1000);
     const s = await inv(b.id);
-    assert.deepEqual([s.paid, s.open], [0, 1000], `kart açılınca fatura ödenmiş görünmez (kapatanlar: ${JSON.stringify(s.closers)})`);
+    // S229 = A + S230 = A: fatura ödenmiş görünmez (ödenen 0, kendi açığı 1.000) ama kartın tamamını aldığı için 'Taksitte' — Açık Faturalar'da satırı yok.
+    assert.deepEqual([s.paid, s.ownOpen, s.inPlan, s.open, s.payState], [0, 1000, 1000, 0, "installment"], `kart açılınca fatura ödenmiş görünmez (kapatanlar: ${JSON.stringify(s.closers)})`);
     const open = await must("açık faturalar", api.get("/api/workspace/report-center/acik-faturalar"));
-    assert.equal((open.rows || []).filter(row => row.some(cell => String(cell).includes(b.number))).length, 1, "Açık Faturalar raporunda");
+    assert.equal((open.rows || []).filter(row => row.some(cell => String(cell).includes(b.number))).length, 0, "Açık Faturalar raporunda yok (kartın taksitlerinde)");
     assert.equal(await agingOf(acc), "1.000,00 TL", "yaşlandırma: kartın 1.000'i (fatura karta bölünmüş, bir kez)");
   });
   test("2. tur: peşin ödenmiş yeni fatura varken kart, açık eski faturayı kapsar (yaşlandırmada bir kez)", async () => {
@@ -476,7 +481,8 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
     assert.equal(await agingOf(acc), "1.000,00 TL", "bakiye 1.000: kart ve Z aynı borç");
     const dues = await must("takvim", api.get("/api/workspace/dues"));
     assert.equal(dues.items.filter(i => i.id === `invoice|${z.id}`).reduce((sum, i) => sum + i.amount, 0), 0, "Z'nin borcu takvimde kartın taksitleriyle");
-    assert.deepEqual([(await inv(z.id)).open, (await card(k.id)).totals.remaining], [1000, 1000]);
+    const zs = await inv(z.id);
+    assert.deepEqual([zs.ownOpen, zs.open, zs.payState, (await card(k.id)).totals.remaining], [1000, 0, "installment", 1000], "S230 = A: Z'nin kendi açığı = kart kalanı; gösterilen 0");
   });
   test("2. tur: Otomatik Dağıt Mevcut Borç kartını carinin borcundan büyütemez (Düzenle'deki denetim)", async () => {
     const { acc, z } = await paidOld("Dağıt", ["2025-07-01", "2025-07-02"]);

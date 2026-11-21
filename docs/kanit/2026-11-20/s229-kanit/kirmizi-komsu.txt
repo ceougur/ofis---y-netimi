@@ -1,0 +1,10 @@
+test/bulgu-223.test.mjs
+test/iade-210.test.mjs
+test/iade-geri-odeme-246.test.mjs
+test/iade-kapama-k1.test.mjs
+test/kapama-rastgele-223.test.mjs
+test/raporlar-210-banka.test.mjs
+test/raporlar-224.test.mjs
+test/tyk-kapanis-dis-250.test.mjs
+test/tyk-son-250.test.mjs
+test/ux18-cek-fatura-244.test.mjs

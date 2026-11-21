@@ -1,0 +1,88 @@
+{
+  "ad": "s229-eski-UTC",
+  "komut": "node --test test/s229-acik-fatura-kart-payi-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T23:33:25.258Z",
+  "sure_sn": 2.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 2,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez › K1 kısmi (S200 = A sırası): Açık Faturalar 20.000 + TOPLAM; fatura kartı; liste; Anlık Durum; Mahsup önerisi 20.000, sınırı 50.000; bakiye / gecikmiş değişmez",
+      "konum": "test/s229-acik-fatura-kart-payi-250.test.mjs:70:3",
+      "hata": "Açık Faturalar F1: [{\"no\":\"FIS2026000000001\",\"kalan\":50000,\"taraf\":\"Alacak (Satış)\",\"gecikme\":\"18 gün\"}] (20.000 beklendi — kartın aldığı 30.000 düşülür) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez › K2 tam: Açık Faturalar'da yok, Anlık Durum'a girmez, 'Taksitte'; Ödeme Durumu süzgeçleri; PDF / Excel",
+      "konum": "test/s229-acik-fatura-kart-payi-250.test.mjs:103:3",
+      "hata": "kartın tamamını aldığı fatura listede: [{\"no\":\"FIS2026000000002\",\"kalan\":50000,\"taraf\":\"Alacak (Satış)\",\"gecikme\":\"18 gün\"}] · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez › K2b Açık Faturalar PDF ve Excel TOPLAM'ı ekranla aynı (kısmi kart)",
+      "konum": "test/s229-acik-fatura-kart-payi-250.test.mjs:137:3",
+      "hata": "PDF'te 20.000,00 0 kez (beklenen true, gelen false)"
+    },
+    {
+      "ad": "S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez › K3 iki kart: gösterilen açık iki kartın payı düşülmüş; iki 'Taksit Kartında' satırı",
+      "konum": "test/s229-acik-fatura-kart-payi-250.test.mjs:158:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez › K4 elle borç + iki fatura: kart önce elle borcu, sonra vadesi önce gelen faturayı alır",
+      "konum": "test/s229-acik-fatura-kart-payi-250.test.mjs:170:3",
+      "hata": "Açık Faturalar [{\"no\":\"FIS2026000000005\",\"kalan\":30000,\"taraf\":\"Alacak (Satış)\",\"gecikme\":\"28 gün\"},{\"no\":\"FIS2026000000006\",\"kalan\":40000,\"taraf\":\"Alacak (Satış)\",\"gecikme\":\"8 gün\"}] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez › K5 kartın taksiti tahsil edilir: fatura gösterilen açığı DEĞİŞMEZ; kart payı azalır",
+      "konum": "test/s229-acik-fatura-kart-payi-250.test.mjs:183:3",
+      "hata": "Açık 40000 · 40000 !== 20000 (beklenen 20000, gelen 40000)"
+    },
+    {
+      "ad": "S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez › K6 Alacak Yaz + alış faturası: karar (5) netleşmesi Açık Faturalar'a GİRMEZ",
+      "konum": "test/s229-acik-fatura-kart-payi-250.test.mjs:196:3",
+      "hata": "[{\"no\":\"ALS8\",\"kalan\":6000,\"taraf\":\"Borç (Alış)\",\"gecikme\":\"36 gün\"},{\"no\":\"FIS2026000000008\",\"kalan\":50000,\"taraf\":\"Alacak (Satış)\",\"gecikme\":\"18 gün\"}] · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez › K7 şüpheliye alınmış fatura listede kalır (S213 = B); kart payı yine düşer",
+      "konum": "test/s229-acik-fatura-kart-payi-250.test.mjs:207:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez › K8 kart silinir → fatura kendi açığıyla; Kartı Kapat 'Borçta Kalsın' → kart payı sürer",
+      "konum": "test/s229-acik-fatura-kart-payi-250.test.mjs:215:3",
+      "hata": "Expected values to be strictly equal: · 50000 !== 20000 (beklenen 20000, gelen 50000)"
+    },
+    {
+      "ad": "S229 = A + S230 = A — Mevcut Borç kartının aldığı kısım faturada açık görünmez › K12 Muhasebe kullanıcısı: Açık Faturalar ve fatura kartı yöneticiyle aynı",
+      "konum": "test/s229-acik-fatura-kart-payi-250.test.mjs:247:3",
+      "hata": "Expected values to be strictly equal: · 50000 !== 20000 (beklenen 20000, gelen 50000)"
+    },
+    {
+      "ad": "S229 / S230 — eski kapama düzeni (legacyClosing) aynı kural › K10 kısmi 20.000 ve tam 'Taksitte'",
+      "konum": "test/s229-acik-fatura-kart-payi-250.test.mjs:286:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-20/s229-eski-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski",
+  "ham_cikti_sha256": "0eabd40d6d323e65f33880d720e9f7d2f5df66cc85eee3817a8f37f075ff859c",
+  "ham_cikti_bayt": 17074
+}

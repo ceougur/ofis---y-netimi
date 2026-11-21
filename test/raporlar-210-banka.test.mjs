@@ -220,7 +220,7 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     // 15) 70: Ayşe'nin mevcut borcunun 150'si 3 taksitli karta; 60 gün önce 100 nakit.
     const firstDue = ago(40);
     const cover = await must("mevcut borç kartı", api.post("/api/workspace/plans", { name: accName.A, registeredOn: ago(70), total: "150", accountId: ids.A, mode: "auto", count: "3", firstDue, coversBalance: true }));
-    E.plans.push({ acc: "A", total: 150, items: [0, 1, 2].map(i => ({ due: addMonths(firstDue, i), amount: 50 })) });
+    E.plans.push({ acc: "A", total: 150, cover: true, items: [0, 1, 2].map(i => ({ due: addMonths(firstDue, i), amount: 50 })) });
     await must("kart tahsilatı", api.post(`/api/workspace/plans/${cover.id}/entries`, { kind: "in", amount: "100", date: ago(60), method: "cash" }));
     E.cash.push({ d: ago(60), amt: 100 });
     E.cari.push({ d: ago(60), acc: "A", debit: 0, credit: 100, tag: "plan" });
@@ -285,6 +285,8 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
   // ---------- Bağımsız beklenen hesaplar ----------
   const balanceOf = (acc, range) => sum(E.cari.filter(r => r.acc === acc && (!range?.to || r.d <= range.to)), r => r.debit - r.credit);
   const allBalance = acc => balanceOf(acc, null);
+  // S229 = A (20.11.2026): "Carinin Mevcut Borcu" kartının aldığı ve henüz ödenmemiş kısım (kartın kalanı) Açık Faturalar'da faturadan düşer — o kısım kartın taksitlerinde.
+  const coverLeft = acc => sum(E.plans.filter(p => p.cover && p.acc === acc), p => sum(p.items, it => it.remaining));
   const live = () => E.inv.filter(r => !r.cancelled);
   const KEYS = ["A", "B", "C", "S", "D", "X"];
   const movement = (list, range) => ({
@@ -616,7 +618,7 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     "acik-faturalar"(data, c) {
       const filter = key => !c.account || c.account === key;
       // Taksitli fatura (Bora) taksit kartında izlenir; peşin ödenmiş ve iade edilmiş faturalar açık değildir.
-      assert.equal(summaryOf(data, "Açık Alacak"), sum(["A", "C", "D"].filter(filter), k => Math.max(0, allBalance(k))), "açık alacak");
+      assert.equal(summaryOf(data, "Açık Alacak"), sum(["A", "C", "D"].filter(filter), k => r2(Math.max(0, allBalance(k)) - coverLeft(k))), "açık alacak (Mevcut Borç kartının kalanı düşülmüş — S229 = A)");
       assert.equal(summaryOf(data, "Açık Borç"), sum(["S", "X"].filter(filter), k => Math.max(0, -allBalance(k))), "açık borç");
       for (const row of data.rows) if (c.account) assert.equal(row[col(data, "Cari")], accName[c.account], "cari süzgeci");
     },
