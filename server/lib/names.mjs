@@ -78,20 +78,21 @@ export function foldedNameIndex(load) {
 }
 
 // 2.5.0 S231 (çek / senet içe aktarmasının HIZI; davranış S223 = A ile AYNEN): adları önceden bilinen yükleme için foldedNameIndex'in eşdeğeri.
-// ÖLÇÜLEN NEDEN (5.484 caride, 'hepsi yeni ad' çek 500): foldedNameIndex bütün carileri SATIR satır okuyup (~3 ms) her adı AYRI katlıyor (~2,3 ms) ve
-// hepsini haritaya koyuyordu (~1,5 ms) — NOCASE'in bulamadığı ilk satırda, her yüklemede. Burada: adlar TEK metin olarak okunur (loadJoined():
-// { n, bad, s } — s = "kimlik\u0001ad" öğeleri "\u0000" ile birleşik, n öğe sayısı, bad adında "\u0000" / "\u0001" geçen öğe sayısı), metin TEK seferde
-// katlanır (foldJoinedNames) ve haritaya YALNIZ aranan adların (wanted) katlanmış adıyla aynı olanlar girer. Aranan kümede olmayan ad sorulursa, metin
-// beklenen biçimde değilse (bad > 0, öğe sayısı tutmuyor) fallback (foldedNameIndex) kullanılır — sonuç her durumda foldedNameIndex'inkiyle aynı kimlikler.
-// foldJoinedNames: foldPersonName'in adımları (NFC, boşluk, I / İ, küçük harf) bütün metne; "\u0000" ve "\u0001" NFC'de birleşmez, boşluk değildir,
-// büyük / küçük harfi yoktur ve son sigma kuralında sınır sayılır → her öğenin ad kısmı foldPersonName(ad) ile aynı (test/s231-cek-hiz-esdegerlik-250).
-const JOINED_START_SPACE = /\u0001 /g;
-const JOINED_END_SPACE = / (?=\u0000|$)/g;
+// ÖLÇÜLEN NEDEN (5.484 caride, 'hepsi yeni ad' çek 500): foldedNameIndex bütün carileri SATIR satır okuyup (~3 ms; her satır kimlik + ad nesnesi) her adı
+// AYRI katlıyor (~2,3 ms) ve hepsini haritaya koyuyordu (~1,5 ms) — NOCASE'in bulamadığı ilk satırda, her yüklemede. Burada: yalnız ADLAR tek metin olarak
+// okunur (loadJoined(): { n, r, s } — s adların "\u001f" ile birleşimi, r aynı sıradaki rowid'ler virgülle, n satır sayısı), metin TEK seferde katlanır
+// (foldJoinedNames), yalnız aranan adların (wanted) katlanmış adıyla aynı olan satırların kimliği idsOf(rowid'ler) ile okunur. Aranan kümede olmayan ad
+// sorulursa ya da metin beklenen biçimde değilse (adında ayraç geçen satır → parça sayısı tutmaz) fallback (foldedNameIndex) kullanılır — sonuç her
+// durumda foldedNameIndex'inkiyle aynı kimlikler. Kimlik metne girmez: metin kısa kalır (kimlik + ad ile ~400 bin karakter, katlama ~3,3 ms ölçüldü).
+// foldJoinedNames: foldPersonName'in adımları (NFC, boşluk, I / İ, küçük harf) bütün metne; "\u001f" NFC'de birleşmez, boşluk değildir (\s dışı),
+// büyük / küçük harfi yoktur ve son sigma kuralında sınır sayılır → her parça foldPersonName(ad) ile aynı (test/s231-cek-hiz-esdegerlik-250).
+// Ayraç U+0000 OLAMAZ: veri tabanı sürücüsü metni ilk U+0000'da kesiyor (ölçüldü: metin kısa gelince her yükleme yedek yola düşüyordu).
+const JOINED_EDGE_SPACE = / ?\u001f ?/g;
 export const foldJoinedNames = joined => {
-  const spaced = String(joined ?? "").normalize("NFC").replace(/\s+/g, " ").replace(JOINED_START_SPACE, "\u0001").replace(JOINED_END_SPACE, "");
-  return (spaced.includes("I") || spaced.includes("İ") ? spaced.replace(TURKISH_I, letter => (letter === "I" ? "ı" : "i")) : spaced).toLowerCase();
+  const spaced = String(joined ?? "").normalize("NFC").replace(/\s+/g, " ").replace(JOINED_EDGE_SPACE, "\u001f").trim();
+  return (spaced.includes("I") || spaced.includes("İ") ? spaced.replaceAll("I", "ı").replaceAll("İ", "i") : spaced).toLowerCase();
 };
-export function foldedNameLookup(wanted, loadJoined, fallback) {
+export function foldedNameLookup(wanted, loadJoined, idsOf, fallback) {
   const keys = new Set();
   for (const name of wanted) {
     const key = foldPersonName(name);
@@ -100,20 +101,21 @@ export function foldedNameLookup(wanted, loadJoined, fallback) {
   let map = null;
   const ready = () => {
     if (map !== null) return map;
-    const { n = 0, bad = 0, s = "" } = loadJoined() || {};
+    const { n = 0, r = "", s = "" } = loadJoined() || {};
     if (!n) return (map = new Map());
-    const raw = bad ? [] : String(s).split("\u0000");
-    const folded = raw.length === n ? foldJoinedNames(s).split("\u0000") : [];
+    const rows = String(r).split(",");
+    const folded = rows.length === n ? foldJoinedNames(s).split("\u001f") : [];
     if (folded.length !== n) return (map = false);
+    const hits = [];
+    for (let i = 0; i < n; i += 1) if (keys.has(folded[i])) hits.push(i);
+    const idOf = hits.length ? idsOf(hits.map(i => rows[i])) : new Map();
     map = new Map();
-    for (let i = 0; i < n; i += 1) {
-      const cut = raw[i].indexOf("\u0001");
-      if (cut < 0 || folded[i].indexOf("\u0001") !== cut) return (map = false);
-      const key = folded[i].slice(cut + 1);
-      if (!key || !keys.has(key)) continue;
-      let ids = map.get(key);
-      if (!ids) map.set(key, (ids = new Set()));
-      ids.add(raw[i].slice(0, cut));
+    for (const i of hits) {
+      const id = idOf.get(rows[i]);
+      if (!id) return (map = false);
+      let ids = map.get(folded[i]);
+      if (!ids) map.set(folded[i], (ids = new Set()));
+      ids.add(id);
     }
     return map;
   };

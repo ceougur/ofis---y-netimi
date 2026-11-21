@@ -2,7 +2,7 @@
 // (lib/names.mjs foldedNameIndex: bütün cariler satır satır, her ad ayrı katlanır) yerine çek yüklemesi foldedNameLookup kullanır (adlar tek metin,
 // tek seferde katlanır, yalnız aranan adlar haritaya girer). Sonuç her ad için AYNI kimlikler olmalı:
 //   (1) foldJoinedNames: birleşik metnin her öğesi foldPersonName(öğe) ile aynı — bütün Unicode kod noktaları, birleşen nokta, boşluk türleri, son sigma.
-//   (2) foldedNameLookup ↔ foldedNameIndex: aranan / aranmayan ad, silinmiş / eklenmiş kayıt, adında ayraç ("\u0000" / "\u0001") geçen kayıt (yedek yol).
+//   (2) foldedNameLookup ↔ foldedNameIndex: aranan / aranmayan ad, silinmiş / eklenmiş kayıt, adında ayraç ("\u001f") geçen kayıt (yedek yol).
 //   (3) Programda: accounts servisinin personIndexFor ↔ personIndex — matchName aynı cari (ya da boş) döner; veri tabanında adında ayraç olan cari varken de.
 // NASIL BOZARIM (mutantlar): önbellek anahtarını aranan adın İngilizce küçük harfi yapmak; birleşik metinde baş / son boşluğu kırpmamak; ayraç denetimini
 // kaldırmak; aranmayan adı yedek yola değil boş sonuca göndermek.
@@ -23,22 +23,19 @@ describe("S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünki
     let batch = [];
     const flush = () => {
       if (!batch.length) return;
-      const joined = batch.map((value, i) => `k${i}\u0001${value}`).join("\u0000");
-      const items = foldJoinedNames(joined).split("\u0000");
-      assert.equal(items.length, batch.length, "öğe sayısı");
+      const items = foldJoinedNames(batch.join("\u001f")).split("\u001f");
+      assert.equal(items.length, batch.length, "parça sayısı");
       for (let i = 0; i < batch.length; i += 1) {
-        const item = items[i];
-        const cut = item.indexOf("\u0001");
-        if (item.slice(0, cut) !== `k${i}` || item.slice(cut + 1) !== foldPersonName(batch[i])) {
+        if (items[i] !== foldPersonName(batch[i])) {
           differences += 1;
-          if (differences < 5) console.log("fark", JSON.stringify(batch[i]), JSON.stringify(item.slice(cut + 1)), JSON.stringify(foldPersonName(batch[i])));
+          if (differences < 5) console.log("fark", JSON.stringify(batch[i]), JSON.stringify(items[i]), JSON.stringify(foldPersonName(batch[i])));
         }
       }
       checked += batch.length;
       batch = [];
     };
     for (let code = 0; code <= 0x10ffff; code += 1) {
-      if ((code >= 0xd800 && code <= 0xdfff) || code === 0 || code === 1) continue;
+      if ((code >= 0xd800 && code <= 0xdfff) || code === 0x1f) continue;
       batch.push(...patterns(String.fromCodePoint(code)));
       if (batch.length >= 90_000) flush();
     }
@@ -57,8 +54,9 @@ describe("S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünki
       ["a7", "e\u0301lif"], ["a8", "élif"], ["a9", "ΟΔΟΣ"], ["a10", "οδος"], ["a11", "οδοσ"], ["a12", "   "], ["a13", "Zeynep Kılıç"], ["a14", "Şükrü Özçelik"],
       ["a15", "ŞÜKRÜ ÖZÇELİK"], ["a16", "K\u212a Ltd"], ["a17", "kk ltd"], ["a18", "Ahu Ak"],
     ];
-    const joined = list => () => ({ n: list.length, bad: list.filter(([, name]) => /[\u0000\u0001]/.test(name)).length, s: list.map(([id, name]) => `${id}\u0001${name}`).join("\u0000") });
-    const wanted = ["AHMET YILMAZ", "İSMAİL IŞIK", "ÉLİF", "οδος", "ΟΔΟΣ", "  ", "zeynep kılıç", "Şükrü ÖZÇELİK", "KK LTD", "Yok Kişi", "ALİ\u0001 VELİ"];
+    const joined = list => () => ({ n: list.length, r: list.map((_, i) => String(i + 1)).join(","), s: list.map(([, name]) => name).join("\u001f") });
+    const idsOf = list => rowids => new Map(rowids.map(rowid => [rowid, list[Number(rowid) - 1][0]]));
+    const wanted = ["AHMET YILMAZ", "İSMAİL IŞIK", "ÉLİF", "οδος", "ΟΔΟΣ", "  ", "zeynep kılıç", "Şükrü ÖZÇELİK", "KK LTD", "Yok Kişi", "ALİ\u001e VELİ"];
     const sameKey = ["ismail ışık", "ŞÜKRÜ ÖZÇELİK", "ahmet\u00a0yılmaz"]; // aranan kümede yazılmamış ama anahtarı aynı (yedek yola GİTMEZ)
     const others = ["Ahu Ak", "Başka Ad"]; // anahtarı aranan kümede değil (yedek yol); 'Ahu Ak' veride var
     // expectFallback: düz metinde aranan / aynı anahtarlı adlar yedek yolu ÇAĞIRMAZ (daraltılmış harita kullanılır); ayraçlı metinde ilk soruda çağırır.
@@ -69,7 +67,7 @@ describe("S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünki
         fallbackCalls += 1;
         return list.map(([id, name]) => ({ id, name }));
       });
-      const fresh = foldedNameLookup(wanted, joined(list), fallback);
+      const fresh = foldedNameLookup(wanted, joined(list), idsOf(list), fallback);
       for (const name of [...wanted, ...sameKey]) assert.deepEqual(fresh.ids(name).sort(), old.ids(name).sort(), `${label}: ${JSON.stringify(name)}`);
       assert.equal(fallbackCalls, expectFallback ? 1 : 0, `${label}: aranan adlarda yedek yol çağrısı`);
       for (const name of others) assert.deepEqual(fresh.ids(name).sort(), old.ids(name).sort(), `${label}: ${JSON.stringify(name)}`);
@@ -80,10 +78,10 @@ describe("S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünki
     };
     assert.deepEqual(foldedNameIndex(() => rows.map(([id, name]) => ({ id, name }))).ids("Ahu Ak"), ["a18"], "ön koşul: 'Ahu Ak' veride");
     compare(rows, "düz", false);
-    compare([...rows, ["b1", "Ali\u0001 Veli"]], "adında U+0001", true);
-    compare([...rows, ["b2", "Ali\u0000Veli"]], "adında U+0000", true);
-    // Öğe sayısı tutmazsa (bad doğru bildirilmese de) yedek yol.
-    const broken = foldedNameLookup(["Ali Veli"], () => ({ n: 2, bad: 0, s: "c1\u0001Ali\u0000Veli\u0000c2\u0001Ali Veli" }), foldedNameIndex(() => [{ id: "c1", name: "Ali\u0000Veli" }, { id: "c2", name: "Ali Veli" }]));
+    compare([...rows, ["b1", "Ali\u001e Veli"]], "adında U+001E (ayraç değil)", false);
+    compare([["b2", "Ali\u001fVeli"], ...rows], "adında U+001F (ayraç; listenin başında — kayma)", true);
+    // Parça sayısı tutmazsa yedek yol.
+    const broken = foldedNameLookup(["Ali Veli"], () => ({ n: 2, r: "1,2", s: "Ali\u001fVeli\u001fAli Veli" }), () => new Map([["1", "c1"], ["2", "c2"]]), foldedNameIndex(() => [{ id: "c1", name: "Ali\u001fVeli" }, { id: "c2", name: "Ali Veli" }]));
     assert.deepEqual(broken.ids("ali veli"), ["c2"]);
   });
 
@@ -104,19 +102,42 @@ describe("S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünki
       const service = ctx.app.context.accounts;
       assert.equal(typeof service.personIndexFor, "function", "routes/accounts.mjs personIndexFor yok");
       const drawers = ["AHMET YILMAZ", "ahmet  yılmaz", "Zeynep Kılıç", "ZEYNEP KILIÇ", "ZEYNEP KILIç", "İLKER IŞIK", "DENİZ AK", " ÖMER ÇİFTÇİ ", "BORA ÜNSAL", "Yok Kişi", ""];
-      const check = label => {
+      // HIZ YOLU GERÇEKTEN KULLANILIYOR MU: aranan adlarda personIndexFor satır satır okumaya (personIndex'in sorgusu) DÜŞMEMELİ. (Ölçülen hata: ayraç
+      // U+0000 iken veri tabanı sürücüsü birleşik metni kesiyordu → her yüklemede yedek yol; sonuç doğru, süre S223'ten kötü.)
+      const ROW_SQL = "SELECT id, name FROM accounts WHERE deleted_at IS NULL";
+      const store = ctx.app.store;
+      const realAll = store.all;
+      let rowReads = 0;
+      store.all = function (sql, ...args) {
+        if (sql === ROW_SQL) rowReads += 1;
+        return realAll.call(this, sql, ...args);
+      };
+      const check = (label, expectRowReads) => {
+        rowReads = 0;
         const fresh = service.personIndexFor(drawers);
+        const got = drawers.map(name => service.matchName(name, fresh));
+        assert.equal(rowReads, expectRowReads, `${label}: satır satır okuma (yedek yol) sayısı`);
         const old = service.personIndex();
         for (const name of [...drawers, "ilker ışık"]) assert.equal(service.matchName(name, fresh), service.matchName(name, old), `${label}: ${JSON.stringify(name)}`);
-        return drawers.map(name => service.matchName(name, fresh));
+        return got;
       };
-      const first = check("düz");
+      let first;
+      try {
+        first = check("düz", 0);
+      } catch (error) {
+        store.all = realAll;
+        throw error;
+      }
       assert.ok(first[0] && first[7], "büyük harfli ad tek cariye bağlanır (ön koşul)");
       assert.equal(first[4], "", "çift caride iki adaylı yazım bağlanmaz (ön koşul)");
       assert.equal(first[8], "", "silinmiş cari aday değil (ön koşul)");
       const odd = await make("Ali Veli");
-      rawRun(ctx.db, "UPDATE accounts SET name = ? WHERE id = ?", "Ali\u0001 Veli", odd);
-      check("ayraçlı ad (yedek yol)");
+      rawRun(ctx.db, "UPDATE accounts SET name = ? WHERE id = ?", "Ali\u001f Veli", odd);
+      try {
+        check("adında ayraç U+001F (yedek yol)", 1);
+      } finally {
+        store.all = realAll;
+      }
     });
   });
 });

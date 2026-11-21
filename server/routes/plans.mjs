@@ -111,12 +111,14 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // karşılaştırması bulamazsa Türkçe harf katlamalı (lib/names.mjs foldPersonName: I / ı, İ / i, Ş Ğ Ü Ö Ç, boşluk) aynı üst gruptaki TEK gruba bağlanır;
   // birden çok aday varsa bulunamaz (çağıran bugünkü gibi yeni grup açar). Ad haritası yükleme başına BİR KEZ, ilk sorulduğunda tek okumayla kurulur
   // (ders 47); yüklemede açılan grup add ile eklenir (harita kurulmadan önceki add gereksiz: kurulurken güncel tablo okunur). Haritadaki aday geri
-  // alınmış iç işlemde açılmış olabilir: güncel satırı okunup adı yeniden denetlenir. created (isteğe bağlı): gerçekten açılan grubun kimliği bildirilir.
+  // alınmış iç işlemde (kilitli dönem satırı) açılmış olabilir: YALNIZ bu yüklemede eklenen aday için güncel satır kimlikle okunup ad yeniden denetlenir
+  // (haritayı kuran okumadaki gruplar yükleme içinde silinmez / yeniden adlandırılmaz). created (isteğe bağlı): gerçekten açılan grubun kimliği bildirilir.
   function groupFinder({ created = null } = {}) {
     let map = null;
-    const keyOf = (name, parentId) => `${parentId || ""}\u0000${foldPersonName(name)}`;
+    const fresh = new Set();
+    const keyOf = (folded, parentId) => `${parentId || ""}\u0000${folded}`;
     const put = (id, name, parentId) => {
-      const key = keyOf(name, parentId);
+      const key = keyOf(foldPersonName(name), parentId);
       let ids = map.get(key);
       if (!ids) map.set(key, (ids = new Set()));
       ids.add(id);
@@ -128,20 +130,25 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       }
       return map;
     };
+    const alive = (id, parentId, wanted) => {
+      const row = store.get("SELECT name FROM plan_groups WHERE id = ? AND COALESCE(parent_id, '') = ?", id, parentId || "");
+      return Boolean(row) && foldPersonName(row.name) === wanted;
+    };
     return {
       add(id, name, parentId = null) {
-        if (map && id) put(id, name, parentId);
+        if (map && id) {
+          put(id, name, parentId);
+          fresh.add(id);
+        }
         if (id) created?.(id);
       },
       find(name, parentId = null) {
         const wanted = foldPersonName(name);
         if (!wanted) return "";
-        const ids = ready().get(keyOf(name, parentId));
+        const ids = ready().get(keyOf(wanted, parentId));
         if (!ids?.size) return "";
-        const rows = store
-          .all("SELECT id, name FROM plan_groups WHERE COALESCE(parent_id, '') = ? AND id IN (SELECT value FROM json_each(?))", parentId || "", JSON.stringify([...ids]))
-          .filter(row => foldPersonName(row.name) === wanted);
-        return rows.length === 1 ? rows[0].id : "";
+        const live = [...ids].filter(id => !fresh.has(id) || alive(id, parentId, wanted));
+        return live.length === 1 ? live[0] : "";
       },
     };
   }
