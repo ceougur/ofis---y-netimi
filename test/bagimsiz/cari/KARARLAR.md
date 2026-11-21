@@ -5314,3 +5314,42 @@ bölümün bütün yolları yalnız `k250`). **Bu bölümün ilk commit'i yalnı
   payı sıradan önce çıkar, dağılım yeniden; C: Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS). Bakiye her seçenekte 400. Öneri A (S126 kuralı değişmez; küçülme yalnız kartın tutarını değiştirir).
 - **SK-42 (a) / (b)** (Düzenle — fazlası / artırma): yalnız Düzenle program tarafında yapılınca; bugün yapım aşamasında — soru Düzenle kodlanınca sorulur (UÇ; öneri (a): fazlası carinin avansı — iadeyle aynı;
   (b) artırma kartı büyütmez, artan kısım kendi vadesiyle kuyrukta).
+
+### Elle hesap (bakım 24 — kâhin koşulmadan, kararların sözüyle; model değişmeden ÖNCE yazıldı — commit 250ea8d6, üreteç `docs/kanit/2026-11-21/kahin-cari24-arac/uret-d53.py`, her satırın yanında hesap)
+- **d53** (bugün 08.10.2026 — Kartı Kapat bugün): P1 = S234'ün kendi örneği (fatura 900 → kart 900 (3 × 300) → kart tahsilatı 300 → Kartı Kapat → iade 300: bakiye **300**, kart 600 · Tahsil Edilen 300 · Kalan **300**,
+  Yeniden Aç → Kalan 300 (kapalı değil), yeniden Kartı Kapat → Kalan **300**); P2 = S237'nin kendi örneği (kart 05.10 / 05.11 / 05.12, 08.10 Kartı Kapat → gecikmiş 300 (05.10 kendi vadesinde — S220), 08.10 iade 300 → 1. taksit 0'a,
+  bakiye **600**, 08.10 gecikmişi **0**); P3 iade iptali (küçülmenin tersi: kart 900, Kalan 600, taksitler [300, 0, 0]); P4 Düzenle 900 → 600 (P1 ile aynı sonuç); P5 kendi kartlı (taksitli) fatura (kart seçilmeden tahsilat
+  1. taksiti kapatır, Kartı Kapat, iade → 2. taksit 0'a: bakiye 300, kartın tutarı 600, Kalan 300); P6 iki kart (K6A faturayı, K6B TEK elle Borç 600'ü içine alır — S120 Y9-2; iade yalnız K6A'yı küçültür: bakiye 1.200, gecikmiş 300 —
+  K6B'nin 01.10 taksiti); A4 açık kartta Düzenle.
+- **d54** (bugün 08.10.2026; yeni dil adımı YOK): A1 / A2 / A3 / A5 / A6 — d53'ün açık kart eşleri (karar (4)): A2'de 05.10 vadeli açık taksit küçülünce gecikmiş 300 → 0.
+- **d55** (bugün 20.11.2026): B1 açık kartta iade (2. taksit 05.11 — gecikmiş — 0'a: gecikmiş 300 → 0) ve iade iptali (2. taksit AYNI taksitte geri: gecikmiş **300**); B2 küçülme kartın açık kalanını aşar (tahsilat 600, iade 600 →
+  kart 600 · Kalan 0, fazlası 300 avans: bakiye **−300**, açık iade belgesi 300, Σ açık = bakiye).
+- **d8 B (karar gereği değişen ESKİ elle tablo — izinli; adımlar DEĞİŞMEDİ; araç `kahin-cari24-arac/elle-guncelle.py`, metin biçimi korunarak):** bakım 1'den beri C13.4 (11) ile susan taksitli faturanın iadesi
+  (F1 600, 2 × 300; iadesi 600) KAPSAM (b) ile tanımlı: iki taksit 0'a → `k1:fatura:F1:acik` 0, `k1:cari:B:gecikmis` 0 (`elleYok` → değer; elle hesap kâhin koşulmadan). Eski kâhinde bu iki denetim beklenen nedenle KIRMIZI (ANAHTAR YOK).
+- **Senaryo düzeltmesi (açıkça — beklenen kural değil):** P6 / A6'nın İLK tasarımında ikinci kart da bir faturayı içine alıyordu; ilk koşuda kâhin o cariyi bakım 23'ün SK-20 susmasıyla (S200 alanı — kuyrukta BAŞKA
+  KARTIN taksiti var; S123 / S135 BİLİNEN SINIR) TANIMSIZ bıraktı → senaryo, ikinci kartın tanımlı alanda (TEK elle Borç'a denk — S120 Y9-2) açılacağı biçimde değiştirildi (üreteçte not). KAPSAM (f) "her kart kendi
+  aldığı borçla" bu kâhinde ikinci kartın faturadan almasını (S200 + başka kartın taksiti) çözmüyor — SK-20 susması AYNEN (KULLANICIYA SORULMALI değil; S135 = BİLİNEN SINIR'ın kolu).
+
+### Kurallar (bakım 24 kod commit'i; yorumların `model.py`'deki karşılığı)
+- Dil eki (Y24-1): `kart_kapat {kart | fatura}`, `kart_yeniden_ac {kart | fatura}` — kartın (ya da taksitli faturanın) `kapanis` = bugün / None, `kapanisIz`; `fatura_duzenle {fatura, adet}` (yalnız `k250`'de kural; eski kural
+  setlerinde adım kabul, etkisiz).
+- `_alacak_govde250` (Y24-2): kart taksitleri ve taksitli faturanın taksitleri kuyrukta gecikme günü **min(vade, kapanis)** ile.
+- `_s234_plan` / `_s234_uygula` / `_s234_kaydet` (Y24-3 / Y24-4 / Y24-6 / Y24-9): iadenin (ya da Düzenle'nin) YAZILDIĞI anda `tyk250` — asıl faturayı TEK, tek kalemli, Taksitler'den açılmış Mevcut Borç kartı tamamen
+  içine almışsa (kuyrukta kart dışı açık 0; kapatıcı tutar ≤ kartın tükettiği pay) planın vadesi sırasıyla her taksitin açık kısmı kadar küçülme; kartın `items` / `toplam`'ı küçülür; taksitli faturada `kucul` (taksit başına) +
+  `planTutar` (Düzenle'den önceki tutar). Alan dışı → `s234sus` nedeni (SK-43 / SK-44 / Y24-9 (vi) / (vii)) — carinin kuyruğu C13.4 (11) düzeninde tanımsız. İade döngüsü: küçülen tutar bağ (asıl faturanın açığından),
+  artanı avans; küçülmeden sonra kart silinmiş / fatura iptal edilmişse SUS.
+- `fatura_iptal` (Y24-5 / Y24-8): iade belgesinin iptali küçülmeyi AYNI taksitlerde geri alır; kapanmış kartın içine aldığı faturanın iptali kartı kapatmaz (`_s226`) — carinin kuyruğu SUS (S226 = C).
+- `kart_tahsilat` (Y24-9 (v)): kapanmış karta Taksit Tahsilatı → `sus_kapali` (kos: adım kabul / adım yok iki dünyası).
+- `kontrol` (Y24-1 / Y24-3): `kart:<no>:kapali` (yalnız `kapanisIz`), küçülmüş kartın tutar / Tahsil Edilen / Kalan etiketi KULLANICI (açık kart, tek kart, yalnız küçülme) ya da BAŞ MİMAR (kapanmış kart, iki kart,
+  iade iptali, Düzenle); taksiti 0'a inen kartta `taksit<i>:odenen` yazılmaz (`belirsiz`); taksitli faturanın kendi kartı `kart:fatura:<F>:kapali` / `toplam` / `kalan`. İz `_iz15[cari]`: "s234" (küçülme), "kapat".
+
+### Dil ekleri (/3, bakım 24)
+- `kart_kapat {id, kart | fatura}` · `kart_yeniden_ac {id, kart | fatura}` · `fatura_duzenle {id, fatura, adet}`. Bağdaştırıcı (`kos.mjs`, yalnız eşleme — yoklama): `PUT /api/workspace/plans/:id {status: "closed" | "active"}`
+  (taksitli faturanın kartı `GET /plans?status=all` → `invoiceId`); `PUT /api/workspace/invoices/:id` (fatura kartının gövdesi, kalemin `qty` = adet). Okuma: `kart:<ad>:kapali` ← `status`; `kart:fatura:<F>:*` ← planın
+  `status` / `totals.total` / `totals.remaining`; ham: `ownPayState`, kartın `status` / `closedAt` / taksit `dueDate` / `planDueDate` (ders 38).
+- Yapım aşaması paket etiketi "Ç7b" (`YAPIM_PAKETLER`; kural metninde "§36 Y24-" geçen fark).
+
+### SÜRÜCÜ İÇİN / eşleme notları (ana oturum için)
+- Kapanış günü sunucunun bugünü — S205'in "ertesi günden gecikmiş"i (kapanışın ertesi günü) bu kâhinde gözlenemez; eski sürüm / sahte saatli iki günlük koşu gerekir.
+- Düzenle'nin gövdesi Düzenle kodlanınca kod ajanınca doğrulanmalı (bağdaştırıcı GET gövdesini `qty` değiştirip gönderir).
+- `ownPayState` (girdi §2) okunur, denetlenmez (kural yok).

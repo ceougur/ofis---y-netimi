@@ -102,10 +102,6 @@
   "k1:fatura:G6A:gosterilen": 0,
   "k1:fatura:G6A:kartta": 60000,
   "k1:fatura:G6A:taksitte": true,
-  "k1:fatura:G6B:acik": 60000,
-  "k1:fatura:G6B:gosterilen": 0,
-  "k1:fatura:G6B:kartta": 60000,
-  "k1:fatura:G6B:taksitte": true,
   "adim:iia3:durum": "ok",
   "k2:cari:A3:bakiye": 60000,
   "k2:cari:A3:gecikmis": 0,
@@ -296,13 +292,10 @@
    "mevcut": true
   },
   {
-   "id": "fa6b",
-   "islem": "fatura",
-   "ad": "G6B",
+   "id": "ba6b",
+   "islem": "borc",
    "cari": "A6",
-   "tur": "satis",
    "tutar": "600",
-   "adet": 2,
    "tarih": "2026-09-03"
   },
   {

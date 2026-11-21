@@ -76,6 +76,8 @@ def taksit_yok(Y, k, no, n=3):
         Y.append("%s:kart:%s:taksit%d:odenen" % (k, no, i))
 
 
+# P6 / A6 (KAPSAM (f) — iki kart): ikinci kart TEK elle Borç 600'e denk açılır (S120 Y9-2 — tanımlı alan). İLK TASARIMDA ikinci kart bir faturayı içine alıyordu: kâhinin S200 alanı
+# başka kartın taksiti kuyruktayken SK-20 ile susuyor (§35 Y23-5 — S123 / S135 BİLİNEN SINIR) — senaryo bu yüzden değiştirildi (beklenen kural değil; ilk koşu 21.11 ~11:20 UTC).
 # ───────────────────────── d53: KAPANMIŞ kart (bugün 08.10.2026 — Kartı Kapat bugün; S237'nin kapanış günü)
 A = []
 E, Y, B = {}, [], []
@@ -86,7 +88,7 @@ A += [cari("cp4", "P4", "Perihan Düzenle"), fatura("fp4", "FP4", "P4", 900, 3, 
 A += [cari("cp5", "P5", "Peyami Kendi Kartı"), fatura("fp5", "FP5", "P5", 900, 3, "2026-09-01", {"sayi": 3, "ilkVade": "2026-10-05"}),
       {"id": "tp5", "islem": "tahsilat", "cari": "P5", "tutar": "300", "tarih": "2026-09-03"}]
 A += [cari("cp6", "P6", "Pamir İki Kart"), fatura("fp6a", "F6A", "P6", 900, 3, "2026-09-01"), kart("kp6a", "K6A", "P6", 900, 3, "2026-10-05", "2026-09-02"),
-      fatura("fp6b", "F6B", "P6", 600, 2, "2026-09-03"), kart("kp6b", "K6B", "P6", 600, 2, "2026-10-01", "2026-09-04")]
+      {"id": "bp6b", "islem": "borc", "cari": "P6", "tutar": "600", "tarih": "2026-09-03"}, kart("kp6b", "K6B", "P6", 600, 2, "2026-10-01", "2026-09-04")]
 A += [cari("ca4", "A4", "Aslı Açık Düzenle"), fatura("fa4", "FA4", "A4", 900, 3, "2026-09-01"), kart("ka4", "KA4", "A4", 900, 3, "2026-10-05", "2026-09-02"), kt("ta4", "KA4", 300, "2026-09-03")]
 A += [{"id": "kk1", "islem": "kart_kapat", "kart": "KP1"}, {"id": "kk2", "islem": "kart_kapat", "kart": "KP2"}, {"id": "kk3", "islem": "kart_kapat", "kart": "KP3"},
       {"id": "kk4", "islem": "kart_kapat", "kart": "KP4"}, {"id": "kk5", "islem": "kart_kapat", "fatura": "FP5"}, {"id": "kk6", "islem": "kart_kapat", "kart": "K6A"}]
@@ -104,11 +106,10 @@ E["k0:fatura:FP5:acik"] = 600 * TL
 E["k0:kart:fatura:FP5:kapali"] = True
 E["k0:kart:fatura:FP5:toplam"] = 900 * TL
 E["k0:kart:fatura:FP5:kalan"] = 600 * TL
-cari_beklenen(E, "k0", "P6", 1500, 600, 1500)            # K6A 1. taksit 05.10 (300) + K6B 1. taksit 01.10 (300) gecikmiş; faturalar kartların içinde (ayrıca sayılmaz)
+cari_beklenen(E, "k0", "P6", 1500, 600, 1500)            # K6A 1. taksit 05.10 (300) + K6B 1. taksit 01.10 (300) gecikmiş; kartların içine aldığı borç (F6A, elle Borç) ayrıca sayılmaz
 kart_beklenen(E, "k0", "K6A", 900, 0, 900, True)
 kart_beklenen(E, "k0", "K6B", 600, 0, 600)
 fatura_kartta(E, "k0", "F6A", 900, 900)
-fatura_kartta(E, "k0", "F6B", 600, 600)
 cari_beklenen(E, "k0", "A4", 600, 0, 600)                # açık kart: 2. taksit 05.11 gelmedi
 kart_beklenen(E, "k0", "KA4", 900, 300, 600)
 fatura_kartta(E, "k0", "FA4", 600, 600)
@@ -144,7 +145,6 @@ cari_beklenen(E, "k1", "P6", 1200, 300, 1200)            # yalnız K6A küçül�
 kart_beklenen(E, "k1", "K6A", 600, 0, 600, True)
 kart_beklenen(E, "k1", "K6B", 600, 0, 600)
 fatura_kartta(E, "k1", "F6A", 600, 600)
-fatura_kartta(E, "k1", "F6B", 600, 600)
 E["k1:fatura:IP6:acik"] = 0
 taksit_yok(Y, "k1", "K6A")
 cari_beklenen(E, "k1", "A4", 300, 0, 300)                # açık kart Düzenle: 2. taksit 0'a, 3. taksit 05.12
@@ -186,7 +186,7 @@ A += [cari("ca3", "A3", "Arda İade İptali"), fatura("fa3", "FA3", "A3", 900, 3
 A += [cari("ca5", "A5", "Ayşe Kendi Kartı"), fatura("fa5", "FA5", "A5", 900, 3, "2026-09-01", {"sayi": 3, "ilkVade": "2026-09-05"}),
       {"id": "ta5", "islem": "tahsilat", "cari": "A5", "tutar": "300", "tarih": "2026-09-03"}]
 A += [cari("ca6", "A6", "Alp İki Kart"), fatura("fa6a", "G6A", "A6", 900, 3, "2026-09-01"), kart("ka6a", "L6A", "A6", 900, 3, "2026-10-05", "2026-09-02"),
-      fatura("fa6b", "G6B", "A6", 600, 2, "2026-09-03"), kart("ka6b", "L6B", "A6", 600, 2, "2026-10-01", "2026-09-04")]
+      {"id": "ba6b", "islem": "borc", "cari": "A6", "tutar": "600", "tarih": "2026-09-03"}, kart("ka6b", "L6B", "A6", 600, 2, "2026-10-01", "2026-09-04")]
 A += [kontrol("k0")]
 cari_beklenen(E, "k0", "A1", 600, 0, 600)
 kart_beklenen(E, "k0", "KA1", 900, 300, 600)
@@ -216,7 +216,6 @@ cari_beklenen(E, "k1", "A6", 1200, 300, 1200)            # yalnız L6A küçül�
 kart_beklenen(E, "k1", "L6A", 600, 0, 600)
 kart_beklenen(E, "k1", "L6B", 600, 0, 600)
 fatura_kartta(E, "k1", "G6A", 600, 600)
-fatura_kartta(E, "k1", "G6B", 600, 600)
 taksit_yok(Y, "k1", "L6A")
 A += [{"id": "iia3", "islem": "fatura_iptal", "fatura": "IA3"}, kontrol("k2")]
 E["adim:iia3:durum"] = "ok"

@@ -88,10 +88,6 @@
   "k0:fatura:F6A:gosterilen": 0,
   "k0:fatura:F6A:kartta": 90000,
   "k0:fatura:F6A:taksitte": true,
-  "k0:fatura:F6B:acik": 60000,
-  "k0:fatura:F6B:gosterilen": 0,
-  "k0:fatura:F6B:kartta": 60000,
-  "k0:fatura:F6B:taksitte": true,
   "k0:cari:A4:bakiye": 60000,
   "k0:cari:A4:gecikmis": 0,
   "k0:cari:A4:acikToplam": 60000,
@@ -205,10 +201,6 @@
   "k1:fatura:F6A:gosterilen": 0,
   "k1:fatura:F6A:kartta": 60000,
   "k1:fatura:F6A:taksitte": true,
-  "k1:fatura:F6B:acik": 60000,
-  "k1:fatura:F6B:gosterilen": 0,
-  "k1:fatura:F6B:kartta": 60000,
-  "k1:fatura:F6B:taksitte": true,
   "k1:fatura:IP6:acik": 0,
   "k1:cari:A4:bakiye": 30000,
   "k1:cari:A4:gecikmis": 0,
@@ -478,13 +470,10 @@
    "mevcut": true
   },
   {
-   "id": "fp6b",
-   "islem": "fatura",
-   "ad": "F6B",
+   "id": "bp6b",
+   "islem": "borc",
    "cari": "P6",
-   "tur": "satis",
    "tutar": "600",
-   "adet": 2,
    "tarih": "2026-09-03"
   },
   {
