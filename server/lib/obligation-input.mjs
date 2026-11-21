@@ -12,6 +12,9 @@ import { createAccountLines } from "./account-lines.mjs";
 import { keptDueSql } from "./accounts.mjs";
 
 export function createObligationInput({ store }) {
+  // 2.5.0 İzleyen küçük tur (docs/erp/C7B-FATURA-TASARIM.md §19.2): iadenin Mevcut Borç kartlarından kestiği tutar (payment_json.coverCuts — yalnız kesilmiş satıştan iadede; kuyruk kartın açıldığı
+  // andaki kapsamını bununla kurar: lib/obligation-queue.mjs returnCutsOf). Öbür belgelerde NULL.
+  const COVER_CUTS = "CASE WHEN kind = 'sale_return' AND status = 'issued' AND payment_json LIKE '%coverCuts%' THEN json_extract(payment_json, '$.coverCuts') END AS coverCuts";
   // v2.0.17: mahsup fişinin karşı belgesinin adı ("Mahsup · ALS2026…" / "Mahsup · Alacak Yaz 15.09.2026").
   function offsetLabel(offset) {
     if (offset.counterType === "invoice") {
@@ -69,7 +72,7 @@ export function createObligationInput({ store }) {
   // Toplu yolun kapama girdileri (bütün cariler; birkaç toplu sorgu). allPaymentStates ve allEntryStates (2.4.5 madde 6) aynı tablolardan okur.
   function settleTables() {
     // issuedAt (v2.0.23): borcun doğduğu an (Mevcut Borç kartının kapsamı, lib/invoice-settle.mjs).
-    const invoicesOf = groupBy(store.all("SELECT id, account_id AS accountId, kind, status, try_payable AS payable, original_id AS originalId, due_date AS dueDate, plan_id AS planId, COALESCE(NULLIF(issued_at, ''), created_at) AS issuedAt FROM invoices"), "accountId");
+    const invoicesOf = groupBy(store.all(`SELECT id, account_id AS accountId, kind, status, try_payable AS payable, original_id AS originalId, due_date AS dueDate, plan_id AS planId, COALESCE(NULLIF(issued_at, ''), created_at) AS issuedAt, ${COVER_CUTS} FROM invoices`), "accountId");
     const baseLinks = new Map();
     for (const entry of store.all("SELECT id, account_id AS accountId, source_id AS invoiceId FROM account_entries WHERE source = 'invoice' AND kind IN ('in', 'out')")) {
       if (!baseLinks.has(entry.accountId)) baseLinks.set(entry.accountId, new Map());
@@ -226,7 +229,7 @@ export function createObligationInput({ store }) {
   // Bir carinin kapama girdisi (tek carili yol): carinin defteri + faturaları + bağlar (paymentStates ve entryStates aynı kuralla).
   function accountSettleInput(accountId, ledger, day) {
     // Bu carinin bütün faturaları (listede olmayanlar da kapamada yer tutar).
-    const all = store.all("SELECT id, kind, status, try_payable AS payable, original_id AS originalId, due_date AS dueDate, plan_id AS planId, COALESCE(NULLIF(issued_at, ''), created_at) AS issuedAt FROM invoices WHERE account_id = ?", accountId);
+    const all = store.all(`SELECT id, kind, status, try_payable AS payable, original_id AS originalId, due_date AS dueDate, plan_id AS planId, COALESCE(NULLIF(issued_at, ''), created_at) AS issuedAt, ${COVER_CUTS} FROM invoices WHERE account_id = ?`, accountId);
     const links = new Map();
     // 2.5.0 TEK ADAY HIZ (t3hiz): `+source` (yukarıdaki datedSql notu — idx_account_entries_source bütün fatura peşinlerini dolaşıyordu, ~40 ms); küme aynı, sıra eski planınki.
     for (const entry of store.all("SELECT id, source_id AS invoiceId FROM account_entries WHERE account_id = ? AND +source = 'invoice' AND kind IN ('in', 'out') ORDER BY source_id, rowid", accountId)) links.set(entry.id, entry.invoiceId);

@@ -1,0 +1,151 @@
+TAP version 13
+# (node:31067) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: İzleyen küçük tur — P-2 (karar (4): fazlası carinin avansı)
+    # Subtest: P2a — açık Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+    ok 1 - P2a — açık Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+      ---
+      duration_ms: 899.165137
+      type: 'test'
+      ...
+    # Subtest: P2k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+    ok 2 - P2k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+      ---
+      duration_ms: 680.785789
+      type: 'test'
+      ...
+    # Subtest: P2o — kendi kartı (taksitli fatura): tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0 (bekçi)
+    ok 3 - P2o — kendi kartı (taksitli fatura): tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0 (bekçi)
+      ---
+      duration_ms: 535.141341
+      type: 'test'
+      ...
+    1..3
+ok 1 - İzleyen küçük tur — P-2 (karar (4): fazlası carinin avansı)
+  ---
+  duration_ms: 2116.641156
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — P-1 / S238 = A (iade iptali aynı taksite)
+    # Subtest: P1a — açık Mevcut Borç kartı: tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+    ok 1 - P1a — açık Mevcut Borç kartı: tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+      ---
+      duration_ms: 692.968756
+      type: 'test'
+      ...
+    # Subtest: P1k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı (S205: kalemler kapanış ertesinden gecikmiş): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 600
+    ok 2 - P1k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı (S205: kalemler kapanış ertesinden gecikmiş): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 600
+      ---
+      duration_ms: 639.209648
+      type: 'test'
+      ...
+    # Subtest: P1o — kendi kartı (taksitli fatura): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+    ok 3 - P1o — kendi kartı (taksitli fatura): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+      ---
+      duration_ms: 626.717572
+      type: 'test'
+      ...
+    # Subtest: P1e — kesim kaydı olmayan (eski sürümün) iadesi: iptalde büyüme bugünkü gibi SON taksite
+    ok 4 - P1e — kesim kaydı olmayan (eski sürümün) iadesi: iptalde büyüme bugünkü gibi SON taksite
+      ---
+      duration_ms: 670.779494
+      type: 'test'
+      ...
+    1..4
+ok 2 - İzleyen küçük tur — P-1 / S238 = A (iade iptali aynı taksite)
+  ---
+  duration_ms: 2630.662485
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — BULGU-1 (kuyruk kapama defteriyle aynı kapsam okuması)
+    # Subtest: B1a — iki açık kart: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 0; bakiye 900
+    ok 1 - B1a — iki açık kart: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 0; bakiye 900
+      ---
+      duration_ms: 539.476788
+      type: 'test'
+      ...
+    # Subtest: B1k — ilk kart Borçta Kalsın ile kapatılmış: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 600; bakiye 900
+    ok 2 - B1k — ilk kart Borçta Kalsın ile kapatılmış: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 600; bakiye 900
+      ---
+      duration_ms: 683.881674
+      type: 'test'
+      ...
+    1..2
+ok 3 - İzleyen küçük tur — BULGU-1 (kuyruk kapama defteriyle aynı kapsam okuması)
+  ---
+  duration_ms: 1223.924283
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — S234-c (Düzenle ile azaltma iade gibi)
+    # Subtest: C1a — açık Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+    ok 1 - C1a — açık Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+      ---
+      duration_ms: 612.560388
+      type: 'test'
+      ...
+    # Subtest: C1k — Borçta Kalsın kapalı Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+    ok 2 - C1k — Borçta Kalsın kapalı Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+      ---
+      duration_ms: 528.589933
+      type: 'test'
+      ...
+    1..2
+ok 4 - İzleyen küçük tur — S234-c (Düzenle ile azaltma iade gibi)
+  ---
+  duration_ms: 1141.447151
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — S239 = A ve S240 = A (bugünkü davranış kararla aynı — bekçi)
+    # Subtest: S239: fatura 900, kart 600 (faturanın 600'ü kartta), iade 300 → kart DEĞİŞMEZ (dışarıdaki 300 kapanır); 06.10 gecikmiş = ilk taksit 200
+    ok 1 - S239: fatura 900, kart 600 (faturanın 600'ü kartta), iade 300 → kart DEĞİŞMEZ (dışarıdaki 300 kapanır); 06.10 gecikmiş = ilk taksit 200
+      ---
+      duration_ms: 443.952621
+      type: 'test'
+      ...
+    # Subtest: S240: elle borç 300 + fatura 900 → kart 1200, tahsilat 300, iade 300 → kart 900 · Tahsil Edilen 300 · Kalan 600; fatura 600'ü kartta
+    ok 2 - S240: elle borç 300 + fatura 900 → kart 1200, tahsilat 300, iade 300 → kart 900 · Tahsil Edilen 300 · Kalan 600; fatura 600'ü kartta
+      ---
+      duration_ms: 587.878578
+      type: 'test'
+      ...
+    1..2
+ok 5 - İzleyen küçük tur — S239 = A ve S240 = A (bugünkü davranış kararla aynı — bekçi)
+  ---
+  duration_ms: 1032.15119
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — BULGU-2 (Düzenle değiştirmeden Kaydet kartı aynen bırakır)
+    # Subtest: E2: aynı ödeme planıyla Düzenle → kart kimliği, kart no, taksitler aynı; taksit sayısı değişince yeni kart
+    ok 1 - E2: aynı ödeme planıyla Düzenle → kart kimliği, kart no, taksitler aynı; taksit sayısı değişince yeni kart
+      ---
+      duration_ms: 535.965678
+      type: 'test'
+      ...
+    1..1
+ok 6 - İzleyen küçük tur — BULGU-2 (Düzenle değiştirmeden Kaydet kartı aynen bırakır)
+  ---
+  duration_ms: 536.18993
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — İş 6 eşdeğerlik (fatura kartı GET önbelleği = baştan kurulan)
+    # Subtest: H6: kapama defteri ve kuyruk okumaları her yazım türünden sonra işlem içinde baştan kurulanla aynı
+    ok 1 - H6: kapama defteri ve kuyruk okumaları her yazım türünden sonra işlem içinde baştan kurulanla aynı
+      ---
+      duration_ms: 772.485305
+      type: 'test'
+      ...
+    1..1
+ok 7 - İzleyen küçük tur — İş 6 eşdeğerlik (fatura kartı GET önbelleği = baştan kurulan)
+  ---
+  duration_ms: 772.661381
+  type: 'suite'
+  ...
+1..7
+# tests 15
+# suites 7
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9922.00379

@@ -1,0 +1,8 @@
+  mutasyon 18 (D4 (S48): cari seçilse de 519): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 19 (D5 (S49 B): formdan carisiz evrak 519'a): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 20 (D5 (S49 C): formdan carisiz evrak 602 / 770): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 21 (D9 (KG-5 B): Excel taksit kartı yeni satış): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 32 (D10 (S12 B): Kasa açılışından önce tarihli Kasa hareketi kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 33 (D10 (B11 B): açılıştan önceye alınan düzeltme kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı
+
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-3ADjme

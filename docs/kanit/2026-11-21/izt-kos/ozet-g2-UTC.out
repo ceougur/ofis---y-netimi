@@ -1,0 +1,12 @@
+=== UTC başta 1.17 1.42 1.83 3/161 31479 13:22:04
+not ok 132 - Ç7b tur 3 devam 3 — iptal / fatura kartının kapsam okuması ve trimCovers (hız düzeltmesinin eşdeğerliği)
+not ok 133 - Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217
+not ok 151 - S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu)
+not ok 264 - 2.4.9 R2 — taksit kartının iade kesintisi toplu yolda cari başına yeniden taranmaz (kural aynen)
+not ok 381 - 2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön denetimi, kuyruk girdisinin sorgu planları ve işlem dışı belleği — davranış AYNEN
+# tests 2040
+# pass 2034
+# fail 6
+# cancelled 0
+# skipped 0
+çıkış 1 sonda 4.89 4.16 3.06 2/143 2077 13:29:49
