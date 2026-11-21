@@ -123,7 +123,13 @@ try {
     ok((await dialog.locator(".hof-modal-title").textContent()).trim() === "Kural Farkı Düzeltme", "pencere başlığı");
     const rows = await dialog.locator("[data-rule-diff-lines] tbody tr").allTextContents();
     console.log(`  satırlar: ${rows.map(row => row.replace(/\s+/g, " ").trim()).join(" | ")}`);
-    ok(rows.length === 3 && /^500/.test(rows[0].trim()) && /^519/.test(rows[1].trim()) && /Toplam/.test(rows[2]), "fiş satırları 500 / 519 + toplam");
+    // Ç7b (docs/erp/C7B-FATURA-TASARIM.md: kilitli dönemin 6 / 7 sınıfı kural farkları — 602 → 600.90 (KG-2), 649 → 649.90, 770 → 770.90 … — da bu fişe girer;
+    // aynı yıl eski hesabın tersi, önceki yıl 671 / 681). Fiş: önce 500 / 519, sonra yalnız 6 / 7 sınıfı satırlar, borç = alacak toplam.
+    const flat = rows.map(row => row.replace(/\s+/g, " ").trim());
+    const total = flat.at(-1) || "";
+    const totals = total.match(/₺[\d.,]+/g) || [];
+    ok(rows.length >= 3 && /^500/.test(flat[0]) && /^519/.test(flat[1]) && flat.slice(2, -1).every(row => /^[67]\d\d(\.\d+)?\D/.test(row))
+      && /^Toplam/.test(total) && totals.length === 2 && totals[0] === totals[1], "fiş satırları 500 / 519 + yalnız 6 / 7 sınıfı kural farkları + borç = alacak toplam");
     ok((await dialog.locator("[data-rule-diff-sources] tbody tr").count()) === ruleDiff.count, `farkı doğuran kayıtlar = kural farkı madde sayısı (${ruleDiff.count})`);
     const save = dialog.locator("[data-rule-diff-save]");
     ok(await save.isDisabled(), "onaysız Fişi Kaydet pasif");
