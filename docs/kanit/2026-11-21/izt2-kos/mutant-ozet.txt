@@ -1,0 +1,14 @@
+mutant m1
+m1: # tests 17 # pass 14 # fail 3  kırmızılar: K1a — aç�,K1k — Bor�,Y1: S241 kay,
+mutant m2
+m2: # tests 17 # pass 11 # fail 6  kırmızılar: A1: kuyruk v,A2: B'nin İ,A3: A'nın �,A4: iade A'n,A5 (S110-ell,A6 (S120): e,
+mutant m3
+m3: # tests 17 # pass 16 # fail 1  kırmızılar: R1: kendi ka,
+mutant m4
+m4: # tests 17 # pass 16 # fail 1  kırmızılar: S1: stok iad,
+UTC çıkış 0 · # tests 35 # pass 35 # fail 0 # cancelled 0 # skipped 0 # todo 0 
+Europe/Istanbul çıkış 0 · # tests 35 # pass 35 # fail 0 # cancelled 0 # skipped 0 # todo 0 
+UTC çıkış 1 · # tests 17 # pass 5 # fail 12 # cancelled 0 # skipped 0 # todo 0 
+Europe/Istanbul çıkış 1 · # tests 17 # pass 5 # fail 12 # cancelled 0 # skipped 0 # todo 0 
+
+[exited with code 0]

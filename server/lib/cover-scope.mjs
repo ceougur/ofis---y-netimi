@@ -110,5 +110,16 @@ export function withEditCuts(input) {
     });
   }
   if (!ids.size) return input;
+  // Kartın kapsamı (coverTotal) ve açıldığı andaki tutarı (coverGross) kayıtlı Düzenle kesintisini iade kesintisi gibi geri ekler (lib/accounts.mjs returnCuts'ın iade kesintisine yaptığı) — kesinti kaydı
+  // faturanın carisinin kartlarındadır (cari değişince kayıt düşer), bu girdinin kart satırlarında. (Hız: bütün faturaları tarayan ayrı bir sorgu yerine girdinin kendi faturalarından — ders 47.)
+  const cutsByPlan = new Map();
+  for (const row of extra) for (const [planId, value] of Object.entries(row.coverCuts || {})) if (centsOf(value) > 0) cutsByPlan.set(planId, (cutsByPlan.get(planId) || 0) + centsOf(value));
+  if (cutsByPlan.size) {
+    for (let i = 0; i < lines.length; i += 1) {
+      const line = lines[i];
+      const add = line.origin === "plan" && line.kind === "plan" && line.covers ? cutsByPlan.get(line.planId) : 0;
+      if (add) lines[i] = { ...line, coverTotal: fromCents(centsOf(line.coverTotal) + add), coverGross: fromCents(centsOf(line.coverGross ?? line.coverTotal) + add) };
+    }
+  }
   return { ...input, lines, invoices: [...invoices, ...extra], editCutIds: ids };
 }
