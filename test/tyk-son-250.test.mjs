@@ -228,13 +228,19 @@ describe("Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların 
     const list = (await must("cari listesi", api.get("/api/workspace/accounts?status=all&limit=5000"))).accounts.find(row => row.id === acc.id);
     const vade = (await must("Vade Takip", api.get(`/api/workspace/overview/vade-takip?from=${day(-800)}&to=${day(800)}`))).rows.filter(r => r.accountId === acc.id || r.party === acc.name);
     const zil = (await must("zil", api.get("/api/workspace/dues"))).items.filter(r => r.accountId === acc.id);
+    // S229 = A + S230 = A (20.11.2026): acik = faturanın KENDİ açığı (kapama kuralı; S126); gosterilen = fatura kartında görünen (kartın aldığı kısım düşülmüş).
     const open = [];
-    for (const id of invoices) open.push((await must("fatura kartı", api.get(`/api/workspace/invoices/${id}`))).open);
+    const shown = [];
+    for (const id of invoices) {
+      const doc = await must("fatura kartı", api.get(`/api/workspace/invoices/${id}`));
+      open.push(doc.ownOpen ?? doc.open);
+      shown.push(doc.open);
+    }
     return {
       bakiye: card.totals.balance, kartKendi: plan.totals.ownRemaining, kartKuyruk: plan.totals.queueRemaining, taksit: plan.items.map(i => i.remaining),
       gecikmis: card.totals.overdueDebt, gecikmisListe: list.overdue, vadeGecikmis: r2(vade.filter(r => r.date < NOW_DAY && r.direction === "in").reduce((s, r) => s + r.amount, 0)),
       vade: vade.map(r => `${r.source}:${r.amount}@${r.date}`).sort(), zil: zil.map(r => `${r.source}:${r.amount}:${r.state}`).sort(),
-      kalan: Object.fromEntries(card.entries.filter(e => e.remaining !== undefined).map(e => [e.note, e.remaining])), acik: open,
+      kalan: Object.fromEntries(card.entries.filter(e => e.remaining !== undefined).map(e => [e.note, e.remaining])), acik: open, gosterilen: shown,
     };
   };
   before(async () => {
@@ -257,6 +263,7 @@ describe("Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların 
     await cardPay(plan.id, 300);
     const paid = await views(acc, plan.id, [f]);
     assert.deepEqual([paid.acik, paid.kalan], [[300], { X: 300 }], "F açık 300, X Kalan 300");
+    assert.deepEqual([once.gosterilen, paid.gosterilen], [[0], [0]], "S230 = A: F'nin tamamı kartta — fatura kartında gösterilen açık 0 (kendi açığı kartın taksitlerinden)");
     assert.deepEqual([paid.bakiye, paid.kartKendi, paid.kartKuyruk, paid.taksit, paid.gecikmis, paid.gecikmisListe, paid.vadeGecikmis, paid.zil], [600, 600, 600, [0, 300, 300], 0, 0, 0, []], "bakiye / kart kalanı / gecikmiş / takvim: yalnız ödenen taksit kadar düştü");
     const free = await entry(acc, { kind: "in", amount: "400", date: day(-4), note: "T400" });
     const two = await views(acc, plan.id, [f]);

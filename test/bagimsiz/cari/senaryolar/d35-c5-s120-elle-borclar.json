@@ -2,7 +2,7 @@
  "dil": "destekofis-cari/3",
  "bugun": "2026-04-15",
  "aciklama": "Bakım 9 (S120 = A): elle kart (açık borç kart tutarından fazla) tek bir elle borca denk gelmiyorsa yalnız ELLE borçları eskiden yeniye içine alır, faturalar ayrı — kart sonrası tahsilat (H1, H14), yeni borç (H12), stok iadesi (H13), birden çok eşit elle borç (H2; H3 SK-22 susar), tek eşit elle borç (H4a, H4b — bakım 8 aynen), borçlu Açılış (H5), kısmen ödenmiş elle borç (H6a, H6b), elle toplamı = kart (H7), elle toplamı < kart (H8 SK-20 susar), vade ↔ belge sırası (H9a SK-23 susar, H9b), kart ödemeli (H10 S50 payı, H11 kart tahsilatı — bakım 10 S122 A: değer), aynı adlı iki cari (H15a / H15b)",
- "dayanak": "KARARLAR.md §21 (S120 A; Y9-1 … Y9-9; SK-20 … SK-23), §20 (S110 A; Y8-3 / Y8-4 / Y8-5), §13 C13.4 / C13.5; §22 (S122 A — H10 / H11; S123 / S124 / S125 = C — H8 / H3 / H9a)",
+ "dayanak": "KARARLAR.md §21 (S120 A; Y9-1 … Y9-9; SK-20 … SK-23), §20 (S110 A; Y8-3 / Y8-4 / Y8-5), §13 C13.4 / C13.5; §22 (S122 A — H10 / H11; S123 / S124 / S125 = C — H8 / H3 / H9a); §35 Y23-5 (S200 = A — H8: SK-20 alanı kapandı, elle tablo karar gereği güncellendi)",
  "elleBeklenen": {
   "k1:cari:H1:bakiye": 120000,
   "k1:cari:H1:gecikmis": 60000,
@@ -178,6 +178,16 @@
   "k1:cari:H8:bakiye": 90000,
   "k1:kart:KH8:var": true,
   "k1:kart:KH8:toplam": 50000,
+  "k1:cari:H8:gecikmis": 65000,
+  "k1:kart:KH8:kalan": 50000,
+  "k1:hareket:h8x:kalan": 30000,
+  "k1:takvim:hareket:h8x": "yok",
+  "k1:fatura:H8F:acik": 60000,
+  "k1:fatura:H8F:gosterilen": 40000,
+  "k1:fatura:H8F:liste:gosterilen": 40000,
+  "k1:fatura:H8F:kartta": 20000,
+  "k1:fatura:H8F:taksitte": false,
+  "k1:fatura:H8F:liste:taksitte": false,
   "k1:cari:H9a:bakiye": 180000,
   "k1:kart:KH9A:var": true,
   "k1:kart:KH9A:toplam": 90000,
@@ -350,10 +360,9 @@
   "k1:kart:KH11:taksit2:odenen": 0,
   "k1:kart:KH11:taksit3:odenen": 0
  },
- "elleYok": ["k1:cari:H3:gecikmis", "k1:kart:KH3:kalan", "k1:hareket:h3z:kalan", "k1:hareket:h3x:kalan", "k1:hareket:h3y:kalan", "k1:takvim:hareket:h3z", "k1:fatura:H3F:acik", "k1:cari:H8:gecikmis", "k1:kart:KH8:kalan", "k1:hareket:h8x:kalan", "k1:takvim:hareket:h8x", "k1:fatura:H8F:acik", "k1:cari:H9a:gecikmis", "k1:kart:KH9A:kalan", "k1:hareket:h9ax:kalan", "k1:hareket:h9ay:kalan", "k1:takvim:hareket:h9ax", "k1:fatura:H9AF:acik"],
+ "elleYok": ["k1:cari:H3:gecikmis", "k1:kart:KH3:kalan", "k1:hareket:h3z:kalan", "k1:hareket:h3x:kalan", "k1:hareket:h3y:kalan", "k1:takvim:hareket:h3z", "k1:fatura:H3F:acik", "k1:cari:H9a:gecikmis", "k1:kart:KH9A:kalan", "k1:hareket:h9ax:kalan", "k1:hareket:h9ay:kalan", "k1:takvim:hareket:h9ax", "k1:fatura:H9AF:acik"],
  "elleBelirsiz": [
   ["cari H3 tanımsız", "SK-22", "BİLİNEN SINIR", "S124 = C"],
-  ["cari H8 tanımsız", "SK-20", "BİLİNEN SINIR", "S123 = C"],
   ["cari H9a tanımsız", "SK-23", "BİLİNEN SINIR", "S125 = C"]
  ],
  "adimlar": [

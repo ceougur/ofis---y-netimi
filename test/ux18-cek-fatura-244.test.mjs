@@ -75,7 +75,8 @@ function kit(api, read) {
     },
     state: async id => {
       const doc = await must("fatura", api.get(`/api/workspace/invoices/${id}`));
-      return { open: doc.open, paid: doc.paid, payState: doc.payState, closers: doc.closers };
+      // S229 = A + S230 = A (20.11.2026): open = faturanın KENDİ açığı (kapama kuralı bu testin konusu); shown = fatura kartında gösterilen (Mevcut Borç kartının aldığı kısım düşülmüş).
+      return { open: doc.ownOpen ?? doc.open, shown: doc.open, paid: doc.paid, payState: doc.payState, closers: doc.closers };
     },
     open: async id => (await helpers.state(id)).open,
     balance: async account => (await must("cari", api.get(`/api/workspace/accounts/${account.id}`))).totals.balance,
@@ -433,6 +434,7 @@ describe("2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu 
     await k.act(e3, "bounce");
     await must("bağsız nakit", api.post(`/api/workspace/accounts/${acc3.id}/entries`, { kind: "in", amount: 1000, date: day(0), method: "cash", cashForce: true }));
     assert.deepEqual([await k.open(g.id), await k.open(h.id)], [1000, 0], "kart G'yi kapsar (kartın taksitleriyle kapanır); bağsız 1.000 karşılıksızla açılan H'yi kapattı");
+    assert.equal((await k.state(g.id)).shown, 0, "S230 = A: G'nin tamamı kartta — fatura kartında gösterilen açık 0");
     await k.integrity();
   });
 
@@ -553,6 +555,7 @@ describe("2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu 
     assert.deepEqual([await k.open(x.id), await k.open(y.id), await k.balance(u)], [1000, 1000, 2000], "karşılıksız: X açık; Y kartın kapsamında");
     await must("bağsız nakit", api.post(`/api/workspace/accounts/${u.id}/entries`, { kind: "in", amount: 1000, date: day(0), method: "cash", cashForce: true }));
     assert.deepEqual([await k.open(x.id), await k.open(y.id)], [0, 1000], "bağsız 1.000 X'i kapattı; Y kartın taksitleriyle kapanır");
+    assert.equal((await k.state(y.id)).shown, 0, "S230 = A: Y'nin tamamı kartta — gösterilen açık 0");
     await k.integrity();
   });
 });

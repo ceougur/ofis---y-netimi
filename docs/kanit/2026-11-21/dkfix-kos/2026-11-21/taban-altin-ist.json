@@ -1,0 +1,38 @@
+{
+  "ad": "taban-altin-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-210-altin.test.mjs",
+  "commit": "94a7b4755cdc9d7b9eddb286d67c22ea822504a0",
+  "dal": "worktree-agent-ab2301e43d5e0964a",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T05:53:44.875Z",
+  "sure_sn": 25.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 5,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)",
+      "konum": "test/banka-210-altin.test.mjs:520:3",
+      "hata": "3 fark: · motor · 001 · admin · json /api/workspace/overview: Expected values to be strictly deep-equal: · + actual - expected"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-21/dkfix-kos/2026-11-21/taban-altin-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab2301e43d5e0964a",
+  "ham_cikti_sha256": "7c8b9e325458170be655b01de987e204f8fdc580247a4ecae7740066cd387d59",
+  "ham_cikti_bayt": 6949
+}

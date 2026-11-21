@@ -72,6 +72,9 @@ async function state(api, acc, inv) {
     card: { total: plan.totals.total, paid: plan.totals.paid, left: plan.totals.remaining },
     items: (plan.items || []).filter(item => Number(item.amount) > 0).map(item => `${item.dueDate}:${item.amount}`),
     open: invoice.open,
+    // S229 = A + S230 = A (20.11.2026): Mevcut Borç kartının aldığı kısım faturada açık GÖRÜNMEZ (open); faturanın kendi açığı ownOpen, kartın payı inPlan.
+    ownOpen: invoice.ownOpen ?? invoice.open,
+    inPlan: invoice.inPlan || 0,
     balance: account.totals.balance,
     accountOverdue: account.totals.overdue || 0,
     late: r2(lateRows.reduce((sum, row) => sum + money(row.at(-2) ?? row.at(-1)), 0)),
@@ -87,7 +90,9 @@ async function expectCard(ctx, acc, inv, { left, balance, open = 0, total, chequ
   const now = await state(ctx.api, acc, inv);
   assert.equal(now.card.left, left, `${label}: kartın kalanı ${now.card.left} (beklenen ${left}) · taksitler [${now.items}]`);
   if (total !== undefined) assert.equal(now.card.total, total, `${label}: kartın toplamı`);
-  assert.equal(now.open, open, `${label}: fatura açığı`);
+  assert.equal(now.ownOpen, open, `${label}: fatura açığı (faturanın kendi açığı)`);
+  // Kendi kartı olan (taksitli) faturada gösterilen = kendi açığı; Mevcut Borç kartının kapsadığı faturada gösterilen = kendi açığı − kartın payı (S229 / S230 = A).
+  assert.equal(now.open, Math.round((open - now.inPlan) * 100) / 100, `${label}: gösterilen açık (kartın payı ${now.inPlan} düşülmüş)`);
   assert.equal(now.balance, balance, `${label}: cari bakiyesi`);
   assert.equal(now.aging, left + cheques, `${label}: Alacak Yaşlandırma = kartın kalanı (+ portföydeki çek)`);
   assert.equal(now.vade, left, `${label}: Vade Takip = kartın kalanı`);
@@ -248,6 +253,8 @@ describe("2.1.0 Canlı Hata 2 — iade + peşin geri ödemesi taksit kartını b
     // Elle: cari = 1.000 − 500 − 500 + 250 = 250. (Önceden "faturanın kendisi kapanır" deniyordu: iadenin tamamı faturayı kapatıyor, geri
     // ödeme ayrıca sayılıyordu — aynı alacak iki kez.)
     await expectCard(ctx, acc, inv, { left: 250, balance: 250, open: 250 }, "K iade-1");
+    const k1 = await state(ctx.api, acc, inv);
+    assert.deepEqual([k1.open, k1.inPlan], [0, 250], "K iade-1: S230 = A — faturanın 250'si kartta, faturada gösterilen açık 0");
     await giveBack(ctx.api, acc, inv, 5, nakit(250));
     await expectCard(ctx, acc, inv, { left: 0, balance: 0 }, "K iade-2");
   }));

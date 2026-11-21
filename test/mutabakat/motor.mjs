@@ -150,8 +150,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const refunds = rets.reduce((sum, x) => sum + x.cashRows.filter(row => row.kind === "out").reduce((t, row) => t + row.amount, 0), 0);
     return { target: Math.max(0, inv.rest - Math.max(0, paid) - returns + refunds), refunds };
   };
+  // 2.5.0 S234 = A (docs/erp/C7B-FATURA-TASARIM.md §18.2): karar (4) Borçta Kalsın ile kapatılmış karta da — motorun bütün kapalı kartları güncel kodla (Borçta Kalsın) kapatılır;
+  // kapalı kendi kart da faturanın açığını izler (iade küçültür, iade iptali büyütür).
   function syncOwn(p) {
-    if (!p || !p.invoiceId || p.status !== "active") return;
+    if (!p || !p.invoiceId || (p.status !== "active" && p.status !== "closed")) return;
     const inv = M.invoices.get(p.invoiceId);
     if (!inv || inv.status !== "issued") return;
     const open = ownTarget(inv, p.paid).target;
@@ -694,9 +696,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   // Taksitlendirilmiş borç iadeden (alacaktan) sonra borçtan büyük kalmaz: en yeni karttan başlayarak kırpılır.
   // Dönüş: kart → kesilen tutar (iade faturası bunu saklar; iade iptal edilince kart aynı tutarda geri büyür — programın
   // payment_json.coverCuts kuralı, 2.0.24 G3).
-  function trimCovers(accountId) {
+  // 2.5.0 S234 = A: iade / stok iadesi yolunda Borçta Kalsın ile kapatılmış kart da kırpılır; İPTAL yolu (closed: false) kapalı kartı bugünkü gibi atlar (S226 = C).
+  function trimCovers(accountId, { closed = true } = {}) {
     const cuts = new Map();
-    const covering = [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && !p.invoiceId && p.status === "active");
+    const covering = [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && !p.invoiceId && (p.status === "active" || (closed && p.status === "closed")));
     let excess = covering.reduce((s, p) => s + planLeft(p), 0) - Math.max(0, M.cari.get(accountId));
     for (const p of covering.sort((a, b) => b.order - a.order)) {
       if (excess <= 0) break;
@@ -885,7 +888,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       // v2.0.24: iade önce asıl faturanın kendi kartını küçültür (kartın kalanı = faturanın açığı); sonra genel kırpma.
       const own = originalId && M.invoices.get(originalId)?.planId ? M.plans.get(M.invoices.get(originalId).planId) : null;
       // İade modele aşağıda (M.invoices.set) yazılır; kendi kartı o zaman eşitlenir.
-      for (const pl of M.plans.values()) if (pl !== own && pl.accountId === accountId && pl.covers && !pl.invoiceId && pl.status === "active") {
+      for (const pl of M.plans.values()) if (pl !== own && pl.accountId === accountId && pl.covers && !pl.invoiceId && (pl.status === "active" || pl.status === "closed")) {
         pl.slack = (pl.slack || 0) + calc.tryPayable;
         pl.slackBy = inv;
       }
@@ -958,13 +961,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     }
     // 2.5.0 Ç7b tur 3 — S206 = A / S211 = A (+ karar (4)): carinin borcundan büyük kalan Mevcut Borç kartları küçülür (trimCovers); kalanı 0'a inen kapanır.
     if (inv.kind === "sale" || inv.kind === "smm") {
-      for (const [pl] of trimCovers(inv.accountId)) if (planLeft(pl) === 0) pl.status = "closed";
+      for (const [pl] of trimCovers(inv.accountId, { closed: false })) if (planLeft(pl) === 0) pl.status = "closed";
     }
-    // İade iptali: iadenin küçülttüğü Mevcut Borç kartları aynı tutarda geri büyür (kapatılmış ya da silinmiş kart değişmez).
+    // İade iptali: iadenin küçülttüğü Mevcut Borç kartları aynı tutarda geri büyür (silinmiş kart değişmez; 2.5.0 S234 = A: Borçta Kalsın ile kapatılmış kart da büyür —
+    // motorun kapalı kartları güncel kodla kapatılır; iptalle kapanmış kartın kalanı 0, kesimi de yok).
     // Not (2.1.0 dilim 4): model bunu önceden yapmıyordu; banka işlemleri rastgele sırayı değiştirince tohum 2'de ortaya çıktı.
     if (inv.kind === "sale_return" && inv.coverCuts) {
       const live = new Set(M.plans.values());
-      for (const [pl, cut] of inv.coverCuts) if (live.has(pl) && pl.status !== "closed") pl.total += cut;
+      for (const [pl, cut] of inv.coverCuts) if (live.has(pl)) pl.total += cut;
     }
     if (inv.kind === "sale_return" && inv.originalId) {
       const orig = M.invoices.get(inv.originalId);

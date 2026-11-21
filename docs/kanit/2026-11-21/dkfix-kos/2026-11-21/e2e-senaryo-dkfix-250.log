@@ -1,0 +1,41 @@
+
+■ A) S234 = A — kapalı Mevcut Borç kartı + iade: kart penceresi Kalan ₺300,00; Yeniden Aç → Kartı Kapat 'Kalan ₺300,00' tek soru
+  ✓ carinin borcu 300 (API)
+  ✓ kart penceresi Kalan ₺300,00 (tabanda ₺600,00): ₺300,00
+  ✓ Yeniden Aç: kart açık (veri tabanı)
+  ✓ Kartı Kapat sorusu 'Kalan ₺300,00' (tabanda ₺600,00):  × ONAY Kartı Kapat Kalan ₺300,00 açıkken “Ekran S234 Kartı” kartı kapatılsın mı? Ödeme planı biter; kalan borç carinin borcunda kalır, yarından itibaren gecikmiş sayılır. Vazgeçmek için cari kartında
+    [soru] "Kartı Kapat" → Kartı Kapat (beklenen tek soru)
+  ✓ ikinci soru YOK
+  ✓ kart kapandı (veri tabanı)
+  ✓ TEK istek, 200 (gelen: [200])
+  ✓ Borçta Kalsın: carinin borcu 300
+
+■ B) S235 = B — kapalı kartlı taksitli faturada Düzenle onayı kartın yeniden açılacağını söyler; kayıttan sonra yeni kart AÇIK
+  ✓ kart kapalı (veri tabanı)
+    [soru] "Değişiklikler Kaydedilsin mi?" → Değişiklikleri Kaydet (beklenen soru)
+    GÖZLEM (önceden var): Düzenle formu açılışta kalan ödeme 'open' seçili
+  ✓ onayda: "Bu faturanın kapatılmış taksit kartı yeniden açılır; kalan borç yeni ödeme planına girer." —  × ONAY Değişiklikler Kaydedilsin mi? FIS2026000000002 numaralı satış faturası yeni haliyle kaydedilecek: ₺900,00 (Ekran S235 Müşterisi). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır. Bu faturanın kapatılmış taksit kartı yeniden açılır; kalan borç yeni ödeme planına girer.VazgeçDeğişiklikleri Kaydet 
+  ✓ kaldırılır cümlesi YOK
+  ✓ faturanın yeni kartı var (eski kart yerine)
+  ✓ eski kapalı kart kaldırıldı (veri tabanı — bugünkü davranış)
+  ✓ yeni kart AÇIK (veri tabanı — bugünkü davranış)
+  ✓ bakiye 900
+
+■ C) S235 = B — Düzenle'de Açık Hesap seçilince onay kartın kaldırılacağını söyler; Vazgeç → kart kapalı kalır
+    [soru] "Değişiklikler Kaydedilsin mi?" → Vazgeç (beklenen soru)
+  ✓ onayda: "Bu faturanın kapatılmış taksit kartı kaldırılır; kalan borç faturanın vadesiyle açık hesapta izlenir." —  × ONAY Değişiklikler Kaydedilsin mi? FIS2026000000003 numaralı satış faturası yeni haliyle kaydedilecek: ₺900,00 (Ekran S235 Açık Hesap Müşterisi). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır. Bu faturanın kapatılmış taksit kartı kaldırılır; kalan borç faturanın vadesiyle açık hesapta izlenir.VazgeçDeğişiklikleri Kaydet 
+  ✓ yeniden açılır cümlesi YOK
+  ✓ Vazgeç: kart kapalı kaldı (veri tabanı)
+
+■ D) Denetim — kartı AÇIK taksitli faturada Düzenle onayında bu cümleler YOK
+    [soru] "Değişiklikler Kaydedilsin mi?" → Vazgeç (beklenen soru)
+  ✓ açık kartta cümle yok:  × ONAY Değişiklikler Kaydedilsin mi? FIS2026000000004 numaralı satış faturası yeni haliyle kaydedilecek: ₺900,00 (Ekran Açık Kart Müşterisi). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır.VazgeçDeğişiklikleri 
+
+■ E) GÖZLEM — kartı açık taksitli faturada Düzenle → değiştirmeden Kaydet
+    [soru] Kaydedilmemiş Değişiklik → Kaydetmeden Kapat (beklenen: Vazgeç'ten sonra Düzenle formu açık)
+    [soru] "Değişiklikler Kaydedilsin mi?" → Değişiklikleri Kaydet (beklenen soru)
+    GÖZLEM: açılışta seçili 'open'; kayıttan sonra faturanın kartı '(yok)', eski kart {"status":"active","total":900,"deletedAt":"2026-10-08T09:11:00.000Z"}, bakiye 900
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+✓ senaryo-dkfix-250: 21 geçti, 0 kaldı

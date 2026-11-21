@@ -7,7 +7,12 @@
 // (Bu dosya test değildir: adı ".test.mjs" ile bitmez.)
 const cents = value => Math.round((Number(value) || 0) * 100);
 
-/** Bu şirketin kaydedilmiş belgeleri: kimlik → { kind, accountId, planId, payState, paid, open, payable } (kuruş). */
+/**
+ * Bu şirketin kaydedilmiş belgeleri: kimlik → { kind, accountId, planId, payState, paid, open, payable, shownOpen, inPlan } (kuruş).
+ * BEKLENTİ BİLEREK DEĞİŞTİ (S229 = A + S230 = A, 20.11.2026; Ç7b DK + S229 ALTIN turu §18.5): API'nin `open` / `payState`'i GÖSTERİLEN açık / durumdur (Mevcut Borç kartının aldığı kısım
+ * düşülmüş; kart tamamını aldıysa 'Taksitte'). K1 KAPAMA kuralıdır → bu yardımcı faturanın KENDİ açığını / durumunu okur (`ownOpen` / `ownPayState` — yalnız kart payı varken gelir;
+ * yoksa gösterilen = kendi). Gösterilen açık ve kart payı (inPlan) ayrıca tutulur: ekran tutarlılığı ödenen + gösterilen açık + inPlan = ödenecek.
+ */
 export async function invoiceStates(api) {
   const list = [];
   for (let offset = 0; ; offset += 5000) {
@@ -19,7 +24,8 @@ export async function invoiceStates(api) {
   const out = new Map();
   for (const doc of list) {
     if (doc.status !== "issued") continue;
-    out.set(doc.id, { number: doc.number, kind: doc.kind, accountId: doc.accountId, planId: doc.planId || "", payState: doc.payState, paid: cents(doc.paid), open: cents(doc.open), payable: cents(doc.tryPayable) });
+    const inPlan = cents(doc.inPlan);
+    out.set(doc.id, { number: doc.number, kind: doc.kind, accountId: doc.accountId, planId: doc.planId || "", payState: inPlan ? doc.ownPayState || doc.payState : doc.payState, paid: cents(doc.paid), open: inPlan && doc.ownOpen !== undefined ? cents(doc.ownOpen) : cents(doc.open), payable: cents(doc.tryPayable), shownOpen: cents(doc.open), inPlan });
   }
   return out;
 }
@@ -45,6 +51,8 @@ export async function k1Check(before, api, { ledgerStates = null } = {}) {
   if (ledgerStates) {
     for (const doc of screen.values()) {
       if (doc.paid + doc.open !== doc.payable) problems.push(`${doc.number}: ekranda ödenen ${doc.paid} + açık ${doc.open} ≠ ${doc.payable} (kuruş)`);
+      // S230 = A: gösterilen açık + kart payı = kendi açık (ödenen + gösterilen açık + inPlan = ödenecek).
+      if (doc.paid + doc.shownOpen + doc.inPlan !== doc.payable) problems.push(`${doc.number}: ekranda ödenen ${doc.paid} + gösterilen açık ${doc.shownOpen} + kart payı ${doc.inPlan} ≠ ${doc.payable} (kuruş)`);
       if (doc.open < 0 || doc.open > doc.payable) problems.push(`${doc.number}: ekranda açık ${doc.open} aralık dışı`);
     }
   }

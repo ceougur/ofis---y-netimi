@@ -1,0 +1,33 @@
+(node:24603) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+FATURA UCU VAR PUT (kök) 401
+FATURA UCU VAR PATCH (kök) 405
+FATURA UCU VAR POST (kök) 405
+FATURA UCU VAR PUT /edit 405
+FATURA UCU VAR PATCH /edit 405
+FATURA UCU VAR POST /edit 401
+kart tahsilat 200
+A0 KART status active closedAt null total 900 totals {"t":900,"p":300,"r":600,"o":0} items [["2026-10-05",null,300,300,0],["2026-11-05",null,300,0,300],["2026-12-05",null,300,0,300]]
+A0 CARI bakiye 600 overdueDebt 0
+kapat closedAt verildi 200 2026-10-08
+A1 KART status closed closedAt 2026-10-08 total 900 totals {"t":900,"p":300,"r":600,"o":0} items [["2026-10-05","2026-10-05",300,300,0],["2026-10-08","2026-11-05",300,0,300],["2026-10-08","2026-12-05",300,0,300]]
+A1 CARI bakiye 600 overdueDebt 0
+A1 FATURA {"st":"issued","open":0,"ownOpen":600,"inPlan":600,"payState":"installment","ownPayState":"overdue","lines":[["iline-bf7d88ef-2875-498e-93ff-15992a780829",3,300]]}
+iade 200 {"id":"invoice-291041bb-7902-4419-8430-f9848249ea65","kind":"sale_return","kindLabel":"Satıştan İade Faturası","scenario":"sale_return","scenarioLabel":"Satıştan İade","status":"issued","statusLabel":"Kaydedildi","number":"IAD2026000000001","displayNo":"IAD2026000000001","internalNumber":true,"ettn"
+A2 KART status closed closedAt 2026-10-08 total 600 totals {"t":600,"p":300,"r":300,"o":0} items [["2026-10-05","2026-10-05",300,300,0],["2026-10-08","2026-12-05",300,0,300]]
+A2 CARI bakiye 300 overdueDebt 0
+A2 FATURA {"st":"issued","open":0,"ownOpen":300,"inPlan":300,"payState":"installment","ownPayState":"overdue","lines":[["iline-bf7d88ef-2875-498e-93ff-15992a780829",3,300]]}
+yeniden ac 200
+A3 KART status active closedAt null total 600 totals {"t":600,"p":300,"r":300,"o":0} items [["2026-10-05",null,300,300,0],["2026-12-05",null,300,0,300]]
+A3 CARI bakiye 300 overdueDebt 0
+yeniden kapat 200
+A4 KART status closed closedAt 2026-10-08 total 600 totals {"t":600,"p":300,"r":300,"o":0} items [["2026-10-05","2026-10-05",300,300,0],["2026-10-08","2026-12-05",300,0,300]]
+A4 CARI bakiye 300 overdueDebt 0
+iade iptal 200 {"id":"invoice-291041bb-7902-4419-8430-f9848249ea65","kind":"sale_return","kindLabel":"Satıştan İade Faturası","scenario":"sale_return","scenarioLabel":"Satıştan İade","status":"cancelled","statusLabel":"İptal Edildi","number":"IAD2026000000001","displayNo":"IAD2026000000001","internalNumber":true,"
+A5 KART status closed closedAt 2026-10-08 total 900 totals {"t":900,"p":300,"r":600,"o":0} items [["2026-10-05","2026-10-05",300,300,0],["2026-10-08","2026-12-05",600,0,600]]
+A5 CARI bakiye 600 overdueDebt 0
+A5 FATURA {"st":"issued","open":0,"ownOpen":600,"inPlan":600,"payState":"installment","ownPayState":"overdue","lines":[["iline-bf7d88ef-2875-498e-93ff-15992a780829",3,300]]}
+fatura duzenle 409 {"ok":false,"error":"Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.","code":"invoice-not-draft"}
+A6 KART status closed closedAt 2026-10-08 total 900 totals {"t":900,"p":300,"r":600,"o":0} items [["2026-10-05","2026-10-05",300,300,0],["2026-10-08","2026-12-05",600,0,600]]
+A6 CARI bakiye 600 overdueDebt 0
+A6 FATURA {"st":"issued","open":0,"ownOpen":600,"inPlan":600,"payState":"installment","ownPayState":"overdue","lines":[["iline-bf7d88ef-2875-498e-93ff-15992a780829",3,300]]}

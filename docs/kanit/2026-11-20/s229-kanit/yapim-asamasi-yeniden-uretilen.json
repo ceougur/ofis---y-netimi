@@ -1,0 +1,474 @@
+{
+ "aciklama": "Cari kâhini ↔ program YAPIM AŞAMASI listesi (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D). Ç5 paket paket ana dala girerken bugünkü farklar kararı / bekleyen paketiyle sabitlenir; kâhinin beklentisi DEĞİŞMEZ. Listede OLMAYAN fark, değeri DEĞİŞEN fark ve KAPANDIĞI hâlde listede duran kayıt kırmızıdır (liste yalnız küçülür). Yayın adayında liste BOŞ olmalı (tools/release.mjs). BİLİNEN.json'dan (kullanıcının ERTELEDİĞİ farklar) AYRIDIR.",
+ "kural": "2.5.0",
+ "uretim": "node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz (varsayılan koşu: bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem)",
+ "paketler": [
+  "Ç5-A",
+  "Ç5-B tur 2",
+  "Ç5-C",
+  "eşleme",
+  "AYRIŞTIRILMADI"
+ ],
+ "kayitlar": [
+  {
+   "senaryo": "c11-ks81-sa-mevcut-borc-karti",
+   "anahtar": "k3:cari:M:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "c11-ks81-sa-mevcut-borc-karti",
+   "anahtar": "k3:cari:M:acikToplam",
+   "beklenen": 100000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "c11-ks81-sa-mevcut-borc-karti",
+   "anahtar": "k3:fatura:SA:acik",
+   "beklenen": 100000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9; K-b FIFO + KS8.1 artan): geri ödenen iade kapatıcı değil",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E3:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E3:acikToplam",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:fatura:E3F:acik",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d36-c5-s122-kart-odemesi",
+   "anahtar": "k1:cari:J13:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d36-c5-s122-kart-odemesi",
+   "anahtar": "k1:cari:J13:acikToplam",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d36-c5-s122-kart-odemesi",
+   "anahtar": "k1:fatura:J13F:acik",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L11:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L11:acikToplam",
+   "beklenen": 90000,
+   "program": 30000,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L12:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L12:acikToplam",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L13c:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L13c:acikToplam",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L15:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L15:acikToplam",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L16a:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L16a:acikToplam",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L1:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L1:acikToplam",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L6:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L6:acikToplam",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L7:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L7:acikToplam",
+   "beklenen": 60000,
+   "program": 10000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L8:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L8:acikToplam",
+   "beklenen": 40000,
+   "program": 30000,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L9:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:cari:L9:acikToplam",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L11F:acik",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L12F1:acik",
+   "beklenen": 10000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L12F2:acik",
+   "beklenen": 50000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L13CF:acik",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L15F:acik",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L16aF:acik",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L1F:acik",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L6F:acik",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L7F2:acik",
+   "beklenen": 50000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L8F:acik",
+   "beklenen": 10000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d37-c5-s126-faturali-kart",
+   "anahtar": "k1:fatura:L9F:acik",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:cari:M18:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:cari:M18:acikToplam",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:cari:M7:acikEsitBakiye",
+   "beklenen": true,
+   "program": false,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:cari:M7:acikToplam",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:fatura:M18F:acik",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d38-c5-s128-ozge-kalemli-kart",
+   "anahtar": "k1:fatura:M7F:acik",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk",
+   "paket": "AYRIŞTIRILMADI",
+   "not": "kural metni paketi göstermiyor"
+  }
+ ]
+}

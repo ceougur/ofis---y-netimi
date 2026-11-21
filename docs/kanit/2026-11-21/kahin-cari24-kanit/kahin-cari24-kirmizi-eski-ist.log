@@ -1,0 +1,77 @@
+  ✗ d53-c5-s234-kapali-kart-iade.json çalışmadı (AttributeError: 'Model' object has no attribute 'kart_kapat') — 271 elle denetimin hepsi kırmızı
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A1:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A1:acikToplam: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A1:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:KA1:toplam: elle 60000 · kâhin 90000
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:KA1:odenen: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:KA1:kalan: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA1:acik: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA1:gosterilen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA1:kartta: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA1:taksitte: elle true · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:IA1:acik: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A3:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A3:acikToplam: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A3:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:KA3:toplam: elle 60000 · kâhin 90000
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:KA3:odenen: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:KA3:kalan: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA3:acik: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA3:gosterilen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA3:kartta: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA3:taksitte: elle true · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:IA3:acik: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A2:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A2:acikToplam: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A2:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:KA2:toplam: elle 60000 · kâhin 90000
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:KA2:odenen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:KA2:kalan: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA2:acik: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA2:gosterilen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA2:kartta: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA2:taksitte: elle true · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A5:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A5:acikToplam: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A5:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:FA5:acik: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:IA5:acik: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A6:gecikmis: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A6:acikToplam: elle 120000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:cari:A6:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:L6A:toplam: elle 60000 · kâhin 90000
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:L6A:odenen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:L6A:kalan: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:L6B:odenen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:kart:L6B:kalan: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:G6A:acik: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:G6A:gosterilen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:G6A:kartta: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d54-c5-s234-acik-kart-iade.json k1:fatura:G6A:taksitte: elle true · kâhin "ANAHTAR YOK"
+d54-c5-s234-acik-kart-iade.json: 128 elle denetim, 49 kırmızı
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:cari:B1:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:cari:B1:acikToplam: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:cari:B1:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:kart:KB1:toplam: elle 60000 · kâhin 90000
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:kart:KB1:odenen: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:kart:KB1:kalan: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:fatura:FB1:acik: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:fatura:FB1:gosterilen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:fatura:FB1:kartta: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:fatura:FB1:taksitte: elle true · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:cari:B2:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:cari:B2:acikToplam: elle -30000 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:cari:B2:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:kart:KB2:toplam: elle 60000 · kâhin 90000
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:kart:KB2:odenen: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:kart:KB2:kalan: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:fatura:FB2:acik: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:fatura:FB2:gosterilen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:fatura:FB2:kartta: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d55-c5-s234-iade-iptal-gecikmis.json k1:fatura:IB2:acik: elle 30000 · kâhin "ANAHTAR YOK"
+d55-c5-s234-iade-iptal-gecikmis.json: 72 elle denetim, 20 kırmızı
+ESKİ KÂHİN KIRMIZISI: 340/471 elle denetim kırmızı, 131 aynı (beklenen: kırmızı > 0; her kırmızının eski değeri yukarıda)
+# tests 340
+# pass 340
+# fail 0
+340/340 denetim geçti

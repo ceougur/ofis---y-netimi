@@ -1,0 +1,38 @@
+{
+ "ornek1": {
+  "acikFaturalar": [
+   {
+    "no": "FIS2026000000001",
+    "kalan": 50000,
+    "gecikme": "18 gün"
+   }
+  ],
+  "faturaKarti": {
+   "acik": 50000,
+   "durum": "Vadesi Geçti",
+   "kendiAcigi": 50000,
+   "taksitKartinda": []
+  },
+  "listeKalan": 50000,
+  "bakiye": 80000,
+  "gecikmis": 20000
+ },
+ "ornek2": {
+  "acikFaturalar": [
+   {
+    "no": "FIS2026000000002",
+    "kalan": 50000,
+    "gecikme": "18 gün"
+   }
+  ],
+  "faturaKarti": {
+   "acik": 50000,
+   "durum": "Vadesi Geçti",
+   "kendiAcigi": 50000,
+   "taksitKartinda": []
+  },
+  "listeKalan": 50000,
+  "bakiye": 50000,
+  "gecikmis": 0
+ }
+}

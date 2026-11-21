@@ -691,6 +691,8 @@
       busy: false,
       modifyId: modify?.id || "",
       modifyNumber: modify?.number || "",
+      // 2.5.0 S235 = B: faturanın KENDİ taksit kartı kapatılmışsa (Kartı Kapat) Düzenle onayı kartın yeniden açılacağını / kaldırılacağını söyler (davranış değişmez).
+      modifyPlanClosed: Boolean(modify?.plan && modify.plan.status === "closed"),
       // 2.7: Düzenle'de kaydedilmiş peşin satırların hesaplardaki etkisi (bakiyede zaten var).
       payOriginal: modify ? payOriginalOf(modify) : null,
       // 2.4.4 (uzman UX10): ilk çizimde odak formun başlangıç alanına (focusFormStart); sonraki yeniden çizimler odağı oynatmaz.
@@ -2533,9 +2535,11 @@
         const stocklessText = stockless.length ? ` DİKKAT: ${stockless.map(line => `“${line.name.trim()}”`).join(", ")} stok kartı olmadan GİDER olarak kaydedilir, stoğa girmez. Mal ise Vazgeç'e basıp ürün adı kutusundaki listeden “+ Yeni Stok Kartı”nı seçin.` : "";
         const sendText = held ? ` ${held.text}` : eSend === "later" ? " Belge Gönderilecekler'de bekler; e-Belge numarası entegratöre gönderilirken verilir." : eSend === "now" ? " Belge kaydedilir kaydedilmez entegratöre (e-Belge) gönderilir." : "";
         if (form.modifyId) {
+          // 2.5.0 S235 = B (docs/erp/C7B-FATURA-TASARIM.md §18.4): kapatılmış kendi taksit kartı — Düzenle yeni ödeme planı kurar (kart açılır) ya da kartı kaldırır; onay bunu söyler.
+          const closedPlanText = form.modifyPlanClosed ? (form.pay.rest === "installments" ? " Bu faturanın kapatılmış taksit kartı yeniden açılır; kalan borç yeni ödeme planına girer." : " Bu faturanın kapatılmış taksit kartı kaldırılır; kalan borç faturanın vadesiyle açık hesapta izlenir.") : "";
           const sure = await HOF.confirm({
             title: "Değişiklikler Kaydedilsin mi?",
-            message: `${form.modifyNumber} numaralı ${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} yeni haliyle kaydedilecek: ${curMoney(c.totals.payable, c.currency)} (${who}). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır.${stocklessText}`,
+            message: `${form.modifyNumber} numaralı ${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} yeni haliyle kaydedilecek: ${curMoney(c.totals.payable, c.currency)} (${who}). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır.${closedPlanText}${stocklessText}`,
             confirmLabel: "Değişiklikleri Kaydet",
           });
           if (!sure) return;
@@ -2683,7 +2687,7 @@
   // 2.4.4 (uzman UX17): kartın üstündeki tutarın adı belgenin durumuna göre. Kapanmış (ödenmiş / mahsup edilmiş) faturada "Tahsil Edilecek"
   // yazmaz: "Genel Toplam" (tevkifat / stopaj kesintisi varsa "Kesinti Sonrası Toplam"); kısmen ödenmişte büyük rakam "Kalan" (headAmountHtml). Tutar değişmez
   // (belgenin ödenecek toplamı); Toplamlar bölümündeki "Tahsil Edilecek" satırı mali terimdir, dokunulmaz.
-  const isClosed = doc => doc.status === "issued" && !(doc.open > 0.004);
+  const isClosed = doc => doc.status === "issued" && !(doc.open > 0.004) && doc.payState !== "installment";
   // Kâğıt makbuz olarak bırakılmış e-SMM (MM4 alt kararı; sunucu paperReceiptBlockOf): e-SMM olarak hiç gönderilmez, e-Belge XML'i yoktur — kâğıt
   // faturadaki gibi "XML İndir" görünmez (bırakılan e-Arşiv fatura sonradan gönderilebildiği için onda kalır).
   const isPaperReceipt = doc => doc.kind === "smm" && doc.eStatus === "withdrawn";
@@ -2696,10 +2700,11 @@
     return sideOf(doc.kind) === "sale" ? "Tahsil Edilecek" : "Ödenecek";
   }
   // 31f U13: kısmen ödenmiş belgede büyük rakam KALAN (QuickBooks/Xero "Balance Due"); belgenin toplamı altında küçük yazılır. Tutarlar sunucudan, hesap değişmez.
-  const isPartial = doc => doc.status === "issued" && !isReturn(doc.kind) && doc.open > 0.004 && doc.paid > 0.004;
+  // S230 = A: Mevcut Borç kartının aldığı kısım (inPlan) da kısmi gösterimdir — büyük rakam Kalan, altında "taksit kartında".
+  const isPartial = doc => doc.status === "issued" && !isReturn(doc.kind) && doc.open > 0.004 && (doc.paid > 0.004 || doc.inPlan > 0.004);
   function headAmountHtml(doc) {
     const cur = doc.currency;
-    if (isPartial(doc)) return `<span>Kalan</span><strong>${esc(money(doc.open))}</strong><small class="hof-inv-head-rest">${esc(totalLabel(doc))} ${esc(curMoney(doc.payableTotal, cur))}${cur !== "TRY" ? ` (${esc(money(doc.tryPayable))})` : ""} · ödenen ${esc(money(doc.paid))}</small>`;
+    if (isPartial(doc)) return `<span>Kalan</span><strong>${esc(money(doc.open))}</strong><small class="hof-inv-head-rest">${esc(totalLabel(doc))} ${esc(curMoney(doc.payableTotal, cur))}${cur !== "TRY" ? ` (${esc(money(doc.tryPayable))})` : ""}${doc.paid > 0.004 ? ` · ödenen ${esc(money(doc.paid))}` : ""}${doc.inPlan > 0.004 ? ` · taksit kartında ${esc(money(doc.inPlan))}` : ""}</small>`;
     return `<span>${esc(headAmountLabel(doc))}</span><strong>${esc(curMoney(doc.payableTotal, cur))}</strong>${cur !== "TRY" ? `<small>${esc(money(doc.tryPayable))}</small>` : ""}`;
   }
   function renderCard() {
@@ -2730,6 +2735,8 @@
       ...(doc.payments || []).map(item => `<li>${esc(HOF.formatDate(item.date))} · ${item.kind === "in" ? "Tahsilat" : "Ödeme"} (${esc(item.methodLabel)}) <b>${esc(money(item.amount))}</b></li>`),
       ...(doc.cheques || []).map(item => `<li>${item.endorsed ? "Ciro Edilen " : ""}${esc(item.instrumentLabel)}${item.serialNo ? ` No ${esc(item.serialNo)}` : ""} · vade ${esc(HOF.formatDate(item.dueDate))} · <b>${esc(money(item.amount))}</b> · ${esc(item.statusLabel)} ${HOF.can("cheques.view") ? `<a href="#" data-open-cheque="${esc(item.id)}">Evrak Kartı</a>` : ""}</li>`),
       doc.plan ? `<li>Taksit Kartı: <a href="#" data-open-plan="${esc(doc.plan.id)}">${esc(doc.plan.name)}</a> · ${esc(money(doc.plan.total))}</li>` : "",
+      // S230 = A: Mevcut Borç kartının bu faturadan aldığı (henüz ödenmemiş) kısım — faturada açık görünmez, kartın taksitlerinden tahsil edilir.
+      ...(doc.inPlans || []).map(item => `<li data-in-plan="${esc(item.planId)}">Taksit Kartında: <a href="#" data-open-plan="${esc(item.planId)}">${esc(item.name)}</a> · <b>${esc(money(item.amount))}</b></li>`),
     ]
       .filter(Boolean)
       .join("");
@@ -2832,6 +2839,8 @@
   }
   // Kartın "+ Tahsilat Ekle" / "+ Ödeme Yap" düğmesi (ve Tahsilat Takvimi / zilden payDoc) ancak kaydedilmiş, açığı olan, iade olmayan faturada ve yetkiyle.
   const canPayDoc = doc => doc.status === "issued" && doc.open > 0.004 && !isReturn(doc.kind) && HOF.can(sideOf(doc.kind) === "sale" ? "accounts.collect" : "accounts.manage");
+  // S230 = A: Mevcut Borç kartının aldığı kısım formda önerilmez; kartın taksitlerinden tahsil edilir (sınır ve kapama değişmez).
+  const planNote = doc => (doc.inPlan > 0.004 ? ` Taksit kartındaki ${money(doc.inPlan)} kartın taksitlerinden tahsil edilir.` : "");
   // Faturaya tahsilat / ödeme: taksitli faturada taksit kartından (taksitten düşer), değilse cariye Kasa hareketi. Cari
   // ödemeleri faturalara en eski açık faturadan başlayarak sayılır (bu faturadan önce açık fatura varsa önce o kapanır).
   function payForm(doc) {
@@ -2848,7 +2857,7 @@
     HOF.formModal({
       title: sale ? "Tahsilat Ekle" : "Ödeme Yap",
       eyebrow: docTitle(doc),
-      intro: `Açık tutar ${money(doc.open)}. Kayıt cariye ve Kasa'ya yazılır; bu faturaya bağlı kapatılır (fazlası carinin vadesi en önce gelen açık borcuna gider).`,
+      intro: `Açık tutar ${money(doc.open)}.${planNote(doc)} Kayıt cariye ve Kasa'ya yazılır; bu faturaya bağlı kapatılır (fazlası carinin vadesi en önce gelen açık borcuna gider).`,
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: amountText(doc.open), autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, value: todayIso(), max: "today" },
@@ -2862,7 +2871,7 @@
         // 2.7: seçicide bakiye (tahsilat hesaba girer; ödeme hesaptan / kredi kartından çıkar).
         const picker = HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", card: sale ? null : {}, direction: sale ? "in" : "out" }) : null;
         // m4 (10.10.2026): açıklama seçilen YOLA göre (cari formundaki metin; önceden yol ne olursa olsun "Kasa'ya yazılır").
-        const help = () => HOF.accounts?.syncEntryHelp?.(dialog, sale ? "in" : "out", text => `Açık tutar ${money(doc.open)}. ${text} Bu faturaya bağlı kapatılır (fazlası carinin vadesi en önce gelen açık borcuna gider).`);
+        const help = () => HOF.accounts?.syncEntryHelp?.(dialog, sale ? "in" : "out", text => `Açık tutar ${money(doc.open)}.${planNote(doc)} ${text} Bu faturaya bağlı kapatılır (fazlası carinin vadesi en önce gelen açık borcuna gider).`);
         dialog.querySelector("form")?.addEventListener("change", help);
         help();
         Promise.resolve(picker).then(help).catch(() => null);
@@ -2891,18 +2900,21 @@
       return HOF.toastError(error);
     }
     const options = [
-      ...data.invoices.map(item => ({ value: `invoice:${item.id}`, label: `${item.kindLabel} ${item.displayNo} · ${HOF.formatDate(item.issueDate)} · açık ${money(item.open)}`, left: item.open })),
+      // S230 = A: karşı faturanın gösterilen açığı (Mevcut Borç kartının aldığı kısım düşülmüş); kartın tamamını aldığı fatura "Taksitte"dir, seçenek değildir (taksitli gibi).
+      ...data.invoices.filter(item => (item.shownOpen ?? item.open) > 0.004).map(item => ({ value: `invoice:${item.id}`, label: `${item.kindLabel} ${item.displayNo} · ${HOF.formatDate(item.issueDate)} · açık ${money(item.shownOpen ?? item.open)}`, left: item.shownOpen ?? item.open })),
       ...data.entries.map(item => ({ value: `entry:${item.id}`, label: `${item.label} · ${HOF.formatDate(item.date)}${item.note ? ` · ${item.note}` : ""} · kalan ${money(item.left)}`, left: item.left })),
     ];
     if (!options.length) return HOF.toast(data.side === "sale" ? "Bu caride mahsup edilecek açık alış faturası ya da Alacak Yaz satırı yok." : "Bu caride mahsup edilecek açık satış faturası ya da Borç Yaz satırı yok.", { type: "info" });
     const first = options[0];
+    // S230 = A: önerilen tutar GÖSTERİLEN açık (suggest); sunucunun sınırı faturanın kendi açığı (data.open — değişmez).
+    const suggest = Number.isFinite(Number(data.suggest)) ? Number(data.suggest) : data.open;
     HOF.formModal({
       title: "Mahsup Et",
       eyebrow: docTitle(doc),
-      intro: `Açık tutar ${money(data.open)}. Seçilen karşı belgeyle karşılıklı kapanır; cari bakiyesi ve Kasa değişmez (bakiye zaten net). Mahsup fişi karttan kaldırılabilir.`,
+      intro: `Açık tutar ${money(suggest)}.${planNote(doc)} Seçilen karşı belgeyle karşılıklı kapanır; cari bakiyesi ve Kasa değişmez (bakiye zaten net). Mahsup fişi karttan kaldırılabilir.`,
       fields: [
         { name: "counter", label: "Karşı Belge", type: "select", value: first.value, options },
-        { name: "amount", label: "Mahsup Tutarı (₺)", required: true, inputmode: "decimal", value: amountText(Math.min(data.open, first.left)), autofocus: true },
+        { name: "amount", label: "Mahsup Tutarı (₺)", required: true, inputmode: "decimal", value: amountText(Math.min(suggest, first.left)), autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, value: todayIso(), max: "today" },
         { name: "note", label: "Açıklama", maxlength: 300, value: "" },
       ],
@@ -2912,7 +2924,7 @@
         const amount = dialog.querySelector('input[name="amount"]');
         select?.addEventListener("change", () => {
           const picked = options.find(item => item.value === select.value);
-          if (picked && amount) amount.value = amountText(Math.min(data.open, picked.left));
+          if (picked && amount) amount.value = amountText(Math.min(suggest, picked.left));
         });
       },
       onSubmit: async form => {
@@ -4058,6 +4070,7 @@
     if (canPayDoc(doc)) return payForm(doc);
     const sale = sideOf(doc.kind) === "sale";
     if (doc.status !== "issued" || isReturn(doc.kind)) return HOF.toast(`${docTitle(doc)} ${sale ? "tahsilat" : "ödeme"} beklemiyor (${doc.status === "cancelled" ? "iptal edildi" : doc.status === "draft" ? "taslak" : "iade belgesi"}).`, { type: "info" });
+    if (doc.payState === "installment") return HOF.toast(`${docTitle(doc)} taksit kartında; tahsilat kartın taksitlerinden girilir.`, { type: "info" });
     if (!(doc.open > 0.004)) return HOF.toast(`${docTitle(doc)} kapandı; açık tutarı yok.`, { type: "info" });
     return HOF.toast(sale ? "Faturaya tahsilat girme yetkiniz yok." : "Faturaya ödeme girmek yönetici, uzman ve muhasebe yetkisidir.", { type: "error" });
   };
