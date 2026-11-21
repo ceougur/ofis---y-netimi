@@ -5141,3 +5141,69 @@ senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'
 - Yeni soru yok. Y23-6 (i) UÇ DURUM (kartın aldığı kısmı kartın taksitleriyle tamamen ödenmiş fatura: 'Ödendi' mi 'Taksitte' mi) ve (ii) (taksitli faturanın gösterimi) — kararın konusu dışında; programla fark
   görülürse sorulur (seçenekler: A 'Ödendi' / B 'Taksitte' / C uç durum böyle kalsın — BİLİNEN SINIR). Y23-5'in E = 0 okuması baş mimara AYRICA gösterilir (kararın harfi kapsıyor; para kuralı — fark görülürse
   ders 43).
+
+### Yoklama (kara kutu, 21.11 ~01:10 UTC — eşleme için; kural kaynağı DEĞİL)
+- d52 taslağı `kos.mjs --mutasyonsuz` ile koşuldu (ham alanlar `.ham.json`): fatura kartı yanıtında `open` her zaman; `ownOpen` ve `inPlan` YALNIZ kartın aldığı kısım > 0 iken (FP1 `open` 20.000 / `ownOpen` 50.000 /
+  `inPlan` 30.000; kartsız FP5 yalnız `open` 6.000; kartın aldığı kısmı ödenmiş FP4a yalnız `open` 0). Belge durumu `status` ("issued") 'Taksitte'yi TAŞIMAZ; ödeme durumu ayrı alan **`payState`** ("installment" /
+  `payStateLabel` "Taksitte") — girdi §2'nin "ödeme durumu `installment`"ı. Faturalar listesi `GET /api/workspace/invoices` → `{invoices: [...]}`, satırda aynı alanlar. Eşleme (Y23-1) buna göre: `taksitte` ←
+  `payState`; `kartta` ← `inPlan`, alan yokken `ownOpen` da yoksa 0 (sözleşme: `ownOpen` yoksa `open` kendi açıktır → kartın aldığı kısım 0), `ownOpen` varken `inPlan` yoksa "alan yok".
+
+### C8ab Nasıl bozulur? (bakım 23 — senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo / mutant |
+|---|---|---|
+| Z251 | gösterilen açık kartın aldığı kısmı düşmez (kendi açık gösterilir — bugünkü B) | d52 P1 / P2 / P3 / P6 / P9, d35 H8 (mutant 329) |
+| Z252 | kart faturanın tamamını aldığında fatura açık görünür / 'Taksitte' değil | d52 P2 / P3 / P4b / P6 (mutant 330) |
+| Z253 | kartın kısmen aldığı fatura 'Taksitte' görünür ya da gösterilen 0 | d52 P1 / P9a, d35 H8 (mutant 332: önce faturalar → P1 FP1 tamamen kartta) |
+| Z254 | kartın almadığı fatura (kartsız, S110 kendi borcu, S200'de sıraya girmeyen fatura, alış) kart payıyla düşer | d52 P5 / P7 / P8 / P9b (değerle — gösterilen = kendi) |
+| Z255 | S200: kart önce faturaları alır / faturalardan en yeniden alır | d52 P1 / P9 (mutant 331 / 332) |
+| Z256 | S200 alanı susar (bakım 22 — S123 = C) | d52 P1 / P6 / P9, d35 H8 (mutant 333) |
+| Z257 | kartın aldığı kısım kartın taksit ödemesiyle gösterilen açıktan da düşer | d52 P4a / P6 (KP6a ödendi; gösterilen kuyruk kalanı — değerle) |
+| Z258 | Faturalar listesi fatura kartından farklı gösterir | her denetimin `liste:gosterilen` / `liste:taksitte` eşi (bağdaştırıcı listeden okur) |
+| Z259 | faturanın KENDİ açığı (kapama kuralı) gösterimle birlikte değişir | `fatura:acik` beklentisi DEĞİŞMEDİ (G3) + KS8.1 Σ açık = bakiye (d52 bütün cariler) |
+
+### Kurallar (bakım 23 kod commit'i acda62f9; yorumların `model.py`'deki karşılığı)
+- `_tyk` S120 kolu (Y23-5): `E_ < gerek` ve kartın günündeki açık borç kalemleri yalnız elle borç + taksitsiz satış faturasıysa `t["s110"] = ("s200", liste, E == 0)` — liste: elle borçlar (S2 sırası) + faturalar
+  (S2 sırası); öbür durumda SK-20 susması aynen. `_alacak_govde250`: S200 kartı `s120_kart`'a girer (Y9-7 / Y10-1 / Y11-2 düzeni aynen); iz `_iz15[cari]` "s200" / "s200e0". SK-23 iletisi S200 kartı için ayrı
+  ("elle borçları ve eksik kısmı faturalardan içine aldı (S200) …").
+- `kontrol_gosterilen` (Y23-2 … Y23-6): `kontrol` (satış faturası, iade belgesi) ve `kontrol_v3` (alış faturası) `fatura:acik`'ı yazdıktan sonra; anahtarlar `fatura:<ad>:gosterilen`, `liste:gosterilen`, `kartta`,
+  `taksitte`, `liste:taksitte`. Kartlı fatura: gösterilen = `tyk250(cari)["kuyruk"][fatura]`, kartta = kendi − gösterilen, taksitte = gösterilen == 0 (kendi > 0); kendi 0 → taksitte SUS. Kartsız: gösterilen = kendi,
+  kartta 0, taksitte false (etiket kendi açığınınki). `_sus17` S163 susması gösterim anahtarlarını da kapsar.
+
+### C10ab Mutantlar (bakım 23; `oz-test.py` DEĞERLE)
+- 329 (kart payı düşülmez), 330 (tam alınan açık sayılır), 331 (S200 faturalardan en yeniden), 332 (S200 önce faturalar), 333 (S200 yok — SK-20 susması). Sayılar kanıt bölümünde.
+
+### Senaryolar (bakım 23)
+- **`d52-c5-s229-s230-gosterilen-acik`** (bugün 16.02.2026; 9 cari, 38 adım; 159 `elleBeklenen` + 2 `elleYok` + 1 `elleBelirsiz`; üreteç `docs/kanit/2026-11-21/kahin-cari23-arac/uret-d52.py` — elle hesap satırları içinde).
+  P1 = S229'un kendi örneği (vade alanı dilde yok — F1 belge 10.01, kart 01.02: sonuç kararınkiyle aynı: gösterilen 20.000, kartta 30.000, gecikmiş 20.000). Elle tablo, kâhin koşulmadan karar metinlerinden yazıldı;
+  ilk koşuda 159/159 kâhinle aynı.
+- **`d35` H8 / `d36` J14 (karar gereği güncellendi — izinli; adımlar DEĞİŞMEDİ):** H8 SK-20 alanı S200 ile değer aldı (5 `elleYok` → değer + 5 gösterim denetimi; üreteç `elle-guncelle.py`); J14 susması SK-20 → SK-23
+  (S125 = C — kartın ödemesi içine alma sırasıyla elle borca, belge tarihi sırasıyla faturaya; `elleYok` aynen). d40 Q8 (S135 alanı — kartın günündeki açık borçta taksitli faturanın taksiti var) SK-20 ile susmaya DEVAM eder.
+
+### Dil ekleri (/3, bakım 23)
+- YOK. Adım alanları değişmedi. Faturanın vade alanı dilde yok (vade = belge günü) — S229 örneğindeki "vade 10.02" belge tarihiyle kuruldu (Y23-5'in sonucu aynı).
+
+### SÜRÜCÜ İÇİN / eşleme notları (ana oturum için)
+- `fatura:<ad>:acik` = `ownOpen` (yoksa `open`); gösterilen = `open`; kartta = `inPlan`; taksitte = `payState` == "installment"; liste eşleri `GET /api/workspace/invoices` satırından. Eski program sürümünde
+  (`ownOpen` yok) gösterim denetimleri kartlı faturada beklenen nedenle kırmızıdır (gösterilen = kendi, kartta 0, 'Taksitte' yok).
+
+### C0ab Değişen eski beklentiler (G3; bakım 22 (`s229-uc` = 81e587b8) ↔ bakım 23 kâhin çıktısı, `2.5.0`; eski kopyanın 105 elle senaryosu + d52 + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+- Üretici 20/20 aynı dizi; eski elle senaryoların adımları DEĞİŞMEDİ (d35 / d36 yalnız elle tablosu ve dayanağı — elle fark 105/105, izinli yalnız d35 H8 / d36 J14); `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`:
+  **504/504 bayt bayt aynı**.
+- 2.5.0 G3: eski 51.068 denetim · yeni 77.122 · değişen / kalkan / yeni **26.054 — hepsi YENİ** (değişen 0, kalkan 0: faturanın kendi açığı dahil hiçbir eski beklenti değişmedi — KAPSAM (a)) · **BEKLENMEYEN 0** · yalnız
+  etiketi değişen 0. Sınıflar: **GÖSTERİM-YENİ 25.985** (her yazılı fatura açığına gösterim denetimleri), **S200 51** (d35 H8 + d52 P1 / P9 — SK-20 susmasından çıkan cari / fatura / hareket / kart / görünüm denetimleri),
+  **S200-E0 17** (d52 P6 — E = 0 okuması), **S200-SK18 1** (d52 `adim:kp6b:durum` — eski kâhinde P6 tanımsız olduğundan ikinci kartın kabulü iki dünyalıydı, SK-18 susması; şimdi tek okuma "ok").
+  Rastgele senaryolarda S200 alanı çıkmadı (yalnız gösterim denetimleri yeni). G3 dökümü iki TZ'de bayt bayt aynı.
+
+### Kanıt (bakım 23; iki saat dilimi — UTC ve Europe/Istanbul; kâhin kodu acda62f9 (araç düzeltmesi d6fd46b5); `docs/kanit/2026-11-21/kahin-cari23-kanit/`, araçlar ve koşu betiği `kahin-cari23-arac/`)
+- oz-test **7.135/7.135** (iki TZ) · G3 **630/630** (BEKLENMEYEN 0) · yeni / değişen elle tablolar (d52 + d35 + d36) yeni kâhinde **903/903** · ESKİ kâhinde (bakım 22) **85/532 kırmızı** (beklenen nedenle: d52 75/162 —
+  gösterim anahtarları eski kâhinde YOK, P1 / P6 / P9 SK-20 ile tanımsız; d35 10/370 — H8 SK-20 susması) · eski elle tablo farkı **105/105** izinli · mutantlar 329–333 öz testte DEĞERLE, `kos.mjs` mutasyon taramasında
+  300 YAKALANDI / 0 YAKALANMADI.
+- **Program ↔ kâhin (taban dalının programı, `npm run test:kahin-cari` düzeni; iki TZ):** **21.673/21.673, fark 0** (98 senaryo; 7 BİLİNEN; okuma hatası 0; yapım aşaması 0). Aynı programda ESKİ kâhin (bakım 22 bağdaştırıcısı +
+  modeli): **17.602/17.648 — 46 fark** (16 `fatura:acik`, 15 `acikToplam`, 15 `acikEsitBakiye`; c11 3, d34 3, d36 3, d37 31, d38 6 — S229 kanıt özetiyle aynı sayı). Yapım aşaması listesi kendi kopyada yeniden
+  üretildi: **0 kayıt** (eski liste 0 → yeni 0; depodaki `YAPIM-ASAMASI.json` ile bayt bayt aynı — değişmedi).
+
+### C12ab DENENMEYEN (bakım 23; neden)
+- Fatura vade alanı (dilde yok — vade = belge günü; S229 örneğindeki "vade 10.02" belge tarihiyle kuruldu). Kartın aldığı kısmı ödenmiş faturanın durumu (Y23-6 (i) SUS). Taksitli faturanın gösterimi (Y23-6 (ii)).
+  Net görünümlü / şüpheli kayıtlı caride kartlı fatura (Y23-6 (iii) — elle senaryo yok; rastgele senaryolarda çıkmadı). S200'ün öbür türlü kalemli alanı (stok veresiye / karşılıksız / taksitli faturanın taksiti — SK-20 aynen).
+  Tahsilat Ekle / Mahsup Et formlarının ÖNERDİĞİ tutar (S230 — form önerisi API'den okunmuyor; dil yok). Anlık Durum'un açık / vadesi geçen fatura toplamları (S230 baş mimar yorumu — bu kâhinde okunmuyor).
+  Açık Faturalar raporu (S229 — bu kâhinde rapor okunmuyor; gösterilen açık fatura kartından ve Faturalar listesinden). Defter kâhini ve mobil yazma kâhini AÇILMADI (gösterim mizanı değiştirmez).
