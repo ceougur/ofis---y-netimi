@@ -16,3 +16,7 @@ Ortam (başlangıç 10:2x UTC): yük 0,07 / 4 çekirdek, bellek boş ~14 GB, dis
 5. Program önizlemesi (yeni senaryolar, `--mutasyonsuz`, kanıt değil): S234 / S237 örnekleri (P1 / P2), kapanmış kart Yeniden Aç / yeniden kapat, kendi kartlı fatura (P5 / A5), iki kart (P6 / A6), açık kart A1 / A2 kâhinle AYNI.
    Farklar: (i) Düzenle 409 invoice-not-draft (girdi §1 (e) — yapım aşaması); (ii) iade iptalinde geri gelen tutar kartın SON taksitine ekleniyor (KAPSAM (c) 'küçülmenin tersi' değil — d55 B1 gecikmiş 0 ↔ 300, taksit satırı);
    (iii) d55 B2 küçülme açık kalanı aşınca program kartın Tahsil Edilen'ini 300'e düşürüp Kalan 300 gösteriyor, iade belgesi açık 0 ((4) 'fazlası carinin avansı' — kâhin Kalan 0, açık iade belgesi 300).
+6. [10:54–12:45] Kanıt koşuları (kos.sh; hepsi flock -s): temel UTC / İstanbul (öz test 7.678/7.678, G3 639/639, elle fark 106/106, yeni elle 471/471, eski kâhinde 340/471 kırmızı — iki TZ bayt bayt aynı; G3 İstanbul ilk
+   denemede kilit beklerken 40 dk sınırında kesildi, tek başına yeniden koşuldu); program UTC / İstanbul 22.775/22.832 (57 fark, liste iki TZ'de aynı); program ↔ eski kâhin (d54 / d55) 295/308; yapım aşaması üretilen 57 →
+   depoya yalnız Düzenle 38 ("Ç7b"); P-1 (iade iptali son taksite) 5 fark ve P-2 (fazlası avans) 14 fark listeye girmedi (program şüphesi).
+7. KARARLAR §36 sonuç bölümleri (C8ac, C10ac, senaryolar, C0ac, program ↔ kâhin, yapım aşaması, KULLANICIYA SORULMALI, DENENMEYEN, 2.5.1, kanıt) + YAPIM-ASAMASI.json.
