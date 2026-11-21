@@ -1,0 +1,28 @@
+başta 1.89 1.43 1.17 4/132 9414 18:27:24
+yeni UTC çıkış 0
+eski UTC çıkış 1
+yeni Europe/Istanbul çıkış 0
+eski Europe/Istanbul çıkış 1
+kâhin cari UTC çıkış 1
+kâhin defter UTC çıkış 0
+kâhin cari Europe/Istanbul çıkış 1
+kâhin defter Europe/Istanbul çıkış 0
+yapım çıkış 0
+e2e yeni senaryo-izt-250 çıkış 0 · ✓ senaryo-izt-250: 20 geçti, 0 kaldı
+e2e yeni senaryo-dkfix-250 çıkış 0 · ✓ senaryo-dkfix-250: 21 geçti, 0 kaldı
+e2e yeni senaryo-banka-210b çıkış 0 · ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /dev/shm/izt-sinama/test/e2e/artifacts/senaryo-banka-210b
+e2e yeni senaryo-banka-210-eski-satir çıkış 0 · ✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /dev/shm/izt-sinama/test/e2e/artifacts/senaryo-banka-210-eski-satir
+e2e yeni senaryo-pos-220 çıkış 0 · ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /dev/shm/izt-sinama/test/e2e/artifacts/senaryo-pos-220
+e2e yeni senaryo-entegrator-240 çıkış 0 · ✓ senaryo-entegrator-240: 81 geçti, 0 kaldı
+e2e yeni senaryo-fatura-243 çıkış 0 · 61 geçti, 0 kaldı
+e2e yeni senaryo-kdv-donemi-250 çıkış 0 · ✓ senaryo-kdv-donemi-250: 22 geçti, 0 kaldı
+e2e yeni senaryo-c7b-kabul-250 çıkış 0 · ✓ senaryo-c7b-kabul-250: 39 geçti, 0 kaldı
+e2e yeni senaryo-c7b-tur3-250 çıkış 0 · ✓ senaryo-c7b-tur3-250: 39 geçti, 0 kaldı
+e2e yeni gg244-esmm-gonder çıkış 0 · 66 geçti, 0 kaldı
+e2e yeni gg244-numara-tarih-onay çıkış 0 · ✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı
+e2e yeni uiux-b-243 çıkış 0 · ✓ uiux-b-243: 58 geçti, 0 kaldı
+e2e yeni senaryo-217 çıkış 0 · 
+e2e yeni senaryo-216 çıkış 0 · 
+e2e yeni banka-210-kart-onbellek-yaris çıkış 0 · ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı
+e2e eski senaryo-izt-250 çıkış 1 · ✗ senaryo-izt-250: 10 geçti, 8 kaldı
+bitti 1.18 1.93 2.13 1/144 22689 19:13:15

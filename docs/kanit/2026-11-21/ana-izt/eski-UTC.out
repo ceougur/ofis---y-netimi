@@ -1,0 +1,577 @@
+TAP version 13
+# Subtest: İzleyen küçük tur — P-2 (karar (4): fazlası carinin avansı)
+    # Subtest: P2a — açık Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+    not ok 1 - P2a — açık Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+      ---
+      duration_ms: 625.328689
+      type: 'test'
+      location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:82:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart (karar (4): küçülme kalanla sınırlı, fazlası avans)
+        + actual - expected
+        
+          {
+        +   left: 300,
+        +   paid: 300,
+        -   left: 0,
+        -   paid: 600,
+            total: 600
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        total: 600
+        paid: 600
+        left: 0
+      actual:
+        total: 600
+        paid: 300
+        left: 300
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:97:16
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:74:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: P2k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+    not ok 2 - P2k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+      ---
+      duration_ms: 510.775459
+      type: 'test'
+      location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:82:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart (karar (4): küçülme kalanla sınırlı, fazlası avans)
+        + actual - expected
+        
+          {
+        +   left: 300,
+        +   paid: 300,
+        -   left: 0,
+        -   paid: 600,
+            total: 600
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        total: 600
+        paid: 600
+        left: 0
+      actual:
+        total: 600
+        paid: 300
+        left: 300
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:97:16
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:74:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: P2o — kendi kartı (taksitli fatura): tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0 (bekçi)
+    ok 3 - P2o — kendi kartı (taksitli fatura): tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0 (bekçi)
+      ---
+      duration_ms: 463.084562
+      type: 'test'
+      ...
+    1..3
+not ok 1 - İzleyen küçük tur — P-2 (karar (4): fazlası carinin avansı)
+  ---
+  duration_ms: 1600.258905
+  type: 'suite'
+  location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:80:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İzleyen küçük tur — P-1 / S238 = A (iade iptali aynı taksite)
+    # Subtest: P1a — açık Mevcut Borç kartı: tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+    not ok 1 - P1a — açık Mevcut Borç kartı: tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+      ---
+      duration_ms: 503.359975
+      type: 'test'
+      location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:130:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksitler iade öncesiyle aynı (kimlik, sıra, vade, tutar)
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              'item-9c88bf91-ca5c-43d9-84e4-01eff7f7c3b5',
+              1,
+              '2026-10-05',
+        ...
+            [
+        -     'item-acd70a80-ca91-4631-af90-81c02ac9637f',
+        -     2,
+        -     '2026-11-05',
+        -     300
+        -   ],
+        -   [
+              'item-4dac1151-8770-4db0-9c29-fa2e92f5a058',
+              3,
+              '2026-12-05',
+        +     600
+        -     300
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'item-9c88bf91-ca5c-43d9-84e4-01eff7f7c3b5'
+          1: 1
+          2: '2026-10-05'
+          3: 300
+        1:
+          0: 'item-acd70a80-ca91-4631-af90-81c02ac9637f'
+          1: 2
+          2: '2026-11-05'
+          3: 300
+        2:
+          0: 'item-4dac1151-8770-4db0-9c29-fa2e92f5a058'
+          1: 3
+          2: '2026-12-05'
+          3: 300
+      actual:
+        0:
+          0: 'item-9c88bf91-ca5c-43d9-84e4-01eff7f7c3b5'
+          1: 1
+          2: '2026-10-05'
+          3: 300
+        1:
+          0: 'item-4dac1151-8770-4db0-9c29-fa2e92f5a058'
+          1: 3
+          2: '2026-12-05'
+          3: 600
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:148:16
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:74:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: P1k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı (S205: kalemler kapanış ertesinden gecikmiş): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 600
+    not ok 2 - P1k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı (S205: kalemler kapanış ertesinden gecikmiş): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 600
+      ---
+      duration_ms: 686.704671
+      type: 'test'
+      location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:130:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksitler iade öncesiyle aynı (kimlik, sıra, vade, tutar)
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              'item-3843cea9-d7cc-4d9b-b099-b9baf12051c1',
+              1,
+              '2026-10-05',
+        ...
+            [
+        -     'item-96b3f93f-bf61-4ba9-b907-9e9082e2724d',
+        -     2,
+        -     '2026-11-05',
+        -     300
+        -   ],
+        -   [
+              'item-c82a811c-642b-4130-b999-e0ce80d8e7db',
+              3,
+              '2026-12-05',
+        +     600
+        -     300
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'item-3843cea9-d7cc-4d9b-b099-b9baf12051c1'
+          1: 1
+          2: '2026-10-05'
+          3: 300
+        1:
+          0: 'item-96b3f93f-bf61-4ba9-b907-9e9082e2724d'
+          1: 2
+          2: '2026-11-05'
+          3: 300
+        2:
+          0: 'item-c82a811c-642b-4130-b999-e0ce80d8e7db'
+          1: 3
+          2: '2026-12-05'
+          3: 300
+      actual:
+        0:
+          0: 'item-3843cea9-d7cc-4d9b-b099-b9baf12051c1'
+          1: 1
+          2: '2026-10-05'
+          3: 300
+        1:
+          0: 'item-c82a811c-642b-4130-b999-e0ce80d8e7db'
+          1: 3
+          2: '2026-12-05'
+          3: 600
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:148:16
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:74:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: P1o — kendi kartı (taksitli fatura): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+    not ok 3 - P1o — kendi kartı (taksitli fatura): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+      ---
+      duration_ms: 609.135054
+      type: 'test'
+      location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:130:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksitler iade öncesiyle aynı (kimlik, sıra, vade, tutar)
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              'item-491311ab-ece9-4dd1-a977-312edbde805f',
+              1,
+              '2026-10-05',
+        ...
+            [
+        -     'item-f6cb0703-68b7-4a45-8938-57b9d5903e39',
+        -     2,
+        -     '2026-11-05',
+        -     300
+        -   ],
+        -   [
+              'item-242e7e22-96f6-4b1d-a375-6fa269827459',
+              3,
+              '2026-12-05',
+        +     600
+        -     300
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'item-491311ab-ece9-4dd1-a977-312edbde805f'
+          1: 1
+          2: '2026-10-05'
+          3: 300
+        1:
+          0: 'item-f6cb0703-68b7-4a45-8938-57b9d5903e39'
+          1: 2
+          2: '2026-11-05'
+          3: 300
+        2:
+          0: 'item-242e7e22-96f6-4b1d-a375-6fa269827459'
+          1: 3
+          2: '2026-12-05'
+          3: 300
+      actual:
+        0:
+          0: 'item-491311ab-ece9-4dd1-a977-312edbde805f'
+          1: 1
+          2: '2026-10-05'
+          3: 300
+        1:
+          0: 'item-242e7e22-96f6-4b1d-a375-6fa269827459'
+          1: 3
+          2: '2026-12-05'
+          3: 600
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:148:16
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:74:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: P1e — kesim kaydı olmayan (eski sürümün) iadesi: iptalde büyüme bugünkü gibi SON taksite
+    not ok 4 - P1e — kesim kaydı olmayan (eski sürümün) iadesi: iptalde büyüme bugünkü gibi SON taksite
+      ---
+      duration_ms: 553.998451
+      type: 'test'
+      location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:157:3'
+      failureType: 'testCodeFailure'
+      error: 'yeni iade kesilen taksitleri kaydeder'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:167:14
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:74:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - İzleyen küçük tur — P-1 / S238 = A (iade iptali aynı taksite)
+  ---
+  duration_ms: 2354.192724
+  type: 'suite'
+  location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:123:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İzleyen küçük tur — BULGU-1 (kuyruk kapama defteriyle aynı kapsam okuması)
+    # Subtest: B1a — iki açık kart: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 0; bakiye 900
+    not ok 1 - B1a — iki açık kart: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 0; bakiye 900
+      ---
+      duration_ms: 524.848194
+      type: 'test'
+      location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:179:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        08.10 gecikmiş
+        
+        300 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 300
+      operator: 'strictEqual'
+      stack: |-
+        file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:190:16
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:74:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B1k — ilk kart Borçta Kalsın ile kapatılmış: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 600; bakiye 900
+    not ok 2 - B1k — ilk kart Borçta Kalsın ile kapatılmış: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 600; bakiye 900
+      ---
+      duration_ms: 528.828353
+      type: 'test'
+      location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:179:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        08.10 gecikmiş
+        
+        300 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 300
+      operator: 'strictEqual'
+      stack: |-
+        file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:190:16
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:74:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - İzleyen küçük tur — BULGU-1 (kuyruk kapama defteriyle aynı kapsam okuması)
+  ---
+  duration_ms: 1054.302186
+  type: 'suite'
+  location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:177:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İzleyen küçük tur — S234-c (Düzenle ile azaltma iade gibi)
+    # Subtest: C1a — açık Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+    not ok 1 - C1a — açık Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+      ---
+      duration_ms: 404.758078
+      type: 'test'
+      location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:204:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   left: 900,
+        -   left: 300,
+            status: 'active',
+        +   total: 900
+        -   total: 300
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        status: 'active'
+        total: 300
+        left: 300
+      actual:
+        status: 'active'
+        total: 900
+        left: 900
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:216:16
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:74:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: C1k — Borçta Kalsın kapalı Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+    not ok 2 - C1k — Borçta Kalsın kapalı Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+      ---
+      duration_ms: 474.763964
+      type: 'test'
+      location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:204:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   left: 900,
+        -   left: 300,
+            status: 'closed',
+        +   total: 900
+        -   total: 300
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        status: 'closed'
+        total: 300
+        left: 300
+      actual:
+        status: 'closed'
+        total: 900
+        left: 900
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:216:16
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:74:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 4 - İzleyen küçük tur — S234-c (Düzenle ile azaltma iade gibi)
+  ---
+  duration_ms: 879.900331
+  type: 'suite'
+  location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:202:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İzleyen küçük tur — S234-c sınırı (Düzenle'de eklenen peşin ödeme kartı küçültmez — ödemedir, iade değil)
+    # Subtest: C2: fatura 900 → kart 900 → Düzenle aynı tutar + 300 peşin → kart 900 kalır; bakiye 600
+    ok 1 - C2: fatura 900 → kart 900 → Düzenle aynı tutar + 300 peşin → kart 900 kalır; bakiye 600
+      ---
+      duration_ms: 453.781343
+      type: 'test'
+      ...
+    1..1
+ok 5 - İzleyen küçük tur — S234-c sınırı (Düzenle'de eklenen peşin ödeme kartı küçültmez — ödemedir, iade değil)
+  ---
+  duration_ms: 453.969892
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — S239 = A ve S240 = A (bugünkü davranış kararla aynı — bekçi)
+    # Subtest: S239: fatura 900, kart 600 (faturanın 600'ü kartta), iade 300 → kart DEĞİŞMEZ (dışarıdaki 300 kapanır); 06.10 gecikmiş = ilk taksit 200
+    ok 1 - S239: fatura 900, kart 600 (faturanın 600'ü kartta), iade 300 → kart DEĞİŞMEZ (dışarıdaki 300 kapanır); 06.10 gecikmiş = ilk taksit 200
+      ---
+      duration_ms: 513.081638
+      type: 'test'
+      ...
+    # Subtest: S240: elle borç 300 + fatura 900 → kart 1200, tahsilat 300, iade 300 → kart 900 · Tahsil Edilen 300 · Kalan 600; fatura 600'ü kartta
+    ok 2 - S240: elle borç 300 + fatura 900 → kart 1200, tahsilat 300, iade 300 → kart 900 · Tahsil Edilen 300 · Kalan 600; fatura 600'ü kartta
+      ---
+      duration_ms: 522.677358
+      type: 'test'
+      ...
+    1..2
+ok 6 - İzleyen küçük tur — S239 = A ve S240 = A (bugünkü davranış kararla aynı — bekçi)
+  ---
+  duration_ms: 1036.014047
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — BULGU-2 (Düzenle değiştirmeden Kaydet kartı aynen bırakır)
+    # Subtest: E2: aynı ödeme planıyla Düzenle → kart kimliği, kart no, taksitler aynı; taksit sayısı değişince yeni kart
+    not ok 1 - E2: aynı ödeme planıyla Düzenle → kart kimliği, kart no, taksitler aynı; taksit sayısı değişince yeni kart
+      ---
+      duration_ms: 441.666132
+      type: 'test'
+      location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:271:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart aynı
+        + actual - expected
+        
+        + 'plan-db3d9642-bb01-41ad-85b5-353ac5d6cbd8'
+        - 'plan-32437a16-26c5-417e-975f-90fb2c7dc510'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-32437a16-26c5-417e-975f-90fb2c7dc510'
+      actual: 'plan-db3d9642-bb01-41ad-85b5-353ac5d6cbd8'
+      operator: 'strictEqual'
+      stack: |-
+        file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:280:14
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:74:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 7 - İzleyen küçük tur — BULGU-2 (Düzenle değiştirmeden Kaydet kartı aynen bırakır)
+  ---
+  duration_ms: 441.981132
+  type: 'suite'
+  location: '/dev/shm/izt-taban/test/izt-izleyen-tur-250.test.mjs:270:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İzleyen küçük tur — İş 6 eşdeğerlik (fatura kartı GET önbelleği = baştan kurulan)
+    # Subtest: H6: kapama defteri ve kuyruk okumaları her yazım türünden sonra işlem içinde baştan kurulanla aynı
+    ok 1 - H6: kapama defteri ve kuyruk okumaları her yazım türünden sonra işlem içinde baştan kurulanla aynı
+      ---
+      duration_ms: 756.806353
+      type: 'test'
+      ...
+    1..1
+ok 8 - İzleyen küçük tur — İş 6 eşdeğerlik (fatura kartı GET önbelleği = baştan kurulan)
+  ---
+  duration_ms: 756.986701
+  type: 'suite'
+  ...
+1..8
+# tests 16
+# suites 8
+# pass 5
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9004.81907

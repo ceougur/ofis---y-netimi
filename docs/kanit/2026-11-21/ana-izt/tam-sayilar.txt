@@ -1,0 +1,7 @@
+# tests 6001
+# suites 1423
+# pass 6001
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
