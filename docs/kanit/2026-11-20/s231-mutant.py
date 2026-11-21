@@ -18,9 +18,9 @@ MUTANTS = [
         "    const similar = folded ? folded.find(clean, parentId) : \"\";\n    if (similar) return similar;\n    if (found) return found.id;",
     ),
     ("M3 elle grup formunu katlamalı yap", "server/routes/plans.mjs", "const id = store.tx(() => ensureGroup(user, name, parentId));", "const id = store.tx(() => ensureGroup(user, name, parentId, groupFinder()));"),
-    ("M4 aynı yüklemede açılan grubu haritaya ekleme", "server/routes/plans.mjs", "if (map && id) put(id, name, parentId);", "if (false && map && id) put(id, name, parentId);"),
+    ("M4 aynı yüklemede açılan grubu haritaya ekleme", "server/routes/plans.mjs", "put(id, name, parentId);\n          fresh.add(id);", "fresh.add(id);"),
     ("M5a çek haritası: aranan adların anahtarı İngilizce küçük harf", "server/lib/names.mjs", "    const key = foldPersonName(name);\n    if (key) keys.add(key);", '    const key = String(name ?? "").trim().toLowerCase();\n    if (key) keys.add(key);'),
-    ("M5b çek haritası: anahtar katlanmamış addan (İngilizce küçük harf)", "server/lib/names.mjs", "if (keys.has(folded[i])) hits.push(i);", "if (keys.has(String(s).split(\"" + U0 + "\")[i]?.toLowerCase())) hits.push(i);"),
+    ("M5b çek haritası: anahtar katlanmamış addan (İngilizce küçük harf)", "server/lib/names.mjs", "if (keys.has(folded[i])) hits.add(raw[i]);", "if (keys.has(raw[i].toLowerCase())) hits.add(raw[i]);"),
     ("M6 birleşik metinde ayraç yanındaki boşluğu kırpma", "server/lib/names.mjs", ".replace(JOINED_EDGE_SPACE, \"" + U0 + "\")", ""),
     ("M7 parça sayısı (ayraç) denetimini kaldır", "server/lib/names.mjs", "if (folded.length !== n) return (map = false);", ""),
     ("M8 aranmayan adı boş sonuca gönder", "server/lib/names.mjs", "return found ? [...(found.get(key) || [])] : fallback.ids(name);", "return found ? [...(found.get(key) || [])] : keys.has(key) ? fallback.ids(name) : [];"),
@@ -31,6 +31,7 @@ MUTANTS = [
         "if (folded) { const made = plansService.ensureGroup(user, name, parentId, folded); if (made && !undo.groups.includes(made)) undo.groups.push(made); return made; }",
     ),
     ("M10 geri alınmış iç işlemin grubunu aday say (güncel satır denetimi yok)", "server/routes/plans.mjs", "if (!ids?.size) return \"\";", "if (!ids?.size) return \"\";\n        if (ids.size === 1) return [...ids][0];"),
+    ("M11 birleşik metinde boşluk düzeltmesini atla", "server/lib/names.mjs", "if (JOINED_ODD_SPACE.test(spaced))", "if (false)"),
 ]
 TESTS = ["test/s231-grup-adi-turkce-250.test.mjs", "test/s231-cek-hiz-esdegerlik-250.test.mjs", "test/s223-turkce-ad-eslesme-250.test.mjs"]
 env = dict(os.environ, HUKUK_LICENSE_URL="http://127.0.0.1:9", TZ="UTC")

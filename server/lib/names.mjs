@@ -80,19 +80,24 @@ export function foldedNameIndex(load) {
 // 2.5.0 S231 (çek / senet içe aktarmasının HIZI; davranış S223 = A ile AYNEN): adları önceden bilinen yükleme için foldedNameIndex'in eşdeğeri.
 // ÖLÇÜLEN NEDEN (5.484 caride, 'hepsi yeni ad' çek 500): foldedNameIndex bütün carileri SATIR satır okuyup (~3 ms; her satır kimlik + ad nesnesi) her adı
 // AYRI katlıyor (~2,3 ms) ve hepsini haritaya koyuyordu (~1,5 ms) — NOCASE'in bulamadığı ilk satırda, her yüklemede. Burada: yalnız ADLAR tek metin olarak
-// okunur (loadJoined(): { n, r, s } — s adların "\u001f" ile birleşimi, r aynı sıradaki rowid'ler virgülle, n satır sayısı), metin TEK seferde katlanır
-// (foldJoinedNames), yalnız aranan adların (wanted) katlanmış adıyla aynı olan satırların kimliği idsOf(rowid'ler) ile okunur. Aranan kümede olmayan ad
-// sorulursa ya da metin beklenen biçimde değilse (adında ayraç geçen satır → parça sayısı tutmaz) fallback (foldedNameIndex) kullanılır — sonuç her
-// durumda foldedNameIndex'inkiyle aynı kimlikler. Kimlik metne girmez: metin kısa kalır (kimlik + ad ile ~400 bin karakter, katlama ~3,3 ms ölçüldü).
+// okunur (loadJoined(): { n, s } — s adların "\u001f" ile birleşimi, n satır sayısı), metin TEK seferde katlanır (foldJoinedNames); katlanmış adı aranan
+// adlardan (wanted) birininkiyle aynı olan satırların ham adları namedIds(adlar) ile okunur ([{ id, name }]; ad yeniden katlanıp denetlenir). Aranan
+// kümede olmayan ad sorulursa ya da metin beklenen biçimde değilse (adında ayraç geçen satır → parça sayısı tutmaz) fallback (foldedNameIndex) kullanılır —
+// sonuç her durumda foldedNameIndex'inkiyle aynı kimlikler. Kimlik metne girmez (kimlik + ad ile ~400 bin karakter, katlama ~3,3 ms ölçüldü).
 // foldJoinedNames: foldPersonName'in adımları (NFC, boşluk, I / İ, küçük harf) bütün metne; "\u001f" NFC'de birleşmez, boşluk değildir (\s dışı),
-// büyük / küçük harfi yoktur ve son sigma kuralında sınır sayılır → her parça foldPersonName(ad) ile aynı (test/s231-cek-hiz-esdegerlik-250).
+// büyük / küçük harfi yoktur ve son sigma kuralında sınır sayılır → her parça foldPersonName(ad) ile aynı (test/s231-cek-hiz-esdegerlik-250). Boşluk
+// düzeltmesi yalnız gerekiyorsa koşar (ardışık boşluk, boşluktan başka boşluk karakteri, ayraç yanında boşluk; çoğu veride yok).
 // Ayraç U+0000 OLAMAZ: veri tabanı sürücüsü metni ilk U+0000'da kesiyor (ölçüldü: metin kısa gelince her yükleme yedek yola düşüyordu).
 const JOINED_EDGE_SPACE = / ?\u001f ?/g;
+const JOINED_ODD_SPACE = /\s\s|[^\S ]/;
 export const foldJoinedNames = joined => {
-  const spaced = String(joined ?? "").normalize("NFC").replace(/\s+/g, " ").replace(JOINED_EDGE_SPACE, "\u001f").trim();
+  let spaced = String(joined ?? "").normalize("NFC");
+  if (JOINED_ODD_SPACE.test(spaced)) spaced = spaced.replace(/\s+/g, " ");
+  if (spaced.includes(" \u001f") || spaced.includes("\u001f ")) spaced = spaced.replace(JOINED_EDGE_SPACE, "\u001f");
+  spaced = spaced.trim();
   return (spaced.includes("I") || spaced.includes("İ") ? spaced.replaceAll("I", "ı").replaceAll("İ", "i") : spaced).toLowerCase();
 };
-export function foldedNameLookup(wanted, loadJoined, idsOf, fallback) {
+export function foldedNameLookup(wanted, loadJoined, namedIds, fallback) {
   const keys = new Set();
   for (const name of wanted) {
     const key = foldPersonName(name);
@@ -101,21 +106,20 @@ export function foldedNameLookup(wanted, loadJoined, idsOf, fallback) {
   let map = null;
   const ready = () => {
     if (map !== null) return map;
-    const { n = 0, r = "", s = "" } = loadJoined() || {};
+    const { n = 0, s = "" } = loadJoined() || {};
     if (!n) return (map = new Map());
-    const rows = String(r).split(",");
-    const folded = rows.length === n ? foldJoinedNames(s).split("\u001f") : [];
+    const raw = String(s).split("\u001f");
+    const folded = raw.length === n ? foldJoinedNames(s).split("\u001f") : [];
     if (folded.length !== n) return (map = false);
-    const hits = [];
-    for (let i = 0; i < n; i += 1) if (keys.has(folded[i])) hits.push(i);
-    const idOf = hits.length ? idsOf(hits.map(i => rows[i])) : new Map();
+    const hits = new Set();
+    for (let i = 0; i < n; i += 1) if (keys.has(folded[i])) hits.add(raw[i]);
     map = new Map();
-    for (const i of hits) {
-      const id = idOf.get(rows[i]);
-      if (!id) return (map = false);
-      let ids = map.get(folded[i]);
-      if (!ids) map.set(folded[i], (ids = new Set()));
-      ids.add(id);
+    for (const row of hits.size ? namedIds([...hits]) : []) {
+      const key = foldPersonName(row.name);
+      if (!keys.has(key)) continue;
+      let ids = map.get(key);
+      if (!ids) map.set(key, (ids = new Set()));
+      ids.add(row.id);
     }
     return map;
   };

@@ -1517,13 +1517,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return foldedNameIndex(() => store.all("SELECT id, name FROM accounts WHERE deleted_at IS NULL"));
   }
   // 2.5.0 S231 (çek / senet içe aktarmasının hızı): adları önceden bilinen yükleme için personIndex'in eşdeğeri (lib/names.mjs foldedNameLookup) — silinmemiş
-  // carilerin ADLARI tek metin olarak okunur (rowid'ler aynı sorguda aynı sırayla), yalnız aranan adlarla aynı katlanan carilerin kimliği okunur; aranmamış
-  // ad ya da beklenmeyen metin personIndex'e düşer.
+  // carilerin ADLARI tek metin olarak okunur, yalnız aranan adlarla aynı katlanan adların carileri (kimlik + ad) okunur; aranmamış ad ya da beklenmeyen
+  // metin personIndex'e düşer.
   function personIndexFor(names) {
     return foldedNameLookup(
       names,
-      () => store.get("SELECT COUNT(*) AS n, COALESCE(group_concat(rowid, ','), '') AS r, COALESCE(group_concat(name, char(31)), '') AS s FROM accounts WHERE deleted_at IS NULL"),
-      rowids => new Map(store.all("SELECT rowid AS r, id FROM accounts WHERE rowid IN (SELECT value FROM json_each(?))", JSON.stringify(rowids.map(Number))).map(row => [String(row.r), row.id])),
+      () => store.get("SELECT COUNT(*) AS n, COALESCE(group_concat(name, char(31)), '') AS s FROM accounts WHERE deleted_at IS NULL"),
+      hits => store.all("SELECT id, name FROM accounts WHERE deleted_at IS NULL AND name IN (SELECT value FROM json_each(?))", JSON.stringify(hits)),
       personIndex(),
     );
   }

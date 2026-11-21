@@ -54,8 +54,8 @@ describe("S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünki
       ["a7", "e\u0301lif"], ["a8", "élif"], ["a9", "ΟΔΟΣ"], ["a10", "οδος"], ["a11", "οδοσ"], ["a12", "   "], ["a13", "Zeynep Kılıç"], ["a14", "Şükrü Özçelik"],
       ["a15", "ŞÜKRÜ ÖZÇELİK"], ["a16", "K\u212a Ltd"], ["a17", "kk ltd"], ["a18", "Ahu Ak"],
     ];
-    const joined = list => () => ({ n: list.length, r: list.map((_, i) => String(i + 1)).join(","), s: list.map(([, name]) => name).join("\u001f") });
-    const idsOf = list => rowids => new Map(rowids.map(rowid => [rowid, list[Number(rowid) - 1][0]]));
+    const joined = list => () => ({ n: list.length, s: list.map(([, name]) => name).join("\u001f") });
+    const idsOf = list => hits => list.filter(([, name]) => hits.includes(name)).map(([id, name]) => ({ id, name }));
     const wanted = ["AHMET YILMAZ", "İSMAİL IŞIK", "ÉLİF", "οδος", "ΟΔΟΣ", "  ", "zeynep kılıç", "Şükrü ÖZÇELİK", "KK LTD", "Yok Kişi", "ALİ\u001e VELİ"];
     const sameKey = ["ismail ışık", "ŞÜKRÜ ÖZÇELİK", "ahmet\u00a0yılmaz"]; // aranan kümede yazılmamış ama anahtarı aynı (yedek yola GİTMEZ)
     const others = ["Ahu Ak", "Başka Ad"]; // anahtarı aranan kümede değil (yedek yol); 'Ahu Ak' veride var
@@ -81,7 +81,7 @@ describe("S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünki
     compare([...rows, ["b1", "Ali\u001e Veli"]], "adında U+001E (ayraç değil)", false);
     compare([["b2", "Ali\u001fVeli"], ...rows], "adında U+001F (ayraç; listenin başında — kayma)", true);
     // Parça sayısı tutmazsa yedek yol.
-    const broken = foldedNameLookup(["Ali Veli"], () => ({ n: 2, r: "1,2", s: "Ali\u001fVeli\u001fAli Veli" }), () => new Map([["1", "c1"], ["2", "c2"]]), foldedNameIndex(() => [{ id: "c1", name: "Ali\u001fVeli" }, { id: "c2", name: "Ali Veli" }]));
+    const broken = foldedNameLookup(["Ali Veli"], () => ({ n: 2, s: "Ali\u001fVeli\u001fAli Veli" }), hits => [{ id: "c1", name: "Ali\u001fVeli" }, { id: "c2", name: "Ali Veli" }].filter(row => hits.includes(row.name)), foldedNameIndex(() => [{ id: "c1", name: "Ali\u001fVeli" }, { id: "c2", name: "Ali Veli" }]));
     assert.deepEqual(broken.ids("ali veli"), ["c2"]);
   });
 
