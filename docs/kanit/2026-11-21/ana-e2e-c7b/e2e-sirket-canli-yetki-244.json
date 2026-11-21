@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-sirket-canli-yetki-244",
+  "komut": "npm run test:sirket-canli-yetki-244",
+  "commit": "b8f034d923c17d9588663db3855d02665fb73486",
+  "dal": "e2e-acilis-c7b",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T08:41:58.051Z",
+  "sure_sn": 3.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 8,
+    "gecen": 8,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-e2e-c7b/kanit/2026-11-21/e2e-sirket-canli-yetki-244.log",
+  "klasor": "/dev/shm/ana-e2e-c7b",
+  "ham_cikti_sha256": "167b04bb9fb55376346578db924fb0582f6fbbecff33f1e224ca4dbb19bf48f7",
+  "ham_cikti_bayt": 723
+}
