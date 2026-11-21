@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-cari24-kirmizi-eski-ist",
+  "komut": "python3 -I -B docs/kanit/2026-11-21/kahin-cari24-arac/elle-karsilastir.py --kirmizi-bekle --model /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc24/eski/test/bagimsiz/cari test/bagimsiz/cari/senaryolar/d53-c5-s234-kapali-kart-iade.json test/bagimsiz/cari/senaryolar/d54-c5-s234-acik-kart-iade.json test/bagimsiz/cari/senaryolar/d55-c5-s234-iade-iptal-gecikmis.json",
+  "commit": "a7e999f299fe86be6d6daa774b20b3069a1a52cc",
+  "dal": "worktree-agent-af6968001b29cf05e",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T12:12:58.111Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 340,
+    "gecen": 340,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc24/kanit/2026-11-21/kahin-cari24-kirmizi-eski-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af6968001b29cf05e",
+  "ham_cikti_sha256": "dd029bd8f4bcc65e4188da15cd5602901cf2d7d01102755b8fba52fccae972a0",
+  "ham_cikti_bayt": 6997
+}

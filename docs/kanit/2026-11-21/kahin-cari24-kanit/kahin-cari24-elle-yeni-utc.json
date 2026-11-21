@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-cari24-elle-yeni-utc",
+  "komut": "python3 -I -B docs/kanit/2026-11-21/kahin-cari24-arac/elle-karsilastir.py --model test/bagimsiz/cari test/bagimsiz/cari/senaryolar/d53-c5-s234-kapali-kart-iade.json test/bagimsiz/cari/senaryolar/d54-c5-s234-acik-kart-iade.json test/bagimsiz/cari/senaryolar/d55-c5-s234-iade-iptal-gecikmis.json",
+  "commit": "a7e999f299fe86be6d6daa774b20b3069a1a52cc",
+  "dal": "worktree-agent-af6968001b29cf05e",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T10:56:21.759Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 471,
+    "gecen": 471,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc24/kanit/2026-11-21/kahin-cari24-elle-yeni-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af6968001b29cf05e",
+  "ham_cikti_sha256": "8390179b78fc67c3ff75cdc716af006aa115f3e8b7f6bdd3e4351ac42db3754b",
+  "ham_cikti_bayt": 253
+}

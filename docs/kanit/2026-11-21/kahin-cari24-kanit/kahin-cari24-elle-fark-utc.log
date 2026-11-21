@@ -1,0 +1,10 @@
+d8-c5-tanimsiz.json: 4 elle beklenti değişti
+    değer                  k1:cari:B:gecikmis: "(yok)" → 0
+    değer                  k1:fatura:F1:acik: "(yok)" → 0
+    elleYok kalktı         k1:cari:B:gecikmis: "yok" → ""
+    elleYok kalktı         k1:fatura:F1:acik: "yok" → ""
+yeni elle senaryo: d53-c5-s234-kapali-kart-iade.json, d54-c5-s234-acik-kart-iade.json, d55-c5-s234-iade-iptal-gecikmis.json
+# tests 106
+# pass 106
+# fail 0
+106/106 denetim geçti

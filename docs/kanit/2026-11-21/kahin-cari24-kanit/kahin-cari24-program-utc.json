@@ -1,0 +1,158 @@
+{
+  "ad": "kahin-cari24-program-utc",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc24/program-utc",
+  "commit": "a7e999f299fe86be6d6daa774b20b3069a1a52cc",
+  "dal": "worktree-agent-af6968001b29cf05e",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T12:12:58.432Z",
+  "sure_sn": 526.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 22832,
+    "gecen": 22775,
+    "basarisiz": 57,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 57 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] adim:dz4:durum: program \"ret\" · kâhin \"ok\" (§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)) · yanıt: invoice-not-draft Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] adim:dza4:durum: program \"ret\" · kâhin \"ok\" (§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)) · yanıt: invoice-not-draft Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:A4:acikToplam: program 60000 · kâhin 30000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:A4:bakiye: program 60000 · kâhin 30000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:P4:acikToplam: program 60000 · kâhin 30000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:P4:bakiye: program 60000 · kâhin 30000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:fatura:FA4:acik: program 60000 · kâhin 30000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FA4:kartta: program 60000 · kâhin 30000 (§35 Y23-2 KAPSAM (b): gösterilen + kartların aldığı = kendi açık)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:fatura:FP4:acik: program 60000 · kâhin 30000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FP4:kartta: program 60000 · kâhin 30000 (§35 Y23-2 KAPSAM (b): gösterilen + kartların aldığı = kendi açık)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kart:KA4:kalan: program 60000 · kâhin 30000 (C13.4 · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c)))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kart:KA4:toplam: program 90000 · kâhin 60000 (B1.3 kart tutarı = tablodaki kalan · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c)))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:kart:KP4:kalan: program 60000 · kâhin 30000 (C13.4 · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c)))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:kart:KP4:toplam: program 90000 · kâhin 60000 (B1.3 kart tutarı = tablodaki kalan · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c)))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:cari:A4:acikToplam: program 60000 · kâhin 30000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k2:cari:A4:bakiye: program 60000 · kâhin 30000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:cari:P4:acikToplam: program 60000 · kâhin 30000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k2:cari:P4:bakiye: program 60000 · kâhin 30000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:fatura:FA4:acik: program 60000 · kâhin 30000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:fatura:FA4:kartta: program 60000 · kâhin 30000 (§35 Y23-2 KAPSAM (b): gösterilen + kartların aldığı = kendi açık)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:fatura:FP4:acik: program 60000 · kâhin 30000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:fatura:FP4:kartta: program 60000 · kâhin 30000 (§35 Y23-2 KAPSAM (b): gösterilen + kartların aldığı = kendi açık)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:kart:KA4:kalan: program 60000 · kâhin 30000 (C13.4 · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c)))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:kart:KA4:toplam: program 90000 · kâhin 60000 (B1.3 kart tutarı = tablodaki kalan · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c)))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k2:kart:KP3:taksit3:odenen: program \"okunamadı\" · kâhin 0 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 ",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc24/kanit/2026-11-21/kahin-cari24-program-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af6968001b29cf05e",
+  "ham_cikti_sha256": "a35774f6a051ce16691a7e96fd6da7ad1e9c1ad0bd7ce16b3db9cb1651ab4bf3",
+  "ham_cikti_bayt": 89195
+}

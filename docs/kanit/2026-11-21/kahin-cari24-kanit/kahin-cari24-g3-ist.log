@@ -1,0 +1,23 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 106 elle senaryonun 0'inin adımları değişti: yok · izinli: yok · yeni elle senaryo: d53-c5-s234-kapali-kart-iade, d54-c5-s234-acik-kart-iade, d55-c5-s234-iade-iptal-gecikmis
+DİL EKİ (bakım 24): eski kâhinin dilinde olmayan adımlı yeni elle senaryo — eşdeğerlik / G3 dışında: d53-c5-s234-kapali-kart-iade
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 106 elle + yeni kopyanın yeni 2 elle + 20 rastgele senaryo × 4 kip): 512/512 bayt bayt aynı
+G3 (kural 2.5.0; 129 senaryo — eski kopyanın 106 elle senaryosu + yeni elle + 20 rastgele): eski 77430 denetim · yeni 77646 denetim · değişen / kalkan / yeni toplam 226 · BEKLENMEYEN 0 · yalnız etiketi değişen 36
+  S234           degisen     10
+      örn. d54-c5-s234-acik-kart-iade k1:kart:KA1:toplam: 90000 → 60000
+      örn. d54-c5-s234-acik-kart-iade k1:kart:KA2:toplam: 90000 → 60000
+      örn. d54-c5-s234-acik-kart-iade k1:kart:KA3:toplam: 90000 → 60000
+      örn. d54-c5-s234-acik-kart-iade k1:kart:L6A:toplam: 90000 → 60000
+  S234           yeni       216
+      örn. d8-c5-tanimsiz k1:cari:B:gecikmis: "(denetim yok)" → 0
+      örn. d8-c5-tanimsiz k1:fatura:F1:acik: "(denetim yok)" → 0
+      örn. d8-c5-tanimsiz k1:fatura:I1:acik: "(denetim yok)" → 0
+      örn. d8-c5-tanimsiz k1:fatura:I1:gosterilen: "(denetim yok)" → 0
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d54-c5-s234-acik-kart-iade               S234/degisen 7 · S234/yeni 161
+  d55-c5-s234-iade-iptal-gecikmis          S234/degisen 3 · S234/yeni 47
+  d8-c5-tanimsiz                           S234/yeni 8
+# tests 639
+# pass 639
+# fail 0
+639/639 denetim geçti
