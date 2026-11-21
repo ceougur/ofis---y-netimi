@@ -32,3 +32,19 @@
 | plans.mjs 1428 / 1437 / 1556–1557 — rapor 'groups' sayısı ve Geri Al kümesi (önce / sonra kimlik farkı) | kimlik | — | DEĞİŞMEZ (katlamayla bulunan grup yeni sayılmaz) |
 | accounts.mjs 120, plans.mjs 182 / 532, trash.mjs 180, app.mjs 1234 | birleştirme / görüntü / kart tablosu listesi | HAYIR | DEĞİŞMEZ |
 | client/assets | grup adı yalnız görüntü / form alanı (hof-plans 520 'Yeni Grup Adı', hof-accounts 1596, hof-plan-transfer 131) | HAYIR | DEĞİŞMEZ |
+
+## 2. KOD (S231 = A) — commit bcb4f263
+- plans.mjs: ensureGroup'a isteğe bağlı 4. parametre (içe aktarmanın bulucusu); groupFinder (yükleme başına ad haritası, tek okuma; aday güncel satırla yeniden denetlenir; açılan grup eklenir; created geri çağrısı).
+- Taksit Excel / Sheets (plans.mjs), cari Excel / Sheets (accounts.mjs 'ensure' → resolveGroups 3. parametre), Tablodan Aktar ön izleme (groupExisting) + aktarım (groupId; Geri Al'a yalnız gerçekten açılan grup).
+- Elle grup açma / yeniden adlandırma / tek kart / tek cari formu bulucusuz (DEĞİŞMEDİ).
+- Yeni test test/s231-grup-adi-turkce-250.test.mjs: yenide 11/11 (UTC, İstanbul); tabanda (s223-uc) 3/11 — 8 kırmızı BEKLENEN NEDENLE ('yeni grup açıldı', ön izleme 'new'); (6) çift grup, (8) kilitli dönem, (11) elle form tabanda da yeşil (bekçi; dişi mutantlarla).
+
+## 3. ÇEK PENCERESİ METNİ — commit e6f82743
+- hof-cheques.js: 'Keşideci adı aynı olan (büyük / küçük harf ve boşluk farkı sayılmaz) tek cari varsa evrak o cariye bağlanır.' Kılavuzda aynı anlatım YOK (PDF yeniden üretimi gerekmedi).
+- test/s231-cek-pencere-metni-250.test.mjs: tabanda kırmızı (eski metin), yenide yeşil; yazim-duzeni 6/6.
+
+## 4. ÇEK HIZI — ÖLÇÜLEN NEDEN (profil; temiz-100k kopyası, cari + taksit Excel 2.000'den sonra 5.484 cari, çek 500 hepsi yeni ad)
+- c7b-aday toplam 59,7–78 ms; s223-uc 70,4–96,8 ms. s223'te matchName 500 çağrıda ~10,2 ms; NOCASE sorguları ikisinde de ~0,85 ms (500 sorgu).
+- Fark = ilk NOCASE ıskasında kurulan ad haritası: 'SELECT id, name FROM accounts' ~3,0–3,8 ms + 5.484 adı tek tek foldPersonName ~2,3 ms + Map/Set ~1,4–1,6 ms.
+- Denenip BIRAKILAN: SQL'de daraltma (replace zinciri + GLOB güvensiz ad süzgeci) — 16 ms (daha yavaş).
+- DÜZELTME (commit e32985e6): foldedNameLookup (names.mjs, yeni) + personIndexFor (accounts.mjs) — adlar TEK metin (group_concat), TEK seferde katlanır, haritaya yalnız yüklemenin keşideci adlarıyla aynı katlananlar girer; aranmayan ad / ayraçlı metin → foldedNameIndex (yedek yol). Eşdeğerlik testi test/s231-cek-hiz-esdegerlik-250.test.mjs.
