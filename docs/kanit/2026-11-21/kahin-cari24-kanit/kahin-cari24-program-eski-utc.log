@@ -1,0 +1,36 @@
+d54-c5-s234-acik-kart-iade: 178/186 tuttu
+  2.5.0 kararıyla değişen beklenti: 50 denetim · farkların 0/8'i bu sınıfta — SINIF DIŞI 8
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:kart:KA1:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:kart:KA2:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:kart:KA3:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:kart:L6A:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+  ✗ [BULGU PLAN · SINIF DIŞI] k2:kart:KA1:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+  ✗ [BULGU PLAN · SINIF DIŞI] k2:kart:KA2:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k2:kart:KA3:taksit3:odenen: program "okunamadı" · kâhin 0 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU PLAN · SINIF DIŞI] k2:kart:L6A:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+d55-c5-s234-iade-iptal-gecikmis: 117/122 tuttu
+  2.5.0 kararıyla değişen beklenti: 33 denetim · farkların 1/5'i bu sınıfta — SINIF DIŞI 4
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:kart:KB1:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:kart:KB2:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+  ✗ [BULGU KULLANICI] k2:cari:B1:gecikmis: program 0 · kâhin 30000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k2:kart:KB1:taksit3:odenen: program "okunamadı" · kâhin 0 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)
+  ✗ [BULGU PLAN · SINIF DIŞI] k2:kart:KB2:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 83 denetim, 2 senaryo · programla farkların 1'i bu sınıfta, 12'i SINIF DIŞI
+
+ÖZET [2.5.0]: 2 senaryo, 308 denetim, 13 fark (BULGU 11), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc24/program-eski-utc
+295/308 denetim geçti

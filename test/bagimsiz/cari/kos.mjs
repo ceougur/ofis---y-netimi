@@ -776,6 +776,33 @@ async function kos(senaryo) {
           durum(a, await api("POST", `/api/workspace/invoices/${ids.fatura[a.fatura]}/cancel`, { reason: "Kâhin denemesi" }));
           break;
         }
+        case "kart_kapat":
+        case "kart_yeniden_ac": {
+          // bakım 24 (KARARLAR.md §36 Y24-1; yalnız eşleme — kara kutu yoklaması 21.11, kahin-cari24-arac/yokla1.mjs / yokla3.mjs): Kartı Kapat 'Borçta Kalsın' = PUT /plans/:id {status: "closed"},
+          // Yeniden Aç = {status: "active"} (kapanış günü sunucunun bugünü — gövdeden verilemiyor). Kart: kart_ac kartı (ids.kart) ya da taksitli faturanın KENDİ kartı (fatura kartının planId'si)
+          let pid = a.kart ? ids.kart[a.kart]?.id : ids.faturaKart?.[a.fatura];
+          if (!a.kart && !pid) {
+            // yoklama 4 (kahin-cari24-arac/yokla4.mjs): taksitli faturanın kartı fatura kartının `planId` alanında (plan listesinde faturaya bağ alanı yok)
+            pid = (await api("GET", `/api/workspace/invoices/${ids.fatura[a.fatura]}`)).data?.planId || null;
+            if (pid) (ids.faturaKart ||= {})[a.fatura] = pid;
+          }
+          if (!pid) hatalar.push(`${a.id}: kapatılacak kartın kimliği okunamadı (${a.kart || a.fatura})`);
+          durum(a, await api("PUT", `/api/workspace/plans/${pid}`, { status: a.islem === "kart_kapat" ? "closed" : "active" }));
+          if (a.kart) (ids.kapatilan ||= new Set()).add(a.kart);
+          break;
+        }
+        case "fatura_duzenle": {
+          // bakım 24 (§36 Y24-6; yalnız eşleme): faturanın Düzenle'si = PUT /invoices/:id (fatura kartının gövdesi, tek kalemin miktarı `adet`); yoklamada kesilmiş fatura 409 invoice-not-draft
+          // (girdi §1 (e) "programın henüz yapmadığı bilinen kısım") — gövde biçimi Düzenle kodlanınca kod ajanınca doğrulanır (SÜRÜCÜ İÇİN)
+          const g = (await api("GET", `/api/workspace/invoices/${ids.fatura[a.fatura]}`)).data || {};
+          const rd = await api("PUT", `/api/workspace/invoices/${ids.fatura[a.fatura]}`, { ...g, lines: (g.lines || []).map(l => ({ ...l, qty: a.adet })), updatedAt: g.updatedAt });
+          durum(a, rd);
+          if (rd.status === 200) {
+            ids.faturaTutar[a.fatura] = Math.round((ids.faturaTutar[a.fatura] * a.adet) / (ids.faturaAdet[a.fatura] || 1));
+            ids.faturaAdet[a.fatura] = a.adet;
+          }
+          break;
+        }
         case "kontrol": {
           const k = a.id;
           const hesaplar = (await api("GET", "/api/workspace/accounts?status=all&limit=500")).data?.accounts || [];
@@ -834,7 +861,7 @@ async function kos(senaryo) {
             P[`${k}:fatura:${ad}:gosterilen`] = sahip(r.data, "open") ? kurus(r.data.open) : "alan yok";
             P[`${k}:fatura:${ad}:kartta`] = sahip(r.data, "inPlan") ? kurus(r.data.inPlan) : !sahip(r.data, "ownOpen") && sahip(r.data, "open") ? 0 : "alan yok";
             P[`${k}:fatura:${ad}:taksitte`] = sahip(r.data, "payState") ? r.data.payState === "installment" : "alan yok";
-            ham[`${k}:fatura:${ad}`] = { open: r.data.open, ownOpen: r.data.ownOpen, inPlan: r.data.inPlan, status: r.data.status, payState: r.data.payState }; // ders 38: ham alanlar
+            ham[`${k}:fatura:${ad}`] = { open: r.data.open, ownOpen: r.data.ownOpen, inPlan: r.data.inPlan, status: r.data.status, payState: r.data.payState, ownPayState: r.data.ownPayState }; // ders 38: ham alanlar (bakım 24: ownPayState — girdi §2, denetlenmez)
             if (r.data.status === "cancelled") P[`${k}:fatura:${ad}:durum`] = "iptal";
           }
           {
@@ -867,6 +894,18 @@ async function kos(senaryo) {
             if (!d) continue;
             Object.assign(P, { [`${k}:kart:${ad}:toplam`]: kurus(d?.totals?.total), [`${k}:kart:${ad}:odenen`]: kurus(d?.totals?.paid), [`${k}:kart:${ad}:kalan`]: kurus(d?.totals?.remaining), [`${k}:kart:${ad}:mevcutBorc`]: Boolean(d?.coversBalance) });
             (d?.items || []).forEach((it, i) => (P[`${k}:kart:${ad}:taksit${i + 1}:odenen`] = kurus(it.paid)));
+            // bakım 24 (§36 Y24-1; girdi §2 "kart kapalıyken (`status` 'closed') de `remaining` kartın güncel kalanı"): Kartı Kapat / Yeniden Aç görmüş kartın durumu
+            if (ids.kapatilan?.has(ad)) P[`${k}:kart:${ad}:kapali`] = d.status === "closed" ? true : d.status === "active" ? false : `durum:${d.status}`;
+            ham[`${k}:kart:${ad}`] = { status: d.status, closedAt: d.closedAt, total: d.totals?.total, remaining: d.totals?.remaining, items: (d.items || []).map(it => [it.dueDate, it.planDueDate, it.amount, it.paid]) }; // ders 38
+          }
+          for (const [fad, pid] of Object.entries(ids.faturaKart || {})) {
+            // bakım 24 (§36 Y24-1 / Y24-4): taksitli faturanın KENDİ kartı (Kartı Kapat / Yeniden Aç görmüş) — kapalı mı, tutarı, Kalan
+            const pr = await api("GET", `/api/workspace/plans/${pid}`);
+            if (pr.status !== 200) { hatalar.push(`${k} fatura ${fad} kartı okunamadı (${pr.status})`); continue; }
+            P[`${k}:kart:fatura:${fad}:kapali`] = pr.data.status === "closed" ? true : pr.data.status === "active" ? false : `durum:${pr.data.status}`;
+            P[`${k}:kart:fatura:${fad}:toplam`] = kurus(pr.data.totals?.total);
+            P[`${k}:kart:fatura:${fad}:kalan`] = kurus(pr.data.totals?.remaining);
+            ham[`${k}:kart:fatura:${fad}`] = { status: pr.data.status, total: pr.data.totals?.total, remaining: pr.data.totals?.remaining, items: (pr.data.items || []).map(it => [it.dueDate, it.planDueDate, it.amount, it.paid]) };
           }
           P[`${k}:kasa`] = kurus((await api("GET", "/api/workspace/cash")).data?.totals?.balance);
           const led = await api("GET", "/api/workspace/ledger");
@@ -1163,7 +1202,7 @@ const YAPIM_UYGULANIR = !LEGACY && KURAL === "2.5.0";
 const YAPIM_YAZ = argv.includes("--yapim-asamasi-yaz");
 if (YAPIM_YAZ && !(YAPIM_UYGULANIR && VARSAYILAN)) throw new Error("--yapim-asamasi-yaz yalnız varsayılan koşuda (senaryo / tohum / --kural / --legacy verilmeden) çalışır");
 const YAPIM_YOLU = process.env.KAHIN_YAPIM_ASAMASI || path.join(HERE, "YAPIM-ASAMASI.json"); // KAHIN_YAPIM_ASAMASI: yalnız mekanizmanın kendi denemesi için başka liste
-const YAPIM_PAKETLER = ["Ç5-A", "Ç5-B tur 2", "Ç5-C", "eşleme", "AYRIŞTIRILMADI"];
+const YAPIM_PAKETLER = ["Ç5-A", "Ç5-B tur 2", "Ç5-C", "eşleme", "Ç7b", "AYRIŞTIRILMADI"]; // bakım 24: "Ç7b" — S234 / S237 kart küçülmesinin programda henüz yapılmayan kısmı (girdi §1 (e) / (f))
 const OKUMA_ONEKI = "OKUMA HATASI: ";
 const YAPIM_ALANLAR = ["senaryo", "anahtar", "beklenen", "program", "sinif", "kural", "paket"];
 function yapimYukle() {
@@ -1253,6 +1292,7 @@ function yapimPaketi(f) {
   if (/açılış karşılığı 519|\bS49\b/.test(metin)) isaret.add("Ç5-A");
   if (/\bS9[1-9]\b/.test(metin)) isaret.add("Ç5-B tur 2");
   if (/\bÇ5-C\b/.test(metin)) isaret.add("Ç5-C");
+  if (/§36 Y24-/.test(metin)) isaret.add("Ç7b"); // bakım 24: S234 / S237 / KAPSAM (a)–(f) kuralları (kart küçülmesi, Düzenle, iki kart)
   return isaret.size === 1 ? { paket: [...isaret][0] } : { paket: "AYRIŞTIRILMADI", not: isaret.size ? `kural metni birden çok pakete işaret ediyor: ${[...isaret].join(", ")}` : "kural metni paketi göstermiyor" };
 }
 const YAPIM = yapimYukle();

@@ -62,6 +62,8 @@
 23. Bakım 23 (§35; S229 = A, S230 = A, S200 = A): Mevcut Borç kartının içine aldığı faturanın GÖSTERİLEN açığı (kart ve liste) = kendi açığı − kartın aldığı kısım, tamamı alınan 'Taksitte'; S200 sırası
    (önce elle borçlar, eksik kısım faturalardan eskiden yeniye) — d52 elle tablosu (S229'un kendi örneği P1; kısmi / tam / iki kart / kartsız / alış / S110 kendi borcu / iki fatura), d35 H8 artık değerle,
    d36 J14 SK-23; mutantlar 329–333 DEĞERLE (9. madde düzeni — her biri bir elle beklenen değerini değiştirmeli).
+24. Bakım 24 (§36; S234 = A, S237 = A, karar (4) 2B-S3 = A, KAPSAM (a)–(f)): Kartı Kapat 'Borçta Kalsın' dil eki ve kart küçülmesi — d53 (kapanmış kart: S234 / S237 örnekleri, iade iptali, Düzenle,
+   kendi kartlı fatura, iki kart, Yeniden Aç), d54 (açık kart — aynı senaryolar), d55 (iade iptalinde geri gelen taksit kendi vadesiyle; küçülmenin fazlası avans) elle tabloları; mutantlar 334–340 DEĞERLE.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util

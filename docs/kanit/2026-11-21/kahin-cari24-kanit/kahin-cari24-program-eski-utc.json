@@ -1,0 +1,98 @@
+{
+  "ad": "kahin-cari24-program-eski-utc",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc24/eski/test/bagimsiz/cari/kos.mjs --mutasyonsuz --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc24/program-eski-utc test/bagimsiz/cari/senaryolar/d54-c5-s234-acik-kart-iade.json test/bagimsiz/cari/senaryolar/d55-c5-s234-iade-iptal-gecikmis.json",
+  "commit": "62e6e96c16e3b2a9048347eb5846aafd18974ff5",
+  "dal": "worktree-agent-af6968001b29cf05e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T12:41:20.601Z",
+  "sure_sn": 4.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 308,
+    "gecen": 295,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:kart:KA1:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:kart:KA2:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:kart:KA3:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:kart:L6A:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k2:kart:KA1:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k2:kart:KA2:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k2:kart:KA3:taksit3:odenen: program \"okunamadı\" · kâhin 0 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k2:kart:L6A:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:kart:KB1:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:kart:KB2:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:cari:B1:gecikmis: program 0 · kâhin 30000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vades",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k2:kart:KB1:taksit3:odenen: program \"okunamadı\" · kâhin 0 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k2:kart:KB2:toplam: program 60000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc24/kanit/2026-11-21/kahin-cari24-program-eski-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af6968001b29cf05e",
+  "ham_cikti_sha256": "0ac84d3f85d2123838c29aab690ccd391b0eb073b090b6a3f9c363d4cea6b50b",
+  "ham_cikti_bayt": 3832
+}
