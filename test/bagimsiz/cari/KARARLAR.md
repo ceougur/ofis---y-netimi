@@ -5067,3 +5067,77 @@ YORUMDUR (ders 40 — önce kural, sonra kod); senaryo / elle beklenen, kural ko
   (bakım 21b) **36 kırmızı** / 105 (beklenen nedenle — hepsi SK-41 alanında: gecikmiş / açık toplamı / eşitlik / FJ2b açık ANAHTAR YOK, kart göstergeleri yazılıyor, `belirsiz` "S210 = A" / "S211 = A" yok; bakiyeler ve
   Kasa eski kâhinde de yeşil) · eski elle tablo farkı **104/104** izinli · G1 taraması **105/105** · mutant ↔ senaryo **1.224/1.224** (d30 … d51 × 261–328) · geniş tarama **2.201/2.201** · özet taraması yazıldı (iki TZ'de
   bayt bayt aynı). Mutantlar 326 / 327 / 328 DEĞERLE yakalandı (d50 + d51), 324 (SUS) d49 / d50 / d51'de. Defter kâhini ve mobil yazma kâhini KOŞULMADI (okuma kapsamı dışında).
+
+## 35. 2.5.0 Ç5 bakımı 23 — S229 = A / S230 = A (Mevcut Borç kartının içine aldığı faturanın GÖSTERİLEN açığı ve 'Taksitte' durumu) + S200 = A (kartın faturadan aldığı kısmın sırası) (21.11.2026, `date -u` 00:45; girdi ana oturumun özet dosyası `scratchpad/kahin-cari23-kararlar.md`; kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + … + §34 + bu bölüm
+
+Bu bakım girdinin §1 (S229 / S230 / S200 ve KAPSAM (a)–(c)) ile §2'sini (API SÖZLEŞMESİ — alan anlamları) işler. §13–§34'ün öbür kuralları DEĞİŞMEZ; **faturanın KENDİ açığı (`fatura:acik`, kapama kuralıyla)
+DEĞİŞMEZ** (KAPSAM (a)). `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN (bu bölümün bütün yolları yalnız `k250`). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod);
+senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'lerde eklenir.**
+
+### C00ab Temiz oda (bakım 23)
+- **Girdi (tek kaynak):** `scratchpad/kahin-cari23-kararlar.md` — başındaki OKUMA KURALI bağlayıcı: soru metinlerindeki "program bugün" / "kod" / "tur" / "test" sözleri ve program gözlemleri (örn. "fatura kartındaki açık
+  tutar … formların önerdiği tutarı … belirliyor", "yaşlandırma / Vade Takip / nakit akışı bugün zaten … düşüyor") kural kaynağı SAYILMADI; kural yalnız KARAR satırları (seçilen seçeneğin metni ve kararın kendi
+  örneği) ve KAPSAM satırlarıdır. §2 (API SÖZLEŞMESİ) yalnız bağdaştırıcının OKUMASI içindir (alan anlamı), beklenen değer kaynağı değildir. Etiketler girdideki gibi.
+- **Birlikte okunan (kâhinin kendi belgesi):** bu dosyanın §20 (Y8-3 / Y8-4), §21 (Y9-2 … Y9-7, SK-20 … SK-23), §22 (Y10-1 … Y10-6), §23 (Y11-1 / Y11-2 / Y11-7 / Y11-10), §34 (bütünü); `model.py` (`_tyk` S120 kolu,
+  `_alacak_govde250` kart tüketimi / defter kalanı, `kontrol` fatura açığı, `kontrol_v3` alış faturası açığı ve takvim kalemi, `_sus17`, `kontrol_gorunum`, `MUTASYONLAR`); `oz-test.py`; `senaryolar/d34`, `d35`,
+  `d36`, `d37`, `d51`; `kos.mjs` YALNIZ eşleme için (fatura okuması, açık toplamı, karşılaştırma). Bakım 22'nin araçları `docs/kanit/2026-11-20/kahintoplu14-arac/` (yalnız çalıştırmak / uyarlamak için).
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/devir/**` (görev metni dışında), `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), `docs/erp/**`,
+  `YAPIM-ASAMASI.json`'ın kayıt içeriği (yalnız yeniden üretilir), `BILINEN.json`, `test/bagimsiz/muhasebe*/`, cari kâhini dışındaki `test/**` (programın `test/*.test.mjs` dosyaları dahil; `test/helpers.mjs` yalnız
+  bağdaştırıcının içe aktardığı biçimde çalışır), başka ajanların `docs/kanit/**` dosyaları (bakım 22'nin araç klasörü ve S229 kanıt özetinin SAYILARI dışında), git farkı / geçmiş içeriği. Program yalnız
+  bağdaştırıcıdan (kara kutu) koşuldu.
+
+### Karar metinleri (girdiden; etiketleri AYNEN)
+- **S229 = A (SORULDU 20.11 19:49; kullanıcının 14.11 06:31 kuralıyla öneri A uygulanır — KULLANICI KURALIYLA ÖNERİ UYGULANDI):** "kartın aldığı kısım faturadan düşer — Açık Faturalar'da F1 20.000 (cari kartının
+  gecikmişi ve Vade Takip ile aynı); kart faturanın TAMAMINI aldıysa fatura listede görünmez". Kararın örneği: "F1 50.000 (vade 10.02), Borç Yaz 30.000; 01.02'de kart 60.000 (S200 = A: önce elle borç 30.000, eksik
+  30.000 F1'den); 16.02".
+- **S230 = A (KULLANICI 20.11 20:14 "önerini uygula"):** "Açık Faturalar'la aynı — fatura kartında 'Açık 20.000' ve 'Taksit Kartında: <kart adı> · 30.000' satırı (karta bağlantı), Faturalar listesinde Kalan 20.000;
+  faturadan Tahsilat Ekle ve Mahsup Et 20.000 ÖNERİR …; kart faturanın tamamını aldıysa fatura 'Taksitte' görünür (taksitli faturalar gibi). Girilebilecek tutarın sınırı ve kapama kuralı bugünkü gibi". BAŞ MİMAR
+  YORUMU (girdideki): Anlık Durum'daki açık / vadesi geçen fatura toplamları Açık Faturalar ile aynı listeden → S229 = A'yı izler.
+- **S200 = A (KULLANICI KURALIYLA ÖNERİ UYGULANDI 19.11 20:51):** "S120: kart tutarı elle borçların toplamından BÜYÜK … örnek F1 50.000 + elle borç BY1 30.000, taksit kartı 60.000. A: önce elle borçlar, eksik kısım
+  faturalardan (16.02'de gecikmiş 20.000)" · "kart tutarı kullanıcının girdiği tutar olarak kalır".
+- **KAPSAM (baş mimar):** (a) kâhinin 'faturanın açığı' beklentisi (KENDİ açığı — kapama kuralıyla) DEĞİŞMEZ; (b) YENİ beklenti: GÖSTERİLEN açık = kendi açık − Mevcut Borç kart(lar)ının o faturadan aldığı kısım
+  (S200 sırası); kart tamamını aldıysa gösterilen 0 ve durum 'Taksitte'; açık fatura toplamının bakiyeyle ilişkisi (kendi açıklar) bugünkü gibi; Σ gösterilen + kartların aldığı = Σ kendi; (c) kâhinin dili kartın
+  aldığı kısmı modellemiyorsa (b) kurulmaz — SUS.
+- **API SÖZLEŞMESİ (girdi §2 — yalnız eşleme):** `open` = GÖSTERİLEN açık; `ownOpen` = KENDİ açık (eskiden `open`); `inPlan` = kart(lar)ın faturadan aldığı kısım; kartın tamamını aldığı faturanın durumu
+  `installment` ('Taksitte'); eski program sürümlerinde `ownOpen` YOK (orada `open` kendi açıktır).
+
+### Kâhinin BUGÜNKÜ (bakım 22, `s229-uc` = 81e587b8) okuması — bu alanda (açıkça)
+- `fatura:<ad>:acik` = faturanın KENDİ açığı (C13.4 TYK; kartın içine aldığı faturada C13.4 (7) / Y9-7 / Y10-1 / Y11-2: kuyruk kalanı + kartın tükettiği − kartın o kaleme düşen ödenen payı). Bağdaştırıcı bunu programın
+  `open` alanıyla karşılaştırıyordu → program `open`'ı gösterilen açığa çevirince Mevcut Borç kartlı senaryolarda fark (S229 kanıt özeti: iki TZ'de 46 fark — fatura açığı ve KS8.1 Σ açık = bakiye). Bu bir
+  EŞLEME farkıdır (alanın anlamı değişti), kâhinin kuralı değil.
+- Gösterilen açık ve 'Taksitte' durumu hiç DENETLENMİYORDU. Kartın faturadan aldığı kısım kâhinde VAR: `tyk250(cari)["tuketilen"][kart][fatura]` (kartın açıldığı anda) ve `["kuyruk"][fatura]` (kartın dışında
+  kalan, kendi vadesiyle izlenen kısım — takvim kalemi Y8-4 / Y11-10). Takvim / Vade Takip / projeksiyon / gecikmiş zaten kuyruk kalanıyla (KAPSAM (c)'nin "dil modellemiyorsa" koşulu YOK — kurulur).
+- S200'ün alanı (S120 tetikli elle kart, açık elle borçların toplamı E < T) kâhinde **SK-20 — BİLİNEN SINIR (S123 = C)** ile SUSUYORDU (cari C13.4 (11) tanımsız; yalnız bakiye ve kart tutarı yazılır; d35 H8,
+  d36 J14, d40 Q8). S229'un kendi örneği bu alandadır.
+
+### Yorumlar (ders 40 — kararlardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y23-1 — eşleme (girdi §2; kural DEĞİL):** bağdaştırıcı `fatura:<ad>:acik`'ı `ownOpen`'dan (alan yoksa `open` — eski sürüm) okur; beklenti DEĞİŞMEZ. Yeni anahtarlar: `fatura:<ad>:gosterilen` (`open`),
+  `fatura:<ad>:kartta` (`inPlan`), `fatura:<ad>:taksitte` (`status` = "installment"); Faturalar LİSTESİ'nden `fatura:<ad>:liste:gosterilen` / `liste:taksitte` (S230 = A "Faturalar listesinde Kalan" — kartla
+  aynı). Alan yoksa "alan yok" (ders 4). Ham alanlar `.ham.json`'da (ders 38).
+- **Y23-2 — GÖSTERİLEN açık (S229 = A, S230 = A; KAPSAM (b)):** Mevcut Borç kartının (etkin) içine aldığı taksitsiz SATIŞ faturasında gösterilen açık = faturanın kendi açığı − kart(lar)ın o faturadan aldığı kısım.
+  "Kartın aldığı kısım" kâhinde = kartın faturadan tükettiği − kartın o faturaya düşen ödenen payı (Y10-1 / Y11-2); dolayısıyla **gösterilen açık = kuyruk kalanı** (kartın dışında kalan, kendi vadesiyle izlenen
+  kısım). Dayanak: kararın kendi sözü "(cari kartının gecikmişi ve Vade Takip ile aynı)" ve S230'un "kartın aldığı kısım kartın taksitlerinden tahsil edilir" sözü — kart taksitlerine gelen ödeme kartın payını küçültür,
+  gösterilen kısmı değil (kart ödemesi faturanın gösterilen açığını DEĞİŞTİRMEZ). `kartta` = kendi − gösterilen (KAPSAM (b) "Σ gösterilen + kartların aldığı = Σ kendi" fatura başına). Kararın örneği: F1 kendi 50.000,
+  gösterilen **20.000**, kartta **30.000**, 'Taksitte' DEĞİL. Etiket **BAŞ MİMAR** (girdideki gibi: KULLANICI KURALIYLA ÖNERİ UYGULANDI; S230 KULLANICI — iki kararın birlikte okunuşu).
+- **Y23-3 — 'Taksitte' (S229 = A "listede görünmez", S230 = A "'Taksitte' görünür"):** kart faturanın tamamını aldıysa (kuyruk kalanı 0, kendi açık > 0) gösterilen **0**, `taksitte` **true**. Kartın kısmen aldığı
+  (kuyruk kalanı > 0) ve kartın hiç almadığı faturada `taksitte` **false**. Kendi açığı 0 olan kartlı fatura (kartın aldığı kısım kartın taksitleriyle tamamen ödenmiş): gösterilen 0, kartta 0 DEĞER; durumu kararda YOK
+  (ödenmiş mi, 'Taksitte' mi) → `taksitte` SUS (Y23-6).
+- **Y23-4 — kartın ALMADIĞI fatura (KAPSAM (b); kararın alanı dışı):** kartı olmayan carinin ya da kartın içine almadığı faturanın (satış, alış, iade belgesi) gösterilen açığı = kendi açığı, `kartta` 0, `taksitte` false
+  (S110 "kendi borcu" kartının dışında kalan fatura dahil — §20 Y8-4). Liste = kart (S230 = A). Etiket kendi açığınınki.
+- **Y23-5 — S200 = A (SK-20 alanı KAPANDI; S123 = C'nin yerine — sonraki kullanıcı kuralı):** S120 tetikli elle kartta (Taksitler'den, kartın açıldığı anda O > T, tutarı T'ye eşit TEK elle borç yok — Y9-2 aynen) açık elle
+  borçların toplamı **E < T** ise kart önce bütün açık elle borçları (E'nin tamamı — sıra sorusu doğmaz), eksik **T − E**'yi taksitsiz satış FATURALARINDAN eskiden yeniye (S2: vade → belge → yazım; faturada vade = belge
+  günü — tek sıra) içine alır; son alınan fatura kısmen kartta kalır (kararın örneği: BY1 30.000 + F1'in 30.000'i kartta; F1'in 20.000'i açık, 16.02'de gecikmiş **20.000**). Kart tutarı girilen tutar (değişmez).
+  **Alan sınırı:** kartın günündeki açık borç kalemleri YALNIZ elle borç (Borç Yaz / borçlu Açılış) ve taksitsiz satış faturasıysa. Başka tür (stok veresiye satışı, karşılıksız kalemi, başka kartın ya da taksitli
+  faturanın taksiti — S135 alanı dahil) varsa kararın "eksik kısım faturalardan" sözü onların yerini söylemiyor → **SK-20 susması AYNEN** (S123 = C metniyle; d40 Q8). E = 0 (elle borç yok, kart açık faturalardan
+  küçük): kararın harfi (E < T, "eksik kısım faturalardan") kapsar → aynı kural (**okuma — baş mimarın görmesi için ayrı işaretlendi**; iz `s200e0`). Kartın sonraki ödemesinin dağılımı Y10-1 / Y11-2
+  (S122 / S126) AYNEN: içine alma sırası (önce elle borçlar, sonra faturalar) ile belge tarihi sırası ödemeyi farklı kalemlere düşürüyorsa **SK-23 (S125 = C) susması AYNEN** (d36 J14 — ödeme elle borca ↔ faturaya).
+  Kalan / gecikmiş / takvim / kart göstergeleri S120 kartının kurallarıyla (Y8-4, Y9-7). Etiket **BAŞ MİMAR** (girdideki gibi).
+- **Y23-6 — SUS (kararın söylemediği; ders 40, 43):** (i) kendi açığı 0 olan kartlı faturanın durumu (Y23-3); (ii) taksitli faturanın ("Bu Satışı Taksitlendir" — S99) gösterilen açığı / durumu — kararın konusu Mevcut
+  Borç kartı; taksitli fatura kendi kartının taksitleriyle (C13.4 (7)) — gösterilen / kartta / taksitte yazılmaz; (iii) kartlı faturanın gösterimi net görünümlü (karşı yönlü kalemli — C16.2) ya da şüpheli kayıtlı
+  (S130) caride (kendi açık ↔ net kalan / görünen tutar ile kartın payının birlikte okunuşu kararda yok); (iv) kendi açığı yazılmayan her fatura (C13.4 (11), C17, S141, S163 — bugünkü susmalar aynen kapsar).
+  `belirsiz`'e yazılır (sessizce atlanmaz).
+
+### KULLANICIYA SORULMALI (bakım 23)
+- Yeni soru yok. Y23-6 (i) UÇ DURUM (kartın aldığı kısmı kartın taksitleriyle tamamen ödenmiş fatura: 'Ödendi' mi 'Taksitte' mi) ve (ii) (taksitli faturanın gösterimi) — kararın konusu dışında; programla fark
+  görülürse sorulur (seçenekler: A 'Ödendi' / B 'Taksitte' / C uç durum böyle kalsın — BİLİNEN SINIR). Y23-5'in E = 0 okuması baş mimara AYRICA gösterilir (kararın harfi kapsıyor; para kuralı — fark görülürse
+  ders 43).
