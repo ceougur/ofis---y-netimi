@@ -4552,6 +4552,7 @@ class Model:
             kayit["s234sus"] = p[1]
             if len(p) > 2 and p[2] in self.kartlar:
                 self.kartlar[p[2]]["_s234susKart"] = p[1]  # bakım 25 (§37 Y25-4 / Y25-7): kartın tutarı / göstergeleri de seçime bağlı — SUS
+                self._iz15[self.kartlar[p[2]]["cari"]].add("sus25")  # iz — G3 sınıflaması (sonucu değiştirmez)
         elif p:
             self._s234_uygula(p, -1)
             kayit["s234"] = p
@@ -4835,6 +4836,7 @@ class Model:
                     # bakım 25 (§37 Y25-7): §3'ün kendi örneği — kartın hangi faturayı aldığı açıkça yok: aday faturanın iptali kartı kapatır mı (S206) değiştirmez mi — SUS (SK-45)
                     kt0_["_s234susKart"] = ("Mevcut Borç kartı %s açılırken (S200) birden çok fatura adaydı (%s) — kartın hangi faturayı içine aldığı kararlarda açıkça yok; aday faturanın (%s) iptali — "
                                             "KULLANICIYA SORULMALI SK-45 (§37 Y25-7)" % (no_, ",".join(adaylar_), a["fatura"]))
+                    self._iz15[f["cari"]].add("sus25")
                     s206 = [x for x in s206 if x[0] != no_]
             if self.mut == 343 and not s206 and not any(a["fatura"] in tk_ for tk_ in (t45_.get("tuketilen") or {}).values()):
                 # mutant 343 (§3): kartın içine ALMADIĞI faturanın iptali carinin Taksitler kartını fatura tutarı kadar (son taksitten) küçültür
