@@ -1,0 +1,158 @@
+{
+  "ad": "kahin-cari25-put-utc",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --mutasyonsuz --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc25/put-utc test/bagimsiz/cari/senaryolar/d57-c5-s241-s242-duzenle.json",
+  "commit": "43a5c5d61c8979fdc76a47b3384faf2a5665f72e",
+  "dal": "worktree-agent-a24e3718cfe7459df",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T20:51:11.104Z",
+  "sure_sn": 2.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 258,
+    "gecen": 197,
+    "basarisiz": 61,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 61 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] adim:dk1:durum: program \"ret\" · kâhin \"ok\" (§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)) · yanıt: invoice-not-draft Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] adim:dk2:durum: program \"ret\" · kâhin \"ok\" (§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)) · yanıt: invoice-not-draft Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] adim:dk3:durum: program \"ret\" · kâhin \"ok\" (§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)) · yanıt: invoice-not-draft Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] adim:dk5:durum: program \"ret\" · kâhin \"ok\" (§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)) · yanıt: invoice-not-draft Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] adim:dp1:durum: program \"ret\" · kâhin \"ok\" (§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)) · yanıt: invoice-not-draft Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] adim:dp2:durum: program \"ret\" · kâhin \"ok\" (§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)) · yanıt: invoice-not-draft Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] adim:dp3:durum: program \"ret\" · kâhin \"ok\" (§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)) · yanıt: invoice-not-draft Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:K1:acikEsitBakiye: program true · kâhin false (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:K1:acikToplam: program 30000 · kâhin 0 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:K1:bakiye: program 30000 · kâhin -30000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:K2:acikEsitBakiye: program true · kâhin false (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:K2:acikToplam: program 30000 · kâhin 0 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:K2:bakiye: program 30000 · kâhin -30000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:K3:acikEsitBakiye: program true · kâhin false (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:K3:acikToplam: program 30000 · kâhin 0 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:K3:bakiye: program 30000 · kâhin -30000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:K5:acikToplam: program 90000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:K5:bakiye: program 90000 · kâhin 60000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:K5:gecikmis: program 90000 · kâhin 60000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), v",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:P1:acikToplam: program 30000 · kâhin 90000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:P1:bakiye: program 30000 · kâhin 90000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:P1:gecikmis: program 20000 · kâhin 80000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), v",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:P2:acikToplam: program 30000 · kâhin 90000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:P2:bakiye: program 30000 · kâhin 90000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:P2:gecikmis: program 20000 · kâhin 80000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), v",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc25/kanit/2026-11-21/kahin-cari25-put-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a24e3718cfe7459df",
+  "ham_cikti_sha256": "247d90d4897634e7ede78888d82432b65250483ca28daaf137bdc3ecc19ae2b5",
+  "ham_cikti_bayt": 14728
+}

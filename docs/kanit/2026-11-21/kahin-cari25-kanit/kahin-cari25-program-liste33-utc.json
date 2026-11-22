@@ -1,0 +1,108 @@
+{
+  "ad": "kahin-cari25-program-utc",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc25/program-utc",
+  "commit": "0eb09b9c305ec0f8182d7181b25f3ddc7b54a4ba",
+  "dal": "worktree-agent-a24e3718cfe7459df",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T21:12:24.323Z",
+  "sure_sn": 468.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 24029,
+    "gecen": 24014,
+    "basarisiz": 15,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 15 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FQ1:gosterilen: program 20000 · kâhin 10000 (§35 Y23-2 S229 / S230 A: gösterilen açık = kendi açık − Mevcut Borç kartının aldığı kısım (= kuyruk kalanı; kartın taksitlerine gelen ödeme gösterilen kısmı değiştirmez) · Y23-5 S200 A: kart önce elle borçları, eksik kısmı fatu",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FQ1:kartta: program 60000 · kâhin 70000 (§35 Y23-2 KAPSAM (b): gösterilen + kartların aldığı = kendi açık)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FQ1:liste:gosterilen: program 20000 · kâhin 10000 (§35 Y23-2 S229 / S230 A: gösterilen açık = kendi açık − Mevcut Borç kartının aldığı kısım (= kuyruk kalanı; kartın taksitlerine gelen ödeme gösterilen kısmı değiştirmez) · Y23-5 S200 A: kart önce elle borçları, eksik kısm",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k1:kart:KQ1:kalan: program 90000 · kâhin 100000 (C13.4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:kart:KQ1:toplam: program 90000 · kâhin 100000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:takvim:fatura:FQ1: program {\"amount\":20000,\"direction\":\"in\"} · kâhin {\"amount\":10000,\"direction\":\"in\"} (§23 Y11-10 / §20 Y8-4: kartın içine aldığı satış faturası takvimde kuyruk kalanıyla (tamamen kartta → kalem değil; K6.5 (1) net))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:fatura:FQ1:gosterilen: program 20000 · kâhin 10000 (§35 Y23-2 S229 / S230 A: gösterilen açık = kendi açık − Mevcut Borç kartının aldığı kısım (= kuyruk kalanı; kartın taksitlerine gelen ödeme gösterilen kısmı değiştirmez) · Y23-5 S200 A: kart önce elle borçları, eksik kısmı fatu",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:fatura:FQ1:kartta: program 60000 · kâhin 70000 (§35 Y23-2 KAPSAM (b): gösterilen + kartların aldığı = kendi açık)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:fatura:FQ1:liste:gosterilen: program 20000 · kâhin 10000 (§35 Y23-2 S229 / S230 A: gösterilen açık = kendi açık − Mevcut Borç kartının aldığı kısım (= kuyruk kalanı; kartın taksitlerine gelen ödeme gösterilen kısmı değiştirmez) · Y23-5 S200 A: kart önce elle borçları, eksik kısm",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k2:kart:KQ1:kalan: program 90000 · kâhin 100000 (C13.4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k2:kart:KQ1:toplam: program 90000 · kâhin 100000 (B1.3 kart tutarı = tablodaki kalan)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:takvim:fatura:FQ1: program {\"amount\":20000,\"direction\":\"in\"} · kâhin {\"amount\":10000,\"direction\":\"in\"} (§23 Y11-10 / §20 Y8-4: kartın içine aldığı satış faturası takvimde kuyruk kalanıyla (tamamen kartta → kalem değil; K6.5 (1) net))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:P1:gecikmis: program 60000 · kâhin 80000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), v",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kart:fatura:FP1:kalan: program 90000 · kâhin 30000 (C13.4 / S99: kartın Kalan'ı = taksitlerin tek kuyruk kalanı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:kart:fatura:FP1:toplam: program 90000 · kâhin 30000 (S99 faturanın kendi kartı = fatura tutarı)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc25/kanit/2026-11-21/kahin-cari25-program-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a24e3718cfe7459df",
+  "ham_cikti_sha256": "7c6cf7121972ccb6c91a612b20af06142e70e17d1dc511ec2c5b82bf1a369500",
+  "ham_cikti_bayt": 81860
+}
