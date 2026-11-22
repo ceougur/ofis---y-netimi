@@ -189,6 +189,11 @@ describe("İzleyen tur 4 — S255 = A: iade / iade iptali / Düzenle / silme / S
       h.at("2026-10-21");
       await h.linked(A, f, 600);
       same(await h.views(A, k), { window: { total: 600, paid: 600, left: 0 } }, "B4a");
+      // Yazım sırası (§22): iade ödemeden ÖNCE kart dışındaki 300'ü kapatmıştı — faturanın BAĞLI kapatanı iadedir (300); tahsilatın tamamı kartın taksitlerine (fatura kartında kartın üzerinden
+      // 'Otomatik'). Kapama defterinde kart faturanın 600'ünü almış kalır (iade kart dışını kapattı — S239).
+      const closers = (await h.doc(f)).closers || [];
+      assert.deepEqual(closers.filter(c => c.mode === "linked").map(c => [c.label, c.amount]), [["Fatura", 300]], `faturanın bağlı kapatanı yalnız iade 300: ${JSON.stringify(closers.map(c => [c.label, c.amount, c.mode]))}`);
+      assert.deepEqual(h.covered(f), { [k]: 600 }, "kapama defteri: kart 600'ü almış kalır");
       const t = await h.totals(A);
       assert.deepEqual([t.balance, t.overdueDebt], [0, 0]);
       assert.equal(await h.ok(), true);
@@ -304,6 +309,27 @@ describe("İzleyen tur 4 — S255 = A: iade / iade iptali / Düzenle / silme / S
       const t = await h.totals(A);
       assert.deepEqual([t.balance, t.overdueDebt], [300, 100]);
       assert.deepEqual(h.covered(f), { [k]: 300 });
+      assert.equal(await h.ok(), true);
+    }));
+});
+
+describe("İzleyen tur 4 — S255 = A: kart tahsilatıyla ödenmiş kart + bağlı ödeme + iade", () => {
+  // B11 — F 900, kart 600 (F'nin 600'ü), kart tahsilatı 600 (kartın kendi hesabı 0 kalan), F'ye bağlı 600 (gösterilen açık 300 kapanır, fazlası 300 kuyrukta — açık borç yok → avans), sonra iade 300
+  // (karar (4): kartın açık kalanı 0 → küçülme yok, iade carinin avansı). Beklenen (elle): kart 600 · Tahsil Edilen 600 · Kalan 0 her görünümde; bakiye 900 − 600 − 600 − 300 = −600; fatura Ödendi;
+  // kart iadeyle KIRPILMAZ (iade kartın kısmını kapatmaz — sıra 3 tutulan yüzünden kesildiyse sıra 4 de korur).
+  it("B11 — kart tahsilatı 600 → bağlı 600 → iade 300: kart 600 / 600 / 0, bakiye −600", () =>
+    world("2026-09-01", async h => {
+      const { A, f, k } = await base(h, "B11");
+      await must("kart tahsilatı", h.api.post(`${W}/plans/${k}/entries`, { kind: "in", amount: "600", date: "2026-10-20", method: "cash" }));
+      h.at("2026-10-21");
+      await h.linked(A, f, 600);
+      h.at("2026-10-22");
+      await h.giveBack(f, A, 1);
+      same(await h.views(A, k), { window: { total: 600, paid: 600, left: 0 }, items: ["10-05:0", "11-05:0", "12-05:0"] }, "B11");
+      assert.deepEqual(h.own(k), { total: 600, paid: 600 }, "kartın kendi hesabı");
+      const t = await h.totals(A);
+      assert.deepEqual([t.balance, t.overdueDebt], [-600, 0]);
+      assert.equal((await h.doc(f)).payState, "paid");
       assert.equal(await h.ok(), true);
     }));
 });
