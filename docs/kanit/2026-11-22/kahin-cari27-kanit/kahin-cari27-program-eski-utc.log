@@ -1,0 +1,29 @@
+d57-c5-s241-s242-duzenle: 251/251 tuttu
+  2.5.0 kararıyla değişen beklenti: 92 denetim · farkların 0/0'i bu sınıfta
+d58-c5-s246-s243-kendi-kart-duzenle: 210/211 tuttu
+  2.5.0 kararıyla değişen beklenti: 101 denetim · farkların 1/1'i bu sınıfta
+  ✗ [BULGU KULLANICI] k1:cari:T3:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle: 177/180 tuttu
+  2.5.0 kararıyla değişen beklenti: 90 denetim · farkların 1/3'i bu sınıfta — SINIF DIŞI 2
+  ✗ [BULGU KULLANICI] k1:cari:U7:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:mizan:120: program 200000 · kâhin 0 (B2.6 kâhinin yazmadığı hesap)
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:mizan:600: program -410000 · kâhin 0 (B2.6 kâhinin yazmadığı hesap)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 283 denetim, 3 senaryo · programla farkların 2'i bu sınıfta, 2'i SINIF DIŞI
+
+ÖZET [2.5.0]: 3 senaryo, 642 denetim, 4 fark (BULGU 4), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc27-a91/program-eski-utc
+638/642 denetim geçti

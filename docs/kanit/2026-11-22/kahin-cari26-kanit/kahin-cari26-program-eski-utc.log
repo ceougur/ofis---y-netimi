@@ -1,0 +1,48 @@
+d56-c5-s238-s240-iade-ve-secilmeyen: 972/972 tuttu
+  2.5.0 kararıyla değişen beklenti: 496 denetim · farkların 0/0'i bu sınıfta
+d57-c5-s241-s242-duzenle: 254/258 tuttu · YAPIM AŞAMASI 4 (Ç7b 4)
+  2.5.0 kararıyla değişen beklenti: 99 denetim · farkların 0/0'i bu sınıfta
+d58-c5-s246-s243-kendi-kart-duzenle: 210/233 tuttu
+  2.5.0 kararıyla değişen beklenti: 124 denetim · farkların 21/23'i bu sınıfta — SINIF DIŞI 2
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] adim:dr4:durum: program "ret" · kâhin "ok" (§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)) · yanıt: invoice-locked Bu faturanın 1 iade faturası var; düzenlenmez. Önce iadeleri iptal edin.
+  ✗ [BULGU KULLANICI] k1:cari:R1:gecikmis: program 20000 · kâhin 60000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU KULLANICI] k1:cari:R2:gecikmis: program 40000 · kâhin 60000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU KULLANICI] k1:cari:R3:gecikmis: program 20000 · kâhin 60000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:R4:acikToplam: program 60000 · kâhin 90000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:cari:R4:bakiye: program 60000 · kâhin 90000 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU KULLANICI] k1:cari:R4:gecikmis: program 0 · kâhin 30000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU KULLANICI] k1:cari:T2:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [BULGU KULLANICI] k1:cari:T3:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A))
+  ✗ [İNCELE AJAN] k1:fatura:FR4:acik: program 60000 · kâhin 90000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) (ajan ayrıntısı: iade))
+  ✗ [BULGU KULLANICI] k1:kart:fatura:FR1:kalan: program 80000 · kâhin 20000 (C13.4 / S99: kartın Kalan'ı = taksitlerin tek kuyruk kalanı)
+  ✗ [BULGU PLAN] k1:kart:fatura:FR1:toplam: program 90000 · kâhin 30000 (S99 faturanın kendi kartı = fatura tutarı)
+  ✗ [BULGU KULLANICI] k1:kart:fatura:FR2:kalan: program 120000 · kâhin 90000 (C13.4 / S99: kartın Kalan'ı = taksitlerin tek kuyruk kalanı)
+  ✗ [BULGU KULLANICI] k1:kart:fatura:FR2:kapali: program false · kâhin true (§36 Y24-1 / Y24-2 KG-23 = A: taksitli faturanın kendi kartı Kartı Kapat ile kapalı)
+  ✗ [BULGU PLAN] k1:kart:fatura:FR2:toplam: program 120000 · kâhin 90000 (S99 faturanın kendi kartı = fatura tutarı)
+  ✗ [BULGU KULLANICI] k1:kart:fatura:FR3:kalan: program 80000 · kâhin 20000 (C13.4 / S99: kartın Kalan'ı = taksitlerin tek kuyruk kalanı)
+  ✗ [BULGU KULLANICI] k1:kart:fatura:FR3:kapali: program false · kâhin true (§36 Y24-1 / Y24-2 KG-23 = A: taksitli faturanın kendi kartı Kartı Kapat ile kapalı)
+  ✗ [BULGU PLAN] k1:kart:fatura:FR3:toplam: program 90000 · kâhin 30000 (S99 faturanın kendi kartı = fatura tutarı)
+  ✗ [BULGU BAŞ MİMAR] k1:kart:fatura:FR4:kalan: program "okunamadı" · kâhin 60000 (C13.4 / S99: kartın Kalan'ı = taksitlerin tek kuyruk kalanı · §36 Y24-4)
+  ✗ [BULGU KULLANICI] k1:kart:fatura:FR4:kapali: program "okunamadı" · kâhin false (§36 Y24-1 / Y24-2 KG-23 = A: taksitli faturanın kendi kartı Kartı Kapat ile kapalı)
+  ✗ [BULGU BAŞ MİMAR] k1:kart:fatura:FR4:toplam: program "okunamadı" · kâhin 60000 (S99 faturanın kendi kartı = fatura tutarı · §36 Y24-4 KAPSAM (b): iade / Düzenle ile küçüldü)
+  ✗ [BULGU KULLANICI] k1:kart:fatura:FT2:kapali: program false · kâhin true (§36 Y24-1 / Y24-2 KG-23 = A: taksitli faturanın kendi kartı Kartı Kapat ile kapalı)
+  ✗ [BULGU PLAN] k1:kart:fatura:FV1:toplam: program 60000 · kâhin 30000 (S99 faturanın kendi kartı = fatura tutarı)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 719 denetim, 3 senaryo · programla farkların 21'i bu sınıfta, 2'i SINIF DIŞI
+
+ÖZET [2.5.0]: 3 senaryo, 1463 denetim, 23 fark (BULGU 22), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 4 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: Ç7b 4; 4 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc26-aba/program-eski-utc
+1436/1459 denetim geçti (4 yapım aşaması ayrı sayıldı — 4 denetim + 0 okuma hatası; geçti sayılmadı)

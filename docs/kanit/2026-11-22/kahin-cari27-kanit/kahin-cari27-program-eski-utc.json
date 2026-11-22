@@ -1,0 +1,53 @@
+{
+  "ad": "kahin-cari27-program-eski-utc",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc27-a91/eski/test/bagimsiz/cari/kos.mjs --mutasyonsuz --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc27-a91/program-eski-utc test/bagimsiz/cari/senaryolar/d57-c5-s241-s242-duzenle.json test/bagimsiz/cari/senaryolar/d58-c5-s246-s243-kendi-kart-duzenle.json test/bagimsiz/cari/senaryolar/d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle.json",
+  "commit": "fe9126b208487402d7687bb8c029805e4136ec83",
+  "dal": "worktree-agent-a911ce76a62d46cac",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-22T06:31:20.185Z",
+  "sure_sn": 16.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 642,
+    "gecen": 638,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:T3:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vades",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:U7:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vades",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:mizan:120: program 200000 · kâhin 0 (B2.6 kâhinin yazmadığı hesap)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:mizan:600: program -410000 · kâhin 0 (B2.6 kâhinin yazmadığı hesap)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc27-a91/kanit/2026-11-22/kahin-cari27-program-eski-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a911ce76a62d46cac",
+  "ham_cikti_sha256": "202a4eedaebd9b7db17eb68e6fe1a9850a81e2329e280b9fec5c38dce0e5b039",
+  "ham_cikti_bayt": 2933
+}

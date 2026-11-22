@@ -66,6 +66,12 @@
    kendi kartlı fatura, iki kart, Yeniden Aç), d54 (açık kart — aynı senaryolar), d55 (iade iptalinde geri gelen taksit kendi vadesiyle; küçülmenin fazlası avans) elle tabloları; mutantlar 334–340 DEĞERLE.
 25. Bakım 25 (§37; S238 / S239 / S240 / S241 / S242 = A, §3): d56 (S238 kapanmış kartta, S239 kısmen kartta faturaya iade — dış önce, S240 çok kalemli kart, §3 seçilmeyen faturanın iadesi / iptali; SK-45 / SK-46 SUS)
    ve d57 (Düzenle — S241 fazlası avans açık / kapanmış / kendi kartı, S242 artış kartı değiştirmez) elle tabloları; mutantlar 341–347 (344 yok — bağdaştırıcı mutantı kos.mjs'te) DEĞERLE.
+26. Bakım 26 (§38; S246 = B, S235 = B, §2 SUS (SK-48), S243 = A, S244 / S245 / S247 / S248 = C): d56 N1 / N2 (S243 = A — en eski fatura kartta; SK-45 SUS kalktı), d57 K3 (SK-48 SUS) / P1 (S246 = B — kendi kartı yeni tutarla)
+   ve d58 (kendi kartında Düzenle: R1 ödemeli artış — okuma Y26-3, R2 S235 = B kararın örneği, R3 / R4 SK-49 SUS, T1 / T2 SK-48 SUS, T3 açık tahsilatsız azaltma §36 KAPSAM (b) + (e); N3 S243 elle borçlu kolu) elle tabloları;
+   mutantlar 348–354 DEĞERLE (351 / 353 / 354 SUS kuralı — `elleYok` / `elleBelirsiz` ile); 347 kaldırıldı; V1 / V2 S245 = C SUS.
+27. Bakım 27 (§39; S249 = A, S251 = A, S250 = C): d57 K3 (S249 = A kararın örneği — kart 3 × 100, fazla 300 avans), d58 T1 / T2 / T3 (S249 (a) / (b) / (c) — kart Düzenle'nin planıyla yeniden kurulur) ve R4 (S251 = A — Düzenle
+   ret, sayılar değişmez), yeni d59 (U1 / U2 / U4 S249 kolları, U3 SK-51 SUS, U5 / U6 S251 Mevcut Borç kartlı / kartsız, U7 iade iptalinden sonra olağan kural) elle tabloları; mutantlar 351 (S249 B) ve 354 (S251 B) yeni
+   anlamıyla DEĞERLE (SUS kuralı DEĞİL artık), 355 / 356 DEĞERLE, 357 (SK-51 SUS kuralı) `elleYok` / `elleBelirsiz` ile.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
@@ -337,7 +343,7 @@ def main():
         eski_sk = [b for b in _m.son_belirsiz if "SK-9 … SK-12" in b or "(SK-13;" in b]
         denetle("%s SK-9 … SK-13 susması yok (S102–S105 A, S99 A)" % ad, not eski_sk, json.dumps(eski_sk[:2], ensure_ascii=False))
     # 2. mutantlar 200–223 (… bakım 20: 313–316)
-    SUSMA_MUTANTLARI = {316, 324, 347}  # bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 25 (§37 — SK-45): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
+    SUSMA_MUTANTLARI = {316, 324, 353, 357}  # bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 26 (§38 — SK-47; 347 KALDIRILDI — S243 = A ile kural oldu) / bakım 27 (§39 — SK-51; 351 / 354 S249 / S251 ile DEĞERLE): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
     for n, ad in M.MUTASYONLAR.items():
         if n < 200:
             continue

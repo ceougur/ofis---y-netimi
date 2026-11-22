@@ -1,0 +1,38 @@
+{
+  "ad": "kahin-cari26-program-utc",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc26-aba/program-utc",
+  "commit": "1d6e82a30dac7c02eb4d55318022f29bfbe318e1",
+  "dal": "worktree-agent-aba92b2d7bf349903",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-22T05:29:20.575Z",
+  "sure_sn": 471.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 24354,
+    "gecen": 24353,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:T3:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vades",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc26-aba/kanit/2026-11-22/kahin-cari26-program-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aba92b2d7bf349903",
+  "ham_cikti_sha256": "962ba7428232d86ce7a95be050ec4981d374a18b512d96cb1fbe09075de9e5a4",
+  "ham_cikti_bayt": 80366
+}
