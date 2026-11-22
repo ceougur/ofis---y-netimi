@@ -1,0 +1,10 @@
+G2 Europe/Istanbul · commit b68b2f97  · 02:31:26 · yük 3.44 2.59 2.85 13/186 15146
+çıkış 0 · 03:08:53
+# tests 3527
+# suites 848
+# pass 3527
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2246658.032123

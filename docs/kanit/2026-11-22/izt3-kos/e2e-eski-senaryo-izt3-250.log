@@ -1,0 +1,32 @@
+  ✓ kurulum: stok iadesi kartı 900 → 600 küçülttü (veri tabanı): 600
+
+■ A) Gözcü kart penceresini açar: Kalan ₺600,00
+  ✓ gözcü kart penceresi Kalan ₺600,00: ₺600,00
+
+■ B) Yönetici iadeyi Stok penceresinden düzeltir (Miktar 1 → 2): kart 300; gözcünün kartı kendiliğinden ₺300,00 (bekçi — tabanda cari olayıyla da)
+  ✓ kart 300 (veri tabanı): 300
+  ✓ gözcü kart penceresi Kalan ₺300,00 (dokunmadan): ₺300,00
+
+■ C) Yönetici iadeyi siler: kart 900; gözcünün kartı kendiliğinden ₺900,00 (bekçi)
+    [soru] "Hareketi Sil" → Sil (beklenen soru):  × ONAY Hareketi Sil Giriş (2 Adet) silinecek; mevcut miktar ve cari bakiyesi yeniden hesaplanır. Yönetim → Silinenler’d
+  ✓ kart 900 (veri tabanı): 900
+  ✓ hareket silindi (veri tabanı)
+  ✓ gözcü kart penceresi Kalan ₺900,00 (dokunmadan): ₺900,00
+
+■ D) Yönetici Yönetim › Silinenler'den Geri Yükler: kart 300; gözcünün kartı kendiliğinden ₺300,00 (tabanda ₺900,00'da kalıyordu)
+  ✓ kart 300 (veri tabanı): 300
+  ✓ hareket geri geldi (veri tabanı)
+  ✗ gözcü kart penceresi Kalan ₺300,00 (dokunmadan; tabanda ₺900,00 kalıyordu): ₺900,00
+
+■ E) Gözcü Taksitler LİSTESİNDE: yönetici yeniden siler (₺900,00) ve geri yükler (₺300,00) — liste kendiliğinden yenilenir
+  ✓ liste satırı (Tutar) ₺300,00: 1Ekran İzt3 KartıGrupsuz · kayıt 02.09.2026₺300,00₺0,00₺300,0005.10.20261. taksit · 36 gün geciktiGecikti1 taksit · ₺300,00
+    [soru] "Hareketi Sil" → Sil (beklenen soru):  × ONAY Hareketi Sil Giriş (2 Adet) silinecek; mevcut miktar ve cari bakiyesi yeniden hesaplanır. Yönetim → Silinenler’d
+  ✓ kart 900 (veri tabanı): 900
+  ✓ liste satırı ₺900,00 (dokunmadan): 1Ekran İzt3 KartıGrupsuz · kayıt 02.09.2026₺900,00₺0,00₺900,0005.10.20261. taksit · 36 gün geciktiGecikti2 taksit · ₺600,00
+  ✓ kart 300 (veri tabanı): 300
+  ✗ liste satırı ₺300,00 (dokunmadan; tabanda ₺900,00 kalıyordu): 1Ekran İzt3 KartıGrupsuz · kayıt 02.09.2026₺900,00₺0,00₺900,0005.10.20261. taksit · 36 gün geciktiGecikti2 taksit · ₺600,00
+  ✓ Mutabakat Testi temiz
+  ✓ bakiye 900 − 600 = 300 (API)
+  ✓ sayfa hatası yok
+
+✗ senaryo-izt3-250: 16 geçti, 2 kaldı

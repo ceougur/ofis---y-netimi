@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: İzleyen tur 3 — İş 2: faturasız stok iadesi kartı değiştirince öbür ekrana 'plans' olayı (planId'li)
+    # Subtest: S0 (taban bekçisi): yeni stok iadesi kartı 900 → 600 küçültür ve 'plans' yayımlar
+    ok 1 - S0 (taban bekçisi): yeni stok iadesi kartı 900 → 600 küçültür ve 'plans' yayımlar
+      ---
+      duration_ms: 2431.863298
+      type: 'test'
+      ...
+    # Subtest: S1: iade düzeltmesi 1 → 2 kartı 600 → 300 küçültür → öbür ekrana 'plans:K' (tabanda yok)
+    ok 2 - S1: iade düzeltmesi 1 → 2 kartı 600 → 300 küçültür → öbür ekrana 'plans:K' (tabanda yok)
+      ---
+      duration_ms: 3146.160559
+      type: 'test'
+      ...
+    # Subtest: S2: iade silinince kart 600 → 900 geri büyür → öbür ekrana 'plans:K' (tabanda yok)
+    ok 3 - S2: iade silinince kart 600 → 900 geri büyür → öbür ekrana 'plans:K' (tabanda yok)
+      ---
+      duration_ms: 3078.728116
+      type: 'test'
+      ...
+    # Subtest: S3: silinen iade Silinenler'den geri yüklenince kart 900 → 600 yeniden küçülür → öbür ekrana 'plans:K' ve 'accounts@A' (tabanda ikisi de yok)
+    ok 4 - S3: silinen iade Silinenler'den geri yüklenince kart 900 → 600 yeniden küçülür → öbür ekrana 'plans:K' ve 'accounts@A' (tabanda ikisi de yok)
+      ---
+      duration_ms: 3124.631596
+      type: 'test'
+      ...
+    # Subtest: S4 (bekçi): kartı değiştirmeyen stok hareketi (peşin satış) düzeltilip silinince 'plans' olayı YOK (bugünkü gibi)
+    ok 5 - S4 (bekçi): kartı değiştirmeyen stok hareketi (peşin satış) düzeltilip silinince 'plans' olayı YOK (bugünkü gibi)
+      ---
+      duration_ms: 3271.78316
+      type: 'test'
+      ...
+    1..5
+ok 1 - İzleyen tur 3 — İş 2: faturasız stok iadesi kartı değiştirince öbür ekrana 'plans' olayı (planId'li)
+  ---
+  duration_ms: 15055.101048
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15560.638397
