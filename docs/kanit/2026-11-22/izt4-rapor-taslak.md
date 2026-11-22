@@ -14,5 +14,5 @@ Taban 6a1d19d1 · dal worktree-agent-ad3ee8a705a609628 · not defteri `/tmp/clau
 8. v2.4.9 verisi: kartsız 4 sınıf FARK YOK; bakiye hiçbir sınıfta değişmedi; fark yalnız 'kart + bağlı ödeme' sınıflarında (`izt4-kos/v249-fark.md`).
 9. Temiz 100 bin veride 1.484 carinin kuyruk sonucu eski = yeni (0 fark) — `izt4-kos/hiz/esdeger-fark.txt`.
 10. Kâhinler iki TZ: cari 24.613 / 24.613 (0 fark), defter 187 / 187; yapım listesi 0 → 0.
-11. Komşular (367 dosya): UTC 3.984 / 3.984; İstanbul — ilk koşu süre sınırında kesildi (495 üst düzey sınama, kırmızı yok), yeniden koşuluyor.
+11. Komşular (367 dosya, d32aca83): UTC 3.984 / 3.984; İstanbul 3.984 / 3.984 (ilk İstanbul koşusu süre sınırında kesilmişti — 495 üst düzey sınama, kırmızı yok; yeniden tam koşuldu). Ekran d32aca83'te 21/21.
 12. Hız: `izt4-kos/hiz/tablo-2.md` (3 tur, d32aca83) + kuyruk mikro ölçümü (848 kartlı cari, `mikro2-sonuc.txt`: en iyi 13.443,7 → 13.718,6 ms, ortanca 16.085,3 → 14.710,5 ms).
