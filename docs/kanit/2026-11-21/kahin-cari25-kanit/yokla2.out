@@ -1,0 +1,5 @@
+(node:31365) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+taksitli ayrıntı payment {"cash":[],"cheques":[],"endorse":[],"mode":"installments","installments":{"count":3,"firstDue":"2026-10-05","everyMonths":1},"rest":300} planId plan-0ca642a9-fbf8-4e33-9afd-b3e5d1925f3d dueDate 2026-12-05
+edit (mode, installments ayrıntıdan) 200 {"open":900,"payableTotal":900,"planId":"plan-97a6be65-9e53-409b-817a-b217f01f0b82"}
+sonra {"open":900,"status":"issued","payment":{"cash":[],"cheques":[],"endorse":[],"mode":"installments","installments":{"count":3,"firstDue":"2026-10-05","everyMonths":1},"rest":900}} kartlar [{"totals":{"total":900,"planned":900,"unplanned":0,"paidIn":0,"paidOut":0,"paid":0,"remaining":900,"ownPaid":0,"ownRemaining":900,"extra":0,"overdue":600,"overdueCount":2,"returned":0,"queueRemaining":900,"accountPaid":0,"overdueRest":0,"overdueExtras":[],"ownOverdue":600},"status":"active"}]

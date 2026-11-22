@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-cari25-oz-ist",
+  "komut": "python3 -I -B test/bagimsiz/cari/oz-test.py",
+  "commit": "43a5c5d61c8979fdc76a47b3384faf2a5665f72e",
+  "dal": "worktree-agent-a24e3718cfe7459df",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T20:51:27.822Z",
+  "sure_sn": 94.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8298,
+    "gecen": 8298,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc25/kanit/2026-11-21/kahin-cari25-oz-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a24e3718cfe7459df",
+  "ham_cikti_sha256": "b26d65eff7e75a4ea425cdf5f6c4b8f96fd25dcbc4fbd42ecef7bc545dee0225",
+  "ham_cikti_bayt": 35392
+}

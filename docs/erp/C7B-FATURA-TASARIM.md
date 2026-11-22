@@ -825,3 +825,83 @@ kapalı kart değişmez), sonra `trimCovers` (iadedeki gibi). Kesim kaydı Düze
   kuyruk kartı EN ESKİ faturaya (s2), kapama defteri EN YENİ faturaya (newestFirst) bağlıyor. Örnek: A 600 (01.09), B 600 (02.09), kart 600 (03.09): ekranda A 'Taksitte', B 'Gecikti'; ama A'nın İptal Et'i kartı
   değiştirmiyor, B'nin İptal Et'i kartı KAPATIYOR (0 / K0; bakiye 600 — A'nın borcu kartsız kalır); iade de aynı ayrışmayla yanlış kartı küçültür. Tek yardımcı (kapama defterinin seçimi S110 / S120'ye
   getirilmeli) yazma yollarının (iade, iptal, Düzenle) davranışını değiştirir — bu turun kapsamı dışında.
+
+## 20. İzleyen tur 2 (21.11.2026; görev metni `docs/devir/2.5.0-DEVAM/izt2-istem.txt`) — S241, kapsam seçimi tek yardımcı, Düzenle azaltma hızı, iade Düzenle'si, faturasız stok iadesi — KODDAN ÖNCE yazıldı
+Kararlar (görev metninden AYNEN): karar (4) 2B-S3 = A; (6) 2B-S5 / S10 = A; S110 = A; S120 = A; S234 = A; S238 = A; S241 = A ("fazlası carinin avansı — iadeyle AYNI (karar (4) 2B-S3 = A); Düzenle kesintisi iade
+kesintisi gibi kayda geçer, iki görünüm aynı sayıyı verir (kart 600 / Tahsil Edilen 600 / Kalan 0; avans 300)"); S242 = A ("bugünkü gibi kalsın — artış kartı büyütmez, faturanın vadesiyle ayrı açık durur");
+BAŞ MİMAR KARARI 21.11 18:28 (1)–(7). Taban 288b91dc (izt-sinama). Bugünkü davranış programın kendisiyle (yoklama not defteri `izt2-a00/probe2/p1.mjs`, çıktı `p1-taban.txt`; kopyası docs/kanit/2026-11-21/izt2-kos/).
+
+### 20.1 S241 = A — Düzenle azalışı iadeyle AYNI (`routes/invoices.mjs editInvoice`, `lib/cover-scope.mjs withEditCuts`, `lib/account-lines.mjs returnCuts`, `lib/obligation-input.mjs`)
+- Bugün (taban): kart 900 (3 × 300), kart tahsilatı 600, Düzenle 900 → 300 → kartın kendi hesabı 600 / 600 / 0 (shrinkPlan kalanla sınırlı keser — karar (4)), ama Tek Yükümlülük Kuyruğu görünümü (kart penceresi,
+  cari kartı özeti, Taksitler) Tahsil Edilen 300 / Kalan 300; bakiye −300. Kök neden: iadede asıl fatura defterde 900 kalır, iade belgesi kendi anında alacak notudur ve kesintisi (coverCuts) kayıtlıdır —
+  kuyruk kartın kapsamını açıldığı andaki tutarla kurar (§19.2: holds / extraCap). Düzenle'de fatura satırı 300'e iner, geçmiş kaybolur: kartın kapsamı 300 görünür, kartın 600'lük taksitinin 300'ü
+  "para dışı kapanmış eksik" sayılıp kırpılır (EK-2B 32).
+- Kural: Düzenle bir Mevcut Borç kartını kestiyse azalış FATURANIN `payment_json.editCuts` listesine kayda geçer: `{ at, date, amount (azalış TL), cuts: { kart: kesilen TL }, items: { kart: [kesilen taksitler] } }`
+  (iade belgesinin coverCuts / coverCutItems'ının aynısı). İki hesap (kuyruk `buildObligations` / `doubtfulBefore`, kapama defteri `settleLedger`) girdiyi okurken TEK yardımcıyla (`withEditCuts`) her kaydı o
+  anda faturaya gelen bir İADE gibi görür: faturanın borç satırı kaydedildiği andaki tutara döner (bugünkü + kayıtlı azalışlar), her azalış kendi anında faturaya bağlı yapay bir alacak notudur (kimlik
+  `edit-cut:<fatura>:<n>`; iade belgesi gibi asıl faturaya mahsup edilir, mahsup edilemeyen kalanı carinin avansıdır). Kartın kapsamı (`coverTotal`) kayıtlı kesintiyi iade kesintisi gibi geri ekler
+  (`account-lines returnCuts`). Sonuç P-2 (iade) ile birebir: kart 600 / Tahsil Edilen 600 / Kalan 0 iki görünümde, avans 300, bakiye −300. Yapay belgeler sonuçlardan silinir; bakiye, ekstre, yevmiye,
+  Mutabakat Testi DEĞİŞMEZ (veri tabanına satır yazılmaz).
+- Kayıt ne zaman: yalnız (i) Düzenle tutarı azalttı VE bir kart kesildi, ya da (ii) faturada önceden kayıt var (sonraki her azalış da kayda geçer — yoksa faturanın kaydedildiği andaki tutarı yanlış kurulur).
+  Kesim ölçümü önceki kayıtlarla (iade kaydının ölçümüyle aynı sıra); yeni kayıt ölçümden sonra eklenir.
+- Artış (S242 = A): kart büyümez. Kayıtlı faturada artış kayıtların azalışını EN YENİDEN geriye artış kadar düşürür (kesim tutarları aynen — kartın küçülmesi kalıcıdır); faturanın kaydedildiği andaki
+  tutarı doğru kalır, artan kısım faturanın kendi vadesiyle açık durur. Örnek: K1'den sonra 300 → 900 → kart 600 / 600 / 0, faturanın 300'ü açık, bakiye 300.
+- Kayıt düşer (BİLİNEN SINIR, rapor): Düzenle'de cari değişirse ya da fatura taksitliye dönerse (kendi kartı olan faturada yapay iade kendi kartın hedefini bozardı).
+- Okuyucular (tarama `editCuts|withEditCuts|returnCuts|coverCuts` server/** + test/**): kuyruk (fatura durumu, gecikmiş, kart penceresi, cari kartı özeti, Taksitler, zil, Vade Takip, WhatsApp seçimi —
+  hepsi `buildObligations`), şüpheli ayırıcısı (`doubtfulBefore`), kapama defteri (iade / İptal Et / Düzenle / iptal penceresi — `coverState`), kart kapsamı (`account-lines returnCuts` → `lib/accounts.mjs`
+  coverTotal / coverGross), açılış onarımı (`batchSettleInput` — kendi kartlı fatura; kayıt taşımaz). Yedek / geri yükleme: alan `invoices.payment_json` içinde (göç yok).
+
+### 20.2 Kapsam SEÇİMİ tek yardımcıda (`lib/cover-scope.mjs chooseCover`; `lib/obligation-queue.mjs coverEvent`, `lib/invoice-settle.mjs coverPlans`)
+- Bugün (taban; önceki turun yoklaması `izt-kos/ayr.mjs`): A 600 (01.09), B 600 (02.09), elle kart 600 (03.09) — kuyruk kartı A'ya (S120 kolu, elle borç yok → S123 = C: öbür borçlar s2 sırasıyla),
+  kapama defteri B'ye (v2.0.23 newestFirst) bağlıyor: ekranda A 'Taksitte', B 'Gecikti'; B'nin İptal Et'i kartı KAPATIYOR (A kartsız kalıyor), A'nın İptal Et'i kartı değiştirmiyor; iade yanlış kartı küçültüyor.
+- Kural (S110 = A, S120 = A; S123 = C — tur 2b-2'den beri kuyrukta): açık borç kart tutarını aşıyorsa satışla açılan kart o satışı, elle kartta tutarı karta eşit TEK elle borç varsa onu, yoksa ELLE borçları
+  eskiden yeniye (artan kapasite öbür borçlara s2 sırasıyla); aşmıyorsa (ya da Excel / Tablodan Aktar kartı) bütün açık borç s2 sırasıyla. Seçim kuyruktan AYNEN `chooseCover` / `ownSaleOf`'a taşındı;
+  kapama defteri aynı işlevi kendi kalemleriyle çağırır (tür, vade — elle borçta Vade Tarihi: `accountSettleInput(..., { withDue: true })`, kayıt anı, yazım sırası; carinin açık borcu = adaylar + öbür
+  kartların kapsadığı açık kısım + taksitli faturaların açığı + ayrı kartların açığı). İade, İptal Et, Düzenle ve iptal penceresi kart paylarını kapama defterinden okur → hepsi seçimi buradan alır.
+- Satışla açılan kartta (en sık yol) sonuç değişmez (satış en yeni borçtur — eski newestFirst de onu seçiyordu). Değişen: elle kart + birden çok açık borç (S110-elle, S120, S123).
+- Kararın söylemediği alt durum çıkarsa kodla karar verilmez (ders 43) — rapora.
+
+### 20.3 Düzenle azaltma hızı (`routes/invoices.mjs editInvoice`; ders 47)
+- Bugün: temiz 100 bin veride 6,3–7 sn, olay döngüsü ~7 sn kilitli (Ç7b öncesinde de). Önce CPU profili (yoklama `izt2-a00/hiz/prof.mjs`), kök neden ölçümle; düzeltme davranışı değiştirmeden,
+  eşdeğerlik testiyle, aynı veri kopyasıyla önce / sonra. Yapısal (göç, iş parçacığı) gerekiyorsa kodlanmaz, ölçümle raporlanır.
+
+### 20.4 İade Düzenle'si — kendi kartın aynı taksitlere geri büyümesi (`routes/invoices.mjs undoReturnCuts`)
+- Bugün: iade Düzenle'sinde kapsayan kart kayda göre geri büyür (`restoreCuts`), faturanın KENDİ kartı ise yeni iadeyle aradaki fark kadar SON taksite büyür. Örnek: taksitli fatura 900 (05.10 / 05.11 / 05.12),
+  tahsilat 300, iade 600 (05.11 + 05.12 kesilir), iade Düzenle 2 → 1 → kart 05.10 600 (20.11 gecikmiş 300).
+- Kural (S238 = A'nın komşusu — ders 10): iade iptali ve iade Düzenle'si TEK yardımcıdan (`undoReturnCuts`): iadenin eski etkileri geri alındıktan SONRA kapsayan kartlar (coverCutItems) ve kendi kart
+  (ownCutItems) kayıtlı taksitlere geri büyür; yeni iade yazılınca karar (4) ile yeniden kesilir, kayıt tam yazılır. Örnek → 05.10 300 + 05.12 300 (iade 300 yalnız 05.11'i keser), 20.11 gecikmiş 0.
+  Kendi kartın kaydı olmayan eski iadede Düzenle bugünkü gibi (fark son taksite); iptalde bugünkü gibi (son taksite).
+
+### 20.5 Faturasız stok iadesinin kesinti kaydı (`routes/stock.mjs`)
+- Önce yoklanır (sayılarla): stok iadesi kartı küçültüyor mu (trimCovers), hareket silinince / düzeltilince kart geri büyüyor mu, hangi taksite. Kararın dışındaysa düzeltilir (kayıtlı taksitlere geri — S238 = A);
+  iadeyle küçülen taksit sonradan elle düzenlenir / silinirse ve iade sonra silinirse ne olduğu sayılarla yazılır; kararın söylemediği → KULLANICIYA SORULMALI.
+
+### 20.6 Nasıl bozulur? (önce yazıldı; testler buradan)
+1. S241: açık / Borçta Kalsın kapalı kart, tahsilat 600 + Düzenle 900 → 300 → dört görünüm (kendi hesap, pencere, cari kartı özeti, Taksitler) 600 / 600 / 0; bakiye −300; ileride gecikmiş 0.
+2. S241 sonra artış (300 → 900): kart değişmez; artan kısım faturanın vadesiyle; bakiye doğru.
+3. Kayıtlı faturada ikinci azalış (kart kesilmese de) kayda geçer; iki azalış + bir artış sırası.
+4. Kayıtlı faturanın iadesi / İptal Et / silinmesi: yapay belge iptal edilmiş faturada yok (yalnız kesilmiş faturada); İptal Et kartı S206 / S211 ile kapatır.
+5. Kapsam seçimi: A/B iki fatura + elle kart — İptal Et (A / B), iade (A / B); S110-elle; S120; satışla açılan kart (değişmez); Excel / Tablodan Aktar kartı (eski kural).
+6. İade Düzenle'si kendi / kapsayan kart: kayıtlı taksitlere geri, yeni iadeyle yeniden kesim; kaydı olmayan eski iade bugünkü gibi.
+7. Kilitli dönem: Düzenle / iade / iptalin tarih kilidi aynen; yedek → geri yükleme: editCuts / ownCutItems / coverCutItems taşınıyor, geri yüklemeden sonra iade iptali aynı taksite büyüyor.
+8. Eşdeğerlik: kayıtsız / kesintisiz girdide kuyruk ve kapama sonucu AYNEN (withEditCuts girdiyi değiştirmez; seçim satışla açılan kartta aynı).
+
+### 20.7 Kod ve sonuç (kodla birlikte; kanıt docs/kanit/2026-11-21/izt2-*)
+- `lib/cover-scope.mjs` (YENİ, saf): `s2`, `ownSaleOf`, `chooseCover` (kuyruktan AYNEN taşınan seçim) + `editCutsOf`, `withEditCuts` (S241). `lib/obligation-queue.mjs`: `coverEvent` seçimi `chooseCover`'dan;
+  `buildObligations` / `doubtfulBefore` girdisi `withEditCuts`'tan (yapay belgeler sonuçtan silinir). `lib/invoice-settle.mjs`: `settleLedger` = `withEditCuts` + `settleLedgerOnce`; kapsam `coverChoice` (newestFirst KALKTI;
+  `dueDates` girdisi). `lib/obligation-input.mjs`: fatura sorgularına `editCuts` sütunu; `accountSettleInput(..., { withDue })`. `lib/account-lines.mjs returnCuts`: Düzenle kesintileri kapsama.
+  `routes/invoices.mjs`: `settledFor` withDue; `editInvoice` → `editCutsFor` / `putEditCuts` / `shrinkCoversByEdit` (kesim + taksit kaydı döner); `undoReturnCuts` (iade iptali + iade Düzenle'si — İş 4).
+  `routes/stock.mjs`: `trimReturn` / `undoReturnCuts` (iz `stock.return.cuts`; POST / PUT / DELETE / Silinenler'den geri yükleme — İş 5).
+- Sonuç (yoklama `izt2-kos/p1.mjs`; taban `p1-taban.txt` ↔ yeni `p1-yeni.txt`; sınama `test/izt2-izleyen-tur-250.test.mjs` 17; ekran `test/e2e/senaryo-izt2-250.mjs` 24):
+  S241 kart penceresi 300 / 300 → 600 / 600 / 0 (kendi hesap 600 / 600 / 0), bakiye −300; kapsam: A / B / elle kart 600 → kapama defteri A'yı kapsar (tabanda B), B'nin İptal Et'i kartı değiştirmez (tabanda
+  kapatıyordu), A'nın İptal Et'i kartı kapatır (tabanda değiştirmiyordu), A'ya iade kartı 300'e indirir, B'ye iade kartı değiştirmez (tabanda 300'e indiriyordu); iade Düzenle'si kendi kartta 10.10 600 → 10.10 300 +
+  10.12 300; stok iadesi silinince kart aynı taksitlere geri (tabanda geri büyümüyordu — 20.11 gecikmiş 600 → 300), düzeltme 1 → 2 kartı küçültür (tabanda küçültmüyordu), geri yükleme yeniden küçültür.
+- İş 3 (Düzenle azaltma hızı) KODLANMADI — kök neden dosya sınırı dışında (`lib/integrity-scope.mjs`): CPU profili 8,0 sn'nin ~7,1 sn'si kapının TAM denetimi (`integrity.mjs check → run`); neden
+  `stock_moves: kimlik değişti` — Düzenle faturanın stok hareketlerini silip yeniden yazar, son yazılan satırların rowid'i yeniden kullanılır, süzgeç aynı rowid'de farklı kimliği "bilinmeyen" sayıp tam kapıya
+  düşer (yeni kaydedilmiş faturanın Düzenle'si, aynı faturanın ikinci Düzenle'si). Öneri (prototip ölçüldü, kod değil): süzgeçte aynı rowid + farklı kimlik = silinen + eklenen iki satır → 8.004 → 228 ms, kapı
+  sınamaları 94 / 94 (gateVerify eşdeğerliği dahil). BAŞ MİMAR KARARI GEREKEN (rapor).
+- KOD SÜRERKEN GÖRÜLDÜ (kararların söylemediği; bugünkü davranış AYNEN — rapor 'KULLANICIYA SORULMALI'): iadeyle küçülen taksit sonradan elle düzenlenip / silinip iade iptal edilince geri gelen tutar
+  kaydedilmiş taksite yazılır (tutarı elle değişmişse üstüne eklenir, vadesi elle değişmişse yeni vadesiyle, silinmişse eski vadesiyle yeniden açılır); sayılar `p1-*.txt` ELLE-*.
+- KOD SÜRERKEN DEĞİŞTİ (hız ölçümü 1 — ders 47, 53 (a); kanıt `izt2-hiz/tablo-1-kotulesme.md`, teşhis profili `tani-*.txt`): Düzenle kesintisi ilk hâlde `lib/account-lines.mjs returnCuts`'a bütün satış faturalarını tarayan
+  sorguyla ekleniyordu (100 bin veride 17 ms; işlem içinde istek başına birkaç kez) → kart penceresi GET +%44, iade yazımı +%45 / +%59, fatura İptal Et +%30, Düzenle (aynı içerik) +%16. Kesinti kartın kapsamına artık
+  `withEditCuts` içinde, girdinin kendi faturalarından eklenir (account-lines değişmedi). Hız ölçümü 2 (`izt2-hiz/tablo-2.md`): kötüleşen yol yok (en büyük ortanca farkı Kartı Kapat +%8,0, en iyisi −%0,2).

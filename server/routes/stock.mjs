@@ -7,7 +7,7 @@
 import { randomUUID } from "node:crypto";
 import { STOCK_OPENING_NOTES, mapStockHeaders, parseQty, roundQty, stockLevel } from "../lib/accounts.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
-import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
+import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
@@ -406,6 +406,36 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     if (move.qty > available + 1e-9) throw new HttpError(409, `Stokta ${qtyText(available)} ${item.unit} var; ${qtyText(move.qty)} ${item.unit} çıkış stoğu eksiye düşürür. ${afterText(roundQty(available - move.qty), item.unit)}`, { code: "stock-negative", available, after: roundQty(available - move.qty) });
   }
   const accountNote = (item, move) => `${move.reason === "return" ? "Satış iadesi" : move.reason === "preturn" ? "Alış iadesi" : `Stok ${move.kind === "in" ? "alımı" : "satışı"}`}: ${item.name} ${qtyText(move.qty)} ${item.unit} × ${tl(move.unitPrice)}${move.note ? ` · ${move.note}` : ""}`;
+  // 2.5.0 İzleyen tur 2 — İş 5 (S238 = A'nın komşusu, ders 10; tasarım §20.5): faturasız müşteri iadesinin (açık hesaba) kestiği taksitler hareketin izine yazılır (audit 'stock.return.cuts':
+  // { cuts: { kart: TL }, items: { kart: [kesilen taksitler] } } — iade belgesinin coverCuts / coverCutItems'ı gibi; iz silinmez, yedekle taşınır, göç gerekmez). Hareket silinince / düzeltilince
+  // kart aynı taksitlere geri büyür (plans.growForInvoice items — iade iptaliyle aynı yardımcı); kaydı olmayan eski hareket bugünkü gibi (geri büyümez). Aynı işlemin içinde çağrılır.
+  const RETURN_CUTS = "stock.return.cuts";
+  function trimReturn(user, moveId, accountId, note) {
+    const trimmed = plans().trimCovers(accountId, user, note);
+    if (trimmed.length) {
+      const cuts = {};
+      const items = {};
+      for (const plan of trimmed) {
+        cuts[plan.id] = roundMoney((cuts[plan.id] || 0) + plan.cut);
+        items[plan.id] = [...(items[plan.id] || []), ...(plan.items || [])];
+      }
+      audit(user, RETURN_CUTS, moveId, { accountId, cuts, items });
+    }
+    return trimmed;
+  }
+  function undoReturnCuts(user, moveId, note) {
+    const record = parseJson(store.get("SELECT payload_json AS j FROM audit_events WHERE type = ? AND entity_id = ? ORDER BY rowid DESC LIMIT 1", RETURN_CUTS, moveId)?.j, {});
+    const cuts = record && typeof record.cuts === "object" && record.cuts ? record.cuts : {};
+    if (!Object.keys(cuts).length || !plans()?.growForInvoice) return [];
+    const grown = [];
+    for (const [planId, cut] of Object.entries(cuts)) {
+      const total = Number(store.get("SELECT total FROM plans WHERE id = ? AND deleted_at IS NULL", planId)?.total);
+      if (!Number.isFinite(total)) continue;
+      if (plans().growForInvoice(user, planId, Number(cut) || 0, roundMoney(total + (Number(cut) || 0)), note, { items: Array.isArray(record.items?.[planId]) ? record.items[planId] : null })) grown.push(planId);
+    }
+    audit(user, RETURN_CUTS, moveId, { accountId: record.accountId || "", cuts: {}, items: {}, undone: true });
+    return grown;
+  }
   function syncAccount(user, item, moveId, move, previousAccountId = "") {
     const service = accounts();
     if (!service?.stockEntry) return [];
@@ -467,7 +497,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         if (account && distribution) plans().createForAccount(user, account, { total: input.amount, count, firstDue: text(plan.firstDue), everyMonths: Math.trunc(Number(plan.everyMonths) || 1), note: accountNote(item, input), coversBalance: true, saleMoveId: moveId });
       }
       // Açık hesaba müşteri iadesi: borç azalır; taksitlendirilmiş borç kalandan büyük kalmasın (kart da küçülür).
-      if (input.reason === "return" && input.pay === "account" && plans()?.trimCovers) trimmed = plans().trimCovers(input.accountId, user, accountNote(item, input));
+      if (input.reason === "return" && input.pay === "account" && plans()?.trimCovers) trimmed = trimReturn(user, moveId, input.accountId, accountNote(item, input));
       return { id: moveId };
     } });
     k7.prime(posted);
@@ -543,6 +573,9 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         const eventId = bank.eventFor("stock_moves", { kind: previous.kind, pay: input.pay, amount: input.amount, date: input.date, method: input.method || "cash", fin_ref: finRef, event_id: previous.eventId, pos: finRef ? posMetaOf(body) : null });
         store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, fin_ref = ?, event_id = ?, is_opening = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, finRef, eventId, openingFlag({ ...input, isOpening: Number(previous.isOpening) === 1 }), user.id, now(), previous.id);
         touched = syncAccount(user, product, previous.id, input, previous.accountId);
+        // 2.5.0 İzleyen tur 2 — İş 5 (§20.5): müşteri iadesinin düzeltmesi iade faturasının Düzenle'si gibi — eski kesim kayıtlı taksitlere geri büyür, yeni iade karar (4) ile yeniden keser.
+        if (previous.reason === "return" && previous.pay === "account") undoReturnCuts(user, previous.id, "Stok iadesi düzeltildi");
+        if (input.reason === "return" && input.pay === "account" && plans()?.trimCovers) trimReturn(user, previous.id, input.accountId, accountNote(product, input));
         audit(user, "stock.move.updated", previous.id, { itemId: item.id, previous, ...input, finRef });
         return { id: previous.id };
       },
@@ -572,6 +605,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         k7.capture();
         store.run("DELETE FROM stock_moves WHERE id = ?", previous.id);
         accountId = accounts()?.stockEntry ? accounts().stockEntry.remove(previous.id) : "";
+        // 2.5.0 İzleyen tur 2 — İş 5 (S238 = A'nın komşusu; §20.5): silinen müşteri iadesinin kestiği taksitler aynı taksitlere geri büyür (iade iptali gibi).
+        if (previous.reason === "return" && previous.pay === "account") undoReturnCuts(user, previous.id, "Stok iadesi silindi");
         trash?.add({ kind: "stock-move", ref: previous.id, title: item.name, detail: `${previous.kind === "in" ? "Giriş" : "Çıkış"} ${qtyText(previous.qty)} ${item.unit}${previous.note ? ` · ${previous.note}` : ""}`, payload: { ...previous, itemId: item.id, itemName: item.name, unit: item.unit }, user });
         audit(user, "stock.move.deleted", previous.id, { itemId: item.id, ...previous });
         return { id: previous.id };
@@ -843,6 +878,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
             bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method: move.method, event_id: payload.eventId || "" }), openingFlag(move), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
           );
           syncAccount(user, item, entry.ref, move);
+          // 2.5.0 İzleyen tur 2 — İş 5 (§20.5): geri yüklenen müşteri iadesi kartı yeniden küçültür (silmede geri büyümüştü; kayıtla).
+          if (move.reason === "return" && move.pay === "account" && plans()?.trimCovers) trimReturn(user, entry.ref, move.accountId, accountNote(item, move));
         }
         trash.markRestored(entry.id, user);
         audit(user, "stock.move.restored", entry.ref, { itemId: item.id, kind: move.kind, qty: move.qty });

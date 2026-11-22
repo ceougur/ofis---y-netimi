@@ -24,6 +24,7 @@
 // Yazma yolları (taksitli faturanın kendi kartının hedefi, iade → kapsayan kartın küçülmesi, açılış onarımı) lib/invoice-settle.mjs'i AYNEN kullanır (defter kuralı değişmez).
 import { roundMoney } from "./money.mjs";
 import { classifyLine, PAY_STATES } from "./invoice-settle.mjs";
+import { chooseCover, ownSaleOf as ownSaleBy, withEditCuts } from "./cover-scope.mjs";
 
 export { PAY_STATES };
 // Kapatanlar listesinin yolu (fatura kartı "Bu Faturayı Kapatanlar").
@@ -103,11 +104,15 @@ export function calendarState({ vade, promise = "", day }) {
  *   doubtfulRecords: [{ date, remainingMinor }], lockAt: (an) → gün }
  * @returns {{ invoices, entries, items, installments, doubtful, overdue: (day) => object, cards }}
  */
-export function buildObligations(input) {
+export function buildObligations(given) {
+  // 2.5.0 İzleyen tur 2 (S241 = A; §20.1): Düzenle azalışları faturaya gelen iade gibi (lib/cover-scope.mjs withEditCuts); yapay belgeler sonuçtan silinir.
+  const input = withEditCuts(given);
   const pieces = implicitRefunds(input);
   const side = runQueue(input, "side", pieces);
   const net = runQueue(input, "net", pieces);
-  return assemble(input, side, net);
+  const result = assemble(input, side, net);
+  if (input.editCutIds) for (const id of input.editCutIds) result.invoices.delete(id);
+  return result;
 }
 
 // 2.4.6 K-b + KS8.1 (BAŞ MİMAR; lib/invoice-settle.mjs passes ile aynı iki aşama, fatura durumu kuralıyla ölçülür, iki görünüm de aynı parçaları kullanır): iadeye bağlanmamış para
@@ -707,19 +712,20 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
   // dayanıyordu: tutar düzenlenince ve gerçek (akan) saatte ikisi de tutmuyor, kart elle kola (S120) düşüp carinin elle borcunu içine alıyordu. Kaynağı bilinmeyen kart
   // (elle açılan; izi olmayan eski kart) aşağıdaki eski tanımada AYNEN kalır (S133 = C — BİLİNEN SINIR: elle kartın tutarı en son taksitsiz stok satışına eşitse sonuç
   // kayıt sırasına bağlı).
-  const saleItemOf = card => (card.sale ? items.find(item => item.kind === "stock" && item.sign > 0 && !item.line?.stockReason && item.line?.sourceId === card.sale) || null : null);
-  const ownSaleOf = card => {
-    const known = saleItemOf(card);
-    if (known) return known;
-    let newest = null;
-    for (const item of items) {
-      if (!(item.sign > 0) || !DEBT_KINDS.has(item.kind) || item.ownCard || (card.at && item.recorded && item.recorded > card.at)) continue;
-      if (!newest || item.recorded > newest.recorded || (item.recorded === newest.recorded && item.rank > newest.rank)) newest = item;
-    }
-    // Satışla açılan kart aynı işlemde satıştan hemen sonra yazılır: en son kaydedilen borç stok satışıdır ve tutarı kartın açıldığı andaki tutara eşittir — kart sonradan
-    // iadeyle küçülmüşse (v2.4.9 verisinde iade kesintisi kayıtlı değil; fikstür C) aynı kayıt anı da yeter.
-    return newest && newest.kind === "stock" && !newest.line?.stockReason && (newest.amount === card.coverGross || (card.at && newest.recorded === card.at)) ? newest : null;
+  // 2.5.0 İzleyen tur 2 (§20.2): kapsam seçimi TEK yardımcıda (lib/cover-scope.mjs chooseCover / ownSaleOf) — kapama defteri (lib/invoice-settle.mjs) aynı işlevi okur. Gövde buradan
+  // AYNEN taşındı (satışın tanınması: v2.4.9 verisinde iade kesintisi kayıtlı değil — fikstür C; aynı kayıt anı da yeter).
+  const coverGet = {
+    left: target => target.left,
+    elle: isElle,
+    stockSale: item => item.kind === "stock" && item.sign > 0 && !item.line?.stockReason,
+    debt: item => item.sign > 0 && DEBT_KINDS.has(item.kind) && !item.ownCard,
+    sourceId: item => item.line?.sourceId,
+    recorded: item => item.recorded,
+    rank: item => item.rank,
+    amount: item => item.amount,
   };
+  const coverOf = card => ({ at: card.at, sale: card.sale || "", gross: card.coverGross, source: card.source || "" });
+  const ownSaleOf = card => ownSaleBy(coverOf(card), items, coverGet);
   const coverEvent = (card, schedule) => {
     // Kartın taksitleri kuyrukta zaten (olay sırası); burada yalnız alttaki açık borçlar tüketilir.
     const pool = mode === "net" ? open.netDebit : open.rDue;
@@ -748,25 +754,17 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
     const candidates = pool.filter(eligible);
     const openDebt = candidates.reduce((sum, target) => sum + target.left, 0) + pool.filter(target => (target.kind === "installment" || target.kind === "plan-rest") && target.planId !== card.planId).reduce((sum, target) => sum + target.left, 0);
     // Seçim (S110 / S120); advanceSet: S101'in "kartın taşıdığı borç" kümesi (kapanmışlar dahil).
-    let chosen = candidates;
+    // S123 = C (BİLİNEN SINIR — kural yok): elle borçlar kartı doldurmuyorsa artan kapasite bu kartın ÖNCEKİ kuralıyla (öbür açık borçlar s2 sırasıyla) — kod
+    // tabanın davranışını o kısımda sürdürür (ayrı kural yazılmadı; sayılar tur 2b-2 raporunda). Elle borcu hiç olmayan caride kart böylece boş kalmaz.
+    const pick = chooseCover({ card: coverOf(card), cap, openDebt, candidates, items, get: coverGet });
+    const chosen = pick.chosen;
     let advanceSet = null;
-    card.rule = "s2";
-    if (openDebt > cap && card.source !== "transfer") {
-      const own = ownSaleOf(card);
-      if (own) {
-        card.rule = "S110-satis";
-        chosen = candidates.includes(own) ? [own] : [];
-        advanceSet = [own];
-      } else {
-        const elle = candidates.filter(isElle);
-        const equal = elle.filter(target => target.left === cap);
-        card.rule = equal.length === 1 ? "S110-elle" : "S120";
-        // S123 = C (BİLİNEN SINIR — kural yok): elle borçlar kartı doldurmuyorsa artan kapasite bu kartın ÖNCEKİ kuralıyla (öbür açık borçlar s2 sırasıyla) — kod
-        // tabanın davranışını o kısımda sürdürür (ayrı kural yazılmadı; sayılar tur 2b-2 raporunda). Elle borcu hiç olmayan caride kart böylece boş kalmaz.
-        chosen = equal.length === 1 ? equal : [...elle, ...candidates.filter(target => !isElle(target))];
-        const debts = items.filter(item => item.sign > 0 && DEBT_KINDS.has(item.kind) && !item.ownCard && eligible(item));
-        advanceSet = equal.length === 1 ? equal : [...debts.filter(isElle), ...debts.filter(item => !isElle(item))];
-      }
+    card.rule = pick.rule;
+    if (pick.rule === "S110-satis") advanceSet = [pick.own];
+    else if (pick.rule === "S110-elle") advanceSet = pick.elle;
+    else if (pick.rule === "S120") {
+      const debts = items.filter(item => item.sign > 0 && DEBT_KINDS.has(item.kind) && !item.ownCard && eligible(item));
+      advanceSet = [...debts.filter(isElle), ...debts.filter(item => !isElle(item))];
     }
     // Kartın açıldığı anda bilinen satırlarla tükettiği kalemler (coverForcing; v2.0.23 "kartın açıldığı ana kadar kaydedilmiş satırlar"): yalnız onlar — sonradan
     // yazılan satırın açtığı kalem (ör. karşılıksızla yeniden açılan fatura) kartın kapsamına girmez.
@@ -997,7 +995,8 @@ function holdDoubtful(net, doubtfulRecords = []) {
  * `doubtfulRecords`'undan ([{ id, date, remainingMinor }] — çağıran o anki durumu verir). Kuyruğun KAPAMA KURALI aynıdır (net görünüm; implicitRefunds + runQueue); buildObligations'ın
  * çıktısına dokunmaz. Dönüş: Map(kalem anahtarı — `inv:<fatura>`, `line:<satır>` … → { minor, records: [{ recordId, minor }] }).
  */
-export function doubtfulBefore(input, { lineId, include = null } = {}) {
+export function doubtfulBefore(given, { lineId, include = null } = {}) {
+  const input = withEditCuts(given); // S241 = A (§20.1): kuyrukla aynı girdi
   const lines = input.lines || [];
   const cut = lines.find(line => line.id === lineId);
   if (!cut) return new Map();

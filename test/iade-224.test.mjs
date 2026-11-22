@@ -159,15 +159,19 @@ describe("2.0.24 iade → doğru taksit kartı", () => {
     assert.deepEqual([(await card(k.id)).remaining, await balance(acc), await aging(acc)], [2000, 2000, 2000]);
   });
 
-  test("G2: kartın kapsadığı YENİ faturadan iade — yaşlandırma = bakiye (aynı borç iki kez sayılmaz)", async () => {
+  // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 İzleyen tur 2 — BAŞ MİMAR KARARI 21.11 18:28 (2), S110 = A / S120 = A, S123 = C; tasarım §20.2): carinin açık borcu (3.000) kart tutarından (2.000) fazla, elle
+  // borç yok → kart açık borçları s2 sırasıyla (ESKİ fatura a önce) içine alır — Tek Yükümlülük Kuyruğu tur 2b-2'den beri böyle; kapama defteri (iade, iptal) artık aynı seçimle. Yeni fatura b
+  // kartın DIŞINDA kalır: b'ye iade kartı küçültmez, b'nin kendi açığını kapatır (önceden v2.0.23 newestFirst: kart b'yi içine alıyor, iade kartı 1.500 / 1.000'e indiriyordu).
+  // Değişmeyen: bakiye ve yaşlandırma = bakiye (aynı borç iki kez sayılmaz).
+  test("G2: kartın DIŞINDAKİ yeni faturadan iade — kart değişmez; yaşlandırma = bakiye (aynı borç iki kez sayılmaz)", async () => {
     const acc = await customer("Yeni Fatura İade");
     await sale(acc, d(), 2);
     const b = await sale(acc, d(), 1);
     const k = await cover(acc, d(), 2000);
     await must("iade", api.post("/api/workspace/invoices", { kind: "sale_return", originalId: b.id, issueDate: d(), lines: [{ originLineId: b.lines[0].id, qty: 0.5 }], payment: {} }));
-    assert.deepEqual([(await card(k.id)).remaining, await balance(acc), await aging(acc)], [1500, 2500, 2500]);
+    assert.deepEqual([(await card(k.id)).remaining, await balance(acc), await aging(acc)], [2000, 2500, 2500]);
     await must("iade 2", api.post("/api/workspace/invoices", { kind: "sale_return", originalId: b.id, issueDate: d(), lines: [{ originLineId: b.lines[0].id, qty: 0.5 }], payment: {} }));
-    assert.deepEqual([(await card(k.id)).remaining, await balance(acc), await aging(acc)], [1000, 2000, 2000]);
+    assert.deepEqual([(await card(k.id)).remaining, await balance(acc), await aging(acc)], [2000, 2000, 2000]);
   });
 
   test("G3: faturanın açığını aşan iade (avans) başka faturayı kapsayan kartı da küçültür — 2.0.23'teki gibi", async () => {

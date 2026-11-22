@@ -1,0 +1,34 @@
+
+■ A) S241 = A — tahsilat 600 + Düzenle 900 → 300: kart Kalan ₺0,00 · Tahsil Edilen ₺600,00; bakiye −300
+    [soru] "Değişiklikler Kaydedilsin mi?" → Değişiklikleri Kaydet (beklenen soru)
+  ✓ onay sorusu geldi
+  ✓ kart tutarı 600 (veri tabanı): 600
+  ✗ kart penceresi Kalan ₺0,00 (tabanda ₺300,00): ₺300,00
+  ✓ kart penceresinde Tahsil Edilen ₺600,00: ₺600,00Toplam Tutar₺300,00Tahsil Edilen · %50₺300,00Kalan₺0,00Geciken · 0 taksit
+  ✗ kart (API) Tahsil Edilen 600 · Kalan 0: 300 / 300
+  ✗ cari kartı özeti 600 / 0: 300 / 300
+  ✓ bakiye −300 (fazlası carinin avansı)
+
+■ B) Kapsam seçimi — A 'Taksitte', B 'Vadesi Geçti'; B'nin İptal Et'i kartı değiştirmez; A'nın İptal Et'i kartı kapatır
+  ✓ A 'Taksitte':  05.10.202612:01 FIS2026000000001Satış Faturası Ekran İzt2 Kapsam MüşterisiStoktan Satış Taksitte ₺600,00 — 
+  ✓ B 'Vadesi Geçti':  06.10.202612:02 FIS2026000000002Satış Faturası Ekran İzt2 Kapsam MüşterisiStoktan Satış Vadesi Geçti ₺600,00 ₺600,00 
+  ✓ Tab ile İptal Et düğmesine gelinir
+  ✓ B iptal edildi (veri tabanı)
+  ✗ kart DEĞİŞMEDİ (tabanda kapanıyordu): closed 0
+  ✗ kart penceresi Kalan ₺600,00: ₺0,00
+  ✓ Tab ile İptal Et düğmesine gelinir
+  ✓ A iptal edildi
+  ✓ A'nın iptali kartı kapattı (S211): closed 0
+  ✓ bakiye 0
+
+■ C) İade Düzenle'si — kendi kart aynı taksitlere geri büyür: 10.10 ve 10.12 ₺300,00
+  ✓ iade 600 → kartta tek taksit (10.10): [["2026-10-10",300]]
+    [soru] "Değişiklikler Kaydedilsin mi?" → Değişiklikleri Kaydet (beklenen soru)
+  ✗ taksitler 10.10 300 + 10.12 300 (tabanda 10.10 600): 2026-10-10:600
+  ✗ kart penceresinde iki taksit satırı ₺300,00: 1.10.10.20262 gün kaldı₺600,00₺300,00₺300,00Kısmen · Yaklaşıyor₺✎×
+  ✓ Kalan ₺300,00: ₺300,00
+  ✓ bakiye 300
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+✗ senaryo-izt2-250: 17 geçti, 7 kaldı

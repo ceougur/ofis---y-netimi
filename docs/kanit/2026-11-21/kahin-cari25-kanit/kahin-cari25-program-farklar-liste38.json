@@ -1,0 +1,1371 @@
+{
+ "utc": [
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "adim:dz4:durum",
+   "beklenen": "ok",
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "adim:dza4:durum",
+   "beklenen": "ok",
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:cari:A4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:cari:A4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:cari:P4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:cari:P4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:fatura:FA4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:fatura:FA4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:fatura:FP4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:fatura:FP4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:kart:KA4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:kart:KA4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:kart:KP4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:kart:KP4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:cari:A4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:cari:A4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:cari:P4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:cari:P4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:fatura:FA4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:fatura:FA4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:fatura:FP4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:fatura:FP4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:kart:KA4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:kart:KA4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:kart:KP4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:kart:KP4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:cari:A4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:cari:A4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:cari:P4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:cari:P4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:fatura:FA4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:fatura:FA4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:fatura:FP4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:fatura:FP4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:kart:KA4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:kart:KA4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:kart:KP4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:kart:KP4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:cari:L2:gecikmis",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:fatura:FQ1:gosterilen",
+   "beklenen": 10000,
+   "program": 20000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:fatura:FQ1:kartta",
+   "beklenen": 70000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:fatura:FQ1:liste:gosterilen",
+   "beklenen": 10000,
+   "program": 20000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL1:kalan",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL1:taksit3:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL1:toplam",
+   "beklenen": 90000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL2:kalan",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL2:taksit2:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL2:taksit3:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL2:toplam",
+   "beklenen": 90000,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KQ1:kalan",
+   "beklenen": 100000,
+   "program": 90000,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KQ1:toplam",
+   "beklenen": 100000,
+   "program": 90000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:projeksiyon:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:projeksiyon:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:takvim:fatura:FQ1",
+   "beklenen": {
+    "amount": 10000,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 20000,
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:takvim:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "cari": "L1",
+    "days": -80,
+    "direction": "in",
+    "dueDate": "2026-09-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Leman Kartsız Fatura İade",
+    "state": "overdue"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:takvim:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "cari": "L2",
+    "days": -80,
+    "direction": "in",
+    "dueDate": "2026-09-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Levent Kartsız Fatura İptal",
+    "state": "overdue"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:vadeTakip:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:vadeTakip:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:cari:L2:gecikmis",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:fatura:FQ1:gosterilen",
+   "beklenen": 10000,
+   "program": 20000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:fatura:FQ1:kartta",
+   "beklenen": 70000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:fatura:FQ1:liste:gosterilen",
+   "beklenen": 10000,
+   "program": 20000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL1:kalan",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL1:taksit3:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL1:toplam",
+   "beklenen": 90000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL2:kalan",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL2:taksit2:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL2:taksit3:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL2:toplam",
+   "beklenen": 90000,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KQ1:kalan",
+   "beklenen": 100000,
+   "program": 90000,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KQ1:toplam",
+   "beklenen": 100000,
+   "program": 90000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:projeksiyon:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:projeksiyon:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:takvim:fatura:FQ1",
+   "beklenen": {
+    "amount": 10000,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 20000,
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:takvim:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "cari": "L1",
+    "days": -80,
+    "direction": "in",
+    "dueDate": "2026-09-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Leman Kartsız Fatura İade",
+    "state": "overdue"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:takvim:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "cari": "L2",
+    "days": -80,
+    "direction": "in",
+    "dueDate": "2026-09-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Levent Kartsız Fatura İptal",
+    "state": "overdue"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:vadeTakip:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:vadeTakip:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:cari:P1:gecikmis",
+   "beklenen": 80000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:KK1:kalan",
+   "beklenen": 0,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:KK1:odenen",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:KK2:kalan",
+   "beklenen": 0,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:KK2:odenen",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:fatura:FK3:toplam",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:fatura:FP1:kalan",
+   "beklenen": 30000,
+   "program": 90000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:fatura:FP1:toplam",
+   "beklenen": 30000,
+   "program": 90000,
+   "sinif": "BULGU"
+  }
+ ],
+ "ist": [
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "adim:dz4:durum",
+   "beklenen": "ok",
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "adim:dza4:durum",
+   "beklenen": "ok",
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:cari:A4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:cari:A4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:cari:P4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:cari:P4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:fatura:FA4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:fatura:FA4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:fatura:FP4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:fatura:FP4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:kart:KA4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:kart:KA4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:kart:KP4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k1:kart:KP4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:cari:A4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:cari:A4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:cari:P4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:cari:P4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:fatura:FA4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:fatura:FA4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:fatura:FP4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:fatura:FP4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:kart:KA4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:kart:KA4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:kart:KP4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k2:kart:KP4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:cari:A4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:cari:A4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:cari:P4:acikToplam",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:cari:P4:bakiye",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:fatura:FA4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:fatura:FA4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:fatura:FP4:acik",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:fatura:FP4:kartta",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:kart:KA4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:kart:KA4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:kart:KP4:kalan",
+   "beklenen": 30000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d53-c5-s234-kapali-kart-iade",
+   "anahtar": "k3:kart:KP4:toplam",
+   "beklenen": 60000,
+   "program": "tuttu",
+   "sinif": "YAPIM AŞAMASI KAPANDI"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:cari:L2:gecikmis",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:fatura:FQ1:gosterilen",
+   "beklenen": 10000,
+   "program": 20000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:fatura:FQ1:kartta",
+   "beklenen": 70000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:fatura:FQ1:liste:gosterilen",
+   "beklenen": 10000,
+   "program": 20000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL1:kalan",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL1:taksit3:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL1:toplam",
+   "beklenen": 90000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL2:kalan",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL2:taksit2:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL2:taksit3:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KL2:toplam",
+   "beklenen": 90000,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KQ1:kalan",
+   "beklenen": 100000,
+   "program": 90000,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KQ1:toplam",
+   "beklenen": 100000,
+   "program": 90000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:projeksiyon:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:projeksiyon:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:takvim:fatura:FQ1",
+   "beklenen": {
+    "amount": 10000,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 20000,
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:takvim:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "cari": "L1",
+    "days": -80,
+    "direction": "in",
+    "dueDate": "2026-09-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Leman Kartsız Fatura İade",
+    "state": "overdue"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:takvim:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "cari": "L2",
+    "days": -80,
+    "direction": "in",
+    "dueDate": "2026-09-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Levent Kartsız Fatura İptal",
+    "state": "overdue"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:vadeTakip:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:vadeTakip:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:cari:L2:gecikmis",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:fatura:FQ1:gosterilen",
+   "beklenen": 10000,
+   "program": 20000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:fatura:FQ1:kartta",
+   "beklenen": 70000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:fatura:FQ1:liste:gosterilen",
+   "beklenen": 10000,
+   "program": 20000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL1:kalan",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL1:taksit3:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL1:toplam",
+   "beklenen": 90000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL2:kalan",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL2:taksit2:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL2:taksit3:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KL2:toplam",
+   "beklenen": 90000,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KQ1:kalan",
+   "beklenen": 100000,
+   "program": 90000,
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KQ1:toplam",
+   "beklenen": 100000,
+   "program": 90000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:projeksiyon:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:projeksiyon:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:takvim:fatura:FQ1",
+   "beklenen": {
+    "amount": 10000,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 20000,
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:takvim:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "cari": "L1",
+    "days": -80,
+    "direction": "in",
+    "dueDate": "2026-09-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Leman Kartsız Fatura İade",
+    "state": "overdue"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:takvim:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "cari": "L2",
+    "days": -80,
+    "direction": "in",
+    "dueDate": "2026-09-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Levent Kartsız Fatura İptal",
+    "state": "overdue"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:vadeTakip:hareket:bl1",
+   "beklenen": "yok",
+   "program": {
+    "amount": 30000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "İNCELE"
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:vadeTakip:hareket:bl2",
+   "beklenen": "yok",
+   "program": {
+    "amount": 60000,
+    "date": "2026-09-01",
+    "direction": "in"
+   },
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:cari:P1:gecikmis",
+   "beklenen": 80000,
+   "program": 60000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:KK1:kalan",
+   "beklenen": 0,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:KK1:odenen",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:KK2:kalan",
+   "beklenen": 0,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:KK2:odenen",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:fatura:FK3:toplam",
+   "beklenen": 60000,
+   "program": 30000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:fatura:FP1:kalan",
+   "beklenen": 30000,
+   "program": 90000,
+   "sinif": "BULGU"
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:fatura:FP1:toplam",
+   "beklenen": 30000,
+   "program": 90000,
+   "sinif": "BULGU"
+  }
+ ],
+ "iki_tz_ayni": true
+}
