@@ -1,0 +1,110 @@
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:cari:N1:gecikmis: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:cari:N1:acikToplam: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:cari:N1:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:kart:KN1:var: elle true · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:kart:KN1:mevcutBorc: elle true · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:kart:KN1:toplam: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:kart:KN1:odenen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:kart:KN1:kalan: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN1A:acik: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN1A:gosterilen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN1A:kartta: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN1A:taksitte: elle true · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:cari:N2:gecikmis: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:cari:N2:acikToplam: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:cari:N2:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:kart:KN2:var: elle true · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:kart:KN2:mevcutBorc: elle true · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:kart:KN2:toplam: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:kart:KN2:odenen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:kart:KN2:kalan: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN2A:acik: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN2A:gosterilen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN2A:kartta: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN2A:taksitte: elle false · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN2B:acik: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN2B:gosterilen: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN2B:kartta: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:FN2B:taksitte: elle false · kâhin "ANAHTAR YOK"
+  ✗ d56-c5-s238-s240-iade-ve-secilmeyen.json k1:fatura:IN2:acik: elle 0 · kâhin "ANAHTAR YOK"
+d56-c5-s238-s240-iade-ve-secilmeyen.json: 412 elle denetim, 29 kırmızı
+  ✗ d57-c5-s241-s242-duzenle.json k1:cari:P1:gecikmis: elle 60000 · kâhin 80000
+  ✗ d57-c5-s241-s242-duzenle.json k1:kart:fatura:FP1:toplam: elle 90000 · kâhin 30000
+  ✗ d57-c5-s241-s242-duzenle.json k1:kart:fatura:FP1:kalan: elle 90000 · kâhin 30000
+  ✗ d57-c5-s241-s242-duzenle.json k1:cari:K3:gecikmis: elle YOK (tanımsız) · kâhin 0
+  ✗ d57-c5-s241-s242-duzenle.json k1:cari:K3:acikToplam: elle YOK (tanımsız) · kâhin 0
+  ✗ d57-c5-s241-s242-duzenle.json k1:fatura:FK3:acik: elle YOK (tanımsız) · kâhin 0
+  ✗ d57-c5-s241-s242-duzenle.json k1:kart:fatura:FK3:toplam: elle YOK (tanımsız) · kâhin 60000
+  ✗ d57-c5-s241-s242-duzenle.json k1:kart:fatura:FK3:kalan: elle YOK (tanımsız) · kâhin 0
+  ✗ d57-c5-s241-s242-duzenle.json k1:kart:fatura:FK3:kapali: elle YOK (tanımsız) · kâhin false
+  ✗ d57-c5-s241-s242-duzenle.json k1:cari:K3:acikEsitBakiye: elle YOK (tanımsız) · kâhin false
+  ✗ d57-c5-s241-s242-duzenle.json belirsiz kaydı yok: SK-48
+d57-c5-s241-s242-duzenle.json: 174 elle denetim, 11 kırmızı
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:R1:gecikmis: elle 20000 · kâhin 60000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FR1:toplam: elle 90000 · kâhin 30000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FR1:kalan: elle 80000 · kâhin 20000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:R2:gecikmis: elle 40000 · kâhin 60000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FR2:toplam: elle 120000 · kâhin 90000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FR2:kalan: elle 120000 · kâhin 90000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FR2:kapali: elle false · kâhin true
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FT3:toplam: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FT3:kalan: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FT3:kapali: elle false · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:N3:gecikmis: elle 55000 · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:N3:acikToplam: elle 80000 · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:N3:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:KN3:var: elle true · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:KN3:mevcutBorc: elle true · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:KN3:toplam: elle 50000 · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:KN3:odenen: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:KN3:kalan: elle 50000 · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FN3A:acik: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FN3A:gosterilen: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FN3A:kartta: elle 30000 · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FN3A:taksitte: elle false · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:hareket:bn3:kalan: elle 20000 · kâhin "ANAHTAR YOK"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FV1:toplam: elle YOK (tanımsız) · kâhin 30000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FV1:kapali: elle YOK (tanımsız) · kâhin false
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:V2:gecikmis: elle YOK (tanımsız) · kâhin 30000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:V2:acikToplam: elle YOK (tanımsız) · kâhin 60000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FV2:acik: elle YOK (tanımsız) · kâhin 60000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FV2:gosterilen: elle YOK (tanımsız) · kâhin 30000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FV2:kartta: elle YOK (tanımsız) · kâhin 30000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FV2:taksitte: elle YOK (tanımsız) · kâhin false
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:KV2:toplam: elle YOK (tanımsız) · kâhin 30000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:KV2:kalan: elle YOK (tanımsız) · kâhin 30000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:KV2:odenen: elle YOK (tanımsız) · kâhin 0
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:R3:gecikmis: elle YOK (tanımsız) · kâhin 60000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:R3:acikToplam: elle YOK (tanımsız) · kâhin 80000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FR3:acik: elle YOK (tanımsız) · kâhin 80000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FR3:toplam: elle YOK (tanımsız) · kâhin 30000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FR3:kalan: elle YOK (tanımsız) · kâhin 20000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FR3:kapali: elle YOK (tanımsız) · kâhin true
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:R4:gecikmis: elle YOK (tanımsız) · kâhin 30000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:R4:acikToplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FR4:acik: elle YOK (tanımsız) · kâhin 90000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FR4:toplam: elle YOK (tanımsız) · kâhin 60000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FR4:kalan: elle YOK (tanımsız) · kâhin 60000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FR4:kapali: elle YOK (tanımsız) · kâhin false
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json adim:dr4:durum: elle YOK (tanımsız) · kâhin "ok"
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:R4:bakiye: elle YOK (tanımsız) · kâhin 90000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:T1:gecikmis: elle YOK (tanımsız) · kâhin 0
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:T1:acikToplam: elle YOK (tanımsız) · kâhin 30000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FT1:acik: elle YOK (tanımsız) · kâhin 30000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:T2:gecikmis: elle YOK (tanımsız) · kâhin 0
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:cari:T2:acikToplam: elle YOK (tanımsız) · kâhin 60000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:fatura:FT2:acik: elle YOK (tanımsız) · kâhin 60000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FT2:toplam: elle YOK (tanımsız) · kâhin 60000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FT2:kalan: elle YOK (tanımsız) · kâhin 60000
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json k1:kart:fatura:FT2:kapali: elle YOK (tanımsız) · kâhin true
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json belirsiz kaydı yok: SK-49
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json belirsiz kaydı yok: SK-49
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json belirsiz kaydı yok: SK-50
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json belirsiz kaydı yok: SK-48
+  ✗ d58-c5-s246-s243-kendi-kart-duzenle.json belirsiz kaydı yok: SK-48
+d58-c5-s246-s243-kendi-kart-duzenle.json: 184 elle denetim, 62 kırmızı
+ESKİ KÂHİN KIRMIZISI: 102/770 elle denetim kırmızı, 668 aynı (beklenen: kırmızı > 0; her kırmızının eski değeri yukarıda)
+# tests 102
+# pass 102
+# fail 0
+102/102 denetim geçti
