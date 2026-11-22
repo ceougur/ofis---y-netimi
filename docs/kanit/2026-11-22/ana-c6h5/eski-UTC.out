@@ -1,0 +1,502 @@
+TAP version 13
+# Subtest: 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür)
+    # Subtest: bos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 1 - bos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 611.311248
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 499.758162
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: alis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 3 - alis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 410.66964
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 4 - kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 409.702957
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 5 - banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 479.147566
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 6 - pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 393.90508
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 7 - cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 414.131441
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 8 - taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 429.427746
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 9 - elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 429.137333
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: acilis: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 10 - acilis: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 482.759156
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 11 - stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 417.347896
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 12 - supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 464.75426
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: vergi: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 13 - vergi: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 445.480055
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4
+    not ok 14 - kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4
+      ---
+      duration_ms: 1769.774114
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:186:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:190:7
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:187:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4
+    not ok 15 - taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4
+      ---
+      duration_ms: 504.199363
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:198:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        fullRuleDiff işlevi yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:86:10)
+        file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:204:7
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:199:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sınama boş geçmedi: fiş en az dört sınıfta yazıldı, KALAN yolu koştu
+    not ok 16 - sınama boş geçmedi: fiş en az dört sınıfta yazıldı, KALAN yolu koştu
+      ---
+      duration_ms: 0.362814
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:210:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş yazılan sınıf 0'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:212:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # fiş yazılan sınıf 0 · KALAN yolunun koştuğu okuma 0
+    1..16
+not ok 1 - 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür)
+  ---
+  duration_ms: 8165.48585
+  type: 'suite'
+  location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:168:1'
+  failureType: 'subtestsFailed'
+  error: '16 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç6-HESAP tur 5 — frozenSums ruleThrough sınırları
+    # Subtest: ruleThrough < through reddedilir; kapsam yokken outside boş
+    not ok 1 - ruleThrough < through reddedilir; kapsam yokken outside boş
+      ---
+      duration_ms: 0.578792
+      type: 'test'
+      location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:218:3'
+      failureType: 'testCodeFailure'
+      error: 'Missing expected exception.'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      operator: 'throws'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:220:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 2 - 2.5.0 Ç6-HESAP tur 5 — frozenSums ruleThrough sınırları
+  ---
+  duration_ms: 0.673973
+  type: 'suite'
+  location: '/dev/shm/ana-c6h4-yeni/test/c6h-tek-okuma.test.mjs:217:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 17
+# suites 2
+# pass 0
+# fail 17
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8599.438612

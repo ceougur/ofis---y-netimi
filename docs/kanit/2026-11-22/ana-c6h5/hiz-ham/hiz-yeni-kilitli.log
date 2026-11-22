@@ -1,0 +1,13 @@
+=== tur 1 · yeni · kilitli · başta yük 1.27 1.22 1.14 · GEÇERLİ · 23:19:47
+kod /dev/shm/ana-c6h5 · kip kilitli · yük (başta) 1.17 1.20 1.13 · TZ UTC
+  donma (bekleyen koşu): 8402.9 ms · kapsam 2026-06-30
+  kilitli Bilanço 2026-12-31: ilk 5110 · en iyi 5281.4 · ortanca 5314.4 · en kötü 5502.4 ms · olay döngüsü en çok 9.8 ms (n=5) · özet d0356b220ef92fc9 · {"kesinDegil":["smm-tahmini","kural-farki","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  kilitli GT yıl 2026: ilk 3065.9 · en iyi 3000.1 · ortanca 3089.1 · en kötü 3151.5 ms · olay döngüsü en çok 11.8 ms (n=5) · özet 2ec6d301a3ec4f45 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  kilitli GT ilk yarı 2026: ilk 2963.6 · en iyi 2970.8 · ortanca 3029.8 · en kötü 3225 ms · olay döngüsü en çok 20.7 ms (n=5) · özet a0f76b4e866ca74f · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":2811665034}
+  fiş 200 2026-07-01 no 1 · Yönetim önce 14 satır, dışlanan 7
+  fişten sonra Bilanço 2026-12-31: ilk 5302.3 · en iyi 5220.9 · ortanca 5356.2 · en kötü 5435.2 ms · olay döngüsü en çok 10.7 ms (n=5) · özet 1879b944acfa3141 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kural-farki","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  fişten sonra GT yıl 2026 (fiş içinde): ilk 3702.1 · en iyi 3638.7 · ortanca 3798.7 · en kötü 3852 ms · olay döngüsü en çok 9.5 ms (n=5) · özet 31396e2028f0ade4 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  fişten sonra GT ikinci yarı 2026 (fiş içinde): ilk 3690.4 · en iyi 3653.6 · ortanca 3707.6 · en kötü 3907.5 ms · olay döngüsü en çok 155.6 ms (n=5) · özet 2480bf49765c4777 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":1965170586}
+  fişten sonra GT ilk yarı 2026 (fiş dışında): ilk 3058 · en iyi 2936.7 · ortanca 2998.2 · en kötü 3089.2 ms · olay döngüsü en çok 10.6 ms (n=5) · özet a0f76b4e866ca74f · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":2811665034}
+  bellek (rss) 656 MB · yük (sonda) 1.24 1.21 1.14
+çıkış 0 · sonda yük 1.24 1.21 1.14 · 23:23:24
