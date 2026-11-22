@@ -1,0 +1,407 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle",
+ "aciklama": "Bakım 27 (§39): S249 = A kendi kartında Düzenle ile azaltma — ödeme yeni tutara eşit (U1), fazla ödeme avans ve sonraki faturayı kapatır (U2), kapanmış tahsilatsız kart kararın 900 → 300 tutarıyla AÇIK kurulur (U4); SK-51 SUS — kapanmış + ödemeli kartta azaltma (U3); S251 = A iadeli faturanın Düzenle'si reddedilir — Mevcut Borç kartlı (U5), kartsız (U6); iade iptalinden sonra Düzenle olağan kuralla (U7). Bugün 20.10.2026. Elle tablo karar metinlerinden, kâhin koşulmadan (üreteç docs/kanit/2026-11-22/kahin-cari27-arac/uret-d59.py).",
+ "dayanak": "KARARLAR.md §39 (Y27-1 … Y27-3), §38 Y26-2, §36 Y24-2 / Y24-3 / Y24-4, C13.4 (4)",
+ "bugun": "2026-10-20",
+ "elleBeklenen": {
+  "k0:cari:U1:bakiye": 30000,
+  "k0:cari:U1:gecikmis": 0,
+  "k0:cari:U1:acikToplam": 30000,
+  "k0:cari:U1:acikEsitBakiye": true,
+  "k0:fatura:FU1:acik": 30000,
+  "k0:cari:U2:bakiye": 50000,
+  "k0:cari:U2:gecikmis": 20000,
+  "k0:cari:U2:acikToplam": 50000,
+  "k0:cari:U2:acikEsitBakiye": true,
+  "k0:fatura:FU2:acik": 30000,
+  "k0:fatura:GU2:acik": 20000,
+  "k0:cari:U3:bakiye": 60000,
+  "k0:cari:U3:gecikmis": 0,
+  "k0:cari:U3:acikToplam": 60000,
+  "k0:cari:U3:acikEsitBakiye": true,
+  "k0:fatura:FU3:acik": 60000,
+  "k0:kart:fatura:FU3:toplam": 90000,
+  "k0:kart:fatura:FU3:kalan": 60000,
+  "k0:kart:fatura:FU3:kapali": true,
+  "k0:cari:U4:bakiye": 90000,
+  "k0:cari:U4:gecikmis": 30000,
+  "k0:cari:U4:acikToplam": 90000,
+  "k0:cari:U4:acikEsitBakiye": true,
+  "k0:fatura:FU4:acik": 90000,
+  "k0:kart:fatura:FU4:toplam": 90000,
+  "k0:kart:fatura:FU4:kalan": 90000,
+  "k0:kart:fatura:FU4:kapali": true,
+  "k0:cari:U5:bakiye": 60000,
+  "k0:cari:U5:gecikmis": 0,
+  "k0:cari:U5:acikToplam": 60000,
+  "k0:cari:U5:acikEsitBakiye": true,
+  "k0:kart:KU5:var": true,
+  "k0:kart:KU5:mevcutBorc": true,
+  "k0:kart:KU5:toplam": 60000,
+  "k0:kart:KU5:odenen": 0,
+  "k0:kart:KU5:kalan": 60000,
+  "k0:fatura:FU5:acik": 60000,
+  "k0:fatura:IU5:acik": 0,
+  "k0:cari:U6:bakiye": 30000,
+  "k0:cari:U6:gecikmis": 30000,
+  "k0:cari:U6:acikToplam": 30000,
+  "k0:cari:U6:acikEsitBakiye": true,
+  "k0:fatura:FU6:acik": 30000,
+  "k0:fatura:IU6:acik": 0,
+  "k0:cari:U7:bakiye": 60000,
+  "k0:cari:U7:gecikmis": 0,
+  "k0:cari:U7:acikToplam": 60000,
+  "k0:cari:U7:acikEsitBakiye": true,
+  "k0:fatura:FU7:acik": 60000,
+  "k0:fatura:IU7:acik": 0,
+  "adim:du1:durum": "ok",
+  "adim:du2:durum": "ok",
+  "adim:du3:durum": "ok",
+  "adim:du4:durum": "ok",
+  "adim:iiu7:durum": "ok",
+  "adim:du7:durum": "ok",
+  "k1:cari:U1:bakiye": 0,
+  "k1:cari:U1:gecikmis": 0,
+  "k1:cari:U1:acikToplam": 0,
+  "k1:cari:U1:acikEsitBakiye": true,
+  "k1:fatura:FU1:acik": 0,
+  "k1:kart:fatura:FU1:toplam": 60000,
+  "k1:kart:fatura:FU1:kalan": 0,
+  "k1:kart:fatura:FU1:kapali": false,
+  "k1:cari:U2:bakiye": -10000,
+  "k1:cari:U2:gecikmis": 0,
+  "k1:cari:U2:acikToplam": 0,
+  "k1:cari:U2:acikEsitBakiye": false,
+  "k1:fatura:FU2:acik": 0,
+  "k1:fatura:GU2:acik": 0,
+  "k1:kart:fatura:FU2:toplam": 30000,
+  "k1:kart:fatura:FU2:kalan": 0,
+  "k1:kart:fatura:FU2:kapali": false,
+  "k1:cari:U3:bakiye": 30000,
+  "k1:cari:U4:bakiye": 30000,
+  "k1:cari:U4:gecikmis": 10000,
+  "k1:cari:U4:acikToplam": 30000,
+  "k1:cari:U4:acikEsitBakiye": true,
+  "k1:fatura:FU4:acik": 30000,
+  "k1:kart:fatura:FU4:toplam": 30000,
+  "k1:kart:fatura:FU4:kalan": 30000,
+  "k1:kart:fatura:FU4:kapali": false,
+  "adim:du5:durum": "ret",
+  "k1:cari:U5:bakiye": 60000,
+  "k1:cari:U5:gecikmis": 0,
+  "k1:cari:U5:acikToplam": 60000,
+  "k1:cari:U5:acikEsitBakiye": true,
+  "k1:kart:KU5:var": true,
+  "k1:kart:KU5:mevcutBorc": true,
+  "k1:kart:KU5:toplam": 60000,
+  "k1:kart:KU5:odenen": 0,
+  "k1:kart:KU5:kalan": 60000,
+  "k1:fatura:FU5:acik": 60000,
+  "k1:fatura:IU5:acik": 0,
+  "adim:du6:durum": "ret",
+  "k1:cari:U6:bakiye": 30000,
+  "k1:cari:U6:gecikmis": 30000,
+  "k1:cari:U6:acikToplam": 30000,
+  "k1:cari:U6:acikEsitBakiye": true,
+  "k1:fatura:FU6:acik": 30000,
+  "k1:fatura:IU6:acik": 0,
+  "k1:cari:U7:bakiye": 60000,
+  "k1:cari:U7:gecikmis": 20000,
+  "k1:cari:U7:acikToplam": 60000,
+  "k1:cari:U7:acikEsitBakiye": true,
+  "k1:fatura:FU7:acik": 60000,
+  "k1:kart:fatura:FU7:toplam": 60000,
+  "k1:kart:fatura:FU7:kalan": 60000,
+  "k1:kart:fatura:FU7:kapali": false,
+  "k1:fatura:IU7:durum": "iptal"
+ },
+ "elleYok": [
+  "k1:cari:U3:gecikmis",
+  "k1:cari:U3:acikToplam",
+  "k1:cari:U3:acikEsitBakiye",
+  "k1:fatura:FU3:acik",
+  "k1:kart:fatura:FU3:toplam",
+  "k1:kart:fatura:FU3:kalan",
+  "k1:kart:fatura:FU3:kapali"
+ ],
+ "elleBelirsiz": [
+  "SK-51"
+ ],
+ "adimlar": [
+  {
+   "id": "cu1",
+   "islem": "cari_ac",
+   "ad": "U1",
+   "isim": "Umut Tam Ödemeli Azaltma",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "fu1",
+   "islem": "fatura",
+   "ad": "FU1",
+   "cari": "U1",
+   "tur": "satis",
+   "tutar": "900",
+   "adet": 3,
+   "tarih": "2026-09-01",
+   "taksit": {
+    "sayi": 3,
+    "ilkVade": "2026-10-05"
+   }
+  },
+  {
+   "id": "tu1",
+   "islem": "tahsilat",
+   "cari": "U1",
+   "tutar": "600",
+   "tarih": "2026-09-03"
+  },
+  {
+   "id": "cu2",
+   "islem": "cari_ac",
+   "ad": "U2",
+   "isim": "Ufuk Avans Sonraki Faturaya",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "fu2",
+   "islem": "fatura",
+   "ad": "FU2",
+   "cari": "U2",
+   "tur": "satis",
+   "tutar": "900",
+   "adet": 3,
+   "tarih": "2026-09-01",
+   "taksit": {
+    "sayi": 3,
+    "ilkVade": "2026-10-05"
+   }
+  },
+  {
+   "id": "tu2",
+   "islem": "tahsilat",
+   "cari": "U2",
+   "tutar": "600",
+   "tarih": "2026-09-03"
+  },
+  {
+   "id": "cu3",
+   "islem": "cari_ac",
+   "ad": "U3",
+   "isim": "Uğur Kapalı Ödemeli Azaltma",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "fu3",
+   "islem": "fatura",
+   "ad": "FU3",
+   "cari": "U3",
+   "tur": "satis",
+   "tutar": "900",
+   "adet": 3,
+   "tarih": "2026-09-01",
+   "taksit": {
+    "sayi": 3,
+    "ilkVade": "2026-10-05"
+   }
+  },
+  {
+   "id": "tu3",
+   "islem": "tahsilat",
+   "cari": "U3",
+   "tutar": "300",
+   "tarih": "2026-09-03"
+  },
+  {
+   "id": "kku3",
+   "islem": "kart_kapat",
+   "fatura": "FU3"
+  },
+  {
+   "id": "cu4",
+   "islem": "cari_ac",
+   "ad": "U4",
+   "isim": "Ulaş Kapalı Kart Azaltma",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "fu4",
+   "islem": "fatura",
+   "ad": "FU4",
+   "cari": "U4",
+   "tur": "satis",
+   "tutar": "900",
+   "adet": 3,
+   "tarih": "2026-09-01",
+   "taksit": {
+    "sayi": 3,
+    "ilkVade": "2026-10-05"
+   }
+  },
+  {
+   "id": "kku4",
+   "islem": "kart_kapat",
+   "fatura": "FU4"
+  },
+  {
+   "id": "cu5",
+   "islem": "cari_ac",
+   "ad": "U5",
+   "isim": "Ümran İadeli Mevcut Borç",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "fu5",
+   "islem": "fatura",
+   "ad": "FU5",
+   "cari": "U5",
+   "tur": "satis",
+   "tutar": "900",
+   "adet": 3,
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "ku5",
+   "islem": "kart_ac",
+   "ad": "KU5",
+   "cari": "U5",
+   "tutar": "900",
+   "taksit": 3,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-02",
+   "mevcut": true
+  },
+  {
+   "id": "cu6",
+   "islem": "cari_ac",
+   "ad": "U6",
+   "isim": "Ülkü İadeli Kartsız",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "fu6",
+   "islem": "fatura",
+   "ad": "FU6",
+   "cari": "U6",
+   "tur": "satis",
+   "tutar": "600",
+   "adet": 2,
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "cu7",
+   "islem": "cari_ac",
+   "ad": "U7",
+   "isim": "Utku İade İptali Sonra Düzenle",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "fu7",
+   "islem": "fatura",
+   "ad": "FU7",
+   "cari": "U7",
+   "tur": "satis",
+   "tutar": "900",
+   "adet": 3,
+   "tarih": "2026-09-01",
+   "taksit": {
+    "sayi": 3,
+    "ilkVade": "2026-10-05"
+   }
+  },
+  {
+   "id": "gu2",
+   "islem": "fatura",
+   "ad": "GU2",
+   "cari": "U2",
+   "tur": "satis",
+   "tutar": "200",
+   "adet": 1,
+   "tarih": "2026-09-10"
+  },
+  {
+   "id": "iu5",
+   "islem": "iade",
+   "ad": "IU5",
+   "fatura": "FU5",
+   "adet": 1,
+   "tarih": "2026-09-10"
+  },
+  {
+   "id": "iu6",
+   "islem": "iade",
+   "ad": "IU6",
+   "fatura": "FU6",
+   "adet": 1,
+   "tarih": "2026-09-10"
+  },
+  {
+   "id": "iu7",
+   "islem": "iade",
+   "ad": "IU7",
+   "fatura": "FU7",
+   "adet": 1,
+   "tarih": "2026-09-10"
+  },
+  {
+   "id": "k0",
+   "islem": "kontrol",
+   "gecikmis": true,
+   "acikToplam": true
+  },
+  {
+   "id": "du1",
+   "islem": "fatura_duzenle",
+   "fatura": "FU1",
+   "adet": 2
+  },
+  {
+   "id": "du2",
+   "islem": "fatura_duzenle",
+   "fatura": "FU2",
+   "adet": 1
+  },
+  {
+   "id": "du3",
+   "islem": "fatura_duzenle",
+   "fatura": "FU3",
+   "adet": 2
+  },
+  {
+   "id": "du4",
+   "islem": "fatura_duzenle",
+   "fatura": "FU4",
+   "adet": 1
+  },
+  {
+   "id": "du5",
+   "islem": "fatura_duzenle",
+   "fatura": "FU5",
+   "adet": 2
+  },
+  {
+   "id": "du6",
+   "islem": "fatura_duzenle",
+   "fatura": "FU6",
+   "adet": 1
+  },
+  {
+   "id": "iiu7",
+   "islem": "fatura_iptal",
+   "fatura": "IU7"
+  },
+  {
+   "id": "du7",
+   "islem": "fatura_duzenle",
+   "fatura": "FU7",
+   "adet": 2
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "gecikmis": true,
+   "acikToplam": true
+  }
+ ]
+}
