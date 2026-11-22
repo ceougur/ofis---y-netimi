@@ -88,6 +88,7 @@
     "test:senaryo-dkfix-250": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-dkfix-250.mjs",
     "test:senaryo-izt2-250": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-izt2-250.mjs",
     "test:senaryo-izt3-250": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-izt3-250.mjs",
+    "test:senaryo-izt4-250": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-izt4-250.mjs",
     "test:senaryo-s223-250": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-s223-250.mjs",
     "test:senaryo-s231-250": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-s231-250.mjs",
     "test:senaryo-izt-250": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-izt-250.mjs",

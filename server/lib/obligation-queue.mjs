@@ -175,6 +175,12 @@ const bornOf = input => {
 // 2.5.0 İzleyen küçük tur (docs/erp/C7B-FATURA-TASARIM.md §19.2 — P-2 / BULGU-1; TEK KURAL kapama defteriyle): Mevcut Borç kartının kapsamı kartın AÇILDIĞI ANDAKİ tutarıdır — bugünkü tutar +
 // o andan SONRA doğan iadelerin bu karttan kestiği tutar (iade belgesinin coverCuts'ı; lib/invoice-settle.mjs coverPlans'ın `coverTotal`'ı aynı kesintileri geri ekler). Dönüş: kesilmiş (issued) satıştan
 // iadelerin kesinti listesi [{ id, original, born, cuts: Map(kart → kuruş) }] — girdi başına bir kez (WeakMap).
+// §22: kayıt anı işlevi girdi başına bir kez (WeakMap; asıl geçişler aynı girdi nesnesini kullanır).
+const bornMemo = new WeakMap();
+const bornOnce = input => {
+  if (!bornMemo.has(input)) bornMemo.set(input, bornOf(input));
+  return bornMemo.get(input);
+};
 const cutsMemo = new WeakMap();
 export function returnCutsOf(input) {
   if (cutsMemo.has(input)) return cutsMemo.get(input);
@@ -544,7 +550,12 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
   // andaki tutarla) − o faturanın iadelerinin o karttan kestiği tutar, kartın kapasitesiyle sınırlı. Yalnız iadesi o kartı kesmiş (kart, fatura) çiftlerinde; iadenin mahsup edilemeyen kalanı bağsız
   // alacaktır (carinin avansı — kapama defterinin 'excess'i). Kesintisiz girdide boş (davranış aynen).
   const holds = new Map();
-  if (forced && cutList.length) {
+  // 2.5.0 İzleyen tur 4 (docs/erp/C7B-FATURA-TASARIM.md §22 — S255 = A, kullanıcı 22.11.2026; kullanıcının 14.11 06:31 kuralıyla öneri uygulandı: "bağlı tahsilat önce faturanın GÖSTERİLEN açığını
+  // (kartın almadığı kısım) kapatır; fazlası S230 = A'nın sözüyle 'carinin vadesi en önce gelen açık borcuna' (tek kuyruk) gider"): faturaya BAĞLI ödeme (sıra 3 — peşin, Kapatılacak Fatura,
+  // faturanın Tahsilat Ekle'si, faturaya bağlı çek / senet / ciro) faturanın Mevcut Borç kartlarınca TUTULAN kısmına dokunmaz — tutulan = yukarıdaki ile AYNI ölçü (kartın ön geçişte tükettiği − o
+  // faturanın iadelerinin o karttan kestiği, kapasiteyle sınırlı), kesinti olsun olmasın. Ön geçiş yoksa (bağ karttan önce yazılmış) boş: davranış AYNEN.
+  const linkHolds = new Map();
+  if (forced) {
     const cutBy = new Map();
     for (const row of cutList) for (const [planId, value] of row.cuts) cutBy.set(`${planId}|${row.original}`, (cutBy.get(`${planId}|${row.original}`) || 0) + value);
     for (const [planId, plan] of forced) {
@@ -558,20 +569,38 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
         const cut = target?.kind === "invoice" ? cutBy.get(`${planId}|${target.invoiceId}`) || 0 : 0;
         const use = Math.min(room, Math.max(0, entry.take - cut));
         if (cut > 0 && use > 0) holds.set(target.key, (holds.get(target.key) || 0) + use);
+        if (target?.kind === "invoice" && use > 0) linkHolds.set(target.key, (linkHolds.get(target.key) || 0) + use);
         room -= use;
       }
     }
   }
-  const invoiceLinks = order => {
+  // §22: kartça tutulan faturada bağlı ödeme ile iadenin mahsubu YAZIM SIRASIYLA (kayıt anı — yazma yolları iadenin kart küçültmesini o anki kapama defterinden ölçer): iadeden SONRA yazılmış bağlı
+  // ödeme iadeden sonra ayrılır (iade kart dışındaki açığı önce kapatmıştır — S239); öncekiler sıra 3'te. Kartça tutulmayan faturada K1 sırası AYNEN (bağlı ödemeler önce, iadeler sonra).
+  // (Kayıt anı haritası yalnız kartça tutulan faturanın iadesi varken ve girdi başına bir kez kurulur — queueOnce bir carinin kuyruğunda birçok kez koşar; ders 47.)
+  const firstReturn = new Map();
+  const bornAt = linkHolds.size && linkList.some(link => link.order === 4 && linkHolds.has(link.targetKey)) ? bornOnce(input) : null;
+  if (bornAt) {
+    for (const link of linkList) {
+      if (link.order !== 4 || !linkHolds.has(link.targetKey)) continue;
+      const when = bornAt(link.from.line);
+      if (!firstReturn.has(link.targetKey) || when < firstReturn.get(link.targetKey)) firstReturn.set(link.targetKey, when);
+    }
+  }
+  const deferred = link => link.order === 3 && firstReturn.has(link.targetKey) && bornAt(link.from.line) > firstReturn.get(link.targetKey);
+  const capped = new Set();
+  const invoiceLinks = (order, { late = false } = {}) => {
     for (const link of linkList) {
       if (link.order !== order) continue;
+      if (order === 3 && deferred(link) !== late) continue;
       const target = itemByKey.get(link.targetKey);
       if (!target || target === link.from) continue;
       const lock = link.lockable ? lockAt(linkedAt(link.from.lineId, link.from.at)) : "";
-      const held = order === 4 && holds.size ? holds.get(target.key) || 0 : 0;
+      // §19.2 (sıra 4) / §22 (sıra 3): kartça tutulan kısım. Sıra 3 bağı tutulan yüzünden kesildiyse aynı faturada sıra 4 de onu korur (iade kartın kısmını kapatmasın — kart para dışı kırpılırdı).
+      const held = order === 4 ? Math.max(holds.get(target.key) || 0, capped.has(target.key) ? linkHolds.get(target.key) || 0 : 0) : order === 3 ? linkHolds.get(target.key) || 0 : 0;
       const avail = Math.max(0, Math.min(target.left - held, link.from.left));
-      // Tutulan kısım yüzünden mahsup edilemeyen pay faturayı AŞAN ödeme değildir (iadenin kendi açığı — carinin avansı).
+      // Tutulan kısım yüzünden mahsup edilemeyen pay faturayı AŞAN ödeme değildir (iadenin kendi açığı — carinin avansı; bağlı ödemede kuyrukta bağsız dağılan pay).
       const blocked = Math.min(target.left, link.from.left) - avail;
+      if (order === 3 && blocked > 0) capped.add(target.key);
       let take = avail;
       if (lock && target.date <= lock) {
         if (lockCaps?.has(link.id)) take = Math.min(take, linkCap(link, target));
@@ -676,6 +705,8 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
     }
   }
   invoiceLinks(4);
+  // §22: kartça tutulan faturada iadeden SONRA yazılmış bağlı ödemeler.
+  if (firstReturn.size) invoiceLinks(3, { late: true });
   // 1p: POS komisyonu yalnız bağlandığı komisyon faturasına.
   for (const link of linkList) {
     if (link.order !== 5) continue;

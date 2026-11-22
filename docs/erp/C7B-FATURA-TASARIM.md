@@ -957,3 +957,60 @@ dışı (program dışından) yapılan HER değişiklik bugünkü gibi YAKALANMA
   `test/izt3-stok-iade-canli-250.test.mjs` 5 (eski 2/5); ekran `test/e2e/senaryo-izt3-250.mjs` 18 (eski 16/18 — geri yüklemede gözcünün kartı ve listesi ₺900,00'da bayat kalıyordu).
 - Eşdeğerlik: eski ↔ yeni 14 senaryoluk döküm (`izt3-kos/kapi.mjs`) iki kipte birebir (durum, 409 kodları, tarama bulguları, sayılar); değişen yalnız kapı yolu. Rowid bozma bulanıklaştırması (2.0.26, 2 tohum × 160)
   eski = yeni: kabul / ret sayıları aynı, eşdeğerlik ihlali 0.
+
+## 22. İzleyen tur 4 (22.11.2026; görev metni `docs/devir/2.5.0-DEVAM/izt4-istem.txt`) — S255 = A: kartın içine aldığı faturaya BAĞLI ödeme önce gösterilen açığı kapatır — KODDAN ÖNCE yazıldı
+Kararlar (görev metninden AYNEN): S255 = A ("bağlı tahsilat önce faturanın GÖSTERİLEN açığını (kartın almadığı kısım — örnekte 300) kapatır; fazlası S230 = A'nın sözüyle 'carinin vadesi en önce gelen açık
+borcuna' (tek kuyruk — örnekte kartın 05.10 taksitinden başlayarak) gider: 600 → fatura kapanır, kart Tahsil 300 · Kalan 300 (05.10 ödenmiş, 05.11'den 100), bakiye 300, gecikmiş 0; 900 → kart Kalan 0, bakiye 0;
+1.200 → kart Kalan 0, avans 300. Girilebilecek tutarın sınırı değişmez (S230)"); S230 = A; S229 = A; S254 = C (BİLİNEN SINIR — faturasız stok iadesi iki kartta en yeni kartı keser; DEĞİŞMEZ). Taban 6a1d19d1.
+Bugünkü davranış programın kendisiyle yeniden üretildi (dar kontrolün betiği `senaryo.mjs` SC5 / SC7; çıktı not defteri `izt4-ad3/taban-sc57.txt`).
+
+### 22.1 Bugünkü davranış (taban; F 900 satış 01.09, elle Mevcut Borç kartı 600 02.09 — 3 × 200, 05.10 / 05.11 / 05.12 — F'nin 600'ünü alır; 20.10)
+| Tahsilat (20.10) | Taban | S255 = A |
+|---|---|---|
+| F'ye bağlı 300 | bakiye 600; kart T0 / K600; F Taksitte (açık 0, kendi 600); gecikmiş 200 (kartın 05.10'u) | AYNI |
+| F'ye bağlı 600 | bakiye 300; kart **T0 / K600**; F kapsam {K:300}; gecikmiş **200** | kart T300 / K300 (05.10 ödendi, 05.11'den 100); F kapsam {K:600} — F Taksitte; gecikmiş 0 |
+| F'ye bağlı 900 | bakiye 0; kart **T0 / K600** (eski anlamdaki taksit gecikmişi 200); F Ödendi, kapsam {} | kart T600 / K0; F Ödendi, kapsam {K:600}; gecikmiş 0 |
+| F'ye bağlı 1.200 | bakiye −300; kart **T0 / K600**; F Ödendi | kart T600 / K0; avans 300 (F'nin fazlası 300) |
+| bağsız 900 | bakiye 0; kart T600 / K0; F Ödendi, kapsam {K:600} | DEĞİŞMEZ |
+
+### 22.2 Kök neden (iki hesap)
+- Tek Yükümlülük Kuyruğu (`lib/obligation-queue.mjs queueOnce`): bağlar (sıra 3 — peşin, Kapatılacak Fatura, faturanın Tahsilat Ekle'si, faturaya bağlı çek / senet / ciro, banka yolu) zamandan bağımsız ÖNCE
+  ayrılır ve faturanın kalemini `target.left` (faturanın tamamı) kadar kapatır; Mevcut Borç kartı açılış olayında (`coverEvent`) faturadan tüketeceğini bulamaz → kartın kalanı S101 ölçümüne düşer, bağlı
+  kapanış 'para' sayılmadığından kart kırpılmaz da ödenmiş de sayılmaz: kart Kalan 600 kalır, faturanın kalemi bağla kapanır (kalemler toplamı ≠ bakiye).
+- Kapama defteri (`lib/invoice-settle.mjs runSide closeInvoice`): faturaya bağlı ödeme önce kapsanmamış (free) kısmı, SONRA kartların kapsadığı kısımları (covered) kapatır → kartın kapsamı (coveredBy) bağlı
+  ödemeyle düşer (600 bağlıda {K:300}, 900'de {}). İade / İptal Et / Düzenle / iptal penceresi kart paylarını buradan okur.
+
+### 22.3 Kural (TEK; iki hesap aynı okumaya)
+- Faturaya BAĞLI ödeme (iade belgesi / iade mahsubu DEĞİL) faturanın Mevcut Borç kart(lar)ınca TUTULAN kısmına dokunmaz; yalnız gösterilen açığı (faturanın kendi açığı − kartların aldığı kısım) kapatır. Fazlası
+  (faturanın kendi açığına kadar olan kısım dahil) bağsız ödeme gibi tek kuyrukta dağılır (S230 = A sözü; kartın taksitleri dahil). Faturanın KENDİ açığını aşan kısım bugünkü gibi 'fazla' (excess) sayılır.
+  Faturanın tamamı karttaysa (gösterilen açık 0) bağlı ödemenin tamamı kuyruğa gider.
+- Kuyrukta: `holds` (§19.2) genelleşir — kartın ön geçişte (forced; kartın açıldığı andaki satırlarla) faturadan tükettiği tutar − o faturanın iadelerinin o karttan kestiği tutar (kapasiteyle sınırlı) =
+  faturanın kartça TUTULAN kısmı. Sıra 3 bağı `target.left − tutulan` kadar kapatır; tutulan yüzünden kapatamadığı pay 'fazla' sayılmaz (sıra 4'teki `blocked` gibi). Sıra 3 bağı tutulan yüzünden
+  kesildiyse o faturada sıra 4 (iadenin asıl faturaya mahsubu) da aynı tutulan kısmı korur (aksi hâlde iade kartın kısmını kapatır, kart para dışı kırpılırdı). Kesilmeyen / kartsız faturada sıra 4 AYNEN.
+  Ön geçiş yoksa (bütün satırlar kartın anında biliniyor — bağlı ödeme karttan ÖNCE yazılmış) tutulan yok: kart zaten bağdan sonraki açığı almıştır (bugünkü gibi).
+- Kapama defterinde: adım 1'de iade olmayan bağlı ödeme `closeInvoice` ile YALNIZ kapsanmamış kısmı kapatır (kapsanan kısımlar kartın tahsilatına kalır — bağsız ödemedeki gibi); iade (returnId) bugünkü gibi
+  önce kapsanmamış, sonra kapsanan. 'Fazla ödenen' (overpaid) = bağlı ödemelerin kalanı − faturanın kartlarca kapsanan açık kısmı (en az 0): faturayı AŞAN kısım bugünkü gibi.
+- Girilebilecek tutarın sınırı, form önerisi (S230), Mahsup Et (offset), kart tahsilatı, taksitli faturanın kendi kartı, alış faturası (Mevcut Borç kartı yalnız alacak tarafında — tedarikçi yönünde AYNI YAPI
+  YOK), POS komisyonu (sıra 5), iade geri ödemeleri (sıra 0 / 1) DEĞİŞMEZ.
+
+### 22.4 Bağlı ödeme yolları (tarama: `server/lib/obligation-input.mjs` links; `INSERT INTO account_entries` server/**)
+1. Cari kartı Tahsilat — Kapatılacak Fatura (`routes/accounts.mjs` POST / PUT entries `invoice_id`; banka yolu `method: bank` aynı satır); faturanın Tahsilat Ekle'si (`client/assets/hof-invoices.js payForm` → aynı uç).
+2. Silinenler'den geri yüklenen tahsilat (`routes/accounts.mjs` geri yükleme — `invoice_id` aynen).
+3. Faturanın peşin ödemesi (`source = 'invoice'`, in / out) — fatura ile birlikte doğar, karttan önce; kural etkisiz (tutulan yok).
+4. Çek / senet: faturanın kendi evrakı, ciro, Kapatılacak Fatura ile alınan evrak (`cheque_events.invoice_id` → `chequeLinks`).
+5. (Değişmez) POS komisyonu (`lib/bank/pos.mjs`, alış komisyon faturası), Mahsup Et (`invoice_offsets`), kart tahsilatı (`plan_entries`).
+Hepsi kuyrukta sıra 3 (`lnk:`), defterde adım 1 (`owner`) — tek kural hepsine.
+
+### 22.5 Nasıl bozulur? (önce yazıldı; testler buradan)
+1. S255 örneği bağlı 300 / 600 / 900 / 1.200: kart penceresi = Taksitler listesi = cari özeti (Tahsil / Kalan), gecikmiş, bakiye, Açık Faturalar, kapama defteri kapsamı; Mutabakat Testi.
+2. Faturanın tamamı kartta (F 600, kart 600): bağlı 600 → kart T600 / K0, F Ödendi.
+3. İki kart aynı faturada (F 900; K1 300, K2 300): bağlı 600 → gösterilen 300 + kuyruk 300 (K1'in ilk taksitinden).
+4. Bağsız ödeme: DEĞİŞMEZ (eşdeğerlik — bağ yoksa yeni dal çalışmaz).
+5. İade → bağlı ödeme; bağlı ödeme → iade (kart küçülür mü, kaç); iade iptali; Düzenle (azaltma) sonrası bağlı ödeme.
+6. Bağlı ödemenin silinmesi → kart eski hâline (K600); Silinenler'den geri yükleme → yeniden A.
+7. Yedek → geri yükleme: sayılar aynı.
+8. Kilitli dönem: bağlı ödeme kilitten sonra yazılmış, hedef kilitli dönemde bağsız kapanmış — karar (3) aynen (kilit ölçümü ile tutulan birlikte).
+9. Ödeme Sözü / Vade Takip / Alacak Yaşlandırma / Nakit Akışı / zil: kartın taksitlerinden tek kez.
+10. Bağlı ödeme karttan ÖNCE yazılmış (kart sonra açık kısmı alır): DEĞİŞMEZ.
+11. Çek / senet Kapatılacak Fatura ile (aynı kural).
+12. v2.4.9 verisi: kartsız carilerde fark 0; kartlı + bağlı ödemeli carilerde fark yalnız bu kuralın sınıfı.

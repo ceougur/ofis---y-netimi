@@ -1,0 +1,56 @@
+##### yeni
+P9 Mahsup Et 300 (F ↔ Alacak Yaz 900)
+  [2026-10-20] Alacak Yaz 900: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[overdue/300] kart[overdue/açık 300/kendi 900/inPlan 600] kapsam{K:600}
+  Mahsup Et: sınır open 900 öneri suggest 300
+  mahsup 300: 200
+  [2026-10-20] Mahsup 300: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 600/inPlan 600] kapsam{K:600}
+P9 Mahsup Et 600 (F ↔ Alacak Yaz 900)
+  [2026-10-20] Alacak Yaz 900: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[overdue/300] kart[overdue/açık 300/kendi 900/inPlan 600] kapsam{K:600}
+  Mahsup Et: sınır open 900 öneri suggest 300
+  mahsup 600: 200
+  [2026-10-20] Mahsup 600: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:300}
+P9 Mahsup Et 900 (F ↔ Alacak Yaz 900)
+  [2026-10-20] Alacak Yaz 900: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[overdue/300] kart[overdue/açık 300/kendi 900/inPlan 600] kapsam{K:600}
+  Mahsup Et: sınır open 900 öneri suggest 300
+  mahsup 900: 200
+  [2026-10-20] Mahsup 900: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{}
+##### eski
+P9 Mahsup Et 300 (F ↔ Alacak Yaz 900)
+  [2026-10-20] Alacak Yaz 900: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[overdue/300] kart[overdue/açık 300/kendi 900/inPlan 600] kapsam{K:600}
+  Mahsup Et: sınır open 900 öneri suggest 300
+  mahsup 300: 200
+  [2026-10-20] Mahsup 300: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 600/inPlan 600] kapsam{K:600}
+P9 Mahsup Et 600 (F ↔ Alacak Yaz 900)
+  [2026-10-20] Alacak Yaz 900: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[overdue/300] kart[overdue/açık 300/kendi 900/inPlan 600] kapsam{K:600}
+  Mahsup Et: sınır open 900 öneri suggest 300
+  mahsup 600: 200
+  [2026-10-20] Mahsup 600: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:300}
+P9 Mahsup Et 900 (F ↔ Alacak Yaz 900)
+  [2026-10-20] Alacak Yaz 900: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[overdue/300] kart[overdue/açık 300/kendi 900/inPlan 600] kapsam{K:600}
+  Mahsup Et: sınır open 900 öneri suggest 300
+  mahsup 900: 200
+  [2026-10-20] Mahsup 900: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{}

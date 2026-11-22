@@ -72,6 +72,9 @@
 27. Bakım 27 (§39; S249 = A, S251 = A, S250 = C): d57 K3 (S249 = A kararın örneği — kart 3 × 100, fazla 300 avans), d58 T1 / T2 / T3 (S249 (a) / (b) / (c) — kart Düzenle'nin planıyla yeniden kurulur) ve R4 (S251 = A — Düzenle
    ret, sayılar değişmez), yeni d59 (U1 / U2 / U4 S249 kolları, U3 SK-51 SUS, U5 / U6 S251 Mevcut Borç kartlı / kartsız, U7 iade iptalinden sonra olağan kural) elle tabloları; mutantlar 351 (S249 B) ve 354 (S251 B) yeni
    anlamıyla DEĞERLE (SUS kuralı DEĞİL artık), 355 / 356 DEĞERLE, 357 (SK-51 SUS kuralı) `elleYok` / `elleBelirsiz` ile.
+28. Bakım 28 (§40; S255 = A, S254 = C): yeni d60 (V1 … V12 — Mevcut Borç kartının içine aldığı faturaya bağlı ödeme önce gösterilen açığı, fazlası tek kuyruğa; bağsız karşılaştırma, tamamı kartta, iade / iade iptalinden
+   sonra, sil / geri yükle, kart öncesi bağlı ödeme bugünkü kural; Q1 / Q2 S254 SUS) elle tablosu; mutantlar 358 (S255 B) / 359 (fazlası en son taksite) / 360 (S255 yok — bakım 27) DEĞERLE, 361 (S254 SUS kuralı) `elleYok` /
+   `elleBelirsiz` ile.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
@@ -343,7 +346,7 @@ def main():
         eski_sk = [b for b in _m.son_belirsiz if "SK-9 … SK-12" in b or "(SK-13;" in b]
         denetle("%s SK-9 … SK-13 susması yok (S102–S105 A, S99 A)" % ad, not eski_sk, json.dumps(eski_sk[:2], ensure_ascii=False))
     # 2. mutantlar 200–223 (… bakım 20: 313–316)
-    SUSMA_MUTANTLARI = {316, 324, 353, 357}  # bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 26 (§38 — SK-47; 347 KALDIRILDI — S243 = A ile kural oldu) / bakım 27 (§39 — SK-51; 351 / 354 S249 / S251 ile DEĞERLE): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
+    SUSMA_MUTANTLARI = {316, 324, 353, 357, 361}  # bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 26 (§38 — SK-47; 347 KALDIRILDI — S243 = A ile kural oldu) / bakım 27 (§39 — SK-51; 351 / 354 S249 / S251 ile DEĞERLE) / bakım 28 (§40 — S254): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
     for n, ad in M.MUTASYONLAR.items():
         if n < 200:
             continue
