@@ -1,0 +1,152 @@
+HIZ · nproc 4 · başta 1.12 1.94 2.01 2/120 8444 · 07:11:28 · eski 3b420085  · yeni 89a10ca6 
+=== tur 1 · eski · başta 1.40 1.96 2.02 1/117 8493 
+kod /dev/shm/izt2-sinama · yük başta 1.34 1.90 2.00
+aday 12 · ürün 8
+SONUÇ | kart penceresi GET | n 4 | en iyi 46.3 | ortanca 46.4 | olay döngüsü en çok 173.1 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 4 | en iyi 38.2 | ortanca 39.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (aynı içerik) | n 4 | en iyi 117.9 | ortanca 118.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (azaltma) | n 4 | en iyi 6375.9 | ortanca 6450.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (büyük azaltma) | n 4 | en iyi 6407.5 | ortanca 6430.2 | olay döngüsü en çok 6815.7 | 200 dışı 0
+SONUÇ | YENİ fatura Düzenle (azaltma) | n 3 | en iyi 6295.4 | ortanca 6436.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (fatura iadesi) | n 3 | en iyi 149.5 | ortanca 158.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi yazımı | n 4 | en iyi 33.8 | ortanca 35.2 | olay döngüsü en çok 49.1 | 200 dışı 0
+SONUÇ | stok iadesi düzeltme | n 4 | en iyi 33.7 | ortanca 36.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi silme | n 4 | en iyi 9.6 | ortanca 10.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi geri yükleme | n 4 | en iyi 39.2 | ortanca 39.3 | olay döngüsü en çok 41.3 | 200 dışı 0
+SONUÇ | stok hareketi düzeltme (sıradan) | n 4 | en iyi 4.5 | ortanca 4.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok hareketi silme (sıradan) | n 4 | en iyi 3.8 | ortanca 3.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bütünlük taraması (Mutabakat Testi) | n 2 | en iyi 7626.9 | ortanca 7626.9 | olay döngüsü en çok 8527.0 | 200 dışı 0
+SONUÇ | Dönem Kilidi kilitle | n 1 | en iyi 5002.7 | ortanca 5002.7 | olay döngüsü en çok 10.6 | 200 dışı 0
+SONUÇ | Dönem Kilidi aç | n 1 | en iyi 30.3 | ortanca 30.3 | olay döngüsü en çok 7.8 | 200 dışı 0
+KAPI | fatura Düzenle (aynı içerik) → scoped | 4
+KAPI | fatura Düzenle (azaltma) → full(stock_moves: kimlik değişti) | 4
+KAPI | fatura Düzenle (büyük azaltma) → full(stock_moves: kimlik değişti) | 4
+KAPI | YENİ fatura Düzenle (azaltma) → full(stock_moves: kimlik değişti) | 3
+yük sonda 1.31 1.27 1.60
+çıkış 0 · sonda 1.31 1.27 1.60 1/117 8567
+=== tur 1 · yeni · başta 1.31 1.27 1.60 1/117 8573 
+kod /dev/shm/izt3-sinama · yük başta 1.48 1.31 1.61
+aday 12 · ürün 8
+SONUÇ | kart penceresi GET | n 4 | en iyi 48.9 | ortanca 59.9 | olay döngüsü en çok 307.8 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 4 | en iyi 40.1 | ortanca 50.5 | olay döngüsü en çok 72.1 | 200 dışı 0
+SONUÇ | fatura Düzenle (aynı içerik) | n 4 | en iyi 153.1 | ortanca 160.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (azaltma) | n 4 | en iyi 166.2 | ortanca 187.8 | olay döngüsü en çok 196.5 | 200 dışı 0
+SONUÇ | fatura Düzenle (büyük azaltma) | n 4 | en iyi 157.6 | ortanca 184.5 | olay döngüsü en çok 199.5 | 200 dışı 0
+SONUÇ | YENİ fatura Düzenle (azaltma) | n 3 | en iyi 148.4 | ortanca 156.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (fatura iadesi) | n 3 | en iyi 154.9 | ortanca 163.3 | olay döngüsü en çok 173.7 | 200 dışı 0
+SONUÇ | stok iadesi yazımı | n 4 | en iyi 35.0 | ortanca 37.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi düzeltme | n 4 | en iyi 37.2 | ortanca 38.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi silme | n 4 | en iyi 10.9 | ortanca 11.3 | olay döngüsü en çok 15.7 | 200 dışı 0
+SONUÇ | stok iadesi geri yükleme | n 4 | en iyi 42.8 | ortanca 48.8 | olay döngüsü en çok 47.3 | 200 dışı 0
+SONUÇ | stok hareketi düzeltme (sıradan) | n 4 | en iyi 5.0 | ortanca 5.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok hareketi silme (sıradan) | n 4 | en iyi 4.1 | ortanca 4.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bütünlük taraması (Mutabakat Testi) | n 2 | en iyi 8692.2 | ortanca 8692.2 | olay döngüsü en çok 9470.7 | 200 dışı 0
+SONUÇ | Dönem Kilidi kilitle | n 1 | en iyi 5003.7 | ortanca 5003.7 | olay döngüsü en çok 14.1 | 200 dışı 0
+SONUÇ | Dönem Kilidi aç | n 1 | en iyi 24.5 | ortanca 24.5 | olay döngüsü en çok 7.9 | 200 dışı 0
+KAPI | fatura Düzenle (aynı içerik) → scoped | 4
+KAPI | fatura Düzenle (azaltma) → scoped | 4
+KAPI | fatura Düzenle (büyük azaltma) → scoped | 4
+KAPI | YENİ fatura Düzenle (azaltma) → scoped | 3
+yük sonda 1.18 1.12 1.40
+çıkış 0 · sonda 1.18 1.12 1.40 1/112 8629
+=== tur 2 · yeni · başta 1.18 1.12 1.40 1/112 8635 
+kod /dev/shm/izt3-sinama · yük başta 1.28 1.15 1.40
+aday 12 · ürün 8
+SONUÇ | kart penceresi GET | n 4 | en iyi 46.6 | ortanca 49.0 | olay döngüsü en çok 159.0 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 4 | en iyi 39.8 | ortanca 41.6 | olay döngüsü en çok 57.2 | 200 dışı 0
+SONUÇ | fatura Düzenle (aynı içerik) | n 4 | en iyi 121.0 | ortanca 123.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (azaltma) | n 4 | en iyi 157.0 | ortanca 157.4 | olay döngüsü en çok 155.5 | 200 dışı 0
+SONUÇ | fatura Düzenle (büyük azaltma) | n 4 | en iyi 155.2 | ortanca 176.1 | olay döngüsü en çok 173.7 | 200 dışı 0
+SONUÇ | YENİ fatura Düzenle (azaltma) | n 3 | en iyi 145.2 | ortanca 146.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (fatura iadesi) | n 3 | en iyi 154.4 | ortanca 163.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi yazımı | n 4 | en iyi 36.7 | ortanca 38.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi düzeltme | n 4 | en iyi 38.4 | ortanca 40.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi silme | n 4 | en iyi 10.2 | ortanca 11.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi geri yükleme | n 4 | en iyi 41.9 | ortanca 43.7 | olay döngüsü en çok 61.5 | 200 dışı 0
+SONUÇ | stok hareketi düzeltme (sıradan) | n 4 | en iyi 4.7 | ortanca 5.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok hareketi silme (sıradan) | n 4 | en iyi 4.1 | ortanca 4.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bütünlük taraması (Mutabakat Testi) | n 2 | en iyi 8522.3 | ortanca 8522.3 | olay döngüsü en çok 9764.3 | 200 dışı 0
+SONUÇ | Dönem Kilidi kilitle | n 1 | en iyi 5002.5 | ortanca 5002.5 | olay döngüsü en çok 12.1 | 200 dışı 0
+SONUÇ | Dönem Kilidi aç | n 1 | en iyi 187.1 | ortanca 187.1 | olay döngüsü en çok 6.8 | 200 dışı 0
+KAPI | fatura Düzenle (aynı içerik) → scoped | 4
+KAPI | fatura Düzenle (azaltma) → scoped | 4
+KAPI | fatura Düzenle (büyük azaltma) → scoped | 4
+KAPI | YENİ fatura Düzenle (azaltma) → scoped | 3
+yük sonda 1.00 1.03 1.24
+çıkış 0 · sonda 1.00 1.03 1.24 3/114 8696
+=== tur 2 · eski · başta 1.00 1.03 1.24 1/114 8702 
+kod /dev/shm/izt2-sinama · yük başta 1.00 1.02 1.23
+aday 12 · ürün 8
+SONUÇ | kart penceresi GET | n 4 | en iyi 53.0 | ortanca 57.4 | olay döngüsü en çok 177.3 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 4 | en iyi 42.5 | ortanca 49.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (aynı içerik) | n 4 | en iyi 122.4 | ortanca 141.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (azaltma) | n 4 | en iyi 6786.2 | ortanca 6878.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (büyük azaltma) | n 4 | en iyi 6643.6 | ortanca 7082.5 | olay döngüsü en çok 7084.2 | 200 dışı 0
+SONUÇ | YENİ fatura Düzenle (azaltma) | n 3 | en iyi 6883.4 | ortanca 7087.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (fatura iadesi) | n 3 | en iyi 167.8 | ortanca 179.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi yazımı | n 4 | en iyi 35.7 | ortanca 40.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi düzeltme | n 4 | en iyi 39.2 | ortanca 44.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi silme | n 4 | en iyi 12.2 | ortanca 12.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi geri yükleme | n 4 | en iyi 42.2 | ortanca 44.6 | olay döngüsü en çok 51.0 | 200 dışı 0
+SONUÇ | stok hareketi düzeltme (sıradan) | n 4 | en iyi 4.7 | ortanca 4.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok hareketi silme (sıradan) | n 4 | en iyi 4.0 | ortanca 4.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bütünlük taraması (Mutabakat Testi) | n 2 | en iyi 8443.9 | ortanca 8443.9 | olay döngüsü en çok 9143.6 | 200 dışı 0
+SONUÇ | Dönem Kilidi kilitle | n 1 | en iyi 5003.3 | ortanca 5003.3 | olay döngüsü en çok 12.4 | 200 dışı 0
+SONUÇ | Dönem Kilidi aç | n 1 | en iyi 25.0 | ortanca 25.0 | olay döngüsü en çok 5.5 | 200 dışı 0
+KAPI | fatura Düzenle (aynı içerik) → scoped | 4
+KAPI | fatura Düzenle (azaltma) → full(stock_moves: kimlik değişti) | 4
+KAPI | fatura Düzenle (büyük azaltma) → full(stock_moves: kimlik değişti) | 4
+KAPI | YENİ fatura Düzenle (azaltma) → full(stock_moves: kimlik değişti) | 3
+yük sonda 1.00 1.00 1.12
+çıkış 0 · sonda 1.00 1.00 1.12 1/116 8779
+=== tur 3 · eski · başta 1.00 1.00 1.12 1/116 8785 
+kod /dev/shm/izt2-sinama · yük başta 1.00 1.00 1.11
+aday 12 · ürün 8
+SONUÇ | kart penceresi GET | n 4 | en iyi 48.9 | ortanca 61.4 | olay döngüsü en çok 203.4 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 4 | en iyi 40.2 | ortanca 46.1 | olay döngüsü en çok 51.4 | 200 dışı 0
+SONUÇ | fatura Düzenle (aynı içerik) | n 4 | en iyi 122.6 | ortanca 127.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (azaltma) | n 4 | en iyi 7009.7 | ortanca 7106.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (büyük azaltma) | n 4 | en iyi 6474.3 | ortanca 6706.2 | olay döngüsü en çok 7235.2 | 200 dışı 0
+SONUÇ | YENİ fatura Düzenle (azaltma) | n 3 | en iyi 6745.2 | ortanca 7050.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (fatura iadesi) | n 3 | en iyi 160.9 | ortanca 161.1 | olay döngüsü en çok 235.1 | 200 dışı 0
+SONUÇ | stok iadesi yazımı | n 4 | en iyi 35.8 | ortanca 38.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi düzeltme | n 4 | en iyi 35.8 | ortanca 35.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi silme | n 4 | en iyi 10.6 | ortanca 12.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi geri yükleme | n 4 | en iyi 43.1 | ortanca 43.9 | olay döngüsü en çok 60.5 | 200 dışı 0
+SONUÇ | stok hareketi düzeltme (sıradan) | n 4 | en iyi 4.7 | ortanca 5.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok hareketi silme (sıradan) | n 4 | en iyi 4.0 | ortanca 4.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bütünlük taraması (Mutabakat Testi) | n 2 | en iyi 7604.0 | ortanca 7604.0 | olay döngüsü en çok 9588.2 | 200 dışı 0
+SONUÇ | Dönem Kilidi kilitle | n 1 | en iyi 5003.3 | ortanca 5003.3 | olay döngüsü en çok 13.3 | 200 dışı 0
+SONUÇ | Dönem Kilidi aç | n 1 | en iyi 30.2 | ortanca 30.2 | olay döngüsü en çok 5.1 | 200 dışı 0
+KAPI | fatura Düzenle (aynı içerik) → scoped | 4
+KAPI | fatura Düzenle (azaltma) → full(stock_moves: kimlik değişti) | 4
+KAPI | fatura Düzenle (büyük azaltma) → full(stock_moves: kimlik değişti) | 4
+KAPI | YENİ fatura Düzenle (azaltma) → full(stock_moves: kimlik değişti) | 3
+yük sonda 1.40 1.09 1.08
+çıkış 0 · sonda 1.40 1.09 1.08 1/114 8929
+=== tur 3 · yeni · başta 1.40 1.09 1.08 1/117 8938 
+kod /dev/shm/izt3-sinama · yük başta 1.47 1.13 1.10
+aday 12 · ürün 8
+SONUÇ | kart penceresi GET | n 4 | en iyi 44.8 | ortanca 46.2 | olay döngüsü en çok 120.2 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 4 | en iyi 39.7 | ortanca 41.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (aynı içerik) | n 4 | en iyi 119.1 | ortanca 120.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (azaltma) | n 4 | en iyi 151.6 | ortanca 152.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura Düzenle (büyük azaltma) | n 4 | en iyi 151.9 | ortanca 152.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | YENİ fatura Düzenle (azaltma) | n 3 | en iyi 142.7 | ortanca 149.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | iade yazımı (fatura iadesi) | n 3 | en iyi 151.1 | ortanca 156.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi yazımı | n 4 | en iyi 34.4 | ortanca 35.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi düzeltme | n 4 | en iyi 34.5 | ortanca 35.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi silme | n 4 | en iyi 9.8 | ortanca 10.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok iadesi geri yükleme | n 4 | en iyi 39.6 | ortanca 41.4 | olay döngüsü en çok 41.9 | 200 dışı 0
+SONUÇ | stok hareketi düzeltme (sıradan) | n 4 | en iyi 4.6 | ortanca 4.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | stok hareketi silme (sıradan) | n 4 | en iyi 3.9 | ortanca 4.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bütünlük taraması (Mutabakat Testi) | n 2 | en iyi 7434.9 | ortanca 7434.9 | olay döngüsü en çok 9026.1 | 200 dışı 0
+SONUÇ | Dönem Kilidi kilitle | n 1 | en iyi 5002.9 | ortanca 5002.9 | olay döngüsü en çok 10.2 | 200 dışı 0
+SONUÇ | Dönem Kilidi aç | n 1 | en iyi 25.6 | ortanca 25.6 | olay döngüsü en çok 7.6 | 200 dışı 0
+KAPI | fatura Düzenle (aynı içerik) → scoped | 4
+KAPI | fatura Düzenle (azaltma) → scoped | 4
+KAPI | fatura Düzenle (büyük azaltma) → scoped | 4
+KAPI | YENİ fatura Düzenle (azaltma) → scoped | 3
+yük sonda 1.14 1.06 1.07
+çıkış 0 · sonda 1.14 1.06 1.07 1/116 9005
+bitti 08:00:19

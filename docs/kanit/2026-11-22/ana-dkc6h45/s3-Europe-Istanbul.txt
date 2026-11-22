@@ -1,0 +1,36 @@
+kasa s1 cover 2026-06-30 Yönetim rule-diff-nothing [] over None
+    bsNow (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+    gt26  (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+kasa s2 cover 2026-09-30 Yönetim rule-diff-nothing [] over None
+    bsNow (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+    gt26  (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+kasa s3 cover 2025-12-31 Yönetim satır [('770', '', 30000), ('770', '770.90', -30000)] over None
+    bsNow (['770: 300,00 TL', '770 (770.90): −300,00 TL'], [])
+    gt26  (None, [])
+pos s1 cover 2026-06-30 Yönetim rule-diff-nothing [] over None
+    bsNow (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+    gt26  (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+pos s2 cover 2026-09-30 Yönetim rule-diff-nothing [] over None
+    bsNow (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+    gt26  (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+pos s3 cover 2025-12-31 Yönetim satır [('602', '', -100000), ('602', '602.90', 100000)] over None
+    bsNow (['602: −1.000,00 TL', '602 (602.90): 1.000,00 TL'], [])
+    gt26  (None, [])
+stok s1 cover 2026-06-30 Yönetim rule-diff-nothing [] over None
+    bsNow (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+    gt26  (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+stok s2 cover 2026-09-30 Yönetim rule-diff-nothing [] over None
+    bsNow (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+    gt26  (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+stok s3 cover 2025-12-31 Yönetim satır [('600', '', -40000), ('600', '600.90', 40000), ('610', '', 10000), ('610', '610.90', -10000)] over None
+    bsNow (['600: −400,00 TL', '600 (600.90): 400,00 TL', '610: 100,00 TL', '610 (610.90): −100,00 TL'], [])
+    gt26  (None, [])
+elle-borc-alacak s1 cover 2026-06-30 Yönetim rule-diff-nothing [] over None
+    bsNow (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+    gt26  (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+elle-borc-alacak s2 cover 2026-09-30 Yönetim rule-diff-nothing [] over None
+    bsNow (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+    gt26  (None, ['Kural Farkı Düzeltildi (Fiş 2026-000001)'])
+elle-borc-alacak s3 cover 2025-12-31 Yönetim satır [('770', '', 70000), ('770', '770.90', -70000)] over None
+    bsNow (['770: 700,00 TL', '770 (770.90): −700,00 TL'], [])
+    gt26  (None, [])

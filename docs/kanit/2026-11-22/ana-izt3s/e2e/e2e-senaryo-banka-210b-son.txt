@@ -1,0 +1,25 @@
+  ✓ kart seçilmeden kaydedilmedi: “"Kredi Kartı" alanı boş bırakılamaz.”
+  ✓ Tab ile Kurumsal Kart alanına geçildi (cardAccountId)
+  ✓ seçilen kart alanda kaldı (yeniden çizilmedi)
+  ✓ tutar kaybolmadı
+  ✓ yalnız Kurumsal Kart 2 −250 (-250 / -750)
+
+■ 17. Alış faturası Düzenle: peşin kartla (Kredi Kartı) satırı Kurumsal Kart 2'ye taşınır; + Havale / EFT satırında hücre Banka Hesabı
+  ✓ Düzenle formunda peşin satırı (başlık “Kredi Kartı”) Kredi Kartı alanıyla açıldı
+  ✓ satırda yol kutusu yok (İz 2.8)
+  ✓ + Havale / EFT satırında hücre Banka Hesabı: “Banka HesabıHesap SeçinZiraat Bankası · Ana TL Hesabı (ZIR-TL) — ₺130.500,00Garanti BBVA · Ana TL Hesabı (GAR-TL) — −₺70.000,00Hesapsız (Açılıştan Önce)”
+  ✓ kart satırı ve kartı yerinde
+  ✓ peşin satır Kurumsal Kart 2'ye bağlı
+  ✓ Kurumsal Kart +600, Kurumsal Kart 2 −600 (-750 / -850)
+  ✓ banka hesapları değişmedi
+
+■ 18. Kart Borcu Ödemesi (Ziraat → Kurumsal Kart 750; alış faturası 17. adımda Kurumsal Kart 2'ye taşındı) → kart 0; Genel Bakış ve Banka Bakiye Raporu'nda Kart ve Kredi Borcu; Mutabakat Testi
+  ✓ Kurumsal Kart 0 (0)
+  ✓ Ziraat −750: z 129750, g -70000, v 20000
+  ✓ Kart ve Kredi Borcu 850 (beklenen 850)
+  ✓ Genel Bakış Kart ve Kredi Borcu: “₺850,00”
+  ✓ Banka Bakiye Raporu: Kart ve Kredi Borcu | Yapı Kredi | Kurumsal Kart 2 | 309.02 | 0,00 TL | 0,00 TL | 850,00 TL | 0,00 TL | 0,00 TL | 0,00 TL | -850,00 TL
+  ✓ Mutabakat Testi tutarlı
+  ✓ sayfa hatası yok
+
+✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /dev/shm/izt3-sinama/test/e2e/artifacts/senaryo-banka-210b

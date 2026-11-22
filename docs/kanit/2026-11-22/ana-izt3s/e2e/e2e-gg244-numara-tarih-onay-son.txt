@@ -1,0 +1,25 @@
+  ✓ uyarı Toplamlar kutusunda da
+  ✓ belge yazılmadı
+    [soru] "Kaydedilmemiş Değişiklik" → Evet (adım bitti; kaydedilmemiş deneme formu kapatılıyor (meşru soru))
+
+E) Düzenle: numarasız bekleyenin (14.06.2026) tarihi serinin son numaralısından (12.06.2026) eskiye
+  ✓ tarih değişmeden uyarı yok
+  ✓ Düzenle kuralıyla uyarı (20₺20,00 Genel Toplam₺120,00 Yalnız Yüz Yirmi Türk Lirası TEA serisinde son gönderilen belge TEA2026000000002 12.06.2026 tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).)
+  ✓ Değişiklikleri Kaydet: onay açılmadı
+  ✓ belgenin tarihi değişmedi
+  ✓ alışın Düzenle'sinde kendi numarası çakışma sayılmaz
+
+F) Alış: aynı tedarikçide kayıtlı numara, dönem kilidi; düzeltilince onay açılır
+  ✓ çift numara uyarısı (Toplamlar Toplam₺40,00Ara Toplam₺40,00 KDV %20₺8,00 Genel Toplam₺48,00 Yalnız Kırk Sekiz Türk Lirası ABC-1 numaralı alış faturası bu caride 15.06.2026 tarihiyle zaten kayıtlı.)
+  ✓ Kaydet: onay açılmadı (çift numara)
+  ✓ numara düzelince uyarı kalktı
+  ✓ dönem kilidi uyarısı (oplam₺40,00 KDV %20₺8,00 Genel Toplam₺48,00 Yalnız Kırk Sekiz Türk Lirası Fatura 05.06.2026 tarihli; 07.06.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.)
+  ✓ Kaydet: onay açılmadı (kilitli dönem)
+  ✓ kilidin ertesi günü uyarı yok
+  ✓ çakışmasız alışta onay açıldı
+    [soru] "Faturayı Kaydet" → Vazgeç (yalnız onayın açıldığı denetleniyor; kaydetmeye gerek yok)
+  ✓ F adımında belge yazılmadı
+    [soru] "Kaydedilmemiş Değişiklik" → Evet (adım bitti; kaydedilmemiş deneme formu kapatılıyor (meşru soru))
+  ✓ sayfa hatası yok
+
+✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı
