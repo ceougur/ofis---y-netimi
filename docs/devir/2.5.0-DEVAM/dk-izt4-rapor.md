@@ -35,6 +35,7 @@
 - **Düzenle (PUT) ve silme:** PUT tutar 300 → 600 = taze 600; bağ ekleme (bağsız → bağlı) = bağlı 600; bağ kaldırma ve bağ F → F2 eski = yeni; silme ve Silinenler'den geri yükleme (tamamı kartta F 600 dahil) doğru.
 - **Kart ve fatura işlemleri:** kart silme eski = yeni. Fatura İptal Et ve iade 600, bağsız ikiziyle aynı. Kartı Kapat bağsızla aynı.
 - **İade sırası:** iade → bağlı, bağlı → iade, iki iade art arda ve PUT ile bağın iadeden sonra eklenmesi denendi; bağlı ile bağsız aynı görünüm, bakiye doğru.
+- **Kilit:** bağlı 600'den sonra kilit koymak görünümü değiştirmiyor. İlk taksiti kilitli dönemde olan kartta sonuç kilitsiz ikiziyle aynı. Kilitten sonra bağlı ödemenin silinmesi eski = yeni.
 - **v2.4.9 verisi:** etiketin gerçek koduyla (`bootVersion("v2.4.9")`) 7 cari üretildi, sonra yeni ve eski kodla göç edildi (iki TZ).
   - kartsız, bağsız 900 ve bağlı 300: AYNI
   - bağlı 600 / 900 / 1.200 ve çek 600: taze veriyle aynı S255 sayıları
