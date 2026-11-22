@@ -192,7 +192,10 @@
  ],
  "elleBelirsiz": [
   "SK-47",
-  "SK-49"
+  [
+   "SK-49",
+   "S250 = C"
+  ]
  ],
  "adimlar": [
   {

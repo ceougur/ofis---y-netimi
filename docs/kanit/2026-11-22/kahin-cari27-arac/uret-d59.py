@@ -75,9 +75,10 @@ def degistir(sen, sil_anahtar, yeni_E, yeni_Y, sil_B=(), yeni_B=()):
     sen["elleBeklenen"] = eb
     sen["elleYok"] = [y for y in sen.get("elleYok", []) if not sil_anahtar(y)] + list(yeni_Y)
     bel = list(sen.get("elleBelirsiz", []))
-    for x in sil_B:  # her biri BİR kez çıkar (aynı kod birden çok caride olabilir)
-        bel.remove(x)
-    sen["elleBelirsiz"] = bel + list(yeni_B)
+    for x in sil_B:  # her biri BİR kez çıkar (aynı kod birden çok caride olabilir); yoksa geçer — üreteç bakım 26 dosyasında da kendi çıktısında da aynı sonucu verir
+        if x in bel:
+            bel.remove(x)
+    sen["elleBelirsiz"] = bel + [x for x in yeni_B if x not in bel]
 
 
 # ───────────────────────── (1a) d57 K3 — S249 = A kararın KENDİ örneği (bugün 20.11.2026)
@@ -108,7 +109,8 @@ cr("k1", "T3", 600, 200, 600); ft("k1", "FT3", 600); fk("k1", "FT3", 600, 600, F
 E["adim:dr4:durum"] = "ret"
 cr("k1", "R4", 600, 0, 600); ft("k1", "FR4", 600); E["k1:fatura:IR4:acik"] = 0; fk("k1", "FR4", 600, 600, False)
 degistir(d58, lambda k: (k.startswith("k1:") and any(x in k for x in (":T1:", ":FT1:", ":T2:", ":FT2:", ":T3:", ":FT3:", ":R4:", ":FR4:", ":IR4:"))) or k == "adim:dr4:durum",
-         E, Y, sil_B=("SK-48", "SK-48", "SK-50", "SK-49"))
+         E, Y, sil_B=("SK-48", "SK-48", "SK-50", "SK-49", "SK-49"), yeni_B=(["SK-49", "S250 = C"],))
+# R3 — S250 = C (Y27-4): SK-49 susması AYNEN, neden metninde karar numarası (KAPSAM §3: 'BİLİNEN SINIR — kullanıcı kararı S250 = C') — elleBelirsiz iki parçalı; R4'ün SK-49'u S251 ile kalktı
 d58["aciklama"] = d58["aciklama"] if "bakım 27" in d58["aciklama"] else d58["aciklama"].replace(
     "azaltma §2 SUS SK-48 (T1 ödemeli, T2 kapanmış tahsilatsız), açık tahsilatsız azaltma §36 KAPSAM (b) + (e) (T3)",
     "azaltma — bakım 27: S249 = A, kart Düzenle'nin planıyla yeniden kurulur (T1 ödemeli, T2 kapanmış tahsilatsız — AÇIK kurulur, T3 açık tahsilatsız); R4 — bakım 27: S251 = A, iadeli faturanın Düzenle'si reddedilir")
