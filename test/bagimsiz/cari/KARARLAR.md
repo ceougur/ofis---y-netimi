@@ -6028,3 +6028,94 @@ senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'
 - **SK-52 (UÇ) — Mevcut Borç kartının içine aldığı faturaya BAĞLI ÇEK / SENET (kartın açılmasından sonra; PARA KURALI — ders 43):** örnek S255'in sayılarıyla, 20.10'da F'ye bağlı 600'lük çek. **A (ÖNERİ):** bağlı tahsilatla AYNI (S255 = A) —
   gösterilen 300, fazla 300 tek kuyruğa (kart Tahsil 300 · Kalan 300, bakiye 300). **B:** çek faturanın kendi açığını (kartın içindeki dahil) kapatır. **C:** Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS). Yaygın programlarda: doğrulanmış kaynak okunmadı.
 - **SK-53 (UÇ) — S255 + Şüpheli Alacak payı (S168 / S181) aynı faturada:** kâhin SUS; seçenek önerisi kanıt bölümünde (programla fark görülürse).
+
+### Kurallar (bakım 28 kod commit'leri `91acc91d` (model + öz test), `e00d9729` (`kos.mjs` — yalnız yapım aşaması paket listesi); yorumların `model.py`'deki karşılığı)
+- `_alacak_govde250` (Y28-1 / Y28-3): bağ ADAYI = carinin ilk kart tüketiminden (tarih, yazım sırası) sonra yazılmış faturaya bağlı tahsilat / evrak. Adaylar HARİÇ aynı hesap (`s255_haric` — ödeme yokmuş gibi) koşulur; bağın gününden
+  önceki bir kart faturayı tüketmişse aday S255 alanına girer: zaman çizelgesinden önceki bağlardan ÇIKAR, kaynak `bagfazla:<ad>` (tam tutar, 'd' havuzu, kendi günü) önceden kaydedilir ve `_tyk(kart_bag=…)` bağı ödemeden önceki SON
+  kart tüketiminin hemen ardından faturanın kuyruk kalanından düşer (fazlası kaynakta kalır, kendi gününde havuza girer). Tüketmemişse bugünkü kural. Son hesapta tutarlılık (Y28-3) bozulursa neden "S255 … kararlı değil" (SUS).
+  Bağlı evrak S255 alanında → neden SK-52; Şüpheli Alacak paylı tahsilat (`s168`) → neden SK-53. Fazlası olmayan S255 bağı bağsız kaynak SAYILMAZ (`kaynak_say` — bugünkü bağ gibi; etiket izi). Çıktı `son["s255"]` (ad → gösterilen
+  açığa düşen); satış faturası açığının etiketi bu caride KULLANICI → **BAŞ MİMAR**. İz `s255`. Mutantlar 358 (S255 B), 359 (fazlası en son taksite), 360 (S255 yok).
+- `_alacak_govde250` (Y28-7 — S254 = C): faturasız stok iadesinden önce açılmış en az iki etkin Mevcut Borç kartı (satış kartı değil, tutarı > 0) ve iade (`iz["kap:<iade>"]`) bir kartın taksitini kapattıysa neden "BİLİNEN SINIR (kullanıcı kararı
+  S254 = C) S254" (C13.4 (11) — carinin kuyruk denetimleri SUS); `son["s254"]` kartları; `_sus17` bu kartların `kart:<no>:toplam`'ını da siler (belirsiz kaydı). İz `s254`. Mutant 361 (SUS yok — SUS kuralı).
+
+### C8ag Nasıl bozulur? (bakım 28 — senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo / mutant |
+|---|---|---|
+| Z292 | S255: bağlı ödeme önce kartın aldığı kısmı (kartın taksitlerini) kapatır, faturanın gösterilen açığı açık kalır (S255 B) | d60 V1 / V2 / V7 / V10 / V11 (mutant 358) |
+| Z293 | S255: fazlası kartın EN SON taksitine gider (S2 yerine) — vadesi geçmiş taksit açık kalır | d60 V2 / V10 / V11 (mutant 359 — gecikmiş 0 → 200) |
+| Z294 | S255: bağ zaman çizelgesinden önce faturanın kendi kalemini kapatır (bakım 27) — kart açık borçtan büyük, cari SUS | d60 V2 … V4, V7 … V11 (mutant 360) |
+| Z295 | S255: kart açılmadan önceki bağlı ödeme de S255 sayılır | d60 V12 (değerle — bugünkü kural; V1 ile aynı sayılar) |
+| Z296 | S255: faturanın tamamı kartta iken bağlı ödeme kaybolur / faturayı eksiye düşürür | d60 V7, V8, V9 (değerle — bağın tamamı havuza) |
+| Z297 | S255: bağlı ödeme ile bağsız ödeme farklı sonuç verir (bu örnekte aynı olmalı) | d60 V3 ↔ V5, V2 ↔ V6 (değerle) |
+| Z298 | S255: silinen bağlı ödeme kuyrukta kalır / geri yüklenen ödeme S255 dışı kalır | d60 V11 k0 / k1 (değerle) |
+| Z299 | S255: iadeden / iade iptalinden sonra bağlı ödeme küçülmüş kartı ya da geri alınmış küçülmeyi görmez | d60 V8 / V9 / V10 (değerle) |
+| Z300 | S254: iki kart + faturasız stok iadesinde hangi kartın küçüldüğü değerle yazılır (kart toplamı dahil) | d60 Q1 / Q2 (mutant 361 — SUS kuralı; `elleYok` / `elleBelirsiz`) |
+
+### C10ag Mutantlar (bakım 28; `oz-test.py` DEĞERLE)
+- 358 (S255 B), 359 (fazlası en son taksite), 360 (S255 yok — bakım 27 davranışı) DEĞERLE; 361 (S254 SUS yok) SUS kuralı — öz testin SUS kuralı kümesi {316, 324, 353, 357, 361}. Hepsi d60'ta yakalandı (ilk yakalayan: 358 `k0:cari:V1:gecikmis`,
+  359 / 360 `k0:cari:V2:gecikmis`, 361 `k0:cari:Q1:acikToplam`); `kos.mjs` mutasyon taramasında programla da YAKALANDI.
+
+### Senaryolar (bakım 28)
+- **yeni `d60-c5-s255-s254-bagli-odeme-kartli-fatura`** (bugün 20.10.2026; 14 cari, 69 adım; 393 elleBeklenen + 70 elleYok + 7 elleBelirsiz): V1 bağlı 300 (= gösterilen; bugünkü kuralla aynı), V2 kararın örneği bağlı 600 (kart 600 / Tahsil 300 / Kalan 300,
+  gösterilen 0, kendi 300 'Taksitte', bakiye 300, gecikmiş 0), V3 bağlı 900 (kart Kalan 0, bakiye 0), V4 bağlı 1.200 (bakiye −300), V5 / V6 bağsız 900 / 600 (V3 / V2 ile aynı), V7 faturanın tamamı kartta (kart 900 / 300 / 600), V8 iade
+  1 adet sonra bağlı 600 (dış açık iadeyle kapalı — bağın tamamı karta), V9 iade 2 adet (kart 300'e küçüldü) sonra bağlı 300, V10 iade iptali sonra bağlı 600 (V2 ile aynı), V11 bağlı 600 silindi (k0: gösterilen 300, gecikmiş 500) / geri
+  yüklendi (k1: V2 ile aynı), V12 kart açılmadan önceki bağlı 300 (bugünkü kural); Q1 / Q2 S254 SUS (bakiye 900 / 1.400). Elle tablo karar metinlerinden, kâhin koşulmadan (üreteç `docs/kanit/2026-11-22/kahin-cari28-arac/uret-d60.py`);
+  ilk kâhin koşusunda 470 elle denetimin HEPSİ tuttu (elle hesap düzeltmesi YOK).
+- Eski elle senaryoların elle tabloları ve adımları DEĞİŞMEDİ.
+
+### Dil ekleri (/3, bakım 28)
+- Yeni dil adımı YOK (bağlı tahsilat `tahsilat {fatura}`, iade, `fatura_iptal`, `hareket_sil` / `hareket_geri_yukle`, `stok_iade` mevcut).
+
+### C12ag DENENMEYEN (bakım 28; neden)
+- Faturanın Tahsilat Ekle'si AYRI yol olarak: bağdaştırıcıda tek uç (`POST …/accounts/:id/entries {invoiceId}`) — formun önerdiği / sınırladığı tutar (S230 "girilebilecek tutarın sınırı değişmez") API'den okunmuyor.
+- Bağlı ÇEK / SENET (SK-52 SUS) ve Mahsup Et (dilde yok) S255 alanında — elle senaryo yok; Şüpheli Alacak paylı bağlı tahsilat (SK-53 SUS) — elle senaryo yok.
+- İki ya da daha çok Mevcut Borç kartının içine aldığı fatura (KAPSAM "kartların almadığı kısım") — elle senaryo yok (kural kodda: bağ son kart tüketiminin ardından).
+- Bağlı ödemeden SONRA yazılmış iade / Düzenle (Y28-4 — bugünkü kural §36 / §37).
+- Rastgele üretici kart sonrası bağlı ödeme ve iki kart + stok iadesi üretmez (G3'te rastgele senaryolarda S255 / S254 alanı çıkmadı — 2.5.1'E).
+
+### SONRAKİ SÜRÜME (2.5.1 — 20.11 kuralı)
+- Rastgele üreticiye kart sonrası bağlı ödeme (bağlı / bağsız / iade sonrası) ve iki kart + faturasız stok iadesi.
+- Bakım 27'nin 2.5.1 listesi aynen (`sus_duz` / `sk50` etkisiz kod, S244 kart Kalan'ı, üreticiye Düzenle / Kartı Kapat / iade + Düzenle, öz test zorlaması, kos.sh kilit düzeni).
+
+### C0ag Değişen eski beklentiler (G3; bakım 27 (`6a1d19d1`) ↔ bakım 28 kâhin çıktısı, `2.5.0`; eski kopyanın 113 elle senaryosu + yeni d60 + rastgele s1 / ux18 tohum 1–10 × 120)
+- Üretici 20/20 aynı dizi; eski elle senaryoların adımları DEĞİŞMEDİ; elle fark 113/113 (izinli YOK); `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **536/536 bayt bayt aynı**.
+- 2.5.0 G3: eski 80.502 denetim · yeni 80.613 · değişen / kalkan / yeni **335** · **BEKLENMEYEN 0** · yalnız etiketi değişen **2** (d60 `k0` / `k1:fatura:FV1:acik` KULLANICI → BAŞ MİMAR — S255). Sınıflar: **S255 yeni 223** (d60 V2 … V4, V7 … V11 — eski
+  kâhinde EK-2B 32 SUS), **S254 kalkan 112** (d60 Q1 / Q2 — eski kâhinde S2 dağıtımı değerle). Fark yalnız d60'ta; öbür 113 elle ve 20 rastgele senaryoda 0. Döküm iki TZ'de bayt bayt aynı.
+
+### Program ↔ kâhin (taban dalının programı — bu dalın tabanı `6a1d19d1`; `npm run test:kahin-cari` düzeni: bütün elle senaryolar + rastgele 1–2 × 60 + mutasyon taraması)
+- **İlk koşu (UTC, depodaki liste BOŞ):** 25.101/25.164 — **63 fark, HEPSİ d60** (öbür 105 senaryo tam; 7 bilinen sınır, 0 okuma hatası, 0 yakalanmayan mutasyon). Farklar yalnız S255 alanında (V2 / V3 / V4 / V7 / V8 / V10 ve V11 k1): kartın
+  Tahsil Edilen / Kalan / taksit Ödenen'i ve carinin gecikmişi. Fatura açığı / gösterilen / kartta / 'Taksitte', bakiye, açık toplamı programla AYNI. S254 (Q1 / Q2) kâhin SUS — bakiye AYNI.
+- **Son koşu (liste 63 kayıt — 'S255 izleyen tur 4'):** UTC **25.101/25.101**, Europe/Istanbul **25.101/25.101** — **0 fark**, 63 yapım aşaması (ayrı sayılır), 0 okuma hatası, 0 yakalanmayan mutasyon (358 / 359 / 360 / 361 programla koşuda
+  da YAKALANDI); 7 bilinen sınır; 12 atlanan senaryo (2.4.5 kararıyla geçersiz /1 /2 — bugünkü gibi).
+- **P-1 (program şüphesi — S255 = A programda henüz yok; ayrı kod turu):** kartın içine aldığı faturaya bağlı ödemenin gösterilen açığı AŞAN kısmı programda kartın taksitlerine DÜŞMÜYOR. En küçük örnek d60 V2 (F 900 01.09; kart 600 = 3 × 200
+  05.10 / 05.11 / 05.12, 02.09; 20.10 F'ye bağlı 600; bugün 20.10): kâhin kart Tahsil **300** / Kalan **300**, gecikmiş **0**; program Tahsil **0** / Kalan **600**, gecikmiş **200** (05.10 taksiti); bakiye 300, F kendi 300 / gösterilen 0 /
+  kartta 300 / 'Taksitte' İKİSİNDE AYNI. Sonuç: programda kartın Kalan'ı (600) carinin bakiyesini (300) aşıyor. Aynı aile V3 (Kalan 600 ↔ 0, bakiye 0), V4 (600 ↔ 0, bakiye −300), V7 (tamamı kartta: 900 ↔ 600, gecikmiş 300 ↔ 0), V8 (iade
+  sonrası: 600 ↔ 0), V10 (iade iptali sonrası = V2), V11 k1 (geri yüklenen = V2). V9 (iade kartı 300'e küçültmüş, bağlı 300) programda kâhinle AYNI (gözlem).
+- **Eski kâhin (bakım 27) aynı programla (d60, `--mutasyonsuz`):** **428/440** — 12 fark, hepsi Q1 (S254 alanı: eski kâhin S2 dağıtımıyla K1'in 05.10 taksiti; program K2'yi küçültüyor — `K2Q1:toplam` 300, `taksit3` okunamadı, b1q1 / b2q1 Kalan
+  ters). Eski kâhinin S255 alanındaki SUS'u (EK-2B 32) P-1'i GİZLİYORDU (yeni kâhinde değerle). **Programın S254 alanındaki davranışı (GÖZLEM — kural kaynağı DEĞİL):** Q1'de iade son açılan kartı (K2) küçültüyor; Q2'de (kart dışında fatura
+  da var) eski kâhinle aynı (K1'in 05.10 taksiti + FQ2'den 100).
+
+### Yapım aşaması listesi
+- Kendi kopyada `--yapim-asamasi-yaz` (KAHIN_YAPIM_ASAMASI; UTC ve Europe/Istanbul bayt bayt aynı): **63 kayıt**, hepsi d60 (üreticinin kural metninden tahmini etiketi Ç5-B tur 2: 7, Ç7b: 8, AYRIŞTIRILMADI: 48 → görev metni gereği hepsi
+  **'S255 izleyen tur 4'**; öbür senaryolardan kayıt 0 — P'ye kalan 0). ESKİ LİSTEYLE FARK: yeni 63, kapanan 0, değeri değişen 0 (eski 0 → yeni 63). `kos.mjs` YAPIM_PAKETLER'e "S255 izleyen tur 4" eklendi (`e00d9729`); liste ayrı commit'te.
+  S255'in kodu girince bu 63 kayıt "YAPIM AŞAMASI KAPANDI" diye kırmızıya döner → liste o birleşimde yeniden üretilir (yayın adayında BOŞ).
+
+### Eski kâhin kırmızısı (elle tablo; eski kâhin `6a1d19d1`, `elle-karsilastir.py --kirmizi-bekle`, iki TZ aynı)
+- **205/470 elle denetim kırmızı** (d60). Kural kural: S255 — V2 / V3 / V4 / V7 / V8 / V9 / V10 (k0 + k1) ve V11 k1'in cari / fatura / kart denetimleri ANAHTAR YOK (eski kâhinde EK-2B 32 SUS) + Y23-6 (i) belirsiz kayıtları yok (V3 / V4 / V8 / V9);
+  S254 — Q1 / Q2 `elleYok` anahtarları eski kâhinde DEĞERLE (gecikmiş, açık toplamı, elle Kalan, kartların toplamı / Tahsil / Kalan, FQ2 açığı) + "S254 = C" belirsiz kaydı yok. **Kırmızısı OLMAYAN:** V1 / V5 / V6 / V12 (bugünkü kuralla aynı sayılar
+  — kâhin kararla aynı yeri bugün de doğru veriyordu) ve V11 k0 (ödeme silinmiş).
+
+### Kanıt (bakım 28; iki saat dilimi; kâhin kodu `91acc91d` + `e00d9729`, araçlar `e7b0e9f3`; `docs/kanit/2026-11-22/kahin-cari28-kanit/`, araçlar ve koşu betikleri `kahin-cari28-arac/`)
+- oz-test **9.357/9.357** · G3 **670/670** (BEKLENMEYEN 0) · elle fark **113/113** · d60 **470/470** · ESKİ kâhinde **205/470 kırmızı** · program ↔ yeni kâhin ilk **25.101/25.164** (63 fark — hepsi d60, P-1), son **25.101/25.101** iki TZ (63 yapım aşaması)
+  · program ↔ eski kâhin (d60) **428/440** · yapım aşaması listesi 0 → 63.
+- Not (açıkça): koşuların hepsi `flock -s -w …` altında, süre sınırı kilidin içinde. KİLİTSİZ koşulanlar (kısa, program açmayan): üç senaryo / anahtar okuma satırı (`python3 -I -c`, d47 / d52 / d59 adımları ve anahtarları — hazırlıkta) ve
+  `model.py`'ye iki satır eklemek için bir düzenleme betiği (python heredoc) — kural ihlali, açıkça. Başka ajanın özel kilitli ölçümü (~11:2x–12:49 UTC) koşuları bekletti; bir okuma betiği 30 dk arka plan sınırında kesildi (yeniden koşuldu).
+
+### KULLANICIYA SORULMALI (bakım 28 — son hâl)
+- **SK-52 (UÇ)** — yorumdaki gibi (Mevcut Borç kartının içine aldığı faturaya kartın açılmasından sonra BAĞLI ÇEK / SENET): **A:** bağlı tahsilatla aynı (S255 = A — gösterilen 300, fazla 300 tek kuyruğa; kart Tahsil 300 · Kalan 300, bakiye 300);
+  **B:** çek faturanın kendi açığını (kartın içindeki dahil) kapatır, kart değişmez; **C (ÖNERİ): Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS)**. Bakiye her seçenekte aynı (300); ayrışan kartın Tahsil / Kalan'ı ve gecikmiş (0 ↔ 200).
+  Programla karşılaştırılmadı (elle senaryo yok). Yaygın programlarda: doğrulanmış kaynak okunmadı.
+- **SK-53 (UÇ)** — S255 alanındaki bağlı tahsilatın faturası Şüpheli Alacak paylıysa (S168 / S181): **A:** önce S168 payı (şüpheliden düşen kısım), kalanına S255; **B:** önce S255 (gösterilen açık), şüpheli payı yalnız gösterilen kısımdan;
+  **C (ÖNERİ): Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS)**. Elle senaryo yok; programla karşılaştırılmadı. Yaygın programlarda: doğrulanmış kaynak okunmadı.
+- **Okuma (baş mimar görsün; soru DEĞİL):** kararın "600 → fatura kapanır" sözü GÖSTERİLEN açığın kapanması diye okundu — kâhinde F'nin kendi açığı 300 (kartın içinde), 'Taksitte' (S230 = A / Y23-3 aynen). Program da aynı okumada (fatura sayıları
+  programla aynı).

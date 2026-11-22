@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-cari28-program-ist",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc28-a5c/program-ist",
+  "commit": "a7e549100f50082d09b6a825bd56fac7e347131c",
+  "dal": "worktree-agent-a5cd991d0d986ba51",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-22T12:59:46.540Z",
+  "sure_sn": 585.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 25101,
+    "gecen": 25101,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc28-a5c/kanit/2026-11-22/kahin-cari28-program-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a5cd991d0d986ba51",
+  "ham_cikti_sha256": "5a3edec6d1f06141a70faa40c4cf7a4f31c76405c267aa8483c37eb01aebadcf",
+  "ham_cikti_bayt": 82710
+}
