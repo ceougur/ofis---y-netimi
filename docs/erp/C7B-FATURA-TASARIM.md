@@ -949,3 +949,11 @@ dışı (program dışından) yapılan HER değişiklik bugünkü gibi YAKALANMA
    ("store dışı yazım"), Mutabakat Testi bulguyu (kilitlide period-lock) bulur — tabanla aynı sayıyla.
 6. Bozma bulanıklaştırması (2.0.26 gerçek verisi, sabit tohum, test kipi): en büyük rowid'li satırı sil + aynı rowid'e yeni kimlikli (bozuk ya da bozmasız) kopya — eşdeğerlik ihlali yok.
 7. Stok iadesi düzelt / sil / geri yükle: öbür ekrana `plans` (planId'li) gider; açık kart penceresi ekranda yenilenir (gerçek tıklama); veri tabanı sayıları aynı.
+
+### 21.4 Kod ve sonuç (kodla birlikte; kanıt docs/kanit/2026-11-22/izt3-*)
+- `lib/integrity-scope.mjs derive`: rowid'in son hâli `capture.inserted`'teyse ve önceki hâlin kimliği farklıysa `{ pre, post: null }` + `{ pre: null, post }`; değilse bugünkü eşleşme ve "kimlik değişti" (D8). Yalnız okuyan yardımcı yok.
+- `routes/stock.mjs` (yalnız iade yolu): `publishCards` (değişen her kart → `plans` + `planId`); PUT / DELETE / Silinenler'den geri yükleme kesilen / geri büyüyen kartları yayımlar; geri yüklemede iadenin carisi için `accounts`.
+- Sınama: `test/izt3-kapi-rowid-250.test.mjs` 14 (eski 12/14 — P1 iki kipte 'kimlik değişti' ile kırmızı; yakalama sınamaları eskide de yeşil, dişleri mutant m1 (3 kırmızı) / m2 (1 kırmızı));
+  `test/izt3-stok-iade-canli-250.test.mjs` 5 (eski 2/5); ekran `test/e2e/senaryo-izt3-250.mjs` 18 (eski 16/18 — geri yüklemede gözcünün kartı ve listesi ₺900,00'da bayat kalıyordu).
+- Eşdeğerlik: eski ↔ yeni 14 senaryoluk döküm (`izt3-kos/kapi.mjs`) iki kipte birebir (durum, 409 kodları, tarama bulguları, sayılar); değişen yalnız kapı yolu. Rowid bozma bulanıklaştırması (2.0.26, 2 tohum × 160)
+  eski = yeni: kabul / ret sayıları aynı, eşdeğerlik ihlali 0.
