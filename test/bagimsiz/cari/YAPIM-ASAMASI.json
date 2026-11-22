@@ -10,43 +10,5 @@
   "Ç7b",
   "AYRIŞTIRILMADI"
  ],
- "kayitlar": [
-  {
-   "senaryo": "d57-c5-s241-s242-duzenle",
-   "anahtar": "k1:cari:P1:gecikmis",
-   "beklenen": 80000,
-   "program": 60000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
-   "paket": "Ç7b"
-  },
-  {
-   "senaryo": "d57-c5-s241-s242-duzenle",
-   "anahtar": "k1:kart:fatura:FK3:toplam",
-   "beklenen": 60000,
-   "program": 30000,
-   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
-   "kural": "S99 faturanın kendi kartı = fatura tutarı · §36 Y24-4 KAPSAM (b): iade / Düzenle ile küçüldü",
-   "paket": "Ç7b",
-   "not": "kural metni birden çok pakete işaret ediyor: Ç5-B tur 2, Ç7b"
-  },
-  {
-   "senaryo": "d57-c5-s241-s242-duzenle",
-   "anahtar": "k1:kart:fatura:FP1:kalan",
-   "beklenen": 30000,
-   "program": 90000,
-   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
-   "kural": "C13.4 / S99: kartın Kalan'ı = taksitlerin tek kuyruk kalanı",
-   "paket": "Ç7b"
-  },
-  {
-   "senaryo": "d57-c5-s241-s242-duzenle",
-   "anahtar": "k1:kart:fatura:FP1:toplam",
-   "beklenen": 30000,
-   "program": 90000,
-   "sinif": "BULGU PLAN · 2.5.0 kararıyla değişen",
-   "kural": "S99 faturanın kendi kartı = fatura tutarı",
-   "paket": "Ç7b"
-  }
- ]
+ "kayitlar": []
 }

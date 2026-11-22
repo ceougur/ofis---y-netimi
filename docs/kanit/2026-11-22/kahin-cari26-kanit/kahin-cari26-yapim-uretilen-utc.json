@@ -1,0 +1,24 @@
+{
+ "aciklama": "Cari kâhini ↔ program YAPIM AŞAMASI listesi (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D). Ç5 paket paket ana dala girerken bugünkü farklar kararı / bekleyen paketiyle sabitlenir; kâhinin beklentisi DEĞİŞMEZ. Listede OLMAYAN fark, değeri DEĞİŞEN fark ve KAPANDIĞI hâlde listede duran kayıt kırmızıdır (liste yalnız küçülür). Yayın adayında liste BOŞ olmalı (tools/release.mjs). BİLİNEN.json'dan (kullanıcının ERTELEDİĞİ farklar) AYRIDIR.",
+ "kural": "2.5.0",
+ "uretim": "node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz (varsayılan koşu: bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem)",
+ "paketler": [
+  "Ç5-A",
+  "Ç5-B tur 2",
+  "Ç5-C",
+  "eşleme",
+  "Ç7b",
+  "AYRIŞTIRILMADI"
+ ],
+ "kayitlar": [
+  {
+   "senaryo": "d58-c5-s246-s243-kendi-kart-duzenle",
+   "anahtar": "k1:cari:T3:gecikmis",
+   "beklenen": 0,
+   "program": 20000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  }
+ ]
+}

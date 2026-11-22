@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Cari kâhini bakımı 25 (§37) — bakım 24 aracının uyarlaması: `--yapim-asamasi-yaz` ile kendi kopyada üretilen listeyi ayrıştırır. Listeye girecek kısım görev metnindeki "programın henüz yapmadığı BİLİNEN
+"""Cari kâhini bakımı 26 (§38): bakım 25 aracının kopyası — listeye giren kayıt YOK (girdide yapım aşaması kısmı yok). Eski not: Cari kâhini bakımı 25 (§37) — bakım 24 aracının uyarlaması: `--yapim-asamasi-yaz` ile kendi kopyada üretilen listeyi ayrıştırır. Listeye girecek kısım görev metnindeki "programın henüz yapmadığı BİLİNEN
 kısım" — S241'in azaltma kolu (d57 K1 / K2 / K3: Düzenle fazlası avans; açık / kapanmış / kendi kartı) ve §3 (d56 L1 / L2: kartın içine almadığı faturanın iadesi / iptali kartı değiştirmez); paket "Ç7b". Öbür farklar
 program şüphesi 'P' diye RAPORLANIR, listeye girmez (ders 40). ESKİ liste ↔ yeni liste farkı (yeni / kapanan / değişen) dökülür.
   python3 -I yapim-ayir.py <üretilen liste> <depodaki eski liste> <yazılacak depo listesi> <döküm json>"""
@@ -10,8 +10,8 @@ import sys
 uretilen, eski_yol, hedef, dokum_yol = sys.argv[1:5]
 U = json.load(open(uretilen, encoding="utf-8"))
 E = json.load(open(eski_yol, encoding="utf-8"))
-BILINEN25 = {"d57-c5-s241-s242-duzenle": (":K1:", ":K2:", ":K3:", ":KK1:", ":KK2:", ":FK1:", ":FK2:", ":FK3:", "adim:dk1:", "adim:dk2:", "adim:dk3:"),
-             "d56-c5-s238-s240-iade-ve-secilmeyen": (":L1:", ":L2:", ":KL1:", ":KL2:", ":FL1:", ":FL2:", ":IL1:", ":bl1", ":bl2", "adim:il1:", "adim:ifl2:")}
+# bakım 26 (§38): girdi bu bakımda "programın henüz yapmadığı bilinen kısım" BELİRTMİYOR → listeye giren YOK; üretilen her kayıt program şüphesi 'P' (raporda), listeye girmez (ders 40).
+BILINEN25 = {}
 secilen, disarida = [], []
 for e in U["kayitlar"]:
     if any(x in e["anahtar"] for x in BILINEN25.get(e["senaryo"], ())):
