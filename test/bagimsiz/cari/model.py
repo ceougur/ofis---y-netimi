@@ -2103,6 +2103,8 @@ class Model:
             neden = "alış iadesi geri tahsilatı etkileşimi (KS9)"
         elif any(t["aktif"] and t["cari"] == cari and t["kart"] is not None for t in self.tahsilatlar.values()):
             neden = "kart tahsilatı"
+        elif self.k250 and any(f["cari"] == cari and f.get("_kendiSus") for f in self.faturalar.values()):
+            neden = "taksitli faturanın kendi kartında Düzenle — kararda yok (§38 SK-47 / SK-48 / SK-49)"  # bakım 26: kendi kartının planı tanımsız — iki yönlü kuyruk da kurulmaz
         self._onbellek[a] = (neden is None, neden)
         return self._onbellek[a]
 

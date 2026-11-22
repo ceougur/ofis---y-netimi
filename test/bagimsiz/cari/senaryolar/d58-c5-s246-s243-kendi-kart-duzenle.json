@@ -303,14 +303,6 @@
    }
   },
   {
-   "id": "ir4",
-   "islem": "iade",
-   "ad": "IR4",
-   "fatura": "FR4",
-   "adet": 1,
-   "tarih": "2026-09-10"
-  },
-  {
    "id": "ct1",
    "islem": "cari_ac",
    "ad": "T1",
@@ -478,6 +470,14 @@
    "ilkVade": "2026-10-05",
    "tarih": "2026-09-02",
    "mevcut": true
+  },
+  {
+   "id": "ir4",
+   "islem": "iade",
+   "ad": "IR4",
+   "fatura": "FR4",
+   "adet": 1,
+   "tarih": "2026-09-10"
   },
   {
    "id": "k0",

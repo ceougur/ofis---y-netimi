@@ -148,7 +148,7 @@ A += [cari("cr2", "R2", "Recep Kapalı Kart Artış"), fatura("fr2", "FR2", "R2"
 A += [cari("cr3", "R3", "Rüya Kapalı Ödemeli Artış"), fatura("fr3", "FR3", "R3", 300, 1, "2026-09-01", T3), tah("tr3", "R3", 100, "2026-09-03"),
       {"id": "kkr3", "islem": "kart_kapat", "fatura": "FR3"}]
 # R4 — Y26-4 (b) SK-49: fatura 900 (3 adet × 300), 10.09 iade 1 adet (300 — 05.10 taksiti 0'a; Y24-4), Düzenle 3 → 4 adet
-A += [cari("cr4", "R4", "Rıza İadeli Artış"), fatura("fr4", "FR4", "R4", 900, 3, "2026-09-01", T3), {"id": "ir4", "islem": "iade", "ad": "IR4", "fatura": "FR4", "adet": 1, "tarih": "2026-09-10"}]
+A += [cari("cr4", "R4", "Rıza İadeli Artış"), fatura("fr4", "FR4", "R4", 900, 3, "2026-09-01", T3)]  # iade adımı aşağıda — numaralı belgeler senaryoda tarih sırasıyla (§19 Y7-1; SENARYO DÜZELTMESİ, beklenen değişmez)
 # T1 — Y26-5 (a) SK-48: fatura 900 (3 × 300), tahsilat 300 (05.10 taksiti kapanır), Düzenle 3 → 2 adet (600 — kartın açık kalanına sığar)
 A += [cari("ct1", "T1", "Tülay Ödemeli Azaltma"), fatura("ft1", "FT1", "T1", 900, 3, "2026-09-01", T3), tah("tt1", "T1", 300, "2026-09-03")]
 # T2 — Y26-5 (b) SK-48: fatura 900 (3 × 300), Kartı Kapat, Düzenle 3 → 2 adet
@@ -165,6 +165,7 @@ A += [cari("cv1", "V1", "Vedat Yeniden Kurulan İade"), fatura("fv1", "FV1", "V1
 # V2 — Y26-7 (S245 = C kararın örneği 900 → 300 → 600): Mevcut Borç kartlı fatura 900, kart 900 (3 × 300), art arda Düzenle 3 → 1 → 2 adet → SK-47 SUS (kartın göstergeleri de)
 A += [cari("cv2", "V2", "Vildan Art Arda Düzenle"), fatura("fv2", "FV2", "V2", 900, 3, "2026-09-01"),
       {"id": "kv2", "islem": "kart_ac", "ad": "KV2", "cari": "V2", "tutar": "900", "taksit": 3, "ilkVade": "2026-10-05", "tarih": "2026-09-02", "mevcut": True}]
+A += [{"id": "ir4", "islem": "iade", "ad": "IR4", "fatura": "FR4", "adet": 1, "tarih": "2026-09-10"}]  # R4: 10.09 iade 1 adet (300)
 A += [{"id": "k0", "islem": "kontrol", "gecikmis": True, "acikToplam": True}]
 cr("k0", "V1", 300, 100, 300); ft("k0", "FV1", 300)  # 05.10 taksiti (100) gecikmiş
 cr("k0", "V2", 900, 300, 900); kr("k0", "KV2", 900, 0, 900); ft("k0", "FV2", 900, 0, 900, True)  # 05.10 300 gecikmiş; fatura tamamen kartta
