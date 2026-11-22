@@ -1,0 +1,32 @@
+{
+  "ad": "aday-hazirlik-dar",
+  "komut": "node --test test/kilavuz-metin-denetle.test.mjs test/kilavuz-pdf-surum.test.mjs test/kilavuz-surum.test.mjs test/updater.test.mjs test/yazim-duzeni.test.mjs test/whatsapp-g1-graph-surum-250.test.mjs",
+  "commit": "95adf2dd3872b02521f5a4934fa5fd478c37af4f",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 5,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-22T20:03:39.937Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 36,
+    "gecen": 36,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-22/aday-hazirlik-dar.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "c2704033f5411869bb6c384dfa95218800cf1af9089657a5177887e20a54536c",
+  "ham_cikti_bayt": 10114
+}

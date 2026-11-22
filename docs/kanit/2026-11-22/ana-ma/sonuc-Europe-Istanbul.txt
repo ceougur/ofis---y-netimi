@@ -1,0 +1,21 @@
+{
+ "TZ": "Europe/Istanbul",
+ "ozetSubatOnce": "Hesaplanan KDV (391) = 1.200,00 TL | İndirilecek KDV (191) = 0,00 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu) = 0,00 TL | Ödenecek KDV = 1.200,00 TL",
+ "mahsupOcak": {
+  "out": 0,
+  "in": 200000,
+  "carryIn": 0,
+  "carryOut": 200000,
+  "payable": 0
+ },
+ "mahsupSubatOnizleme": {
+  "out": 120000,
+  "in": 0,
+  "carryIn": 200000,
+  "carryOut": 80000,
+  "payable": 0,
+  "result": "carry"
+ },
+ "ozetSubatSonra": "Hesaplanan KDV (391) = 1.200,00 TL | İndirilecek KDV (191) = 0,00 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu) = 0,00 TL | Ödenecek KDV = 1.200,00 TL",
+ "ozetYil": "Hesaplanan KDV (391) = 1.200,00 TL | İndirilecek KDV (191) = 2.000,00 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu) = 0,00 TL | Devreden KDV = 800,00 TL | KDV Mahsup Fişi = Ocak 2026"
+}
