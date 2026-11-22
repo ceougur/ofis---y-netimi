@@ -105,7 +105,8 @@ describe("Ç6-HESAP Bilanço okuma ucu — API'den girilen veri, iş parçacığ
       assert.deepEqual([locked.aktif, locked.pasif], [before.aktif, before.pasif], "kilitli t donmuş defterden (canlı türetme +100,00 gösterirdi)");
       const codes = locked.kesinDegil.map(row => row.kod);
       assert.ok(codes.includes("kural-farki"), JSON.stringify(codes));
-      assert.deepEqual(locked.kesinDegil.find(row => row.kod === "kural-farki").ayrinti, ["2026 · 120: 100,00 TL", "2026 · 600: −100,00 TL"]);
+      // Tur 4 — BEKLENTİ BİLEREK DEĞİŞTİ (ORTA-1, BAŞ MİMAR 21.11 09:49 (2); tasarım §11.1): Bilanço'nun kural farkı alt hesap ve CARİ boyutunda (120 satırı carinin adıyla).
+      assert.deepEqual(locked.kesinDegil.find(row => row.kod === "kural-farki").ayrinti, ["2026 · 120 · Ayşe Yılmaz: 100,00 TL", "2026 · 600: −100,00 TL"]);
       // B-d: güncel türetme 120'yi cari kartından 100,00 fazla gösterir → Defter Mutabakatı'nın 120 denetimi başarısız (check() sonucu okunur).
       assert.ok(codes.includes("defter-farki"), JSON.stringify(codes));
       assert.match(locked.kesinDegil.find(row => row.kod === "defter-farki").ayrinti.join(" "), /^120 /);

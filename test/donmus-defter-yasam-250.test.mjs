@@ -320,7 +320,7 @@ describe("2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm
       assert.equal(server.app.store.get("SELECT GROUP_CONCAT(DISTINCT rule_version) AS v FROM ledger_snapshots").v, "2.4.9");
       assert.deepEqual(canon(S.entries()), canon(upTo(buildRule249(server.app.store), LOCK)), "donmuş = 2.4.9 kopyası");
       assert.deepEqual(canon(S.entries()), canon(upTo(server.app.ledger.build(), LOCK)), "bugün güncel kural = 2.4.9 (tutarda)");
-      assert.equal(server.app.store.get("PRAGMA user_version").user_version, 53); // Ç7b tur 3b — BEKLENTİ BİLEREK DEĞİŞTİ (karar (6), B-11 = A): göç 53 (Kartı Kapat kural işareti); 2.5.0 Ç5-A (G3): 46 → 47 (donmuş defter) → 48, 49 (Ç5-A); tur 1e: 50; Ç7b tur 2c — BEKLENTİ BİLEREK DEĞİŞTİ (B-8 = A): göç 51; Ç7b tur 2d — BEKLENTİ BİLEREK DEĞİŞTİ (KG-7 = A): göç 52
+      assert.equal(server.app.store.get("PRAGMA user_version").user_version, 54); // Ç6-HESAP tur 4 — BEKLENTİ BİLEREK DEĞİŞTİ (S236 = A): göç 54 (değerleme kartları); Ç7b tur 3b — BEKLENTİ BİLEREK DEĞİŞTİ (karar (6), B-11 = A): göç 53 (Kartı Kapat kural işareti); 2.5.0 Ç5-A (G3): 46 → 47 (donmuş defter) → 48, 49 (Ç5-A); tur 1e: 50; Ç7b tur 2c — BEKLENTİ BİLEREK DEĞİŞTİ (B-8 = A): göç 51; Ç7b tur 2d — BEKLENTİ BİLEREK DEĞİŞTİ (KG-7 = A): göç 52
     } finally {
       await server.close();
     }

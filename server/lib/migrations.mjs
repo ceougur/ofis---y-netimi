@@ -1698,6 +1698,30 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 54,
+    name: "v2.5.0 Ç6-HESAP kilitli dönemin değerleme kartları (ledger_valuation_cards; S236 = A; para dışı)",
+    up(store) {
+      // 2.5.0 Ç6-HESAP tur 4 (S236 = A; docs/erp/C6-HESAP-TASARIM.md §11.3, docs/erp/C3-DONDURMA-TASARIM.md §21): kilitli dönemin stok değerlemesi kilit anında dondurulur — ürün kartının
+      // değerlemeye giren alanları (tür, kart alış fiyatı, silinme) dondurma koşusu açılırken koşu başına saklanır (lib/ledger-snapshots.mjs insertRun → freezeValuationCards). YALNIZ EKLEYİCİ:
+      // tablo + tetikleyiciler; var olan tablolara / satırlara dokunulmaz. Kartı OLMAYAN her bırakılmamış freeze koşusuna (v2.4.9'dan göç 47'nin 'migration' koşusu dahil) GÖÇ ANININ kartı
+      // yazılır (eski sürüm kilit anının kartını saklamadı; BİLİNEN SINIR) — tetikleyicilerden ÖNCE. Yeniden koşan göçte (tablo var) yazılmaz. Eski sürüm (2.4.9) tabloyu görmez.
+      store.raw("migration.v54", () => {
+        const existed = Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'ledger_valuation_cards'"));
+        store.exec(LEDGER_VALUATION_CARDS_SCHEMA_V54);
+        const table = name => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", name));
+        if (!existed && table("ledger_snapshot_runs") && table("stock_items")) {
+          const kind = columnExists(store, "stock_items", "kind") ? "i.kind" : "'product'";
+          store.run(
+            `INSERT INTO ledger_valuation_cards (run, item_id, kind, unit_price, deleted_at)
+             SELECT r.no, i.id, ${kind}, CAST(i.unit_price AS REAL), i.deleted_at FROM ledger_snapshot_runs r CROSS JOIN stock_items i
+             WHERE r.kind = 'freeze' AND r.state <> 'abandoned'`,
+          );
+        }
+        store.exec(LEDGER_VALUATION_CARDS_TRIGGERS_V54);
+      });
+    },
+  },
 ];
 /** Excel / Sheets "Açılış portföyü" evrakının ilk olay notu (routes/cheques.mjs OPENING_PORTFOLIO_NOTE ile AYNI metin; göç 49). */
 const OPENING_PORTFOLIO_NOTE = "Açılış portföyü (Excel/Sheets)";
@@ -1770,6 +1794,26 @@ export const LEDGER_SNAPSHOT_TRIGGERS_V47 = `
                                    OR EXISTS (SELECT 1 FROM ledger_snapshots s WHERE s.date > ${COVERAGE_V47})))
       OR (NEW.kind = 'thaw' AND (NEW.state <> 'done' OR NEW.from_date <> ${COVERAGE_V47} OR NEW.through >= NEW.from_date))
     BEGIN SELECT RAISE(ABORT, 'ledger_snapshot_runs: koşu yazılamaz (aynı koşu, bekleyen koşu, kapsam ya da bayat satır)'); END;
+`;
+// 2.5.0 Ç6-HESAP tur 4 (S236 = A): kilitli dönemin değerleme kartları — koşu başına ürün kartının değerlemeye giren alanları (tür, kart alış fiyatı, silinme). Kilit anında (koşu açılırken) yazılır.
+// Değişmezlik (Ç3 deseni): satır değiştirilemez; yalnız EN SON bekleyen freeze koşusuna eklenir, aynı (run, item_id) ikinci kez yazılamaz (INSERT OR REPLACE); tamamlanmış ve kapsam içindeki
+// koşunun satırı silinemez. Tetikleyicileri yalnız Şirket Verisini Sıfırla (lib/ledger-snapshots.mjs clearSnapshots) aynı işlemde kaldırıp kurar.
+export const LEDGER_VALUATION_CARDS_SCHEMA_V54 = `
+  CREATE TABLE IF NOT EXISTS ledger_valuation_cards (
+    run INTEGER NOT NULL, item_id TEXT NOT NULL, kind TEXT NOT NULL DEFAULT 'product', unit_price REAL NOT NULL DEFAULT 0, deleted_at TEXT,
+    PRIMARY KEY (run, item_id)
+  ) STRICT, WITHOUT ROWID;
+`;
+export const LEDGER_VALUATION_CARDS_TRIGGER_NAMES = Object.freeze(["ledger_valuation_cards_no_update", "ledger_valuation_cards_no_delete", "ledger_valuation_cards_insert"]);
+export const LEDGER_VALUATION_CARDS_TRIGGERS_V54 = `
+  CREATE TRIGGER IF NOT EXISTS ledger_valuation_cards_no_update BEFORE UPDATE ON ledger_valuation_cards BEGIN SELECT RAISE(ABORT, 'ledger_valuation_cards değiştirilemez: donmuş değerleme kartı'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_valuation_cards_no_delete BEFORE DELETE ON ledger_valuation_cards
+    WHEN EXISTS (SELECT 1 FROM ledger_snapshot_runs r WHERE r.no = OLD.run AND r.state = 'done' AND r.from_date < ${COVERAGE_V47})
+    BEGIN SELECT RAISE(ABORT, 'ledger_valuation_cards silinemez: donmuş değerleme kartı (kilit geri çekilmeden)'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_valuation_cards_insert BEFORE INSERT ON ledger_valuation_cards
+    WHEN NOT EXISTS (SELECT 1 FROM ledger_snapshot_runs r WHERE r.no = NEW.run AND r.kind = 'freeze' AND r.state = 'pending' AND r.no = (SELECT MAX(no) FROM ledger_snapshot_runs))
+      OR EXISTS (SELECT 1 FROM ledger_valuation_cards s WHERE s.run = NEW.run AND s.item_id = NEW.item_id)
+    BEGIN SELECT RAISE(ABORT, 'ledger_valuation_cards: satır eklenemez (koşu kapalı ya da aynı satır)'); END;
 `;
 // 2.5.0 Ç2: saklanan fiş defteri. Tutarlar kuruş. Fiş başlığı satır sayısını ve borç (= alacak) toplamını taşır; satırlar başlıkla aynı işlemde yazılır.
 //   year / no     : fişin tarihinin yılı ve o yıldaki sıra (fin_events.no'dan ayrı; lib/ledger-vouchers.mjs nextNo)

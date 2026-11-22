@@ -1,0 +1,1707 @@
+TAP version 13
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür)
+    # Subtest: bos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 1 - bos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 604.608496
+      type: 'test'
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 510.003151
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        satis-fatura fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '500',
+                differenceMinor: 150000,
+        ...
+              },
+        +     {
+        +       account: '120',
+        +       differenceMinor: 36000,
+        +       frozenMinor: 0,
+        +       liveMinor: 36000,
+        +       party: 'account-2ac84ab0-462c-4cf5-a22c-aea0b4e652ba',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '120',
+        +       differenceMinor: 48000,
+        +       frozenMinor: 0,
+        +       liveMinor: 48000,
+        +       party: 'account-4a062689-ccbf-422a-b3cb-bea19ae86530',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '391',
+        +       differenceMinor: -14000,
+        +       frozenMinor: 0,
+        +       liveMinor: -14000,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '600',
+        +       differenceMinor: -70000,
+        +       frozenMinor: 0,
+        +       liveMinor: -70000,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-06-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -150000
+            liveMinor: 0
+            differenceMinor: 150000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -150000
+            differenceMinor: -150000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -150000
+            liveMinor: 0
+            differenceMinor: 150000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -150000
+            differenceMinor: -150000
+          2:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-2ac84ab0-462c-4cf5-a22c-aea0b4e652ba'
+            frozenMinor: 0
+            liveMinor: 36000
+            differenceMinor: 36000
+          3:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-4a062689-ccbf-422a-b3cb-bea19ae86530'
+            frozenMinor: 0
+            liveMinor: 48000
+            differenceMinor: 48000
+          4:
+            year: 2026
+            account: '391'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -14000
+            differenceMinor: -14000
+          5:
+            year: 2026
+            account: '600'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -70000
+            differenceMinor: -70000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: alis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 3 - alis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 482.261125
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        alis-fatura fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        
+          {
+        +   balances: [
+        +     {
+        +       account: '153',
+        +       differenceMinor: 87000,
+        +       frozenMinor: 0,
+        +       liveMinor: 87000,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '191',
+        +       differenceMinor: 17400,
+        +       frozenMinor: 0,
+        +       liveMinor: 17400,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '320',
+        +       differenceMinor: -42000,
+        +       frozenMinor: 0,
+        +       liveMinor: -42000,
+        +       party: 'account-31fbb45a-56e0-4c92-b51d-0ce490e7cb1a',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '320',
+        +       differenceMinor: -62400,
+        +       frozenMinor: 0,
+        +       liveMinor: -62400,
+        +       party: 'account-f2400428-e3dc-42f8-a621-878187257494',
+        +       sub: '',
+        +       year: 2026
+        +     }
+        +   ],
+        -   balances: [],
+            through: '2026-06-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2026
+            account: '153'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: 87000
+            differenceMinor: 87000
+          1:
+            year: 2026
+            account: '191'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: 17400
+            differenceMinor: 17400
+          2:
+            year: 2026
+            account: '320'
+            sub: ''
+            party: 'account-31fbb45a-56e0-4c92-b51d-0ce490e7cb1a'
+            frozenMinor: 0
+            liveMinor: -42000
+            differenceMinor: -42000
+          3:
+            year: 2026
+            account: '320'
+            sub: ''
+            party: 'account-f2400428-e3dc-42f8-a621-878187257494'
+            frozenMinor: 0
+            liveMinor: -62400
+            differenceMinor: -62400
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 4 - kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 496.996502
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kasa fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '500',
+                differenceMinor: 500000,
+        ...
+              {
+        +       account: '100',
+        -       account: '770',
+                differenceMinor: -30000,
+        +       frozenMinor: 0,
+        +       liveMinor: -30000,
+        -       frozenMinor: 30000,
+        -       liveMinor: 0,
+                party: '',
+                sub: '',
+                year: 2026
+              },
+              {
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -500000
+            liveMinor: 0
+            differenceMinor: 500000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -500000
+            differenceMinor: -500000
+          2:
+            year: 2025
+            account: '649'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          3:
+            year: 2025
+            account: '649'
+            sub: '649.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -100000
+            differenceMinor: -100000
+          4:
+            year: 2026
+            account: '770'
+            sub: ''
+            party: ''
+            frozenMinor: 30000
+            liveMinor: 0
+            differenceMinor: -30000
+          5:
+            year: 2026
+            account: '770'
+            sub: '770.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: 30000
+            differenceMinor: 30000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -500000
+            liveMinor: 0
+            differenceMinor: 500000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -500000
+            differenceMinor: -500000
+          2:
+            year: 2025
+            account: '649'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          3:
+            year: 2025
+            account: '649'
+            sub: '649.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -100000
+            differenceMinor: -100000
+          4:
+            year: 2026
+            account: '100'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -30000
+            differenceMinor: -30000
+          5:
+            year: 2026
+            account: '770'
+            sub: '770.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: 30000
+            differenceMinor: 30000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 5 - banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 479.552847
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        banka fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '500',
+                differenceMinor: 2500000,
+        ...
+              },
+        +     {
+        +       account: '102',
+        +       differenceMinor: -12000,
+        +       frozenMinor: 0,
+        +       liveMinor: -12000,
+        +       party: '',
+        +       sub: '102.01',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '770',
+        +       differenceMinor: 12000,
+        +       frozenMinor: 0,
+        +       liveMinor: 12000,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-06-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -2500000
+            liveMinor: 0
+            differenceMinor: 2500000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -2500000
+            differenceMinor: -2500000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -2500000
+            liveMinor: 0
+            differenceMinor: 2500000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -2500000
+            differenceMinor: -2500000
+          2:
+            year: 2026
+            account: '102'
+            sub: '102.01'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -12000
+            differenceMinor: -12000
+          3:
+            year: 2026
+            account: '770'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: 12000
+            differenceMinor: 12000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 6 - pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 446.40375
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        pos fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        
+          {
+            balances: [
+              {
+        +       account: '108',
+        +       differenceMinor: 40000,
+        +       frozenMinor: 0,
+        +       liveMinor: 40000,
+        -       account: '602',
+        -       differenceMinor: 100000,
+        -       frozenMinor: -100000,
+        -       liveMinor: 0,
+                party: '',
+        +       sub: '108.00',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '120',
+        +       differenceMinor: 60000,
+        +       frozenMinor: 0,
+        +       liveMinor: 60000,
+        +       party: 'account-7274b3ed-66d4-4287-bc47-10cd937e7baa',
+                sub: '',
+                year: 2026
+              },
+              {
+                account: '602',
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2026
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          1:
+            year: 2026
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -100000
+            differenceMinor: -100000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2026
+            account: '108'
+            sub: '108.00'
+            party: ''
+            frozenMinor: 0
+            liveMinor: 40000
+            differenceMinor: 40000
+          1:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-7274b3ed-66d4-4287-bc47-10cd937e7baa'
+            frozenMinor: 0
+            liveMinor: 60000
+            differenceMinor: 60000
+          2:
+            year: 2026
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -100000
+            differenceMinor: -100000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 7 - cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 463.901782
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        cek-senet fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '602',
+                differenceMinor: 300000,
+        ...
+              },
+        +     {
+        +       account: '100',
+        +       differenceMinor: 100000,
+        +       frozenMinor: 0,
+        +       liveMinor: 100000,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '101',
+        +       differenceMinor: -100000,
+        +       frozenMinor: 0,
+        +       liveMinor: -100000,
+        +       party: '',
+        +       sub: '101.01',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '120',
+        +       differenceMinor: -50000,
+        +       frozenMinor: 0,
+        +       liveMinor: -50000,
+        +       party: 'account-2f5600e5-1b41-4ff5-9295-a3bc42c34c6f',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '121',
+        +       differenceMinor: 50000,
+        +       frozenMinor: 0,
+        +       liveMinor: 50000,
+        +       party: '',
+        +       sub: '121.01',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-06-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -300000
+            liveMinor: 0
+            differenceMinor: 300000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -300000
+            differenceMinor: -300000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -300000
+            liveMinor: 0
+            differenceMinor: 300000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -300000
+            differenceMinor: -300000
+          2:
+            year: 2026
+            account: '100'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: 100000
+            differenceMinor: 100000
+          3:
+            year: 2026
+            account: '101'
+            sub: '101.01'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -100000
+            differenceMinor: -100000
+          4:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-2f5600e5-1b41-4ff5-9295-a3bc42c34c6f'
+            frozenMinor: 0
+            liveMinor: -50000
+            differenceMinor: -50000
+          5:
+            year: 2026
+            account: '121'
+            sub: '121.01'
+            party: ''
+            frozenMinor: 0
+            liveMinor: 50000
+            differenceMinor: 50000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 8 - taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 453.123733
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '600',
+                differenceMinor: -120000,
+        ...
+              },
+        +     {
+        +       account: '100',
+        +       differenceMinor: 130000,
+        +       frozenMinor: 0,
+        +       liveMinor: 130000,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '120',
+        +       differenceMinor: -40000,
+        +       frozenMinor: 0,
+        +       liveMinor: -40000,
+        +       party: 'account-4dbf9668-164c-4a7c-a921-52eb6d2e01f3',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '120',
+        +       differenceMinor: -90000,
+        +       frozenMinor: 0,
+        +       liveMinor: -90000,
+        +       party: 'account-ed61b2f3-0a8b-4ec7-8a0c-79b6248aaf7f',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-06-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+          2:
+            year: 2026
+            account: '100'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: 130000
+            differenceMinor: 130000
+          3:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-4dbf9668-164c-4a7c-a921-52eb6d2e01f3'
+            frozenMinor: 0
+            liveMinor: -40000
+            differenceMinor: -40000
+          4:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-ed61b2f3-0a8b-4ec7-8a0c-79b6248aaf7f'
+            frozenMinor: 0
+            liveMinor: -90000
+            differenceMinor: -90000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 9 - elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 441.971592
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        elle-borc-alacak fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '602',
+                differenceMinor: 80000,
+        ...
+              {
+        +       account: '100',
+        +       differenceMinor: 30000,
+        +       frozenMinor: 0,
+        +       liveMinor: 30000,
+        -       account: '770',
+        -       differenceMinor: -70000,
+        -       frozenMinor: 70000,
+        -       liveMinor: 0,
+                party: '',
+                sub: '',
+                year: 2026
+              },
+              {
+        +       account: '120',
+        +       differenceMinor: -30000,
+        +       frozenMinor: 0,
+        +       liveMinor: -30000,
+        +       party: 'account-4e206844-5024-4eb8-92ba-b459e907aa00',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '120',
+        +       differenceMinor: -20000,
+        +       frozenMinor: 0,
+        +       liveMinor: -20000,
+        +       party: 'account-8237e79d-01e1-4bbc-9f7d-0215cbb6a564',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '320',
+        +       differenceMinor: -50000,
+        +       frozenMinor: 0,
+        +       liveMinor: -50000,
+        +       party: 'account-6cdc89f1-bf07-44c7-ac88-da0aefaf2d5f',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+                account: '770',
+                differenceMinor: 70000,
+                frozenMinor: 0,
+                liveMinor: 70000,
+                party: '',
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -80000
+            liveMinor: 0
+            differenceMinor: 80000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -80000
+            differenceMinor: -80000
+          2:
+            year: 2026
+            account: '770'
+            sub: ''
+            party: ''
+            frozenMinor: 70000
+            liveMinor: 0
+            differenceMinor: -70000
+          3:
+            year: 2026
+            account: '770'
+            sub: '770.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: 70000
+            differenceMinor: 70000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -80000
+            liveMinor: 0
+            differenceMinor: 80000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -80000
+            differenceMinor: -80000
+          2:
+            year: 2026
+            account: '100'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: 30000
+            differenceMinor: 30000
+          3:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-4e206844-5024-4eb8-92ba-b459e907aa00'
+            frozenMinor: 0
+            liveMinor: -30000
+            differenceMinor: -30000
+          4:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-8237e79d-01e1-4bbc-9f7d-0215cbb6a564'
+            frozenMinor: 0
+            liveMinor: -20000
+            differenceMinor: -20000
+          5:
+            year: 2026
+            account: '320'
+            sub: ''
+            party: 'account-6cdc89f1-bf07-44c7-ac88-da0aefaf2d5f'
+            frozenMinor: 0
+            liveMinor: -50000
+            differenceMinor: -50000
+          6:
+            year: 2026
+            account: '770'
+            sub: '770.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: 70000
+            differenceMinor: 70000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: acilis: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 10 - acilis: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 473.782262
+      type: 'test'
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 11 - stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 422.385293
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        stok fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+        +       account: '120',
+        +       differenceMinor: 30000,
+        +       frozenMinor: 0,
+        +       liveMinor: 30000,
+        +       party: 'account-1370c11c-1bf4-41fb-b6c2-e07a88b7b955',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '153',
+        +       differenceMinor: -9900,
+        +       frozenMinor: 0,
+        +       liveMinor: -9900,
+        -       account: '600',
+        -       differenceMinor: 40000,
+        -       frozenMinor: -40000,
+        -       liveMinor: 0,
+                party: '',
+                sub: '',
+                year: 2026
+              },
+              {
+        +       account: '320',
+        +       differenceMinor: 9900,
+        +       frozenMinor: 0,
+        +       liveMinor: 9900,
+        +       party: 'account-56187939-7495-42e6-9011-e189d29f5e47',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+                account: '600',
+                differenceMinor: -40000,
+                frozenMinor: 0,
+                liveMinor: -40000,
+                party: '',
+        ...
+                account: '610',
+        -       differenceMinor: -10000,
+        -       frozenMinor: 10000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2026
+        -     },
+        -     {
+        -       account: '610',
+                differenceMinor: 10000,
+                frozenMinor: 0,
+                liveMinor: 10000,
+                party: '',
+                sub: '610.90',
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2026
+            account: '600'
+            sub: ''
+            party: ''
+            frozenMinor: -40000
+            liveMinor: 0
+            differenceMinor: 40000
+          1:
+            year: 2026
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -40000
+            differenceMinor: -40000
+          2:
+            year: 2026
+            account: '610'
+            sub: ''
+            party: ''
+            frozenMinor: 10000
+            liveMinor: 0
+            differenceMinor: -10000
+          3:
+            year: 2026
+            account: '610'
+            sub: '610.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: 10000
+            differenceMinor: 10000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-1370c11c-1bf4-41fb-b6c2-e07a88b7b955'
+            frozenMinor: 0
+            liveMinor: 30000
+            differenceMinor: 30000
+          1:
+            year: 2026
+            account: '153'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -9900
+            differenceMinor: -9900
+          2:
+            year: 2026
+            account: '320'
+            sub: ''
+            party: 'account-56187939-7495-42e6-9011-e189d29f5e47'
+            frozenMinor: 0
+            liveMinor: 9900
+            differenceMinor: 9900
+          3:
+            year: 2026
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -40000
+            differenceMinor: -40000
+          4:
+            year: 2026
+            account: '610'
+            sub: '610.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: 10000
+            differenceMinor: 10000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 12 - supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 462.120291
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        supheli fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '602',
+                differenceMinor: 200000,
+        ...
+              },
+        +     {
+        +       account: '120',
+        +       differenceMinor: -200000,
+        +       frozenMinor: 0,
+        +       liveMinor: -200000,
+        +       party: 'account-18160e3b-0ecf-4850-88a8-3613fac16baf',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '128',
+        +       differenceMinor: 200000,
+        +       frozenMinor: 0,
+        +       liveMinor: 200000,
+        +       party: 'account-18160e3b-0ecf-4850-88a8-3613fac16baf',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-06-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -200000
+            liveMinor: 0
+            differenceMinor: 200000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -200000
+            differenceMinor: -200000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -200000
+            liveMinor: 0
+            differenceMinor: 200000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -200000
+            differenceMinor: -200000
+          2:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-18160e3b-0ecf-4850-88a8-3613fac16baf'
+            frozenMinor: 0
+            liveMinor: -200000
+            differenceMinor: -200000
+          3:
+            year: 2026
+            account: '128'
+            sub: ''
+            party: 'account-18160e3b-0ecf-4850-88a8-3613fac16baf'
+            frozenMinor: 0
+            liveMinor: 200000
+            differenceMinor: 200000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: vergi: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 13 - vergi: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 460.581313
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        vergi fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        
+          {
+        +   balances: [
+        +     {
+        +       account: '100',
+        +       differenceMinor: -15500,
+        +       frozenMinor: 0,
+        +       liveMinor: -15500,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '120',
+        +       differenceMinor: 120000,
+        +       frozenMinor: 0,
+        +       liveMinor: 120000,
+        +       party: 'account-0d2d0313-6106-41d9-809e-e2041df800ca',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '360',
+        +       differenceMinor: 15000,
+        +       frozenMinor: 0,
+        +       liveMinor: 15000,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '391',
+        +       differenceMinor: -20000,
+        +       frozenMinor: 0,
+        +       liveMinor: -20000,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '600',
+        +       differenceMinor: -100000,
+        +       frozenMinor: 0,
+        +       liveMinor: -100000,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '689',
+        +       differenceMinor: 500,
+        +       frozenMinor: 0,
+        +       liveMinor: 500,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     }
+        +   ],
+        -   balances: [],
+            through: '2026-06-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2026
+            account: '100'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -15500
+            differenceMinor: -15500
+          1:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-0d2d0313-6106-41d9-809e-e2041df800ca'
+            frozenMinor: 0
+            liveMinor: 120000
+            differenceMinor: 120000
+          2:
+            year: 2026
+            account: '360'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: 15000
+            differenceMinor: 15000
+          3:
+            year: 2026
+            account: '391'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -20000
+            differenceMinor: -20000
+          4:
+            year: 2026
+            account: '600'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -100000
+            differenceMinor: -100000
+          5:
+            year: 2026
+            account: '689'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: 500
+            differenceMinor: 500
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4
+    not ok 14 - kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4
+      ---
+      duration_ms: 910.428809
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:186:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kasa kilit yeniden 30.09.2026 · Gelir Tablosu 2026-07-01..2026-07-31: yeni = tur 4
+        + actual - expected
+        
+        + `{"from":"2026-07-01","to":"2026-07-31","bookType":"unset","bilgiAmacli":true,"entryCount":1,"items":[{"kod":"A","ad":"Brüt Satışlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"B","ad":"Satış İndirimleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"D","ad":"Satışların Maliyeti (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"E","ad":"Faaliyet Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[{"hesap":"632","ad":"Genel Yönetim Giderleri","tutarMinor":0,"altlar":[{"hesap":"770","ad":"Genel Yönetim Giderleri","tutarMinor":-30000},{"hesap":"770.90","ad":"Sınıflandırılmamış Kasa / Banka Giderleri","tutarMinor":30000}]}]},{"kod":"F","ad":"Diğer Faaliyetlerden Olağan Gelir ve Kârlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"G","ad":"Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"H","ad":"Finansman Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"I","ad":"Olağandışı Gelir ve Kârlar","gelir":true,"tutarMinor":100000,"hesaplar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000,"altlar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000}]}]},{"kod":"J","ad":"Olağandışı Gider ve Zararlar (−)","gelir":false,"tutarMinor":100000,"hesaplar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000,"altlar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000}]}]},{"kod":"K","ad":"Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)","gelir":false,"tutarMinor":0,"hesaplar":[],"aciklama":"Program dönem kârı vergi karşılığı ayırmaz; Dönem Net Kârı vergi öncesidir."}],"subtotals":{"netSatislar":0,"brutSatisKari":0,"faaliyetKari":0,"olaganKar":0,"donemKari":0,"donemNetKari":0},"smm":{"estimated":false,"posted":false,"minor":0,"dssPrevMinor":0,"dssMinor":0,"stockFlowMinor":0,"stockMovesMinor":0,"differenceMinor":0},"kesinDegil":[{"kod":"bilgi-amacli","baslik":"Bilgi Amaçlı","aciklama":"Defter Türü Bilanço Esası değil; tablo resmî biçim yerine bilgi amaçlıdır."}],"footnotes":[{"kod":"yasal-degil","metin":"Bu tablolar DestekOfis kayıtlarından üretilmiştir; yasal defter (e-Defter) ve beyannameye esas mali tablo, KÜMİ FRS / BOBİ FRS finansal tablosu değildir."},{"kod":"donem-sonu","metin":"Amortisman, reeskont, gider / gelir tahakkuku, kur değerlemesi ve dönem kârı vergi karşılığı programda yapılmaz."},{"kod":"kasa-banka-gider","metin":"Kasa ve banka 'Diğer Gider' çıkışları (300,00 TL) Genel Yönetim Giderleri'ne yazılmıştır; içinde demirbaş, ortak / sahip çekişi, müvekkil masraf avansı ya da borç ödemesi bulunabilir.","tutarMinor":30000},{"kod":"siniflandirilmamis","metin":"Faturasız / sınıflandırılmamış gelir 0,00 TL, gider 300,00 TL (.90 alt hesaplar).","gelirMinor":0,"giderMinor":30000}],"warnings":[]}`
+        - `{"from":"2026-07-01","to":"2026-07-31","bookType":"unset","bilgiAmacli":true,"entryCount":1,"items":[{"kod":"A","ad":"Brüt Satışlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"B","ad":"Satış İndirimleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"D","ad":"Satışların Maliyeti (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"E","ad":"Faaliyet Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[{"hesap":"632","ad":"Genel Yönetim Giderleri","tutarMinor":0,"altlar":[{"hesap":"770","ad":"Genel Yönetim Giderleri","tutarMinor":-30000},{"hesap":"770.90","ad":"Sınıflandırılmamış Kasa / Banka Giderleri","tutarMinor":30000}]}]},{"kod":"F","ad":"Diğer Faaliyetlerden Olağan Gelir ve Kârlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"G","ad":"Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"H","ad":"Finansman Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"I","ad":"Olağandışı Gelir ve Kârlar","gelir":true,"tutarMinor":100000,"hesaplar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000,"altlar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000}]}]},{"kod":"J","ad":"Olağandışı Gider ve Zararlar (−)","gelir":false,"tutarMinor":100000,"hesaplar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000,"altlar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000}]}]},{"kod":"K","ad":"Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)","gelir":false,"tutarMinor":0,"hesaplar":[],"aciklama":"Program dönem kârı vergi karşılığı ayırmaz; Dönem Net Kârı vergi öncesidir."}],"subtotals":{"netSatislar":0,"brutSatisKari":0,"faaliyetKari":0,"olaganKar":0,"donemKari":0,"donemNetKari":0},"smm":{"estimated":false,"posted":false,"minor":0,"dssPrevMinor":0,"dssMinor":0,"stockFlowMinor":0,"stockMovesMinor":0,"differenceMinor":0},"kesinDegil":[{"kod":"kural-farki","baslik":"Kural Değişikliği Farkı","aciklama":"Kilitli dönemin donmuş defteri ile güncel kural arasındaki farkın Kural Farkı Düzeltme Fişi'yle kapanmamış kısmı aşağıdadır (Yönetim › Sistem › Kural Farkı Düzeltme); tablo donmuş defterdendir.","ayrinti":["770: 300,00 TL","770 (770.90): −300,00 TL"]},{"kod":"bilgi-amacli","baslik":"Bilgi Amaçlı","aciklama":"Defter Türü Bilanço Esası değil; tablo resmî biçim yerine bilgi amaçlıdır."}],"footnotes":[{"kod":"yasal-degil","metin":"Bu tablolar DestekOfis kayıtlarından üretilmiştir; yasal defter (e-Defter) ve beyannameye esas mali tablo, KÜMİ FRS / BOBİ FRS finansal tablosu değildir."},{"kod":"donem-sonu","metin":"Amortisman, reeskont, gider / gelir tahakkuku, kur değerlemesi ve dönem kârı vergi karşılığı programda yapılmaz."},{"kod":"kasa-banka-gider","metin":"Kasa ve banka 'Diğer Gider' çıkışları (300,00 TL) Genel Yönetim Giderleri'ne yazılmıştır; içinde demirbaş, ortak / sahip çekişi, müvekkil masraf avansı ya da borç ödemesi bulunabilir.","tutarMinor":30000},{"kod":"siniflandirilmamis","metin":"Faturasız / sınıflandırılmamış gelir 0,00 TL, gider 300,00 TL (.90 alt hesaplar).","gelirMinor":0,"giderMinor":30000}],"warnings":[]}`
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: `{"from":"2026-07-01","to":"2026-07-31","bookType":"unset","bilgiAmacli":true,"entryCount":1,"items":[{"kod":"A","ad":"Brüt Satışlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"B","ad":"Satış İndirimleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"D","ad":"Satışların Maliyeti (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"E","ad":"Faaliyet Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[{"hesap":"632","ad":"Genel Yönetim Giderleri","tutarMinor":0,"altlar":[{"hesap":"770","ad":"Genel Yönetim Giderleri","tutarMinor":-30000},{"hesap":"770.90","ad":"Sınıflandırılmamış Kasa / Banka Giderleri","tutarMinor":30000}]}]},{"kod":"F","ad":"Diğer Faaliyetlerden Olağan Gelir ve Kârlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"G","ad":"Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"H","ad":"Finansman Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"I","ad":"Olağandışı Gelir ve Kârlar","gelir":true,"tutarMinor":100000,"hesaplar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000,"altlar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000}]}]},{"kod":"J","ad":"Olağandışı Gider ve Zararlar (−)","gelir":false,"tutarMinor":100000,"hesaplar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000,"altlar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000}]}]},{"kod":"K","ad":"Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)","gelir":false,"tutarMinor":0,"hesaplar":[],"aciklama":"Program dönem kârı vergi karşılığı ayırmaz; Dönem Net Kârı vergi öncesidir."}],"subtotals":{"netSatislar":0,"brutSatisKari":0,"faaliyetKari":0,"olaganKar":0,"donemKari":0,"donemNetKari":0},"smm":{"estimated":false,"posted":false,"minor":0,"dssPrevMinor":0,"dssMinor":0,"stockFlowMinor":0,"stockMovesMinor":0,"differenceMinor":0},"kesinDegil":[{"kod":"kural-farki","baslik":"Kural Değişikliği Farkı","aciklama":"Kilitli dönemin donmuş defteri ile güncel kural arasındaki farkın Kural Farkı Düzeltme Fişi'yle kapanmamış kısmı aşağıdadır (Yönetim › Sistem › Kural Farkı Düzeltme); tablo donmuş defterdendir.","ayrinti":["770: 300,00 TL","770 (770.90): −300,00 TL"]},{"kod":"bilgi-amacli","baslik":"Bilgi Amaçlı","aciklama":"Defter Türü Bilanço Esası değil; tablo resmî biçim yerine bilgi amaçlıdır."}],"footnotes":[{"kod":"yasal-degil","metin":"Bu tablolar DestekOfis kayıtlarından üretilmiştir; yasal defter (e-Defter) ve beyannameye esas mali tablo, KÜMİ FRS / BOBİ FRS finansal tablosu değildir."},{"kod":"donem-sonu","metin":"Amortisman, reeskont, gider / gelir tahakkuku, kur değerlemesi ve dönem kârı vergi karşılığı programda yapılmaz."},{"kod":"kasa-banka-gider","metin":"Kasa ve banka 'Diğer Gider' çıkışları (300,00 TL) Genel Yönetim Giderleri'ne yazılmıştır; içinde demirbaş, ortak / sahip çekişi, müvekkil masraf avansı ya da borç ödemesi bulunabilir.","tutarMinor":30000},{"kod":"siniflandirilmamis","metin":"Faturasız / sınıflandırılmamış gelir 0,00 TL, gider 300,00 TL (.90 alt hesaplar).","gelirMinor":0,"giderMinor":30000}],"warnings":[]}`
+      actual: `{"from":"2026-07-01","to":"2026-07-31","bookType":"unset","bilgiAmacli":true,"entryCount":1,"items":[{"kod":"A","ad":"Brüt Satışlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"B","ad":"Satış İndirimleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"D","ad":"Satışların Maliyeti (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"E","ad":"Faaliyet Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[{"hesap":"632","ad":"Genel Yönetim Giderleri","tutarMinor":0,"altlar":[{"hesap":"770","ad":"Genel Yönetim Giderleri","tutarMinor":-30000},{"hesap":"770.90","ad":"Sınıflandırılmamış Kasa / Banka Giderleri","tutarMinor":30000}]}]},{"kod":"F","ad":"Diğer Faaliyetlerden Olağan Gelir ve Kârlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"G","ad":"Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"H","ad":"Finansman Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"I","ad":"Olağandışı Gelir ve Kârlar","gelir":true,"tutarMinor":100000,"hesaplar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000,"altlar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000}]}]},{"kod":"J","ad":"Olağandışı Gider ve Zararlar (−)","gelir":false,"tutarMinor":100000,"hesaplar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000,"altlar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000}]}]},{"kod":"K","ad":"Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)","gelir":false,"tutarMinor":0,"hesaplar":[],"aciklama":"Program dönem kârı vergi karşılığı ayırmaz; Dönem Net Kârı vergi öncesidir."}],"subtotals":{"netSatislar":0,"brutSatisKari":0,"faaliyetKari":0,"olaganKar":0,"donemKari":0,"donemNetKari":0},"smm":{"estimated":false,"posted":false,"minor":0,"dssPrevMinor":0,"dssMinor":0,"stockFlowMinor":0,"stockMovesMinor":0,"differenceMinor":0},"kesinDegil":[{"kod":"bilgi-amacli","baslik":"Bilgi Amaçlı","aciklama":"Defter Türü Bilanço Esası değil; tablo resmî biçim yerine bilgi amaçlıdır."}],"footnotes":[{"kod":"yasal-degil","metin":"Bu tablolar DestekOfis kayıtlarından üretilmiştir; yasal defter (e-Defter) ve beyannameye esas mali tablo, KÜMİ FRS / BOBİ FRS finansal tablosu değildir."},{"kod":"donem-sonu","metin":"Amortisman, reeskont, gider / gelir tahakkuku, kur değerlemesi ve dönem kârı vergi karşılığı programda yapılmaz."},{"kod":"kasa-banka-gider","metin":"Kasa ve banka 'Diğer Gider' çıkışları (300,00 TL) Genel Yönetim Giderleri'ne yazılmıştır; içinde demirbaş, ortak / sahip çekişi, müvekkil masraf avansı ya da borç ödemesi bulunabilir.","tutarMinor":30000},{"kod":"siniflandirilmamis","metin":"Faturasız / sınıflandırılmamış gelir 0,00 TL, gider 300,00 TL (.90 alt hesaplar).","gelirMinor":0,"giderMinor":30000}],"warnings":[]}`
+      operator: 'strictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:94:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:194:7
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:187:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4
+    not ok 15 - taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4
+      ---
+      duration_ms: 468.628534
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:198:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit ters kayıt · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '600',
+                differenceMinor: -120000,
+        ...
+              },
+        +     {
+        +       account: '100',
+        +       differenceMinor: 130000,
+        +       frozenMinor: 0,
+        +       liveMinor: 130000,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '120',
+        +       differenceMinor: -40000,
+        +       frozenMinor: 0,
+        +       liveMinor: -40000,
+        +       party: 'account-4dbf9668-164c-4a7c-a921-52eb6d2e01f3',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '120',
+        +       differenceMinor: -90000,
+        +       frozenMinor: 0,
+        +       liveMinor: -90000,
+        +       party: 'account-ed61b2f3-0a8b-4ec7-8a0c-79b6248aaf7f',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-06-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+          2:
+            year: 2026
+            account: '100'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: 130000
+            differenceMinor: 130000
+          3:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-4dbf9668-164c-4a7c-a921-52eb6d2e01f3'
+            frozenMinor: 0
+            liveMinor: -40000
+            differenceMinor: -40000
+          4:
+            year: 2026
+            account: '120'
+            sub: ''
+            party: 'account-ed61b2f3-0a8b-4ec7-8a0c-79b6248aaf7f'
+            frozenMinor: 0
+            liveMinor: -90000
+            differenceMinor: -90000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:204:7
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:199:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sınama boş geçmedi: fiş en az dört sınıfta yazıldı, KALAN yolu koştu
+    not ok 16 - sınama boş geçmedi: fiş en az dört sınıfta yazıldı, KALAN yolu koştu
+      ---
+      duration_ms: 0.369486
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:210:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş yazılan sınıf 0'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:212:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # fiş yazılan sınıf 0 · KALAN yolunun koştuğu okuma 0
+    1..16
+not ok 1 - 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür)
+  ---
+  duration_ms: 7579.997776
+  type: 'suite'
+  location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:168:1'
+  failureType: 'subtestsFailed'
+  error: '14 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç6-HESAP tur 5 — frozenSums ruleThrough sınırları
+    # Subtest: ruleThrough < through reddedilir; kapsam yokken outside boş
+    ok 1 - ruleThrough < through reddedilir; kapsam yokken outside boş
+      ---
+      duration_ms: 0.470801
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.5.0 Ç6-HESAP tur 5 — frozenSums ruleThrough sınırları
+  ---
+  duration_ms: 0.56187
+  type: 'suite'
+  ...
+1..2
+# tests 17
+# suites 2
+# pass 3
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7966.524724
+
+[kanit] başarısız testler (14):
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — satis-fatura fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › alis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — alis-fatura fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — kasa fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — banka fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — pos fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — cek-senet fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — taksit fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — elle-borc-alacak fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — stok fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — supheli fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › vergi: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — vergi fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4 [test/c6h-tek-okuma.test.mjs:186:3] — kasa kilit yeniden 30.09.2026 · Gelir Tablosu 2026-07-01..2026-07-31: yeni = tur 4 · + actual - expected · + `{"from":"2026-07-01","to":"2026-07-31","bookType":"unset","bilgiAmacli":true,"entryCount":1,"items":[{"kod":"A","ad":"Brüt Satışlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"B","ad":"Satış İndirimleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"D","ad":"Satışların Maliyeti (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"E","ad":"Faaliyet Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[{"hesap":"632","ad":"Genel Yönetim Giderleri","tutarMinor":0,"altlar":[{"hesap":"770","ad":"Genel Yönetim Giderleri","tutarMinor":-30000},{"hesap":"770.90","ad":"Sınıflandırılmamış Kasa / Banka Giderleri","tutarMinor":30000}]}]},{"kod":"F","ad":"Diğer Faaliyetlerden Olağan Gelir ve Kârlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"G","ad":"Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"H","ad":"Finansman Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"I","ad":"Olağandışı Gelir ve Kârlar","gelir":true,"tutarMinor":100000,"hesaplar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000,"altlar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000}]}]},{"kod":"J","ad":"Olağandışı Gider ve Zararlar (−)","gelir":false,"tutarMinor":100000,"hesaplar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000,"altlar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000}]}]},{"kod":"K","ad":"Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)","gelir":false,"tutarMinor":0,"hesaplar":[],"aciklama":"Program dönem kârı vergi karşılığı ayırmaz; Dönem Net Kârı vergi öncesidir."}],"subtotals":{"netSatislar":0,"brutSatisKari":0,"faaliyetKari":0,"olaganKar":0,"donemKari":0,"donemNetKari":0},"smm":{"estimated":false,"posted":false,"minor":0,"dssPrevMinor":0,"dssMinor":0,"stockFlowMinor":0,"stockMovesMinor":0,"differenceMinor":0},"kesinDegil":[{"kod":"bilgi-amacli","baslik":"Bilgi Amaçlı","aciklama":"Defter Türü Bilanço Esası değil; tablo resmî biçim yerine bilgi amaçlıdır."}],"footnotes":[{"kod":"yasal-degil","metin":"Bu tablolar DestekOfis kayıtlarından üretilmiştir; yasal defter (e-Defter) ve beyannameye esas mali tablo, KÜMİ FRS / BOBİ FRS finansal tablosu değildir."},{"kod":"donem-sonu","metin":"Amortisman, reeskont, gider / gelir tahakkuku, kur değerlemesi ve dönem kârı vergi karşılığı programda yapılmaz."},{"kod":"kasa-banka-gider","metin":"Kasa ve banka 'Diğer Gider' çıkışları (300,00 TL) Genel Yönetim Giderleri'ne yazılmıştır; içinde demirbaş, ortak / sahip çekişi, müvekkil masraf avansı ya da borç ödemesi bulunabilir.","tutarMinor":30000},{"kod":"siniflandirilmamis","metin":"Faturasız / sınıflandırılmamış gelir 0,00 TL, gider 300,00 TL (.90 alt hesaplar).","gelirMinor":0,"giderMinor":30000}],"warnings":[]}` (beklenen `{"from":"2026-07-01","to":"2026-07-31","bookType":"unset","bilgiAmacli":true,"entryCount":1,"items":[{"kod":"A","ad":"Brüt Satışlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"B","ad":"Satış İndirimleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"D","ad":"Satışların Maliyeti (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"E","ad":"Faaliyet Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[{"hesap":"632","ad":"Genel Yönetim Giderleri","tutarMinor":0,"altlar":[{"hesap":"770","ad":"Genel Yönetim Giderleri","tutarMinor":-30000},{"hesap":"770.90","ad":"Sınıflandırılmamış Kasa / Banka Giderleri","tutarMinor":30000}]}]},{"kod":"F","ad":"Diğer Faaliyetlerden Olağan Gelir ve Kârlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"G","ad":"Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"H","ad":"Finansman Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"I","ad":"Olağandışı Gelir ve Kârlar","gelir":true,"tutarMinor":100000,"hesaplar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000,"altlar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000}]}]},{"kod":"J","ad":"Olağandışı Gider ve Zararlar (−)","gelir":false,"tutarMinor":100000,"hesaplar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000,"altlar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000}]}]},{"kod":"K","ad":"Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)","gelir":false,"tutarMinor":0,"hesaplar":[],"aciklama":"Program dönem kârı vergi karşılığı ayırmaz; Dönem Net Kârı vergi öncesidir."}],"subtotals":{"netSatislar":0,"brutSatisKari":0,"faaliyetKari":0,"olaganKar":0,"donemKari":0,"donemNetKari":0},"smm":{"estimated":false,"posted":false,"minor":0,"dssPrevMinor":0,"dssMinor":0,"stockFlowMinor":0,"stockMovesMinor":0,"differenceMinor":0},"kesinDegil":[{"kod":"kural-farki","baslik":"Kural Değişikliği Farkı","aciklama":"Kilitli dönemin donmuş defteri ile güncel kural arasındaki farkın Kural Farkı Düzeltme Fişi'yle kapanmamış kısmı aşağıdadır (Yönetim › Sistem › Kural Farkı Düzeltme); tablo donmuş defterdendir.","ayrinti":["770: 300,00 TL","770 (770.90): −300,00 TL"]},{"kod":"bilgi-amacli","baslik":"Bilgi Amaçlı","aciklama":"Defter Türü Bilanço Esası değil; tablo resmî biçim yerine bilgi amaçlıdır."}],"footnotes":[{"kod":"yasal-degil","metin":"Bu tablolar DestekOfis kayıtlarından üretilmiştir; yasal defter (e-Defter) ve beyannameye esas mali tablo, KÜMİ FRS / BOBİ FRS finansal tablosu değildir."},{"kod":"donem-sonu","metin":"Amortisman, reeskont, gider / gelir tahakkuku, kur değerlemesi ve dönem kârı vergi karşılığı programda yapılmaz."},{"kod":"kasa-banka-gider","metin":"Kasa ve banka 'Diğer Gider' çıkışları (300,00 TL) Genel Yönetim Giderleri'ne yazılmıştır; içinde demirbaş, ortak / sahip çekişi, müvekkil masraf avansı ya da borç ödemesi bulunabilir.","tutarMinor":30000},{"kod":"siniflandirilmamis","metin":"Faturasız / sınıflandırılmamış gelir 0,00 TL, gider 300,00 TL (.90 alt hesaplar).","gelirMinor":0,"giderMinor":30000}],"warnings":[]}`, gelen `{"from":"2026-07-01","to":"2026-07-31","bookType":"unset","bilgiAmacli":true,"entryCount":1,"items":[{"kod":"A","ad":"Brüt Satışlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"B","ad":"Satış İndirimleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"D","ad":"Satışların Maliyeti (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"E","ad":"Faaliyet Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[{"hesap":"632","ad":"Genel Yönetim Giderleri","tutarMinor":0,"altlar":[{"hesap":"770","ad":"Genel Yönetim Giderleri","tutarMinor":-30000},{"hesap":"770.90","ad":"Sınıflandırılmamış Kasa / Banka Giderleri","tutarMinor":30000}]}]},{"kod":"F","ad":"Diğer Faaliyetlerden Olağan Gelir ve Kârlar","gelir":true,"tutarMinor":0,"hesaplar":[]},{"kod":"G","ad":"Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"H","ad":"Finansman Giderleri (−)","gelir":false,"tutarMinor":0,"hesaplar":[]},{"kod":"I","ad":"Olağandışı Gelir ve Kârlar","gelir":true,"tutarMinor":100000,"hesaplar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000,"altlar":[{"hesap":"671","ad":"Önceki Dönem Gelir ve Kârları","tutarMinor":100000}]}]},{"kod":"J","ad":"Olağandışı Gider ve Zararlar (−)","gelir":false,"tutarMinor":100000,"hesaplar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000,"altlar":[{"hesap":"681","ad":"Önceki Dönem Gider ve Zararları","tutarMinor":100000}]}]},{"kod":"K","ad":"Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)","gelir":false,"tutarMinor":0,"hesaplar":[],"aciklama":"Program dönem kârı vergi karşılığı ayırmaz; Dönem Net Kârı vergi öncesidir."}],"subtotals":{"netSatislar":0,"brutSatisKari":0,"faaliyetKari":0,"olaganKar":0,"donemKari":0,"donemNetKari":0},"smm":{"estimated":false,"posted":false,"minor":0,"dssPrevMinor":0,"dssMinor":0,"stockFlowMinor":0,"stockMovesMinor":0,"differenceMinor":0},"kesinDegil":[{"kod":"bilgi-amacli","baslik":"Bilgi Amaçlı","aciklama":"Defter Türü Bilanço Esası değil; tablo resmî biçim yerine bilgi amaçlıdır."}],"footnotes":[{"kod":"yasal-degil","metin":"Bu tablolar DestekOfis kayıtlarından üretilmiştir; yasal defter (e-Defter) ve beyannameye esas mali tablo, KÜMİ FRS / BOBİ FRS finansal tablosu değildir."},{"kod":"donem-sonu","metin":"Amortisman, reeskont, gider / gelir tahakkuku, kur değerlemesi ve dönem kârı vergi karşılığı programda yapılmaz."},{"kod":"kasa-banka-gider","metin":"Kasa ve banka 'Diğer Gider' çıkışları (300,00 TL) Genel Yönetim Giderleri'ne yazılmıştır; içinde demirbaş, ortak / sahip çekişi, müvekkil masraf avansı ya da borç ödemesi bulunabilir.","tutarMinor":30000},{"kod":"siniflandirilmamis","metin":"Faturasız / sınıflandırılmamış gelir 0,00 TL, gider 300,00 TL (.90 alt hesaplar).","gelirMinor":0,"giderMinor":30000}],"warnings":[]}`)
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4 [test/c6h-tek-okuma.test.mjs:198:3] — taksit ters kayıt · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › sınama boş geçmedi: fiş en az dört sınıfta yazıldı, KALAN yolu koştu [test/c6h-tek-okuma.test.mjs:210:3] — fiş yazılan sınıf 0 (beklenen true, gelen false)
+
+[kanit] c6h5-mut-m1-disari-sonrasi-yok-UTC: BAŞARISIZ (çıkış 1; 14 başarısız, 0 iptal) · çıkış 1 · 3/17 geçti, 14 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v726 x64 · Node v22.23.4

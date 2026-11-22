@@ -1,0 +1,4 @@
+[{"y":"2022","n":16666},{"y":"2023","n":84266},{"y":"2024","n":85357},{"y":"2025","n":87537},{"y":"2026","n":40207}]
+  yıl başına 2022,2023,2024,2025 (ifadesiz anahtar, tek tek): en iyi 284 · ortanca 298 ms · 2675
+  tek sorgu, yıl ifadesi anahtarda: en iyi 359 · ortanca 398 ms · 2675
+  yıl başına yalnız hesap: en iyi 182 · ortanca 183 ms · 94

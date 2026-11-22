@@ -1,0 +1,48 @@
+tur 1 · kilit bekleniyor 14:48:30
+tur 1 · kilit alındı 14:48:34 · yük 1.47 1.24 1.73 · yeni 596253cf
+=== tur 1 · eski · kilitli · başta yük 1.47 1.24 1.73 · GEÇERLİ · 14:48:34
+çıkış 0 · sonda yük 1.09 1.13 1.56 · 14:52:35
+=== tur 1 · tur4 · kilitli · başta yük 1.09 1.13 1.56 · GEÇERLİ · 14:52:35
+çıkış 0 · sonda yük 1.26 1.16 1.46 · 14:57:12
+=== tur 1 · yeni · kilitli · başta yük 1.24 1.15 1.45 · GEÇERLİ · 14:57:12
+çıkış 0 · sonda yük 1.32 1.18 1.38 · 15:01:24
+=== tur 1 · eski · kilitsiz · başta yük 1.32 1.18 1.38 · GEÇERLİ · 15:01:25
+çıkış 0 · sonda yük 1.35 1.20 1.37 · 15:03:04
+=== tur 1 · tur4 · kilitsiz · başta yük 1.35 1.20 1.37 · GEÇERLİ · 15:03:04
+çıkış 0 · sonda yük 1.48 1.24 1.36 · 15:04:37
+=== tur 1 · yeni · kilitsiz · başta yük 1.36 1.22 1.36 · GEÇERLİ · 15:04:37
+çıkış 0 · sonda yük 1.31 1.23 1.35 · 15:06:11
+tur 1 bitti 15:06:11 · yük 1.31 1.23 1.35
+tur 1 çıkış 0
+tur 2 · kilit bekleniyor 15:06:11
+tur 2 · kilit alındı 15:06:35 · yük 1.21 1.22 1.34 · yeni 596253cf
+=== tur 2 · yeni · kilitli · başta yük 1.21 1.22 1.34 · GEÇERLİ · 15:06:35
+çıkış 0 · sonda yük 1.88 1.45 1.40 · 15:11:03
+=== tur 2 · eski · kilitli · başta yük 1.35 1.36 1.37 · GEÇERLİ · 15:11:23
+çıkış 0 · sonda yük 1.59 1.34 1.35 · 15:15:17
+=== tur 2 · tur4 · kilitli · başta yük 1.30 1.29 1.33 · GEÇERLİ · 15:15:28
+çıkış 0 · sonda yük 1.05 1.15 1.26 · 15:19:49
+=== tur 2 · yeni · kilitsiz · başta yük 1.05 1.15 1.26 · GEÇERLİ · 15:19:49
+çıkış 0 · sonda yük 1.15 1.15 1.25 · 15:21:25
+=== tur 2 · eski · kilitsiz · başta yük 1.15 1.15 1.25 · GEÇERLİ · 15:21:25
+çıkış 0 · sonda yük 1.31 1.23 1.27 · 15:23:10
+=== tur 2 · tur4 · kilitsiz · başta yük 1.31 1.23 1.27 · GEÇERLİ · 15:23:10
+çıkış 0 · sonda yük 1.24 1.26 1.27 · 15:24:54
+tur 2 bitti 15:24:54 · yük 1.24 1.26 1.27
+tur 2 çıkış 0
+tur 3 · kilit bekleniyor 15:24:54
+tur 3 · kilit alındı 15:28:30 · yük 0.32 0.73 1.05 · yeni 596253cf
+=== tur 3 · tur4 · kilitli · başta yük 0.32 0.73 1.05 · GEÇERLİ · 15:28:30
+çıkış 0 · sonda yük 1.14 1.07 1.12 · 15:32:50
+=== tur 3 · yeni · kilitli · başta yük 1.14 1.07 1.12 · GEÇERLİ · 15:32:50
+çıkış 0 · sonda yük 1.46 1.28 1.19 · 15:36:48
+=== tur 3 · eski · kilitli · başta yük 1.46 1.28 1.19 · GEÇERLİ · 15:36:48
+çıkış 0 · sonda yük 1.16 1.23 1.18 · 15:40:50
+=== tur 3 · tur4 · kilitsiz · başta yük 1.16 1.23 1.18 · GEÇERLİ · 15:40:51
+çıkış 0 · sonda yük 1.35 1.27 1.20 · 15:42:34
+=== tur 3 · yeni · kilitsiz · başta yük 1.32 1.27 1.20 · GEÇERLİ · 15:42:34
+çıkış 0 · sonda yük 1.79 1.39 1.24 · 15:44:15
+=== tur 3 · eski · kilitsiz · başta yük 1.28 1.30 1.21 · GEÇERLİ · 15:44:35
+çıkış 0 · sonda yük 1.05 1.21 1.18 · 15:46:15
+tur 3 bitti 15:46:15 · yük 1.05 1.21 1.18
+tur 3 çıkış 0

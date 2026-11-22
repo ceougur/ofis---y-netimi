@@ -1,0 +1,36 @@
+pos kilitsiz GT 2025-01-01..2025-12-31: []
+    Kesin Değil: [["bilgi-amacli",null]] · dipnot .90: null · dipnot 3: 0
+pos kilitsiz GT 2026-01-01..2026-06-30: [["A",[["602",100000,[["602.90",100000]]]]]]
+    Kesin Değil: [["bilgi-amacli",null]] · dipnot .90: {"kod":"siniflandirilmamis","metin":"Faturasız / sınıflandırılmamış gelir 1.000,00 TL, gider 0,00 TL (.90 alt hesaplar).","gelirMinor":100000,"giderMinor":0} · dipnot 3: 0
+pos kilitli GT 2025-01-01..2025-12-31: []
+    Kesin Değil: [["bilgi-amacli",null]] · dipnot .90: null · dipnot 3: 0
+pos kilitli GT 2026-01-01..2026-06-30: [["A",[["602",100000,[["602",100000]]]]]]
+    Kesin Değil: [["kural-farki",["2026 · 602: 1.000,00 TL","2026 · 602 (602.90): −1.000,00 TL"]],["bilgi-amacli",null]] · dipnot .90: null · dipnot 3: 0
+    Yönetim Kural Farkı ön izlemesi: 1 madde; satırlar [["602","",100000,0],["602","602.90",0,100000]]
+    Bilanço 20.10 Kesin Değil: [["kural-farki",["2026 · 602: 1.000,00 TL","2026 · 602 (602.90): −1.000,00 TL"]],["bilgi-amacli",null]]
+    fiş 200; Yönetim sonra: kalan satır 0, rule-diff-nothing, fişler ["Fiş 2026-000001"]
+    Bilanço 20.10 fişten SONRA Kesin Değil: [["kural-farki",["2026 · 602: 1.000,00 TL","2026 · 602 (602.90): −1.000,00 TL"]],["bilgi-amacli",null]]
+stok kilitsiz GT 2025-01-01..2025-12-31: [["D",[["621",-30692,[]]]]]
+    Kesin Değil: [["smm-tahmini",null],["bilgi-amacli",null]] · dipnot .90: null · dipnot 3: 0
+stok kilitsiz GT 2026-01-01..2026-06-30: [["A",[["600",40000,[["600.90",40000]]]]],["B",[["610",10000,[["610.90",10000]]]]],["D",[["621",33531,[]]]]]
+    Kesin Değil: [["smm-tahmini",null],["bilgi-amacli",null]] · dipnot .90: {"kod":"siniflandirilmamis","metin":"Faturasız / sınıflandırılmamış gelir 400,00 TL, gider 100,00 TL (.90 alt hesaplar).","gelirMinor":40000,"giderMinor":10000} · dipnot 3: 0
+stok kilitli GT 2025-01-01..2025-12-31: [["D",[["621",-30692,[]]]]]
+    Kesin Değil: [["smm-tahmini",null],["bilgi-amacli",null]] · dipnot .90: null · dipnot 3: 0
+stok kilitli GT 2026-01-01..2026-06-30: [["A",[["600",40000,[["600",40000]]]]],["B",[["610",10000,[["610",10000]]]]],["D",[["621",33531,[]]]]]
+    Kesin Değil: [["smm-tahmini",null],["kural-farki",["2026 · 600: 400,00 TL","2026 · 600 (600.90): −400,00 TL","2026 · 610: −100,00 TL","2026 · 610 (610.90): 100,00 TL"]],["bilgi-amacli",null]] · dipnot .90: null · dipnot 3: 0
+    Yönetim Kural Farkı ön izlemesi: 2 madde; satırlar [["600","",40000,0],["600","600.90",0,40000],["610","",0,10000],["610","610.90",10000,0]]
+    Bilanço 20.10 Kesin Değil: [["smm-tahmini",null],["kural-farki",["2026 · 600: 400,00 TL","2026 · 600 (600.90): −400,00 TL","2026 · 610: −100,00 TL","2026 · 610 (610.90): 100,00 TL"]],["eksi-bakiye",["100 Kasa (Nakit): −380,00 TL"]],["kapanmamis-yil",["2025"]],["bilgi-amacli",null]]
+    fiş 200; Yönetim sonra: kalan satır 0, rule-diff-nothing, fişler ["Fiş 2026-000001"]
+    Bilanço 20.10 fişten SONRA Kesin Değil: [["smm-tahmini",null],["kural-farki",["2026 · 600: 400,00 TL","2026 · 600 (600.90): −400,00 TL","2026 · 610: −100,00 TL","2026 · 610 (610.90): 100,00 TL"]],["eksi-bakiye",["100 Kasa (Nakit): −380,00 TL"]],["kapanmamis-yil",["2025"]],["bilgi-amacli",null]]
+kasa kilitsiz GT 2025-01-01..2025-12-31: [["F",[["649",100000,[["649.90",100000]]]]]]
+    Kesin Değil: [["bilgi-amacli",null]] · dipnot .90: {"kod":"siniflandirilmamis","metin":"Faturasız / sınıflandırılmamış gelir 1.000,00 TL, gider 0,00 TL (.90 alt hesaplar).","gelirMinor":100000,"giderMinor":0} · dipnot 3: 0
+kasa kilitsiz GT 2026-01-01..2026-06-30: [["E",[["632",30000,[["770.90",30000]]]]]]
+    Kesin Değil: [["bilgi-amacli",null]] · dipnot .90: {"kod":"siniflandirilmamis","metin":"Faturasız / sınıflandırılmamış gelir 0,00 TL, gider 300,00 TL (.90 alt hesaplar).","gelirMinor":0,"giderMinor":30000} · dipnot 3: 30000
+kasa kilitli GT 2025-01-01..2025-12-31: [["F",[["649",100000,[["649",100000]]]]]]
+    Kesin Değil: [["kural-farki",["2025 · 649: 1.000,00 TL","2025 · 649 (649.90): −1.000,00 TL"]],["bilgi-amacli",null]] · dipnot .90: null · dipnot 3: 0
+kasa kilitli GT 2026-01-01..2026-06-30: [["E",[["632",30000,[["770",30000]]]]]]
+    Kesin Değil: [["kural-farki",["2026 · 770: −300,00 TL","2026 · 770 (770.90): 300,00 TL"]],["bilgi-amacli",null]] · dipnot .90: null · dipnot 3: 0
+    Yönetim Kural Farkı ön izlemesi: 3 madde; satırlar [["500","",500000,0],["519","",0,500000],["671","",0,100000],["681","",100000,0],["770","",0,30000],["770","770.90",30000,0]]
+    Bilanço 20.10 Kesin Değil: [["kural-farki",["2025 · 500: 5.000,00 TL","2025 · 519: −5.000,00 TL","2025 · 649: 1.000,00 TL","2025 · 649 (649.90): −1.000,00 TL","2026 · 770: −300,00 TL","2026 · 770 (770.90): 300,00 TL"]],["kapanmamis-yil",["2025"]],["bilgi-amacli",null]]
+    fiş 200; Yönetim sonra: kalan satır 0, rule-diff-nothing, fişler ["Fiş 2026-000001"]
+    Bilanço 20.10 fişten SONRA Kesin Değil: [["tamamlanmamis-acilis",null],["kural-farki",["2025 · 500: 5.000,00 TL","2025 · 519: −5.000,00 TL","2025 · 649: 1.000,00 TL","2025 · 649 (649.90): −1.000,00 TL","2026 · 770: −300,00 TL","2026 · 770 (770.90): 300,00 TL"]],["kapanmamis-yil",["2025"]],["bilgi-amacli",null]]

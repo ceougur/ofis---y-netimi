@@ -1,0 +1,5 @@
+Ç6-HESAP tur 5 ham çıktıları. Betikler ../c6h5-betik (not defteri yolları /tmp/claude-0/.../scratchpad/c6h5-ag içindir).
+gecersiz-mut1/: GEÇERSİZ mutasyon koşusu (kopyadaki test dosyası eskiydi) — kanıt sayılmaz; geçerli olan mutasyon.out + mut-*.out.
+kanit/: tools/kanit.mjs kos kayıtları (mutant kayıtları yeniden koşuyla üzerine yazıldı).
+fark-*.json.gz: fark5.mjs yanıt dökümleri (tur 4 ↔ yeni); fark-json.sha256 açılmış hâllerinin özetleri.
+hiz/: olc5.mjs ham günlükleri; hiz-tablo.out tablo5.py özeti; parca-tekcagri.out ilk (tek SQL) biçimin, parca.out son biçimin parça ayrıştırması.

@@ -1,0 +1,45 @@
+komşu UTC kilit bekleniyor 15:46:36
+komşu UTC çıkış 0 · # tests 1431 # pass 1431 # fail 0 # cancelled 0 # skipped 0  · 15:54:57 yük 3.32 4.37 2.96
+komşu Europe/Istanbul kilit bekleniyor 15:54:57
+komşu Europe/Istanbul çıkış 0 · # tests 1431 # pass 1431 # fail 0 # cancelled 0 # skipped 0  · 16:01:58 yük 2.77 3.79 3.23
+mutasyon çıkış 0 · 16:05:28
+başla 16:01:58 yük 2.77 3.79 3.23
+uygulandı m1-disari-sonrasi-yok (server/lib/ledger-snapshots.mjs)
+m1-disari-sonrasi-yok UTC çıkış 1 · # pass 3 # fail 14  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m1-disari-sonrasi-yok Europe/Istanbul çıkış 1 · # pass 3 # fail 14  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m2-from-gunu-iki-kez (server/lib/ledger-snapshots.mjs)
+m2-from-gunu-iki-kez UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m2-from-gunu-iki-kez Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m3-voucher-disariya (server/lib/ledger-snapshots.mjs)
+m3-voucher-disariya UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m3-voucher-disariya Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m4-iceri-unutuldu (server/lib/financial-statements.mjs)
+m4-iceri-unutuldu UTC çıkış 1 · # pass 2 # fail 15  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m4-iceri-unutuldu Europe/Istanbul çıkış 1 · # pass 2 # fail 15  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m5-alt-defter-bos (server/lib/financial-statements.mjs)
+m5-alt-defter-bos UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m5-alt-defter-bos Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m6-gt-ruleThrough-through (server/lib/financial-statements.mjs)
+m6-gt-ruleThrough-through UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m6-gt-ruleThrough-through Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m7-bilanco-genis-yok (server/lib/financial-statements.mjs)
+m7-bilanco-genis-yok UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m7-bilanco-genis-yok Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m8-disari-yanlis-yil (server/lib/ledger-snapshots.mjs)
+m8-disari-yanlis-yil UTC çıkış 1 · # pass 2 # fail 15  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m8-disari-yanlis-yil Europe/Istanbul çıkış 1 · # pass 2 # fail 15  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m9-through-gunu-iki-kez (server/lib/ledger-snapshots.mjs)
+m9-through-gunu-iki-kez UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m9-through-gunu-iki-kez Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+bitti 16:05:28 yük 1.39 2.62 2.88
+kâhin-defter UTC çıkış 0 ·   mutasyon 33 (D10 (B11 B): açılıştan önceye alınan düzeltme kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı  ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-6zFIUp 
+kâhin-defter Europe/Istanbul çıkış 0 ·   mutasyon 33 (D10 (B11 B): açılıştan önceye alınan düzeltme kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı  ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-lc8bMN 
+fark fikstur çıkış 0 · 17:19:55
+başla 17:05:28 yük 1.07 1.02 1.03 yeni dfff5a1a
+fikstür tur4 UTC çıkış 0 · okuma 828 · anahtar 874 · /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/out/fark-fikstur-tur4-UTC.json
+fikstür yeni UTC çıkış 0 · okuma 828 · anahtar 874 · /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/out/fark-fikstur-yeni-UTC.json
+fikstür karşılaştırma UTC çıkış 0 · SONUÇ: 0 fark / 874
+fikstür tur4 Europe/Istanbul çıkış 0 · okuma 828 · anahtar 874 · /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/out/fark-fikstur-tur4-Europe-Istanbul.json
+fikstür yeni Europe/Istanbul çıkış 0 · okuma 828 · anahtar 874 · /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/out/fark-fikstur-yeni-Europe-Istanbul.json
+fikstür karşılaştırma Europe/Istanbul çıkış 0 · SONUÇ: 0 fark / 874
+bitti 17:19:55 yük 1.78 1.35 1.18

@@ -22,7 +22,7 @@ import { RULE_249, buildRule249 } from "./ledger-rule-249/index.mjs";
 import { leanRows, leanStore } from "./lean-rows.mjs";
 import { postedRuleDiffCorrections, ruleDiffCorrectionPlan, ruleDiffCorrectionYear } from "./ledger-opening.mjs";
 import { voucherNoText } from "./ledger-vouchers.mjs";
-import { LEDGER_SNAPSHOT_TRIGGERS_V47, LEDGER_SNAPSHOT_TRIGGER_NAMES } from "./migrations.mjs";
+import { LEDGER_VALUATION_CARDS_TRIGGERS_V54, LEDGER_VALUATION_CARDS_TRIGGER_NAMES, LEDGER_SNAPSHOT_TRIGGERS_V47, LEDGER_SNAPSHOT_TRIGGER_NAMES } from "./migrations.mjs";
 
 /**
  * Eski sürümün (≤ 2.4.9; BS-7 kapısını bilmez) değiştirdiği dönemi donduran kural: kilidi ilerlettiyse aradaki dönem, dosyayı sıfırlayıp yeniden kilitlediyse (donmuş satırları
@@ -172,10 +172,18 @@ export function clearSnapshots(store) {
   if (!has(store, "ledger_snapshot_runs")) return {};
   if (!store.inTransaction) throw new Error("Donmuş defter yalnız veri tabanı işleminin içinde silinir (store.tx).");
   const counts = { ledger_snapshots: store.get("SELECT COUNT(*) AS n FROM ledger_snapshots").n, ledger_snapshot_runs: store.get("SELECT COUNT(*) AS n FROM ledger_snapshot_runs").n };
+  // 2.5.0 Ç6-HESAP tur 4 (S236 = A): değerleme kartları da (göç 54; tablo yoksa atlanır).
+  const items = has(store, "ledger_valuation_cards");
+  if (items) {
+    counts.ledger_valuation_cards = store.get("SELECT COUNT(*) AS n FROM ledger_valuation_cards").n;
+    for (const name of LEDGER_VALUATION_CARDS_TRIGGER_NAMES) store.exec(`DROP TRIGGER IF EXISTS ${name}`);
+    store.run("DELETE FROM ledger_valuation_cards");
+  }
   for (const name of LEDGER_SNAPSHOT_TRIGGER_NAMES) store.exec(`DROP TRIGGER IF EXISTS ${name}`);
   store.run("DELETE FROM ledger_snapshots");
   store.run("DELETE FROM ledger_snapshot_runs");
   store.exec(LEDGER_SNAPSHOT_TRIGGERS_V47);
+  if (items) store.exec(LEDGER_VALUATION_CARDS_TRIGGERS_V54);
   return counts;
 }
 
@@ -461,6 +469,8 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       no, `lsr-${randomUUID()}`, kind, runState, from, through, rule, reason, t.lines || 0, t.debit || 0, t.credit || 0, t.weight || 0, actor.id, now().toISOString(), runState === "done" ? now().toISOString() : "",
     );
+    // 2.5.0 Ç6-HESAP tur 4 (S236 = A): kilitli dönemin değerleme kartları kilit ANINDA (koşuyu açan işlemde) dondurulur.
+    if (kind === "freeze") freezeValuationCards(store, no, write);
     return store.get("SELECT * FROM ledger_snapshot_runs WHERE no = ?", no);
   }
   const abandon = run => write("UPDATE ledger_snapshot_runs SET state = 'abandoned', finished_at = ? WHERE no = ? AND state = 'pending'", now().toISOString(), run.no);
@@ -1200,16 +1210,29 @@ const FROZEN_PREFIX_SQL = "CASE WHEN instr(entry_id, ':') > 0 THEN substr(entry_
  * Dönüş: groups — [{ year, part, prefix, voucher, account, sub, party, net, lines, last }] (yıl × kısım × kimlik öneki × 'voucher' öneki × hesap × alt hesap × cari; net = Σ borç − alacak,
  * last = en geç tarih); entries — [{ year, part, entries, unbalanced }] (madde = run × entry_id × date — frozenTrial'ın "dengesiz madde" tanımı); firstSeen(hesaplar) — o hesapların
  * satırları yevmiye sırasıyla (ORDER BY date, run, run_seq = frozenEntries'in sırası): [{ account, year, part, prefix }] (seyrek: sınıflandırılmamış hesapların ilk görünüş sırası).
+ * ruleThrough (Ç6-HESAP tur 5; tasarım §11.6; ≥ through — genelde kapsam): verilirse ayrıca `outside` — [from, through] DIŞINDAKİ (from'dan önce ya da through'dan sonra, ≤ ruleThrough) 'voucher'
+ * olmayan satırların kaba toplamları [{ year, voucher: false, account, sub, party, net }] (önek, kısım, madde sayımı yok; Kural Değişikliği Farkı'nın kapsamın tamamı okuması için — tur 4'ün ["", kapsam]
+ * okumasının yerine). groups / entries / firstSeen her durumda AYNI SQL (ruleThrough onlara dokunmaz). Verilmezse çıktı birebir eski (outside alanı yok).
  */
-export function frozenSums(store, { from = "", through = "", split = "" } = {}) {
+export function frozenSums(store, { from = "", through = "", split = "", ruleThrough = "" } = {}) {
   const lower = from || "";
-  if (!through || !has(store, "ledger_snapshots")) return { from: lower, through, split, groups: [], entries: [], firstSeen: () => [] };
+  const wide = Boolean(ruleThrough);
+  if (wide && through && ruleThrough < through) throw new Error(`ruleThrough (${ruleThrough}) through'dan (${through}) önce olamaz`);
+  if (!through || !has(store, "ledger_snapshots")) return { from: lower, through, split, groups: [], entries: [], firstSeen: () => [], ...(wide ? { outside: [] } : {}) };
   const groups = store.all(
     `SELECT substr(date, 1, 4) AS year, CASE WHEN date >= ?3 THEN 1 ELSE 0 END AS part, ${FROZEN_PREFIX_SQL} AS prefix, CASE WHEN substr(entry_id, 1, 7) = 'voucher' THEN 1 ELSE 0 END AS voucher,
             account, sub, party, SUM(debit_minor - credit_minor) AS net, COUNT(*) AS lines, MAX(date) AS last
      FROM ledger_snapshots WHERE date >= ?1 AND date <= ?2 GROUP BY 1, 2, 3, 4, account, sub, party`,
     lower, through, split,
   ).map(row => ({ year: Number(row.year), part: Number(row.part), prefix: String(row.prefix), voucher: Number(row.voucher) === 1, account: String(row.account), sub: row.sub || "", party: row.party || "", net: Number(row.net), lines: Number(row.lines), last: String(row.last) }));
+  // Dışarısı (tasarım §11.6): yıl × hesap × alt × cari, 'voucher' satırları WHERE'de dışarıda (Kural Değişikliği Farkı onları zaten karşılaştırmaz) — önek / kısım / madde sayımı hesaplanmaz.
+  const outside = !wide
+    ? null
+    : store.all(
+        `SELECT substr(date, 1, 4) AS year, account, sub, party, SUM(debit_minor - credit_minor) AS net
+         FROM ledger_snapshots WHERE date <= ?3 AND (date < ?1 OR date > ?2) AND substr(entry_id, 1, 7) <> 'voucher' GROUP BY 1, account, sub, party`,
+        lower, through, ruleThrough,
+      ).map(row => ({ year: Number(row.year), voucher: false, account: String(row.account), sub: row.sub || "", party: row.party || "", net: Number(row.net) }));
   const entries = store.all(
     `SELECT year, part, COUNT(*) AS entries, SUM(CASE WHEN net <> 0 THEN 1 ELSE 0 END) AS unbalanced FROM (
        SELECT substr(date, 1, 4) AS year, CASE WHEN date >= ?3 THEN 1 ELSE 0 END AS part, SUM(debit_minor - credit_minor) AS net
@@ -1226,5 +1249,39 @@ export function frozenSums(store, { from = "", through = "", split = "" } = {}) 
       split, lower, through, ...list,
     ).map(row => ({ account: String(row.account), year: Number(row.year), part: Number(row.part), prefix: String(row.prefix) }));
   };
-  return { from: lower, through, split, groups, entries, firstSeen };
+  return { from: lower, through, split, groups, entries, firstSeen, ...(wide ? { outside } : {}) };
+}
+
+// ---------- 2.5.0 Ç6-HESAP tur 4 (S236 = A; docs/erp/C6-HESAP-TASARIM.md §11.3, C3-DONDURMA-TASARIM §21): kilitli dönemin değerleme kartları ----------
+
+/**
+ * Dondurma koşusu açılırken (insertRun, kind freeze — aynı işlem) ürün kartlarının değerlemeye giren alanları (tür, kart alış fiyatı, silinme) koşuya yazılır: tek INSERT … SELECT (hizmet dahil —
+ * sonradan Ürün'e çevrilen kalem kilitli yıla girmesin). Tablo yoksa (göç 54 öncesi bellek içi araç) yazılmaz. write: koşunun yazım işlevi (ownChanges sayacı).
+ */
+export function freezeValuationCards(store, run, write = (sql, ...args) => store.run(sql, ...args)) {
+  if (!has(store, "ledger_valuation_cards") || !has(store, "stock_items")) return 0;
+  const kind = store.all("PRAGMA table_info(stock_items)").some(row => row.name === "kind") ? "kind" : "'product'";
+  return Number(write(`INSERT INTO ledger_valuation_cards (run, item_id, kind, unit_price, deleted_at) SELECT ?, id, ${kind}, CAST(unit_price AS REAL), deleted_at FROM stock_items`, run)?.changes) || 0;
+}
+
+/**
+ * Değerlemenin okuduğu donmuş kartlar (tek sorgu): kapsam (son tamamlanan koşunun through'u) ve kapsamla kesişen TAMAMLANMIŞ freeze koşularının kartları, en son koşu önce.
+ * Dönüş: { cover, runs: [{ no, from, through, cards: Map(item_id → { kind, unitPrice, deletedAt }) }] } — kapsam yoksa runs boş. Değerleme t ≤ kapsam için t'yi kapsayan (from < t ≤ through)
+ * ilk koşunun kartını kullanır (lib/stock-valuation.mjs).
+ */
+export function frozenValuationCards(store) {
+  if (!has(store, "ledger_valuation_cards") || !has(store, "ledger_snapshot_runs")) return { cover: "", runs: [] };
+  const cover = String(store.get("SELECT COALESCE((SELECT through FROM ledger_snapshot_runs WHERE state = 'done' ORDER BY no DESC LIMIT 1), '') AS cover").cover || "");
+  if (!cover) return { cover: "", runs: [] };
+  const runs = new Map();
+  for (const row of store.all(
+    `SELECT r.no, r.from_date AS fromDate, r.through, s.item_id AS itemId, s.kind, s.unit_price AS unitPrice, s.deleted_at AS deletedAt
+     FROM ledger_snapshot_runs r JOIN ledger_valuation_cards s ON s.run = r.no WHERE r.kind = 'freeze' AND r.state = 'done' AND r.from_date < ? ORDER BY r.no DESC`,
+    cover,
+  )) {
+    let run = runs.get(row.no);
+    if (!run) runs.set(row.no, (run = { no: Number(row.no), from: String(row.fromDate || ""), through: String(row.through || ""), cards: new Map() }));
+    run.cards.set(row.itemId, { kind: String(row.kind || "product"), unitPrice: Number(row.unitPrice) || 0, deletedAt: row.deletedAt || "" });
+  }
+  return { cover, runs: [...runs.values()] };
 }

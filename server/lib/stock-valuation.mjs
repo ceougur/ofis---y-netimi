@@ -8,6 +8,7 @@
 //
 // Tamsayı aritmetiği: para kuruş, miktar 1/1000 (roundQty üç ondalık), birim fiyat 1/10.000 TL; ürün değeri BigInt ile tek bölmede yuvarlanır (kayan nokta birikmez).
 import { localDayOf, stockOpeningValue } from "./general-ledger.mjs";
+import { frozenValuationCards } from "./ledger-snapshots.mjs";
 
 /** Hareket sınıfı (defterin 153 maddeleriyle AYNI ayrım — general-ledger journal(): stok açılışı, peşin / açık hesap alım ve iade, fatura matrahı). */
 export const MOVE_CLASS = Object.freeze({ opening: "opening", purchase: "purchase", purchaseReturn: "purchaseReturn", quantity: "quantity" });
@@ -54,14 +55,24 @@ const hasTable = (store, table) => Boolean(store.get("SELECT 1 AS found FROM sql
 export function loadValuationInput(store) {
   if (!hasTable(store, "stock_items") || !hasTable(store, "stock_moves")) return { items: [], moves: [] };
   const itemKind = hasColumn(store, "stock_items", "kind") ? "i.kind" : "'product'";
-  const items = store.all(`SELECT i.id, i.code, i.name, i.unit, i.unit_price AS unitPrice, i.deleted_at AS deletedAt FROM stock_items i WHERE ${itemKind} <> 'service'`).map(row => ({
-    id: row.id,
-    code: row.code || "",
-    name: row.name || "",
-    unit: row.unit || "",
-    unitPriceE4: Math.round((Number(row.unitPrice) || 0) * PRICE_SCALE),
-    deletedDay: row.deletedAt ? localDayOf(row.deletedAt) : "",
-  }));
+  // Tur 4 (S236 = A; tasarım §11.3): kilitli dönemin donmuş kartları — güncel türü Hizmet olup donmuş kartı Ürün olan kalem de girdiye alınır (kilitli yılda değerlenir; `service` işaretiyle).
+  const frozen = frozenValuationCards(store);
+  const frozenProduct = new Set();
+  for (const run of frozen.runs) for (const [id, card] of run.cards) if (card.kind !== "service") frozenProduct.add(id);
+  const items = [];
+  for (const row of store.all(`SELECT i.id, i.code, i.name, i.unit, i.unit_price AS unitPrice, i.deleted_at AS deletedAt, ${itemKind} AS kind FROM stock_items i`)) {
+    const service = row.kind === "service";
+    if (service && !frozenProduct.has(row.id)) continue;
+    items.push({
+      id: row.id,
+      code: row.code || "",
+      name: row.name || "",
+      unit: row.unit || "",
+      unitPriceE4: Math.round((Number(row.unitPrice) || 0) * PRICE_SCALE),
+      deletedDay: row.deletedAt ? localDayOf(row.deletedAt) : "",
+      ...(service ? { service: true } : {}),
+    });
+  }
   const known = new Set(items.map(item => item.id));
   const opening = hasColumn(store, "stock_moves", "is_opening") ? "m.is_opening" : "0";
   const reason = hasColumn(store, "stock_moves", "reason") ? "m.reason" : "''";
@@ -75,7 +86,14 @@ export function loadValuationInput(store) {
     const valueMinor = cls === MOVE_CLASS.opening ? toMinor(stockOpeningValue(row)) : cls === MOVE_CLASS.quantity ? 0 : toMinor(row.amount);
     moves.push({ itemId: row.itemId, date: String(row.date), cls, qtyMilli: sign * toMilli(row.qty), valueMinor });
   }
-  return { items, moves };
+  if (!frozen.runs.length) return { items, moves };
+  const runs = frozen.runs.map(run => ({
+    no: run.no,
+    from: run.from,
+    through: run.through,
+    cards: new Map([...run.cards].map(([id, card]) => [id, { unitPriceE4: Math.round(card.unitPrice * PRICE_SCALE), deletedDay: card.deletedAt ? localDayOf(card.deletedAt) : "", ...(card.kind === "service" ? { service: true } : {}) }])),
+  }));
+  return { items, moves, frozen: { cover: frozen.cover, runs } };
 }
 
 const emptyYear = () => ({ openQ: 0, openV: 0, buyQ: 0, buyV: 0, retQ: 0, retV: 0 });
@@ -86,8 +104,21 @@ const emptyYear = () => ({ openQ: 0, openV: 0, buyQ: 0, buyV: 0, retQ: 0, retV: 
  *   { date, year, totals: { dbsMinor, openingMinor, purchaseMinor, returnMinor, dssMinor, smmStockMinor }, negative: [...], clipped: [{ …ürün, clippedMinor }] (S209 = B), warnings: [...], products?: [...] }
  * yearEnd(Y, opts) = at("Y-12-31", opts).
  */
-export function createStockValuation({ items = [], moves = [] } = {}) {
+export function createStockValuation({ items = [], moves = [], frozen = null } = {}) {
   const itemById = new Map(items.map(item => [item.id, item]));
+  // Tur 4 (S236 = A; tasarım §11.3): t ≤ kapsam → t'yi kapsayan (from < t ≤ through) en son tamamlanmış koşunun DONMUŞ kartı (tür, kart alış fiyatı, silinme günü); t > kapsam ya da koşuda o
+  // kalem yoksa güncel kart. Donmuş kart yoksa sonuç birebir eski. Yıl sonu durumu (endOf) 31.12'nin kartıyla → açık yılın dönem başı = kilitli yılın donmuş dönem sonu (süreklilik).
+  const frozenCover = frozen?.cover || "";
+  const frozenRuns = frozen?.runs || [];
+  const cardAt = (item, day) => {
+    if (!frozenCover || day > frozenCover) return item;
+    for (const run of frozenRuns) {
+      if (!(run.from < day && day <= run.through)) continue;
+      const card = run.cards.get(item.id);
+      return card ? { ...item, unitPriceE4: card.unitPriceE4, deletedDay: card.deletedDay, service: card.service === true } : item;
+    }
+    return item;
+  };
   // Ürün → yıl → hareketler (girdi tarih sırasında).
   const byItem = new Map();
   let firstYear = Infinity;
@@ -142,8 +173,15 @@ export function createStockValuation({ items = [], moves = [] } = {}) {
     const warnings = [];
     const products = detail ? [] : null;
     const state = new Map();
-    for (const item of items) {
+    for (const listed of items) {
+      const item = cardAt(listed, day);
       const before = prior.get(item.id) || { qMilli: 0, vMinor: 0 };
+      // Hizmet (S-07) stok değildir; donmuş kartı Ürün olup sonradan Hizmet'e çevrilen kalemin dönem başı değeri (donmuş) dönem başı toplamına girer, yıl sonunda envanterde değildir
+      // (değeri o yılın satışların maliyetine düşer — tasarım §11.3; silinmiş ürünle aynı yön).
+      if (item.service) {
+        totals.dbsMinor += before.vMinor;
+        continue;
+      }
       const acc = emptyYear();
       let qMilli = before.qMilli;
       for (const move of byItem.get(item.id)?.get(year) || []) {

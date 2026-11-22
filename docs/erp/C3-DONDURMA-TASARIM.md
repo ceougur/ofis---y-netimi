@@ -724,3 +724,11 @@ gerçek routes/ledger.mjs uçları + yönlendirici + HTTP), kilit 31.12.2025 →
 İki deneme de GEÇERSİZ: makinede başka ajanların kilitsiz yükü (tam `npm test`, kâhin mutasyonu) sürdü; 1 dk ortalaması 2'nin altına inmedi. Yük ~5'te olay döngüsü 172 ms (tur 3:
 289–319 ms, yük 4,7–5,3; dar kontrol: 575 ms, yük 11–16 — §16 / §18 / §19 ailesi, kaynak yük ve çöp toplama). DOĞRULANMADI: boş makinede (yük ≤ 2) değer — son adayda yinelenir
 (komut c3t4-ham/kos-olcum.sh.txt; veri c3t4-ham/veri-kur-1m.sh.txt ile yeniden üretilir, ~8 dk).
+
+## 21. Değerleme dondurması (2.5.0 Ç6-HESAP tur 4, S236 = A; ayrıntı `docs/erp/C6-HESAP-TASARIM.md` §11.3)
+- Göç 54: `ledger_valuation_cards` (run, item_id, kind, unit_price, deleted_at; WITHOUT ROWID) + tetikleyiciler `ledger_valuation_cards_no_update`, `_no_delete`, `_insert` (Ç3 deseni: yalnız
+  en son bekleyen freeze koşusuna; tamamlanmış ve kapsam içindeki koşunun satırı silinemez). Göç, kartı olmayan her bırakılmamış freeze koşusuna (göç 47'nin 'migration' koşusu dahil) göç
+  anının kartını yazar (tetikleyicilerden önce).
+- Yazım: `insertRun` (kind freeze) koşuyu açan işlemde tek INSERT … SELECT (stock_items; hizmet dahil). Var olan işlevlerin davranışı ve donmuş satırlar değişmez.
+- Okuma: `frozenValuationCards(store)` (yeni; koşu × ürün, tamamlanmış freeze koşuları + kapsam) — değerleme t ≤ kapsam için t'yi kapsayan en son tamamlanmış koşunun kartını kullanır.
+- Sıfırlama: `clearSnapshots` tabloyu da siler (tetikleyiciler aynı işlemde kaldırılıp kurulur; sayı `ledger_valuation_cards`).

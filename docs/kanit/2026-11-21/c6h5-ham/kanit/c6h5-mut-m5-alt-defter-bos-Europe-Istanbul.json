@@ -1,0 +1,32 @@
+{
+  "ad": "c6h5-mut-m5-alt-defter-bos-Europe-Istanbul",
+  "komut": "node --test test/c6h-tek-okuma.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T18:24:33.236Z",
+  "sure_sn": 12.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kanit/2026-11-21/c6h5-mut-m5-alt-defter-bos-Europe-Istanbul.log",
+  "klasor": "/dev/shm/c6h5-mut",
+  "ham_cikti_sha256": "a1d9c4a6ada7f11a1d15399cb133fba51cd8e6558cb04c8ae2da8c61de8fc832",
+  "ham_cikti_bayt": 11436
+}

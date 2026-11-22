@@ -1,0 +1,108 @@
+{
+  "ad": "c6h5-mut-m4-iceri-unutuldu-UTC",
+  "komut": "node --test test/c6h-tek-okuma.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T18:24:04.388Z",
+  "sure_sn": 8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 2,
+    "basarisiz": 15,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 15 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "satis-fatura fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › alis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "alis-fatura fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "kasa fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "banka fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "pos fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "cek-senet fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "taksit fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "elle-borc-alacak fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › acilis: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "acilis fişten önce · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "stok fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "supheli fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › vergi: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "vergi fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4",
+      "konum": "test/c6h-tek-okuma.test.mjs:186:3",
+      "hata": "kasa kilit geri · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4",
+      "konum": "test/c6h-tek-okuma.test.mjs:198:3",
+      "hata": "taksit ters kayıt · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › sınama boş geçmedi: fiş en az dört sınıfta yazıldı, KALAN yolu koştu",
+      "konum": "test/c6h-tek-okuma.test.mjs:210:3",
+      "hata": "fiş yazılan sınıf 0 (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kanit/2026-11-21/c6h5-mut-m4-iceri-unutuldu-UTC.log",
+  "klasor": "/dev/shm/c6h5-mut",
+  "ham_cikti_sha256": "417f2ff972b50b77a5cbdc3b3e6b9d6e0d13c3456f96eec5252fc82f212c9847",
+  "ham_cikti_bayt": 63361
+}

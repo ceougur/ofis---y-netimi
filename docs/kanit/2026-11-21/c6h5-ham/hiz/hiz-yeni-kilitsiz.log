@@ -1,0 +1,24 @@
+=== tur 1 · yeni · kilitsiz · başta yük 1.36 1.22 1.36 · GEÇERLİ · 15:04:37
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a32c17a0bb8351975 · kip kilitsiz · yük (başta) 1.48 1.26 1.36 · TZ UTC
+  donma: bekleyen koşu yok (kapsam —)
+  kilitsiz Bilanço 2026-12-31: ilk 4752.4 · en iyi 4785.5 · ortanca 5155.3 · en kötü 5450 ms · olay döngüsü en çok 107.2 ms (n=5) · özet 88bdb83d9510fcc0 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT yıl 2026: ilk 3252.5 · en iyi 3172 · ortanca 3356.6 · en kötü 3452.1 ms · olay döngüsü en çok 11.9 ms (n=5) · özet a9b13a9c44e05567 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT ilk yarı 2026: ilk 3581.9 · en iyi 3110.1 · ortanca 3314 · en kötü 3392.9 ms · olay döngüsü en çok 10.1 ms (n=5) · özet 273e254a7a473b64 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":2349410319}
+  bellek (rss) 665 MB · yük (sonda) 1.31 1.23 1.35
+çıkış 0 · sonda yük 1.31 1.23 1.35 · 15:06:11
+=== tur 2 · yeni · kilitsiz · başta yük 1.05 1.15 1.26 · GEÇERLİ · 15:19:49
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a32c17a0bb8351975 · kip kilitsiz · yük (başta) 1.03 1.14 1.25 · TZ UTC
+  donma: bekleyen koşu yok (kapsam —)
+  kilitsiz Bilanço 2026-12-31: ilk 5190 · en iyi 4873.5 · ortanca 4926.9 · en kötü 5466.9 ms · olay döngüsü en çok 93.2 ms (n=5) · özet 88bdb83d9510fcc0 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT yıl 2026: ilk 3403.1 · en iyi 3233.5 · ortanca 3353.3 · en kötü 3759.4 ms · olay döngüsü en çok 10.4 ms (n=5) · özet a9b13a9c44e05567 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT ilk yarı 2026: ilk 3330.7 · en iyi 3239.3 · ortanca 3470.2 · en kötü 3724.6 ms · olay döngüsü en çok 9.9 ms (n=5) · özet 273e254a7a473b64 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":2349410319}
+  bellek (rss) 660 MB · yük (sonda) 1.15 1.15 1.25
+çıkış 0 · sonda yük 1.15 1.15 1.25 · 15:21:25
+=== tur 3 · yeni · kilitsiz · başta yük 1.32 1.27 1.20 · GEÇERLİ · 15:42:34
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a32c17a0bb8351975 · kip kilitsiz · yük (başta) 1.27 1.26 1.20 · TZ UTC
+  donma: bekleyen koşu yok (kapsam —)
+  kilitsiz Bilanço 2026-12-31: ilk 4988.3 · en iyi 4935 · ortanca 5314.6 · en kötü 5687.5 ms · olay döngüsü en çok 137.8 ms (n=5) · özet 88bdb83d9510fcc0 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT yıl 2026: ilk 3433.1 · en iyi 3342.5 · ortanca 3420.3 · en kötü 3581.6 ms · olay döngüsü en çok 9.6 ms (n=5) · özet a9b13a9c44e05567 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT ilk yarı 2026: ilk 3853.4 · en iyi 3286 · ortanca 3435.6 · en kötü 3836.2 ms · olay döngüsü en çok 13.5 ms (n=5) · özet 273e254a7a473b64 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":2349410319}
+  bellek (rss) 624 MB · yük (sonda) 1.79 1.39 1.24
+çıkış 0 · sonda yük 1.79 1.39 1.24 · 15:44:15

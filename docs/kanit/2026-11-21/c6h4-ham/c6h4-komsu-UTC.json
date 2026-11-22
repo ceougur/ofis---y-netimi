@@ -1,0 +1,32 @@
+{
+  "ad": "c6h4-komsu-UTC",
+  "komut": "node --test --test-concurrency=3 test/accounts-stock.test.mjs test/acilis-519-250.test.mjs test/acilis-duzeni-v249-250.test.mjs test/acilis-eslestirme-250.test.mjs test/acilis-isareti-246.test.mjs test/acilis-olabilir-250.test.mjs test/acilis-olabilir-yetki-250.test.mjs test/acilis-onarimi-hiz-250.test.mjs test/acilis-sinir-250.test.mjs test/asama0-226.test.mjs test/backup.test.mjs test/banka-210-acilis.test.mjs test/banka-210-altin.test.mjs test/banka-210-fis.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/banka-210-ileri-tarihli-eski.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-onarim.test.mjs test/banka-210-post-statik.test.mjs test/banka-210-sihirbaz.test.mjs test/banka-210-ters-kayit.test.mjs test/banka-210-transfer.test.mjs test/banka-220-hesap-kart.test.mjs test/banka-220-pos-iz3.test.mjs test/banka-220-pos-kdv.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-230-46-iade-iptal.test.mjs test/banka-230-supheli-bozma.test.mjs test/birlesik-tur2-yaris-250.test.mjs test/bulgu-223.test.mjs test/c6h-alt-hesap-farki.test.mjs test/c6h-ba.test.mjs test/c6h-bilanco-uc.test.mjs test/c6h-bilanco.test.mjs test/c6h-degerleme-dondurma.test.mjs test/c6h-degerleme.test.mjs test/c6h-esdegerlik.test.mjs test/c6h-gelir-tablosu.test.mjs test/c6h-kural-farki-fis.test.mjs test/c6h-s209.test.mjs test/c6h-uc.test.mjs test/c6h-v249-sinif.test.mjs test/c7b-eski-surum-sinif-250.test.mjs test/c7b-gecis-gunu-250.test.mjs test/c7b-goc52-kilit-izi-250.test.mjs test/c7b-kilit-izi-250.test.mjs test/c7b-tur3b-borcta-kalsin-250.test.mjs test/c7b-tur3b-eski-surum-250.test.mjs test/c7bt-ayni-adli-excel-karti-250.test.mjs test/cari-hareket-249.test.mjs test/columns.test.mjs test/dataset.test.mjs test/db-tx-kayip-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/defter-turu-c4.test.mjs test/devir-arsiv-wal-250.test.mjs test/devir-d2-arsiv-250.test.mjs test/devir-d2-arsiv-goc-kesinti-250.test.mjs test/devir-d2-bakim-250.test.mjs test/donem-213.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-bellek-250.test.mjs test/donmus-defter-kilit-ucu-250.test.mjs test/donmus-defter-tur1-250.test.mjs test/donmus-defter-tur3-250.test.mjs test/donmus-defter-tur4-250.test.mjs test/donmus-defter-yasam-250.test.mjs test/duzeltmeler-211.test.mjs test/edoc-kullanim-birim-247.test.mjs test/ertelenen-224.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/fis-defteri-250.test.mjs test/fis-defteri-koruma-250.test.mjs test/fis-defteri-yasam-250.test.mjs test/geri-yukleme-uyari-244.test.mjs test/gg243-dar3-stok.test.mjs test/goc-243-iade-ref.test.mjs test/goc-243-stok-acilis.test.mjs test/goc-243-stok-kdv.test.mjs test/goc-244-esmm-gonderim.test.mjs test/goc-244-iptal-suresi.test.mjs test/goc-244-numara-tabani.test.mjs test/goc-244-silinen-numara.test.mjs test/goc-245-cari-vade.test.mjs test/goc-246-iade-bagi.test.mjs test/goc48-bosluk-250.test.mjs test/hesapsiz-acilis-v249-250.test.mjs test/import-crash.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/iz1-kasa-acilis.test.mjs test/kapi-para-245.test.mjs test/kart-faizi-250.test.mjs test/kayit-bag-31e-birim.test.mjs test/kg16-geri-alma-250.test.mjs test/kilit-izi-alanlar-250.test.mjs test/kullanici-yetki-210.test.mjs test/kural-farki-alarm-250.test.mjs test/kural-farki-duzeltme-250.test.mjs test/kural-farki-kapi-disi-250.test.mjs test/kural-farki-yil-250.test.mjs test/maliyet-bagsizlik.test.mjs test/maliyet-cekirdek-246.test.mjs test/migrations.test.mjs test/mutabakat-cekirdek.test.mjs test/names.test.mjs test/numara-silinen-tarih-244.test.mjs test/obligation-input-250.test.mjs test/personel-ozluk-244.test.mjs test/pos-komisyon-v249-250.test.mjs test/s127-tek-kez-250.test.mjs test/s160-iptal-yollari-250.test.mjs test/s160-kilitli-tahsilat-bagi-250.test.mjs test/sema-kapisi-bs7.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/supheli-kuyruk-defter-250.test.mjs test/t3hiz-esdegerlik-250.test.mjs test/tablodan-aktar-244.test.mjs test/takvim-govde-250.test.mjs test/trash.test.mjs test/tyk-api-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-tur2b1-250.test.mjs test/update-flow.test.mjs test/upgrade-identity.test.mjs test/whatsapp-b3-goc-249.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs test/whatsapp-tur3-hiz-250.test.mjs test/whatsapp-we-webhook-bilgisi-250.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-220.test.mjs",
+  "commit": "78fc025caa2bff2f076c47cee147412141039193",
+  "dal": "worktree-agent-adeefec4f86e1240e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T10:50:56.863Z",
+  "sure_sn": 435,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1414,
+    "gecen": 1414,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/kanit/2026-11-21/c6h4-komsu-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-adeefec4f86e1240e",
+  "ham_cikti_sha256": "31c404a4d3b365cf97da48b25a5b743bb26c8d3262fdd5673fdb0cc43d38150f",
+  "ham_cikti_bayt": 709780
+}

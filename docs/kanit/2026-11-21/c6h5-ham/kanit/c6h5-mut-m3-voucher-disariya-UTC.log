@@ -1,0 +1,1468 @@
+TAP version 13
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür)
+    # Subtest: bos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 1 - bos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 555.890432
+      type: 'test'
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 920.959587
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        satis-fatura kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '500',
+                differenceMinor: 150000,
+        ...
+              },
+        +     {
+        +       account: '500',
+        +       differenceMinor: -150000,
+        +       frozenMinor: 150000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '519',
+        +       differenceMinor: 150000,
+        +       frozenMinor: -150000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-09-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -150000
+            liveMinor: 0
+            differenceMinor: 150000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -150000
+            differenceMinor: -150000
+      actual:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -150000
+            liveMinor: 0
+            differenceMinor: 150000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -150000
+            differenceMinor: -150000
+          2:
+            year: 2026
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: 150000
+            liveMinor: 0
+            differenceMinor: -150000
+          3:
+            year: 2026
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: -150000
+            liveMinor: 0
+            differenceMinor: 150000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:179:23
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: alis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 3 - alis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 480.084445
+      type: 'test'
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 4 - kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 863.211696
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kasa kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '500',
+                differenceMinor: 500000,
+        ...
+              {
+        +       account: '500',
+        +       differenceMinor: -500000,
+        +       frozenMinor: 500000,
+        -       account: '770',
+        -       differenceMinor: -30000,
+        -       frozenMinor: 30000,
+                liveMinor: 0,
+                party: '',
+                sub: '',
+                year: 2026
+              },
+              {
+        +       account: '519',
+        +       differenceMinor: 500000,
+        +       frozenMinor: -500000,
+        +       liveMinor: 0,
+        -       account: '770',
+        -       differenceMinor: 30000,
+        -       frozenMinor: 15000,
+        -       liveMinor: 45000,
+                party: '',
+        +       sub: '',
+        -       sub: '770.90',
+                year: 2026
+              },
+        +     {
+        +       account: '671',
+        +       differenceMinor: 100000,
+        +       frozenMinor: -100000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '681',
+        +       differenceMinor: -100000,
+        +       frozenMinor: 100000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-09-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -500000
+            liveMinor: 0
+            differenceMinor: 500000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -500000
+            differenceMinor: -500000
+          2:
+            year: 2025
+            account: '649'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          3:
+            year: 2025
+            account: '649'
+            sub: '649.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -100000
+            differenceMinor: -100000
+          4:
+            year: 2026
+            account: '770'
+            sub: ''
+            party: ''
+            frozenMinor: 30000
+            liveMinor: 0
+            differenceMinor: -30000
+          5:
+            year: 2026
+            account: '770'
+            sub: '770.90'
+            party: ''
+            frozenMinor: 15000
+            liveMinor: 45000
+            differenceMinor: 30000
+      actual:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -500000
+            liveMinor: 0
+            differenceMinor: 500000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -500000
+            differenceMinor: -500000
+          2:
+            year: 2025
+            account: '649'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          3:
+            year: 2025
+            account: '649'
+            sub: '649.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -100000
+            differenceMinor: -100000
+          4:
+            year: 2026
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: 500000
+            liveMinor: 0
+            differenceMinor: -500000
+          5:
+            year: 2026
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: -500000
+            liveMinor: 0
+            differenceMinor: 500000
+          6:
+            year: 2026
+            account: '671'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          7:
+            year: 2026
+            account: '681'
+            sub: ''
+            party: ''
+            frozenMinor: 100000
+            liveMinor: 0
+            differenceMinor: -100000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:179:23
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 5 - banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 852.838628
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        banka kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '500',
+                differenceMinor: 2500000,
+        ...
+              },
+        +     {
+        +       account: '500',
+        +       differenceMinor: -2500000,
+        +       frozenMinor: 2500000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '519',
+        +       differenceMinor: 2500000,
+        +       frozenMinor: -2500000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-09-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -2500000
+            liveMinor: 0
+            differenceMinor: 2500000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -2500000
+            differenceMinor: -2500000
+      actual:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -2500000
+            liveMinor: 0
+            differenceMinor: 2500000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -2500000
+            differenceMinor: -2500000
+          2:
+            year: 2026
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: 2500000
+            liveMinor: 0
+            differenceMinor: -2500000
+          3:
+            year: 2026
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: -2500000
+            liveMinor: 0
+            differenceMinor: 2500000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:179:23
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 6 - pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 940.250951
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        pos kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        
+          {
+        +   balances: [],
+        -   balances: [
+        -     {
+        -       account: '602',
+        -       differenceMinor: 100000,
+        -       frozenMinor: -100000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2026
+        -     },
+        -     {
+        -       account: '602',
+        -       differenceMinor: -100000,
+        -       frozenMinor: 0,
+        -       liveMinor: -100000,
+        -       party: '',
+        -       sub: '602.90',
+        -       year: 2026
+        -     }
+        -   ],
+            through: '2026-09-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2026
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          1:
+            year: 2026
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -100000
+            differenceMinor: -100000
+      actual:
+        through: '2026-09-30'
+        balances:
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:179:23
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 7 - cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 993.853569
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        cek-senet kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '602',
+                differenceMinor: 300000,
+        ...
+              },
+        +     {
+        +       account: '671',
+        +       differenceMinor: 300000,
+        +       frozenMinor: -300000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '681',
+        +       differenceMinor: -300000,
+        +       frozenMinor: 300000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-09-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -300000
+            liveMinor: 0
+            differenceMinor: 300000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -300000
+            differenceMinor: -300000
+      actual:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -300000
+            liveMinor: 0
+            differenceMinor: 300000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -300000
+            differenceMinor: -300000
+          2:
+            year: 2026
+            account: '671'
+            sub: ''
+            party: ''
+            frozenMinor: -300000
+            liveMinor: 0
+            differenceMinor: 300000
+          3:
+            year: 2026
+            account: '681'
+            sub: ''
+            party: ''
+            frozenMinor: 300000
+            liveMinor: 0
+            differenceMinor: -300000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:179:23
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 8 - taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 871.232666
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '600',
+                differenceMinor: -120000,
+        ...
+              },
+        +     {
+        +       account: '671',
+        +       differenceMinor: 120000,
+        +       frozenMinor: -120000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '681',
+        +       differenceMinor: -120000,
+        +       frozenMinor: 120000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-09-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+      actual:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+          2:
+            year: 2026
+            account: '671'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+          3:
+            year: 2026
+            account: '681'
+            sub: ''
+            party: ''
+            frozenMinor: 120000
+            liveMinor: 0
+            differenceMinor: -120000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:179:23
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 9 - elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 993.286686
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        elle-borc-alacak kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '602',
+                differenceMinor: 80000,
+        ...
+              {
+        +       account: '671',
+        +       differenceMinor: 80000,
+        +       frozenMinor: -80000,
+        -       account: '770',
+        -       differenceMinor: -70000,
+        -       frozenMinor: 70000,
+                liveMinor: 0,
+                party: '',
+                sub: '',
+                year: 2026
+              },
+              {
+        +       account: '681',
+        +       differenceMinor: -80000,
+        +       frozenMinor: 80000,
+        +       liveMinor: 0,
+        -       account: '770',
+        -       differenceMinor: 70000,
+        -       frozenMinor: 0,
+        -       liveMinor: 70000,
+                party: '',
+        +       sub: '',
+        -       sub: '770.90',
+                year: 2026
+              }
+            ],
+            through: '2026-09-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -80000
+            liveMinor: 0
+            differenceMinor: 80000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -80000
+            differenceMinor: -80000
+          2:
+            year: 2026
+            account: '770'
+            sub: ''
+            party: ''
+            frozenMinor: 70000
+            liveMinor: 0
+            differenceMinor: -70000
+          3:
+            year: 2026
+            account: '770'
+            sub: '770.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: 70000
+            differenceMinor: 70000
+      actual:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -80000
+            liveMinor: 0
+            differenceMinor: 80000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -80000
+            differenceMinor: -80000
+          2:
+            year: 2026
+            account: '671'
+            sub: ''
+            party: ''
+            frozenMinor: -80000
+            liveMinor: 0
+            differenceMinor: 80000
+          3:
+            year: 2026
+            account: '681'
+            sub: ''
+            party: ''
+            frozenMinor: 80000
+            liveMinor: 0
+            differenceMinor: -80000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:179:23
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: acilis: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 10 - acilis: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 454.964019
+      type: 'test'
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 11 - stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 887.211132
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        stok kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        
+          {
+        +   balances: [],
+        -   balances: [
+        -     {
+        -       account: '600',
+        -       differenceMinor: 40000,
+        -       frozenMinor: -40000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2026
+        -     },
+        -     {
+        -       account: '600',
+        -       differenceMinor: -40000,
+        -       frozenMinor: -22000,
+        -       liveMinor: -62000,
+        -       party: '',
+        -       sub: '600.90',
+        -       year: 2026
+        -     },
+        -     {
+        -       account: '610',
+        -       differenceMinor: -10000,
+        -       frozenMinor: 10000,
+        -       liveMinor: 0,
+        -       party: '',
+        -       sub: '',
+        -       year: 2026
+        -     },
+        -     {
+        -       account: '610',
+        -       differenceMinor: 10000,
+        -       frozenMinor: 0,
+        -       liveMinor: 10000,
+        -       party: '',
+        -       sub: '610.90',
+        -       year: 2026
+        -     }
+        -   ],
+            through: '2026-09-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2026
+            account: '600'
+            sub: ''
+            party: ''
+            frozenMinor: -40000
+            liveMinor: 0
+            differenceMinor: 40000
+          1:
+            year: 2026
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: -22000
+            liveMinor: -62000
+            differenceMinor: -40000
+          2:
+            year: 2026
+            account: '610'
+            sub: ''
+            party: ''
+            frozenMinor: 10000
+            liveMinor: 0
+            differenceMinor: -10000
+          3:
+            year: 2026
+            account: '610'
+            sub: '610.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: 10000
+            differenceMinor: 10000
+      actual:
+        through: '2026-09-30'
+        balances:
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:179:23
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 12 - supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 962.720366
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        supheli kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '602',
+                differenceMinor: 200000,
+        ...
+              },
+        +     {
+        +       account: '671',
+        +       differenceMinor: 200000,
+        +       frozenMinor: -200000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '681',
+        +       differenceMinor: -200000,
+        +       frozenMinor: 200000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-09-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -200000
+            liveMinor: 0
+            differenceMinor: 200000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -200000
+            differenceMinor: -200000
+      actual:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -200000
+            liveMinor: 0
+            differenceMinor: 200000
+          1:
+            year: 2025
+            account: '602'
+            sub: '602.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -200000
+            differenceMinor: -200000
+          2:
+            year: 2026
+            account: '671'
+            sub: ''
+            party: ''
+            frozenMinor: -200000
+            liveMinor: 0
+            differenceMinor: 200000
+          3:
+            year: 2026
+            account: '681'
+            sub: ''
+            party: ''
+            frozenMinor: 200000
+            liveMinor: 0
+            differenceMinor: -200000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:179:23
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: vergi: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 13 - vergi: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 471.722521
+      type: 'test'
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4
+    not ok 14 - kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4
+      ---
+      duration_ms: 953.048432
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:186:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kasa kilit yeniden 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '500',
+                differenceMinor: 500000,
+        ...
+              },
+        +     {
+        +       account: '500',
+        +       differenceMinor: -500000,
+        +       frozenMinor: 500000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '519',
+        +       differenceMinor: 500000,
+        +       frozenMinor: -500000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '671',
+        +       differenceMinor: 100000,
+        +       frozenMinor: -100000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '681',
+        +       differenceMinor: -100000,
+        +       frozenMinor: 100000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '770',
+        +       differenceMinor: 30000,
+        +       frozenMinor: -30000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '770',
+        +       differenceMinor: -30000,
+        +       frozenMinor: 75000,
+        +       liveMinor: 45000,
+        +       party: '',
+        +       sub: '770.90',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-09-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -500000
+            liveMinor: 0
+            differenceMinor: 500000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -500000
+            differenceMinor: -500000
+          2:
+            year: 2025
+            account: '649'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          3:
+            year: 2025
+            account: '649'
+            sub: '649.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -100000
+            differenceMinor: -100000
+      actual:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: -500000
+            liveMinor: 0
+            differenceMinor: 500000
+          1:
+            year: 2025
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: 0
+            liveMinor: -500000
+            differenceMinor: -500000
+          2:
+            year: 2025
+            account: '649'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          3:
+            year: 2025
+            account: '649'
+            sub: '649.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -100000
+            differenceMinor: -100000
+          4:
+            year: 2026
+            account: '500'
+            sub: ''
+            party: ''
+            frozenMinor: 500000
+            liveMinor: 0
+            differenceMinor: -500000
+          5:
+            year: 2026
+            account: '519'
+            sub: ''
+            party: ''
+            frozenMinor: -500000
+            liveMinor: 0
+            differenceMinor: 500000
+          6:
+            year: 2026
+            account: '671'
+            sub: ''
+            party: ''
+            frozenMinor: -100000
+            liveMinor: 0
+            differenceMinor: 100000
+          7:
+            year: 2026
+            account: '681'
+            sub: ''
+            party: ''
+            frozenMinor: 100000
+            liveMinor: 0
+            differenceMinor: -100000
+          8:
+            year: 2026
+            account: '770'
+            sub: ''
+            party: ''
+            frozenMinor: -30000
+            liveMinor: 0
+            differenceMinor: 30000
+          9:
+            year: 2026
+            account: '770'
+            sub: '770.90'
+            party: ''
+            frozenMinor: 75000
+            liveMinor: 45000
+            differenceMinor: -30000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:194:7
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:187:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4
+    not ok 15 - taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4
+      ---
+      duration_ms: 791.771484
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:198:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit ters kayıt + kilit 30.09.2026 · ['', 2026-06-30] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+                account: '600',
+                differenceMinor: -120000,
+        ...
+              },
+        +     {
+        +       account: '671',
+        +       differenceMinor: 120000,
+        +       frozenMinor: -120000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     },
+        +     {
+        +       account: '681',
+        +       differenceMinor: -120000,
+        +       frozenMinor: 120000,
+        +       liveMinor: 0,
+        +       party: '',
+        +       sub: '',
+        +       year: 2026
+        +     }
+            ],
+            through: '2026-09-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+      actual:
+        through: '2026-09-30'
+        balances:
+          0:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+          2:
+            year: 2026
+            account: '671'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+          3:
+            year: 2026
+            account: '681'
+            sub: ''
+            party: ''
+            frozenMinor: 120000
+            liveMinor: 0
+            differenceMinor: -120000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:206:7
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:199:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sınama boş geçmedi: fiş en az dört sınıfta yazıldı, KALAN yolu koştu
+    ok 16 - sınama boş geçmedi: fiş en az dört sınıfta yazıldı, KALAN yolu koştu
+      ---
+      duration_ms: 0.504812
+      type: 'test'
+      ...
+    # fiş yazılan sınıf 9 · KALAN yolunun koştuğu okuma 54
+    1..16
+not ok 1 - 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür)
+  ---
+  duration_ms: 11996.221523
+  type: 'suite'
+  location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:168:1'
+  failureType: 'subtestsFailed'
+  error: '11 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç6-HESAP tur 5 — frozenSums ruleThrough sınırları
+    # Subtest: ruleThrough < through reddedilir; kapsam yokken outside boş
+    ok 1 - ruleThrough < through reddedilir; kapsam yokken outside boş
+      ---
+      duration_ms: 0.623572
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.5.0 Ç6-HESAP tur 5 — frozenSums ruleThrough sınırları
+  ---
+  duration_ms: 0.721203
+  type: 'suite'
+  ...
+1..2
+# tests 17
+# suites 2
+# pass 6
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12389.037294

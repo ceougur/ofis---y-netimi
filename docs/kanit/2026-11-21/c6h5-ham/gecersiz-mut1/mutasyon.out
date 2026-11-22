@@ -1,0 +1,29 @@
+başla 16:01:58 yük 2.77 3.79 3.23
+uygulandı m1-disari-sonrasi-yok (server/lib/ledger-snapshots.mjs)
+m1-disari-sonrasi-yok UTC çıkış 1 · # pass 3 # fail 14  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m1-disari-sonrasi-yok Europe/Istanbul çıkış 1 · # pass 3 # fail 14  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m2-from-gunu-iki-kez (server/lib/ledger-snapshots.mjs)
+m2-from-gunu-iki-kez UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m2-from-gunu-iki-kez Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m3-voucher-disariya (server/lib/ledger-snapshots.mjs)
+m3-voucher-disariya UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m3-voucher-disariya Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m4-iceri-unutuldu (server/lib/financial-statements.mjs)
+m4-iceri-unutuldu UTC çıkış 1 · # pass 2 # fail 15  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m4-iceri-unutuldu Europe/Istanbul çıkış 1 · # pass 2 # fail 15  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m5-alt-defter-bos (server/lib/financial-statements.mjs)
+m5-alt-defter-bos UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m5-alt-defter-bos Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m6-gt-ruleThrough-through (server/lib/financial-statements.mjs)
+m6-gt-ruleThrough-through UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m6-gt-ruleThrough-through Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m7-bilanco-genis-yok (server/lib/financial-statements.mjs)
+m7-bilanco-genis-yok UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m7-bilanco-genis-yok Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m8-disari-yanlis-yil (server/lib/ledger-snapshots.mjs)
+m8-disari-yanlis-yil UTC çıkış 1 · # pass 2 # fail 15  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m8-disari-yanlis-yil Europe/Istanbul çıkış 1 · # pass 2 # fail 15  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+uygulandı m9-through-gunu-iki-kez (server/lib/ledger-snapshots.mjs)
+m9-through-gunu-iki-kez UTC çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+m9-through-gunu-iki-kez Europe/Istanbul çıkış 1 · # pass 6 # fail 11  · ilk düşen:     not ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçal
+bitti 16:05:28 yük 1.39 2.62 2.88

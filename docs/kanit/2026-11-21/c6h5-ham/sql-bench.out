@@ -1,0 +1,12 @@
+yük 1.70 1.44 2.35 · /dev/shm/c6h5-sql/v/data/destekofis.sqlite
+CREATE TABLE ledger_snapshots ( run INTEGER NOT NULL, run_seq INTEGER NOT NULL, entry_id TEXT NOT NULL, line_no INTEGER NOT NULL, date TEXT NOT NULL, cls INTEGER NOT NULL, seq INTEGER, account TEXT NOT NULL, sub TEXT NOT NULL DEFAULT '', party TEXT NOT NULL DEFAULT '', debit_minor INTEGER NOT NULL DEFAULT 0, credit_minor INTEGER NOT NULL DEFAULT 0, source TEXT NOT NULL DEFAULT '', text TEXT NOT NULL DEFAULT '', rule_version TEXT NOT NULL, PRIMARY KEY (run, run_seq) ) STRICT, WITHOUT ROWID
+  yıl (eski, iç): en iyi 79 · ortanca 79 ms · satır 1091
+  tamamı (tur 4): en iyi 644 · ortanca 646 ms · satır 8777
+  tek çağrı (tur 5): en iyi 672 · ortanca 683 ms · satır 3766
+  dışarı kaba (date < from): en iyi 480 · ortanca 488 ms · satır 2675
+  dışarı kaba, voucher süzülü: en iyi 362 · ortanca 364 ms · satır 2675
+  dışarı yalnız hesap × yıl (alt / cari yok): en iyi 264 · ortanca 268 ms · satır 94
+  satır say (date < from): en iyi 8 · ortanca 8 ms · satır 1
+  toplam (date < from), gruplamasız: en iyi 117 · ortanca 118 ms · satır 1
+  madde sayımı tamamı (tur 4'ün entries'i): en iyi 385 · ortanca 387 ms · satır 5
+yük (sonda) 1.50 1.41 2.32
