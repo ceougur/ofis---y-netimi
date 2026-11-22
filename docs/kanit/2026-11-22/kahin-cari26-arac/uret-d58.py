@@ -80,7 +80,7 @@ def degistir(sen, sil_anahtar, yeni_E, yeni_Y, yeni_B=()):
     sen["elleBeklenen"] = eb
     sen["elleYok"] = [y for y in sen.get("elleYok", []) if not sil_anahtar(y)] + list(yeni_Y)
     if yeni_B:
-        sen["elleBelirsiz"] = list(sen.get("elleBelirsiz", [])) + list(yeni_B)
+        sen["elleBelirsiz"] = [x for x in sen.get("elleBelirsiz", []) if x not in yeni_B] + list(yeni_B)
 
 
 # ───────────────────────── (1a) d56 N1 / N2 — S243 = A (bugün 20.11.2026): A 600 (01.09), B 600 (02.09), 05.09 elle kart 600 (2 × 300; 05.10 / 05.11) → kart EN ESKİ faturayı (A) alır
@@ -93,12 +93,13 @@ for c, fa, fb, no in (("N1", "FN1A", "FN1B", "KN1"), ("N2", "FN2A", "FN2B", "KN2
 cr("k1", "N1", 600, 600, 600); kr("k1", "KN1", 600, 0, 600); ft("k1", "FN1A", 600, 0, 600, True); E["k1:fatura:FN1B:durum"] = "iptal"
 # N2 k1 — seçilen A'nın iadesi (600, 10.11) kartı karar (4) ile küçültür: dış açık 0, kartın payı 600 → 05.10 300 → 0, 05.11 300 → 0; kart 0 / 0 / 0; bakiye 600 (B); gecikmiş B 600 (02.09)
 cr("k1", "N2", 600, 600, 600); kr("k1", "KN2", 0, 0, 0); E["k1:fatura:FN2A:acik"] = 0; E["k1:fatura:FN2A:gosterilen"] = 0; E["k1:fatura:FN2A:kartta"] = 0
-Y.append("k1:fatura:FN2A:taksitte")  # kendi açığı 0 olan kartlı fatura — Y23-3 SUS (d56 J2 / d57 K1 ile aynı)
+E["k1:fatura:FN2A:taksitte"] = False  # Y23-4: kart küçülmeyle faturadan hiçbir şey taşımıyor (kartta 0) — "kartın almadığı fatura Taksitte değil". ELLE HESAP DÜZELTMESİ (açıkça): ilk tasarımda
+#   Y23-3 (i) SUS yazılmıştı; (i) "kartın aldığı kısım kartın taksitleriyle ödenmiş" durumudur (J2 / K1), burada kartın payı iadeyle 0 — ilk elle koşuda fark, kural metni okunarak düzeltildi
 Y.extend(["k1:kart:KN2:taksit1:odenen", "k1:kart:KN2:taksit2:odenen"])  # Y24-9 (iv): taksiti 0'a inen kartın satırları — 2.5.1'E (görünüm; d56 G1 ile aynı)
 ft("k1", "FN2B", 600, 600, 0, False); E["k1:fatura:IN2:acik"] = 0
 degistir(d56, lambda k: (":N1:" in k or ":N2:" in k or ":KN1:" in k or ":KN2:" in k or ":FN1A:" in k or ":FN1B:" in k or ":FN2A:" in k or ":FN2B:" in k or ":IN2:" in k), E, Y)
-d56["aciklama"] = d56["aciklama"].replace("§3'ün kendi örneği SUS (N1 / N2 SK-45)", "§3'ün kendi örneği (N1 / N2 — bakım 26: S243 = A, en eski fatura kartta; SK-45 SUS kalktı)")
-d56["dayanak"] += ", §38 Y26-6"
+d56["aciklama"] = d56["aciklama"] if "bakım 26" in d56["aciklama"] else d56["aciklama"].replace("§3'ün kendi örneği SUS (N1 / N2 SK-45)", "§3'ün kendi örneği (N1 / N2 — bakım 26: S243 = A, en eski fatura kartta; SK-45 SUS kalktı)")
+d56["dayanak"] += "" if "§38" in d56["dayanak"] else ", §38 Y26-6"
 yaz(d56["ad"], d56)
 n56 = (len(E), len(Y))
 
@@ -112,9 +113,9 @@ Y.append("k1:cari:K3:acikEsitBakiye")
 # P1 — S246 = B kararın KENDİ örneği: fatura 300, kendi kartı 3 × 100 (05.10 / 05.11 / 05.12), Düzenle 300 → 900 → kendi kartı 900 (3 × 300), Kalan 900; 20.11 gecikmişi 05.10 300 + 05.11 300 = 600
 cr("k1", "P1", 900, 600, 900); ft("k1", "FP1", 900); fk("k1", "FP1", 900, 900, False)
 degistir(d57, lambda k: k.startswith("k1:") and (":K3:" in k or ":FK3:" in k or ":P1:" in k or ":FP1:" in k), E, Y, B)
-d57["aciklama"] = d57["aciklama"].replace("K3 kendi kartlı faturada", "K3 kendi kartlı faturada — bakım 26: §2 SUS, SK-48").replace(
+d57["aciklama"] = d57["aciklama"] if "bakım 26" in d57["aciklama"] else d57["aciklama"].replace("K3 kendi kartlı faturada", "K3 kendi kartlı faturada — bakım 26: §2 SUS, SK-48").replace(
     "P1 kararın örneği — kendi kartı", "P1 — bakım 26: S246 = B, kendi kartı yeni tutarla yeniden kurulur")
-d57["dayanak"] += ", §38 Y26-1 / Y26-5"
+d57["dayanak"] += "" if "§38" in d57["dayanak"] else ", §38 Y26-1 / Y26-5"
 yaz(d57["ad"], d57)
 n57 = (len(E), len(Y), len(B))
 

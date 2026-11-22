@@ -434,11 +434,17 @@ MUTASYONLAR = {
     340: "Ç5 C36 ((4) 'fazlası avans' yok): küçülme taksitin AÇIK kısmıyla sınırlanmaz (ödenmiş kısmı da düşer) — kartın açık kalanını aşan iade avansa gitmez",
     # bakım 25 (§37 — S238–S242, §3)
     341: "Ç5 C37 (S241 yok — bakım 24 davranışı): Düzenle kartın açık kalanından fazla azaltınca fazlası avans olmaz, cari SUS (SK-42 (a))",
-    342: "Ç5 C37 (S242 B — artış kartı büyütür): Düzenle ile artan tutar kartın son taksitine eklenir (taksitli faturada plan yeni tutarla)",
+    342: "Ç5 C37 (S242 B — artış kartı büyütür): Düzenle ile artan tutar Mevcut Borç kartının son taksitine eklenir (bakım 26: taksitli faturanın kendi kartı S246 = B ile kuralın kendisi — mutant yalnız Mevcut Borç kartında)",
     343: "Ç5 C37 (§3 — seçilmeyen kalemin iptali kartı küçültür): kartın içine ALMADIĞI faturanın İptal Et'i carinin Taksitler kartını fatura tutarı kadar (son taksitten) küçültür",
     345: "Ç5 C37 (S239 B — önce kartın içindeki pay): kısmen kartta olan faturaya iade önce kartı küçültür, dış açık sonra",
     346: "Ç5 C37 (S240 B — iade gelen kalem ödemeden önce pay alır): çok kalemli kartta ödeme önce iade gelen faturaya dağılır",
-    347: "Ç5 C37 (§3 SUS yok — SK-45): yalnız faturaların açık olduğu elle kartta aday faturanın iptali / iadesi Y23-5 okumasıyla (en eski fatura kartta) değer alır",
+    # 347 (§3 SUS yok — SK-45) bakım 26'da KALDIRILDI: S243 = A ile kuralın kendisi oldu (§38 Y26-6); yerine 352 (SK-45 SUS kalır)
+    # bakım 26 (§38 — S246 / S235 / §2 / S243)
+    348: "Ç5 C38 (S246 A — bakım 25 davranışı): taksitli faturanın Düzenle ile artırılmasında kendi kartı ESKİ tutarda kalır, artış faturanın günüyle ayrı açık",
+    349: "Ç5 C38 (S243 B — en yeni fatura): yalnız faturaların açık olduğu (E = 0) S200 kartı faturalardan EN YENİDEN başlayarak içine alır",
+    350: "Ç5 C38 (S235 A — kapanış korunur): Borçta Kalsın ile kapanmış tahsilatsız kendi kartında Düzenle ile artırma kartı KAPALI kurar",
+    351: "Ç5 C38 (§2 SUS yok — SK-48): kendi kartında ödemeli / kapanmış kartta Düzenle ile azaltma iade gibi küçültür (bakım 25 davranışı) — SUS kuralı",
+    352: "Ç5 C38 (S243 yok — bakım 25 davranışı): S200 kartının aday faturasının iptali / iadesi / Düzenle'si SK-45 SUS kalır",
 }
 # 2.4.9 C1.6: silinmiş cariye yazılamayan para adımları (hedef cari adımın `cari`'si) ve carisi silinmişken yapılamayan Silinenler geri yüklemeleri (hedef kaydın carisi)
 # bakım 15 (§26 Y15-6) S145: denetlenmeyen adımlar (durumu kendi kuralıyla kuran / para satırı yazmayan) ve geri alma kopyasının dışında kalan alanlar (yedek_al ile aynı)
@@ -1264,7 +1270,8 @@ class Model:
                             diger200 = [a for a in uygun_k if a not in elle_ and a not in fat200]
                             if E_ < gerek and not diger200 and self.mut != 333:
                                 fs_ = sorted(fat200, key=sira)
-                                if self.mut == 331:
+                                # bakım 26 (§38 Y26-6) [S243 = A]: yalnız faturalar açıkken (E = 0) de faturalardan eskiden yeniye — mutant 349 (S243 B): E = 0'da en yeniden
+                                if self.mut == 331 or (self.mut == 349 and E_ == 0):
                                     fs_.reverse()
                                 liste_ = fs_ + sorted(elle_, key=sira) if self.mut == 332 else sorted(elle_, key=sira) + fs_
                                 t["s110"] = ("s200", liste_, E_ == 0)
@@ -1664,7 +1671,7 @@ class Model:
             # bakım 25 (§37 Y25-6): Düzenle artışı faturanın kendi kalemidir (vadesi aynı — faturanın günü) — kuyruk kalanı faturaya katılır
             if "artis:" + ad in kalemler:
                 if any("artis:" + ad in tk_ for tk_ in tuketilen.values()):
-                    neden.add("fatura %s Düzenle ile artırıldıktan sonra açılan kart artışı da içine aldı — iki kuralın birlikte okunuşu kararda yok — KULLANICIYA SORULMALI SK-47 (§37 Y25-8)" % ad)
+                    neden.add("fatura %s Düzenle ile artırıldıktan sonra açılan kart artışı da içine aldı — iki kuralın birlikte okunuşu kararda yok — BİLİNEN SINIR (kullanıcı kararı S245 = C) SK-47 (§37 Y25-8, §38 Y26-7)" % ad)
                 kalemler[ad]["kalan"] += kalemler.pop("artis:" + ad)["kalan"]
         acik = {ad: kalemler[ad]["kalan"] for ad in satis}
         for hn in [k for k in kalemler if k in self.hareketler]:
@@ -4429,8 +4436,9 @@ class Model:
         tutar = asil["tutar"] * int(a.get("adet", asil.get("adet", 1))) // asil.get("adet", 1)
         # bakım 24 (§36 Y24-3 / Y24-4): iadenin YAZILDIĞI anda (iade hariç) asıl faturayı içine alan kart — küçülme planı (kapatıcı tutar: geri ödenmeyen kısım)
         p234 = self._s234_plan(a["fatura"], tutar - (tutar if a.get("geri") == "nakit" else 0)) if self.k250 else None
-        if self.k250 and (asil.get("artis") or asil.get("duzFazla")):
-            p234 = ("sus", "fatura %s Düzenle ile değiştirildikten sonra iade edildi (artış / fazla avans) — iki kuralın birlikte okunuşu kararda yok — KULLANICIYA SORULMALI SK-47 (§37 Y25-8 (iv))" % a["fatura"])
+        if self.k250 and (asil.get("artis") or asil.get("duzFazla") or asil.get("duz246")):
+            # bakım 26 (§38 Y26-7): S246 = B ile kendi kartı yeniden kurulmuş faturanın iadesi de aynı aile (S245 = C)
+            p234 = ("sus", "fatura %s Düzenle ile değiştirildikten sonra iade edildi (artış / fazla avans / kendi kartı yeniden kuruldu) — iki kuralın birlikte okunuşu kararda yok — BİLİNEN SINIR (kullanıcı kararı S245 = C) SK-47 (§37 Y25-8 (iv), §38 Y26-7)" % a["fatura"])
         self.faturalar[a["ad"]] = {"cari": asil["cari"], "tutar": tutar, "tarih": t,
                                    "seq": self.yeni_seq(), "tur": "iade", "durum": "kesildi", "taksitli": False, "asil": a["fatura"]}
         self._s234_kaydet(self.faturalar[a["ad"]], p234)
@@ -4466,8 +4474,9 @@ class Model:
         else:
             for no_, adaylar_ in sorted((t.get("s200sec") or {}).items()):
                 kt0_ = self.kartlar.get(no_)
-                if asil_ad in adaylar_ and kt0_ and kt0_["aktif"] and self.mut != 347:
-                    # bakım 25 (§37 Y25-7): §3'ün kendi örneği — yalnız faturaların (ya da faturaların da) açık olduğu S200 kartında aday faturaya iade / Düzenle
+                if asil_ad in adaylar_ and kt0_ and kt0_["aktif"] and self.mut == 352:
+                    # bakım 25 (§37 Y25-7): §3'ün kendi örneği — yalnız faturaların (ya da faturaların da) açık olduğu S200 kartında aday faturaya iade / Düzenle — SUS
+                    # bakım 26 (§38 Y26-6) [S243 = A]: SUS KALKTI — kart en eski faturayı taşır (Y23-5 sırası); yalnız mutant 352 (S243 yok) SUSAR
                     return ("sus", "Mevcut Borç kartı %s açılırken (S200) birden çok fatura adaydı (%s) — kartın hangi faturayı içine aldığı kararlarda açıkça yok; aday faturanın (%s) iadesi / Düzenle'si — "
                                    "KULLANICIYA SORULMALI SK-45 (§37 Y25-7)" % (no_, ",".join(adaylar_), asil_ad), no_)
             kartlar = sorted(no_ for no_, tk in (t.get("tuketilen") or {}).items() if tk.get(asil_ad))
@@ -4499,7 +4508,7 @@ class Model:
                 if no in (t.get("s120") or []) or D_ > 0:
                     # bakım 25 (§37 Y25-4): S240'ın alanı S126 kartı (bakiye kadar açılan); S120 / S200 alanında açılmış çok kalemli kartta küçülme içine alma sınıfını değiştirebilir — dağılım kararda yok
                     return ("sus", "Mevcut Borç kartı %s S120 / S200 alanında birden çok kalemi içine aldı (%s) ve iade / Düzenle kartı küçültüyor — küçülmeden sonra ödemenin dağılım sırası kararda yok — "
-                                   "KULLANICIYA SORULMALI SK-46 (§37 Y25-4)" % (no, ",".join(sorted(tk))), no)
+                                   "BİLİNEN SINIR (kullanıcı kararı S244 = C) SK-46 (§37 Y25-4, §38 Y26-7)" % (no, ",".join(sorted(tk))), no)
                 # bakım 25 (§37 Y25-4) [S240 = A]: S126 kartı — kart küçülür, ödeme S126 sırasıyla (aşağıda _alacak_govde250 dağılımı AYNEN, küçülmüş kalemlerle)
             A = ic_
             if self.mut == 339:
@@ -4590,6 +4599,16 @@ class Model:
         self._ok_etiket[a["id"]] = ("KULLANICI", "§36 Y24-2: Yeniden Aç")
         return "ok"
 
+    def _kendi_kart_odenen(self, ad, f):
+        """Bakım 26 (§38 Y26-5): taksitli faturanın kendi kartının o ana kadar kapanmış kısmı (plan tutarı − taksitlerin tek kuyruk kalanı); carinin kuyruğu tanımsızsa None. Durumu değiştirmez."""
+        self._onbellek = {}
+        t = self.tyk250(f["cari"])
+        self._onbellek = {}
+        if t["neden"]:
+            return None
+        plan = self._taksit_plani(ad, f)
+        return sum(p_[2] for p_ in plan) - sum(t["kuyruk"].get(p_[0], 0) for p_ in plan)
+
     def fatura_duzenle(self, a):
         """§36 Y24-6 [BAŞ MİMAR KAPSAM (e)]: kesilmiş satış faturasının (tek kalem) miktarı Düzenle ile `adet`e — yeni tutar = birim × adet; azalan tutar Δ iade gibi kartı küçültür; Δ kartın açık
         kalanını aşarsa SUS (SK-42 (a)); artırma SUS (SK-42 (b))."""
@@ -4600,19 +4619,47 @@ class Model:
         yeni = f["tutar"] * adet // adet0
         delta = f["tutar"] - yeni
         t_ = a.get("tarih", self.bugun)
-        if self.k250 and (f.get("artis") or f.get("duzFazla")):
-            # bakım 25 (§37 Y25-5 / Y25-8 (iii)): aynı faturada ikinci Düzenle (artış / fazla avanstan sonra) — kararda yok
-            f["s234sus"] = "fatura %s Düzenle ile ikinci kez değiştirildi (önceki Düzenle artış / fazla avans bıraktı) — kararda yok — KULLANICIYA SORULMALI SK-47 (§37 Y25-8 (iii))" % a["fatura"]
+        kendi_ = None  # bakım 26 (§38): taksitli faturanın KENDİ kartı — "s246" (yeniden kuruldu), "sus" (SK-48 / SK-49) ya da None (bakım 24 / 25 kuralı)
+        if self.k250 and f["taksitli"] and delta and not (f.get("artis") or f.get("duzFazla") or f.get("duz246")):
+            odenen_ = self._kendi_kart_odenen(a["fatura"], f)
+            iadeli_ = bool(f.get("kucul")) or any(x["tur"] == "iade" and x.get("asil") == a["fatura"] and x["durum"] == "kesildi" for x in self.faturalar.values())
+            if delta < 0 and self.mut != 348:
+                if iadeli_ or (f.get("kapanis") and odenen_):
+                    # bakım 26 (§38 Y26-4) SK-49 (UÇ): kapanmış + ödemeli kendi kartı / iadeli fatura — kararda yok
+                    kendi_ = ("sus", "taksitli fatura %s Düzenle ile artırıldı — %s; kararda yok — KULLANICIYA SORULMALI SK-49 (§38 Y26-4)"
+                              % (a["fatura"], "faturaya daha önce iade gelmiş (b)" if iadeli_ else "kendi kartı Borçta Kalsın ile kapanmış ve karta ödeme yapılmış (a)"))
+                else:
+                    # bakım 26 (§38 Y26-1 / Y26-2 / Y26-3) [S246 = B; S235 = B]: kendi kartı Düzenle'nin ödeme planıyla (aynı taksit sayısı / ilk vade) yeni tutarla yeniden kurulur; kapanmış (tahsilatsız)
+                    # kart AÇIK kurulur (mutant 350 — S235 A: kapalı kalır); ödeme tek kuyrukta aynen (Y26-3 okuması)
+                    kendi_ = "s246"
+            elif delta > 0 and self.mut != 351 and (odenen_ is None or odenen_ > 0 or f.get("kapanis")):
+                # bakım 26 (§38 Y26-5) [§2 BAŞ MİMAR KARARI 22.11 — SUS] SK-48: kendi kartında Düzenle ile azaltma — (a) karta ödeme yapılmışken, (b) Borçta Kalsın ile kapanmış kartta (S235 = B ↔ §36 KAPSAM (e))
+                kendi_ = ("sus", "taksitli fatura %s Düzenle ile azaltıldı — %s; kararlar bu durumu açıkça söylemiyor (S241 = A ↔ S246 = B) — KULLANICIYA SORULMALI SK-48 (§38 Y26-5)"
+                          % (a["fatura"], "kendi kartı Borçta Kalsın ile kapanmış (b)" if (f.get("kapanis") and not odenen_) else "kendi kartına ödeme yapılmış (a)"))
+        if f["taksitli"] and self.k250:
+            f["duzIz"] = True  # bakım 26: Düzenle görmüş taksitli faturanın kendi kartı kontrolde yazılır
+        if isinstance(kendi_, tuple):
+            f["s234sus"] = kendi_[1]
+            f["_kendiSus"] = kendi_[1]
+            self._iz15[f["cari"]].add("sk48")
+        elif kendi_ == "s246":
+            f["planTutar"], f["kucul"], f["duz246"], f["s234et"] = yeni, {}, True, "BAŞ MİMAR"
+            if f.get("kapanis") and self.mut != 350:
+                f["kapanis"] = None  # S235 = B: kart açılır
+            self._iz15[f["cari"]].add("s246")
+        elif self.k250 and (f.get("artis") or f.get("duzFazla") or f.get("duz246")):
+            # bakım 25 (§37 Y25-5 / Y25-8 (iii)): aynı faturada ikinci Düzenle (artış / fazla avanstan / bakım 26: kendi kartı yeniden kurulduktan sonra) — kararda yok (S245 = C)
+            f["s234sus"] = "fatura %s Düzenle ile ikinci kez değiştirildi (önceki Düzenle artış / fazla avans bıraktı ya da kendi kartını yeniden kurdu) — kararda yok — BİLİNEN SINIR (kullanıcı kararı S245 = C) SK-47 (§37 Y25-8 (iii), §38 Y26-7)" % a["fatura"]
+            if f["taksitli"]:
+                f["_kendiSus"] = f["s234sus"]
         elif delta < 0 and self.k250:
             # bakım 25 (§37 Y25-6) [S242 = A]: artış kartı DEĞİŞTİRMEZ — faturanın kendi vadesiyle ayrı açık (Düzenle anında doğan kalem; kartın / taksitli faturanın kendi kartının içine girmez)
             self._onbellek = {}
             t250_ = self.tyk250(f["cari"])
             self._onbellek = {}
             kartli_ = [no_ for no_, tk_ in (t250_.get("tuketilen") or {}).items() if tk_.get(a["fatura"]) and self.kartlar.get(no_, {}).get("aktif")]
-            if self.mut == 342:
-                # mutant 342 (S242 B): artış kartın son taksitine (taksitli faturada plan yeni tutarla)
-                if f["taksitli"]:
-                    f["planTutar"] = yeni
+            if self.mut == 342 and not f["taksitli"]:
+                # mutant 342 (S242 B): artış Mevcut Borç kartının son taksitine (bakım 26: taksitli faturada S246 = B kuralın kendisi — yalnız mutant 348'de buraya gelir)
                 for no_ in kartli_[:1]:
                     kt_ = self.kartlar[no_]
                     items_ = list(kt_["items"])
@@ -4636,7 +4683,8 @@ class Model:
         if f["taksitli"]:
             f.setdefault("planTutar", f["tutar"])
         f["tutar"], f["adet"] = yeni, adet
-        self._ok_etiket[a["id"]] = ("BAŞ MİMAR", "§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)")
+        self._ok_etiket[a["id"]] = (("BAŞ MİMAR", "§38 Y26-1 / Y26-2 S246 = B / S235 = B: kendi kartı Düzenle'nin ödeme planıyla yeniden kuruldu") if kendi_ == "s246" else
+                                    ("BAŞ MİMAR", "§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)"))
         return "ok"
 
     def ks8_sinif(self, cari):
@@ -4834,8 +4882,9 @@ class Model:
             self._onbellek = {}
             for no_, adaylar_ in sorted((t45_.get("s200sec") or {}).items()):
                 kt0_ = self.kartlar.get(no_)
-                if a["fatura"] in adaylar_ and kt0_ and kt0_["aktif"] and self.mut != 347:
+                if a["fatura"] in adaylar_ and kt0_ and kt0_["aktif"] and self.mut == 352:
                     # bakım 25 (§37 Y25-7): §3'ün kendi örneği — kartın hangi faturayı aldığı açıkça yok: aday faturanın iptali kartı kapatır mı (S206) değiştirmez mi — SUS (SK-45)
+                    # bakım 26 (§38 Y26-6) [S243 = A]: SUS KALKTI — seçilen (en eski) faturanın iptali S206 / S210 / S211, seçilmeyeninki kartı değiştirmez; yalnız mutant 352 SUSAR
                     kt0_["_s234susKart"] = ("Mevcut Borç kartı %s açılırken (S200) birden çok fatura adaydı (%s) — kartın hangi faturayı içine aldığı kararlarda açıkça yok; aday faturanın (%s) iptali — "
                                             "KULLANICIYA SORULMALI SK-45 (§37 Y25-7)" % (no_, ",".join(adaylar_), a["fatura"]))
                     self._iz15[f["cari"]].add("sus25")
@@ -5965,15 +6014,19 @@ class Model:
                            ("C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat" if self.k250 else "B1.2 en eski açık taksitten başlayarak") + ek_k + s234k)
         for fad, f in self.faturalar.items():
             # bakım 24 (§36 Y24-1 / Y24-4): Kartı Kapat / Yeniden Aç görmüş taksitli faturanın KENDİ kartı — kapalı mı, tutarı (küçülmüş), Kalan (taksitlerin tek kuyruk kalanı)
-            if not ((f.get("kapanisIz") or f.get("artis") or f.get("duzFazla")) and self.k250) or f["durum"] != "kesildi" or not f["taksitli"]:
-                continue  # bakım 25 (§37 Y25-5 / Y25-6): Düzenle görmüş taksitli faturanın kendi kartı da (S241 fazla, S242 artış — kart değişmez)
+            if not ((f.get("kapanisIz") or f.get("artis") or f.get("duzFazla") or f.get("duzIz")) and self.k250) or f["durum"] != "kesildi" or not f["taksitli"]:
+                continue  # bakım 25 (§37 Y25-5 / Y25-6): Düzenle görmüş taksitli faturanın kendi kartı da (S241 fazla, S242 artış — kart değişmez); bakım 26: her Düzenle (`duzIz`)
+            if f.get("_kendiSus"):
+                # bakım 26 (§38 Y26-4 / Y26-5 / Y26-7): SK-48 / SK-49 / SK-47 — kendi kartının durumu, tutarı ve Kalan'ı kararda yok — SUS
+                self.belirsiz.append("%s: taksitli fatura %s kendi kartı — %s" % (k, fad, f["_kendiSus"]))
+                continue
             et_f = f.get("s234et") or "PLAN"
             self.d("%s:kart:fatura:%s:kapali" % (k, fad), bool(f.get("kapanis")), "KULLANICI", "§36 Y24-1 / Y24-2 KG-23 = A: taksitli faturanın kendi kartı Kartı Kapat ile kapalı")
             plan_ = self._taksit_plani(fad, f)
             self.d("%s:kart:fatura:%s:toplam" % (k, fad), sum(p_[2] for p_ in plan_), et_f, "S99 faturanın kendi kartı = fatura tutarı" + (" · §36 Y24-4 KAPSAM (b): iade / Düzenle ile küçüldü" if f.get("kucul") else ""))
             t_f = self.tyk250(f["cari"])
             if not t_f["neden"]:
-                self.d("%s:kart:fatura:%s:kalan" % (k, fad), sum(t_f["kuyruk"].get(p_[0], 0) for p_ in plan_), et_f if f.get("kucul") else "KULLANICI",
+                self.d("%s:kart:fatura:%s:kalan" % (k, fad), sum(t_f["kuyruk"].get(p_[0], 0) for p_ in plan_), et_f if (f.get("kucul") or f.get("duz246")) else "KULLANICI",
                        "C13.4 / S99: kartın Kalan'ı = taksitlerin tek kuyruk kalanı" + (" · §36 Y24-4" if f.get("kucul") else ""))
         self.d("%s:kasa" % k, self.kasa, "KULLANICI", "B1.2 Kasa değişmez / tahsilatlar Kasa'da")
         if self.mizanBilinir:

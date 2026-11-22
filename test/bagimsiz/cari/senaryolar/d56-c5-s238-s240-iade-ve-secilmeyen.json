@@ -399,6 +399,7 @@
   "k1:fatura:FN2A:acik": 0,
   "k1:fatura:FN2A:gosterilen": 0,
   "k1:fatura:FN2A:kartta": 0,
+  "k1:fatura:FN2A:taksitte": false,
   "k1:fatura:FN2B:acik": 60000,
   "k1:fatura:FN2B:gosterilen": 60000,
   "k1:fatura:FN2B:kartta": 0,
@@ -416,7 +417,6 @@
   "k1:kart:KQ2:toplam",
   "k1:kart:KQ2:kalan",
   "k1:fatura:FQ2:acik",
-  "k1:fatura:FN2A:taksitte",
   "k1:kart:KN2:taksit1:odenen",
   "k1:kart:KN2:taksit2:odenen"
  ],
