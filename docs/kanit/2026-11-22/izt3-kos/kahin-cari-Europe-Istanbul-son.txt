@@ -1,0 +1,25 @@
+  mutasyon 342 (Ç5 C37 (S242 B — artış kartı büyütür): Düzenle ile artan tutar kartın son taksitine eklenir (taksitli faturada plan yeni tutarla)): YAKALANDI (d57-c5-s241-s242-duzenle)
+  mutasyon 343 (Ç5 C37 (§3 — seçilmeyen kalemin iptali kartı küçültür): kartın içine ALMADIĞI faturanın İptal Et'i carinin Taksitler kartını fatura tutarı kadar (son taksitten) küçültür): YAKALANDI (d56-c5-s238-s240-iade-ve-secilmeyen)
+  mutasyon 345 (Ç5 C37 (S239 B — önce kartın içindeki pay): kısmen kartta olan faturaya iade önce kartı küçültür, dış açık sonra): YAKALANDI (d56-c5-s238-s240-iade-ve-secilmeyen, d57-c5-s241-s242-duzenle)
+  mutasyon 346 (Ç5 C37 (S240 B — iade gelen kalem ödemeden önce pay alır): çok kalemli kartta ödeme önce iade gelen faturaya dağılır): YAKALANDI (d56-c5-s238-s240-iade-ve-secilmeyen)
+  mutasyon 347 (Ç5 C37 (§3 SUS yok — SK-45): yalnız faturaların açık olduğu elle kartta aday faturanın iptali / iadesi Y23-5 okumasıyla (en eski fatura kartta) değer alır): YAKALANDI (d56-c5-s238-s240-iade-ve-secilmeyen)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 276 denetim, 23 senaryo — b2-ux18-karsiliksiz 12, b2-ux18-retler 6, b2-ux18-sira 10, b2-ux18-temel 18, b3b-k1-k4-donem-raporlar 18, b3c-k2-donem-ayni-no 6, b3d-c3-kisi-gruplama 2, b3e-vergi-sutunu 2, b3k-vergi-tek-kolon 10, b3n-borc-kolonu-kisi-ozniteligi 14, b3o-seyrek-kalan 14, b3q-takvim-kalemi 16, b3r-kalan-sifir-eksi 11, b3s-soz-tutari-kalemi 9, b3t-sozlesme-tutari 13, b3u-sozlesme-tarihi-soz-basliklari 13, b3v-taahhut-soz-miktari 16, b3w-yalniz-soz-tutari 22, b3x-yalin-soz-ve-tutar 19, b3y-taahhut-alacak-bakiye 15, b5-u1-nihai-tuketici 2, rastgele-ux18-1 14, rastgele-ux18-2 14
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 12 — b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc, b1-5c-rapor, b3-u2-tablo-borcu, b3f-kayit-anahtari, b3g-tablo-bag-surekliligi, b3h-dosya-no-ve-devam, b3i-devam-ayni-icerik, b3j-ayni-ad-takas, b3m-dosya-no-degisimi, b3p-ayni-ad-telefon
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 8828 denetim, 103 senaryo · programla farkların 0'i bu sınıfta, 0'i SINIF DIŞI
+
+ÖZET [2.5.0]: 103 senaryo, 24062 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 4 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: Ç7b 4; 4 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 12 atlanan senaryo. Ham çıktı: /tmp/kahin-cari-CPQ1gj
+BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:grup; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:grup
+24058/24058 denetim geçti (7 bilinen sınır dahil) (4 yapım aşaması ayrı sayıldı — 4 denetim + 0 okuma hatası; geçti sayılmadı)

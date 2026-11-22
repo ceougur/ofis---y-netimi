@@ -17,3 +17,15 @@ Taban 3b420085 (izt3-taban). Dal worktree-agent-ae8c8568d72566f15. Push yok.
   - Bulanıklaştırma sayıları eski = yeni: tohum 31 135/160 aynı rowid, kabul 89, ret 46; tohum 37 (kilitli) 144/160, kabul 25, ret 119; eşdeğerlik ihlali 0.
 - Eski ↔ yeni EŞDEĞERLİK dökümü (`izt3-kos/kapi.mjs`, 14 senaryo, her biri taze sunucu): üretim ve test kipinde 14/14 sonuç birebir aynı (durum, 409 kodları, tarama bulguları, sayılar); değişen yalnız kapı yolu:
   eski üretim {stock_moves kimlik değişti ×3, cash_entries kimlik değişti ×2}, yeni {scoped ×4 (Düzenle ×3), full(bulgu: bank:event) ×1, cash_entries kimlik değişti ×1 (K4 — D8 aynen)}.
+
+## Adım 3 — İş 2 sınaması (koddan önce) — 483f8a47; kod — d4b2a864; ekran — 5ac159f5
+- `routes/stock.mjs` (yalnız iade yolu): `publishCards`; PUT / DELETE / Silinenler'den geri yükleme değişen kartları `plans` + `planId` ile; geri yüklemede `accounts` da.
+- Sınama `test/izt3-stok-iade-canli-250.test.mjs` 5: yeni iki TZ 5/5; eski iki TZ 2/5 — kırmızı iletiler `olaylar: stock cash accounts@A` (düzeltme), `stock accounts@A` (silme), `stock cash` (geri yükleme): beklenen neden (plans yok; geri yüklemede accounts da yok).
+- Ekran `test/e2e/senaryo-izt3-250.mjs` (iki tarayıcı: yönetici Stok penceresinden Düzelt / Sil + Yönetim › Silinenler'den Geri Yükle; gözcünün ekranına dokunulmaz): yeni 18/18, eski 16/18 —
+  eski kırmızı 2: geri yüklemeden sonra gözcünün kart penceresi Kalan ₺900,00 (veri tabanı 300) ve Taksitler listesi ₺900,00 (bayat). Görüntüler `izt3-ekran/` (yeni-04 ₺300,00 · eski-04 ₺900,00 — baktım).
+  İlk koşuda beklentim yanlıştı (geri yüklenen hareket Miktar 2'lik hâli → kart 300, ben 600 yazmıştım); sayı programla değil iadenin kendi tutarıyla (600) düzeltildi.
+
+## Adım 4 — Komşular, kâhin
+- G2 (335 dosya — `test/` taraması: gateVerify / integrity / ledger/integrity / period-lock / kapı / ledger_snapshot / dondur / sema-kapisi / trash/restore / stok hareketi; varsayılan gateVerify açık olduğundan bu dosyaların her yazımı süzgeç ↔ tam kapı eşdeğerlik denetimi):
+  UTC 3527/3527 (commit 5ac159f5), Europe/Istanbul 3527/3527 (b68b2f97 — yalnız belge farkı); fail 0, cancelled 0, skipped 0.
+- Kâhin (5ac159f5): cari 103 senaryo / 24.062 denetim 0 fark iki TZ; defter 187 denetim 0 fark iki TZ; yapım listesi kendi kopyada: 4 → 4, yeni 0 / kapanan 0 / değeri değişen 0 (yalnız paket etiketi metni farklı — bilinen üretici nüansı).
