@@ -219,6 +219,8 @@ etiket_degisen = 0
 def sinif15(anahtar, c, t, supheli):
     """Bakım 21b sınıfı (None → BEKLENMEYEN): yalnız C6 S206 = A — kartı S206 ile kapanan carinin (iz `s206`) denetimleri."""
     p = anahtar.split(":")
+    if "sk50" in t:
+        return "SK50"  # bakım 26 (§38 Y26-9): iadesi olan faturanın Düzenle'si — iki dünya SUS (eski kâhinde adım kabul)
     if "sk48" in t:
         return "SK48-49"  # bakım 26 (§38 Y26-4 / Y26-5): kendi kartında Düzenle — SUS (eski kâhinde S241 / Y24-6 değeri)
     if "sk47" in t:
@@ -303,7 +305,10 @@ for ad, sen in elle_eski + [(ad, s) for ad, s in elle_yeni if ad not in eski_sen
     for c_, t_ in S110_IZ:
         iz15[c_].add("s130" + t_)
     supheli_c = {a_["cari"] for a_ in sen["adimlar"] if a_["islem"] == "supheli_al"}
-    sus_ids = {x_[0]: x_[1] for m_ in ORNEKLER for x_ in m_.sus_s145}  # iki modelin S145 / S155 iki dünya adımları (eski SK-33 / SK-34; yeni SK-35 / Y16-4) → carisi
+    sus_ids = {x_[0]: x_[1] for m_ in ORNEKLER for x_ in m_.sus_s145}
+    duz_ids = {x_[0]: x_[2] for m_ in ORNEKLER for x_ in getattr(m_, "sus_duz", [])}  # bakım 26 (§38 Y26-9) SK-50: iadesi olan faturanın Düzenle'si — iki dünya (yeni kâhin)
+    for c_ in duz_ids.values():
+        iz15[c_].add("sk50")  # iki modelin S145 / S155 iki dünya adımları (eski SK-33 / SK-34; yeni SK-35 / Y16-4) → carisi
     if e is None or y is None:
         denetle("G3 %s iki modelde de aynı biçimde koşuyor" % ad, e is None and y is None)
         continue
@@ -322,7 +327,9 @@ for ad, sen in elle_eski + [(ad, s) for ad, s in elle_yeni if ad not in eski_sen
     for anahtar, eb, yb in farklar:
         c = cari_of(anahtar, sen)
         if anahtar.startswith("adim:") and anahtar.split(":")[1] in sus_ids:
-            c = sus_ids[anahtar.split(":")[1]]  # carisi adımda yazılı olmayan adım (hareket_sil, hareket_geri_yukle, karsiliksiz …)
+            c = sus_ids[anahtar.split(":")[1]]
+        if anahtar.startswith("adim:") and anahtar.split(":")[1] in duz_ids:
+            c = duz_ids[anahtar.split(":")[1]]  # carisi adımda yazılı olmayan adım (hareket_sil, hareket_geri_yukle, karsiliksiz …)
         s = sinif21(anahtar) or (sinif15(anahtar, c, iz15.get(c, set()), c in supheli_c) if c is not None else None)
         if s:
             kontrolde[anahtar.split(":")[0]] += 1

@@ -33,6 +33,7 @@ case "$2" in
     k elle-yeni python3 -I -B $A/elle-karsilastir.py --model test/bagimsiz/cari $YENI
     k kirmizi-eski python3 -I -B $A/elle-karsilastir.py --kirmizi-bekle --model $E/test/bagimsiz/cari $YENI
     ;;
+  g3) k g3 python3 -I -B $A/karsilastir.py --eski $E/test/bagimsiz/cari --yeni test/bagimsiz/cari --dokum $KANIT_DIR/kahin-cari26-g3-dokum-$Z.json ;;
   program) k program node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti $S/kc26-aba/program-$Z ;;
   program-eski) KAHIN_PROGRAM_KOKU=$W k program-eski node --disable-warning=ExperimentalWarning $E/test/bagimsiz/cari/kos.mjs --mutasyonsuz --cikti $S/kc26-aba/program-eski-$Z $YENI ;;
   yapim)
