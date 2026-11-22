@@ -570,7 +570,8 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
   }
   // §22: kartça tutulan faturada bağlı ödeme ile iadenin mahsubu YAZIM SIRASIYLA (kayıt anı — yazma yolları iadenin kart küçültmesini o anki kapama defterinden ölçer): iadeden SONRA yazılmış bağlı
   // ödeme iadeden sonra ayrılır (iade kart dışındaki açığı önce kapatmıştır — S239); öncekiler sıra 3'te. Kartça tutulmayan faturada K1 sırası AYNEN (bağlı ödemeler önce, iadeler sonra).
-  const bornAt = bornOf(input);
+  // (Kayıt anı haritası yalnız kartça tutulan fatura varken kurulur — queueOnce bir carinin kuyruğunda birçok kez koşar; ders 47.)
+  const bornAt = linkHolds.size ? bornOf(input) : null;
   const firstReturn = new Map();
   if (linkHolds.size) {
     for (const link of linkList) {
