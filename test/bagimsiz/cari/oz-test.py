@@ -68,7 +68,7 @@
    ve d57 (Düzenle — S241 fazlası avans açık / kapanmış / kendi kartı, S242 artış kartı değiştirmez) elle tabloları; mutantlar 341–347 (344 yok — bağdaştırıcı mutantı kos.mjs'te) DEĞERLE.
 26. Bakım 26 (§38; S246 = B, S235 = B, §2 SUS (SK-48), S243 = A, S244 / S245 / S247 / S248 = C): d56 N1 / N2 (S243 = A — en eski fatura kartta; SK-45 SUS kalktı), d57 K3 (SK-48 SUS) / P1 (S246 = B — kendi kartı yeni tutarla)
    ve d58 (kendi kartında Düzenle: R1 ödemeli artış — okuma Y26-3, R2 S235 = B kararın örneği, R3 / R4 SK-49 SUS, T1 / T2 SK-48 SUS, T3 açık tahsilatsız azaltma §36 KAPSAM (b) + (e); N3 S243 elle borçlu kolu) elle tabloları;
-   mutantlar 348–352 DEĞERLE (351 SUS kuralı — `elleYok` / `elleBelirsiz` ile); 347 kaldırıldı.
+   mutantlar 348–353 DEĞERLE (351 / 353 SUS kuralı — `elleYok` / `elleBelirsiz` ile); 347 kaldırıldı; V1 / V2 S245 = C SUS.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
@@ -340,7 +340,7 @@ def main():
         eski_sk = [b for b in _m.son_belirsiz if "SK-9 … SK-12" in b or "(SK-13;" in b]
         denetle("%s SK-9 … SK-13 susması yok (S102–S105 A, S99 A)" % ad, not eski_sk, json.dumps(eski_sk[:2], ensure_ascii=False))
     # 2. mutantlar 200–223 (… bakım 20: 313–316)
-    SUSMA_MUTANTLARI = {316, 324, 351}  # bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 26 (§38 — SK-48; 347 KALDIRILDI — S243 = A ile kural oldu): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
+    SUSMA_MUTANTLARI = {316, 324, 351, 353}  # bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 26 (§38 — SK-48 / SK-47; 347 KALDIRILDI — S243 = A ile kural oldu): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
     for n, ad in M.MUTASYONLAR.items():
         if n < 200:
             continue

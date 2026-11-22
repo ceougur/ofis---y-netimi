@@ -1,10 +1,28 @@
 {
  "dil": "destekofis-cari/3",
  "ad": "d58-c5-s246-s243-kendi-kart-duzenle",
- "aciklama": "Bakım 26 (§38): taksitli faturanın KENDİ kartında Düzenle — S246 = B ödemeli açık kartta (R1 — okuma Y26-3), S235 = B kararın örneği kapanmış tahsilatsız kartta (R2 — kart AÇIK kurulur), SK-49 SUS (R3 kapanmış + ödemeli, R4 iadeli), azaltma §2 SUS SK-48 (T1 ödemeli, T2 kapanmış tahsilatsız), açık tahsilatsız azaltma §36 KAPSAM (b) + (e) (T3); S243 = A elle borçlu S200 kartında seçilmeyen faturanın iptali (N3). Bugün 08.10.2026. Elle tablo karar metinlerinden, kâhin koşulmadan (üreteç docs/kanit/2026-11-22/kahin-cari26-arac/uret-d58.py).",
+ "aciklama": "Bakım 26 (§38): taksitli faturanın KENDİ kartında Düzenle — S246 = B ödemeli açık kartta (R1 — okuma Y26-3), S235 = B kararın örneği kapanmış tahsilatsız kartta (R2 — kart AÇIK kurulur), SK-49 SUS (R3 kapanmış + ödemeli, R4 iadeli), azaltma §2 SUS SK-48 (T1 ödemeli, T2 kapanmış tahsilatsız), açık tahsilatsız azaltma §36 KAPSAM (b) + (e) (T3); S243 = A elle borçlu S200 kartında seçilmeyen faturanın iptali (N3); S245 = C SUS (V1 yeniden kurulan kendi kartına iade, V2 art arda Düzenle 900 → 300 → 600). Bugün 08.10.2026. Elle tablo karar metinlerinden, kâhin koşulmadan (üreteç docs/kanit/2026-11-22/kahin-cari26-arac/uret-d58.py).",
  "dayanak": "KARARLAR.md §38 (Y26-1 … Y26-6), §36 Y24-2 / Y24-4 / Y24-6, §35 Y23-5",
  "bugun": "2026-10-08",
  "elleBeklenen": {
+  "k0:cari:V1:bakiye": 30000,
+  "k0:cari:V1:gecikmis": 10000,
+  "k0:cari:V1:acikToplam": 30000,
+  "k0:cari:V1:acikEsitBakiye": true,
+  "k0:fatura:FV1:acik": 30000,
+  "k0:cari:V2:bakiye": 90000,
+  "k0:cari:V2:gecikmis": 30000,
+  "k0:cari:V2:acikToplam": 90000,
+  "k0:cari:V2:acikEsitBakiye": true,
+  "k0:kart:KV2:var": true,
+  "k0:kart:KV2:mevcutBorc": true,
+  "k0:kart:KV2:toplam": 90000,
+  "k0:kart:KV2:odenen": 0,
+  "k0:kart:KV2:kalan": 90000,
+  "k0:fatura:FV2:acik": 90000,
+  "k0:fatura:FV2:gosterilen": 0,
+  "k0:fatura:FV2:kartta": 90000,
+  "k0:fatura:FV2:taksitte": true,
   "k0:cari:R1:bakiye": 20000,
   "k0:cari:R1:gecikmis": 0,
   "k0:cari:R1:acikToplam": 20000,
@@ -76,6 +94,12 @@
   "adim:dt2:durum": "ok",
   "adim:dt3:durum": "ok",
   "adim:ifn3:durum": "ok",
+  "adim:dv1:durum": "ok",
+  "adim:iv1:durum": "ok",
+  "adim:dv2a:durum": "ok",
+  "adim:dv2b:durum": "ok",
+  "k1:cari:V1:bakiye": 60000,
+  "k1:cari:V2:bakiye": 60000,
   "k1:cari:R1:bakiye": 80000,
   "k1:cari:R1:gecikmis": 20000,
   "k1:cari:R1:acikToplam": 80000,
@@ -121,6 +145,22 @@
   "k1:hareket:bn3:kalan": 20000
  },
  "elleYok": [
+  "k1:cari:V1:gecikmis",
+  "k1:cari:V1:acikToplam",
+  "k1:fatura:FV1:acik",
+  "k1:kart:fatura:FV1:toplam",
+  "k1:kart:fatura:FV1:kalan",
+  "k1:kart:fatura:FV1:kapali",
+  "k1:fatura:IV1:acik",
+  "k1:cari:V2:gecikmis",
+  "k1:cari:V2:acikToplam",
+  "k1:fatura:FV2:acik",
+  "k1:fatura:FV2:gosterilen",
+  "k1:fatura:FV2:kartta",
+  "k1:fatura:FV2:taksitte",
+  "k1:kart:KV2:toplam",
+  "k1:kart:KV2:kalan",
+  "k1:kart:KV2:odenen",
   "k1:cari:R3:gecikmis",
   "k1:cari:R3:acikToplam",
   "k1:fatura:FR3:acik",
@@ -147,6 +187,7 @@
   "k1:kart:fatura:FT2:kapali"
  ],
  "elleBelirsiz": [
+  "SK-47",
   "SK-49",
   "SK-49",
   "SK-48",
@@ -390,6 +431,55 @@
    "mevcut": true
   },
   {
+   "id": "cv1",
+   "islem": "cari_ac",
+   "ad": "V1",
+   "isim": "Vedat Yeniden Kurulan İade",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "fv1",
+   "islem": "fatura",
+   "ad": "FV1",
+   "cari": "V1",
+   "tur": "satis",
+   "tutar": "300",
+   "adet": 1,
+   "tarih": "2026-09-01",
+   "taksit": {
+    "sayi": 3,
+    "ilkVade": "2026-10-05"
+   }
+  },
+  {
+   "id": "cv2",
+   "islem": "cari_ac",
+   "ad": "V2",
+   "isim": "Vildan Art Arda Düzenle",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "fv2",
+   "islem": "fatura",
+   "ad": "FV2",
+   "cari": "V2",
+   "tur": "satis",
+   "tutar": "900",
+   "adet": 3,
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "kv2",
+   "islem": "kart_ac",
+   "ad": "KV2",
+   "cari": "V2",
+   "tutar": "900",
+   "taksit": 3,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-02",
+   "mevcut": true
+  },
+  {
    "id": "k0",
    "islem": "kontrol",
    "gecikmis": true,
@@ -441,6 +531,32 @@
    "id": "ifn3",
    "islem": "fatura_iptal",
    "fatura": "FN3B"
+  },
+  {
+   "id": "dv1",
+   "islem": "fatura_duzenle",
+   "fatura": "FV1",
+   "adet": 3
+  },
+  {
+   "id": "iv1",
+   "islem": "iade",
+   "ad": "IV1",
+   "fatura": "FV1",
+   "adet": 1,
+   "tarih": "2026-10-08"
+  },
+  {
+   "id": "dv2a",
+   "islem": "fatura_duzenle",
+   "fatura": "FV2",
+   "adet": 1
+  },
+  {
+   "id": "dv2b",
+   "islem": "fatura_duzenle",
+   "fatura": "FV2",
+   "adet": 2
   },
   {
    "id": "k1",

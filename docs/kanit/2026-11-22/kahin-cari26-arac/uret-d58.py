@@ -160,7 +160,14 @@ A += [cari("ct3", "T3", "Tuna Açık Kart Azaltma"), fatura("ft3", "FT3", "T3", 
 A += [cari("cn3", "N3", "Nevin Borçlu İki Fatura"), {"id": "bn3", "islem": "borc", "cari": "N3", "tutar": "200", "tarih": "2026-09-01"},
       fatura("fn3a", "FN3A", "N3", 600, 2, "2026-09-02"), fatura("fn3b", "FN3B", "N3", 600, 2, "2026-09-03"),
       {"id": "kn3", "islem": "kart_ac", "ad": "KN3", "cari": "N3", "tutar": "500", "taksit": 2, "ilkVade": "2026-10-05", "tarih": "2026-09-05", "mevcut": True}]
+# V1 — Y26-7 (S245 = C): S246 ile kendi kartı yeniden kurulan faturaya iade — fatura 300 (3 × 100), Düzenle 300 → 900, sonra iade 1 adet (300) → SK-47 SUS
+A += [cari("cv1", "V1", "Vedat Yeniden Kurulan İade"), fatura("fv1", "FV1", "V1", 300, 1, "2026-09-01", T3)]
+# V2 — Y26-7 (S245 = C kararın örneği 900 → 300 → 600): Mevcut Borç kartlı fatura 900, kart 900 (3 × 300), art arda Düzenle 3 → 1 → 2 adet → SK-47 SUS (kartın göstergeleri de)
+A += [cari("cv2", "V2", "Vildan Art Arda Düzenle"), fatura("fv2", "FV2", "V2", 900, 3, "2026-09-01"),
+      {"id": "kv2", "islem": "kart_ac", "ad": "KV2", "cari": "V2", "tutar": "900", "taksit": 3, "ilkVade": "2026-10-05", "tarih": "2026-09-02", "mevcut": True}]
 A += [{"id": "k0", "islem": "kontrol", "gecikmis": True, "acikToplam": True}]
+cr("k0", "V1", 300, 100, 300); ft("k0", "FV1", 300)  # 05.10 taksiti (100) gecikmiş
+cr("k0", "V2", 900, 300, 900); kr("k0", "KV2", 900, 0, 900); ft("k0", "FV2", 900, 0, 900, True)  # 05.10 300 gecikmiş; fatura tamamen kartta
 # k0 (bugün 08.10)
 cr("k0", "R1", 200, 0, 200); ft("k0", "FR1", 200)  # 05.10 taksiti (100) tahsilatla kapalı; 05.11 / 05.12 gelmedi
 cr("k0", "R2", 900, 300, 900); ft("k0", "FR2", 900); fk("k0", "FR2", 900, 900, True)  # kapanış 08.10: 05.10 kendi vadesinde (S220) gecikmiş, öbürleri min(vade, 08.10) = bugün
@@ -176,8 +183,15 @@ A += [{"id": "dr1", "islem": "fatura_duzenle", "fatura": "FR1", "adet": 3}, {"id
       {"id": "dr3", "islem": "fatura_duzenle", "fatura": "FR3", "adet": 3}, {"id": "dr4", "islem": "fatura_duzenle", "fatura": "FR4", "adet": 4},
       {"id": "dt1", "islem": "fatura_duzenle", "fatura": "FT1", "adet": 2}, {"id": "dt2", "islem": "fatura_duzenle", "fatura": "FT2", "adet": 2},
       {"id": "dt3", "islem": "fatura_duzenle", "fatura": "FT3", "adet": 2}, {"id": "ifn3", "islem": "fatura_iptal", "fatura": "FN3B"},
+      {"id": "dv1", "islem": "fatura_duzenle", "fatura": "FV1", "adet": 3}, {"id": "iv1", "islem": "iade", "ad": "IV1", "fatura": "FV1", "adet": 1, "tarih": "2026-10-08"},
+      {"id": "dv2a", "islem": "fatura_duzenle", "fatura": "FV2", "adet": 1}, {"id": "dv2b", "islem": "fatura_duzenle", "fatura": "FV2", "adet": 2},
       {"id": "k1", "islem": "kontrol", "gecikmis": True, "acikToplam": True}]
-ok("dr1", "dr2", "dr3", "dr4", "dt1", "dt2", "dt3", "ifn3")
+ok("dr1", "dr2", "dr3", "dr4", "dt1", "dt2", "dt3", "ifn3", "dv1", "iv1", "dv2a", "dv2b")
+E["k1:cari:V1:bakiye"] = 600 * TL; sus_kendi("k1", "V1", "FV1", "SK-47"); Y.append("k1:fatura:IV1:acik")  # 900 − 300 (bakiye her okumada); kart / kuyruk S245 = C (iade belgesinin açığı da
+#   carinin kuyruğundan — C13.4 (11) düzeni; ELLE HESAP DÜZELTMESİ (açıkça): ilk tasarımda değerle (0) yazılmıştı — SUS caride belge açığı yazılmaz, d56 Q2 / N-dizisi ile aynı)
+E["k1:cari:V2:bakiye"] = 600 * TL  # son tutar 600 (bakiye her okumada)
+Y.extend(["k1:cari:V2:gecikmis", "k1:cari:V2:acikToplam", "k1:fatura:FV2:acik", "k1:fatura:FV2:gosterilen", "k1:fatura:FV2:kartta", "k1:fatura:FV2:taksitte",
+          "k1:kart:KV2:toplam", "k1:kart:KV2:kalan", "k1:kart:KV2:odenen"])
 # k1
 cr("k1", "R1", 800, 200, 800); ft("k1", "FR1", 800); fk("k1", "FR1", 900, 800, False)  # yeni kart 3 × 300; tahsilat 100 → 05.10 taksitinin 100'ü; 05.10'un 200'ü gecikmiş
 cr("k1", "R2", 1200, 400, 1200); ft("k1", "FR2", 1200); fk("k1", "FR2", 1200, 1200, False)  # S235 = B: açık; 3 × 400; 05.10 400 gecikmiş
@@ -190,7 +204,8 @@ cr("k1", "T3", 600, 0, 600); ft("k1", "FT3", 600); fk("k1", "FT3", 600, 600, Fal
 cr("k1", "N3", 800, 550, 800); kr("k1", "KN3", 500, 0, 500); ft("k1", "FN3A", 600, 300, 300, False); E["k1:fatura:FN3B:durum"] = "iptal"; E["k1:hareket:bn3:kalan"] = 200 * TL
 d58 = {"dil": "destekofis-cari/3", "ad": "d58-c5-s246-s243-kendi-kart-duzenle",
        "aciklama": "Bakım 26 (§38): taksitli faturanın KENDİ kartında Düzenle — S246 = B ödemeli açık kartta (R1 — okuma Y26-3), S235 = B kararın örneği kapanmış tahsilatsız kartta (R2 — kart AÇIK kurulur), SK-49 SUS (R3 kapanmış + ödemeli, R4 iadeli), "
-                   "azaltma §2 SUS SK-48 (T1 ödemeli, T2 kapanmış tahsilatsız), açık tahsilatsız azaltma §36 KAPSAM (b) + (e) (T3); S243 = A elle borçlu S200 kartında seçilmeyen faturanın iptali (N3). Bugün 08.10.2026. "
+                   "azaltma §2 SUS SK-48 (T1 ödemeli, T2 kapanmış tahsilatsız), açık tahsilatsız azaltma §36 KAPSAM (b) + (e) (T3); S243 = A elle borçlu S200 kartında seçilmeyen faturanın iptali (N3); S245 = C SUS (V1 yeniden kurulan kendi kartına iade, "
+                   "V2 art arda Düzenle 900 → 300 → 600). Bugün 08.10.2026. "
                    "Elle tablo karar metinlerinden, kâhin koşulmadan (üreteç docs/kanit/2026-11-22/kahin-cari26-arac/uret-d58.py).",
        "dayanak": "KARARLAR.md §38 (Y26-1 … Y26-6), §36 Y24-2 / Y24-4 / Y24-6, §35 Y23-5", "bugun": "2026-10-08",
        "elleBeklenen": dict(E), "elleYok": list(Y), "elleBelirsiz": list(B), "adimlar": A}
