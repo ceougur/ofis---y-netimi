@@ -1,0 +1,33 @@
+uygulandı M1
+M1 rc=1 # tests 16 # pass 3 # fail 13 
+    not ok 2 - B1 — F'ye bağlı 600: kart 300 / 300, bakiye 300, gecikmiş 0
+    not ok 3 - B1 — F'ye bağlı 900: kart 600 / 0, bakiye 0, gecikmiş 0
+    not ok 4 - B1 — F'ye bağlı 1200: kart 600 / 0, bakiye -300, gecikmiş 0
+    not ok 6 - B2 — faturanın tamamı kartta (F 600, kart 600): bağlı 600 → tamamı
+    not ok 7 - B3 — iki kart aynı faturada (K1 300, K2 300): bağlı 600 → 300 göste
+    not ok 1 - B4a — iade 300 (kart dışındaki kısım) → bağlı 600: gösterilen a
+    not ok 2 - B4b / B4c — bağlı 600 → iade 300: kart ve bakiye BAĞSIZ 600 → iade
+    not ok 3 - B4d — Düzenle 900 → 600 (kart dışındaki 300 düşer) → bağlı 60
+    not ok 4 - B5 — bağlı 600'ün silinmesi → kart 0 / 600, bakiye 900; Silinenler'd
+    not ok 5 - B6 — kilitli dönem (30.09'a kadar; fatura kilitli dönemde, bağlı öde
+    not ok 6 - B7 — Vade Takip / zil / Alacak Yaşlandırma / Nakit Akışı: carinin a�
+    not ok 7 - B8 — çek 'Kapatılacak Fatura' ile (alınan evrak 600, F'ye bağlı): B1
+    not ok 1 - B10 — B1 600'ün sayıları yedek → (bozucu silme) → geri yüklemeden
+uygulandı M2
+M2 rc=1 # tests 16 # pass 13 # fail 3 
+    not ok 2 - B1 — F'ye bağlı 600: kart 300 / 300, bakiye 300, gecikmiş 0
+    not ok 3 - B1 — F'ye bağlı 900: kart 600 / 0, bakiye 0, gecikmiş 0
+    not ok 4 - B1 — F'ye bağlı 1200: kart 600 / 0, bakiye -300, gecikmiş 0
+uygulandı M3
+M3 rc=0 # tests 16 # pass 16 # fail 0 
+uygulandı M4
+M4 rc=0 # tests 16 # pass 16 # fail 0 
+uygulandı M5
+M5 rc=1 # tests 16 # pass 13 # fail 3 
+    not ok 2 - B1 — F'ye bağlı 600: kart 300 / 300, bakiye 300, gecikmiş 0
+    not ok 3 - B1 — F'ye bağlı 900: kart 600 / 0, bakiye 0, gecikmiş 0
+    not ok 4 - B1 — F'ye bağlı 1200: kart 600 / 0, bakiye -300, gecikmiş 0
+uygulandı M6
+M6 rc=0 # tests 16 # pass 16 # fail 0 
+uygulandı geri
+BITTI
