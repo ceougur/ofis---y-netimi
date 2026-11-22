@@ -5816,3 +5816,65 @@ yalnız `k250`). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önc
   bakiye aynı).
 - **Okumalar (baş mimar görsün):** Y26-3 (ödemeli kendi kartında artırma — ödeme tek kuyrukta aynen; program da böyle), Y26-5 (b) (S235 = B ↔ §36 KAPSAM (e) çatışması — SUS), Y26-6 (S243'ün elle borçlu kolu da), Y26-7 (S245 SUS'unda kartın
   göstergeleri de), d56 FN2A `taksitte` (kartın payı iadeyle 0 → Y23-4 false).
+
+## 39. 2.5.0 Ç5 bakımı 27 — KÜÇÜK BAKIM: S249 = A (kendi kartında Düzenle ile AZALTMA — kart Düzenle'nin ödeme planıyla yeni tutarla yeniden kurulur; fazla ödeme avans), S251 = A (iadesi olan faturanın Düzenle'si REDDEDİLİR), S250 = C (SUS aynen) (22.11.2026; girdi ana oturumun özet dosyası `docs/devir/2.5.0-DEVAM/kahin-cari27-kararlar.md`; kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + … + §38 + bu bölüm
+
+Bu bakım girdinin §1–§3'ünü işler. §13–§38'in öbür kuralları DEĞİŞMEZ. `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN (bu bölümün bütün yolları yalnız `k250`). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod);
+senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'lerde eklenir.**
+
+### C00af Temiz oda (bakım 27)
+- **Girdi (tek kaynak):** `docs/devir/2.5.0-DEVAM/kahin-cari27-kararlar.md` — başındaki OKUMA KURALI bağlayıcı: kural yalnız SEÇİLEN seçeneğin metni (kendi örneğiyle) ve KAPSAM / BAŞ MİMAR satırlarıdır; kararın söylemediği alt durumda kural
+  UYDURULMAZ (SUS + KULLANICIYA SORULMALI). Etiketler girdideki gibi: hepsi "KULLANICI KURALIYLA ÖNERİ UYGULANDI" (bu kâhinde **BAŞ MİMAR** etiketiyle — §36 / §37 / §38'deki düzen).
+- **Birlikte okunan (kâhinin kendi belgesi):** §38 (Y26-1 … Y26-9; SK-48 / SK-49 / SK-50; P-1), §36 (Y24-2 / Y24-4 / Y24-6 — KAPSAM (b) / (e)), §37 (Y25-5 / Y25-8); `model.py` (`fatura_duzenle`, `_kendi_kart_odenen`, `iade`, `kos`, `kontrol`),
+  `oz-test.py`, `senaryolar/` (d57 / d58), bakım 26'nın araçları `docs/kanit/2026-11-22/kahin-cari26-arac/` (yalnız çalıştırmak / uyarlamak için); `kos.mjs` YALNIZ eşleme için.
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/devir/**` (görev metni ve girdi dışında), `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), `docs/erp/**`,
+  `YAPIM-ASAMASI.json`'ın kayıt DEĞERLERİ (yalnız yeniden üretilir), `BILINEN.json`, öbür kâhinler, cari kâhini dışındaki `test/**`, başka ajanların `docs/kanit/**` dosyaları (bakım 26'nın araç klasörü dışında), git farkı / geçmiş içeriği.
+
+### Karar metinleri (girdiden; seçilen seçeneğin metni AYNEN)
+- **S249 = A:** "kart Düzenle'nin ödeme planıyla YENİDEN KURULUR — kart 300 (3 × 100), Tahsil Edilen 300, Kalan 0, fazla 300 carinin avansı, bakiye −300 (S235 = B ve S246 = B'nin 'Düzenle yeni ödeme planı kurar' kuralının azaltma karşılığı;
+  kullanıcı Düzenle formunda ödeme planını görüp onaylıyor; açık / tahsilatsız kartta 900 → 600 ise kart 3 × 200)." Örnek: "fatura 900, kendi kartı 3 × 300, karta tahsilat 600; Düzenle 900 → 300".
+- **KAPSAM §1 (baş mimar):** "S249 = A, S235 = B ve S246 = B ile AYNI kural ailesidir — faturanın KENDİ taksit kartında Düzenle (artırma da azaltma da) kartı Düzenle'nin ödeme planıyla yeni tutarla yeniden kurar; karta yapılmış
+  ödemeler yeni karta (tek kuyruk) uygulanır, yeni kart tutarını aşan kısım carinin avansıdır. Kollar: (a) ödemeli kart, (b) Borçta Kalsın ile kapanmış tahsilatsız kart (S235 = B: kart AÇIK kurulur), (c) açık tahsilatsız kart.
+  Bakım 24'ün 'azaltılan tutar iade gibi' kapsam yorumu (e) YALNIZ faturayı İÇİNE ALAN Mevcut Borç kartında kalır (S241 = A); kendi kart için GEÇERSİZDİR — KARARLAR.md'ye S249 numarasıyla yazılır. Kararın söylemediği alt
+  durum (ör. Düzenle'de taksit sayısı / ilk vade değişirse ödemelerin dağılımı) varsa SUS + KULLANICIYA SORULMALI."
+- **S251 = A:** "reddedilir — 'önce iadeleri iptal edin'." **KAPSAM §2:** "beklenti = Düzenle isteği REDDEDİLİR (4xx yanıt); belge, kart, cari bakiyesi ve iade DEĞİŞMEZ (ret = 'yapılmadı' — ders 3: yanıt kodu + gövde + sayılar okunur).
+  İade iptal edildikten sonraki Düzenle olağan kurallarla (S241 / S242 / S246 / S249)."
+- **S250 = C:** "Uç durum böyle kalsın (BİLİNEN SINIR)." **KAPSAM §3:** "bakım 26'nın SK-49 susması aynen; neden metnine karar numarası ('BİLİNEN SINIR — kullanıcı kararı S250 = C'). İadeli kolu S251 = A ile kendiliğinden kapanır (ret)."
+
+### Kâhinin BUGÜNKÜ (bakım 26, taban `edd5f828`) okuması — bu alanda (açıkça)
+- **Kendi kartında azaltma:** §38 Y26-5 — (a) ödemeli ve (b) kapanmış kartta SUS (SK-48; d57 K3, d58 T1 / T2); (c) açık tahsilatsız kartta §36 KAPSAM (b) + (e) "iade gibi" (vadesi en önce gelen açık taksitten küçülme; d58 T3 0 / 300 / 300
+  — program 3 × 200 okudu: P-1). **S249 = A ile DEĞİŞİR.**
+- **İadesi olan faturanın Düzenle'si:** §38 Y26-9 — iki dünyalı SUS (SK-50; d58 R4 adım durumu + bakiye `elleYok`). **S251 = A ile DEĞİŞİR.**
+- **SK-49:** (a) kapanmış + ödemeli kartta artırma, (b) iadeli faturada artırma — SUS (d58 R3 / R4). **S250 = C ile AYNEN; (b) S251 ile ret.**
+
+### Yorumlar (ders 40 — kararlardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y27-1 — S249 = A (kendi kartında Düzenle ile azaltma — bütün kollar tek kural):** taksitli satış faturasının tutarı Düzenle ile azalınca kendi kartı **yeni tutarla yeniden kurulur** (Y26-1'in azaltma karşılığı — aynı taksit sayısı ve ilk
+  vadeyle yeni tutarın eşit taksitleri; artık kuruş sonda — C13.4 (1) / Y6-3 aynen). Bakım 24'ün §36 KAPSAM (b) + (e)'nin ve §37 Y25-5'in KENDİ KART kolu (iade gibi küçülme — `kucul`; kartın açık kalanını aşan kısım `duzFazla` avansı)
+  **KALKAR** (KAPSAM §1: "kendi kart için GEÇERSİZDİR — S249"); Mevcut Borç kartında (faturayı İÇİNE ALAN kart) §36 KAPSAM (e) + S241 = A AYNEN. Ödemeler: kendi kartına yapılmış ödemeler (kart seçilmeden tahsilat — tek kuyruk S50 / S99 /
+  C13.4) kuyrukta AYNEN kalır ve yeniden kurulan kartın taksitlerini vade sırasıyla kapatır (KAPSAM: "karta yapılmış ödemeler yeni karta (tek kuyruk) uygulanır"); yeni kart tutarını aşan kısım kapatacak kalem bulamaz → carinin
+  avansı (C13.4 artığı — kâhinde yeni bir 'fazla' kalemi AÇILMAZ, kuyruğun kendi artığıdır). Kartın tutarı = yeni tutar; Kalan = taksitlerin tek kuyruk kalanı; gecikmiş = vadesi geçmiş açık taksitler. Etiket **BAŞ MİMAR**.
+  - **(a) ödemeli, açık kart — kararın örneği (d57 K3; bugün 20.11):** fatura 900 (3 adet; 3 × 300, 05.10 / 05.11 / 05.12), 03.09 tahsilat 600, Düzenle 3 → 1 adet (300) → kendi kartı **300** (3 × 100), Kalan **0**, açık (Kartı Kapat yok),
+    fatura açığı **0**, gecikmiş **0**, açık toplamı **0** (avans açık toplamına girmez — d57 K1 ile aynı tanım), bakiye **−300** (avans 300). "Tahsil Edilen 300" = kart tutarı − Kalan (kâhinin kendi kart dilinde ayrı anahtar yok).
+  - **(a) kısmi (d58 T1; bugün 08.10):** fatura 900 (3 × 300), 03.09 tahsilat 300, Düzenle 3 → 2 (600) → kart **600** (3 × 200), tahsilat 300 → 05.10 200 + 05.11 100 → Kalan **300**, 08.10 gecikmişi **0**, bakiye **300**.
+  - **(b) Borçta Kalsın ile kapanmış, tahsilatsız (d58 T2):** S235 = B ile kart **AÇIK** kurulur (kapanış kalkar — Y26-2 aynen): 900 → 600 → kart **600** (3 × 200), açık, Kalan **600**, 08.10 gecikmişi **200** (05.10 taksiti), bakiye **600**.
+    Bakım 26'nın Y26-5 (b) çatışması (S235 = B ↔ §36 KAPSAM (e)) KAPSAM §1 ile çözüldü: (e) kendi kart için geçersiz.
+  - **(c) açık, tahsilatsız (d58 T3 — kararın "900 → 600 ise kart 3 × 200" sözü):** kart **600** (3 × 200), Kalan **600**, 08.10 gecikmişi **200**, bakiye **600** (bakım 26'nın P-1'i: kâhin artık programla aynı okumada — kâhin programa UYDURULMADI,
+    kural kararın KENDİ metninden).
+- **Y27-2 — SUS (KULLANICIYA SORULMALI SK-51 — UÇ): Borçta Kalsın ile kapanmış VE ödemeli kendi kartında Düzenle ile azaltma:** KAPSAM §1'in kolları (a) "ödemeli kart" ve (b) "Borçta Kalsın ile kapanmış **tahsilatsız** kart"tır;
+  kapanmış + ödemeli kartın yeniden kurulurken AÇIK mı (S235 = B gibi) KAPALI mı (kapanış korunur) kurulacağı kararlarda yok — artırmadaki AYNI alt durum S250 = C ile BİLİNEN SINIR kaldı (SK-49 (a)). Kâhin bakım 26'nın SK-48 düzeniyle SUSAR
+  (carinin kuyruğu ve kendi kartının göstergeleri yazılmaz; bakiye, Kasa ve adım sonucu yazılır). Bakiye ve kartın tutarı / Kalan'ı iki okumada AYNI; ayrışan kartın kapalı / açık durumu ve gecikmiş (kapanmış kartta gecikme günü
+  min(vade, kapanış) — Y24-2). Carinin kuyruğu tanımsızken (kâhin ödenen kısmı bilemez) kapanmış kartta da aynı SUS.
+- **Y27-3 — S251 = A (iadesi olan faturanın Düzenle'si):** kesilmiş (iptal edilmemiş) iade belgesi olan satış faturasının Düzenle'si — taksitli de, Mevcut Borç kartlı da, kartsız da (karar faturayı ayırmıyor) — **REDDEDİLİR**
+  (adımın durumu `ret`; etiket **BAŞ MİMAR**); hiçbir durum değişmez: fatura tutarı / adedi, kendi kartı / Mevcut Borç kartı, iade belgesi, bakiye, gecikmiş, Kasa Düzenle'den önceki gibi (ret = 'yapılmadı'). Bakım 26'nın Y26-9 iki dünyalı
+  SUS'u (SK-50) KALKAR: tek beklenti. Kendi kartı olan faturada kartın göstergeleri ret'ten sonra da yazılır (`kart:fatura:<F>:toplam` / `kalan` / `kapali` — Düzenle'den önceki değerler; "kart DEĞİŞMEZ"in denetimi). İade iptal edildikten
+  sonra (iade belgesi `iptal`) Düzenle olağan kurallarla (S241 / S242 / S246 / S249 — iade iptalinde küçülme geri alınır, KAPSAM (c) — §36 aynen). Programın ret iletisi (görünür metin "önce iadeleri iptal edin") API'den adımın `ret`
+  durumuyla okunur; metnin kendisi denetlenmez (DENENMEYEN).
+- **Y27-4 — S250 = C (SK-49):** SUS AYNEN (Y26-4); neden metnine karar numarası: "BİLİNEN SINIR (kullanıcı kararı S250 = C) SK-49". (b) iadeli kolu Y27-3 ile ret → SK-49'un (b) dalı yalnız mutantta (S251 yok) erişilir.
+- **Y27-5 — dilde olmayan alt durumlar:** `fatura_duzenle` yalnız miktarı (`adet`) değiştirir — taksit sayısı / ilk vade değişmez (KAPSAM §1'in "taksit sayısı / ilk vade değişirse" alt durumu dilde DOĞMAZ — DENENMEYEN). Kendi kartına
+  KART SEÇİLEREK ödeme dilde yok (bakım 26 C12ae aynen) — ödemeli kollar kart seçilmeden tahsilatla.
+- **Y27-6 — S249 ile yeniden kurulan kartın sonradan iadesi / ikinci Düzenle'si:** S245 = C ailesi (Y26-7 aynen) — SK-47 SUS; S249 ile kurulan kart da `duz246` izi taşır.
+
+### KULLANICIYA SORULMALI (bakım 27 — yorum aşaması; son hâl kanıt bölümünde)
+- **SK-51 (UÇ) — Borçta Kalsın ile kapanmış VE ödemesi olan kendi kartında Düzenle ile AZALTMA (S250'nin azaltma karşılığı; PARA KURALI — ders 43):** örnek: fatura 900 (3 × 300; 05.10 / 05.11 / 05.12), 03.09 tahsilat 300, 08.10 Kartı Kapat,
+  Düzenle 3 → 2 (600). **A:** kart S235 = B gibi AÇIK kurulur (3 × 200; tahsilat 300 → 05.10 200 + 05.11 100; Kalan 300; 09.10 gecikmişi **0** — 05.11 / 05.12 gelmedi). **B:** kapanış korunur (kart 600, Kalan 300, KAPALI; açık taksitlerin gecikme günü
+  min(vade, 08.10) — 09.10 gecikmişi **300**). **C (ÖNERİ):** Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS; S250 = C ile aynı aile). Bakiye (300) ve kart tutarı / Kalan her seçenekte AYNI. Yaygın programlarda: doğrulanmış kaynak okunmadı.
