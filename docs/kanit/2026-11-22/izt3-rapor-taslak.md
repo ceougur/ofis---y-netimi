@@ -37,3 +37,8 @@ Taban 3b420085 (izt3-taban). Dal worktree-agent-ae8c8568d72566f15. Push yok.
 - Öbür yollar ortanca farkı: kart penceresi +%3,4 (en iyi −%1,1), fatura kartı +%0,5, Düzenle aynı içerik −%3,8, iade yazımı −%1,7, stok iadesi yazım / düzeltme / silme / geri yükleme −%1,7 / −%2,9 / +%4,6 / −%0,7,
   sıradan stok düzeltme / silme +%3,8 / +%2,1 (5 ms düzeyinde), bütünlük taraması +%8,1 (en iyi +%5,1; tam tarama kodu değişmedi — `run`), Dönem Kilidi kilitle 0, aç +%19,3 (tek ölçüm, en iyi 0 — 23 ms düzeyinde gürültü).
 - Olay döngüsü 0,0 okunan satırlar ölçüm aracının nüansı (önceki turdan biliniyor — 2.5.1).
+
+## Adım 6 — Komşu ekran senaryoları (UTC, commit 2047b2f8; `izt3-kos/e2e-komsu-ozet-UTC.txt`)
+- 19 senaryonun 19'u çıkış 0: izt3-250 18/18 (UTC; İstanbul'da da 18/18), izt2-250 24, izt-250 20, dkfix-250 21, 217 65/65, 216 54/54, banka-210b 90, banka-210-eski-satir 29, fatura-243 61, kdv-donemi-250 22,
+  duzeltme-kilidi-250 79, duzeltme-kilidi-tur3-250 110, iade-246 26, cari-243 70, kasa-acilis-uyari-250 20/20, pos-220 113, entegrator-240 81, banka-210-kart-onbellek-yaris 49, uiux-b-243 58.
+- Seçim: `test/e2e` taraması — Düzenle (`data-act="modify"` / `/edit`) ya da stok hareketi silme / düzeltme / Silinenler'den geri yükleme kullanan senaryolar (+ izt / izt2 / dkfix).
