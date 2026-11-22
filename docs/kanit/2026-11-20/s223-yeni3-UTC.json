@@ -1,0 +1,32 @@
+{
+  "ad": "s223-yeni3-UTC",
+  "komut": "node --test test/s223-turkce-ad-eslesme-250.test.mjs test/c7bt-ayni-adli-excel-karti-250.test.mjs",
+  "commit": "f95986e4dbc88995936a454b865e53a38249d9fd",
+  "dal": "worktree-agent-a2b475536b68533c3",
+  "kirli": 2,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T19:55:36.072Z",
+  "sure_sn": 27.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 25,
+    "gecen": 25,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/kanit/2026-11-20/s223-yeni3-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2b475536b68533c3",
+  "ham_cikti_sha256": "21de4a017c164f3557d8311fef8d860150a60ecd7a749e5c6d9a298b1c2fadc1",
+  "ham_cikti_bayt": 11343
+}

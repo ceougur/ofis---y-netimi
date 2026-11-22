@@ -1,0 +1,73 @@
+{
+  "ad": "s231-taban-UTC",
+  "komut": "node --test test/s231-grup-adi-turkce-250.test.mjs",
+  "commit": "b169e1973b2859a1b8437044c016d94e88844cab",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T02:04:29.155Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 3,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası) › (1) S231 örneği: önce 'Elif Su' / 'Işık Servisi', sonra 'ELİF SU' / 'IŞIK SERVİSİ' (ikisi de telefonsuz) → AYNI grup, AYNI cari, TEK borç",
+      "konum": "test/s231-grup-adi-turkce-250.test.mjs:47:3",
+      "hata": "yeni grup açıldı (çift grup 'IŞIK SERVİSİ'): rapor groups=1 · 2 !== 1 (beklenen 1, gelen 2)"
+    },
+    {
+      "ad": "S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası) › (2) grup adı varyantları (ı / I, İ / i, küçük harf, boşluk, karışık) var olan 'Işık Servisi' grubunu bulur; 'ŞUBE A' ↔ 'Şube A' bugün de aynı (denetim)",
+      "konum": "test/s231-grup-adi-turkce-250.test.mjs:67:3",
+      "hata": "yeni grup açıldı: 4 · 6 !== 2 (beklenen 2, gelen 6)"
+    },
+    {
+      "ad": "S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası) › (3) telefonsuz kişi + aynı grup: büyük harfli grup yazımıyla var olan carisine bağlanır; aynı adlı iki kişi (iki ayrı grupta) kendi grubundaki carisine",
+      "konum": "test/s231-grup-adi-turkce-250.test.mjs:80:3",
+      "hata": "yeni grup açıldı: 1 · 8 !== 7 (beklenen 7, gelen 8)"
+    },
+    {
+      "ad": "S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası) › (4) telefonlu kişi: grup eşleşmesi kişi eşleşmesini değiştirmez (telefonla var olan cariye); kart var olan gruba",
+      "konum": "test/s231-grup-adi-turkce-250.test.mjs:100:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'group-9759b78a-28e2-41f4-86f5-ae3e5be02afc' (beklenen group-8e03926c-ec61-4a32-8536-8cc8b58a1dd5, gelen group-9759b78a-28e2-41f4-86f5-ae3e5be02afc)"
+    },
+    {
+      "ad": "S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası) › (5) alt grup: 'YILDIZ SİTESİ' / 'İÇ BLOK' var olan 'Yıldız Sitesi' › 'İç Blok'u bulur; aynı adlı alt grup BAŞKA ana grupta ayrı kalır",
+      "konum": "test/s231-grup-adi-turkce-250.test.mjs:110:3",
+      "hata": "yeni grup / alt grup açıldı: 3 · 13 !== 10 (beklenen 10, gelen 13)"
+    },
+    {
+      "ad": "S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası) › (7) aynı dosyada iki yazım: ilk satırın açtığı 'Ilıca Yolu' ikinci ve üçüncü satıra görünür (tek grup)",
+      "konum": "test/s231-grup-adi-turkce-250.test.mjs:142:3",
+      "hata": "tek grup beklenirdi, açılan: 3 · 19 !== 17 (beklenen 17, gelen 19)"
+    },
+    {
+      "ad": "S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası) › (9) Tablodan Aktar: sayfa adı 'IŞIL KAFE' var olan 'Işıl Kafe' grubunu bulur — ön izleme 'eşleşen cari', aktarım yeni grup / cari açmaz; Geri Al var olan grubu SİLMEZ",
+      "konum": "test/s231-grup-adi-turkce-250.test.mjs:169:3",
+      "hata": "ön izleme: {\"account\":\"new\",\"accountName\":\"\",\"groupName\":\"IŞIL KAFE\"} · 'new' !== 'match' (beklenen match, gelen new)"
+    },
+    {
+      "ad": "S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası) › (10) cari Excel'in grup kolonu: 'IŞIL KAFE' yazımı var olan 'Işıl Kafe' grubuna (yeni grup açılmaz)",
+      "konum": "test/s231-grup-adi-turkce-250.test.mjs:199:3",
+      "hata": "yeni grup açıldı: 1 · 22 !== 21 (beklenen 21, gelen 22)"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s231-a5ab/2026-11-21/s231-taban-UTC.log",
+  "klasor": "/dev/shm/s231-a5ab/eski",
+  "ham_cikti_sha256": "ca69944af54bd434e04a944e85c263bfda6bf4c108da216e6d3dd402b7328c87",
+  "ham_cikti_bayt": 11159
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "s231-son-UTC",
+  "komut": "node --test test/s231-grup-adi-turkce-250.test.mjs test/s231-cek-pencere-metni-250.test.mjs test/s231-cek-hiz-esdegerlik-250.test.mjs test/s231-eski-surum-sinif-250.test.mjs test/s223-turkce-ad-eslesme-250.test.mjs test/s223-eski-surum-sinif-250.test.mjs test/c7bt-ayni-adli-excel-karti-250.test.mjs test/names.test.mjs",
+  "commit": "270b3ad9635bfe425aa417ec62e562e598fb6c75",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T08:05:01.768Z",
+  "sure_sn": 31.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 55,
+    "gecen": 55,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s231-a5ab/2026-11-21/s231-son-UTC.log",
+  "klasor": "/dev/shm/s231-a5ab/yeni",
+  "ham_cikti_sha256": "565b00c2c34dcc15173c866c3f3a8795bb98a0016df64d282babe05883307576",
+  "ham_cikti_bayt": 24847
+}

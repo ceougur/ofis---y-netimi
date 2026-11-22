@@ -1,0 +1,32 @@
+{
+  "ad": "s231-yeni2-UTC",
+  "komut": "node --test test/s231-cek-hiz-esdegerlik-250.test.mjs test/s231-grup-adi-turkce-250.test.mjs",
+  "commit": "73e055d82b4ddcd2614b44a626e3d43d174e90f4",
+  "dal": "worktree-agent-a5ab5fcddbbc37322",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T03:42:29.328Z",
+  "sure_sn": 13.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 15,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s231-a5ab/2026-11-21/s231-yeni2-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a5ab5fcddbbc37322",
+  "ham_cikti_sha256": "6db489ff765508a6c58c1a677136bb08384277434703c984eb75386303f911e4",
+  "ham_cikti_bayt": 7079
+}

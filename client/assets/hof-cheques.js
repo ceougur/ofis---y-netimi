@@ -644,7 +644,7 @@
       title: "Çek / Senet Portföyü: Kolonları Eşle",
       eyebrow: fileName,
       size: "wide",
-      intro: `${preview.rows} satır bulundu. Program başlıkları tanıdı; yanlışsa değiştirin. Keşideci adı birebir aynı olan tek cari varsa evrak o cariye bağlanır.`,
+      intro: `${preview.rows} satır bulundu. Program başlıkları tanıdı; yanlışsa değiştirin. Keşideci adı aynı olan (büyük / küçük harf ve boşluk farkı sayılmaz) tek cari varsa evrak o cariye bağlanır.`,
       fields: [
         ...preview.headers.map((header, index) => ({ name: `c${index}`, label: `${header || `${index + 1}. kolon`}${sample[index] !== undefined && String(sample[index]).trim() ? ` — ör. ${String(sample[index]).slice(0, 30)}` : ""}`, type: "select", value: preview.roles[index] === "extra" ? "" : preview.roles[index] || "", options: ROLE_OPTIONS.map(([value, label]) => ({ value, label })) })),
         { name: "direction", label: "Yön kolonu yoksa hepsi", type: "select", value: view.direction === "out" ? "out" : "in", options: [{ value: "in", label: "Alınan (müşteri evrakı, portföy)" }, { value: "out", label: "Verilen (kendi çekimiz / senedimiz)" }] },

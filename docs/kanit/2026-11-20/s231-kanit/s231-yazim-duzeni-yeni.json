@@ -1,0 +1,32 @@
+{
+  "ad": "s231-yazim-duzeni-yeni",
+  "komut": "node --test test/yazim-duzeni.test.mjs",
+  "commit": "bcb4f263f863f64be02d6f187cd8a563d89a3213",
+  "dal": "worktree-agent-a5ab5fcddbbc37322",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T02:05:27.163Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s231-a5ab/2026-11-21/s231-yazim-duzeni-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a5ab5fcddbbc37322",
+  "ham_cikti_sha256": "3211010dfc314257c5f4b9c8f0e6da2cec25b5423d4b15ac750000a948de617f",
+  "ham_cikti_bayt": 1624
+}

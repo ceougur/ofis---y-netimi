@@ -1,0 +1,178 @@
+TAP version 13
+# (node:11415) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kişi
+    # Subtest: (1) iki ayrı cari aynı ad + farklı telefon: satır sırası iki yönde, her kişiye kendi kartı ve borcu
+    ok 1 - (1) iki ayrı cari aynı ad + farklı telefon: satır sırası iki yönde, her kişiye kendi kartı ve borcu
+      ---
+      duration_ms: 355.763084
+      type: 'test'
+      ...
+    # Subtest: (2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (S223 = A: Türkçe harf katlamalı; önceden yalnız ASCII katlanıyordu)
+    ok 2 - (2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (S223 = A: Türkçe harf katlamalı; önceden yalnız ASCII katlanıyordu)
+      ---
+      duration_ms: 33.23771
+      type: 'test'
+      ...
+    # Subtest: (3) telefonsuz satır + aynı adlı iki (telefonlu) kişi: kişi kesin değil → atlanır, yeni neden; kart / cari / borç açılmaz
+    ok 3 - (3) telefonsuz satır + aynı adlı iki (telefonlu) kişi: kişi kesin değil → atlanır, yeni neden; kart / cari / borç açılmaz
+      ---
+      duration_ms: 24.666973
+      type: 'test'
+      ...
+    # Subtest: (4) telefonlu satır + aynı adlı TELEFONSUZ carinin kartı: kişi kesin değil → atlanır (çift borç yok)
+    ok 4 - (4) telefonlu satır + aynı adlı TELEFONSUZ carinin kartı: kişi kesin değil → atlanır (çift borç yok)
+      ---
+      duration_ms: 63.883765
+      type: 'test'
+      ...
+    # Subtest: (5) aynı dosyada aynı kişi iki satır: ikinci satır atlanır; telefonu farklı üçüncü kişi yeni carisiyle açılır
+    ok 5 - (5) aynı dosyada aynı kişi iki satır: ikinci satır atlanır; telefonu farklı üçüncü kişi yeni carisiyle açılır
+      ---
+      duration_ms: 62.810857
+      type: 'test'
+      ...
+    # Subtest: (6) grup: telefonsuz satır yalnız aynı gruptaki telefonsuz cariyi bulur; başka gruptaki aynı adlı kart denetime girmez
+    ok 6 - (6) grup: telefonsuz satır yalnız aynı gruptaki telefonsuz cariyi bulur; başka gruptaki aynı adlı kart denetime girmez
+      ---
+      duration_ms: 67.745528
+      type: 'test'
+      ...
+    # Subtest: (7) telefonsuz satır + aynı adlı tek telefonsuz cari (aynı grup, kartsız) ve telefonlu başka kişinin kartı: kişi kesin → kendi carisiyle açılır
+    ok 7 - (7) telefonsuz satır + aynı adlı tek telefonsuz cari (aynı grup, kartsız) ve telefonlu başka kişinin kartı: kişi kesin → kendi carisiyle açılır
+      ---
+      duration_ms: 105.518788
+      type: 'test'
+      ...
+    # Subtest: (9) Geri Al: yalnız bu yüklemenin açtığı kart ve cari kalkar; önceden var olan aynı adlı carinin kartı ve borcu kalır
+    ok 8 - (9) Geri Al: yalnız bu yüklemenin açtığı kart ve cari kalkar; önceden var olan aynı adlı carinin kartı ve borcu kalır
+      ---
+      duration_ms: 262.679161
+      type: 'test'
+      ...
+    # Subtest: (10) kilitli dönem: aynı adlı ikinci kişinin satırı KİLİT nedeniyle atlanır, cari açılmaz; yükleme durmaz
+    ok 9 - (10) kilitli dönem: aynı adlı ikinci kişinin satırı KİLİT nedeniyle atlanır, cari açılmaz; yükleme durmaz
+      ---
+      duration_ms: 521.480046
+      type: 'test'
+      ...
+    # Subtest: (11) ad eşleşmesi: önce veri tabanının NOCASE kuralı (hız düzeltmesinin eşdeğerliği), bulamazsa Türkçe harf katlaması (S223 = A); I / ı, İ / i aynı kişi
+    ok 10 - (11) ad eşleşmesi: önce veri tabanının NOCASE kuralı (hız düzeltmesinin eşdeğerliği), bulamazsa Türkçe harf katlaması (S223 = A); I / ı, İ / i aynı kişi
+      ---
+      duration_ms: 65.612719
+      type: 'test'
+      ...
+    # Subtest: (8) carisiz eski kart: kartın kendi telefonu aynıysa aynı kişi (atlanır), 7+ hane ve farklıysa başka kişi (açılır)
+    ok 11 - (8) carisiz eski kart: kartın kendi telefonu aynıysa aynı kişi (atlanır), 7+ hane ve farklıysa başka kişi (açılır)
+      ---
+      duration_ms: 75.583701
+      type: 'test'
+      ...
+    1..11
+ok 1 - Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kişi
+  ---
+  duration_ms: 2753.194697
+  type: 'suite'
+  ...
+# (node:11417) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S223 = A / S228 = A — içe aktarmalarda Türkçe harf katlamalı kişi adı
+    # Subtest: (0) foldPersonName = foldName (bütün Unicode kod noktaları + I / İ / birleşen nokta bileşimleri); örnek katlamalar
+    ok 1 - (0) foldPersonName = foldName (bütün Unicode kod noktaları + I / İ / birleşen nokta bileşimleri); örnek katlamalar
+      ---
+      duration_ms: 23487.728745
+      type: 'test'
+      ...
+    # Subtest: (1) cari Excel — ad + telefon: büyük harf / I-ı / İ-i / Ş Ğ Ü Ö Ç / boşluk / ayrık noktalı İ ile yazılan kişi VAR OLAN cari (yeni cari açılmaz); telefonu farklı aynı ad ayrı kişi
+    ok 2 - (1) cari Excel — ad + telefon: büyük harf / I-ı / İ-i / Ş Ğ Ü Ö Ç / boşluk / ayrık noktalı İ ile yazılan kişi VAR OLAN cari (yeni cari açılmaz); telefonu farklı aynı ad ayrı kişi
+      ---
+      duration_ms: 216.546932
+      type: 'test'
+      ...
+    # Subtest: (2) cari Excel — Cari No + ad: aynı No + büyük harfli ad aynı cari; aynı ad başka No (telefonsuz) yeni cari (2.0.19 kuralı); aynı Excel ikinci kez de öyle
+    ok 3 - (2) cari Excel — Cari No + ad: aynı No + büyük harfli ad aynı cari; aynı ad başka No (telefonsuz) yeni cari (2.0.19 kuralı); aynı Excel ikinci kez de öyle
+      ---
+      duration_ms: 47.262821
+      type: 'test'
+      ...
+    # Subtest: (3) cari Excel — aynı dosyada aynı kişi iki satır, biri büyük harfle: ilk satırın açtığı cari ikinciye görünür (yükleme içi harita)
+    ok 4 - (3) cari Excel — aynı dosyada aynı kişi iki satır, biri büyük harfle: ilk satırın açtığı cari ikinciye görünür (yükleme içi harita)
+      ---
+      duration_ms: 23.789415
+      type: 'test'
+      ...
+    # Subtest: (4) taksit Excel — büyük harfle yazılan kişi var olan carisine bağlanır (yeni cari yok); aynı Excel ikinci kez çift kart açmaz; borç doğru cariye
+    ok 5 - (4) taksit Excel — büyük harfle yazılan kişi var olan carisine bağlanır (yeni cari yok); aynı Excel ikinci kez çift kart açmaz; borç doğru cariye
+      ---
+      duration_ms: 164.25443
+      type: 'test'
+      ...
+    # Subtest: (5) taksit Excel — var olan kart başka yazımla (önce 'Şule Çakır' açılır, sonra 'ŞULE ÇAKIR'): yinelenen kart görülür, çift kart / borç yok (telefonsuz + aynı grup dahil)
+    ok 6 - (5) taksit Excel — var olan kart başka yazımla (önce 'Şule Çakır' açılır, sonra 'ŞULE ÇAKIR'): yinelenen kart görülür, çift kart / borç yok (telefonsuz + aynı grup dahil)
+      ---
+      duration_ms: 99.12111
+      type: 'test'
+      ...
+    # Subtest: (6) S228 = A — var olan ÇİFT cari ('Zeynep Kılıç' + 'ZEYNEP KILIÇ', telefonsuz, aynı grup): bugünkü bağlantı korunur; ikisine de uymayan yazım bugünkü gibi şüpheli
+    ok 7 - (6) S228 = A — var olan ÇİFT cari ('Zeynep Kılıç' + 'ZEYNEP KILIÇ', telefonsuz, aynı grup): bugünkü bağlantı korunur; ikisine de uymayan yazım bugünkü gibi şüpheli
+      ---
+      duration_ms: 189.08739
+      type: 'test'
+      ...
+    # Subtest: (7) S228 = A — bugün NOCASE ile bağlanan satır değişmez: 'Irmak Yilmaz' (ASCII i) satırı 'IRMAK YILMAZ' carisine (Türkçe katlamada farklı ad; bugünkü bağ korunur)
+    ok 8 - (7) S228 = A — bugün NOCASE ile bağlanan satır değişmez: 'Irmak Yilmaz' (ASCII i) satırı 'IRMAK YILMAZ' carisine (Türkçe katlamada farklı ad; bugünkü bağ korunur)
+      ---
+      duration_ms: 54.976213
+      type: 'test'
+      ...
+    # Subtest: (8) taksit Excel — aynı dosyada aynı kişi iki yazımla (önce büyük harf): ilk satırın açtığı cari + kart ikinci satıra görünür
+    ok 9 - (8) taksit Excel — aynı dosyada aynı kişi iki yazımla (önce büyük harf): ilk satırın açtığı cari + kart ikinci satıra görünür
+      ---
+      duration_ms: 32.026731
+      type: 'test'
+      ...
+    # Subtest: (9) taksit Excel — kilitli dönemde geri alınan satırın carisi sonraki (başka yazımlı) satıra aday olmaz; Geri Al yalnız kendi açtığını siler
+    ok 10 - (9) taksit Excel — kilitli dönemde geri alınan satırın carisi sonraki (başka yazımlı) satıra aday olmaz; Geri Al yalnız kendi açtığını siler
+      ---
+      duration_ms: 420.154357
+      type: 'test'
+      ...
+    # Subtest: (10) çek / senet içe aktarma — keşideci büyük harfle var olan tek cariye bağlanır; aynı dosyada iki yazım kendi sonucunu alır (önbellek); çift caride birebir yazım kendi carisine
+    ok 11 - (10) çek / senet içe aktarma — keşideci büyük harfle var olan tek cariye bağlanır; aynı dosyada iki yazım kendi sonucunu alır (önbellek); çift caride birebir yazım kendi carisine
+      ---
+      duration_ms: 82.936978
+      type: 'test'
+      ...
+    # Subtest: (11) Tablodan Aktar — tablodaki 'AHMET KOÇ' var olan 'Ahmet Koç' (aynı telefon) carisine: ön izleme 'eşleşen cari' der, aktarım yeni cari açmaz; Geri Al cariyi silmez
+    ok 12 - (11) Tablodan Aktar — tablodaki 'AHMET KOÇ' var olan 'Ahmet Koç' (aynı telefon) carisine: ön izleme 'eşleşen cari' der, aktarım yeni cari açmaz; Geri Al cariyi silmez
+      ---
+      duration_ms: 139.489221
+      type: 'test'
+      ...
+    # Subtest: (12) silinmiş cari aday olmaz: 'Bora Ünsal' silinince 'BORA ÜNSAL' satırı (taksit, cari Excel, çek) silinen cariye bağlanmaz
+    ok 13 - (12) silinmiş cari aday olmaz: 'Bora Ünsal' silinince 'BORA ÜNSAL' satırı (taksit, cari Excel, çek) silinen cariye bağlanmaz
+      ---
+      duration_ms: 88.246155
+      type: 'test'
+      ...
+    # Subtest: (13) S228 = A 'bugünkü karşılaştırma bulamazsa' EŞLEŞME düzeyinde: NOCASE aynı adı bulur ama telefonu tutmazsa (başka kişi) Türkçe katlamadaki aynı telefonlu cari seçilir
+    ok 14 - (13) S228 = A 'bugünkü karşılaştırma bulamazsa' EŞLEŞME düzeyinde: NOCASE aynı adı bulur ama telefonu tutmazsa (başka kişi) Türkçe katlamadaki aynı telefonlu cari seçilir
+      ---
+      duration_ms: 63.893139
+      type: 'test'
+      ...
+    1..14
+ok 2 - S223 = A / S228 = A — içe aktarmalarda Türkçe harf katlamalı kişi adı
+  ---
+  duration_ms: 26483.161917
+  type: 'suite'
+  ...
+1..2
+# tests 25
+# suites 2
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27022.519214

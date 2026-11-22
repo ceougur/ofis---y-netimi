@@ -1,0 +1,10 @@
+komşu bitti 7.08 7.20 5.82 5/148 9943
+mutant bitti
+D yeni utc # tests 4 # pass 4 # fail 0 # cancelled 0 # skipped 0 
+D yeni ist # tests 4 # pass 4 # fail 0 # cancelled 0 # skipped 0 
+D taban utc # tests 0 # pass 0 # fail 0 # cancelled 0 # skipped 0 
+5.26 6.17 5.69 5/151 10776
+ekran yeni çıkış 0 Senaryo S223 (Türkçe harf katlamalı kişi adı): 26 geçti, 0 kaldı. Ekranlar: ../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/ekran-yeni
+5.91 6.18 5.72 8/180 11048
+ekran taban çıkış 1 Senaryo S223 (Türkçe harf katlamalı kişi adı): 16 geçti, 10 kaldı. Ekranlar: ../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/ekran-taban
+BİTTİ

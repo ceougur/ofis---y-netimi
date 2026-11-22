@@ -1,0 +1,397 @@
+TAP version 13
+# (node:15341) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kişi
+    # Subtest: (1) iki ayrı cari aynı ad + farklı telefon: satır sırası iki yönde, her kişiye kendi kartı ve borcu
+    ok 1 - (1) iki ayrı cari aynı ad + farklı telefon: satır sırası iki yönde, her kişiye kendi kartı ve borcu
+      ---
+      duration_ms: 211.814821
+      type: 'test'
+      ...
+    # Subtest: (2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (S223 = A: Türkçe harf katlamalı; önceden yalnız ASCII katlanıyordu)
+    ok 2 - (2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (S223 = A: Türkçe harf katlamalı; önceden yalnız ASCII katlanıyordu)
+      ---
+      duration_ms: 18.825452
+      type: 'test'
+      ...
+    # Subtest: (3) telefonsuz satır + aynı adlı iki (telefonlu) kişi: kişi kesin değil → atlanır, yeni neden; kart / cari / borç açılmaz
+    ok 3 - (3) telefonsuz satır + aynı adlı iki (telefonlu) kişi: kişi kesin değil → atlanır, yeni neden; kart / cari / borç açılmaz
+      ---
+      duration_ms: 18.241094
+      type: 'test'
+      ...
+    # Subtest: (4) telefonlu satır + aynı adlı TELEFONSUZ carinin kartı: kişi kesin değil → atlanır (çift borç yok)
+    ok 4 - (4) telefonlu satır + aynı adlı TELEFONSUZ carinin kartı: kişi kesin değil → atlanır (çift borç yok)
+      ---
+      duration_ms: 47.512596
+      type: 'test'
+      ...
+    # Subtest: (5) aynı dosyada aynı kişi iki satır: ikinci satır atlanır; telefonu farklı üçüncü kişi yeni carisiyle açılır
+    ok 5 - (5) aynı dosyada aynı kişi iki satır: ikinci satır atlanır; telefonu farklı üçüncü kişi yeni carisiyle açılır
+      ---
+      duration_ms: 45.736114
+      type: 'test'
+      ...
+    # Subtest: (6) grup: telefonsuz satır yalnız aynı gruptaki telefonsuz cariyi bulur; başka gruptaki aynı adlı kart denetime girmez
+    ok 6 - (6) grup: telefonsuz satır yalnız aynı gruptaki telefonsuz cariyi bulur; başka gruptaki aynı adlı kart denetime girmez
+      ---
+      duration_ms: 45.452248
+      type: 'test'
+      ...
+    # Subtest: (7) telefonsuz satır + aynı adlı tek telefonsuz cari (aynı grup, kartsız) ve telefonlu başka kişinin kartı: kişi kesin → kendi carisiyle açılır
+    ok 7 - (7) telefonsuz satır + aynı adlı tek telefonsuz cari (aynı grup, kartsız) ve telefonlu başka kişinin kartı: kişi kesin → kendi carisiyle açılır
+      ---
+      duration_ms: 67.36746
+      type: 'test'
+      ...
+    # Subtest: (9) Geri Al: yalnız bu yüklemenin açtığı kart ve cari kalkar; önceden var olan aynı adlı carinin kartı ve borcu kalır
+    ok 8 - (9) Geri Al: yalnız bu yüklemenin açtığı kart ve cari kalkar; önceden var olan aynı adlı carinin kartı ve borcu kalır
+      ---
+      duration_ms: 117.531866
+      type: 'test'
+      ...
+    # Subtest: (10) kilitli dönem: aynı adlı ikinci kişinin satırı KİLİT nedeniyle atlanır, cari açılmaz; yükleme durmaz
+    ok 9 - (10) kilitli dönem: aynı adlı ikinci kişinin satırı KİLİT nedeniyle atlanır, cari açılmaz; yükleme durmaz
+      ---
+      duration_ms: 314.28964
+      type: 'test'
+      ...
+    # Subtest: (11) ad eşleşmesi: önce veri tabanının NOCASE kuralı (hız düzeltmesinin eşdeğerliği), bulamazsa Türkçe harf katlaması (S223 = A); I / ı, İ / i aynı kişi
+    ok 10 - (11) ad eşleşmesi: önce veri tabanının NOCASE kuralı (hız düzeltmesinin eşdeğerliği), bulamazsa Türkçe harf katlaması (S223 = A); I / ı, İ / i aynı kişi
+      ---
+      duration_ms: 45.456527
+      type: 'test'
+      ...
+    # Subtest: (8) carisiz eski kart: kartın kendi telefonu aynıysa aynı kişi (atlanır), 7+ hane ve farklıysa başka kişi (açılır)
+    ok 11 - (8) carisiz eski kart: kartın kendi telefonu aynıysa aynı kişi (atlanır), 7+ hane ve farklıysa başka kişi (açılır)
+      ---
+      duration_ms: 44.631881
+      type: 'test'
+      ...
+    1..11
+ok 1 - Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kişi
+  ---
+  duration_ms: 1514.719789
+  type: 'suite'
+  ...
+# (node:15342) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S223 / S228 — kabul D: v2.4.9'un verisinde Türkçe harf katlamalı eşleşme (sınıf listesi)
+    # Subtest: v2.4.9'da hata VAR (elle beklenen): büyük harfli cari Excel çift cari, taksit Excel çift cari + kart, çek bağlanmaz
+    ok 1 - v2.4.9'da hata VAR (elle beklenen): büyük harfli cari Excel çift cari, taksit Excel çift cari + kart, çek bağlanmaz
+      ---
+      duration_ms: 1.641633
+      type: 'test'
+      ...
+    # Subtest: C1–C3 cari Excel: tek aday büyük harf → var; v2.4.9'un çiftinde birebir yazım bugünkü carisi, iki adaylı yazım yeni cari; yok aday yeni cari
+    ok 2 - C1–C3 cari Excel: tek aday büyük harf → var; v2.4.9'un çiftinde birebir yazım bugünkü carisi, iki adaylı yazım yeni cari; yok aday yeni cari
+      ---
+      duration_ms: 27.693765
+      type: 'test'
+      ...
+    # Subtest: C4–C7 taksit Excel: tek aday büyük harf / boşluk → var olan cari; çift caride bugünkü bağ; iki adaylı yazım atlanır; yok aday yeni cari
+    ok 3 - C4–C7 taksit Excel: tek aday büyük harf / boşluk → var olan cari; çift caride bugünkü bağ; iki adaylı yazım atlanır; yok aday yeni cari
+      ---
+      duration_ms: 70.757261
+      type: 'test'
+      ...
+    # Subtest: C8–C10 çek / senet: tek aday büyük harf bağlanır; çift caride birebir yazım kendi carisine; iki adaylı ve tanınmayan ad carisiz
+    ok 4 - C8–C10 çek / senet: tek aday büyük harf bağlanır; çift caride birebir yazım kendi carisine; iki adaylı ve tanınmayan ad carisiz
+      ---
+      duration_ms: 31.855853
+      type: 'test'
+      ...
+    1..4
+ok 2 - S223 / S228 — kabul D: v2.4.9'un verisinde Türkçe harf katlamalı eşleşme (sınıf listesi)
+  ---
+  duration_ms: 1251.112001
+  type: 'suite'
+  ...
+# (node:15343) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S223 = A / S228 = A — içe aktarmalarda Türkçe harf katlamalı kişi adı
+    # Subtest: (0) foldPersonName = foldName (bütün Unicode kod noktaları + I / İ / birleşen nokta bileşimleri); örnek katlamalar
+    ok 1 - (0) foldPersonName = foldName (bütün Unicode kod noktaları + I / İ / birleşen nokta bileşimleri); örnek katlamalar
+      ---
+      duration_ms: 22566.186154
+      type: 'test'
+      ...
+    # Subtest: (1) cari Excel — ad + telefon: büyük harf / I-ı / İ-i / Ş Ğ Ü Ö Ç / boşluk / ayrık noktalı İ ile yazılan kişi VAR OLAN cari (yeni cari açılmaz); telefonu farklı aynı ad ayrı kişi
+    ok 2 - (1) cari Excel — ad + telefon: büyük harf / I-ı / İ-i / Ş Ğ Ü Ö Ç / boşluk / ayrık noktalı İ ile yazılan kişi VAR OLAN cari (yeni cari açılmaz); telefonu farklı aynı ad ayrı kişi
+      ---
+      duration_ms: 135.260346
+      type: 'test'
+      ...
+    # Subtest: (2) cari Excel — Cari No + ad: aynı No + büyük harfli ad aynı cari; aynı ad başka No (telefonsuz) yeni cari (2.0.19 kuralı); aynı Excel ikinci kez de öyle
+    ok 3 - (2) cari Excel — Cari No + ad: aynı No + büyük harfli ad aynı cari; aynı ad başka No (telefonsuz) yeni cari (2.0.19 kuralı); aynı Excel ikinci kez de öyle
+      ---
+      duration_ms: 40.24234
+      type: 'test'
+      ...
+    # Subtest: (3) cari Excel — aynı dosyada aynı kişi iki satır, biri büyük harfle: ilk satırın açtığı cari ikinciye görünür (yükleme içi harita)
+    ok 4 - (3) cari Excel — aynı dosyada aynı kişi iki satır, biri büyük harfle: ilk satırın açtığı cari ikinciye görünür (yükleme içi harita)
+      ---
+      duration_ms: 18.597882
+      type: 'test'
+      ...
+    # Subtest: (4) taksit Excel — büyük harfle yazılan kişi var olan carisine bağlanır (yeni cari yok); aynı Excel ikinci kez çift kart açmaz; borç doğru cariye
+    ok 5 - (4) taksit Excel — büyük harfle yazılan kişi var olan carisine bağlanır (yeni cari yok); aynı Excel ikinci kez çift kart açmaz; borç doğru cariye
+      ---
+      duration_ms: 139.341837
+      type: 'test'
+      ...
+    # Subtest: (5) taksit Excel — var olan kart başka yazımla (önce 'Şule Çakır' açılır, sonra 'ŞULE ÇAKIR'): yinelenen kart görülür, çift kart / borç yok (telefonsuz + aynı grup dahil)
+    ok 6 - (5) taksit Excel — var olan kart başka yazımla (önce 'Şule Çakır' açılır, sonra 'ŞULE ÇAKIR'): yinelenen kart görülür, çift kart / borç yok (telefonsuz + aynı grup dahil)
+      ---
+      duration_ms: 88.722863
+      type: 'test'
+      ...
+    # Subtest: (6) S228 = A — var olan ÇİFT cari ('Zeynep Kılıç' + 'ZEYNEP KILIÇ', telefonsuz, aynı grup): bugünkü bağlantı korunur; ikisine de uymayan yazım bugünkü gibi şüpheli
+    ok 7 - (6) S228 = A — var olan ÇİFT cari ('Zeynep Kılıç' + 'ZEYNEP KILIÇ', telefonsuz, aynı grup): bugünkü bağlantı korunur; ikisine de uymayan yazım bugünkü gibi şüpheli
+      ---
+      duration_ms: 163.547545
+      type: 'test'
+      ...
+    # Subtest: (7) S228 = A — bugün NOCASE ile bağlanan satır değişmez: 'Irmak Yilmaz' (ASCII i) satırı 'IRMAK YILMAZ' carisine (Türkçe katlamada farklı ad; bugünkü bağ korunur)
+    ok 8 - (7) S228 = A — bugün NOCASE ile bağlanan satır değişmez: 'Irmak Yilmaz' (ASCII i) satırı 'IRMAK YILMAZ' carisine (Türkçe katlamada farklı ad; bugünkü bağ korunur)
+      ---
+      duration_ms: 37.603611
+      type: 'test'
+      ...
+    # Subtest: (8) taksit Excel — aynı dosyada aynı kişi iki yazımla (önce büyük harf): ilk satırın açtığı cari + kart ikinci satıra görünür
+    ok 9 - (8) taksit Excel — aynı dosyada aynı kişi iki yazımla (önce büyük harf): ilk satırın açtığı cari + kart ikinci satıra görünür
+      ---
+      duration_ms: 16.335721
+      type: 'test'
+      ...
+# (node:15343) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: (9) taksit Excel — kilitli dönemde geri alınan satırın carisi sonraki (başka yazımlı) satıra aday olmaz; Geri Al yalnız kendi açtığını siler
+    ok 10 - (9) taksit Excel — kilitli dönemde geri alınan satırın carisi sonraki (başka yazımlı) satıra aday olmaz; Geri Al yalnız kendi açtığını siler
+      ---
+      duration_ms: 331.624041
+      type: 'test'
+      ...
+    # Subtest: (10) çek / senet içe aktarma — keşideci büyük harfle var olan tek cariye bağlanır; aynı dosyada iki yazım kendi sonucunu alır (önbellek); çift caride birebir yazım kendi carisine
+    ok 11 - (10) çek / senet içe aktarma — keşideci büyük harfle var olan tek cariye bağlanır; aynı dosyada iki yazım kendi sonucunu alır (önbellek); çift caride birebir yazım kendi carisine
+      ---
+      duration_ms: 54.981696
+      type: 'test'
+      ...
+    # Subtest: (11) Tablodan Aktar — tablodaki 'AHMET KOÇ' var olan 'Ahmet Koç' (aynı telefon) carisine: ön izleme 'eşleşen cari' der, aktarım yeni cari açmaz; Geri Al cariyi silmez
+    ok 12 - (11) Tablodan Aktar — tablodaki 'AHMET KOÇ' var olan 'Ahmet Koç' (aynı telefon) carisine: ön izleme 'eşleşen cari' der, aktarım yeni cari açmaz; Geri Al cariyi silmez
+      ---
+      duration_ms: 101.167202
+      type: 'test'
+      ...
+    # Subtest: (12) silinmiş cari aday olmaz: 'Bora Ünsal' silinince 'BORA ÜNSAL' satırı (taksit, cari Excel, çek) silinen cariye bağlanmaz
+    ok 13 - (12) silinmiş cari aday olmaz: 'Bora Ünsal' silinince 'BORA ÜNSAL' satırı (taksit, cari Excel, çek) silinen cariye bağlanmaz
+      ---
+      duration_ms: 59.770866
+      type: 'test'
+      ...
+    # Subtest: (13) S228 = A 'bugünkü karşılaştırma bulamazsa' EŞLEŞME düzeyinde: NOCASE aynı adı bulur ama telefonu tutmazsa (başka kişi) Türkçe katlamadaki aynı telefonlu cari seçilir
+    ok 14 - (13) S228 = A 'bugünkü karşılaştırma bulamazsa' EŞLEŞME düzeyinde: NOCASE aynı adı bulur ama telefonu tutmazsa (başka kişi) Türkçe katlamadaki aynı telefonlu cari seçilir
+      ---
+      duration_ms: 64.559302
+      type: 'test'
+      ...
+    1..14
+ok 3 - S223 = A / S228 = A — içe aktarmalarda Türkçe harf katlamalı kişi adı
+  ---
+  duration_ms: 24367.073026
+  type: 'suite'
+  ...
+# (node:15366) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünkiyle eşdeğer
+    # Subtest: (1) foldJoinedNames: birleşik metnin her öğesi foldPersonName ile aynı (bütün kod noktaları × bağlam)
+    ok 1 - (1) foldJoinedNames: birleşik metnin her öğesi foldPersonName ile aynı (bütün kod noktaları × bağlam)
+      ---
+      duration_ms: 11807.329099
+      type: 'test'
+      ...
+    # Subtest: (2) foldedNameLookup ↔ foldedNameIndex: aranan, aranmayan, eklenen kayıt ve ayraçlı metinde aynı kimlikler
+    ok 2 - (2) foldedNameLookup ↔ foldedNameIndex: aranan, aranmayan, eklenen kayıt ve ayraçlı metinde aynı kimlikler
+      ---
+      duration_ms: 4.03497
+      type: 'test'
+      ...
+    # Subtest: (3) programda personIndexFor ↔ personIndex (matchName)
+        # Subtest: büyük / küçük harf, boşluk, çift cari, silinmiş cari, adında ayraç olan cari: aynı cari
+        not ok 1 - büyük / küçük harf, boşluk, çift cari, silinmiş cari, adında ayraç olan cari: aynı cari
+          ---
+          duration_ms: 139.123691
+          type: 'test'
+          location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a5ab5fcddbbc37322/test/s231-cek-hiz-esdegerlik-250.test.mjs:99:5'
+          failureType: 'testCodeFailure'
+          error: |-
+            çift caride iki adaylı yazım bağlanmaz (ön koşul)
+            + actual - expected
+            
+            + 'account-bfcf0b23-5c54-48c4-9c48-fc7be7cfbf07'
+            - ''
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: ''
+          actual: 'account-bfcf0b23-5c54-48c4-9c48-fc7be7cfbf07'
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a5ab5fcddbbc37322/test/s231-cek-hiz-esdegerlik-250.test.mjs:115:14)
+            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..1
+    not ok 3 - (3) programda personIndexFor ↔ personIndex (matchName)
+      ---
+      duration_ms: 576.312896
+      type: 'suite'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a5ab5fcddbbc37322/test/s231-cek-hiz-esdegerlik-250.test.mjs:90:3'
+      failureType: 'subtestsFailed'
+      error: '1 subtest failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..3
+not ok 4 - S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünkiyle eşdeğer
+  ---
+  duration_ms: 12389.146229
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a5ab5fcddbbc37322/test/s231-cek-hiz-esdegerlik-250.test.mjs:16:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: S231 — Çek / Senet eşleme penceresinin metni
+    # Subtest: yeni cümle var (cümle düzeni), eski 'birebir aynı olan tek cari' yok
+    ok 1 - yeni cümle var (cümle düzeni), eski 'birebir aynı olan tek cari' yok
+      ---
+      duration_ms: 1.358168
+      type: 'test'
+      ...
+    1..1
+ok 5 - S231 — Çek / Senet eşleme penceresinin metni
+  ---
+  duration_ms: 2.663775
+  type: 'suite'
+  ...
+# (node:15380) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S231 — kabul D: v2.4.9'un verisinde grup adı Türkçe harf katlamalı (sınıf listesi)
+    # Subtest: v2.4.9'da hata VAR (elle beklenen): 'ELİF SU' / 'IŞIK SERVİSİ' yeni grup + yeni cari + yeni kart (borç iki kez)
+    ok 1 - v2.4.9'da hata VAR (elle beklenen): 'ELİF SU' / 'IŞIK SERVİSİ' yeni grup + yeni cari + yeni kart (borç iki kez)
+      ---
+      duration_ms: 1.465548
+      type: 'test'
+      ...
+    # Subtest: G1–G3, G5 taksit Excel: tek aday grup büyük / küçük harfle bulunur; v2.4.9'un çift grubunda birebir yazım kendi grubuna, iki adaylı yazım yeni grup; alt grup; yok aday yeni grup
+    ok 2 - G1–G3, G5 taksit Excel: tek aday grup büyük / küçük harfle bulunur; v2.4.9'un çift grubunda birebir yazım kendi grubuna, iki adaylı yazım yeni grup; alt grup; yok aday yeni grup
+      ---
+      duration_ms: 109.048763
+      type: 'test'
+      ...
+    # Subtest: G4 cari Excel'in grup kolonu: 'ILGAZ HATTI' → v2.4.9'un 'Ilgaz Hattı' grubu (yeni grup yok)
+    ok 3 - G4 cari Excel'in grup kolonu: 'ILGAZ HATTI' → v2.4.9'un 'Ilgaz Hattı' grubu (yeni grup yok)
+      ---
+      duration_ms: 25.752392
+      type: 'test'
+      ...
+    1..3
+ok 6 - S231 — kabul D: v2.4.9'un verisinde grup adı Türkçe harf katlamalı (sınıf listesi)
+  ---
+  duration_ms: 1207.385938
+  type: 'suite'
+  ...
+# (node:15389) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası)
+    # Subtest: (1) S231 örneği: önce 'Elif Su' / 'Işık Servisi', sonra 'ELİF SU' / 'IŞIK SERVİSİ' (ikisi de telefonsuz) → AYNI grup, AYNI cari, TEK borç
+    ok 1 - (1) S231 örneği: önce 'Elif Su' / 'Işık Servisi', sonra 'ELİF SU' / 'IŞIK SERVİSİ' (ikisi de telefonsuz) → AYNI grup, AYNI cari, TEK borç
+      ---
+      duration_ms: 113.258446
+      type: 'test'
+      ...
+    # Subtest: (2) grup adı varyantları (ı / I, İ / i, küçük harf, boşluk, karışık) var olan 'Işık Servisi' grubunu bulur; 'ŞUBE A' ↔ 'Şube A' bugün de aynı (denetim)
+    ok 2 - (2) grup adı varyantları (ı / I, İ / i, küçük harf, boşluk, karışık) var olan 'Işık Servisi' grubunu bulur; 'ŞUBE A' ↔ 'Şube A' bugün de aynı (denetim)
+      ---
+      duration_ms: 42.769069
+      type: 'test'
+      ...
+    # Subtest: (3) telefonsuz kişi + aynı grup: büyük harfli grup yazımıyla var olan carisine bağlanır; aynı adlı iki kişi (iki ayrı grupta) kendi grubundaki carisine
+    ok 3 - (3) telefonsuz kişi + aynı grup: büyük harfli grup yazımıyla var olan carisine bağlanır; aynı adlı iki kişi (iki ayrı grupta) kendi grubundaki carisine
+      ---
+      duration_ms: 106.44846
+      type: 'test'
+      ...
+    # Subtest: (4) telefonlu kişi: grup eşleşmesi kişi eşleşmesini değiştirmez (telefonla var olan cariye); kart var olan gruba
+    ok 4 - (4) telefonlu kişi: grup eşleşmesi kişi eşleşmesini değiştirmez (telefonla var olan cariye); kart var olan gruba
+      ---
+      duration_ms: 30.729049
+      type: 'test'
+      ...
+    # Subtest: (5) alt grup: 'YILDIZ SİTESİ' / 'İÇ BLOK' var olan 'Yıldız Sitesi' › 'İç Blok'u bulur; aynı adlı alt grup BAŞKA ana grupta ayrı kalır
+    ok 5 - (5) alt grup: 'YILDIZ SİTESİ' / 'İÇ BLOK' var olan 'Yıldız Sitesi' › 'İç Blok'u bulur; aynı adlı alt grup BAŞKA ana grupta ayrı kalır
+      ---
+      duration_ms: 49.471899
+      type: 'test'
+      ...
+    # Subtest: (6) S228 sırası — var olan ÇİFT grup ('Çınar Durağı' + 'ÇINAR DURAĞI', elle açılmış): birebir yazım bugünkü grubuna; iki adaylı yazım bugünkü gibi yeni grup; elle grup formu katlamasız (DEĞİŞMEDİ)
+    ok 6 - (6) S228 sırası — var olan ÇİFT grup ('Çınar Durağı' + 'ÇINAR DURAĞI', elle açılmış): birebir yazım bugünkü grubuna; iki adaylı yazım bugünkü gibi yeni grup; elle grup formu katlamasız (DEĞİŞMEDİ)
+      ---
+      duration_ms: 35.884732
+      type: 'test'
+      ...
+    # Subtest: (6b) S228 sırası — bugün NOCASE ile bulunan grup DEĞİŞMEZ: 'irmak yolu' (ASCII i) satırı 'Irmak Yolu' grubuna (Türkçe katlamada 'İrmak Yolu' ile aynı olsa da)
+    ok 7 - (6b) S228 sırası — bugün NOCASE ile bulunan grup DEĞİŞMEZ: 'irmak yolu' (ASCII i) satırı 'Irmak Yolu' grubuna (Türkçe katlamada 'İrmak Yolu' ile aynı olsa da)
+      ---
+      duration_ms: 21.177978
+      type: 'test'
+      ...
+    # Subtest: (7) aynı dosyada iki yazım: ilk satırın açtığı 'Ilıca Yolu' ikinci ve üçüncü satıra görünür (tek grup)
+    ok 8 - (7) aynı dosyada iki yazım: ilk satırın açtığı 'Ilıca Yolu' ikinci ve üçüncü satıra görünür (tek grup)
+      ---
+      duration_ms: 16.977102
+      type: 'test'
+      ...
+    # Subtest: (8) kilitli dönem: geri alınan satırın açtığı grup sonraki (başka yazımlı) satıra aday olmaz; kartın grubu var
+    ok 9 - (8) kilitli dönem: geri alınan satırın açtığı grup sonraki (başka yazımlı) satıra aday olmaz; kartın grubu var
+      ---
+      duration_ms: 284.814268
+      type: 'test'
+      ...
+    # Subtest: (9) Tablodan Aktar: sayfa adı 'IŞIL KAFE' var olan 'Işıl Kafe' grubunu bulur — ön izleme 'eşleşen cari', aktarım yeni grup / cari açmaz; Geri Al var olan grubu SİLMEZ
+    ok 10 - (9) Tablodan Aktar: sayfa adı 'IŞIL KAFE' var olan 'Işıl Kafe' grubunu bulur — ön izleme 'eşleşen cari', aktarım yeni grup / cari açmaz; Geri Al var olan grubu SİLMEZ
+      ---
+      duration_ms: 119.519702
+      type: 'test'
+      ...
+    # Subtest: (10) cari Excel'in grup kolonu: 'IŞIL KAFE' yazımı var olan 'Işıl Kafe' grubuna (yeni grup açılmaz)
+    ok 11 - (10) cari Excel'in grup kolonu: 'IŞIL KAFE' yazımı var olan 'Işıl Kafe' grubuna (yeni grup açılmaz)
+      ---
+      duration_ms: 16.218278
+      type: 'test'
+      ...
+    # Subtest: (11) elle grup formu ve yeniden adlandırma DEĞİŞMEDİ: 'IŞIK SERVİSİ' elle yeni grup açar; 'ılgaz hattı' adına yeniden adlandırma çakışma saymaz; NOCASE çakışması bugünkü gibi reddedilir
+    ok 12 - (11) elle grup formu ve yeniden adlandırma DEĞİŞMEDİ: 'IŞIK SERVİSİ' elle yeni grup açar; 'ılgaz hattı' adına yeniden adlandırma çakışma saymaz; NOCASE çakışması bugünkü gibi reddedilir
+      ---
+      duration_ms: 26.315328
+      type: 'test'
+      ...
+    1..12
+ok 7 - S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası)
+  ---
+  duration_ms: 1308.706953
+  type: 'suite'
+  ...
+1..7
+# tests 48
+# suites 8
+# pass 47
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24802.82249
