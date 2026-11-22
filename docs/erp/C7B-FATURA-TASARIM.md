@@ -902,3 +902,6 @@ BAŞ MİMAR KARARI 21.11 18:28 (1)–(7). Taban 288b91dc (izt-sinama). Bugünkü
   sınamaları 94 / 94 (gateVerify eşdeğerliği dahil). BAŞ MİMAR KARARI GEREKEN (rapor).
 - KOD SÜRERKEN GÖRÜLDÜ (kararların söylemediği; bugünkü davranış AYNEN — rapor 'KULLANICIYA SORULMALI'): iadeyle küçülen taksit sonradan elle düzenlenip / silinip iade iptal edilince geri gelen tutar
   kaydedilmiş taksite yazılır (tutarı elle değişmişse üstüne eklenir, vadesi elle değişmişse yeni vadesiyle, silinmişse eski vadesiyle yeniden açılır); sayılar `p1-*.txt` ELLE-*.
+- KOD SÜRERKEN DEĞİŞTİ (hız ölçümü 1 — ders 47, 53 (a); kanıt `izt2-hiz/tablo-1-kotulesme.md`, teşhis profili `tani-*.txt`): Düzenle kesintisi ilk hâlde `lib/account-lines.mjs returnCuts`'a bütün satış faturalarını tarayan
+  sorguyla ekleniyordu (100 bin veride 17 ms; işlem içinde istek başına birkaç kez) → kart penceresi GET +%44, iade yazımı +%45 / +%59, fatura İptal Et +%30, Düzenle (aynı içerik) +%16. Kesinti kartın kapsamına artık
+  `withEditCuts` içinde, girdinin kendi faturalarından eklenir (account-lines değişmedi). Hız ölçümü 2 (`izt2-hiz/tablo-2.md`): kötüleşen yol yok (en büyük ortanca farkı Kartı Kapat +%8,0, en iyisi −%0,2).
