@@ -1,0 +1,14 @@
+MİKRO başta 1.17 1.05 1.05 5/129 16122 11:54:01
+=== tur 1 · eski · başta 1.17 1.05 1.05 1/127 16156
+MİKRO | eski | cari 12 | en iyi 217.0 | ortanca 253.9 | yük 1.21 1.08 1.06
+=== tur 1 · yeni · başta 1.21 1.08 1.06 1/127 16198
+MİKRO | agent-ad3ee8a705a609628 | cari 12 | en iyi 235.1 | ortanca 311.9 | yük 1.50 1.18 1.09
+=== tur 2 · eski · başta 1.50 1.18 1.09 1/127 16239
+MİKRO | eski | cari 12 | en iyi 257.8 | ortanca 286.4 | yük 1.98 1.31 1.14
+=== tur 2 · yeni · başta 1.98 1.31 1.14 1/127 16283
+MİKRO | agent-ad3ee8a705a609628 | cari 12 | en iyi 215.9 | ortanca 240.4 | yük 1.68 1.29 1.14
+=== tur 3 · eski · başta 1.68 1.29 1.14 1/127 16323
+MİKRO | eski | cari 12 | en iyi 216.7 | ortanca 257.5 | yük 1.60 1.31 1.15
+=== tur 3 · yeni · başta 1.60 1.31 1.15 1/127 16363
+MİKRO | agent-ad3ee8a705a609628 | cari 12 | en iyi 222.1 | ortanca 251.0 | yük 1.58 1.33 1.16
+bitti 11:57:12

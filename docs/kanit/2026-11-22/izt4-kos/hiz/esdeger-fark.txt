@@ -1,0 +1,2 @@
+cari 1484 1484 | sonucu farklı cari (geçiş sayısı hariç): 0 | ön ödeme geçişi toplamı eski 0 yeni 0
+geçiş sayısı farklı cari: 0
