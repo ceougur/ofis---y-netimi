@@ -1,0 +1,32 @@
+{
+  "ad": "aday250-senaryo-raporlar",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-raporlar.mjs",
+  "commit": "e7934c5e0003b4133eb8f9fd1193f9f19550c463",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 20,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-22T20:19:48.124Z",
+  "sure_sn": 34.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 87,
+    "gecen": 87,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-22/aday250-senaryo-raporlar.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "0a8f632a41f27e04fe1924aafe5bb2e83ffee652e0da3470b8982f8cb3a45cba",
+  "ham_cikti_bayt": 7590
+}
