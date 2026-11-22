@@ -168,8 +168,18 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       const rowids = [...(capture.rows.get(table) || [])];
       const posts = new Map(rowids.length ? all(`SELECT rowid AS __rowid, * FROM ${table} WHERE rowid IN ${IN}`, json(rowids)).map(row => [row.__rowid, row]) : []);
       const pres = capture.before.get(table) || new Map();
+      // 2.5.0 İzleyen tur 3 (docs/erp/C7B-FATURA-TASARIM.md §21.1): SQLite silinen en büyük rowid'i sonraki INSERT'e yeniden verir (Düzenle faturanın stok hareketlerini silip yeniden yazar).
+      // Son hâli bu işlemde store ile EKLENMİŞ rowid'de (capture.inserted — lib/db.mjs afterScopedInsert'in kesin izi) önceki hâlin kimliği farklıysa eşleşme İKİ satırdır: silinen ve eklenen —
+      // başka rowid'e yazılan DELETE + INSERT ile aynı model (iki kimliğin varlıkları kapsamda; kilit denetimi iki tarafı da değişmiş sayar). Önceden "kimlik değişti" tam kapıya düşüyordu (100 bin
+      // satırda ~7 sn). EKLENMEMİŞ rowid'de kimlik değişimi (UPDATE … SET id; gözden geçirme D8) bugünkü gibi tam kapı; store dışı yazım süzgece hiç gelmez (integrity.mjs sayaçlar).
+      const inserted = capture.inserted?.get(table);
       const list = [];
-      for (const rowid of new Set([...posts.keys(), ...pres.keys()])) list.push({ pre: pres.get(rowid) || null, post: posts.get(rowid) || null });
+      for (const rowid of new Set([...posts.keys(), ...pres.keys()])) {
+        const pre = pres.get(rowid) || null;
+        const post = posts.get(rowid) || null;
+        if (pre && post && String(pre.id ?? "") !== String(post.id ?? "") && inserted?.has(rowid)) list.push({ pre, post: null }, { pre: null, post });
+        else list.push({ pre, post });
+      }
       s.rows.set(table, list);
       for (const { pre, post } of list) if (pre && post && String(pre.id ?? "") !== String(post.id ?? "")) s.reason ||= `${table}: kimlik değişti`;
       // Hesap kartının türü / para birimi / ana ve alt hesabı değişti: bağlı satırların yolu ve alt hesabı başka hesaba geçer (rota hareketli
