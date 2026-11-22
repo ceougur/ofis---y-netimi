@@ -1,0 +1,15 @@
+✓ sıradaki kod 002 önerildi
+✓ 002 · Gayri Resmi Ltd. seçildi; ekran yeniden açıldı
+✓ 002 sıfırdan: cari yok, Kasa 0
+✓ 002'de veri yok: başlangıç ekranı; sayfa şeridi boş veriyle gizli
+✓ 2 şirketle seçicide + Yeni Şirket yok
+✓ senkron kartında şirket satırı “002 · Gayri Resmi Ltd.”
+✓ Yönetim → Şirketler listesi: 001, 002
+✓ Yönetim → Şirketler: + Yeni Şirket görünmüyor
+✓ Yönetim'de nedeni görünür: “En fazla 2 şirket kurulabilir. Yeni şirket açmak için önce bir şirketi silin.”
+✓ birleşik rapor toplam satırı (TOPLAM₺19.000,00₺0,00₺0,00₺700,00₺3.000,00₺7.800,00₺0,00₺4.1…)
+✓ 002 Kasa 777
+✓ sıfırlama sonrası 002 Kasa 0
+✓ 001 verisi aynı (Kasa 19000, 2 cari)
+
+65 / 65 kontrol geçti.

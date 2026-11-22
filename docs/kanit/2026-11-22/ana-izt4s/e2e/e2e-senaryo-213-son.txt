@@ -1,0 +1,15 @@
+
+■ 11. Dönem Kilidi: Yönetim → Sistem'de kilitle; kapalı güne hareket reddedilir; formlarda ileri tarih seçilemez; kilit kaldırılır
+✓ cari hareket formunda tarih seçici bugünden ileriyi göstermez (max = 2026-11-22)
+✓ kartta mutabakat durumu: Mutabakat: 65 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tu
+✓ kilit tarihi bugünden ileri seçilemez
+✓ kilitlendi: 21.11.2026 ve öncesi kilitli.
+✓ kapalı güne Kasa hareketi reddedildi: Hareket 21.11.2026 tarihli; 21.11.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.
+✓ kilit kaldırıldı
+✓ Eksi Bakiye Denetimi: yalnız Nakit Kasa, varsayılan Uyar (cash=warn)
+✓ kaydedildi: {"cash":"block","bank":"off","card":"off"}
+
+■ Tarayıcı hataları
+✓ hiçbir ekranda tarayıcı hatası yok
+
+64 / 64 kontrol geçti.

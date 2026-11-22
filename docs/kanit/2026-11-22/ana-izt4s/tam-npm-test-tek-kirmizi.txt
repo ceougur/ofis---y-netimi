@@ -1,0 +1,46 @@
+  type: 'suite'
+  ...
+# Subtest: tools/release.mjs YAPIM AŞAMASI kapısı
+    # Subtest: depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa dolu liste iletisi yok, git yokken 'okunamadı' der
+    not ok 1 - depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa dolu liste iletisi yok, git yokken 'okunamadı' der
+      ---
+      duration_ms: 77.572855
+      type: 'test'
+      location: '/dev/shm/izt4-sinama/test/yapim-asamasi-kapisi.test.mjs:179:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iletide yok: YAPIM AŞAMASI listesi çalışma ağacında commit'tekinden FARKLI (commit'te 63, çalışma ağacında 0 kayıt) — değişiklik git'ten gizlenmiş olabilir (update-index --skip-worktree / --assume-unchanged); paket commit'in listesiyle denetlenir
+        ✗ Doğrulanmamış commit'ten imzalı paket üretilmez:
+          - git durumu okunamadı
+          - CI BELİRSİZ: commit ya da GitHub deposu bulunamadı (null)
+          - YAPIM AŞAMASI listesi commit'ten okunamadı (git show HEAD:test/bagimsiz/cari/YAPIM-ASAMASI.json) — okunamayan liste boş sayılmaz
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/izt4-sinama/test/yapim-asamasi-kapisi.test.mjs:189:48)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+    ok 2 - release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+      ---
+      duration_ms: 0.336144
+      type: 'test'
+      ...
+    1..2
+not ok 1497 - tools/release.mjs YAPIM AŞAMASI kapısı
+  ---
+  duration_ms: 78.212246
+  type: 'suite'
+  location: '/dev/shm/izt4-sinama/test/yapim-asamasi-kapisi.test.mjs:178:1'

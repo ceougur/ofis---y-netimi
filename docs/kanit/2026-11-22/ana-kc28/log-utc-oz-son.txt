@@ -1,0 +1,25 @@
+  mutasyon 348 (Ç5 C38 (S246 A — bakım 25 davranışı): taksitli faturanın Düzenle ile artırılmasında kendi kartı ESKİ tutarda kalır, artış faturanın günüyle ayrı açık): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d57-c5-s241-s242-duzenle.json:k1:cari:P1:gecikmis)
+  mutasyon 349 (Ç5 C38 (S243 B — en yeni fatura): yalnız faturaların açık olduğu (E = 0) S200 kartı faturalardan EN YENİDEN başlayarak içine alır): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d56-c5-s238-s240-iade-ve-secilmeyen.json:k0:fatura:FN1A:gosterilen)
+  mutasyon 350 (Ç5 C38 (S235 A — kapanış korunur): Borçta Kalsın ile kapanmış tahsilatsız kendi kartında Düzenle ile artırma (bakım 27: ve S249 (b) azaltma) kartı KAPALI kurar): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d58-c5-s246-s243-kendi-kart-duzenle.json:k1:kart:fatura:FR2:kapali)
+  mutasyon 351 (Ç5 C39 (S249 B — iade gibi küçülür; bakım 26'da SK-48 SUS kuralının mutantıydı): kendi kartında Düzenle ile azaltma kartı vadesi en önce gelen açık taksitten küçültür, kartın açık kalanını aşan kısım ayrı avans (bakım 24 / 25 davranışı)): DEĞERLE YAKALANDI (3 elle senaryo; ilk: d57-c5-s241-s242-duzenle.json:k1:kart:fatura:FK3:toplam)
+  mutasyon 352 (Ç5 C38 (S243 yok — bakım 25 davranışı): S200 kartının aday faturasının iptali / iadesi / Düzenle'si SK-45 SUS kalır): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d56-c5-s238-s240-iade-ve-secilmeyen.json:k1:cari:N1:gecikmis)
+  mutasyon 353 (Ç5 C38 (S245 SUS yok — SK-47): art arda Düzenle (önceki Düzenle iz bırakmadıysa) ve Düzenle'den sonra iade kartın göstergelerini değerle yazar — SUS kuralı): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d58-c5-s246-s243-kendi-kart-duzenle.json:k1:kart:fatura:FV1:toplam)
+  mutasyon 354 (Ç5 C39 (S251 B — Düzenle kabul; bakım 26'da SK-50 SUS kuralının mutantıydı): iadesi olan faturanın Düzenle'si kabul edilir, kart / iade bakım 24 / 25 kurallarıyla yeniden hesaplanır): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d58-c5-s246-s243-kendi-kart-duzenle.json:adim:dr4:durum)
+  mutasyon 355 (Ç5 C39 (S249 — fazla avans yok): ödemeli kendi kartında Düzenle ile azaltmada kart ödenen tutarın altına inmez (kart = en çok (yeni tutar, ödenen))): DEĞERLE YAKALANDI (2 elle senaryo; ilk: d57-c5-s241-s242-duzenle.json:k1:kart:fatura:FK3:toplam)
+  mutasyon 356 (Ç5 C39 (S251 yalnız taksitli): iadesi olan faturanın Düzenle'si yalnız taksitli faturada reddedilir; Mevcut Borç kartlı / kartsız faturada kabul): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle.json:adim:du5:durum)
+  mutasyon 357 (Ç5 C39 (SK-51 SUS yok): Borçta Kalsın ile kapanmış ve ödemeli kendi kartında Düzenle ile azaltma S249 (a) gibi değerle yazılır (kart AÇIK kurulur) — SUS kuralı): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle.json:k1:cari:U3:gecikmis)
+  mutasyon 358 (Ç5 C40 (S255 B — önce kartın aldığı kısım): kartın içine aldığı faturaya kartın açılmasından sonra bağlı ödeme önce kartın taksitlerini (faturadan aldığı kısım kadar, taksit sırasıyla), sonra faturanın gösterilen açığını kapatır): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d60-c5-s255-s254-bagli-odeme-kartli-fatura.json:k0:cari:V1:gecikmis)
+  mutasyon 359 (Ç5 C40 (S255 — fazlası en son taksite): bağlı ödemenin gösterilen açığı aşan kısmı kartın EN SON taksitinden başlayarak kapatır (tek kuyruk S2 yerine)): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d60-c5-s255-s254-bagli-odeme-kartli-fatura.json:k0:cari:V2:gecikmis)
+  mutasyon 360 (Ç5 C40 (S255 yok — bakım 27 davranışı): kartın içine aldığı faturaya bağlı ödeme zaman çizelgesinden önce faturanın kendi kalemini kapatır (kart sonra kalanı tüketir; açık borçtan büyük kart SUS)): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d60-c5-s255-s254-bagli-odeme-kartli-fatura.json:k0:cari:V2:gecikmis)
+  mutasyon 361 (Ç5 C40 (S254 SUS yok): iki Mevcut Borç kartı + faturasız stok iadesi S2 dağıtımıyla değerle yazılır (kartların toplamı, Tahsil Edilen / Kalan, gecikmiş) — SUS kuralı): DEĞERLE YAKALANDI (1 elle senaryo; ilk: d60-c5-s255-s254-bagli-odeme-kartli-fatura.json:k0:cari:Q1:acikToplam)
+  çapraz denetim (saf TYK): 184 kalem · tarih sıralı alanda 2.4.9 = 2.5.0: 105 kalem
+  bakım 4 + 5 + 6 çapraz denetim: saf net 140 kalem (karşı yönlü kalemli caride) + 745 kalem (tek yönde; 68 taksit) · saf belge durumu 112 fatura · avans 304 cari · (ii) 383 cari · gecikmiş (i) 722 cari · susulan: okuma ayrışan (SK-17) 2, tanım alanı dışı 26 · S98 ile kendi tarafından ayrışan 21 cari
+  G1 (bakım 7): 114 elle senaryo, 334 seriden numara alan belge adımı tarih sırasıyla denetlendi
+# tests 9357
+# pass 9357
+# fail 0
+9357/9357 denetim geçti
+
+[kanit] kahin-cari28-oz-utc: GEÇTİ · çıkış 0 · 9357/9357 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a3d1a1b +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+== oz: çıkış 0
+bitti 2026-11-22T13:14:48Z

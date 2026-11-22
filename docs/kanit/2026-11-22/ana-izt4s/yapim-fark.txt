@@ -1,0 +1,3 @@
+ÖNCE 63 SONRA 0
+YENİ 0 KAPANAN 63 DEĞİŞEN 0
+KAPANANLAR senaryo / paket: {('d60-c5-s255-s254-bagli-odeme-kartli-fatura', 'S255 izleyen tur 4'): 63}

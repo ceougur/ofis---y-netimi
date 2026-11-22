@@ -1,0 +1,15 @@
+  ✓ UX16 yazılan ad yeni cari formunda (Yeni Müşteri A)
+  ✓ cari bir kez açıldı, müşteri ([{"id":"account-f496edec-6f01-4958-b8af-2f185d31578d","name":"Yeni Müşteri A","type":"customer"}])
+  ✓ faturada yeni cari seçili ({"name":"Yeni Müşteri A","id":"account-f496edec-6f01-4958-b8af-2f185d31578d"})
+
+■ 12 UX25 Belge Türü süzgecinde e-SMM yalnız açıkken; her seçenek
+  ✓ UX25 e-SMM kapalıyken seçenek yok (Tüm Belge Türleri, Kâğıt Fatura, e-Arşiv Fatura, e-Fatura (Temel), e-Fatura (Ticari))
+  ✓ süzgeç "Tüm Belge Türleri": 9 satır = alt sayı 9
+  ✓ süzgeç "Kâğıt Fatura": 0 satır = alt sayı 0
+  ✓ süzgeç "e-Arşiv Fatura": 9 satır = alt sayı 9
+  ✓ süzgeç "e-Fatura (Temel)": 0 satır = alt sayı 0
+  ✓ süzgeç "e-Fatura (Ticari)": 0 satır = alt sayı 0
+  ✓ UX25 e-SMM açıkken seçenek var (, KAGIT, EARSIVFATURA, TEMELFATURA, TICARIFATURA, ESMM; meta 2 kez)
+  ✓ sayfa hatası yok
+
+61 geçti, 0 kaldı

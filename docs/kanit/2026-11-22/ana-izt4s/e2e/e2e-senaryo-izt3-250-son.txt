@@ -1,0 +1,15 @@
+  ✓ hareket geri geldi (veri tabanı)
+  ✓ gözcü kart penceresi Kalan ₺300,00 (dokunmadan; tabanda ₺900,00 kalıyordu): ₺300,00
+
+■ E) Gözcü Taksitler LİSTESİNDE: yönetici yeniden siler (₺900,00) ve geri yükler (₺300,00) — liste kendiliğinden yenilenir
+  ✓ liste satırı (Tutar) ₺300,00: 1Ekran İzt3 KartıGrupsuz · kayıt 02.09.2026₺300,00₺0,00₺300,0005.10.20261. taksit · 36 gün geciktiGecikti1 taksit · ₺300,00
+    [soru] "Hareketi Sil" → Sil (beklenen soru):  × ONAY Hareketi Sil Giriş (2 Adet) silinecek; mevcut miktar ve cari bakiyesi yeniden hesaplanır. Yönetim → Silinenler’d
+  ✓ kart 900 (veri tabanı): 900
+  ✓ liste satırı ₺900,00 (dokunmadan): 1Ekran İzt3 KartıGrupsuz · kayıt 02.09.2026₺900,00₺0,00₺900,0005.10.20261. taksit · 36 gün geciktiGecikti2 taksit · ₺600,00
+  ✓ kart 300 (veri tabanı): 300
+  ✓ liste satırı ₺300,00 (dokunmadan; tabanda ₺900,00 kalıyordu): 1Ekran İzt3 KartıGrupsuz · kayıt 02.09.2026₺300,00₺0,00₺300,0005.10.20261. taksit · 36 gün geciktiGecikti1 taksit · ₺300,00
+  ✓ Mutabakat Testi temiz
+  ✓ bakiye 900 − 600 = 300 (API)
+  ✓ sayfa hatası yok
+
+✓ senaryo-izt3-250: 18 geçti, 0 kaldı

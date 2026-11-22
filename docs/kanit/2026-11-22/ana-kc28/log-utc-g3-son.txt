@@ -1,0 +1,25 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 113 elle senaryonun 0'inin adımları değişti: yok · izinli: yok · yeni elle senaryo: d60-c5-s255-s254-bagli-odeme-kartli-fatura
+DİL EKİ (bakım 24): eski kâhinin dilinde olmayan adımlı yeni elle senaryo — eşdeğerlik / G3 dışında: yok
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 113 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 536/536 bayt bayt aynı
+G3 (kural 2.5.0; 134 senaryo — eski kopyanın 113 elle senaryosu + yeni elle + 20 rastgele): eski 80502 denetim · yeni 80613 denetim · değişen / kalkan / yeni toplam 335 · BEKLENMEYEN 0 · yalnız etiketi değişen 2
+  S254           kalkan     112
+      örn. d60-c5-s255-s254-bagli-odeme-kartli-fatura k0:cari:Q1:acikEsitBakiye: true → "(denetim yok)"
+      örn. d60-c5-s255-s254-bagli-odeme-kartli-fatura k0:cari:Q1:acikToplam: 90000 → "(denetim yok)"
+      örn. d60-c5-s255-s254-bagli-odeme-kartli-fatura k0:cari:Q2:acikEsitBakiye: true → "(denetim yok)"
+      örn. d60-c5-s255-s254-bagli-odeme-kartli-fatura k0:cari:Q2:acikToplam: 140000 → "(denetim yok)"
+  S255           yeni       223
+      örn. d60-c5-s255-s254-bagli-odeme-kartli-fatura k0:cari:V10:acikEsitBakiye: "(denetim yok)" → true
+      örn. d60-c5-s255-s254-bagli-odeme-kartli-fatura k0:cari:V10:acikToplam: "(denetim yok)" → 30000
+      örn. d60-c5-s255-s254-bagli-odeme-kartli-fatura k0:cari:V10:gecikmis: "(denetim yok)" → 0
+      örn. d60-c5-s255-s254-bagli-odeme-kartli-fatura k0:cari:V2:acikEsitBakiye: "(denetim yok)" → true
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d60-c5-s255-s254-bagli-odeme-kartli-fatura S254/kalkan 112 · S255/yeni 223
+# tests 670
+# pass 670
+# fail 0
+670/670 denetim geçti
+
+[kanit] kahin-cari28-g3-utc: GEÇTİ · çıkış 0 · 670/670 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a3d1a1b +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+== g3: çıkış 0
+bitti 2026-11-22T13:17:43Z

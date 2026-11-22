@@ -1,0 +1,8 @@
+başta 0.11 0.57 0.86 5/121 9143 14:59:57
+yeni UTC çıkış 0 · # tests 17 # pass 17 # fail 0 
+yeni Europe/Istanbul çıkış 0 · # tests 17 # pass 17 # fail 0 
+yeni e2e çıkış 0 · ✓ senaryo-izt4-250: 21 geçti, 0 kaldı
+eski UTC çıkış 1 · # tests 17 # pass 3 # fail 14 
+eski Europe/Istanbul çıkış 1 · # tests 17 # pass 3 # fail 14 
+eski e2e çıkış 1 · ✗ senaryo-izt4-250: 12 geçti, 9 kaldı
+bitti 0.85 0.71 0.89 1/114 9580 15:01:30

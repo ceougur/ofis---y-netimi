@@ -1,0 +1,15 @@
+  ✓ plans: eşleme penceresi açıldı (taksit-yine.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "0 kart oluşturuldu. 2 satır atlandı (Aynı adla açık kart var)." (beklenen 0 kart, 2 satır atlandı — Aynı adla açık kart var)
+  ✓ kart ve cari sayısı değişmedi
+  ✓ defter 120 değişmedi
+
+■ 5. Çek / Senet → Excel: AHU ÖZTÜRK (büyük harf) → Ahu Öztürk'e bağlanır
+  ✓ cheques: eşleme penceresi açıldı (cek.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "2 evrak portföye alındı, 1 cariye bağlandı." (beklenen "2 evrak portföye alındı, 1 cariye bağlandı.")
+  ✓ E2E-S223-1 çekinin carisi Ahu Öztürk (beklenen Ahu Öztürk)
+  ✓ Mutabakat Testi tutarlı
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo S223 (Türkçe harf katlamalı kişi adı): 26 geçti, 0 kaldı. Ekranlar: ../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-izt4s/ekran/senaryo-s223-250

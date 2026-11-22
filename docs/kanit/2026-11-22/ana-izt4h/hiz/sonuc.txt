@@ -1,0 +1,158 @@
+HIZ · nproc 4 · başta 1.00 1.15 1.00 3/113 25761 · 17:00:23 · eski 6a1d19d1  · yeni d0395880 
+=== tur 1 · eski · başta 1.00 1.15 1.00 1/113 25778 
+kod /dev/shm/izt4-eski · yük başta 1.00 1.14 1.00
+aday 6
+SONUÇ | Taksitler listesi (ilk — soğuk) | n 1 | en iyi 2422.4 | ortanca 2422.4 | olay döngüsü en çok 2288.0 | 200 dışı 0
+SONUÇ | Cari listesi (ilk — soğuk) | n 1 | en iyi 900.7 | ortanca 900.7 | olay döngüsü en çok 896.0 | 200 dışı 0
+SONUÇ | Açık Faturalar (ilk — soğuk) | n 1 | en iyi 768.3 | ortanca 768.3 | olay döngüsü en çok 761.3 | 200 dışı 0
+SONUÇ | Anlık Durum (ilk — soğuk) | n 1 | en iyi 2909.9 | ortanca 2909.9 | olay döngüsü en çok 2908.7 | 200 dışı 0
+SONUÇ | Vade Takip (ilk — soğuk) | n 1 | en iyi 1993.0 | ortanca 1993.0 | olay döngüsü en çok 9.6 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma (ilk — soğuk) | n 1 | en iyi 2087.8 | ortanca 2087.8 | olay döngüsü en çok 2086.7 | 200 dışı 0
+SONUÇ | Nakit Akışı (ilk — soğuk) | n 1 | en iyi 4354.7 | ortanca 4354.7 | olay döngüsü en çok 8.1 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 142.8 | ortanca 153.9 | olay döngüsü en çok 197.9 | 200 dışı 0
+SONUÇ | kart penceresi GET | n 6 | en iyi 3.5 | ortanca 40.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 40.6 | ortanca 42.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bağlı tahsilat yazımı (Kapatılacak Fatura) | n 6 | en iyi 161.5 | ortanca 187.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | cari kartı GET (yazımdan sonra) | n 12 | en iyi 138.8 | ortanca 154.5 | olay döngüsü en çok 157.2 | 200 dışı 0
+SONUÇ | kart penceresi GET (yazımdan sonra) | n 6 | en iyi 37.9 | ortanca 39.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Taksitler listesi | n 6 | en iyi 2053.6 | ortanca 2086.7 | olay döngüsü en çok 16.8 | 200 dışı 0
+SONUÇ | Cari listesi | n 6 | en iyi 718.1 | ortanca 804.2 | olay döngüsü en çok 927.5 | 200 dışı 0
+SONUÇ | Açık Faturalar | n 6 | en iyi 707.1 | ortanca 798.8 | olay döngüsü en çok 822.1 | 200 dışı 0
+SONUÇ | Anlık Durum | n 6 | en iyi 2661.1 | ortanca 2738.6 | olay döngüsü en çok 2845.8 | 200 dışı 0
+SONUÇ | Vade Takip | n 6 | en iyi 1646.4 | ortanca 1785.7 | olay döngüsü en çok 6.8 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma | n 6 | en iyi 2048.2 | ortanca 2124.1 | olay döngüsü en çok 2382.4 | 200 dışı 0
+SONUÇ | Nakit Akışı | n 6 | en iyi 4255.2 | ortanca 4377.1 | olay döngüsü en çok 4167.0 | 200 dışı 0
+SONUÇ | bağsız tahsilat yazımı | n 6 | en iyi 189.0 | ortanca 204.3 | olay döngüsü en çok 251.1 | 200 dışı 0
+yük sonda 1.26 1.12 1.03
+çıkış 0 · sonda 1.26 1.12 1.03 1/109 26100
+=== tur 1 · yeni · başta 1.26 1.12 1.03 1/109 26107 
+kod /dev/shm/izt4-sinama · yük başta 1.60 1.20 1.06
+aday 6
+SONUÇ | Taksitler listesi (ilk — soğuk) | n 1 | en iyi 2467.5 | ortanca 2467.5 | olay döngüsü en çok 2340.4 | 200 dışı 0
+SONUÇ | Cari listesi (ilk — soğuk) | n 1 | en iyi 977.0 | ortanca 977.0 | olay döngüsü en çok 967.3 | 200 dışı 0
+SONUÇ | Açık Faturalar (ilk — soğuk) | n 1 | en iyi 784.3 | ortanca 784.3 | olay döngüsü en çok 777.5 | 200 dışı 0
+SONUÇ | Anlık Durum (ilk — soğuk) | n 1 | en iyi 2719.7 | ortanca 2719.7 | olay döngüsü en çok 2717.9 | 200 dışı 0
+SONUÇ | Vade Takip (ilk — soğuk) | n 1 | en iyi 1794.6 | ortanca 1794.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma (ilk — soğuk) | n 1 | en iyi 2056.8 | ortanca 2056.8 | olay döngüsü en çok 2055.2 | 200 dışı 0
+SONUÇ | Nakit Akışı (ilk — soğuk) | n 1 | en iyi 4606.2 | ortanca 4606.2 | olay döngüsü en çok 8.0 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 150.2 | ortanca 152.6 | olay döngüsü en çok 200.5 | 200 dışı 0
+SONUÇ | kart penceresi GET | n 6 | en iyi 3.4 | ortanca 41.3 | olay döngüsü en çok 40.2 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 41.3 | ortanca 44.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bağlı tahsilat yazımı (Kapatılacak Fatura) | n 6 | en iyi 171.1 | ortanca 177.1 | olay döngüsü en çok 181.7 | 200 dışı 0
+SONUÇ | cari kartı GET (yazımdan sonra) | n 12 | en iyi 146.1 | ortanca 153.7 | olay döngüsü en çok 151.0 | 200 dışı 0
+SONUÇ | kart penceresi GET (yazımdan sonra) | n 6 | en iyi 39.7 | ortanca 40.9 | olay döngüsü en çok 41.2 | 200 dışı 0
+SONUÇ | Taksitler listesi | n 6 | en iyi 2021.5 | ortanca 2059.4 | olay döngüsü en çok 20.1 | 200 dışı 0
+SONUÇ | Cari listesi | n 6 | en iyi 775.1 | ortanca 802.5 | olay döngüsü en çok 994.1 | 200 dışı 0
+SONUÇ | Açık Faturalar | n 6 | en iyi 712.3 | ortanca 784.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Anlık Durum | n 6 | en iyi 2555.9 | ortanca 2635.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Vade Takip | n 6 | en iyi 1589.3 | ortanca 1737.8 | olay döngüsü en çok 8.3 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma | n 6 | en iyi 2002.8 | ortanca 2152.3 | olay döngüsü en çok 2254.4 | 200 dışı 0
+SONUÇ | Nakit Akışı | n 6 | en iyi 4311.6 | ortanca 4332.2 | olay döngüsü en çok 6.2 | 200 dışı 0
+SONUÇ | bağsız tahsilat yazımı | n 6 | en iyi 191.6 | ortanca 198.1 | olay döngüsü en çok 242.6 | 200 dışı 0
+yük sonda 1.37 1.12 1.05
+çıkış 0 · sonda 1.37 1.12 1.05 1/109 26177
+=== tur 2 · yeni · başta 1.37 1.12 1.05 1/109 26184 
+kod /dev/shm/izt4-sinama · yük başta 1.31 1.13 1.05
+aday 6
+SONUÇ | Taksitler listesi (ilk — soğuk) | n 1 | en iyi 2176.8 | ortanca 2176.8 | olay döngüsü en çok 2056.3 | 200 dışı 0
+SONUÇ | Cari listesi (ilk — soğuk) | n 1 | en iyi 907.3 | ortanca 907.3 | olay döngüsü en çok 902.8 | 200 dışı 0
+SONUÇ | Açık Faturalar (ilk — soğuk) | n 1 | en iyi 739.1 | ortanca 739.1 | olay döngüsü en çok 733.0 | 200 dışı 0
+SONUÇ | Anlık Durum (ilk — soğuk) | n 1 | en iyi 2519.8 | ortanca 2519.8 | olay döngüsü en çok 2518.7 | 200 dışı 0
+SONUÇ | Vade Takip (ilk — soğuk) | n 1 | en iyi 1613.7 | ortanca 1613.7 | olay döngüsü en çok 7.7 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma (ilk — soğuk) | n 1 | en iyi 2035.7 | ortanca 2035.7 | olay döngüsü en çok 2034.2 | 200 dışı 0
+SONUÇ | Nakit Akışı (ilk — soğuk) | n 1 | en iyi 4380.1 | ortanca 4380.1 | olay döngüsü en çok 7.5 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 144.6 | ortanca 157.5 | olay döngüsü en çok 197.9 | 200 dışı 0
+SONUÇ | kart penceresi GET | n 6 | en iyi 4.8 | ortanca 40.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 40.6 | ortanca 41.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bağlı tahsilat yazımı (Kapatılacak Fatura) | n 6 | en iyi 162.7 | ortanca 164.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | cari kartı GET (yazımdan sonra) | n 12 | en iyi 139.9 | ortanca 146.6 | olay döngüsü en çok 141.7 | 200 dışı 0
+SONUÇ | kart penceresi GET (yazımdan sonra) | n 6 | en iyi 37.4 | ortanca 38.3 | olay döngüsü en çok 49.3 | 200 dışı 0
+SONUÇ | Taksitler listesi | n 6 | en iyi 1970.0 | ortanca 2014.3 | olay döngüsü en çok 18.9 | 200 dışı 0
+SONUÇ | Cari listesi | n 6 | en iyi 753.7 | ortanca 766.6 | olay döngüsü en çok 878.2 | 200 dışı 0
+SONUÇ | Açık Faturalar | n 6 | en iyi 688.7 | ortanca 710.8 | olay döngüsü en çok 730.3 | 200 dışı 0
+SONUÇ | Anlık Durum | n 6 | en iyi 2509.2 | ortanca 2574.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Vade Takip | n 6 | en iyi 1587.6 | ortanca 1611.1 | olay döngüsü en çok 6.1 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma | n 6 | en iyi 1956.6 | ortanca 2049.7 | olay döngüsü en çok 2131.8 | 200 dışı 0
+SONUÇ | Nakit Akışı | n 6 | en iyi 4013.0 | ortanca 4219.6 | olay döngüsü en çok 4271.9 | 200 dışı 0
+SONUÇ | bağsız tahsilat yazımı | n 6 | en iyi 187.3 | ortanca 198.4 | olay döngüsü en çok 231.5 | 200 dışı 0
+yük sonda 1.38 1.11 1.04
+çıkış 0 · sonda 1.38 1.11 1.04 1/112 26251
+=== tur 2 · eski · başta 1.38 1.11 1.04 1/112 26258 
+kod /dev/shm/izt4-eski · yük başta 1.25 1.10 1.04
+aday 6
+SONUÇ | Taksitler listesi (ilk — soğuk) | n 1 | en iyi 2257.8 | ortanca 2257.8 | olay döngüsü en çok 2138.0 | 200 dışı 0
+SONUÇ | Cari listesi (ilk — soğuk) | n 1 | en iyi 923.7 | ortanca 923.7 | olay döngüsü en çok 919.1 | 200 dışı 0
+SONUÇ | Açık Faturalar (ilk — soğuk) | n 1 | en iyi 854.4 | ortanca 854.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Anlık Durum (ilk — soğuk) | n 1 | en iyi 2775.2 | ortanca 2775.2 | olay döngüsü en çok 2774.5 | 200 dışı 0
+SONUÇ | Vade Takip (ilk — soğuk) | n 1 | en iyi 1927.2 | ortanca 1927.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma (ilk — soğuk) | n 1 | en iyi 2079.7 | ortanca 2079.7 | olay döngüsü en çok 2078.3 | 200 dışı 0
+SONUÇ | Nakit Akışı (ilk — soğuk) | n 1 | en iyi 4143.9 | ortanca 4143.9 | olay döngüsü en çok 7.8 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 144.1 | ortanca 147.3 | olay döngüsü en çok 240.5 | 200 dışı 0
+SONUÇ | kart penceresi GET | n 6 | en iyi 3.6 | ortanca 37.4 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 41.5 | ortanca 43.3 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bağlı tahsilat yazımı (Kapatılacak Fatura) | n 6 | en iyi 164.2 | ortanca 169.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | cari kartı GET (yazımdan sonra) | n 12 | en iyi 138.9 | ortanca 150.2 | olay döngüsü en çok 150.3 | 200 dışı 0
+SONUÇ | kart penceresi GET (yazımdan sonra) | n 6 | en iyi 36.5 | ortanca 37.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Taksitler listesi | n 6 | en iyi 2002.2 | ortanca 2098.8 | olay döngüsü en çok 19.4 | 200 dışı 0
+SONUÇ | Cari listesi | n 6 | en iyi 741.2 | ortanca 782.1 | olay döngüsü en çok 869.3 | 200 dışı 0
+SONUÇ | Açık Faturalar | n 6 | en iyi 666.2 | ortanca 699.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Anlık Durum | n 6 | en iyi 2507.2 | ortanca 2605.4 | olay döngüsü en çok 2604.7 | 200 dışı 0
+SONUÇ | Vade Takip | n 6 | en iyi 1586.0 | ortanca 1613.8 | olay döngüsü en çok 7.7 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma | n 6 | en iyi 2022.9 | ortanca 2062.2 | olay döngüsü en çok 2147.5 | 200 dışı 0
+SONUÇ | Nakit Akışı | n 6 | en iyi 4090.1 | ortanca 4130.2 | olay döngüsü en çok 7.4 | 200 dışı 0
+SONUÇ | bağsız tahsilat yazımı | n 6 | en iyi 187.9 | ortanca 200.8 | olay döngüsü en çok 221.5 | 200 dışı 0
+yük sonda 1.31 1.09 1.03
+çıkış 0 · sonda 1.31 1.09 1.03 1/109 26325
+=== tur 3 · eski · başta 1.31 1.09 1.03 1/109 26332 
+kod /dev/shm/izt4-eski · yük başta 1.26 1.10 1.03
+aday 6
+SONUÇ | Taksitler listesi (ilk — soğuk) | n 1 | en iyi 2351.3 | ortanca 2351.3 | olay döngüsü en çok 2206.2 | 200 dışı 0
+SONUÇ | Cari listesi (ilk — soğuk) | n 1 | en iyi 972.8 | ortanca 972.8 | olay döngüsü en çok 960.0 | 200 dışı 0
+SONUÇ | Açık Faturalar (ilk — soğuk) | n 1 | en iyi 777.4 | ortanca 777.4 | olay döngüsü en çok 770.2 | 200 dışı 0
+SONUÇ | Anlık Durum (ilk — soğuk) | n 1 | en iyi 2561.4 | ortanca 2561.4 | olay döngüsü en çok 2560.6 | 200 dışı 0
+SONUÇ | Vade Takip (ilk — soğuk) | n 1 | en iyi 1799.9 | ortanca 1799.9 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma (ilk — soğuk) | n 1 | en iyi 2142.8 | ortanca 2142.8 | olay döngüsü en çok 2141.2 | 200 dışı 0
+SONUÇ | Nakit Akışı (ilk — soğuk) | n 1 | en iyi 4484.5 | ortanca 4484.5 | olay döngüsü en çok 7.9 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 141.1 | ortanca 152.0 | olay döngüsü en çok 191.8 | 200 dışı 0
+SONUÇ | kart penceresi GET | n 6 | en iyi 3.4 | ortanca 38.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 40.7 | ortanca 42.7 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bağlı tahsilat yazımı (Kapatılacak Fatura) | n 6 | en iyi 163.9 | ortanca 171.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | cari kartı GET (yazımdan sonra) | n 12 | en iyi 142.0 | ortanca 152.3 | olay döngüsü en çok 137.5 | 200 dışı 0
+SONUÇ | kart penceresi GET (yazımdan sonra) | n 6 | en iyi 37.8 | ortanca 38.1 | olay döngüsü en çok 37.7 | 200 dışı 0
+SONUÇ | Taksitler listesi | n 6 | en iyi 1978.1 | ortanca 2053.2 | olay döngüsü en çok 19.6 | 200 dışı 0
+SONUÇ | Cari listesi | n 6 | en iyi 720.6 | ortanca 752.9 | olay döngüsü en çok 838.9 | 200 dışı 0
+SONUÇ | Açık Faturalar | n 6 | en iyi 669.4 | ortanca 710.1 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Anlık Durum | n 6 | en iyi 2437.3 | ortanca 2562.0 | olay döngüsü en çok 2436.9 | 200 dışı 0
+SONUÇ | Vade Takip | n 6 | en iyi 1620.9 | ortanca 1669.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma | n 6 | en iyi 1931.7 | ortanca 2150.3 | olay döngüsü en çok 2235.6 | 200 dışı 0
+SONUÇ | Nakit Akışı | n 6 | en iyi 4236.1 | ortanca 4407.1 | olay döngüsü en çok 7.1 | 200 dışı 0
+SONUÇ | bağsız tahsilat yazımı | n 6 | en iyi 193.0 | ortanca 200.3 | olay döngüsü en çok 211.9 | 200 dışı 0
+yük sonda 1.22 1.10 1.03
+çıkış 0 · sonda 1.22 1.10 1.03 1/109 26405
+=== tur 3 · yeni · başta 1.22 1.10 1.03 1/109 26412 
+kod /dev/shm/izt4-sinama · yük başta 1.48 1.16 1.05
+aday 6
+SONUÇ | Taksitler listesi (ilk — soğuk) | n 1 | en iyi 2527.7 | ortanca 2527.7 | olay döngüsü en çok 2405.4 | 200 dışı 0
+SONUÇ | Cari listesi (ilk — soğuk) | n 1 | en iyi 886.2 | ortanca 886.2 | olay döngüsü en çok 877.1 | 200 dışı 0
+SONUÇ | Açık Faturalar (ilk — soğuk) | n 1 | en iyi 824.2 | ortanca 824.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Anlık Durum (ilk — soğuk) | n 1 | en iyi 2717.7 | ortanca 2717.7 | olay döngüsü en çok 2715.8 | 200 dışı 0
+SONUÇ | Vade Takip (ilk — soğuk) | n 1 | en iyi 1696.2 | ortanca 1696.2 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma (ilk — soğuk) | n 1 | en iyi 1957.5 | ortanca 1957.5 | olay döngüsü en çok 1955.6 | 200 dışı 0
+SONUÇ | Nakit Akışı (ilk — soğuk) | n 1 | en iyi 4554.0 | ortanca 4554.0 | olay döngüsü en çok 11.2 | 200 dışı 0
+SONUÇ | cari kartı GET | n 6 | en iyi 146.9 | ortanca 154.4 | olay döngüsü en çok 258.9 | 200 dışı 0
+SONUÇ | kart penceresi GET | n 6 | en iyi 4.4 | ortanca 38.4 | olay döngüsü en çok 36.2 | 200 dışı 0
+SONUÇ | fatura kartı GET | n 6 | en iyi 42.4 | ortanca 42.6 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | bağlı tahsilat yazımı (Kapatılacak Fatura) | n 6 | en iyi 170.8 | ortanca 177.5 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | cari kartı GET (yazımdan sonra) | n 12 | en iyi 140.3 | ortanca 153.1 | olay döngüsü en çok 196.0 | 200 dışı 0
+SONUÇ | kart penceresi GET (yazımdan sonra) | n 6 | en iyi 37.5 | ortanca 38.0 | olay döngüsü en çok 44.4 | 200 dışı 0
+SONUÇ | Taksitler listesi | n 6 | en iyi 2000.2 | ortanca 2115.8 | olay döngüsü en çok 2001.7 | 200 dışı 0
+SONUÇ | Cari listesi | n 6 | en iyi 784.8 | ortanca 805.9 | olay döngüsü en çok 871.9 | 200 dışı 0
+SONUÇ | Açık Faturalar | n 6 | en iyi 702.1 | ortanca 754.8 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Anlık Durum | n 6 | en iyi 2598.7 | ortanca 2653.0 | olay döngüsü en çok 0.0 | 200 dışı 0
+SONUÇ | Vade Takip | n 6 | en iyi 1608.1 | ortanca 1653.7 | olay döngüsü en çok 5.8 | 200 dışı 0
+SONUÇ | Alacak Yaşlandırma | n 6 | en iyi 1947.6 | ortanca 2182.4 | olay döngüsü en çok 2374.0 | 200 dışı 0
+SONUÇ | Nakit Akışı | n 6 | en iyi 4185.8 | ortanca 4300.8 | olay döngüsü en çok 6.7 | 200 dışı 0
+SONUÇ | bağsız tahsilat yazımı | n 6 | en iyi 191.5 | ortanca 201.1 | olay döngüsü en çok 241.8 | 200 dışı 0
+yük sonda 1.08 1.06 1.02
+çıkış 0 · sonda 1.08 1.06 1.02 1/109 26485
+bitti 17:50:04
