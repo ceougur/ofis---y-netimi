@@ -175,6 +175,12 @@ const bornOf = input => {
 // 2.5.0 İzleyen küçük tur (docs/erp/C7B-FATURA-TASARIM.md §19.2 — P-2 / BULGU-1; TEK KURAL kapama defteriyle): Mevcut Borç kartının kapsamı kartın AÇILDIĞI ANDAKİ tutarıdır — bugünkü tutar +
 // o andan SONRA doğan iadelerin bu karttan kestiği tutar (iade belgesinin coverCuts'ı; lib/invoice-settle.mjs coverPlans'ın `coverTotal`'ı aynı kesintileri geri ekler). Dönüş: kesilmiş (issued) satıştan
 // iadelerin kesinti listesi [{ id, original, born, cuts: Map(kart → kuruş) }] — girdi başına bir kez (WeakMap).
+// §22: kayıt anı işlevi girdi başına bir kez (WeakMap; asıl geçişler aynı girdi nesnesini kullanır).
+const bornMemo = new WeakMap();
+const bornOnce = input => {
+  if (!bornMemo.has(input)) bornMemo.set(input, bornOf(input));
+  return bornMemo.get(input);
+};
 const cutsMemo = new WeakMap();
 export function returnCutsOf(input) {
   if (cutsMemo.has(input)) return cutsMemo.get(input);
@@ -570,10 +576,10 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
   }
   // §22: kartça tutulan faturada bağlı ödeme ile iadenin mahsubu YAZIM SIRASIYLA (kayıt anı — yazma yolları iadenin kart küçültmesini o anki kapama defterinden ölçer): iadeden SONRA yazılmış bağlı
   // ödeme iadeden sonra ayrılır (iade kart dışındaki açığı önce kapatmıştır — S239); öncekiler sıra 3'te. Kartça tutulmayan faturada K1 sırası AYNEN (bağlı ödemeler önce, iadeler sonra).
-  // (Kayıt anı haritası yalnız kartça tutulan fatura varken kurulur — queueOnce bir carinin kuyruğunda birçok kez koşar; ders 47.)
-  const bornAt = linkHolds.size ? bornOf(input) : null;
+  // (Kayıt anı haritası yalnız kartça tutulan faturanın iadesi varken ve girdi başına bir kez kurulur — queueOnce bir carinin kuyruğunda birçok kez koşar; ders 47.)
   const firstReturn = new Map();
-  if (linkHolds.size) {
+  const bornAt = linkHolds.size && linkList.some(link => link.order === 4 && linkHolds.has(link.targetKey)) ? bornOnce(input) : null;
+  if (bornAt) {
     for (const link of linkList) {
       if (link.order !== 4 || !linkHolds.has(link.targetKey)) continue;
       const when = bornAt(link.from.line);
