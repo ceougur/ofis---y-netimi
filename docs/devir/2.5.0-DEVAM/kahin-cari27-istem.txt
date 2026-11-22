@@ -1,0 +1,24 @@
+Sen DestekOfis projesinde CARİ KÂHİNİ BAKIMI 27 ajanısın (2.5.0; KÜÇÜK BAKIM — S249 = A, S251 = A, S250 = C). Programın KODUNU GÖRMEZSİN (`server/`, `client/`, programın `test/*.test.mjs` dosyaları, `docs/erp/` ve `docs/2.5.0-IS-LISTESI*` OKUNMAZ); programı yalnız API'den, kâhinin kendi bağdaştırıcısıyla (`test/bagimsiz/cari/kos.mjs`) dışarıdan kullanırsın. Yanıtın Türkçe. Eforun high. KENDİ dalında commit edersin; PUSH YOK. Her bitmiş adımı HEMEN commit et; koşuları ≤ 40 dk parçalara böl, kanıtı 'Kanıt:' commit'iyle; rapor taslağı `docs/kanit/2026-11-22/kahin-cari27-rapor-taslak.md`. Zamanlanmış görev KURMA. Kendi arka plan işin sürerken rapor vermeden BİTİRME (turunu 'bekliyorum' diye kapatma; işi ön planda, süre sınırıyla koş).
+
+## Hazırlık
+1. Worktree'de (kendi commit'in YOKKEN) `git reset --hard worktree-agent-aba92b2d7bf349903` (= edd5f828; bakım 26'nın dal ucu). `git log --oneline -2` ile doğrula; değilse DUR. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK).
+2. ÖNCE oku: `CLAUDE.md` (dersler; özellikle 5, 6, 7, 16, 40, 43, 44, 52, 54); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; kâhinin kendi `test/bagimsiz/cari/KARARLAR.md`'si (güncel kurallar dizini + §38 bakım 26 bölümü — SK-48 / SK-49 / SK-50 ve Y26-5); karar girdisi `/home/user/ofis---y-netimi/docs/devir/2.5.0-DEVAM/kahin-cari27-kararlar.md` (TEK karar kaynağın). Bakım 26'nın araçları `docs/kanit/2026-11-22/kahin-cari26-arac/` (kos.sh, karsilastir.py, elle-*.py, uret-d58.py) — kendi bakımın için kopyala / uyarla (yeni dosyalar `docs/kanit/2026-11-22/kahin-cari27-arac/`).
+
+## İş
+1. S249 = A (girdi §1): kendi kartında Düzenle ile azaltmanın üç kolu (a) / (b) / (c) değerle; bakım 26'nın SK-48 susması kalkar; d57 K3 ve d58 T1–T3 (ve benzeri) beklentileri karar metninden ELLE yeniden yazılır (kâhin koşulmadan, üreteçle); fazla tahsilat avans.
+2. S251 = A (girdi §2): iadeli faturanın Düzenle'si ret; SK-50'nin iki dünyalı karşılaştırması kalkar, tek beklenti: istek reddedilir, sayılar değişmez.
+3. S250 = C (girdi §3): susma aynen, neden metnine karar numarası.
+4. Öz test + mutasyon: S249 ve S251 için en az birer mutant (ör. S249'da kartı iade gibi küçült; S251'de Düzenle'yi kabul et) yakalanmalı; kalkan susmaların mutantları (bakım 26'nın 351 / 354'ü) yeni kurala göre güncellenir.
+5. PROGRAMLA KARŞILAŞTIRMA: `npm run test:kahin-cari` düzeninde iki TZ (UTC, Europe/Istanbul), taban dalındaki programla. Hedef 0 fark + yapım aşaması listesi BOŞ. Fark çıkarsa: en küçük örnek + hangisinin girdiye uymadığı — kâhin programa UYDURULMAZ (ders 40); program şüphesi 'P' diye raporlanır. Yapım listesi KENDİ kopyanda `--yapim-asamasi-yaz` (KAHIN_YAPIM_ASAMASI ile not defterine); depodaki liste ancak kendi dalında, ayrı commit'le, öncesi / sonrası farkıyla.
+6. G3 (eski kâhin = bakım 26 ↔ yeni) + ESKİ KÂHİN KIRMIZISI: değişen her denetimin nedeni S249 / S251 / S250; beklenmeyen değişiklik 0; yeni / değişen kural bakım 26 kâhininde farklı sonuç vermeli (sayıyla).
+
+## Kurallar
+- YAZABİLECEĞİN: yalnız `test/bagimsiz/cari/**` ve `docs/kanit/2026-11-22/kahin-cari27-*`. Program kodu, öbür kâhinler, sürücü YASAK.
+- Koşular `HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=<not defterin> node tools/kanit.mjs kos kahin-cari27-<ad> -- <komut>`; ölçüm DIŞI HER koşu — TEK python satırı, öz test, elle karşılaştırma DAHİL — `flock -s -w 3600 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock timeout -k 5 <sn> <komut>` (süre sınırı flock'un İÇİNDE; ana oturumun özel kilitli ölçümü sürerken koşun bekler — bekle, kilitsiz koşma; bakım 26 bu kuralı bir kez çiğnedi). Not defterin BENZERSİZ: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc27-<ajan kimliğinin ilk 3 hanesi>/`. Arka plan koşusu en çok 2 saat. Önce `cat /proc/loadavg`, 4'ün üstündeyse tek seferlik bekle. GIT_DIR / GIT_WORK_TREE VERME. `pkill` / joker `rm` YOK. Tam `npm test` YOK. Disk 5 GB'ın altına düşmez. Commit'e yalnız kendi yolların (`git add <yol>`; `-A` / `-u` / `commit -a` YOK).
+- 2.5.1'E BIRAK (kullanıcı kuralı girdide AYNEN): kâhinin iç bakımı / test düzeni / belge türü husus KOVALANMAZ; raporun 'SONRAKİ SÜRÜME (2.5.1)' başlığına.
+- Commit iletisi sonunda tam olarak (model adı YOK):
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+
+## Rapor (SubagentHandback, Türkçe; kısa cümle, madde, tablo)
+Özet; her değişen / kalkan susmanın kuralı (girdinin hangi satırından); öz test + mutasyon; G3; program ↔ kâhin iki TZ; yapım aşaması listesi (önce / sonra + nedenleri); eski kâhin kırmızısı; P listesi en küçük örnekle; KULLANICIYA SORULMALI (iki seçenek + öneri, sayılarla; uç durumsa 'Uç durum böyle kalsın (BİLİNEN SINIR)'; 'yaygın programlarda' satırı — doğrulanmış kaynak okunmadıysa 'okunmadı'); SONRAKİ SÜRÜME (2.5.1); DENENMEYEN; değişen yollar; commit listesi; dal ucu; ana oturumun yeniden koşacağı komutlar.
