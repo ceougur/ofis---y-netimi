@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cari kâhini bakımı 27: bakım 26 aracının kopyası; izin listesi bakım 27 kararlarına göre (d57 K3, d58 T1 / T2 / T3 / R4; yeni d59 yalnız yeni kopyada). Eski not: Cari kâhini bakımı 26: bakım 25 aracının kopyası; izin listesi bakım 26 kararlarına göre. Eski not: Toplu kâhin bakımı 14 / cari bakım 22 (bakım 21b aracının uyarlaması; izin listesi bakım 22 kararlarına göre — d50 I2 / KI2 / I3 / KI3). Eski not: Bakım 21b: eski kopyanın (bakım 21) elle tabloları ↔ yeni kopyanın elle tabloları — DEĞİŞEN her eski beklenti tek tek
+"""Cari kâhini bakımı 28: bakım 27 aracının kopyası; izin listesi BOŞ (eski elle tablo değişmedi; yeni d60 yalnız yeni kopyada). Eski not: Cari kâhini bakımı 27: bakım 26 aracının kopyası; izin listesi bakım 27 kararlarına göre (d57 K3, d58 T1 / T2 / T3 / R4; yeni d59 yalnız yeni kopyada). Eski not: Cari kâhini bakımı 26: bakım 25 aracının kopyası; izin listesi bakım 26 kararlarına göre. Eski not: Toplu kâhin bakımı 14 / cari bakım 22 (bakım 21b aracının uyarlaması; izin listesi bakım 22 kararlarına göre — d50 I2 / KI2 / I3 / KI3). Eski not: Bakım 21b: eski kopyanın (bakım 21) elle tabloları ↔ yeni kopyanın elle tabloları — DEĞİŞEN her eski beklenti tek tek
 (elleBeklenen değer / elleYok / elleBelirsiz). Program AÇILMAZ; yalnız senaryo dosyaları okunur. Bakım 21b'de izinli değişiklik YALNIZ d49 A1 / KA1 (S206 = A — C13.4 (11) susması kalktı, kapanmış kartın
 göstergeleri SUS); adımı değişen senaryo YOK; açıklama metni (`aciklama`) karşılaştırılmaz.
   python3 -I elle-fark.py --eski <eski test/bagimsiz/cari> --yeni <yeni test/bagimsiz/cari>
@@ -14,10 +14,8 @@ YENI = os.path.join(os.path.abspath(sys.argv[sys.argv.index("--yeni") + 1]), "se
 # bakım 24 (§36): eski elle senaryoların elle tablosu — YALNIZ d8 B (§36 Y24-4, KAPSAM (b): taksitli faturanın iadesi tanımlı — fatura açığı ve gecikmiş elleYok → değer); yeni d53 / d54 / d55 yalnız yeni kopyada
 # bakım 26 (§38): YALNIZ d56 N1 / N2 (S243 = A — SK-45 SUS kalktı; Y26-6) ve d57 K3 (§2 SK-48 SUS) / P1 (S246 = B); yeni d58 yalnız yeni kopyada. Adımı değişen eski senaryo YOK.
 # bakım 27 (§39): YALNIZ d57 K3 (S249 = A — kararın örneği; SK-48 SUS kalktı) ve d58 T1 / T2 / T3 (S249 = A) / R4 (S251 = A — SK-50 / SK-49 kalktı); yeni d59 yalnız yeni kopyada. Adımı değişen eski senaryo YOK.
-IZINLI = {"d57-c5-s241-s242-duzenle.json": ("k1:cari:K3:", "k1:fatura:FK3:", "k1:kart:fatura:FK3:", "SK-48"),
-          "d58-c5-s246-s243-kendi-kart-duzenle.json": ("k1:cari:T1:", "k1:fatura:FT1:", "k1:kart:fatura:FT1:", "k1:cari:T2:", "k1:fatura:FT2:", "k1:kart:fatura:FT2:",
-                                                       "k1:cari:T3:", "k1:fatura:FT3:", "k1:kart:fatura:FT3:", "k1:cari:R4:", "k1:fatura:FR4:", "k1:fatura:IR4:", "k1:kart:fatura:FR4:",
-                                                       "adim:dr4:durum", "SK-48", "SK-50", "SK-49")}
+# bakım 28 (§40): eski elle senaryoların elle tablosu DEĞİŞMEDİ (S255 / S254 yalnız yeni d60'ta — yalnız yeni kopyada). Adımı değişen eski senaryo YOK.
+IZINLI = {}
 ADIM_IZIN = set()  # bakım 21b: adımı değişen senaryo yok
 SECENEK = {}
 

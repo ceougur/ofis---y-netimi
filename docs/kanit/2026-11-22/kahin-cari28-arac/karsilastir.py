@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Cari kâhini bakımı 27 (§39): bakım 26 aracının kopyası; yeni sınıflar S251 (iz `s251` — iadeli faturanın Düzenle'si ret; eski kâhinde SK-50 iki dünya), S249 (iz `s249` — kendi kartında azaltma yeniden kurma; eski kâhinde SK-48 SUS / §36 (e)), SK51 (iz `sk51`); eski kopya bakım 26 (edd5f828). Eski not: Cari kâhini bakımı 26 (§38): bakım 25 aracının kopyası; yeni sınıflar S246 / SK48-49 / SK47 (izler `s246` / `sk48` / `sk47`), SUS25-S243; eski kopya izt2-sinama (3b420085). Eski not: Cari kâhini bakımı 25 (§37): bakım 24 aracının kopyası; sınıflar S241 / S242 (Düzenle — izler `s241` / `s242`), S234-25 (iz `s234` — S239 / S240 ile genişleyen küçülme), SUS25 (SK-45 / SK-46 — iz `sus25`), eski kopya kc25-taban (288b91dc); eski kâhin Düzenle / Kartı Kapat dilini bilir (d53 artık kümenin içinde). Eski not: Cari kâhini bakımı 24 (§36): bakım 23 aracının kopyası; sınıflar S234 (yeni kâhinin izi `s234` — kart küçülmesi) / KAPAT (`kapat` — Kartı Kapat), eski kopya de403915. Yeni dil adımlı elle senaryo
+# Cari kâhini bakımı 28 (§40): bakım 27 aracının kopyası; yeni sınıflar S255 (iz `s255`), S254 (iz `s254`); eski kopya bakım 27 (6a1d19d1). Eski not: Cari kâhini bakımı 27 (§39): bakım 26 aracının kopyası; yeni sınıflar S251 (iz `s251` — iadeli faturanın Düzenle'si ret; eski kâhinde SK-50 iki dünya), S249 (iz `s249` — kendi kartında azaltma yeniden kurma; eski kâhinde SK-48 SUS / §36 (e)), SK51 (iz `sk51`); eski kopya bakım 26 (edd5f828). Eski not: Cari kâhini bakımı 26 (§38): bakım 25 aracının kopyası; yeni sınıflar S246 / SK48-49 / SK47 (izler `s246` / `sk48` / `sk47`), SUS25-S243; eski kopya izt2-sinama (3b420085). Eski not: Cari kâhini bakımı 25 (§37): bakım 24 aracının kopyası; sınıflar S241 / S242 (Düzenle — izler `s241` / `s242`), S234-25 (iz `s234` — S239 / S240 ile genişleyen küçülme), SUS25 (SK-45 / SK-46 — iz `sus25`), eski kopya kc25-taban (288b91dc); eski kâhin Düzenle / Kartı Kapat dilini bilir (d53 artık kümenin içinde). Eski not: Cari kâhini bakımı 24 (§36): bakım 23 aracının kopyası; sınıflar S234 (yeni kâhinin izi `s234` — kart küçülmesi) / KAPAT (`kapat` — Kartı Kapat), eski kopya de403915. Yeni dil adımlı elle senaryo
 # (kart_kapat / kart_yeniden_ac / fatura_duzenle — d53) eski kâhinde KOŞAMAZ: eşdeğerlik ve G3 kümesinin dışında (adı yazılır).
 # Eski not: Cari kâhini bakımı 23 (§35): bakım 22 aracının kopyası; sınıflar GÖSTERİM-YENİ / S200 / S200-E0.
 """Toplu kâhin bakımı 14 / cari bakım 22 (bakım 21b aracının uyarlaması — sınıf S210-S211; iz `s210`). Eski not: Kâhin bakımı 21b (cari; C6 S206 = A + kesik girdinin tam metni; KARARLAR.md §33) — bakım 21 aracının uyarlaması (sınıf bakım 21b'ye göre) — eski kâhin
@@ -219,6 +219,10 @@ etiket_degisen = 0
 def sinif15(anahtar, c, t, supheli):
     """Bakım 21b sınıfı (None → BEKLENMEYEN): yalnız C6 S206 = A — kartı S206 ile kapanan carinin (iz `s206`) denetimleri."""
     p = anahtar.split(":")
+    if "s255" in t:
+        return "S255"  # bakım 28 (§40 Y28-1): kartın içine aldığı faturaya kart sonrası bağlı ödeme — gösterilen açık, fazlası tek kuyruğa (eski kâhinde bağlar önce; çoğunlukla EK-2B 32 SUS)
+    if "s254" in t:
+        return "S254"  # bakım 28 (§40 Y28-7): iki Mevcut Borç kartı + faturasız stok iadesi — SUS (eski kâhinde S2 dağıtımı değerle)
     if "s251" in t:
         return "S251"  # bakım 27 (§39 Y27-3): iadesi olan faturanın Düzenle'si ret (eski kâhinde SK-50 iki dünya SUS)
     if "sk51" in t:
