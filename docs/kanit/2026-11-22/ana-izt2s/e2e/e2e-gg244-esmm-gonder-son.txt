@@ -1,0 +1,15 @@
+  ✓ ön koşul: e-SMM kullanıcısında açıklama e-SMM cümlesini taşır
+  ✓ e-SMM işareti kaldırıldı (sunucu)
+  ✓ işaret kalkınca açıklamada e-SMM cümlesi yok (pencere kapatılmadan): …PDF'te Düzenleyen kutusuna basılır; e-Faturada da istenirse Entegratör Ayarları → Görünüm.
+  ✓ kaydedilmemiş Telefon alanı durdu ("0312 555 00 00")
+  ✓ işaret yeniden konunca açıklama e-SMM cümlesini taşır: …örünüm. Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer.
+  ✓ Telefon alanı ikinci kayıttan sonra da durdu
+■ 7 Satış faturası kâğıda düşünce nedeni formda (firma işareti); Alış'ta, e-Arşiv'de ve entegratörsüz firmada not yok
+  ✓ satış, işaretler kapalı: "Kâğıt belge: firma e-Fatura / e-Arşiv kullanıcısı olarak işaretli değil (Entegratör Ayarları → Firma / Etiket Tanımları)." (gizli: false)
+  ✓ Alış faturasında not yok (hesap yapıldı: true; gizli: true, "")
+  ✓ satış, e-Fatura var e-Arşiv yok, alıcı mükellef değil: "Kâğıt belge: alıcı e-Fatura mükellefi değil ve firma e-Arşiv kullanıcısı olarak işaretli değil (Entegratör Ayarları → Firma / Etiket Tanımları)."
+  ✓ e-Arşiv'de not yok (gizli: true; tür notu "Alıcı e-Fatura mükellefi değil: e-Arşiv kesilir.")
+  ✓ entegratör kayıtlı değilken kâğıt belgede not yok (Kaydedilince Verilecek NoFIS2026000000001; gizli: true, "")
+  ✓ sayfa hatası yok ()
+
+66 geçti, 0 kaldı
