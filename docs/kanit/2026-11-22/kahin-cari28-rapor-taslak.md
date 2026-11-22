@@ -19,3 +19,9 @@ Taban 6a1d19d1 · dal worktree-agent-a5cd991d0d986ba51 · girdi docs/devir/2.5.0
   Aynısı V3 / V4 / V7 / V8 / V10 / V11 (k1). V9 (iade kartı 300'e küçültmüş, bağlı 300) programda kâhinle AYNI.
 
 (son hâl SubagentHandback raporunda)
+
+## Son hâl (13:1x UTC)
+- program ↔ yeni kâhin son: 25.101/25.101 UTC ve Europe/Istanbul (0 fark, 63 yapım aşaması — 'S255 izleyen tur 4', 0 okuma hatası, 0 yakalanmayan mutasyon).
+- program ↔ eski kâhin (d60): 428/440 — 12 fark yalnız Q1 (S254 alanı; program son açılan kartı küçültüyor — gözlem).
+- yapım aşaması listesi 0 → 63 (hepsi d60; yeni 63 / kapanan 0 / değişen 0) — ayrı commit.
+- KULLANICIYA SORULMALI: SK-52 (bağlı çek / senet), SK-53 (şüpheli paylı) — ikisi de UÇ, öneri C (BİLİNEN SINIR); kâhin SUS.
