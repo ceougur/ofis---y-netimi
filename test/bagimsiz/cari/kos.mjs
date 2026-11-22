@@ -809,6 +809,8 @@ async function kos(senaryo) {
           }
           durum(a, rd);
           ham[`duzenle:${a.id}`] = { http: rd.status, yanit: rd.status === 200 ? undefined : rd.data };
+          // bakım 27 (§39 Y27-3 — yalnız okuma eşlemesi, kural DEĞİL): reddedilen Düzenle'den sonra da taksitli faturanın kendi kartı okunur ('kart DEĞİŞMEZ'in denetimi; kimlik Düzenle'den önceki ayrıntının planId'si)
+          if (rd.status !== 200 && g.planId) (ids.faturaKart ||= {})[a.fatura] = g.planId;
           if (rd.status === 200) {
             ids.faturaTutar[a.fatura] = Math.round((ids.faturaTutar[a.fatura] * a.adet) / (ids.faturaAdet[a.fatura] || 1));
             ids.faturaAdet[a.fatura] = a.adet;

@@ -1,0 +1,42 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 111 elle senaryonun 0'inin adımları değişti: yok · izinli: yok · yeni elle senaryo: d58-c5-s246-s243-kendi-kart-duzenle
+DİL EKİ (bakım 24): eski kâhinin dilinde olmayan adımlı yeni elle senaryo — eşdeğerlik / G3 dışında: yok
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 111 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 528/528 bayt bayt aynı
+G3 (kural 2.5.0; 132 senaryo — eski kopyanın 111 elle senaryosu + yeni elle + 20 rastgele): eski 79744 denetim · yeni 79803 denetim · değişen / kalkan / yeni toplam 181 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  S234           yeni         3
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:kart:fatura:FT3:kalan: "(denetim yok)" → 60000
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:kart:fatura:FT3:kapali: "(denetim yok)" → false
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:kart:fatura:FT3:toplam: "(denetim yok)" → 60000
+  S246           degisen     10
+      örn. d57-c5-s241-s242-duzenle k1:cari:P1:gecikmis: 80000 → 60000
+      örn. d57-c5-s241-s242-duzenle k1:kart:fatura:FP1:kalan: 30000 → 90000
+      örn. d57-c5-s241-s242-duzenle k1:kart:fatura:FP1:toplam: 30000 → 90000
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:cari:R1:gecikmis: 60000 → 20000
+  SK47           kalkan      16
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:cari:V2:acikEsitBakiye: true → "(denetim yok)"
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:cari:V2:acikToplam: 60000 → "(denetim yok)"
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:cari:V2:gecikmis: 30000 → "(denetim yok)"
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:fatura:FV2:acik: 60000 → "(denetim yok)"
+  SK48-49        kalkan      25
+      örn. d57-c5-s241-s242-duzenle k1:cari:K3:acikEsitBakiye: false → "(denetim yok)"
+      örn. d57-c5-s241-s242-duzenle k1:cari:K3:acikToplam: 0 → "(denetim yok)"
+      örn. d57-c5-s241-s242-duzenle k1:cari:K3:gecikmis: 0 → "(denetim yok)"
+      örn. d57-c5-s241-s242-duzenle k1:fatura:FK3:acik: 0 → "(denetim yok)"
+  SK50           kalkan      15
+      örn. d58-c5-s246-s243-kendi-kart-duzenle adim:dr4:durum: "ok" → "(denetim yok)"
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:cari:R4:acikEsitBakiye: true → "(denetim yok)"
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:cari:R4:acikToplam: 90000 → "(denetim yok)"
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:cari:R4:bakiye: 90000 → "(denetim yok)"
+  SUS25-S243     yeni       112
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:N1:acikEsitBakiye: "(denetim yok)" → true
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:N1:acikToplam: "(denetim yok)" → 60000
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:N1:gecikmis: "(denetim yok)" → 60000
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:N2:acikEsitBakiye: "(denetim yok)" → true
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d56-c5-s238-s240-iade-ve-secilmeyen      SUS25-S243/yeni 88
+  d57-c5-s241-s242-duzenle                 S246/degisen 3 · SK48-49/kalkan 7
+  d58-c5-s246-s243-kendi-kart-duzenle      S234/yeni 3 · S246/degisen 7 · SK47/kalkan 16 · SK48-49/kalkan 18 · SK50/kalkan 15 · SUS25-S243/yeni 24
+# tests 660
+# pass 660
+# fail 0
+660/660 denetim geçti

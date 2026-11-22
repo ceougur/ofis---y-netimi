@@ -1,0 +1,58 @@
+{
+  "ad": "kahin-cari26-program-ist",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc26-aba/program-ist",
+  "commit": "9320049d3b2a16d0692065b1b30ac1a2a7c8e345",
+  "dal": "worktree-agent-aba92b2d7bf349903",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-22T05:16:10.745Z",
+  "sure_sn": 467.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 24354,
+    "gecen": 24349,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:P1:gecikmis: program \"tuttu\" · kâhin 80000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 60000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:fatura:FK3:toplam: program \"denetim yok\" · kâhin 60000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 30000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:fatura:FP1:kalan: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 90000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:fatura:FP1:toplam: program \"tuttu\" · kâhin 30000 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç7b; liste program 90000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:T3:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vades",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc26-aba/kanit/2026-11-22/kahin-cari26-program-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aba92b2d7bf349903",
+  "ham_cikti_sha256": "221e0670ff195d6061c7830a677a5f23d3f848eed56c55c03d5c96c4546e5984",
+  "ham_cikti_bayt": 81091
+}

@@ -1,0 +1,94 @@
+d56-c5-s238-s240-iade-ve-secilmeyen.json: 69 elle beklenti değişti
+    değer                  k0:cari:N1:acikEsitBakiye: "(yok)" → true
+    değer                  k0:cari:N1:acikToplam: "(yok)" → 120000
+    değer                  k0:cari:N1:gecikmis: "(yok)" → 120000
+    değer                  k0:cari:N2:acikEsitBakiye: "(yok)" → true
+    değer                  k0:cari:N2:acikToplam: "(yok)" → 120000
+    değer                  k0:cari:N2:gecikmis: "(yok)" → 120000
+    değer                  k0:fatura:FN1A:acik: "(yok)" → 60000
+    değer                  k0:fatura:FN1A:gosterilen: "(yok)" → 0
+    değer                  k0:fatura:FN1A:kartta: "(yok)" → 60000
+    değer                  k0:fatura:FN1A:taksitte: "(yok)" → true
+    değer                  k0:fatura:FN1B:acik: "(yok)" → 60000
+    değer                  k0:fatura:FN1B:gosterilen: "(yok)" → 60000
+    değer                  k0:fatura:FN1B:kartta: "(yok)" → 0
+    değer                  k0:fatura:FN1B:taksitte: "(yok)" → false
+    değer                  k0:fatura:FN2A:acik: "(yok)" → 60000
+    değer                  k0:fatura:FN2A:gosterilen: "(yok)" → 0
+    değer                  k0:fatura:FN2A:kartta: "(yok)" → 60000
+    değer                  k0:fatura:FN2A:taksitte: "(yok)" → true
+    değer                  k0:fatura:FN2B:acik: "(yok)" → 60000
+    değer                  k0:fatura:FN2B:gosterilen: "(yok)" → 60000
+    değer                  k0:fatura:FN2B:kartta: "(yok)" → 0
+    değer                  k0:fatura:FN2B:taksitte: "(yok)" → false
+    değer                  k0:kart:KN1:kalan: "(yok)" → 60000
+    değer                  k0:kart:KN1:mevcutBorc: "(yok)" → true
+    değer                  k0:kart:KN1:odenen: "(yok)" → 0
+    değer                  k0:kart:KN1:var: "(yok)" → true
+    değer                  k0:kart:KN2:kalan: "(yok)" → 60000
+    değer                  k0:kart:KN2:mevcutBorc: "(yok)" → true
+    değer                  k0:kart:KN2:odenen: "(yok)" → 0
+    değer                  k0:kart:KN2:var: "(yok)" → true
+    değer                  k1:cari:N1:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:N1:acikToplam: "(yok)" → 60000
+    değer                  k1:cari:N1:gecikmis: "(yok)" → 60000
+    değer                  k1:cari:N2:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:N2:acikToplam: "(yok)" → 60000
+    değer                  k1:cari:N2:gecikmis: "(yok)" → 60000
+    değer                  k1:fatura:FN1A:acik: "(yok)" → 60000
+    değer                  k1:fatura:FN1A:gosterilen: "(yok)" → 0
+    değer                  k1:fatura:FN1A:kartta: "(yok)" → 60000
+    değer                  k1:fatura:FN1A:taksitte: "(yok)" → true
+    değer                  k1:fatura:FN2A:acik: "(yok)" → 0
+    değer                  k1:fatura:FN2A:gosterilen: "(yok)" → 0
+    değer                  k1:fatura:FN2A:kartta: "(yok)" → 0
+    değer                  k1:fatura:FN2A:taksitte: "(yok)" → false
+    değer                  k1:fatura:FN2B:acik: "(yok)" → 60000
+    değer                  k1:fatura:FN2B:gosterilen: "(yok)" → 60000
+    değer                  k1:fatura:FN2B:kartta: "(yok)" → 0
+    değer                  k1:fatura:FN2B:taksitte: "(yok)" → false
+    değer                  k1:fatura:IN2:acik: "(yok)" → 0
+    değer                  k1:kart:KN1:kalan: "(yok)" → 60000
+    değer                  k1:kart:KN1:mevcutBorc: "(yok)" → true
+    değer                  k1:kart:KN1:odenen: "(yok)" → 0
+    değer                  k1:kart:KN1:toplam: "(yok)" → 60000
+    değer                  k1:kart:KN1:var: "(yok)" → true
+    değer                  k1:kart:KN2:kalan: "(yok)" → 0
+    değer                  k1:kart:KN2:mevcutBorc: "(yok)" → true
+    değer                  k1:kart:KN2:odenen: "(yok)" → 0
+    değer                  k1:kart:KN2:toplam: "(yok)" → 0
+    değer                  k1:kart:KN2:var: "(yok)" → true
+    elleYok kalktı         k1:cari:N1:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N2:gecikmis: "yok" → ""
+    elleYok kalktı         k1:fatura:FN1A:acik: "yok" → ""
+    elleYok kalktı         k1:fatura:FN2A:acik: "yok" → ""
+    elleYok kalktı         k1:kart:KN1:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:KN1:toplam: "yok" → ""
+    elleYok kalktı         k1:kart:KN2:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:KN2:toplam: "yok" → ""
+    elleYok eklendi        k1:kart:KN2:taksit1:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KN2:taksit2:odenen: "" → "yok"
+d57-c5-s241-s242-duzenle.json: 18 elle beklenti değişti
+    değer                  k1:cari:K3:acikEsitBakiye: false → "(yok)"
+    değer                  k1:cari:K3:acikToplam: 0 → "(yok)"
+    değer                  k1:cari:K3:gecikmis: 0 → "(yok)"
+    değer                  k1:cari:P1:gecikmis: 80000 → 60000
+    değer                  k1:fatura:FK3:acik: 0 → "(yok)"
+    değer                  k1:kart:fatura:FK3:kalan: 0 → "(yok)"
+    değer                  k1:kart:fatura:FK3:toplam: 60000 → "(yok)"
+    değer                  k1:kart:fatura:FP1:kalan: 30000 → 90000
+    değer                  k1:kart:fatura:FP1:kapali: "(yok)" → false
+    değer                  k1:kart:fatura:FP1:toplam: 30000 → 90000
+    elleYok eklendi        k1:cari:K3:acikEsitBakiye: "" → "yok"
+    elleYok eklendi        k1:cari:K3:acikToplam: "" → "yok"
+    elleYok eklendi        k1:cari:K3:gecikmis: "" → "yok"
+    elleYok eklendi        k1:fatura:FK3:acik: "" → "yok"
+    elleYok eklendi        k1:kart:fatura:FK3:kalan: "" → "yok"
+    elleYok eklendi        k1:kart:fatura:FK3:kapali: "" → "yok"
+    elleYok eklendi        k1:kart:fatura:FK3:toplam: "" → "yok"
+    elleBelirsiz eklendi   "SK-48": "" → ""
+yeni elle senaryo: d58-c5-s246-s243-kendi-kart-duzenle.json
+# tests 111
+# pass 111
+# fail 0
+111/111 denetim geçti

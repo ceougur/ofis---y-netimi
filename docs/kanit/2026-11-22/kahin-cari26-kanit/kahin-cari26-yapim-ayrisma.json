@@ -1,0 +1,20 @@
+{
+ "uretilen_toplam": 1,
+ "listeye_giren": 0,
+ "listeye_girmeyen_P": [
+  {
+   "senaryo": "d58-c5-s246-s243-kendi-kart-duzenle",
+   "anahtar": "k1:cari:T3:gecikmis",
+   "beklenen": 0,
+   "program": 20000
+  }
+ ],
+ "yeni": [],
+ "kapanan": [
+  "d57-c5-s241-s242-duzenle k1:cari:P1:gecikmis",
+  "d57-c5-s241-s242-duzenle k1:kart:fatura:FK3:toplam",
+  "d57-c5-s241-s242-duzenle k1:kart:fatura:FP1:kalan",
+  "d57-c5-s241-s242-duzenle k1:kart:fatura:FP1:toplam"
+ ],
+ "degisen": []
+}

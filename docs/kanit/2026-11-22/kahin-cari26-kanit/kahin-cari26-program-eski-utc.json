@@ -1,0 +1,148 @@
+{
+  "ad": "kahin-cari26-program-eski-utc",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc26-aba/eski/test/bagimsiz/cari/kos.mjs --mutasyonsuz --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc26-aba/program-eski-utc test/bagimsiz/cari/senaryolar/d56-c5-s238-s240-iade-ve-secilmeyen.json test/bagimsiz/cari/senaryolar/d57-c5-s241-s242-duzenle.json test/bagimsiz/cari/senaryolar/d58-c5-s246-s243-kendi-kart-duzenle.json",
+  "commit": "120c77963888bd5150607a87dfa2f008f6596672",
+  "dal": "worktree-agent-aba92b2d7bf349903",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-22T05:23:58.215Z",
+  "sure_sn": 6.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 1459,
+    "gecen": 1436,
+    "basarisiz": 23,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 23 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] adim:dr4:durum: program \"ret\" · kâhin \"ok\" (§36 Y24-6 KAPSAM (e): kesilmiş faturanın Düzenle ile azaltılması (azaltılan tutar iade gibi)) · yanıt: invoice-locked Bu faturanın 1 iade faturası var; düzenlenmez. Önce iadeleri iptal edin.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:R1:gecikmis: program 20000 · kâhin 60000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), v",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:R2:gecikmis: program 40000 · kâhin 60000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), v",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:R3:gecikmis: program 20000 · kâhin 60000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), v",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:R4:acikToplam: program 60000 · kâhin 90000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:R4:bakiye: program 60000 · kâhin 90000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:R4:gecikmis: program 0 · kâhin 30000 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vades",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:T2:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vades",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:cari:T3:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vades",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k1:fatura:FR4:acik: program 60000 · kâhin 90000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) (ajan ayrıntısı: iade))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kart:fatura:FR1:kalan: program 80000 · kâhin 20000 (C13.4 / S99: kartın Kalan'ı = taksitlerin tek kuyruk kalanı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:kart:fatura:FR1:toplam: program 90000 · kâhin 30000 (S99 faturanın kendi kartı = fatura tutarı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kart:fatura:FR2:kalan: program 120000 · kâhin 90000 (C13.4 / S99: kartın Kalan'ı = taksitlerin tek kuyruk kalanı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kart:fatura:FR2:kapali: program false · kâhin true (§36 Y24-1 / Y24-2 KG-23 = A: taksitli faturanın kendi kartı Kartı Kapat ile kapalı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:kart:fatura:FR2:toplam: program 120000 · kâhin 90000 (S99 faturanın kendi kartı = fatura tutarı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kart:fatura:FR3:kalan: program 80000 · kâhin 20000 (C13.4 / S99: kartın Kalan'ı = taksitlerin tek kuyruk kalanı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kart:fatura:FR3:kapali: program false · kâhin true (§36 Y24-1 / Y24-2 KG-23 = A: taksitli faturanın kendi kartı Kartı Kapat ile kapalı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:kart:fatura:FR3:toplam: program 90000 · kâhin 30000 (S99 faturanın kendi kartı = fatura tutarı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:kart:fatura:FR4:kalan: program \"okunamadı\" · kâhin 60000 (C13.4 / S99: kartın Kalan'ı = taksitlerin tek kuyruk kalanı · §36 Y24-4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kart:fatura:FR4:kapali: program \"okunamadı\" · kâhin false (§36 Y24-1 / Y24-2 KG-23 = A: taksitli faturanın kendi kartı Kartı Kapat ile kapalı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:kart:fatura:FR4:toplam: program \"okunamadı\" · kâhin 60000 (S99 faturanın kendi kartı = fatura tutarı · §36 Y24-4 KAPSAM (b): iade / Düzenle ile küçüldü)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kart:fatura:FT2:kapali: program false · kâhin true (§36 Y24-1 / Y24-2 KG-23 = A: taksitli faturanın kendi kartı Kartı Kapat ile kapalı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:kart:fatura:FV1:toplam: program 60000 · kâhin 30000 (S99 faturanın kendi kartı = fatura tutarı)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc26-aba/kanit/2026-11-22/kahin-cari26-program-eski-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aba92b2d7bf349903",
+  "ham_cikti_sha256": "9d777457c5ae890bd9a9b97d01b6d4962f09a5f7020ce059f33ee75dc4160960",
+  "ham_cikti_bayt": 7051
+}

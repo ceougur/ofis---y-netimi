@@ -1,0 +1,6 @@
+kilit 02:52 yük 1.08 1.13 1.10 2/108 15178
+[kanit] s231-yeni-UTC: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 47/48 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7ab911b +2 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-yeni-Europe: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 47/48 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7ab911b +2 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-taban-yeniler-UTC: BAŞARISIZ (çıkış 1; 14 başarısız, 0 iptal) · çıkış 1 · 4/18 geçti, 14 başarısız, 0 iptal, 0 atlanan · commit b169e19 +5 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-taban-yeniler-Europe: BAŞARISIZ (çıkış 1; 14 başarısız, 0 iptal) · çıkış 1 · 4/18 geçti, 14 başarısız, 0 iptal, 0 atlanan · commit b169e19 +5 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+BİTTİ 02:53 yük 1.72 1.29 1.16 1/118 15553

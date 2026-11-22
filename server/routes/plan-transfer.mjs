@@ -28,12 +28,13 @@ import { dayText, isoDay } from "../lib/plans.mjs";
 import { FREEZE_CLOSE, SkippedRow } from "./plans.mjs";
 import { accountMovements, openTrashAccounts } from "../lib/account-movements.mjs";
 import { systemClock } from "../lib/clock.mjs";
+import { foldPersonName } from "../lib/names.mjs";
 
 const SETTLED_KEY = "dues.settled";
 const DISMISSED_KEY = "plans.transfer.dismissed";
 const IMPORTABLE = new Set(["ready", "warning", "closed", "link"]);
 const EPS = 0.005;
-const fold = value => String(value ?? "").normalize("NFC").toLocaleLowerCase("tr-TR").replace(/\s+/g, " ").trim();
+const fold = foldPersonName; // S223: kişi adı karşılaştırmasının tek yardımcısı (lib/names.mjs; sonuç önceki yerel katlamayla aynı)
 const digits = value => String(value ?? "").replace(/\D/g, "");
 const MONEY = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const money = value => MONEY.format(Number(value) || 0);
@@ -215,7 +216,11 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
       freeHits.set(record.key, { hits, candidates });
       for (const plan of hits) claims.set(plan.id, (claims.get(plan.id) || 0) + 1);
     }
-    const groupExisting = name => (name ? store.get("SELECT id FROM plan_groups WHERE name = ? COLLATE NOCASE AND parent_id IS NULL", name)?.id || "" : "");
+    // S231 = A: ön izleme aktarımın grup bulmasıyla aynı sıra — önce NOCASE, bulamazsa Türkçe harf katlamalı tek grup (routes/plans.mjs groupFinder; okuma).
+    const groups = plans()?.groupFinder ? plans().groupFinder() : null;
+    const groupExisting = name => (name ? store.get("SELECT id FROM plan_groups WHERE name = ? COLLATE NOCASE AND parent_id IS NULL", name)?.id || groups?.find(name) || "" : "");
+    // S223 = A: ön izlemenin ad haritası (aktarımdaki createFromPlan ile aynı kural: önce NOCASE, bulamazsa Türkçe katlamalı aynı ad).
+    const people = accounts()?.personIndex ? accounts().personIndex() : null;
 
     const totals = emptyTotals();
     const decisions = new Map();
@@ -273,7 +278,7 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
         account = "bound";
         accountName = bound.name;
       } else if (status !== "error" && status !== "exists") {
-        const matched = accounts()?.matchPerson ? accounts().matchPerson({ name: record.name, phone: record.phone, groupId: groupExisting(groupNameFor(record, options)) || "__yeni__" }) : "";
+        const matched = accounts()?.matchPerson ? accounts().matchPerson({ name: record.name, phone: record.phone, groupId: groupExisting(groupNameFor(record, options)) || "__yeni__" }, people) : "";
         const owner = matched ? store.get("SELECT name, case_key AS caseKey FROM accounts WHERE id = ?", matched) : null;
         if (matched && !owner?.caseKey) {
           account = "match";
@@ -409,6 +414,7 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
     const undo = { plans: [], openings: [], links: [], accounts: [], accountLinks: [], payments: [], accountEntries: [], groups: [], source: key };
     const plansService = plans();
     const accountsService = accounts();
+    const people = accountsService?.personIndex ? accountsService.personIndex() : null; // S223 = A: aktarımın ad haritası (açılan cari eklenir)
     // v2.1.0 (bank.post op 'move'): kayıt tahsilatı karta taşınırken işlem başlığını (İşlem No, yol) taşır; kart, taksitler ve
     // açılış (devir) satırları para satırı değildir.
     const result = bank.post({ user, module: "plan", op: "move", prev: { importId }, write: () => {
@@ -425,10 +431,14 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
         refs.add(String(autoRef));
         return String(autoRef);
       };
+      // S231 = A: NOCASE bulamazsa Türkçe harf katlamalı tek grup (routes/plans.mjs groupFinder); Geri Al listesine YALNIZ gerçekten açılan grup girer
+      // (katlamayla bulunan var olan grup Geri Al'da silinmez).
+      const folded = plansService.groupFinder ? plansService.groupFinder({ created: id => undo.groups.push(id) }) : null;
       const groupId = (name, parentId = null) => {
         if (!name) return null;
         const found = store.get("SELECT id FROM plan_groups WHERE name = ? COLLATE NOCASE AND COALESCE(parent_id, '') = ?", name, parentId || "");
         if (found) return found.id;
+        if (folded) return plansService.ensureGroup(user, name, parentId, folded);
         const id = plansService.ensureGroup(user, name, parentId);
         if (id) undo.groups.push(id);
         return id;
@@ -486,7 +496,7 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
               const sg = g && record.subgroupName ? groupId(record.subgroupName, g) : null;
               const person = { name: record.name, phone: record.phone, note: "", registeredOn: full.registeredOn || "", groupId: g, subgroupId: sg, caseKey: record.key, caseSource: key, caseTitle: record.name };
               const result = {};
-              const id = accountsService?.createFromPlan ? accountsService.createFromPlan(user, person, result) : "";
+              const id = accountsService?.createFromPlan ? accountsService.createFromPlan(user, person, result, people) : "";
               const day = plansService.scheduledStart(full.registeredOn || (id && !result.created ? store.get("SELECT registered_on AS day FROM accounts WHERE id = ?", id)?.day : "") || today(), full.items);
               const reason = plansService.lockedStartReason(day);
               if (reason) throw new SkippedRow(reason);

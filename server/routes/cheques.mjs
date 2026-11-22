@@ -848,15 +848,24 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       if (report.skipped.length < 500) report.skipped.push({ row: headerAt + index + 2, reason });
     };
     // Cari eşleşmesi: keşideci/lehtar adı ile birebir aynı adlı TEK cari (şüphede bağlanmaz).
+    // 2.5.0 S223 = A / S228 = A (routes/accounts.mjs matchName): önce bugünkü (NOCASE) karşılaştırma; hiç cari bulamazsa Türkçe katlamalı aynı ad
+    // (yükleme başına tek ad haritası). Önbellek ADIN KENDİSİYLE: iki yazımın sonucu ayrı olabilir (önceden Türkçe küçük harf anahtarı, NOCASE sorgusu —
+    // aynı dosyada 'AHMET YILMAZ' ile 'Ahmet Yılmaz' ilk satırın sonucunu paylaşıyordu).
     const accountByName = new Map();
+    // S231 (hız; davranış aynen): yüklemenin keşideci / lehtar adları önceden bilinir → ad haritası yalnız bu adlarla (routes/accounts.mjs personIndexFor;
+    // cariler tek metin olarak okunur). Ölçülen neden: S223'ün haritası bütün carileri satır satır katlıyordu ('hepsi yeni ad' çek 500'de ~8 ms).
+    const drawers = col.drawer >= 0 ? rows.filter(Array.isArray).map(row => cell(row, col.drawer).slice(0, 160)) : [];
+    const people = accounts()?.personIndexFor ? accounts().personIndexFor(drawers) : accounts()?.personIndex ? accounts().personIndex() : null;
     const findAccount = name => {
       if (!name) return "";
-      const key = name.toLocaleLowerCase("tr-TR");
-      if (!accountByName.has(key)) {
-        const found = store.all("SELECT id FROM accounts WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE LIMIT 2", name);
-        accountByName.set(key, found.length === 1 ? found[0].id : "");
+      if (!accountByName.has(name)) {
+        if (accounts()?.matchName) accountByName.set(name, accounts().matchName(name, people));
+        else {
+          const found = store.all("SELECT id FROM accounts WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE LIMIT 2", name);
+          accountByName.set(name, found.length === 1 ? found[0].id : "");
+        }
       }
-      return accountByName.get(key);
+      return accountByName.get(name);
     };
     const seen = new Set();
     const replayed = store.tx(() => {

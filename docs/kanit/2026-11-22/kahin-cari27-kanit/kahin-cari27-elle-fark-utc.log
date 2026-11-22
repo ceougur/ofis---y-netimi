@@ -1,0 +1,73 @@
+d57-c5-s241-s242-duzenle.json: 15 elle beklenti değişti
+    değer                  k1:cari:K3:acikEsitBakiye: "(yok)" → false
+    değer                  k1:cari:K3:acikToplam: "(yok)" → 0
+    değer                  k1:cari:K3:gecikmis: "(yok)" → 0
+    değer                  k1:fatura:FK3:acik: "(yok)" → 0
+    değer                  k1:kart:fatura:FK3:kalan: "(yok)" → 0
+    değer                  k1:kart:fatura:FK3:kapali: "(yok)" → false
+    değer                  k1:kart:fatura:FK3:toplam: "(yok)" → 30000
+    elleYok kalktı         k1:cari:K3:acikEsitBakiye: "yok" → ""
+    elleYok kalktı         k1:cari:K3:acikToplam: "yok" → ""
+    elleYok kalktı         k1:cari:K3:gecikmis: "yok" → ""
+    elleYok kalktı         k1:fatura:FK3:acik: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FK3:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FK3:kapali: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FK3:toplam: "yok" → ""
+    elleBelirsiz kalktı    "SK-48": "" → ""
+d58-c5-s246-s243-kendi-kart-duzenle.json: 51 elle beklenti değişti
+    değer                  adim:dr4:durum: "(yok)" → "ret"
+    değer                  k1:cari:R4:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:R4:acikToplam: "(yok)" → 60000
+    değer                  k1:cari:R4:bakiye: "(yok)" → 60000
+    değer                  k1:cari:R4:gecikmis: "(yok)" → 0
+    değer                  k1:cari:T1:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:T1:acikToplam: "(yok)" → 30000
+    değer                  k1:cari:T1:gecikmis: "(yok)" → 0
+    değer                  k1:cari:T2:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:T2:acikToplam: "(yok)" → 60000
+    değer                  k1:cari:T2:gecikmis: "(yok)" → 20000
+    değer                  k1:cari:T3:gecikmis: 0 → 20000
+    değer                  k1:fatura:FR4:acik: "(yok)" → 60000
+    değer                  k1:fatura:FT1:acik: "(yok)" → 30000
+    değer                  k1:fatura:FT2:acik: "(yok)" → 60000
+    değer                  k1:fatura:IR4:acik: "(yok)" → 0
+    değer                  k1:kart:fatura:FR4:kalan: "(yok)" → 60000
+    değer                  k1:kart:fatura:FR4:kapali: "(yok)" → false
+    değer                  k1:kart:fatura:FR4:toplam: "(yok)" → 60000
+    değer                  k1:kart:fatura:FT1:kalan: "(yok)" → 30000
+    değer                  k1:kart:fatura:FT1:kapali: "(yok)" → false
+    değer                  k1:kart:fatura:FT1:toplam: "(yok)" → 60000
+    değer                  k1:kart:fatura:FT2:kalan: "(yok)" → 60000
+    değer                  k1:kart:fatura:FT2:kapali: "(yok)" → false
+    değer                  k1:kart:fatura:FT2:toplam: "(yok)" → 60000
+    elleYok kalktı         adim:dr4:durum: "yok" → ""
+    elleYok kalktı         k1:cari:R4:acikToplam: "yok" → ""
+    elleYok kalktı         k1:cari:R4:bakiye: "yok" → ""
+    elleYok kalktı         k1:cari:R4:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:T1:acikToplam: "yok" → ""
+    elleYok kalktı         k1:cari:T1:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:T2:acikToplam: "yok" → ""
+    elleYok kalktı         k1:cari:T2:gecikmis: "yok" → ""
+    elleYok kalktı         k1:fatura:FR4:acik: "yok" → ""
+    elleYok kalktı         k1:fatura:FT1:acik: "yok" → ""
+    elleYok kalktı         k1:fatura:FT2:acik: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FR4:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FR4:kapali: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FR4:toplam: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FT1:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FT1:kapali: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FT1:toplam: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FT2:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FT2:kapali: "yok" → ""
+    elleYok kalktı         k1:kart:fatura:FT2:toplam: "yok" → ""
+    elleBelirsiz kalktı    "SK-49": "" → ""
+    elleBelirsiz kalktı    "SK-49": "" → ""
+    elleBelirsiz kalktı    "SK-50": "" → ""
+    elleBelirsiz kalktı    "SK-48": "" → ""
+    elleBelirsiz kalktı    "SK-48": "" → ""
+    elleBelirsiz eklendi   ["SK-49", "S250 = C"]: "" → ""
+yeni elle senaryo: d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle.json
+# tests 112
+# pass 112
+# fail 0
+112/112 denetim geçti

@@ -1,8 +1,8 @@
 {
  "dil": "destekofis-cari/3",
  "ad": "d57-c5-s241-s242-duzenle",
- "aciklama": "Bakım 25 (§37): kesilmiş faturanın Düzenle'si (POST /invoices/:id/edit) — S241 = A kartın açık kalanından fazla azaltma, fazlası avans (K1 kararın örneği açık kartta, K2 kapanmış kartta, K3 kendi kartlı faturada); KAPSAM 'iade ile AYNI' + S239 dış önce (K5); S242 = A artırma kartı değiştirmez, artan faturanın günüyle ayrı açık (P1 kararın örneği — kendi kartı, P2 Mevcut Borç kartı, P3 kapanmış kart). Bugün 20.11.2026. Elle tablo karar metinlerinden, kâhin koşulmadan (üreteç docs/kanit/2026-11-21/kahin-cari25-arac/uret-d56.py).",
- "dayanak": "KARARLAR.md §37 (Y25-1, Y25-5, Y25-6), §36 Y24-6",
+ "aciklama": "Bakım 25 (§37): kesilmiş faturanın Düzenle'si (POST /invoices/:id/edit) — S241 = A kartın açık kalanından fazla azaltma, fazlası avans (K1 kararın örneği açık kartta, K2 kapanmış kartta, K3 kendi kartlı faturada — bakım 27: S249 = A kararın örneği, kart 3 × 100 yeniden kurulur, fazla 300 avans); KAPSAM 'iade ile AYNI' + S239 dış önce (K5); S242 = A artırma kartı değiştirmez, artan faturanın günüyle ayrı açık (P1 — bakım 26: S246 = B, kendi kartı yeni tutarla yeniden kurulur, P2 Mevcut Borç kartı, P3 kapanmış kart). Bugün 20.11.2026. Elle tablo karar metinlerinden, kâhin koşulmadan (üreteç docs/kanit/2026-11-21/kahin-cari25-arac/uret-d56.py).",
+ "dayanak": "KARARLAR.md §37 (Y25-1, Y25-5, Y25-6), §36 Y24-6, §38 Y26-1 / Y26-5, §39 Y27-1",
  "bugun": "2026-11-20",
  "elleBeklenen": {
   "k0:cari:K1:bakiye": 30000,
@@ -114,13 +114,6 @@
   "k1:fatura:FK2:acik": 0,
   "k1:fatura:FK2:gosterilen": 0,
   "k1:fatura:FK2:kartta": 0,
-  "k1:cari:K3:bakiye": -30000,
-  "k1:cari:K3:gecikmis": 0,
-  "k1:cari:K3:acikToplam": 0,
-  "k1:cari:K3:acikEsitBakiye": false,
-  "k1:fatura:FK3:acik": 0,
-  "k1:kart:fatura:FK3:toplam": 60000,
-  "k1:kart:fatura:FK3:kalan": 0,
   "k1:cari:K5:bakiye": 60000,
   "k1:cari:K5:gecikmis": 60000,
   "k1:cari:K5:acikToplam": 60000,
@@ -134,13 +127,6 @@
   "k1:fatura:FK5:gosterilen": 0,
   "k1:fatura:FK5:kartta": 60000,
   "k1:fatura:FK5:taksitte": true,
-  "k1:cari:P1:bakiye": 90000,
-  "k1:cari:P1:gecikmis": 80000,
-  "k1:cari:P1:acikToplam": 90000,
-  "k1:cari:P1:acikEsitBakiye": true,
-  "k1:fatura:FP1:acik": 90000,
-  "k1:kart:fatura:FP1:toplam": 30000,
-  "k1:kart:fatura:FP1:kalan": 30000,
   "k1:cari:P2:bakiye": 90000,
   "k1:cari:P2:gecikmis": 80000,
   "k1:cari:P2:acikToplam": 90000,
@@ -167,7 +153,23 @@
   "k1:fatura:FP3:acik": 90000,
   "k1:fatura:FP3:gosterilen": 60000,
   "k1:fatura:FP3:kartta": 30000,
-  "k1:fatura:FP3:taksitte": false
+  "k1:fatura:FP3:taksitte": false,
+  "k1:cari:P1:bakiye": 90000,
+  "k1:cari:P1:gecikmis": 60000,
+  "k1:cari:P1:acikToplam": 90000,
+  "k1:cari:P1:acikEsitBakiye": true,
+  "k1:fatura:FP1:acik": 90000,
+  "k1:kart:fatura:FP1:toplam": 90000,
+  "k1:kart:fatura:FP1:kalan": 90000,
+  "k1:kart:fatura:FP1:kapali": false,
+  "k1:cari:K3:bakiye": -30000,
+  "k1:cari:K3:gecikmis": 0,
+  "k1:cari:K3:acikToplam": 0,
+  "k1:cari:K3:acikEsitBakiye": false,
+  "k1:fatura:FK3:acik": 0,
+  "k1:kart:fatura:FK3:toplam": 30000,
+  "k1:kart:fatura:FK3:kalan": 0,
+  "k1:kart:fatura:FK3:kapali": false
  },
  "elleYok": [
   "k1:kart:KK1:taksit1:odenen",
@@ -447,5 +449,6 @@
    "gecikmis": true,
    "acikToplam": true
   }
- ]
+ ],
+ "elleBelirsiz": []
 }
