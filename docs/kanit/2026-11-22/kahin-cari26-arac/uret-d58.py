@@ -155,16 +155,16 @@ A += [cari("ct1", "T1", "Tülay Ödemeli Azaltma"), fatura("ft1", "FT1", "T1", 9
 A += [cari("ct2", "T2", "Tarık Kapalı Kart Azaltma"), fatura("ft2", "FT2", "T2", 900, 3, "2026-09-01", T3), {"id": "kkt2", "islem": "kart_kapat", "fatura": "FT2"}]
 # T3 — Y26-5 (c): açık, tahsilatsız: fatura 900 (3 × 300), Düzenle 3 → 2 adet — §36 KAPSAM (b) + (e): vadesi en önce gelen açık taksitten küçülür (0 / 300 / 300)
 A += [cari("ct3", "T3", "Tuna Açık Kart Azaltma"), fatura("ft3", "FT3", "T3", 900, 3, "2026-09-01", T3)]
-# N3 — Y26-6 (S243 = A, elle borçlu S200 kartı, iki aday fatura): Borç 200 (01.09), FA 600 (02.09), FB 600 (03.09), 05.09 elle kart 500 (2 × 250; 05.10 / 05.11)
-#   S200: önce elle borç 200, eksik 300 faturalardan eskiden yeniye → FA'nın 300'ü kartta (FA dışarıda 300), FB kartın dışında
-A += [cari("cn3", "N3", "Nevin Borçlu İki Fatura"), {"id": "bn3", "islem": "borc", "cari": "N3", "tutar": "200", "tarih": "2026-09-01"},
-      fatura("fn3a", "FN3A", "N3", 600, 2, "2026-09-02"), fatura("fn3b", "FN3B", "N3", 600, 2, "2026-09-03"),
-      {"id": "kn3", "islem": "kart_ac", "ad": "KN3", "cari": "N3", "tutar": "500", "taksit": 2, "ilkVade": "2026-10-05", "tarih": "2026-09-05", "mevcut": True}]
 # V1 — Y26-7 (S245 = C): S246 ile kendi kartı yeniden kurulan faturaya iade — fatura 300 (3 × 100), Düzenle 300 → 900, sonra iade 1 adet (300) → SK-47 SUS
 A += [cari("cv1", "V1", "Vedat Yeniden Kurulan İade"), fatura("fv1", "FV1", "V1", 300, 1, "2026-09-01", T3)]
 # V2 — Y26-7 (S245 = C kararın örneği 900 → 300 → 600): Mevcut Borç kartlı fatura 900, kart 900 (3 × 300), art arda Düzenle 3 → 1 → 2 adet → SK-47 SUS (kartın göstergeleri de)
 A += [cari("cv2", "V2", "Vildan Art Arda Düzenle"), fatura("fv2", "FV2", "V2", 900, 3, "2026-09-01"),
       {"id": "kv2", "islem": "kart_ac", "ad": "KV2", "cari": "V2", "tutar": "900", "taksit": 3, "ilkVade": "2026-10-05", "tarih": "2026-09-02", "mevcut": True}]
+# N3 — (numaralı belgeler tarih sırasıyla — Y7-1: 02.09 / 03.09 faturaları 01.09'luların ardından) Y26-6 (S243 = A, elle borçlu S200 kartı, iki aday fatura): Borç 200 (01.09), FA 600 (02.09), FB 600 (03.09), 05.09 elle kart 500 (2 × 250; 05.10 / 05.11)
+#   S200: önce elle borç 200, eksik 300 faturalardan eskiden yeniye → FA'nın 300'ü kartta (FA dışarıda 300), FB kartın dışında
+A += [cari("cn3", "N3", "Nevin Borçlu İki Fatura"), {"id": "bn3", "islem": "borc", "cari": "N3", "tutar": "200", "tarih": "2026-09-01"},
+      fatura("fn3a", "FN3A", "N3", 600, 2, "2026-09-02"), fatura("fn3b", "FN3B", "N3", 600, 2, "2026-09-03"),
+      {"id": "kn3", "islem": "kart_ac", "ad": "KN3", "cari": "N3", "tutar": "500", "taksit": 2, "ilkVade": "2026-10-05", "tarih": "2026-09-05", "mevcut": True}]
 A += [{"id": "ir4", "islem": "iade", "ad": "IR4", "fatura": "FR4", "adet": 1, "tarih": "2026-09-10"}]  # R4: 10.09 iade 1 adet (300)
 A += [{"id": "k0", "islem": "kontrol", "gecikmis": True, "acikToplam": True}]
 cr("k0", "V1", 300, 100, 300); ft("k0", "FV1", 300)  # 05.10 taksiti (100) gecikmiş

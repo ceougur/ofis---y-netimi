@@ -378,51 +378,6 @@
    }
   },
   {
-   "id": "cn3",
-   "islem": "cari_ac",
-   "ad": "N3",
-   "isim": "Nevin Borçlu İki Fatura",
-   "tarih": "2026-09-01"
-  },
-  {
-   "id": "bn3",
-   "islem": "borc",
-   "cari": "N3",
-   "tutar": "200",
-   "tarih": "2026-09-01"
-  },
-  {
-   "id": "fn3a",
-   "islem": "fatura",
-   "ad": "FN3A",
-   "cari": "N3",
-   "tur": "satis",
-   "tutar": "600",
-   "adet": 2,
-   "tarih": "2026-09-02"
-  },
-  {
-   "id": "fn3b",
-   "islem": "fatura",
-   "ad": "FN3B",
-   "cari": "N3",
-   "tur": "satis",
-   "tutar": "600",
-   "adet": 2,
-   "tarih": "2026-09-03"
-  },
-  {
-   "id": "kn3",
-   "islem": "kart_ac",
-   "ad": "KN3",
-   "cari": "N3",
-   "tutar": "500",
-   "taksit": 2,
-   "ilkVade": "2026-10-05",
-   "tarih": "2026-09-05",
-   "mevcut": true
-  },
-  {
    "id": "cv1",
    "islem": "cari_ac",
    "ad": "V1",
@@ -469,6 +424,51 @@
    "taksit": 3,
    "ilkVade": "2026-10-05",
    "tarih": "2026-09-02",
+   "mevcut": true
+  },
+  {
+   "id": "cn3",
+   "islem": "cari_ac",
+   "ad": "N3",
+   "isim": "Nevin Borçlu İki Fatura",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "bn3",
+   "islem": "borc",
+   "cari": "N3",
+   "tutar": "200",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "fn3a",
+   "islem": "fatura",
+   "ad": "FN3A",
+   "cari": "N3",
+   "tur": "satis",
+   "tutar": "600",
+   "adet": 2,
+   "tarih": "2026-09-02"
+  },
+  {
+   "id": "fn3b",
+   "islem": "fatura",
+   "ad": "FN3B",
+   "cari": "N3",
+   "tur": "satis",
+   "tutar": "600",
+   "adet": 2,
+   "tarih": "2026-09-03"
+  },
+  {
+   "id": "kn3",
+   "islem": "kart_ac",
+   "ad": "KN3",
+   "cari": "N3",
+   "tutar": "500",
+   "taksit": 2,
+   "ilkVade": "2026-10-05",
+   "tarih": "2026-09-05",
    "mevcut": true
   },
   {
