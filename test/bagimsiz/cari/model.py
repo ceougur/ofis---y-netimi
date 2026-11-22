@@ -446,12 +446,13 @@ MUTASYONLAR = {
     351: "Ç5 C38 (§2 SUS yok — SK-48): kendi kartında ödemeli / kapanmış kartta Düzenle ile azaltma iade gibi küçültür (bakım 25 davranışı) — SUS kuralı",
     352: "Ç5 C38 (S243 yok — bakım 25 davranışı): S200 kartının aday faturasının iptali / iadesi / Düzenle'si SK-45 SUS kalır",
     353: "Ç5 C38 (S245 SUS yok — SK-47): art arda Düzenle (önceki Düzenle iz bırakmadıysa) ve Düzenle'den sonra iade kartın göstergelerini değerle yazar — SUS kuralı",
+    354: "Ç5 C38 (SK-50 SUS yok): iadesi olan faturanın Düzenle'si kabul sayılır, değerle yazılır (bakım 25 davranışı) — SUS kuralı",
 }
 # 2.4.9 C1.6: silinmiş cariye yazılamayan para adımları (hedef cari adımın `cari`'si) ve carisi silinmişken yapılamayan Silinenler geri yüklemeleri (hedef kaydın carisi)
 # bakım 15 (§26 Y15-6) S145: denetlenmeyen adımlar (durumu kendi kuralıyla kuran / para satırı yazmayan) ve geri alma kopyasının dışında kalan alanlar (yedek_al ile aynı)
 S145_DISI = ("cari_ac", "kullanici_ac", "supheli_al", "yedek_al", "yedek_geri_yukle", "donem_kilitle", "sunucu_yeniden", "tablo_yukle")
 S145_SNAP_DISI = ("s", "out", "belirsiz", "yedekler", "mut", "kural", "k246", "v3", "anahtar", "seq", "kullanicilar", "_onbellek", "_artik", "_iz", "k249", "c1_izlenen",
-                  "fatura_sil_izlenen", "_ok_etiket", "k250", "sus_kart", "sus_s145", "_iz15", "sus_kapali")
+                  "fatura_sil_izlenen", "_ok_etiket", "k250", "sus_kart", "sus_s145", "_iz15", "sus_kapali", "sus_duz")
 C1_YAZIM = ("tahsilat", "odeme", "borc", "alacak", "fatura", "evrak", "kart_ac", "stok_iade", "alis_iade", "stok_satis_hesap", "supheli_al", "ciro", "stok_satis_taksit")
 C1_GERI = ("hareket_geri_yukle", "evrak_geri_yukle", "fatura_geri_yukle")
 
@@ -648,6 +649,7 @@ class Model:
         self.fatura_sil_izlenen = set()  # 2.4.9: silinen / geri yüklenen taslak faturalar (kontrolde fatura:<ad>:var)
         self._ok_etiket = {}       # 2.4.9: kabul edilen adımın durum etiketi (adım id → (etiket, kural)); yoksa PLAN "adım kabul edilir"
         self.sus_kapali = []       # bakım 24 (§36 Y24-9 (v)): kapanmış karta Taksit Tahsilatı — kararda yok, iki dünya [(adım id, kart, cari)]
+        self.sus_duz = []          # bakım 26 (§38 Y26-9) SK-50: iadesi olan faturanın Düzenle'si — kabulü kararda yok, iki dünya [(adım id, fatura, cari)]
         self.sus_kart = []         # bakım 7 (§19 Y7-3) SK-18: kabulü iki okumada ayrışan elle Mevcut Borç kartı adımları [(adım id, kart, cari, kalem okuması, bakiye okuması)]
         self.sus_s145 = []         # bakım 16 (§27 Y16-4 / Y16-5): kabulü S155'in sınırında kalan adımlar [(adım id, cari, kod, neden)] (bakım 15'te SK-33 / SK-34)
         self._s168_sus = {}        # bakım 20 (§31 Y20-6): faturaya bağlı adımın şüpheli payı tanımsız → adım id → (cari, kod, neden) (_s145_adim iki dünyaya alır)
@@ -4061,7 +4063,7 @@ class Model:
     def yedek_al(self, a):
         """/3 K6.4: yerel yedek — o anki bütün durum."""
         import copy
-        self.yedekler[a["ad"]] = copy.deepcopy({k: v for k, v in self.__dict__.items() if k not in ("s", "out", "belirsiz", "yedekler", "mut", "kural", "k246", "v3", "anahtar", "seq", "kullanicilar", "_onbellek", "_artik", "_iz", "k249", "c1_izlenen", "fatura_sil_izlenen", "_ok_etiket", "k250", "sus_kart", "sus_s145", "_iz15", "sus_kapali")})
+        self.yedekler[a["ad"]] = copy.deepcopy({k: v for k, v in self.__dict__.items() if k not in ("s", "out", "belirsiz", "yedekler", "mut", "kural", "k246", "v3", "anahtar", "seq", "kullanicilar", "_onbellek", "_artik", "_iz", "k249", "c1_izlenen", "fatura_sil_izlenen", "_ok_etiket", "k250", "sus_kart", "sus_s145", "_iz15", "sus_kapali", "sus_duz")})
         return "ok"
 
     def yedek_geri_yukle(self, a):
@@ -4634,6 +4636,10 @@ class Model:
         f = self.faturalar.get(a["fatura"])
         if not f or f["tur"] != "satis" or f["durum"] != "kesildi":
             return ("ret", "YAYGIN", "düzenlenecek kesilmiş satış faturası yok")
+        if self.k250 and self.mut != 354 and any(x["tur"] == "iade" and x.get("asil") == a["fatura"] and x["durum"] == "kesildi" for x in self.faturalar.values()):
+            # bakım 26 (§38 Y26-9) SK-50: kesilmiş iadesi olan faturanın Düzenle'si — kararlar Düzenle'nin kabul mü ret mi olduğunu söylemiyor: kâhin SUSAR (adım kabul / adım yok iki dünyası;
+            # bu koşu kabul dünyası). Mutant 354: SUS yok (adım kabul diye değer yazar — bakım 25 davranışı)
+            self.sus_duz.append((a["id"], a["fatura"], f["cari"]))
         adet0, adet = int(f.get("adet", 1)), int(a["adet"])
         yeni = f["tutar"] * adet // adet0
         delta = f["tutar"] - yeni
@@ -6402,6 +6408,16 @@ class Model:
                 self.belirsiz.append("adım %s: cari %s kart %s Taksit Tahsilatı %d kartın kendi kalanının iki okumasının arasında (kart tutarı − kendi tahsilatları %d · avansla ödenmiş / para dışı"
                                      " pay düşülmüş %d) ve 'Kalanı Aşan Tutar' yanıtı yok — iki dünyada (adım kabul / adım yok) farklı çıkan denetimler yazılmadı: KULLANICIYA SORULMALI SK-36 (§28 Y17-2)"
                                      % (aid, cari, no, tutar, K, K2))
+        if self.sus_duz:
+            # bakım 26 (§38 Y26-9) SK-50: iadesi olan faturanın Düzenle'si — adım kabul (bu koşu) ve adım yok dünyalarında farklı çıkan (ya da yalnız birinde olan) denetimler yazılmaz; adımın durumu da
+            sus_id = {x[0] for x in self.sus_duz}
+            alt = Model(dict(self.s, adimlar=[x for x in self.s["adimlar"] if x["id"] not in sus_id]), self.mut, self.kural).kos()["denetimler"]
+            for anahtar in list(out):
+                if anahtar not in alt or alt[anahtar]["b"] != out[anahtar]["b"]:
+                    del out[anahtar]
+            for aid, fat, cari in self.sus_duz:
+                self.belirsiz.append("adım %s: cari %s fatura %s Düzenle — faturanın kesilmiş iadesi var; Düzenle'nin kabulü kararda yok — iki dünyada (adım kabul / adım yok) farklı çıkan denetimler "
+                                     "yazılmadı: KULLANICIYA SORULMALI SK-50 (§38 Y26-9)" % (aid, cari, fat))
         if self.sus_kapali:
             # bakım 24 (§36 Y24-9 (v)): kapanmış karta Taksit Tahsilatı kararda yok — adım kabul (bu koşu) ve adım yok dünyalarında farklı çıkan (ya da yalnız birinde olan) denetimler yazılmaz
             sus_id = {x[0] for x in self.sus_kapali}

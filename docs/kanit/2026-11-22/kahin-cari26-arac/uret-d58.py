@@ -197,7 +197,10 @@ Y.extend(["k1:cari:V2:gecikmis", "k1:cari:V2:acikToplam", "k1:fatura:FV2:acik", 
 cr("k1", "R1", 800, 200, 800); ft("k1", "FR1", 800); fk("k1", "FR1", 900, 800, False)  # yeni kart 3 × 300; tahsilat 100 → 05.10 taksitinin 100'ü; 05.10'un 200'ü gecikmiş
 cr("k1", "R2", 1200, 400, 1200); ft("k1", "FR2", 1200); fk("k1", "FR2", 1200, 1200, False)  # S235 = B: açık; 3 × 400; 05.10 400 gecikmiş
 E["k1:cari:R3:bakiye"] = 800 * TL; sus_kendi("k1", "R3", "FR3", "SK-49")  # 900 − 100
-E["k1:cari:R4:bakiye"] = 900 * TL; sus_kendi("k1", "R4", "FR4", "SK-49")  # 1.200 − 300
+sus_kendi("k1", "R4", "FR4", "SK-49")  # 1.200 − 300 = 900 Düzenle kabul dünyasında; Düzenle yok dünyasında 600
+#   Y26-9 SK-50: iadesi olan faturanın Düzenle'si — kabul mü ret mi kararda yok → adımın durumu ve iki dünyada farklı sayılar (bakiye) SUS (program koşusunun ilk sonucundan SONRA eklenen kural;
+#   elle tablo yeni kuralın metninden — ilk tasarımda adım 'ok' ve bakiye 900 yazılıydı)
+del E["adim:dr4:durum"]; Y.extend(["adim:dr4:durum", "k1:cari:R4:bakiye"]); B.append("SK-50")
 E["k1:cari:T1:bakiye"] = 300 * TL; sus_kendi("k1", "T1", "FT1", "SK-48")  # 600 − 300
 E["k1:cari:T2:bakiye"] = 600 * TL; sus_kendi("k1", "T2", "FT2", "SK-48")
 cr("k1", "T3", 600, 0, 600); ft("k1", "FT3", 600); fk("k1", "FT3", 600, 600, False)  # 300 küçülme 05.10 taksitinden (0 / 300 / 300); 05.11 / 05.12 gelmedi

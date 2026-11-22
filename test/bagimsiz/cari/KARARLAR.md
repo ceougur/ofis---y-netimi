@@ -5706,6 +5706,10 @@ yalnız `k250`). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önc
   "bakiye, kart kalanı her seçenekte aynı" sözü — kart Kalan'ı yazılabilirdi): bu bakımda YAZILMAZ (yalnız bakiye — bugünkü gibi; isteğe bağlı genişleme 2.5.1'E). S246 = B ile kendi kartı yeniden kurulmuş faturanın sonradan iadesi
   ve ikinci Düzenle'si de S245 = C ailesidir → SUS (SK-47).
 - **Y26-8 — S247 = C, S248 = C:** dilde karşılığı yok (yukarıdaki 'bugünkü okuma'); kâhin beklenti yazmaz — BİLİNEN SINIR. Senaryo yok (DENENMEYEN).
+- **Y26-9 — SUS (KULLANICIYA SORULMALI SK-50 — UÇ; program koşusundan SONRA eklendi, açıkça):** kesilmiş iadesi olan faturanın Düzenle'si — kararlar Düzenle'nin bu durumda KABUL mü RET mi olduğunu söylemiyor (bakım 24 / 25'in
+  Y24-6 / Y25-5 kuralları Düzenle'yi kabul varsayıyordu; ilk program koşusunda d58 R4'te program adımı reddetti: `invoice-locked` "Bu faturanın 1 iade faturası var; düzenlenmez. Önce iadeleri iptal edin." — bu gözlem kural kaynağı
+  DEĞİL, yalnız kâhinin varsayımının karar metninde dayanağı olmadığını gösterdi). Kâhin SUSAR: adım kabul / adım yok iki dünyasında farklı çıkan denetimler ve adımın durumu yazılmaz (bakım 24 Y24-9 (v) düzeni). SK-49 (b) bu iki
+  dünyanın kabul kolunda kalır.
 
 ### KULLANICIYA SORULMALI (bakım 26 — yorum aşaması; son hâl kanıt bölümünde)
 - **SK-48 — kendi taksit kartı olan faturada Düzenle ile AZALTMA (girdi §2; PARA KURALI — ders 43):** kararın örneği: fatura 900, kendi kartı 3 × 300, karta tahsilat 600, Düzenle 900 → 300. **A:** kart Düzenle'nin ödeme planıyla yeni
@@ -5713,5 +5717,8 @@ yalnız `k250`). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önc
   küçülür (S241 = A / §36 KAPSAM (b) + (e)): kart **600** (300 / 300 / 0), Tahsil Edilen **600**, Kalan **0**, Düzenle'nin karta sığmayan **300**'ü carinin avansı; bakiye **−300**. Bakiye ve avans iki seçenekte AYNI; ayrışan kartın
   tutarı / 'Tahsil Edilen' / taksit satırları (ve kısmi azaltmada gecikmiş). (b) kolu (kapanmış, tahsilatsız) ve (c) kolu (açık, tahsilatsız — program farklı okursa) aynı soruya alt madde. Uç durum DEĞİL (fiyat düzeltmesi
   sık) → "Uç durum böyle kalsın" maddesi yok. Yaygın programlarda: doğrulanmış kaynak okunmadı.
+- **SK-50 (UÇ) — iadesi olan faturanın Düzenle'si:** A (ÖNERİ): Düzenle reddedilir — "önce iadeleri iptal edin" (iade ile Düzenle'nin birlikte okunuşu hiç doğmaz; SK-49 (b) ve S245'in "iade + Düzenle" kolu kendiliğinden kapanır);
+  B: Düzenle kabul edilir, kart / iade bağı bakım 24 / 25 kurallarıyla yeniden hesaplanır (SK-49 (b) ayrıca karar ister); C: Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS). Bakiye A'da Düzenle'siz, B'de Düzenle'li tutarla. Yaygın
+  programlarda: doğrulanmış kaynak okunmadı.
 - **SK-49 (UÇ) — kendi kartında artırma, kapanmış + ödemeli kart / iadeli fatura:** A: S246 = B aynen (kart yeni tutarla açık kurulur; ödeme / iade tek kuyrukta); B: kapanmış + ödemeli kartta kapanış korunur, iadeli faturada kart
   iade düşülmüş tutarla; C (ÖNERİ): Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS). Bakiye her seçenekte aynı. Yaygın programlarda: doğrulanmış kaynak okunmadı.
