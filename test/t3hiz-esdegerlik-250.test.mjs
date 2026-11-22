@@ -22,7 +22,8 @@ import { createObligationInput } from "../server/lib/obligation-input.mjs";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
 // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 İzleyen küçük tur — tasarım docs/erp/C7B-FATURA-TASARIM.md §19.2): kuyruk girdisinin fatura satırları iade belgesinin kesintisini (coverCuts) da taşır — hakem aynı sütunu okur
 // (lib/obligation-input.mjs ile AYNI ifade; öbür alanlar ve sıra aynen).
-const COVER_CUTS = "CASE WHEN kind = 'sale_return' AND status = 'issued' AND payment_json LIKE '%coverCuts%' THEN json_extract(payment_json, '$.coverCuts') END AS coverCuts";
+// BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 İzleyen tur 2 — S241 = A, tasarım §20.1): fatura satırları Düzenle azalış kaydını (editCuts) da taşır — hakem aynı ifadeyi okur.
+const COVER_CUTS = "CASE WHEN kind = 'sale_return' AND status = 'issued' AND payment_json LIKE '%coverCuts%' THEN json_extract(payment_json, '$.coverCuts') END AS coverCuts, CASE WHEN kind IN ('sale', 'smm') AND status = 'issued' AND payment_json LIKE '%editCuts%' THEN json_extract(payment_json, '$.editCuts') END AS editCuts";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const HAKEM = path.join(HERE, "fixtures", "t3hiz-esdegerlik-250-hakem.json");
@@ -82,7 +83,8 @@ function plain(value, seen = new WeakSet()) {
     result = {};
     // BEKLENTİ BİLEREK DEĞİŞTİ (İzleyen küçük tur §19.2): fatura satırının yeni coverCuts sütunu kesintisi olmayan belgede null — hakem dökümü (o sütundan önce üretildi) bu alanı taşımaz; null
     // değer atlanır, dolu değer dökümde kalır (kesinti varsa fark görünür).
-    for (const k of Object.keys(value)) if (!(k === "coverCuts" && value[k] === null)) result[k] = plain(value[k], seen);
+    // İzleyen tur 2 (S241 = A, §20.1): editCuts sütunu da aynı kuralla (kaydı olmayan belgede null — atlanır).
+    for (const k of Object.keys(value)) if (!((k === "coverCuts" || k === "editCuts") && value[k] === null)) result[k] = plain(value[k], seen);
   }
   seen.delete(value);
   return result;

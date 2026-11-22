@@ -1,0 +1,76 @@
+aday cari account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~99 satır 100 · aynı içerik 200 187 ms
+KAPI aynı içerik {"path":"scoped","ms":20.45208899996942,"runMs":0,"lockMs":0,"sections":{"scoped":17.94417400000384,"s.scope":0.42903499997919425,"s.lock":0.2214490000042133,"s.party":8.78658600000199,"s.invoice":3.6058279999997467,"s.stock":1.3683010000386275,"s.links":0.14285899995593354,"s.rows":2.94810800004052,"s.bank":0.38129599997773767},"events":0,"tables":["stock_moves","account_entries"],"rejected":false,"scope":{"parties":1,"plans":0,"cheques":0,"invoices":1,"items":2,"money":0,"events":0,"heavyParties":0,"built":116}}
+azaltma 200 228 ms 
+KAPI azaltma {"path":"scoped","ms":12.119532999990042,"runMs":0,"lockMs":0,"sections":{"scoped":11.799231999961194,"s.scope":0.06468499999027699,"s.lock":0.02540199999930337,"s.party":7.185952999978326,"s.invoice":2.034726000041701,"s.stock":0.8869829999748617,"s.links":0.07415200001560152,"s.rows":1.0595159999793395,"s.bank":0.4539799999911338},"events":0,"tables":["stock_moves","account_entries"],"rejected":false,"scope":{"parties":1,"plans":0,"cheques":0,"invoices":1,"items":2,"money":0,"events":0,"heavyParties":0,"built":116}}
+ÖZ SÜRE (ilk 25):
+   266 ms  post node:inspector:118
+    86 ms  all :0
+    74 ms  get :0
+    10 ms  (garbage collector) :0
+     6 ms  queueOnce server/lib/obligation-queue.mjs:301
+     5 ms  leanRows server/lib/lean-rows.mjs:32
+     4 ms  roundMoney server/lib/money.mjs:32
+     4 ms  coverForcing server/lib/obligation-queue.mjs:203
+     3 ms  query server/lib/db.mjs:375
+     3 ms  (idle) :0
+     2 ms  next :0
+     2 ms  add server/lib/obligation-queue.mjs:334
+     1 ms  (anon) server/lib/plans.mjs:113
+     1 ms  ordered server/lib/permissions.mjs:287
+     1 ms  arrive server/lib/obligation-queue.mjs:898
+     1 ms  runQueue server/lib/obligation-queue.mjs:261
+     1 ms  exec :0
+     1 ms  coverEvent server/lib/obligation-queue.mjs:729
+     1 ms  editInvoice server/routes/invoices.mjs:1060
+     1 ms  (anon) server/routes/accounts.mjs:199
+     1 ms  bornAt server/lib/invoice-settle.mjs:319
+     1 ms  rows server/routes/ledger.mjs:58
+     1 ms  prepare server/lib/db.mjs:76
+     1 ms  scanReturnCuts server/lib/account-lines.mjs:54
+     1 ms  eventOrder server/lib/obligation-queue.mjs:80
+KAPSAYICI (server/, ilk 45):
+   210 ms  (anon) server/routes/invoices.mjs:3367
+   164 ms  query server/lib/db.mjs:375
+   113 ms  editInvoice server/routes/invoices.mjs:1060
+    97 ms  detail server/routes/invoices.mjs:1238
+    90 ms  all server/lib/db.mjs:396
+    88 ms  detail server/routes/accounts.mjs:159
+    88 ms  ledgerFor server/routes/invoices.mjs:849
+    75 ms  get server/lib/db.mjs:395
+    72 ms  tx server/lib/db.mjs:491
+    72 ms  post server/lib/bank/post.mjs:580
+    72 ms  obligationsOf server/routes/invoices.mjs:889
+    72 ms  paymentStates server/routes/invoices.mjs:805
+    60 ms  settledFor server/routes/invoices.mjs:865
+    60 ms  coverState server/routes/invoices.mjs:2163
+    59 ms  forAccount server/routes/plans.mjs:1771
+    55 ms  write server/routes/invoices.mjs:1139
+    55 ms  (anon) server/lib/bank/post.mjs:585
+    55 ms  scanReturnCuts server/lib/account-lines.mjs:54
+    55 ms  returnCuts server/lib/account-lines.mjs:45
+    44 ms  (anon) server/routes/invoices.mjs:821
+    28 ms  obligationsFor server/routes/invoices.mjs:879
+    25 ms  openingEntryOf server/routes/accounts.mjs:664
+    20 ms  buildObligations server/lib/obligation-queue.mjs:107
+    20 ms  accountSettleInput server/lib/obligation-input.mjs:234
+    16 ms  runQueue server/lib/obligation-queue.mjs:261
+    15 ms  coverCancelText server/routes/invoices.mjs:3690
+    15 ms  evaluate server/lib/integrity-scope.mjs:450
+    15 ms  check server/lib/integrity.mjs:1070
+    12 ms  coverForcing server/lib/obligation-queue.mjs:203
+    12 ms  queueOnce server/lib/obligation-queue.mjs:301
+    10 ms  build server/routes/ledger.mjs:313
+    10 ms  build server/lib/integrity-scope.mjs:524
+     9 ms  rows server/routes/ledger.mjs:58
+     9 ms  forInvoice server/routes/cheques.mjs:1115
+     7 ms  leanRows server/lib/lean-rows.mjs:32
+     7 ms  leanAll server/lib/lean-rows.mjs:76
+     7 ms  all server/routes/ledger.mjs:88
+     5 ms  mayBeCovered server/routes/invoices.mjs:3672
+     4 ms  roundMoney server/lib/money.mjs:32
+     4 ms  shape server/routes/plans.mjs:204
+     4 ms  (anon) server/routes/plans.mjs:1777
+     3 ms  tl server/lib/obligation-queue.mjs:1044
+     3 ms  assemble server/lib/obligation-queue.mjs:1041
+     3 ms  hasShrinkableCover server/routes/plans.mjs:1889
+     3 ms  settleLedgerOnce server/lib/invoice-settle.mjs:184

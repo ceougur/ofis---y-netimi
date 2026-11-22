@@ -14,7 +14,9 @@ import { keptDueSql } from "./accounts.mjs";
 export function createObligationInput({ store }) {
   // 2.5.0 İzleyen küçük tur (docs/erp/C7B-FATURA-TASARIM.md §19.2): iadenin Mevcut Borç kartlarından kestiği tutar (payment_json.coverCuts — yalnız kesilmiş satıştan iadede; kuyruk kartın açıldığı
   // andaki kapsamını bununla kurar: lib/obligation-queue.mjs returnCutsOf). Öbür belgelerde NULL.
-  const COVER_CUTS = "CASE WHEN kind = 'sale_return' AND status = 'issued' AND payment_json LIKE '%coverCuts%' THEN json_extract(payment_json, '$.coverCuts') END AS coverCuts";
+  // 2.5.0 İzleyen tur 2 (S241 = A; tasarım §20.1): satış faturasının Düzenle ile azaltılışlarının kaydı (payment_json.editCuts — yalnız azaltma bir Mevcut Borç kartını kestiyse ve sonrasında;
+  // kuyruk ve kapama defteri her kaydı faturaya gelen bir iade gibi okur: lib/cover-scope.mjs withEditCuts). Öbür belgelerde NULL.
+  const COVER_CUTS = "CASE WHEN kind = 'sale_return' AND status = 'issued' AND payment_json LIKE '%coverCuts%' THEN json_extract(payment_json, '$.coverCuts') END AS coverCuts, CASE WHEN kind IN ('sale', 'smm') AND status = 'issued' AND payment_json LIKE '%editCuts%' THEN json_extract(payment_json, '$.editCuts') END AS editCuts";
   // v2.0.17: mahsup fişinin karşı belgesinin adı ("Mahsup · ALS2026…" / "Mahsup · Alacak Yaz 15.09.2026").
   function offsetLabel(offset) {
     if (offset.counterType === "invoice") {
@@ -227,7 +229,9 @@ export function createObligationInput({ store }) {
   }
   const withExtras = (input, extras, accountId) => ({ ...input, schedules: extras.schedules, dueDates: extras.dueDates, promises: extras.promises, doubtfulRecords: extras.doubtful.get(accountId) || [], lockAt: extras.lockAt, linkTimes: extras.linkTimes, linkMoments: extras.linkMoments });
   // Bir carinin kapama girdisi (tek carili yol): carinin defteri + faturaları + bağlar (paymentStates ve entryStates aynı kuralla).
-  function accountSettleInput(accountId, ledger, day) {
+  // withDue (2.5.0 İzleyen tur 2, §20.2): kapama defterinin kapsam seçimi (lib/cover-scope.mjs) elle borcun Vade Tarihi'ni de okur — kuyruk girdisi dueDates'i ekten (withExtras) alır;
+  // kapama defteri tek başına kurulurken (routes/invoices.mjs settledFor) carinin vadeli elle satırları burada okunur (obligationExtras'ın tek cari sorgusunun vade kısmı).
+  function accountSettleInput(accountId, ledger, day, { withDue = false } = {}) {
     // Bu carinin bütün faturaları (listede olmayanlar da kapamada yer tutar).
     const all = store.all(`SELECT id, kind, status, try_payable AS payable, original_id AS originalId, due_date AS dueDate, plan_id AS planId, COALESCE(NULLIF(issued_at, ''), created_at) AS issuedAt, ${COVER_CUTS} FROM invoices WHERE account_id = ?`, accountId);
     const links = new Map();
@@ -254,7 +258,8 @@ export function createObligationInput({ store }) {
       const schedule = store.all(`SELECT ${keptDueSql("p", "i.due_date")} AS dueDate, i.amount FROM plan_items i LEFT JOIN plans p ON p.id = i.plan_id WHERE i.plan_id = ? ORDER BY i.due_date`, invoice.planId);
       plansById.set(invoice.id, { planTotal: Number(plan?.total) || 0, schedule });
     }
-    return { lines: ledger, invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, chequeEvents, reversals, offsets, today: day };
+    const dueDates = withDue ? new Map(store.all("SELECT id, due_date AS dueDate FROM account_entries WHERE account_id = ? AND +source = '' AND kind IN ('debt', 'credit') AND due_date <> ''", accountId).map(row => [row.id, row.dueDate])) : null;
+    return { lines: ledger, invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, chequeEvents, reversals, offsets, today: day, ...(dueDates ? { dueDates } : {}) };
   }
   // 2.5.0 Ç5-A tur 3b (§18.11 (4)): carinin SATIRLARI da modülün kendisinden (lib/account-lines.mjs — routes/accounts.mjs allLedgers'ın satır kuralı, routes/plans.mjs'in kart haritası;
   // servis ağacı yok). Taşıma değil: yalnız taşınan parçaları bağlar. Eski "satırlar parametreyle" yolları (accountSettleInput / batchSettleInput) AYNEN kalır.

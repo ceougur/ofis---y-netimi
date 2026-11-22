@@ -52,6 +52,7 @@
 // para karşı tarafın AÇIK iadelerini ve kendi tarafının yükümlülüklerini TEK sırada, en eskiden kapatır (K-b; önceden açık iade yalnız artan parayla).
 // Kural cari türüne bakmaz (K-f). Cari bakiye, Kasa ve yevmiye değişmez.
 import { roundMoney } from "./money.mjs";
+import { chooseCover, s2, withEditCuts } from "./cover-scope.mjs";
 
 const cents = value => Math.round((Number(value) || 0) * 100);
 const RECEIVABLE = new Set(["sale", "smm"]);
@@ -173,7 +174,14 @@ export function settleInvoices(input) {
  *   tahsilatı ve en eski borçtan dağıtılan bağsız ödemelerden sonra açık kalan (TL); covered = kalanın Mevcut Borç kartınca kapsanan kısmı (kartın
  *   taksitleriyle görünür; birleşik listelerde bir kez sayılır).
  */
-export function settleLedger({ lines, invoices, links = new Map(), chequeEvents = new Map(), reversals = new Map(), offsets = [], today }) {
+export function settleLedger(given) {
+  // 2.5.0 İzleyen tur 2 (S241 = A; §20.1): Düzenle azalışları faturaya gelen iade gibi (lib/cover-scope.mjs withEditCuts — kuyrukla aynı girdi); yapay belgeler sonuçtan silinir.
+  const input = withEditCuts(given);
+  const result = settleLedgerOnce(input);
+  if (input.editCutIds) for (const id of input.editCutIds) result.invoices.delete(id);
+  return result;
+}
+function settleLedgerOnce({ lines, invoices, links = new Map(), chequeEvents = new Map(), reversals = new Map(), offsets = [], today, dueDates = new Map() }) {
   const out = new Map();
   const entries = new Map();
   const byId = new Map(invoices.map(invoice => [invoice.id, invoice]));
@@ -304,7 +312,7 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
   // (artanı genel sıraya düşer); kapsanan kısım en eski borç sırasında atlanır; karttan sonra doğan borç kapsanmaz.
   const coverPlans = lines
     .filter(line => line.origin === "plan" && line.kind === "plan" && line.covers && line.planId && !planOwner.has(line.planId) && cents(line.coverTotal) > 0)
-    .map(line => ({ planId: line.planId, at: String(line.at || line.date || ""), total: cents(line.coverTotal) }))
+    .map(line => ({ planId: line.planId, at: String(line.at || line.date || ""), total: cents(line.coverTotal), sale: line.coverSale || "", gross: cents(line.coverGross ?? line.coverTotal), source: line.coverSource || "" }))
     .sort((a, b) => a.at.localeCompare(b.at));
   const coverIds = new Set(coverPlans.map(plan => plan.planId));
   // Borcun doğduğu an: fatura için kaydedildiği an (düzenleme ve taslak süresi değiştirmez), öbürleri için satırın kaydı.
@@ -541,11 +549,45 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
   // Kapsam: kartlar açılış sırasıyla; her kart, kendi açıldığı ana kadar kaydedilmiş satırlarla (önceki kartların kapsamı
   // dahil) kapama yapılınca açık kalan, kapsanmamış borcu en son kaydedilenden başlayarak alır (stoktan taksitli satışın kartı,
   // satış geriye tarihli girilse de o satışı). Taksitli faturanın borcu kendi kartınındır, kapsanmaz.
-  const newestFirst = obligations => obligations
-    .map((item, index) => ({ item, index }))
-    .filter(({ item }) => !item.planned && item.free > 0)
-    .sort((a, b) => (a.item.bornAt === b.item.bornAt ? b.index - a.index : a.item.bornAt < b.item.bornAt ? 1 : -1))
-    .map(({ item }) => item);
+  // 2.5.0 İzleyen tur 2 (§20.2; BAŞ MİMAR KARARI 21.11 18:28 (2)): SEÇİM Tek Yükümlülük Kuyruğu'yla TEK yardımcıdan (lib/cover-scope.mjs chooseCover). Kalemin kuyruktaki karşılığı:
+  // tür (fatura / elle borç / stok / karşılıksız), vade (fatura: Vade Tarihi; elle borç: Vade Tarihi — girdinin dueDates'i; yoksa belge günü), kayıt anı (bornAt), yazım sırası (rank).
+  // Carinin açık borcu (kuyrukla aynı tanım): kartın adayları + öbür kartların kapsadığı açık kısım + taksitli faturaların açığı + ayrı kartların (Yeni Borç) açığı.
+  // Önceki kural (v2.0.23 newestFirst: en yeni doğan borçtan) — satışla açılan kartta sonuç aynıdır (satış en yeni borçtur).
+  const coverKind = line => (line.origin === "invoice" ? (RETURNS.has(kindOf(line)) ? "note" : "invoice") : line.origin === "account" && (line.kind === "debt" || line.kind === "credit") ? "entry" : line.origin === "cheque" && chequeEvents.get(line.id) === "bounce" ? "bounce" : line.origin === "stock" ? "stock" : "due");
+  const COVER_DEBTS = new Set(["invoice", "entry", "stock", "bounce"]);
+  const coverGet = {
+    left: item => item.free,
+    elle: item => item.line.origin === "account" && item.line.kind === "debt" && cents(item.line.debit) > 0,
+    stockSale: item => item.line.origin === "stock" && cents(item.line.debit) > 0 && !item.line.stockReason,
+    debt: item => !item.planned && !item.pseudo && !item.refundOf && cents(item.line.debit) > 0 && COVER_DEBTS.has(coverKind(item.line)),
+    sourceId: item => item.line.sourceId,
+    recorded: item => item.bornAt,
+    rank: item => rank.get(item.line.id) ?? -1,
+    amount: item => facts(item.line).amount,
+  };
+  const s2Key = item => {
+    const line = item.line;
+    const kind = coverKind(line);
+    const vade = kind === "invoice" ? byId.get(line.sourceId)?.dueDate || line.date : kind === "entry" ? dueDates.get(line.id) || line.date : line.date;
+    return { vade, date: line.date, at: String(line.at || ""), rank: rank.get(line.id) ?? -1, sub: 0 };
+  };
+  const coverChoice = (plan, obligations, knownLines) => {
+    const candidates = obligations.filter(item => !item.planned && item.free > 0).map(item => ({ item, key: s2Key(item) })).sort((a, b) => s2(a.key, b.key)).map(({ item }) => item);
+    let other = 0;
+    for (const item of obligations) {
+      if (item.pseudo) continue;
+      if (item.planned) other += partsLeft(item);
+      else for (const value of item.covered.values()) other += value;
+    }
+    const books = new Map();
+    for (const line of knownLines) {
+      if (!(line.origin === "plan" && separatePlans.has(line.planId))) continue;
+      books.set(line.planId, (books.get(line.planId) || 0) + cents(line.debit) - cents(line.credit));
+    }
+    for (const value of books.values()) if (value > 0) other += value;
+    const openDebt = candidates.reduce((sum, item) => sum + item.free, 0) + other;
+    return chooseCover({ card: plan, cap: plan.total, openDebt, candidates, items: obligations, get: coverGet }).chosen;
+  };
   const other = { receivable: "payable", payable: "receivable" };
   // Kapamanın geçişleri (kapsam döngüsü ve son kapama AYNI kuralla — 2.4.6 B1: kart anındaki kapsam da bağsız geri ödemeyi görür):
   //   1. geçiş: açık bağ bölmesiyle (K-a) iki taraf.
@@ -601,7 +643,9 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
     const parts = new Map();
     let rest = plan.total;
     // 2.4.6: iadeye bağlı ve bağsız geri ödeme kapsamda da aynı kuralla bölünür (kartın açıldığı ana kadarki satırlarla; geri ödeme borç değildir, kapsanmaz).
-    for (const item of newestFirst(passes(known, knownOffsets, coverage, false).receivable.obligations)) {
+    // 2.5.0 İzleyen tur 2 (§20.2): hangi borcun karta girdiği Tek Yükümlülük Kuyruğu'yla AYNI seçimle (lib/cover-scope.mjs chooseCover — S110 / S120; açık borç kart tutarını aşmıyorsa
+    // bütün açık borç s2 sırasıyla). Önceden en YENİ borçtan (newestFirst) — kuyruk başka kalemi seçiyordu.
+    for (const item of coverChoice(plan, passes(known, knownOffsets, coverage, false).receivable.obligations, known)) {
       if (rest <= 0) break;
       const take = Math.min(item.free, rest);
       parts.set(item.lineId, (parts.get(item.lineId) || 0) + take);

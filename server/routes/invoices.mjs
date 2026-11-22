@@ -31,6 +31,7 @@ import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCE
 import { PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { CLOSER_MODES, buildObligations } from "../lib/obligation-queue.mjs";
 import { createObligationInput } from "../lib/obligation-input.mjs";
+import { editCutsOf } from "../lib/cover-scope.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodInput } from "../lib/pay-method.mjs";
 import { bankForm, negativeConfirmed } from "../lib/bank/module-ref.mjs";
@@ -865,7 +866,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const key = memoKey();
     let states = key && settleMemo.key === key ? settleMemo.map.get(row.accountId) : null;
     if (!states) {
-      states = settle(accountSettleInput(row.accountId, ledgerFor(row.accountId), today()));
+      states = settle(accountSettleInput(row.accountId, ledgerFor(row.accountId), today(), { withDue: true }));
       if (key) {
         if (settleMemo.key !== key) settleMemo = { key, map: new Map() };
         if (settleMemo.map.size >= LEDGER_MAX) settleMemo.map.clear();
@@ -1139,7 +1140,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       k7.capture();
       period?.assertOpen(existing.issueDate, "Bu fatura");
       // v2.0.24: eski iadenin küçülttüğü kartlar önce geri büyür; yeni iade kaydedilirken yeniden hesaplanır.
-      if (existing.kind === "sale_return" && existing.originalId) restoreCuts(user, { id: existing.id }, touched, `İade düzenlendi ${existing.number}`);
+      // (İade Düzenle'sinde kartların geri büyümesi eski etkiler geri alındıktan SONRA — undoReturnCuts, aşağıda.)
       // 2.5.0 İzleyen küçük tur — S234-c (S234 = A + karar (4); tasarım §19.5): taksitsiz satış faturasının Düzenle'si onu içine almış Mevcut Borç kartlarını iade gibi küçültür — kart payları
       // Düzenle'den ÖNCE okunur (kapama defteri), yeni etkilerden sonra fark kadar karar (4) ile küçülür. Küçülebilecek kart yoksa okunmaz (ders 47).
       // Yalnız AZALTMADA (tutar düştü ya da cari değişti — borç bu cariden çıktı): Düzenle'de eklenen peşin ödeme kartı küçültmez (ödemedir, iade değil); tutarı düşmeyen Düzenle kapsam okumaz (ders 47).
@@ -1148,10 +1149,22 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // BULGU-2 (§19.6): faturanın KENDİ kartı açık, tahsilatsız ve yeni ödeme planı kayıtlıyla aynıysa kart kaldırılıp yeniden kurulmaz (writeIssued karar verir).
       const keepPlan = ownPlanToKeep(existing);
       reverseEffects(user, existing, touched, { force, edit: true, keepPlanId: keepPlan?.id || "" });
+      // 2.5.0 İzleyen tur 2 — İş 4 (S238 = A'nın komşusu, ders 10; tasarım §20.4): iade Düzenle'si iptalle AYNI yardımcıdan — kapsayan kartlar VE faturanın kendi kartı eski iadenin kestiği
+      // taksitlere geri büyür; yeni iade yazılınca (writeIssued → retarget) karar (4) ile yeniden kesilir, kesim kaydı tam yazılır. Kendi kartın kaydı yoksa (eski iade) bugünkü gibi: yeni
+      // iadenin farkı son taksite (retarget → ownCard).
+      if (existing.kind === "sale_return" && existing.originalId) undoReturnCuts(user, existing, touched, `İade düzenlendi ${existing.number}`, { ownWithoutRecord: false });
       const pre = existing.kind === "sale_return" && existing.originalId ? coverState(existing.originalId) : null;
       const payment = paymentInput(body, doc, user, { previous: previousLines });
       const written = writeIssued(user, doc, payment, { id: existing.id, force, edit: existing, pre, keepEvents, keepPlan });
-      if (coverPre && Object.keys(coverPre.coveredBy).length) shrinkCoversByEdit(user, coverPre, touched, `Fatura düzenlendi ${existing.number}`, decrease);
+      // 2.5.0 İzleyen tur 2 — S241 = A (tasarım §20.1): Düzenle azalışlarının kaydı (payment_json.editCuts; kuyruk ve kapama defteri her kaydı faturaya gelen iade gibi okur — lib/cover-scope.mjs
+      // withEditCuts). writeIssued ödeme alanını formdan yeniden yazar: önceki kayıtlar taşınır (artışta en yeniden geriye azalır — artan tutar kartı büyütmez, faturanın vadesiyle ayrı
+      // açık durur: S242 = A); cari değişince ya da fatura taksitliye dönünce kayıtlar düşer (BİLİNEN SINIR §20.1). Yeni azalış kaydı kart payının azalışı ölçüldükten SONRA eklenir
+      // (ölçüm önceki kayıtlarla — iade kaydının ölçümüyle aynı sıra).
+      const keepCuts = editCutsFor(existing, doc, decrease);
+      if (coverPre && Object.keys(coverPre.coveredBy).length) {
+        const cut = shrinkCoversByEdit(user, coverPre, touched, `Fatura düzenlendi ${existing.number}`, decrease);
+        if (keepCuts && (Object.keys(cut.cuts).length || keepCuts.length)) putEditCuts(existing.id, [...keepCuts, { at: now(), date: today(), amount: roundMoney(decrease), cuts: cut.cuts, items: cut.items }]);
+      } else if (keepCuts?.length && decrease > 0.005) putEditCuts(existing.id, [...keepCuts, { at: now(), date: today(), amount: roundMoney(decrease), cuts: {}, items: {} }]);
       // Son durum denetimi — stok: düzenleme bir ürünü eksiye düşürdüyse (ya da eksiyi büyüttüyse) sorulur.
       if (!force.stock) {
         for (const [itemId, was] of stockBefore) {
@@ -2376,17 +2389,59 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // 2.5.0 İzleyen küçük tur — S234-c (§19.5): Düzenle'den önceki kart payları (pre) ile sonrası arasındaki azalış kadar her kart karar (4) ile küçülür (shrinkPlan — kalanla sınırlı, fazlası avans);
   // carinin borcundan büyük kalan kartlar iadedeki gibi kırpılır (trimCovers). Kesim kaydı yazılmaz (iade belgesi yok; artırma kartı büyütmez — SK-42 (b) bugünkü davranış).
   // limit: faturanın azalan tutarı — kart payındaki azalış onu aşamaz (Düzenle'deki öbür değişiklik — ör. eklenen peşin — kartı küçültmez).
+  // S241 = A (§20.1): dönüş — kesilen tutar ve taksitler kart kart (iade belgesinin coverCuts / coverCutItems'ı gibi; çağıran faturanın editCuts kaydına yazar).
   function shrinkCoversByEdit(user, pre, touched, note, limit = Infinity) {
+    const out = { cuts: {}, items: {} };
     const post = coverState(pre.row.id);
-    if (!post) return;
+    if (!post) return out;
     let room = limit;
     for (const planId of Object.keys(pre.coveredBy)) {
       const delta = roundMoney(Math.min(room, (pre.coveredBy[planId] || 0) - (post.coveredBy[planId] || 0)));
       if (delta > 0.005) room = roundMoney(room - delta);
       if (!(delta > 0.005)) continue;
-      if (plans().shrinkPlan(user, planId, delta, note) > 0) touched.plans.add(planId);
+      const log = [];
+      const cut = plans().shrinkPlan(user, planId, delta, note, { log });
+      if (cut > 0) {
+        touched.plans.add(planId);
+        out.cuts[planId] = roundMoney((out.cuts[planId] || 0) + cut);
+        out.items[planId] = [...(out.items[planId] || []), ...log];
+      }
     }
-    if (plans()?.trimCovers) for (const plan of plans().trimCovers(pre.row.accountId, user, note)) touched.plans.add(plan.id);
+    if (plans()?.trimCovers) {
+      for (const plan of plans().trimCovers(pre.row.accountId, user, note)) {
+        touched.plans.add(plan.id);
+        out.cuts[plan.id] = roundMoney((out.cuts[plan.id] || 0) + plan.cut);
+        out.items[plan.id] = [...(out.items[plan.id] || []), ...(plan.items || [])];
+      }
+    }
+    return out;
+  }
+  // S241 = A (§20.1): Düzenle'den sonra taşınacak azalış kayıtları (null — kayıt tutulmaz: cari değişti ya da fatura taksitli oldu). Artışta (decrease < 0) kayıtlar EN YENİDEN geriye
+  // artış kadar azalır (kesim tutarları — kartın küçülmesi — aynen kalır: S242 = A, artış kartı büyütmez). Çağrı writeIssued'dan SONRA: önceki kayıtlar ödeme alanına hemen geri yazılır
+  // (Düzenle'nin kart payı ölçümü onlarla).
+  function editCutsFor(existing, doc, decrease) {
+    if (existing.kind !== "sale" && existing.kind !== "smm") return null;
+    const old = editCutsOf(existing.paymentJson);
+    const row = store.get("SELECT plan_id AS planId FROM invoices WHERE id = ?", existing.id);
+    if ((doc.account?.id && doc.account.id !== existing.accountId) || row?.planId) {
+      if (old.length) putEditCuts(existing.id, []);
+      return null;
+    }
+    const keep = old.map(record => ({ ...record }));
+    let rise = decrease < -0.005 ? roundMoney(-decrease) : 0;
+    for (let i = keep.length - 1; i >= 0 && rise > 0.005; i -= 1) {
+      const take = roundMoney(Math.min(rise, keep[i].amount));
+      keep[i].amount = roundMoney(keep[i].amount - take);
+      rise = roundMoney(rise - take);
+    }
+    if (old.length) putEditCuts(existing.id, keep);
+    return keep;
+  }
+  function putEditCuts(invoiceId, records) {
+    const payment = parseJson(store.get("SELECT payment_json AS j FROM invoices WHERE id = ?", invoiceId)?.j, {});
+    if (records.length) payment.editCuts = records;
+    else delete payment.editCuts;
+    store.run("UPDATE invoices SET payment_json = ? WHERE id = ?", JSON.stringify(payment), invoiceId);
   }
   // BULGU-2 (§19.6): Düzenle'de korunacak kendi kart adayı — AÇIK, tahsilatsız, faturanın kayıtlı ödemesi taksitli. Son karar writeIssued'da (yeni ödeme planı kayıtlıyla aynı mı).
   function ownPlanToKeep(existing) {
@@ -2400,6 +2455,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const samePlanShape = (keep, payment) =>
     Boolean(keep) && payment.mode === "installments" && Math.abs((Number(payment.rest) || 0) - keep.total) < 0.005 && Number(payment.installments?.count) === Number(keep.installments.count) &&
     String(payment.installments?.firstDue || "") === String(keep.installments.firstDue || "") && Number(payment.installments?.everyMonths || 1) === Number(keep.installments.everyMonths || 1);
+  // 2.5.0 İzleyen tur 2 — İş 4 (S238 = A; tasarım §19.3, §20.4): iade iptali ve iade Düzenle'si TEK yardımcıdan — iadenin küçülttüğü kapsayan Mevcut Borç kartları (coverCutItems) ve asıl
+  // faturanın KENDİ kartı (ownCutItems) kayıtlı taksitlere geri büyür. Çağrı iadenin eski etkileri geri alındıktan SONRA (kendi kartın hedefi faturanın iadesiz açığıdır — ownTarget).
+  // ownWithoutRecord: kendi kartın kesim kaydı yoksa (eski iade) iptalde bugünkü gibi son taksite büyür; Düzenle'de büyütülmez (yeni iadenin farkı retarget → ownCard ile — bugünkü yol).
+  function undoReturnCuts(user, returnRow, touched, note, { ownWithoutRecord = true } = {}) {
+    restoreCuts(user, { id: returnRow.id }, touched, note);
+    const original = store.get("SELECT id, plan_id AS planId, payment_json AS paymentJson FROM invoices WHERE id = ?", returnRow.originalId);
+    if (!original?.planId) return;
+    const ownItems = parseJson(store.get("SELECT payment_json AS j FROM invoices WHERE id = ?", returnRow.id)?.j, {}).ownCutItems;
+    const restore = ownItems && Array.isArray(ownItems[original.planId]) ? ownItems[original.planId] : null;
+    if (restore || ownWithoutRecord) ownCard(user, original, touched, note, { restore });
+  }
   // İadenin küçülttüğü Mevcut Borç kartları geri büyür (iade iptali / düzenlemesi).
   // S238 = A (§19.3): kayıtlı kesilen taksitler (coverCutItems) aynı taksitlere geri yazılır; kaydı olmayan eski iade son taksite (bugünkü).
   function restoreCuts(user, returnRow, touched, note) {
@@ -2815,13 +2881,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // da varsa o borç kendi vadesiyle carinin kuyruğuna döner; tahsilatı avans); öbür kartlar borçtan büyük kalırsa küçülür (fazlası avans), borcu kalmayan kapanır.
       if (saleKind && plans()?.settleCoverOnCancel) for (const planId of plans().settleCoverOnCancel(user, invoice.accountId, `Fatura iptali ${invoice.number || ""}`.trim(), { coverIds })) touched.plans.add(planId);
       // İade iptali: asıl faturanın taksit kartı iadeyle küçüldüyse geri büyür (müşteri borcu yine taksitlerde izlenir).
-      if (invoice.kind === "sale_return" && invoice.originalId && plans()?.shrinkPlan) {
-        restoreCuts(user, { id: invoice.id }, touched, `İade iptali ${invoice.number}`);
-        const original = store.get("SELECT id, plan_id AS planId, payment_json AS paymentJson FROM invoices WHERE id = ?", invoice.originalId);
-        // S238 = A (§19.3): kendi kartı da iadenin kestiği taksitlere geri büyür.
-        const ownItems = parseJson(store.get("SELECT payment_json AS j FROM invoices WHERE id = ?", invoice.id)?.j, {}).ownCutItems;
-        ownCard(user, original, touched, `İade iptali ${invoice.number}`, { restore: original?.planId && ownItems && Array.isArray(ownItems[original.planId]) ? ownItems[original.planId] : null });
-      }
+      if (invoice.kind === "sale_return" && invoice.originalId && plans()?.shrinkPlan) undoReturnCuts(user, invoice, touched, `İade iptali ${invoice.number}`, { ownWithoutRecord: true });
       // v2.0.17: iptal edilen belgenin mahsup fişleri ve ona bağlanmış tahsilat/ödemelerin bağı kalkar (satırlar kalır,
       // kapama yeniden hesaplanır: otomatik en eski açık faturaya).
       store.run("DELETE FROM invoice_offsets WHERE invoice_id = ? OR (counter_type = 'invoice' AND counter_id = ?)", invoice.id, invoice.id);
