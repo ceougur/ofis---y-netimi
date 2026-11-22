@@ -97,6 +97,7 @@ jobs:
       - run: npm run test:senaryo-izt3-250
       - run: npm run test:senaryo-s223-250
       - run: npm run test:senaryo-s231-250
+      - run: npm run test:senaryo-izt4-250
       - run: npm run test:senaryo-donem-kilidi-ilerleme-250
       - run: npm run test:senaryo-kasa-acilis-uyari-250
       - run: npm run test:senaryo-acilis-duzeni-250
