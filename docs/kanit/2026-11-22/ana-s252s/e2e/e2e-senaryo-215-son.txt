@@ -1,0 +1,25 @@
+■ 12. Formdan “+ Yeni Cari”: cari kartı formdan ayrılmadan açılır, kaydedilince seçili gelir
+✓ senaryo seçiminde Fiyat Farkı Faturası var
+✓ yeni cari kaydedilince fatura formunda seçili geldi
+✓ kesilen belge yeni cariye
+✓ kartta E-Posta düğmesi var
+✓ E-Posta düğmesi cari kartındaki adrese gider
+
+■ 13. Toplu işlemler: Taslaklar sekmesinde Seçilenleri Kes; Satış sekmesinde Seçilenleri İptal Et
+✓ iki taslak hazırlandı
+✓ Seçilenleri Kaydet (2) düğmesi
+✓ iki taslak toplu kesildi
+✓ toplu kesilen belge cariye işlendi (360)
+✓ Seçilenleri İptal Et (2) düğmesi
+✓ iki belge toplu iptal edildi
+✓ iptalle cari borcu geri alındı
+✓ mutabakat kapısı tutarlı
+
+■ 14. Fatura Ayarları: logo yüklenir (JPEG'e çevrilir), kaşe / imza seçeneği; PDF'te logo
+✓ kaşe / imza kutuları varsayılan açık
+✓ PNG logo tarayıcıda JPEG'e çevrildi
+✓ logo ayarlara kaydedildi
+✓ kaşe / imza ayarı kaydedildi
+✓ satış PDF'inde logo görseli gömülü
+
+73 / 73 kontrol geçti.

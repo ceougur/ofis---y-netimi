@@ -1,0 +1,25 @@
+  ✓ onayda: "Bu faturanın kapatılmış taksit kartı yeniden açılır; kalan borç yeni ödeme planına girer." —  × ONAY Değişiklikler Kaydedilsin mi? FIS2026000000002 numaralı satış faturası yeni haliyle kaydedilecek: ₺900,00 (Ekran S235 Müşterisi). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır. Bu faturanın kapatılmış taksit kartı yeniden açılır; kalan borç yeni ödeme planına girer.VazgeçDeğişiklikleri Kaydet 
+  ✓ kaldırılır cümlesi YOK
+  ✓ faturanın yeni kartı var (eski kart yerine)
+  ✓ eski kapalı kart kaldırıldı (veri tabanı — bugünkü davranış)
+  ✓ yeni kart AÇIK (veri tabanı — bugünkü davranış)
+  ✓ bakiye 900
+
+■ C) S235 = B — Düzenle'de Açık Hesap seçilince onay kartın kaldırılacağını söyler; Vazgeç → kart kapalı kalır
+    [soru] "Değişiklikler Kaydedilsin mi?" → Vazgeç (beklenen soru)
+  ✓ onayda: "Bu faturanın kapatılmış taksit kartı kaldırılır; kalan borç faturanın vadesiyle açık hesapta izlenir." —  × ONAY Değişiklikler Kaydedilsin mi? FIS2026000000003 numaralı satış faturası yeni haliyle kaydedilecek: ₺900,00 (Ekran S235 Açık Hesap Müşterisi). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır. Bu faturanın kapatılmış taksit kartı kaldırılır; kalan borç faturanın vadesiyle açık hesapta izlenir.VazgeçDeğişiklikleri Kaydet 
+  ✓ yeniden açılır cümlesi YOK
+  ✓ Vazgeç: kart kapalı kaldı (veri tabanı)
+
+■ D) Denetim — kartı AÇIK taksitli faturada Düzenle onayında bu cümleler YOK
+    [soru] Kaydedilmemiş Değişiklik → Kaydetmeden Kapat (beklenen: Vazgeç'ten sonra Düzenle formu açık)
+    [soru] "Değişiklikler Kaydedilsin mi?" → Vazgeç (beklenen soru)
+  ✓ açık kartta cümle yok:  × ONAY Değişiklikler Kaydedilsin mi? FIS2026000000004 numaralı satış faturası yeni haliyle kaydedilecek: ₺900,00 (Ekran Açık Kart Müşterisi). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır.VazgeçDeğişiklikleri 
+
+■ E) GÖZLEM — kartı açık taksitli faturada Düzenle → değiştirmeden Kaydet
+    [soru] "Değişiklikler Kaydedilsin mi?" → Değişiklikleri Kaydet (beklenen soru)
+    GÖZLEM: açılışta seçili 'installments'; kayıttan sonra faturanın kartı 'plan-39bd3f90-35af-4d20-8299-362d6a2980ea', eski kart {"status":"active","total":900,"deletedAt":null}, bakiye 900
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+✓ senaryo-dkfix-250: 21 geçti, 0 kaldı

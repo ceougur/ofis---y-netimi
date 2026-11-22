@@ -1,0 +1,25 @@
+✓ tahsilat yolları: Nakit, Havale / EFT, POS, Çek / Senet (portföye alınır)
+✓ ödeme yolları: Nakit, Havale / EFT, Kredi Kartı, Çek / Senet (verilir)
+
+■ 6. Raporlar: her rapor arayüzden açılır; PDF ve Excel gerçek dosya; yalnız Cari Ekstre cari ister
+✓ arayüzde 63 rapor (katalog 63)
+✓ 63 raporun hepsi arayüzden açıldı, PDF ve Excel indi
+✓ fatura raporları katalogda ve açıldı (fatura-satis, fatura-alis, fatura-iade, acik-faturalar, faturasi-beklenen-komisyonlar, fatura-banka-hareketleri)
+
+■ 7. Öbür ekranlar: Taksit ve Kasa formlarında POS / Kredi Kartı, stok satışında POS; fatura PDF, Excel ve raporda Stok Kodu
+✓ taksit tahsilatı yolları: Nakit, Havale / EFT, POS
+✓ taksit ödeme/iade yolları: Nakit, Havale / EFT, Kredi Kartı
+✓ Kasa'da yol sekmesi yok
+✓ Kasa in formunda yol seçici yok
+✓ Kasa tahsilat yolu sabit Nakit (Nakit)
+✓ Kasa out formunda yol seçici yok
+✓ Kasa ödeme yolu sabit Nakit (Nakit)
+✓ stok satış yolları: Yalnız Miktar (para yazılmaz) | Nakit (tahsil edildi) | POS (tahsil edildi) | Havale / EFT (tahsil edildi) | Açık Hesap (veresiye, müşteri borçlanır)
+✓ stok alım yolları: Yalnız Miktar (para yazılmaz) | Nakit (ödendi) | Kredi Kartı (ödendi) | Havale / EFT (ödendi) | Açık Hesap (tedarikçiye borçlanılır)
+✓ satış faturası PDF'i indi (35425 bayt)
+✓ kart kaleminde Stok Kodu FK-A4 (PDF aynı veriden basılır)
+✓ fatura Excel'i indi (5167 bayt)
+✓ Ürün Bazında Satış raporunda Stok Kodu kolonu (Stok Kodu; 1 satır)
+✓ stok raporunda Stok Kodu kolonu (Stok Kodu)
+
+54 / 54 kontrol geçti.

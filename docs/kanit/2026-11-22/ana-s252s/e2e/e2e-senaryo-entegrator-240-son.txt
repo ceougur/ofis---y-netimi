@@ -1,0 +1,25 @@
+
+■ 13 e-Faturada ölçü birimi: kodu olmayan birim (Çuval) için ipucu (gerçek EDM SA'yı reddetti; e-Belgede Adet + kalem notu)
+  ✓ Adet biriminde ipucu yok
+  ✓ Çuval yazılınca ipucu: Çuval: e-Fatura / e-Arşivde “Adet” kodu ile gider; birim adı kalem notunda yazar.
+  ✓ Kg yazılınca ipucu kalkar (EDM'nin kabul ettiği kod)
+
+■ 6 Yönetim → Sistem → Ağ Bağlantısı (vekil sunucu)
+  ✓ varsayılan Otomatik (Windows Ayarı); elle alanları gizli
+  ✓ Elle Yazılan Adres seçilince adres alanları açılır
+  ✓ ayar dosyaya yazıldı, parola mühürlü (mode manual)
+  ✓ parola ekrana dönmez; “Kayıtlı parola korunur”
+  ✓ Bağlantıyı Dene vekilden geçti, ret iletisi: Güncelleme sunucusuna ulaşılamadı (http://127.0.0.1:35059 üzerinden): Vekil sunucu bağlantıyı reddetti (403).
+  ✓ vekile mühürlü parolayla kimlik bilgisi gider
+  ✓ Entegratör kartında yol satırı: İnternet bağlantısı: elle yazılan vekil sunucu (http://127.0.0.1:35059). Vekil sunucu Yönetim → Sistem → Ağ Bağlantısı'ndan değiştirilir.
+
+■ 14 Canlı ortam açık sürüm (kullanıcı kararı 16.10.2026: "hem testi hem canlıyı aç"; üretim girişi edocLive: true)
+  ✓ Canlı Ortam seçilebilir; ilk açılışta Test Ortamı seçili
+  ✓ canlı notu: Canlı Ortam'da gönderilen belgeler yasal belgedir; kullanıcı adı ve parola EDM'nin canlı hesabıdır, numara firmanın kendi serisinden alınır.
+  ✓ canlıda yanlış hesap: “Durum: Bağlantı kurulamadı · 22.11.2026 09:41: EDM isteği reddetti: Kullanıcı adı veya şifre hatalı (EDM hata kodu 2001). Canlı Ortam'da EDM'nin canlı hesabının kullanıcı adı ve parolası girilir (test hesabı canlıda geçmez).”
+  ✓ veri tabanında ortam live, kullanıcı edmkullanici
+  ✓ canlı ayarla bağlantı (sahte EDM): “Durum: Bağlantı kuruldu · 22.11.2026 09:41”
+  ✓ sayfa hatası yok
+  ✓ sahte EDM sözleşme ihlali yok
+
+✓ senaryo-entegrator-240: 81 geçti, 0 kaldı

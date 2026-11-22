@@ -1,0 +1,25 @@
+  ✓ bakiye −300 (fazlası carinin avansı)
+
+■ B) Kapsam seçimi — A 'Taksitte', B 'Vadesi Geçti'; B'nin İptal Et'i kartı değiştirmez; A'nın İptal Et'i kartı kapatır
+  ✓ A 'Taksitte':  05.10.202612:01 FIS2026000000001Satış Faturası Ekran İzt2 Kapsam MüşterisiStoktan Satış Taksitte ₺600,00 — 
+  ✓ B 'Vadesi Geçti':  06.10.202612:02 FIS2026000000002Satış Faturası Ekran İzt2 Kapsam MüşterisiStoktan Satış Vadesi Geçti ₺600,00 ₺600,00 
+  ✓ Tab ile İptal Et düğmesine gelinir
+  ✓ B iptal edildi (veri tabanı)
+  ✓ kart DEĞİŞMEDİ (tabanda kapanıyordu): active 600
+  ✓ kart penceresi Kalan ₺600,00: ₺600,00
+  ✓ Tab ile İptal Et düğmesine gelinir
+  ✓ A iptal edildi
+  ✓ A'nın iptali kartı kapattı (S211): closed 0
+  ✓ bakiye 0
+
+■ C) İade Düzenle'si — kendi kart aynı taksitlere geri büyür: 10.10 ve 10.12 ₺300,00
+  ✓ iade 600 → kartta tek taksit (10.10): [["2026-10-10",300]]
+    [soru] "Değişiklikler Kaydedilsin mi?" → Değişiklikleri Kaydet (beklenen soru)
+  ✓ taksitler 10.10 300 + 10.12 300 (tabanda 10.10 600): 2026-10-10:300 | 2026-12-10:300
+  ✓ kart penceresinde iki taksit satırı ₺300,00: 1.10.10.2026₺300,00₺300,00₺0,00Ödendi✎× | 3.10.12.202663 gün kaldı₺300,00₺300,00Bekliyor₺✎×
+  ✓ Kalan ₺300,00: ₺300,00
+  ✓ bakiye 300
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+✓ senaryo-izt2-250: 24 geçti, 0 kaldı

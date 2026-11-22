@@ -1,0 +1,25 @@
+  ✓ ikinci kullanımda aynı cari (çift açılmadı)
+  ✓ sınır üstü kaydetmeden durdu (Fatura kaydedilemez: Cari (alıcı): 30.000 TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunlu)
+  ✓ sınır üstü belge kaydedilmedi (veri tabanı)
+H) UX5: sunucu mükellefiyeti gönderimde düzeltince açık form e-Fatura'ya döner, seçili kutu korunur
+  ✓ ön koşul: form e-Arşiv numarası gösteriyor (Kaydedilince Verilecek NoTEA2026765401886)
+  ✓ ileti korunan kutuyu söylüyor (Alıcı (2223334447) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi. Önceden seçtiğiniz posta kutusu (urn:mail:defaultpk@coklu.com.tr) korundu. Fatura kaydedilmedi,)
+  ✓ açık form yeniden hesaplandı: e-Fatura numarası (Kaydedilince Verilecek NoTEF2026236293443)
+  ✓ cari işaretli, kutu korundu ({"e":1,"alias":"urn:mail:defaultpk@coklu.com.tr"})
+  ✓ yeniden kaydedince e-Fatura kesildi ({"profile":"","number":"TEF2026236293443","accountId":"account-7b1c00b0-7516-4795-97c9-325c803b0cc5"})
+I) UX26: Fatura Ayarları'nda Esc listeye döner (pencere kapanmaz); değişiklik varsa sorar
+  ✓ Esc: ayarlardan listeye döndü, pencere açık ({"open":true,"h3":"","list":true})
+  ✓ değişiklik varken Esc: Kaydedilmemiş Değişiklik sorusu
+  ✓ Forma Dön: ayarlarda kalındı, yazılan duruyor
+  ✓ Kaydetmeden Kapat: listeye dönüldü, pencere açık ({"open":true,"list":true})
+  ✓ listede Esc pencereyi kapatır (eski davranış yerinde)
+J) UX14: Tümünü Gönder iletisinde teknik kod ve tekrarlanan neden yok
+  ✓ sonuç bildirimi geldi (Satış Faturası TEF2026236293443 kaydedildi. e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır. | 0 belge gönderildi; 1 belge gönderilemedi: EDM'ye bağlanılamadı. İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deney)
+  ✓ bildirimde teknik kod yok
+  ✓ aynı neden iki kez yazılmadı
+K) UX3: gece yarısını geçen açık pencerede yeni fatura bugünün tarihini alır (31.12 → 01.01)
+  ✓ yeni formun tarihi 01.01.2027 ({"value":"2027-01-01","max":"2027-01-01"})
+  ✓ tarih sınırı da bugün (2027-01-01)
+  ✓ sayfa hatası yok
+
+✓ uiux-b-243: 58 geçti, 0 kaldı
