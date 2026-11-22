@@ -29,3 +29,11 @@ Taban 3b420085 (izt3-taban). Dal worktree-agent-ae8c8568d72566f15. Push yok.
 - G2 (335 dosya — `test/` taraması: gateVerify / integrity / ledger/integrity / period-lock / kapı / ledger_snapshot / dondur / sema-kapisi / trash/restore / stok hareketi; varsayılan gateVerify açık olduğundan bu dosyaların her yazımı süzgeç ↔ tam kapı eşdeğerlik denetimi):
   UTC 3527/3527 (commit 5ac159f5), Europe/Istanbul 3527/3527 (b68b2f97 — yalnız belge farkı); fail 0, cancelled 0, skipped 0.
 - Kâhin (5ac159f5): cari 103 senaryo / 24.062 denetim 0 fark iki TZ; defter 187 denetim 0 fark iki TZ; yapım listesi kendi kopyada: 4 → 4, yeni 0 / kapanan 0 / değeri değişen 0 (yalnız paket etiketi metni farklı — bilinen üretici nüansı).
+
+## Adım 5 — Hız (özel kilit dışarıda, 3 tur dönüşümlü, taze temiz-100k, TZ Europe/Istanbul; `izt3-hiz/tablo-1.md`, ham `sonuc-1.txt`)
+- Geçerli: her ölçüm başında yük < 1,5 (1,09–1,44); GEÇERSİZ tur yok. KÖTÜ (ortanca VE en iyi > +%10) yol YOK.
+- Düzenle (azaltma) 6.393 → 161 ms (−%97,5), büyük azaltma 6.469 → 146 ms, YENİ fatura Düzenle azaltma 6.613 → 145 ms; olay döngüsü tabanda ~7 sn kilitli → yenide ≤ 181 ms.
+  Kapı yolu: tabanda azaltma / büyük azaltma / yeni fatura azaltması 3 turda da `full(stock_moves: kimlik değişti)` (11 / 11), yenide hepsi `scoped`.
+- Öbür yollar ortanca farkı: kart penceresi +%3,4 (en iyi −%1,1), fatura kartı +%0,5, Düzenle aynı içerik −%3,8, iade yazımı −%1,7, stok iadesi yazım / düzeltme / silme / geri yükleme −%1,7 / −%2,9 / +%4,6 / −%0,7,
+  sıradan stok düzeltme / silme +%3,8 / +%2,1 (5 ms düzeyinde), bütünlük taraması +%8,1 (en iyi +%5,1; tam tarama kodu değişmedi — `run`), Dönem Kilidi kilitle 0, aç +%19,3 (tek ölçüm, en iyi 0 — 23 ms düzeyinde gürültü).
+- Olay döngüsü 0,0 okunan satırlar ölçüm aracının nüansı (önceki turdan biliniyor — 2.5.1).
