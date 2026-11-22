@@ -1,0 +1,14 @@
+MİKRO başta 1.11 1.17 1.21 3/126 1847 14:00:25
+=== tur 1 · eski · başta 1.11 1.17 1.21 1/128 1854
+MİKRO | eski | cari 848 | en iyi 15480.1 | ortanca 16085.3 | ön ödeme geçişi 0 | yük 1.11 1.16 1.20
+=== tur 1 · yeni · başta 1.11 1.16 1.20 1/119 1890
+MİKRO | agent-ad3ee8a705a609628 | cari 848 | en iyi 14693.0 | ortanca 14817.1 | ön ödeme geçişi 0 | yük 1.06 1.14 1.18
+=== tur 2 · eski · başta 1.06 1.14 1.18 1/119 1925
+MİKRO | eski | cari 848 | en iyi 15082.7 | ortanca 16646.5 | ön ödeme geçişi 0 | yük 1.02 1.10 1.16
+=== tur 2 · yeni · başta 1.02 1.10 1.16 1/113 1967
+MİKRO | agent-ad3ee8a705a609628 | cari 848 | en iyi 13718.6 | ortanca 14710.5 | ön ödeme geçişi 0 | yük 1.09 1.13 1.17
+=== tur 3 · eski · başta 1.09 1.13 1.17 1/113 2037
+MİKRO | eski | cari 848 | en iyi 13443.7 | ortanca 14348.2 | ön ödeme geçişi 0 | yük 1.03 1.10 1.15
+=== tur 3 · yeni · başta 1.03 1.10 1.15 1/116 2087
+MİKRO | agent-ad3ee8a705a609628 | cari 848 | en iyi 14072.6 | ortanca 14182.4 | ön ödeme geçişi 0 | yük 1.00 1.06 1.13
+bitti 14:12:21

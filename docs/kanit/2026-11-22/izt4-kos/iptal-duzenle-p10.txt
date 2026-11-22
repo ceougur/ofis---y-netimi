@@ -1,0 +1,82 @@
+##### yeni
+P10 bağlı 600 → iptal
+  [2026-10-20] ödeme 600: bakiye 300 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T300/K300/G0] cari[T300/K300] liste[T300/K300] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:600}
+  iptal: 200
+  [2026-10-21] iptal: bakiye -600 gecikmiş 0 (taksit 0)
+    kart K: pencere[closed 0 T0/K0/G0] cari[T0/K0] liste[T0/K0] kendi[0/0/0] taksit[]
+    fatura F: cancelled 900 liste[cancelled/0] kart[cancelled/açık 0/kendi -/inPlan -] kapsam{}
+P10 bağlı 600 → duzenle600
+  [2026-10-20] ödeme 600: bakiye 300 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T300/K300/G0] cari[T300/K300] liste[T300/K300] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:600}
+  Düzenle: 200
+  [2026-10-21] duzenle600: bakiye 0 gecikmiş 0 (taksit 0)
+    kart K: pencere[active 0 T0/K0/G0] cari[T0/K0] liste[T0/K0] kendi[0/0/0] taksit[]
+    fatura F: issued 600 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{K:300}
+P10 bağlı 600 → duzenle300
+  [2026-10-20] ödeme 600: bakiye 300 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T300/K300/G0] cari[T300/K300] liste[T300/K300] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:600}
+  Düzenle: 200
+  [2026-10-21] duzenle300: bakiye -300 gecikmiş 0 (taksit 0)
+    kart K: pencere[active 0 T0/K0/G0] cari[T0/K0] liste[T0/K0] kendi[0/0/0] taksit[]
+    fatura F: issued 300 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{}
+P10 bağsız 600 → bagsiz-iptal
+  [2026-10-20] ödeme 600: bakiye 300 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T300/K300/G0] cari[T300/K300] liste[T300/K300] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:600}
+  iptal: 200
+  [2026-10-21] bagsiz-iptal: bakiye -600 gecikmiş 0 (taksit 0)
+    kart K: pencere[closed 0 T0/K0/G0] cari[T0/K0] liste[T0/K0] kendi[0/0/0] taksit[]
+    fatura F: cancelled 900 liste[cancelled/0] kart[cancelled/açık 0/kendi -/inPlan -] kapsam{}
+P10 bağsız 600 → bagsiz-duzenle600
+  [2026-10-20] ödeme 600: bakiye 300 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T300/K300/G0] cari[T300/K300] liste[T300/K300] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:600}
+  Düzenle: 200
+  [2026-10-21] bagsiz-duzenle600: bakiye 0 gecikmiş 0 (taksit 0)
+    kart K: pencere[active 0 T0/K0/G0] cari[T0/K0] liste[T0/K0] kendi[0/0/0] taksit[]
+    fatura F: issued 600 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{K:600}
+##### eski
+P10 bağlı 600 → iptal
+  [2026-10-20] ödeme 600: bakiye 300 gecikmiş 200 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G200] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:300}
+  iptal: 200
+  [2026-10-21] iptal: bakiye -600 gecikmiş 0 (taksit 0)
+    kart K: pencere[closed 0 T0/K0/G0] cari[T0/K0] liste[T0/K0] kendi[0/0/0] taksit[]
+    fatura F: cancelled 900 liste[cancelled/0] kart[cancelled/açık 0/kendi -/inPlan -] kapsam{}
+P10 bağlı 600 → duzenle600
+  [2026-10-20] ödeme 600: bakiye 300 gecikmiş 200 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G200] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:300}
+  Düzenle: 200
+  [2026-10-21] duzenle600: bakiye 0 gecikmiş 0 (taksit 0)
+    kart K: pencere[active 0 T0/K0/G0] cari[T0/K0] liste[T0/K0] kendi[0/0/0] taksit[]
+    fatura F: issued 600 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{}
+P10 bağlı 600 → duzenle300
+  [2026-10-20] ödeme 600: bakiye 300 gecikmiş 200 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G200] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:300}
+  Düzenle: 200
+  [2026-10-21] duzenle300: bakiye -300 gecikmiş 0 (taksit 0)
+    kart K: pencere[active 0 T0/K0/G0] cari[T0/K0] liste[T0/K0] kendi[0/0/0] taksit[]
+    fatura F: issued 300 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{}
+P10 bağsız 600 → bagsiz-iptal
+  [2026-10-20] ödeme 600: bakiye 300 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T300/K300/G0] cari[T300/K300] liste[T300/K300] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:600}
+  iptal: 200
+  [2026-10-21] bagsiz-iptal: bakiye -600 gecikmiş 0 (taksit 0)
+    kart K: pencere[closed 0 T0/K0/G0] cari[T0/K0] liste[T0/K0] kendi[0/0/0] taksit[]
+    fatura F: cancelled 900 liste[cancelled/0] kart[cancelled/açık 0/kendi -/inPlan -] kapsam{}
+P10 bağsız 600 → bagsiz-duzenle600
+  [2026-10-20] ödeme 600: bakiye 300 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T300/K300/G0] cari[T300/K300] liste[T300/K300] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:600}
+  Düzenle: 200
+  [2026-10-21] bagsiz-duzenle600: bakiye 0 gecikmiş 0 (taksit 0)
+    kart K: pencere[active 0 T0/K0/G0] cari[T0/K0] liste[T0/K0] kendi[0/0/0] taksit[]
+    fatura F: issued 600 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{K:600}

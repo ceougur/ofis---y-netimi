@@ -1,0 +1,74 @@
+TAP version 13
+# Subtest: İzleyen tur 4 — S255 = A: iade / iade iptali / Düzenle / silme / Silinenler / kilit / raporlar / çek / önceden yazılmış bağ
+    # Subtest: B4a — iade 300 (kart dışındaki kısım) → bağlı 600: gösterilen açık 0 → tamamı kuyruğa: kart 600 / 600 / 0, bakiye 0
+    ok 1 - B4a — iade 300 (kart dışındaki kısım) → bağlı 600: gösterilen açık 0 → tamamı kuyruğa: kart 600 / 600 / 0, bakiye 0
+      ---
+      duration_ms: 934.298374
+      type: 'test'
+      ...
+    1..1
+ok 1 - İzleyen tur 4 — S255 = A: iade / iade iptali / Düzenle / silme / Silinenler / kilit / raporlar / çek / önceden yazılmış bağ
+  ---
+  duration_ms: 935.606354
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 4 — S255 = A: kart tahsilatıyla ödenmiş kart + bağlı ödeme + iade
+    # Subtest: B11 — kart tahsilatı 600 → bağlı 600 → iade 300: kart 600 / 600 / 0, bakiye −600
+    not ok 1 - B11 — kart tahsilatı 600 → bağlı 600 → iade 300: kart 600 / 600 / 0, bakiye −600
+      ---
+      duration_ms: 589.515867
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt4-ad3/mut/test/izt4-s255-bagli-odeme-250.test.mjs:320:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        B11: kart penceresi
+        + actual - expected
+        
+          {
+        +   left: 300,
+        +   paid: 300,
+        -   left: 0,
+        -   paid: 600,
+            total: 600
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        total: 600
+        paid: 600
+        left: 0
+      actual:
+        total: 600
+        paid: 300
+        left: 300
+      operator: 'deepStrictEqual'
+      stack: |-
+        same (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt4-ad3/mut/test/izt4-s255-bagli-odeme-250.test.mjs:113:10)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt4-ad3/mut/test/izt4-s255-bagli-odeme-250.test.mjs:328:7
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt4-ad3/mut/test/izt4-s255-bagli-odeme-250.test.mjs:37:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - İzleyen tur 4 — S255 = A: kart tahsilatıyla ödenmiş kart + bağlı ödeme + iade
+  ---
+  duration_ms: 590.427978
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt4-ad3/mut/test/izt4-s255-bagli-odeme-250.test.mjs:316:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 2
+# suites 2
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2056.287313

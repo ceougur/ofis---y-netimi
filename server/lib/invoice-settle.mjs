@@ -445,11 +445,13 @@ function settleLedgerOnce({ lines, invoices, links = new Map(), chequeEvents = n
       // taksitli faturanın açığı = kartın kalanı); bu iadenin geri ödemesi taksit kartından ya da iade belgesinden girilir.
       if (payment.refundKey && !item.refundOf && !item.planned) payment.closing = (payment.closing || 0) + take;
     };
-    // Faturaya bağlı ödeme: önce açık (kapsanmamış) kısım, sonra kartların kapsadığı kısımlar.
-    const closeInvoice = (items, payment, mode) => {
+    // Faturaya bağlı ödeme: önce açık (kapsanmamış) kısım, sonra kartların kapsadığı kısımlar. 2.5.0 İzleyen tur 4 (§22 — S255 = A): iade OLMAYAN bağlı ödeme (freeOnly) kartların kapsadığı
+    // kısma dokunmaz — yalnız gösterilen açığı kapatır; kalanı bağsız ödeme gibi (Tek Yükümlülük Kuyruğu'nda kartın taksitlerine; bu defterde kartın kapsamı bağsız ödemedeki gibi durur).
+    const closeInvoice = (items, payment, mode, freeOnly = false) => {
       for (const item of items) {
         if (payment.left <= 0) return;
         if (item.free > 0) close(item, payment, Math.min(item.free, payment.left), mode);
+        if (freeOnly) continue;
         for (const [planId, left] of item.covered) {
           if (payment.left <= 0) return;
           if (left > 0) close(item, payment, Math.min(left, payment.left), mode, planId);
@@ -492,17 +494,32 @@ function settleLedgerOnce({ lines, invoices, links = new Map(), chequeEvents = n
     }
     // 1. Bağlı ödemeler kendi faturasına: önce peşin, kart tahsilatı, çek/senet ve seçilerek bağlanan ödemeler; iadelerin mahsubu
     // (geri ödenmemiş kısım) en son, kalan açıktan (K1: asılAçık = peşin ve bağlı ödemelerden sonra kalan; iade.açık = artan).
-    for (const returns of [false, true]) {
+    // §22 (S255 = A): kartların kapsadığı (covered) faturada bağlı ödeme ile iadenin mahsubu YAZIM SIRASIYLA (kayıt anı; Tek Yükümlülük Kuyruğu'yla aynı kural): iadeden SONRA yazılmış bağlı ödeme
+    // iadelerden sonra (iade kart dışındaki açığı önce kapatmıştır — S239). Kapsanmayan faturada K1 sırası AYNEN.
+    const heldBy = items => items.some(item => [...item.covered.values()].some(value => value > 0));
+    const firstReturn = new Map();
+    for (const payment of pool) {
+      if (!payment.returnId || !payment.owner || !target.has(payment.owner) || !heldBy(target.get(payment.owner))) continue;
+      const when = facts(payment.line).born;
+      if (!firstReturn.has(payment.owner) || when < firstReturn.get(payment.owner)) firstReturn.set(payment.owner, when);
+    }
+    const lateLink = payment => !payment.returnId && firstReturn.has(payment.owner) && facts(payment.line).born > firstReturn.get(payment.owner);
+    for (const phase of ["links", "returns", "late"]) {
       for (const payment of pool) {
-        if (Boolean(payment.returnId) !== returns) continue;
+        if (phase === "returns" ? !payment.returnId : Boolean(payment.returnId) || lateLink(payment) !== (phase === "late")) continue;
         const own = payment.owner && target.get(payment.owner);
-        if (own) closeInvoice(own, payment, payment.mode || "linked");
+        if (own) closeInvoice(own, payment, payment.mode || "linked", !payment.returnId);
       }
     }
     // v2.1.0 (Canlı Hata 2): faturaya bağlı ödemelerin ve iadelerin (mahsup edilen kısmının) faturayı AŞAN kısmı (fazla ödenen / avansa
     // dönen iade). İmzalı açık = açık − bu tutar (faturanın kendi kartının hedefi; geri ödenen iade adım R'de düşüldü, buraya girmez).
+    // §22: bağlı ödemenin kartların kapsadığı açık kısım yüzünden kapatamadığı pay faturayı AŞMAZ — faturanın kapsanan açığı düşülür (en az 0).
     const overpaid = new Map();
     for (const payment of pool) if (payment.left > 0 && payment.owner && target.has(payment.owner)) overpaid.set(payment.owner, (overpaid.get(payment.owner) || 0) + payment.left);
+    for (const [owner, value] of overpaid) {
+      const coveredLeft = target.get(owner).reduce((sum, item) => sum + [...item.covered.values()].reduce((total, left) => total + Math.max(0, left), 0), 0);
+      if (coveredLeft > 0) overpaid.set(owner, Math.max(0, value - coveredLeft));
+    }
     // 1b. Mevcut Borç kartının tahsilatı ve kapatılması kartın kapsadığı borca (en eskiden); artanı genel sıraya kalır.
     const coveredBy = new Map();
     for (const item of obligations) {

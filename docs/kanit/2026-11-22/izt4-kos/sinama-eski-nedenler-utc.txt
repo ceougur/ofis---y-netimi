@@ -1,0 +1,31 @@
+ok     | B1 — F'ye bağlı 300: kart 0 / 600, bakiye 600, gecikmiş 200
+not ok | B1 — F'ye bağlı 600: kart 300 / 300, bakiye 300, gecikmiş 0
+         NEDEN: error: |- 600: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 300, - paid: 300, total: 600 } 
+not ok | B1 — F'ye bağlı 900: kart 600 / 0, bakiye 0, gecikmiş 0
+         NEDEN: error: |- 900: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 0, - paid: 600, total: 600 } 
+not ok | B1 — F'ye bağlı 1200: kart 600 / 0, bakiye -300, gecikmiş 0
+         NEDEN: error: |- 1200: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 0, - paid: 600, total: 600 } 
+ok     | B1 — bağsız 900: kart 600 / 0, bakiye 0, gecikmiş 0
+not ok | B2 — faturanın tamamı kartta (F 600, kart 600): bağlı 600 → tamamı kuyruğa: kart 600 / 600 / 0, fatura Ödendi,
+         NEDEN: error: |- B2: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 0, - paid: 600, total: 600 } 
+not ok | B3 — iki kart aynı faturada (K1 300, K2 300): bağlı 600 → 300 gösterilen açık + 300 vadesi en önce gelen taksi
+         NEDEN: error: |- K1: kart penceresi + actual - expected { + left: 300, + paid: 0, - left: 100, - paid: 200, total: 300 } 
+not ok | B4a — iade 300 (kart dışındaki kısım) → bağlı 600: gösterilen açık 0 → tamamı kuyruğa: kart 600 / 600 / 0, bak
+         NEDEN: error: |- B4a: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 0, - paid: 600, total: 600 } 
+not ok | B4b / B4c — bağlı 600 → iade 300: kart ve bakiye BAĞSIZ 600 → iade 300 ile AYNI; iade iptali → aynı taksitlere
+         NEDEN: error: |- B4c iade iptali: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 300, - paid: 300, total: 600 } 
+not ok | B4d — Düzenle 900 → 600 (kart dışındaki 300 düşer) → bağlı 600: kart 600 / 600 / 0, bakiye 0
+         NEDEN: error: |- B4d: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 0, - paid: 600, total: 600 } 
+not ok | B5 — bağlı 600'ün silinmesi → kart 0 / 600, bakiye 900; Silinenler'den geri yükleme → Tahsil 300 · Kalan 300, 
+         NEDEN: error: |- geri yüklendi: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 300, - paid: 300, total: 600 } 
+not ok | B6 — kilitli dönem (30.09'a kadar; fatura kilitli dönemde, bağlı ödeme sonra): B1 600 ile aynı; Mutabakat Test
+         NEDEN: error: |- B6: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 300, - paid: 300, total: 600 } 
+not ok | B7 — Vade Takip / zil / Alacak Yaşlandırma / Nakit Akışı: carinin açık kalemleri kartın kalan taksitleri (100 
+         NEDEN: error: |- Vade Takip: kartın kalan taksitleri + actual - expected [ [ 'plan', + '2026-10-05', + 200 - '2026-11-05', - 100 ],
+not ok | B8 — çek 'Kapatılacak Fatura' ile (alınan evrak 600, F'ye bağlı): B1 600 ile aynı
+         NEDEN: error: |- B8: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 300, - paid: 300, total: 600 } 
+ok     | B9 — bağlı ödeme karttan ÖNCE (F 900 → bağlı 600 → kart 300 açık kalanı alır): DEĞİŞMEZ (bekçi) — kart 0 / 300
+not ok | B11 — kart tahsilatı 600 → bağlı 600 → iade 300: kart 600 / 600 / 0, bakiye −600
+         NEDEN: error: |- B11: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 0, - paid: 600, total: 600 } 
+not ok | B10 — B1 600'ün sayıları yedek → (bozucu silme) → geri yüklemeden sonra aynı
+         NEDEN: error: |- geri yüklendi: kart penceresi + actual - expected { + left: 600, + paid: 0, - left: 300, - paid: 300, total: 600 } 

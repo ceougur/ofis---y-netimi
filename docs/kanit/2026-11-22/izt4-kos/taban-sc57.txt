@@ -1,0 +1,56 @@
+SC5 tahsilat 300
+(node:2139) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+  [2026-10-20] kart açıldı: bakiye 900 gecikmiş 500 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G200] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[overdue/300] kart[overdue/açık 300/kendi 900/inPlan 600] kapsam{K:600}
+    Mutabakat ok
+  Mahsup Et: sınır open 900 öneri suggest 300
+  faturadan tahsilat 300: 200
+  [2026-10-20] tahsilat 300: bakiye 600 gecikmiş 200 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G200] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 600/inPlan 600] kapsam{K:600}
+    Mutabakat ok
+SC5 tahsilat 900
+  [2026-10-20] kart açıldı: bakiye 900 gecikmiş 500 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G200] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[overdue/300] kart[overdue/açık 300/kendi 900/inPlan 600] kapsam{K:600}
+    Mutabakat ok
+  Mahsup Et: sınır open 900 öneri suggest 300
+  faturadan tahsilat 900: 200
+  [2026-10-20] tahsilat 900: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{}
+    Mutabakat ok
+SC5 tahsilat 1200
+  [2026-10-20] kart açıldı: bakiye 900 gecikmiş 500 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G200] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[overdue/300] kart[overdue/açık 300/kendi 900/inPlan 600] kapsam{K:600}
+    Mutabakat ok
+  Mahsup Et: sınır open 900 öneri suggest 300
+  faturadan tahsilat 1200: 200
+  [2026-10-20] tahsilat 1200: bakiye -300 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{}
+    Mutabakat ok
+SC7 tahsilat 900 bağsız
+  tahsilat: 200
+  [2026-10-20] tahsilat 900: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T600/K0/G0] cari[T600/K0] liste[T600/K0] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{K:600}
+    Mutabakat ok
+  cari planRemaining 0 · gecikmiş adet 0
+SC7 tahsilat 600 F'ye bağlı
+  tahsilat: 200
+  [2026-10-20] tahsilat 600: bakiye 300 gecikmiş 200 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G200] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[installment/0] kart[installment/açık 0/kendi 300/inPlan 300] kapsam{K:300}
+    Mutabakat ok
+  cari planRemaining 600 · gecikmiş adet 1
+SC7 tahsilat 900 F'ye bağlı
+  tahsilat: 200
+  [2026-10-20] tahsilat 900: bakiye 0 gecikmiş 0 (taksit 200)
+    kart K: pencere[active 600 T0/K600/G0] cari[T0/K600] liste[T0/K600] kendi[600/0/600] taksit[10-05:200 11-05:200 12-05:200]
+    fatura F: issued 900 liste[paid/0] kart[paid/açık 0/kendi -/inPlan -] kapsam{}
+    Mutabakat ok
+  cari planRemaining 600 · gecikmiş adet 0
