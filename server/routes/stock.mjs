@@ -447,6 +447,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     return [...touched];
   }
   const publishAccounts = (user, ids) => ids.forEach(id => events?.publish("workspace.changed", { kind: "accounts", accountId: id, actorId: user.id, actorName: user.display_name }, { except: user.id }));
+  // 2.5.0 İzleyen tur 3 (§21.2): iadenin küçülttüğü / geri büyüttüğü her kart (fatura yolu publishAll gibi — açık kart penceresi ve Taksitler, zil).
+  const publishCards = (user, ids) => new Set(ids).forEach(planId => changed(user, { kind: "plans", planId }));
 
   // v2.1.0 Aşama 8 (plan §3.7 #8): peşin havale/EFT satış, alım ve iade banka hesabına bağlanır (fin_ref); istek kimliği, Benzer İşlem, K7
   // (alım ve iade bankadan çıkar), bankadan çıkış bank.move ister. Stok girişi (alım ya da müşteri iadesi) = bankadan çıkış.
@@ -537,6 +539,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const current = []; // bank.post'un "prev"i: prepare güncel satırı koyar (adım 3 ondan sonra okur)
     let step = null;
     let touched = [];
+    let cards = new Set();
     const result = bank.post({
       user,
       module: "stock",
@@ -574,8 +577,10 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, fin_ref = ?, event_id = ?, is_opening = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, finRef, eventId, openingFlag({ ...input, isOpening: Number(previous.isOpening) === 1 }), user.id, now(), previous.id);
         touched = syncAccount(user, product, previous.id, input, previous.accountId);
         // 2.5.0 İzleyen tur 2 — İş 5 (§20.5): müşteri iadesinin düzeltmesi iade faturasının Düzenle'si gibi — eski kesim kayıtlı taksitlere geri büyür, yeni iade karar (4) ile yeniden keser.
-        if (previous.reason === "return" && previous.pay === "account") undoReturnCuts(user, previous.id, "Stok iadesi düzeltildi");
-        if (input.reason === "return" && input.pay === "account" && plans()?.trimCovers) trimReturn(user, previous.id, input.accountId, accountNote(product, input));
+        // 2.5.0 İzleyen tur 3 (§21.2): kartı küçülten / geri büyüten iade değişen kartları öbür ekranlara bildirir (fatura yolu publishAll gibi).
+        cards = new Set();
+        if (previous.reason === "return" && previous.pay === "account") for (const planId of undoReturnCuts(user, previous.id, "Stok iadesi düzeltildi")) cards.add(planId);
+        if (input.reason === "return" && input.pay === "account" && plans()?.trimCovers) for (const plan of trimReturn(user, previous.id, input.accountId, accountNote(product, input))) cards.add(plan.id);
         audit(user, "stock.move.updated", previous.id, { itemId: item.id, previous, ...input, finRef });
         return { id: previous.id };
       },
@@ -584,6 +589,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     changed(user, { itemId: item.id });
     changed(user, { kind: "cash" });
     publishAccounts(user, touched);
+    publishCards(user, cards);
     ok(res, detail(item.id, user));
   });
   router.delete("/api/workspace/stock/:id/moves/:moveId", async ({ req, res, params, url }) => {
@@ -594,6 +600,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     period?.assertOpen(previous.date, "Bu stok hareketi");
     cash?.guardChange?.(cashSide(previous), null, url.searchParams.get("cashForce") === "1", "Bu stok hareketi silinince");
     let accountId = "";
+    let cards = [];
     const k7 = banking.negative([previous.finRef], previous.date, banking.forced(null, url));
     const result = bank.post({
       user,
@@ -606,7 +613,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         store.run("DELETE FROM stock_moves WHERE id = ?", previous.id);
         accountId = accounts()?.stockEntry ? accounts().stockEntry.remove(previous.id) : "";
         // 2.5.0 İzleyen tur 2 — İş 5 (S238 = A'nın komşusu; §20.5): silinen müşteri iadesinin kestiği taksitler aynı taksitlere geri büyür (iade iptali gibi).
-        if (previous.reason === "return" && previous.pay === "account") undoReturnCuts(user, previous.id, "Stok iadesi silindi");
+        if (previous.reason === "return" && previous.pay === "account") cards = undoReturnCuts(user, previous.id, "Stok iadesi silindi");
         trash?.add({ kind: "stock-move", ref: previous.id, title: item.name, detail: `${previous.kind === "in" ? "Giriş" : "Çıkış"} ${qtyText(previous.qty)} ${item.unit}${previous.note ? ` · ${previous.note}` : ""}`, payload: { ...previous, itemId: item.id, itemName: item.name, unit: item.unit }, user });
         audit(user, "stock.move.deleted", previous.id, { itemId: item.id, ...previous });
         return { id: previous.id };
@@ -616,6 +623,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     changed(user, { itemId: item.id });
     if (previous.pay === "cash") changed(user, { kind: "cash" });
     publishAccounts(user, [accountId].filter(Boolean));
+    publishCards(user, cards);
     ok(res, detail(item.id, user));
   });
   router.get("/api/workspace/stock/:id/hareketler.pdf", async ({ req, res, params, url }) => {
@@ -863,6 +871,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const kept = pay === "cash" ? bank.keepRef(payload.finRef, { method: move.method, date: move.date }) : { ref: "", dropped: "" };
     // Yargıç K2 (plan §3.8, §9.2/7, §3.9): banka bağlı satırda kaynak modül yetkisi + bank.move, pasif hesap 400, K7 son durumla.
     const k7 = banking?.restore(user, { refs: [kept.ref], date: move.date, force, permission: "stock.move" }) || { capture() {}, guard: null, prime() {} };
+    let cards = [];
     const result = bank.post({
       user,
       module: "stock",
@@ -879,7 +888,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
           );
           syncAccount(user, item, entry.ref, move);
           // 2.5.0 İzleyen tur 2 — İş 5 (§20.5): geri yüklenen müşteri iadesi kartı yeniden küçültür (silmede geri büyümüştü; kayıtla).
-          if (move.reason === "return" && move.pay === "account" && plans()?.trimCovers) trimReturn(user, entry.ref, move.accountId, accountNote(item, move));
+          if (move.reason === "return" && move.pay === "account" && plans()?.trimCovers) cards = trimReturn(user, entry.ref, move.accountId, accountNote(item, move)).map(plan => plan.id);
         }
         trash.markRestored(entry.id, user);
         audit(user, "stock.move.restored", entry.ref, { itemId: item.id, kind: move.kind, qty: move.qty });
@@ -888,6 +897,11 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     k7.prime(result);
     changed(user, { itemId: item.id });
     changed(user, { kind: "cash" });
+    // 2.5.0 İzleyen tur 3 (§21.2): geri yüklenen müşteri iadesi kartı yeniden küçülttüyse cari ve kart ekranları da yenilenir (yalnız iade yolu).
+    if (cards.length) {
+      publishAccounts(user, [move.accountId]);
+      publishCards(user, cards);
+    }
     return `Stok hareketi geri eklendi${pay !== payload.pay ? " (carisi silindiği için yalnız miktar olarak)" : ""}.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
   const fingerprint = () => {

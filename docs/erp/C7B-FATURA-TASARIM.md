@@ -905,3 +905,55 @@ BAŞ MİMAR KARARI 21.11 18:28 (1)–(7). Taban 288b91dc (izt-sinama). Bugünkü
 - KOD SÜRERKEN DEĞİŞTİ (hız ölçümü 1 — ders 47, 53 (a); kanıt `izt2-hiz/tablo-1-kotulesme.md`, teşhis profili `tani-*.txt`): Düzenle kesintisi ilk hâlde `lib/account-lines.mjs returnCuts`'a bütün satış faturalarını tarayan
   sorguyla ekleniyordu (100 bin veride 17 ms; işlem içinde istek başına birkaç kez) → kart penceresi GET +%44, iade yazımı +%45 / +%59, fatura İptal Et +%30, Düzenle (aynı içerik) +%16. Kesinti kartın kapsamına artık
   `withEditCuts` içinde, girdinin kendi faturalarından eklenir (account-lines değişmedi). Hız ölçümü 2 (`izt2-hiz/tablo-2.md`): kötüleşen yol yok (en büyük ortanca farkı Kartı Kapat +%8,0, en iyisi −%0,2).
+
+## 21. İzleyen tur 3 (22.11.2026; görev metni `docs/devir/2.5.0-DEVAM/izt3-istem.txt`) — bütünlük kapısında rowid yeniden kullanımı (Düzenle azaltma hızı), stok iadesinde canlı yenileme — KODDAN ÖNCE yazıldı
+Kararlar (görev metninden AYNEN): BAŞ MİMAR KARARI 22.11 01:02 UTC (1) "İŞ 3 (Düzenle azaltma 6–7 sn, olay döngüsü kilitli) … kök neden ölçüldü: bütünlük kapısının kapsam süzgeci aynı rowid yeniden kullanılınca
+('kimlik değişti') TAM denetime düşüyor (~7,1 sn); … KULLANICIYI ETKİLER → İZLEYEN TUR 3'te (dosya izniyle; kapı eşdeğerliği ve kapı sınamaları + tam test + dar kontrol — kapı güvenlik çekirdeği)";
+(3) "'stok hareketi düzeltme / silmesinde kart ekranı canlı yenilenmiyor' KULLANICININ GÖRDÜĞÜNÜ değiştirir (açık ekranda bayat kart) → … İZLEYEN TUR 3 (küçük)". KOŞUL (görev metni, pazarlıksız): kapı
+dışı (program dışından) yapılan HER değişiklik bugünkü gibi YAKALANMAYA DEVAM EDER. Taban 3b420085.
+
+### 21.1 Rowid yeniden kullanımı süzgeçte silinen + eklenen iki satır (`lib/integrity-scope.mjs derive`)
+- Bugün (taban): süzgeç işlemin dokunduğu satırları rowid'e göre eşler — önceki hâl (`capture.before`: UPDATE / DELETE'ten önce okunan) ↔ son hâl (`capture.rows`: COMMIT'te okunan). Aynı rowid'de önceki ve son
+  hâlin kimliği (`id`) farklıysa "`<tablo>`: kimlik değişti" deyip kararı TAM kapıya bırakır (gözden geçirme D8: `UPDATE … SET id` bağlı satırları yetim bırakır, kilit izini kimlikle değiştirir; bu yol modellemez).
+  SQLite (AUTOINCREMENT'siz tablo) silinen EN BÜYÜK rowid'i bir sonraki INSERT'e yeniden verir: Düzenle faturanın stok hareketlerini (ve kalemlerini) silip yeniden yazar; yeni kaydedilmiş faturada bunlar
+  tablonun son satırlarıdır → aynı rowid'e başka kimlikli satır → tam kapı (100 bin veride ~7,1 sn, olay döngüsü kilitli). Etkilenen: yeni kaydedilmiş faturanın Düzenle'si, aynı faturanın ikinci Düzenle'si,
+  en son yazılan satırı silip yeniden yazan her yol.
+- Kural: rowid'in son hâli bu işlemde store ile EKLENMİŞSE (`capture.inserted` — lib/db.mjs `afterScopedInsert`'in kesin izi) ve önceki hâlin kimliği farklıysa, eşleşme İKİ ayrı satırdır: silinen
+  (`{ pre, post: null }`) ve eklenen (`{ pre: null, post }`). Bu, aynı işlemin başka bir rowid'e yazdığı DELETE + INSERT ile birebir aynı modeldir (süzgeç onu zaten bu yolda denetliyor): iki kimliğin varlıkları
+  (cari, kart, fatura, ürün, stok hareketi, para satırı) kapsama girer, yetim satır denetimleri (stock:orphan, invoice:*) silinen kimliği görür, kilit denetimi (`lockRelevant`) iki tarafı da "değişti" sayar
+  (`differs(pre, null)` / `differs(null, post)` her zaman doğru) — kilitli dönemdeki satırın silinmesi ya da kilitli tarihli satır eklenmesi kararı TAM kapıya ve kilit izine bırakır.
+- DEĞİŞMEYEN (güvenlik): (a) son hâli EKLENMEMİŞ rowid'de kimlik değişimi (`UPDATE … SET id` — program yapmaz; hatalı modül / ham SQL) bugünkü gibi "kimlik değişti" → TAM kapı (D8 aynen); (b) store DIŞI yazım
+  (aynı bağlantıda db.prepare / db.exec: total_changes ↔ kayıtlı yazım sayısı; başka bağlantı: PRAGMA data_version) süzgece hiç gelmez, bugünkü gibi TAM kapı ("store dışı yazım" / "başka bağlantı yazdı");
+  kapanmış dönemin COMMIT'ler arasındaki kapı dışı değişikliği tam taramada (Mutabakat Testi, Yönetim › Sistem taraması) kilit izinden bulunur — süzgeçle ilgisi yok, değişmez; (c) taban sapması alanı,
+  kilit değişimi, FULL_TABLES, çözülemeyen yazım, upsert aynen tam kapı; (d) süzgeç yine yalnız SÜZGEÇTİR: bulgu → tam kapı karar verir; testlerde (gateVerify) tam kapı her işlemde çalışır, süzgeç "temiz"
+  deyip tam kapı reddederse test kırılır.
+- Neden yalnız `inserted`: önceki turun prototipi kimlik farkını her durumda bölüyordu; bu, (a)'yı da süzgece alırdı (UPDATE SET id). Güvenlik çekirdeğinde en dar gevşetme seçildi — hız kazancı aynı
+  (Düzenle yolu DELETE + INSERT), D8'in kapsamı aynen tam kapıda.
+- Yalnız okuyan yardımcı yok; değişiklik `derive` içinde tek döngü. Göç yok.
+
+### 21.2 Faturasız stok iadesinde canlı yenileme (`routes/stock.mjs` — yalnız iade yolu)
+- Bugün (taban; yoklama not defteri `izt3-ae8/probe/olay.mjs`, başka personelin olay akışı): yeni stok iadesi `stock`, `accounts`, `plans` yayımlar; iadenin DÜZELTMESİ `stock`, `cash`, `accounts` (plans YOK);
+  SİLİNMESİ `stock`, `accounts` (plans YOK); Silinenler'den GERİ YÜKLENMESİ `stock`, `cash` (accounts ve plans YOK) — kart 300 → 900 → 300 değiştiği hâlde. Açık Taksitler penceresi / kart penceresi geri
+  yüklemede hiç yenilenmez (yeniden açınca doğru); zil (gecikmiş rozetleri: plans / cash / bank dinler) silmede yenilenmez.
+- Kural (kart değiştiren öbür yollar gibi — fatura yolu `publishAll`: değişen her kart için `{ kind: "plans", planId }`): iade yolunda kartı küçülten (`trimReturn`) ya da geri büyüten (`undoReturnCuts`)
+  her işlem değişen her kart için `plans` + `planId` yayımlar; geri yüklemede iadenin carisi için `accounts` da (cari kartı ve Taksitler'in cari dinleyicisi). Kart değişmediyse (kayıt yok, kesim yok) olay yok —
+  bugünkü gibi.
+
+### 21.3 Nasıl bozulur? (önce yazıldı; testler buradan)
+1. Yeni kaydedilmiş faturanın Düzenle'si (azaltma, aynı içerik, ikinci Düzenle): üretim kipinde süzgeç yolu (tabanda tam kapı "kimlik değişti"); sonuç (durum, kart, bakiye, Mutabakat Testi) aynı; test kipinde
+   (gateVerify) eşdeğerlik ihlali yok.
+2. Store üzerinden ham SQL (hatalı modül gibi), AÇIK dönem: en son satırı sil + aynı rowid'e başka kimlikli bozuk kopya (miktar / tutar) → 409, tabanla aynı bulgu ailesi; bozmadan kopya → tabanla aynı sonuç.
+3. Aynısı KİLİTLİ dönemde (kilitli tarihli satır, içeriği aynı yalnız kimliği farklı kopya) → 409 "Kapanmış dönem" (tabanda da); mutant (kimlik değişimini hiç saymayan süzgeç) burada KABUL eder / eşdeğerlik ihlali verir.
+4. `UPDATE … SET id` (eklenmemiş rowid): bugünkü gibi tam kapı "kimlik değişti", kilitliyse 409 (D8 bekçisi).
+5. Store DIŞI (db.prepare): aynı rowid'e başka kimlikli satır (açık / kilitli), rowid'i yeniden kullanılmış satırın tutarının değiştirilmesi, silinip aynı rowid'le geri yazılması → sonraki COMMIT tam kapı
+   ("store dışı yazım"), Mutabakat Testi bulguyu (kilitlide period-lock) bulur — tabanla aynı sayıyla.
+6. Bozma bulanıklaştırması (2.0.26 gerçek verisi, sabit tohum, test kipi): en büyük rowid'li satırı sil + aynı rowid'e yeni kimlikli (bozuk ya da bozmasız) kopya — eşdeğerlik ihlali yok.
+7. Stok iadesi düzelt / sil / geri yükle: öbür ekrana `plans` (planId'li) gider; açık kart penceresi ekranda yenilenir (gerçek tıklama); veri tabanı sayıları aynı.
+
+### 21.4 Kod ve sonuç (kodla birlikte; kanıt docs/kanit/2026-11-22/izt3-*)
+- `lib/integrity-scope.mjs derive`: rowid'in son hâli `capture.inserted`'teyse ve önceki hâlin kimliği farklıysa `{ pre, post: null }` + `{ pre: null, post }`; değilse bugünkü eşleşme ve "kimlik değişti" (D8). Yalnız okuyan yardımcı yok.
+- `routes/stock.mjs` (yalnız iade yolu): `publishCards` (değişen her kart → `plans` + `planId`); PUT / DELETE / Silinenler'den geri yükleme kesilen / geri büyüyen kartları yayımlar; geri yüklemede iadenin carisi için `accounts`.
+- Sınama: `test/izt3-kapi-rowid-250.test.mjs` 14 (eski 12/14 — P1 iki kipte 'kimlik değişti' ile kırmızı; yakalama sınamaları eskide de yeşil, dişleri mutant m1 (3 kırmızı) / m2 (1 kırmızı));
+  `test/izt3-stok-iade-canli-250.test.mjs` 5 (eski 2/5); ekran `test/e2e/senaryo-izt3-250.mjs` 18 (eski 16/18 — geri yüklemede gözcünün kartı ve listesi ₺900,00'da bayat kalıyordu).
+- Eşdeğerlik: eski ↔ yeni 14 senaryoluk döküm (`izt3-kos/kapi.mjs`) iki kipte birebir (durum, 409 kodları, tarama bulguları, sayılar); değişen yalnız kapı yolu. Rowid bozma bulanıklaştırması (2.0.26, 2 tohum × 160)
+  eski = yeni: kabul / ret sayıları aynı, eşdeğerlik ihlali 0.

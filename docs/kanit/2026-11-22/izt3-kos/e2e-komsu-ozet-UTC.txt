@@ -1,0 +1,21 @@
+e2e UTC · commit 2047b2f8  · 04:51:52
+senaryo-izt3-250 çıkış 0 · ✓ senaryo-izt3-250: 18 geçti, 0 kaldı
+senaryo-izt2-250 çıkış 0 · ✓ senaryo-izt2-250: 24 geçti, 0 kaldı
+senaryo-izt-250 çıkış 0 · ✓ senaryo-izt-250: 20 geçti, 0 kaldı
+senaryo-dkfix-250 çıkış 0 · ✓ senaryo-dkfix-250: 21 geçti, 0 kaldı
+senaryo-217 çıkış 0 · 
+senaryo-216 çıkış 0 · 
+senaryo-banka-210b çıkış 0 · ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-ae8c8568d72566f15/test/e2e/artifacts/senaryo-banka-210b
+senaryo-banka-210-eski-satir çıkış 0 · ✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-ae8c8568d72566f15/test/e2e/artifacts/senaryo-banka-210-eski-satir
+senaryo-fatura-243 çıkış 0 · 61 geçti, 0 kaldı
+senaryo-kdv-donemi-250 çıkış 0 · ✓ senaryo-kdv-donemi-250: 22 geçti, 0 kaldı
+senaryo-duzeltme-kilidi-250 çıkış 0 · 79 geçti, 0 kaldı
+senaryo-duzeltme-kilidi-tur3-250 çıkış 0 · 110 geçti, 0 kaldı
+senaryo-iade-246 çıkış 0 · 26 geçti, 0 kaldı
+senaryo-cari-243 çıkış 0 · 70 geçti, 0 kaldı
+senaryo-kasa-acilis-uyari-250 çıkış 0 · 
+senaryo-pos-220 çıkış 0 · ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-ae8c8568d72566f15/test/e2e/artifacts/senaryo-pos-220
+senaryo-entegrator-240 çıkış 0 · ✓ senaryo-entegrator-240: 81 geçti, 0 kaldı
+banka-210-kart-onbellek-yaris çıkış 0 · ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı
+uiux-b-243 çıkış 0 · ✓ uiux-b-243: 58 geçti, 0 kaldı
+bitti 05:15:01
