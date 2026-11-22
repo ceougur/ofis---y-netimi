@@ -5964,3 +5964,67 @@ senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'
 ### KULLANICIYA SORULMALI (bakım 27 — son hâl)
 - **SK-51 (UÇ)** — yorumdaki gibi (A: kart AÇIK kurulur — program GÖZLEMİ bu; B: kapanış korunur; **C (ÖNERİ): Uç durum böyle kalsın (BİLİNEN SINIR)**). Bakiye, kart tutarı ve Kalan her seçenekte aynı; ayrışan kartın açık / kapalı durumu ve
   kapanış gününün ertesindeki gecikmiş (örnekte 0 ↔ 300).
+
+## 40. 2.5.0 Ç5 bakımı 28 — KÜÇÜK BAKIM: S255 = A (Mevcut Borç kartının içine aldığı faturaya BAĞLI ödeme önce faturanın GÖSTERİLEN açığını kapatır, fazlası tek kuyruğa), S254 = C (aynı caride iki Mevcut Borç kartı + faturasız stok iadesi — hangi kartın küçüleceği SUS) (22.11.2026; girdi ana oturumun özet dosyası `docs/devir/2.5.0-DEVAM/kahin-cari28-kararlar.md`; kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + … + §39 + bu bölüm
+
+Bu bakım girdinin §1–§2'sini işler. §13–§39'un öbür kuralları DEĞİŞMEZ. `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN (bu bölümün bütün yolları yalnız `k250`). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod);
+senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'lerde eklenir.**
+
+### C00ag Temiz oda (bakım 28)
+- **Girdi (tek kaynak):** `docs/devir/2.5.0-DEVAM/kahin-cari28-kararlar.md` — başındaki OKUMA KURALI bağlayıcı: kural yalnız SEÇİLEN seçeneğin metni (kendi örneğiyle) ve KAPSAM / BAŞ MİMAR satırlarıdır; kararın söylemediği alt durumda kural
+  UYDURULMAZ (SUS + KULLANICIYA SORULMALI). Etiketler girdideki gibi: ikisi de "KULLANICI KURALIYLA ÖNERİ UYGULANDI" (bu kâhinde **BAŞ MİMAR** etiketiyle — §36 … §39'daki düzen). Sorunun metnindeki "ÖNCEDEN VAR — v2.4.9'da da",
+  "TEK DAR KONTROL'ün ORTA-1'i" gibi program gözlemleri kural kaynağı SAYILMADI.
+- **Birlikte okunan (kâhinin kendi belgesi):** C6 S1 (§8), C13.4 (3) "bağlar önce" (§13), §35 (Y23-2 … Y23-6 — gösterilen açık, S230), §37 Y25-3 (S239 — iade önce dış açık), §36 Y24-3 / Y24-4 (karar (4) — kart küçülmesi), §28 / §30 (S162 = B ölçütü);
+  `model.py` (`_alacak_govde250`, `_baglar250`, `_tyk`, `_s234_plan`, `kontrol_gosterilen`, `_sus17`, `MUTASYONLAR`), `oz-test.py`, `senaryolar/` (d52, d56, d59), bakım 27'nin araçları `docs/kanit/2026-11-22/kahin-cari27-arac/` (yalnız
+  çalıştırmak / uyarlamak için); `kos.mjs` YALNIZ eşleme ve yapım aşaması listesi için.
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/devir/**` (görev metni ve girdi dışında), `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), `docs/erp/**`,
+  `YAPIM-ASAMASI.json`'ın kayıt DEĞERLERİ (yalnız yeniden üretilir), `BILINEN.json`, öbür kâhinler, cari kâhini dışındaki `test/**`, başka ajanların `docs/kanit/**` dosyaları (bakım 27'nin araç klasörü dışında), git farkı / geçmiş içeriği.
+
+### Karar metinleri (girdiden; seçilen seçeneğin metni AYNEN)
+- **S255 = A:** "bağlı tahsilat önce faturanın GÖSTERİLEN açığını (kartın almadığı kısım — örnekte 300) kapatır; fazlası S230 = A'nın sözüyle 'carinin vadesi en önce gelen açık borcuna' (tek kuyruk — örnekte kartın 05.10 taksitinden
+  başlayarak) gider: 600 → fatura kapanır, kart Tahsil 300 · Kalan 300 (05.10 ödenmiş, 05.11'den 100), bakiye 300, gecikmiş 0; 900 → kart Kalan 0, bakiye 0; 1.200 → kart Kalan 0, avans 300. Girilebilecek tutarın sınırı
+  değişmez (S230)." Örnek: "F 900 (satış, vadesi geçmiş), elle Mevcut Borç kartı 600 (F'nin 600'ünü içine alır; 3 × 200, 05.10 / 05.11 / 05.12); 20.10'da F'ye bağlı tahsilat."
+- **KAPSAM §1 (baş mimar):** "kâhinin C6 S1 kuralı ('bağlı ödemeler yalnız kendi kalemini kapatır, fazlası havuza') bir faturanın bir kısmını ya da tamamını Mevcut Borç kartı İÇİNE ALMIŞSA şöyle okunur: faturanın 'kendi kalemi' =
+  GÖSTERİLEN açığı (kartın / kartların almadığı kısım; S230 = A); fazlası havuza (tek kuyruk — kartın taksitleri dahil …). Faturanın tamamı kartta ise bağlı ödemenin TAMAMI havuza. … Bağlı ödeme türleri: Kapatılacak Fatura'lı
+  cari tahsilatı ve faturanın Tahsilat Ekle'si; çek / senet ve Mahsup Et bu girdide AÇIKÇA geçmiyor → SUS + KULLANICIYA SORULMALI (yalnız kâhinin bağdaştırıcısının desteklediği yollar). Bu kural için taksit kartlı caride
+  'Kalan tanımsız (denetlenmez)' istisnası bu senaryolarda KALKAR (kart ve fatura sayıları denetlenir). KARARLAR.md'ye S255 numarasıyla."
+- **S254 = C:** "Uç durum böyle kalsın (BİLİNEN SINIR olarak yazılır) — bakiye iki okumada da 900, değişen yalnız gecikmiş (200 / 0)". Örnek: "K1 (ilk taksit 05.10) ve K2 (ilk taksit 05.11), 600'er; 300'lük faturasız stok iadesi; 20.10."
+  **KAPSAM §2:** "hangi kartın küçüleceği denetlenmez; neden metnine karar numarası ('BİLİNEN SINIR — kullanıcı kararı S254 = C'); bakiye denetlenir."
+
+### Kâhinin BUGÜNKÜ (bakım 27, taban `6a1d19d1`) okuması — bu alanda (açıkça)
+- **S255:** C13.4 (3) "bağlar önce" — faturaya bağlı tahsilat / evrak zaman çizelgesinden ÖNCE faturanın KENDİ kalemini (kartın tüketiminden önceki, tamamı) kapatır; fazlası kendi gününde bağsız ('d' havuzu). Kart sonradan (zaman çizelgesinde,
+  kendi gününde) faturanın KALAN kısmını tüketir. Örnekte (kart 02.09, bağlı 20.10): bağlı 300 → fatura 600 kalır, kart 600'ü tüketir (S255 = A ile AYNI sonuç); bağlı 600 / 900 / 1.200 → faturanın kart gününde kalanı (300 / 0 / 0) kart
+  tutarından (600) az → kart "açık borçtan büyük" (EK-2B 32) → carinin bütün kuyruk denetimleri SUS (C13.4 (11); yalnız bakiye / Kasa / adım yazılır). Yani kararın asıl alanı bugün SUSUYOR (yanlış değer YAZMIYOR). (Kod okumasından;
+  elle senaryonun eski kâhindeki koşusu kanıt bölümünde.)
+- **S254:** faturasız stok iadesi (KS7 (a)) bağsız kapatıcı — carinin BÜTÜN açık kalemlerinde S2 sırasıyla (vade → belge → yazım): örnekte K1'in 05.10 taksiti (girdinin B okuması) değerle yazılır. Kart carinin bütün borcunu taşıyorsa S162 = B (§28 / §30)
+  o kartın toplamını, taksit Ödenen'lerini ve gecikmişi zaten SUSTURUR; öbür kartın göstergeleri ve S162 alanı dışındaki (kart dışında da açık borç olan) cari değerle yazılır.
+
+### Yorumlar (ders 40 — kararlardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y28-1 — S255 = A (C6 S1'in Mevcut Borç kartlı faturada okunuşu):** taksitsiz satış faturasına BAĞLI tahsilat (dilde `tahsilat {fatura}` — Kapatılacak Fatura'lı cari tahsilatı; faturanın Tahsilat Ekle'si bağdaştırıcıda AYRI yol DEĞİL, aynı uç)
+  faturayı İÇİNE ALMIŞ bir Mevcut Borç kartından SONRA (tarih, aynı gün yazım sırası) yazılmışsa faturanın "kendi kalemi" = GÖSTERİLEN açığı = kartın / kartların tüketiminden sonra kuyrukta kalan kısmı (Y23-2: gösterilen = kuyruk kalanı).
+  Bağ bu kısmı **zamandan bağımsız** kapatır (C13.4 (3) "bağlar önce" — aradaki bağsız ödemeler bu kısmı ondan önce alamaz); kâhinde bağ, ödemeden önceki SON kart tüketiminin hemen ardından uygulanır (kartın gününe kadar zaman çizelgesi
+  ödeme yokmuş gibi). Fazlası kendi gününde bağsız alacak ('d' havuzu — bugünkü bağ fazlası gibi) → tek kuyruk S2 sırasıyla (kartın taksitleri dahil; KAPSAM "kartın taksitleri dahil"); hiçbir yerde kapanmayan artığı carinin avansı.
+  Faturanın tamamı kartta (kuyruk kalanı 0) → bağın TAMAMI havuza. Kartın aldığı kısmın kartın taksitleriyle ödenmesi faturanın KENDİ açığını Y10-1 / Y11-2 / Y23-2 ile düşürür (kendi = kuyruk kalanı + kartın tükettiği − kartın ödenen payı):
+  kararın örneğinde bağlı 600 → gösterilen **0**, kendi **300**, kartta **300**, 'Taksitte' **true** (Y23-3: gösterilen 0 ve kendi > 0); kart Tahsil **300** · Kalan **300**; bakiye **300**; gecikmiş **0**. Kararın "600 → fatura kapanır"
+  sözü faturanın GÖSTERİLEN açığının kapanması diye okundu (kâhinin S230 = A kuralı aynen — fatura kartın içindeki 300'le 'Taksitte' görünür; **okuma — baş mimarın görmesi için ayrı işaretlendi**). 900 → kart Kalan **0**, bakiye **0**,
+  faturanın kendi açığı 0 (durumu Y23-6 (i) SUS aynen); 1.200 → kart Kalan **0**, bakiye **−300** (avans 300). Bağsız 900 aynı gün → S2'de faturanın kuyruk kalanı (vadesi 01.09) kartın taksitlerinden önce → bağlı 900 ile AYNI sayılar
+  (karşılaştırma). Etiket **BAŞ MİMAR**.
+- **Y28-2 — kart açılmadan ÖNCE yazılmış bağlı ödeme:** ödeme anında kart yoktu, gösterilen açık = kendi açık → bugünkü kural (bağ zaman çizelgesinden önce faturanın kendi kalemini kapatır; kart sonra kalanı tüketir) AYNEN — S255 alanı DEĞİL.
+- **Y28-3 — "kartın içine aldığı" ölçüsü:** bağın gününden önce açılmış en az bir etkin Mevcut Borç kartı faturanın bir kısmını (ödeme yokmuş gibi kurulan zaman çizelgesinde) tüketmişse S255 alanı; tüketmemişse (kart başka kalemi aldı)
+  bugünkü kural. Kâhin iki hesabın tutarlılığını denetler (bağın kendisi kartın tüketimini değiştirmez; değiştiriyorsa — ör. başka bir faturanın bağı kartın aldığı sırayı kaydırıyor — **SUS**, neden "S255 … kararlı değil").
+- **Y28-4 — iade / iade iptalinden sonra bağlı ödeme:** iade yazıldığı anda S239 = A / karar (4) ile (önce dış açık, sonra kart küçülür — §36 / §37 aynen) faturanın gösterilen açığını ve kartı küçültür; sonra gelen bağlı ödeme Y28-1 ile yeni
+  gösterilen açığı (çoğunlukla 0) kapatır, fazlası kuyruğa (küçülmüş kartın açık taksitleri). İade iptali küçülmeyi geri alır (KAPSAM (c) — §36 aynen); sonra gelen bağlı ödeme iadesizmiş gibi. Bağlı ödemeden SONRA yazılmış iade bu girdinin
+  konusu değil — bugünkü kural (§36 / §37) aynen; elle senaryo yok.
+- **Y28-5 — bağlı ödemenin silinip geri yüklenmesi:** silinen ödeme kuyrukta yok (kart, gösterilen açık, gecikmiş ödemesizmiş gibi); geri yüklenen ödeme kendi tarihinde, kendi yazım sırasıyla (kimlik aynı — hareket_geri_yukle) Y28-1 ile.
+- **Y28-6 — SUS (KULLANICIYA SORULMALI; ders 40, 43):** (a) faturaya bağlı ÇEK / SENET (`evrak {fatura}`) Mevcut Borç kartının içine aldığı faturada, kartın açılmasından sonra — KAPSAM: "AÇIKÇA geçmiyor → SUS"; kâhin carinin kuyruğunu
+  SUSTURUR (C13.4 (11) neden, "SK-52"); bağlı evrak kartın gününden ÖNCEYSE Y28-2 (bugünkü kural). (b) Mahsup Et — dilde yok (DENENMEYEN). (c) Bağlı ödeme + faturanın Şüpheli Alacak payı (S168 / S181 alanı) Mevcut Borç kartlı faturada —
+  iki kuralın birlikte okunuşu kararda yok → SUS (neden "SK-53"). (d) Alış faturasına bağlı ödeme — Mevcut Borç kartı yalnız alacak tarafında; alan doğmaz.
+- **Y28-7 — S254 = C (iki Mevcut Borç kartı + faturasız stok iadesi):** carinin en az İKİ etkin Mevcut Borç kartı (Taksitler'den ya da aktarımdan — satışla açılan kart DEĞİL; satış kartı S140 / S157 / S170 aynen) iadeden ÖNCE açılmışsa
+  ve iade (S2 dağıtımında) bir kartın taksitini kapatıyorsa hangi kartın küçüleceği **denetlenmez**: carinin kuyruk denetimleri SUS (C13.4 (11) neden — fatura açığı / gösterim, elle Kalan, gecikmiş, açık toplamı, takvim / Vade Takip /
+  projeksiyon kalemleri, kartların Tahsil Edilen / Kalan / taksit Ödenen'i) + kartların **toplamı** da SUS (kararın sözü "hangi kartı küçültsün"); neden metni "BİLİNEN SINIR (kullanıcı kararı S254 = C) S254". **Bakiye**, Kasa, adım
+  sonuçları ve kartların varlığı yazılır. İade kart taksiti kapatmıyorsa (S2'de önce kart dışı kalemler yetiyor) bugünkü kural aynen.
+
+### KULLANICIYA SORULMALI (bakım 28 — yorum aşaması; son hâl kanıt bölümünde)
+- **SK-52 (UÇ) — Mevcut Borç kartının içine aldığı faturaya BAĞLI ÇEK / SENET (kartın açılmasından sonra; PARA KURALI — ders 43):** örnek S255'in sayılarıyla, 20.10'da F'ye bağlı 600'lük çek. **A (ÖNERİ):** bağlı tahsilatla AYNI (S255 = A) —
+  gösterilen 300, fazla 300 tek kuyruğa (kart Tahsil 300 · Kalan 300, bakiye 300). **B:** çek faturanın kendi açığını (kartın içindeki dahil) kapatır. **C:** Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS). Yaygın programlarda: doğrulanmış kaynak okunmadı.
+- **SK-53 (UÇ) — S255 + Şüpheli Alacak payı (S168 / S181) aynı faturada:** kâhin SUS; seçenek önerisi kanıt bölümünde (programla fark görülürse).
