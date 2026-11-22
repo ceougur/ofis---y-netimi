@@ -1219,7 +1219,7 @@ const YAPIM_UYGULANIR = !LEGACY && KURAL === "2.5.0";
 const YAPIM_YAZ = argv.includes("--yapim-asamasi-yaz");
 if (YAPIM_YAZ && !(YAPIM_UYGULANIR && VARSAYILAN)) throw new Error("--yapim-asamasi-yaz yalnız varsayılan koşuda (senaryo / tohum / --kural / --legacy verilmeden) çalışır");
 const YAPIM_YOLU = process.env.KAHIN_YAPIM_ASAMASI || path.join(HERE, "YAPIM-ASAMASI.json"); // KAHIN_YAPIM_ASAMASI: yalnız mekanizmanın kendi denemesi için başka liste
-const YAPIM_PAKETLER = ["Ç5-A", "Ç5-B tur 2", "Ç5-C", "eşleme", "Ç7b", "AYRIŞTIRILMADI"]; // bakım 24: "Ç7b" — S234 / S237 kart küçülmesinin programda henüz yapılmayan kısmı (girdi §1 (e) / (f))
+const YAPIM_PAKETLER = ["Ç5-A", "Ç5-B tur 2", "Ç5-C", "eşleme", "Ç7b", "S255 izleyen tur 4", "AYRIŞTIRILMADI"]; // bakım 24: "Ç7b" — S234 / S237 kart küçülmesinin programda henüz yapılmayan kısmı (girdi §1 (e) / (f)); bakım 28: "S255 izleyen tur 4" — S255 = A'nın kodu (ayrı kod turu; görev metni)
 const OKUMA_ONEKI = "OKUMA HATASI: ";
 const YAPIM_ALANLAR = ["senaryo", "anahtar", "beklenen", "program", "sinif", "kural", "paket"];
 function yapimYukle() {

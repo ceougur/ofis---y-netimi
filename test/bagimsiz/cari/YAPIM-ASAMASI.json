@@ -8,7 +8,624 @@
   "Ç5-C",
   "eşleme",
   "Ç7b",
+  "S255 izleyen tur 4",
   "AYRIŞTIRILMADI"
  ],
- "kayitlar": []
+ "kayitlar": [
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:cari:V10:gecikmis",
+   "beklenen": 0,
+   "program": 20000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:cari:V2:gecikmis",
+   "beklenen": 0,
+   "program": 20000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:cari:V7:gecikmis",
+   "beklenen": 0,
+   "program": 30000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV10:kalan",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c))",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV10:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50) · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c))",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV10:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c))",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV10:taksit2:odenen",
+   "beklenen": 10000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c))",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV2:kalan",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV2:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV2:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV2:taksit2:odenen",
+   "beklenen": 10000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV3:kalan",
+   "beklenen": 0,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV3:odenen",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV3:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV3:taksit2:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV3:taksit3:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV4:kalan",
+   "beklenen": 0,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV4:odenen",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV4:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV4:taksit2:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV4:taksit3:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV7:kalan",
+   "beklenen": 60000,
+   "program": 90000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV7:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV7:taksit1:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV8:kalan",
+   "beklenen": 0,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV8:odenen",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV8:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV8:taksit2:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k0:kart:KV8:taksit3:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:cari:V10:gecikmis",
+   "beklenen": 0,
+   "program": 20000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:cari:V11:gecikmis",
+   "beklenen": 0,
+   "program": 20000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:cari:V2:gecikmis",
+   "beklenen": 0,
+   "program": 20000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:cari:V7:gecikmis",
+   "beklenen": 0,
+   "program": 30000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV10:kalan",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c))",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV10:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50) · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c))",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV10:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c))",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV10:taksit2:odenen",
+   "beklenen": 10000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c))",
+   "paket": "S255 izleyen tur 4"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV11:kalan",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV11:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV11:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV11:taksit2:odenen",
+   "beklenen": 10000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV2:kalan",
+   "beklenen": 30000,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV2:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV2:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV2:taksit2:odenen",
+   "beklenen": 10000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV3:kalan",
+   "beklenen": 0,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV3:odenen",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV3:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV3:taksit2:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV3:taksit3:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV4:kalan",
+   "beklenen": 0,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV4:odenen",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV4:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV4:taksit2:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV4:taksit3:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV7:kalan",
+   "beklenen": 60000,
+   "program": 90000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV7:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV7:taksit1:odenen",
+   "beklenen": 30000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV8:kalan",
+   "beklenen": 0,
+   "program": 60000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV8:odenen",
+   "beklenen": 60000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV8:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV8:taksit2:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  },
+  {
+   "senaryo": "d60-c5-s255-s254-bagli-odeme-kartli-fatura",
+   "anahtar": "k1:kart:KV8:taksit3:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "S255 izleyen tur 4",
+   "not": "kural metni paketi göstermiyor"
+  }
+ ]
 }

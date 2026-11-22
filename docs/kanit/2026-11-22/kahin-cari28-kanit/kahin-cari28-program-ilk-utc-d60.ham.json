@@ -1,0 +1,3920 @@
+{
+ "k0:cari:V1:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:V2:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:V3:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:V4:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:V5:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:V6:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:V7:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:V8:deleteBlock": "Bu carinin 1 cari hareketi, 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:V9:deleteBlock": "Bu carinin 1 cari hareketi, 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:V10:deleteBlock": "Bu carinin 1 cari hareketi, 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:V11:deleteBlock": "Bu carinin 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:V12:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:Q1:deleteBlock": "Bu carinin 2 cari hareketi, 1 stok hareketi ve 2 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:Q2:deleteBlock": "Bu carinin 2 cari hareketi, 1 stok hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 2 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:fatura:FV1": {
+  "open": 0,
+  "ownOpen": 600,
+  "inPlan": 600,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k0:fatura:FV2": {
+  "open": 0,
+  "ownOpen": 300,
+  "inPlan": 300,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k0:fatura:FV3": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k0:fatura:FV4": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k0:fatura:FV5": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k0:fatura:FV6": {
+  "open": 0,
+  "ownOpen": 300,
+  "inPlan": 300,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k0:fatura:FV7": {
+  "open": 0,
+  "ownOpen": 600,
+  "inPlan": 600,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k0:fatura:FV8": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k0:fatura:FV9": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k0:fatura:FV10": {
+  "open": 0,
+  "ownOpen": 300,
+  "inPlan": 300,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k0:fatura:FV11": {
+  "open": 300,
+  "ownOpen": 900,
+  "inPlan": 600,
+  "status": "issued",
+  "payState": "overdue",
+  "ownPayState": "overdue"
+ },
+ "k0:fatura:FV12": {
+  "open": 0,
+  "ownOpen": 600,
+  "inPlan": 600,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k0:fatura:IV8": {
+  "open": 0,
+  "status": "issued",
+  "payState": "return"
+ },
+ "k0:fatura:IV9": {
+  "open": 0,
+  "status": "issued",
+  "payState": "return"
+ },
+ "k0:fatura:IV10": {
+  "open": 0,
+  "status": "cancelled",
+  "payState": "cancelled"
+ },
+ "k0:fatura:FQ2": {
+  "open": 400,
+  "status": "issued",
+  "payState": "overdue"
+ },
+ "k0:faturaListesi": {
+  "status": 200,
+  "anahtarlar": [
+   "invoices",
+   "totals",
+   "tabCounts",
+   "canManage",
+   "total",
+   "offset",
+   "limit",
+   "hasMore",
+   "restoreNotice"
+  ],
+  "ilk": {
+   "id": "invoice-4fde56de-aba6-4cec-b387-22fee12be081",
+   "kind": "sale",
+   "kindLabel": "Satış Faturası",
+   "scenario": "service_sale",
+   "scenarioLabel": "Hizmet Satışı",
+   "status": "issued",
+   "statusLabel": "Kaydedildi",
+   "number": "FIS2026000000013",
+   "displayNo": "FIS2026000000013",
+   "internalNumber": false,
+   "ettn": "fd208558-3769-4cac-9d63-174f47b2298a",
+   "issueDate": "2026-10-15",
+   "issueTime": "09:00",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "accountRef": "14",
+   "accountPhone": "",
+   "profile": "KAGIT",
+   "profileLabel": "Kâğıt Fatura",
+   "typeCode": "SATIS",
+   "currency": "TRY",
+   "rate": 1,
+   "netTotal": 500,
+   "vatTotal": 0,
+   "withheldTotal": 0,
+   "stoppageTotal": 0,
+   "payableTotal": 500,
+   "tryNet": 500,
+   "tryVat": 0,
+   "tryPayable": 500,
+   "dueDate": "2026-10-15",
+   "planId": "",
+   "originalId": "",
+   "originalNumber": "",
+   "originalDate": "",
+   "note": "",
+   "eStatus": "none",
+   "eStatusLabel": "Gönderilmedi",
+   "eUnsent": false,
+   "eTestLive": false,
+   "eTest": false,
+   "actorName": "Ofis yöneticisi",
+   "createdAt": "2026-10-20T09:00:01.449Z",
+   "payState": "overdue",
+   "payStateLabel": "Vadesi Geçti",
+   "paid": 100,
+   "open": 400,
+   "closers": [
+    {
+     "id": "aentry-03b9c7c8-6920-4312-a93d-0d74e9956985",
+     "date": "2026-10-20",
+     "label": "Alacak",
+     "note": "Satış iadesi: Kâhin Malı 1 Adet × 300,00 TL",
+     "method": "",
+     "amount": 100,
+     "mode": "auto",
+     "modeLabel": "Otomatik (vadesi en önce gelen)",
+     "methodLabel": ""
+    }
+   ],
+   "posCash": false,
+   "eBlocked": false
+  }
+ },
+ "k0:kart:KV1": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:KV2": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:KV3": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:KV4": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:KV5": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 0,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    200
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    200
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    200
+   ]
+  ]
+ },
+ "k0:kart:KV6": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 300,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    200
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    100
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:KV7": {
+  "status": "active",
+  "closedAt": null,
+  "total": 900,
+  "remaining": 900,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    300,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    300,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    300,
+    0
+   ]
+  ]
+ },
+ "k0:kart:KV8": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:KV9": {
+  "status": "active",
+  "closedAt": null,
+  "total": 300,
+  "remaining": 0,
+  "items": [
+   [
+    "2026-11-05",
+    null,
+    100,
+    100
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    200
+   ]
+  ]
+ },
+ "k0:kart:KV10": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:KV11": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:KV12": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:K1Q1": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:K2Q1": {
+  "status": "active",
+  "closedAt": null,
+  "total": 300,
+  "remaining": 300,
+  "items": [
+   [
+    "2026-12-05",
+    null,
+    100,
+    0
+   ],
+   [
+    "2027-01-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:K1Q2": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 400,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:kart:K2Q2": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2027-01-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k0:takvim": [
+  {
+   "id": "plan|plan-b7f47d9e-4620-40ec-9504-7318f24b59a6|item-1082e05f-df30-4468-8b19-dbbac146e821",
+   "source": "plan",
+   "planId": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6",
+   "itemId": "item-1082e05f-df30-4468-8b19-dbbac146e821",
+   "person": "Vedat Bağlı 300",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountRef": "1",
+   "refNo": "1"
+  },
+  {
+   "id": "plan|plan-60f4ce54-5a8b-457c-8532-b02601466b2e|item-7a246923-7c27-4faa-8963-0763f4655ddb",
+   "source": "plan",
+   "planId": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e",
+   "itemId": "item-7a246923-7c27-4faa-8963-0763f4655ddb",
+   "person": "Veli Bağlı 600",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+   "accountRef": "2",
+   "refNo": "2"
+  },
+  {
+   "id": "plan|plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0|item-faf8277f-916b-48f9-8f31-d94429935036",
+   "source": "plan",
+   "planId": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0",
+   "itemId": "item-faf8277f-916b-48f9-8f31-d94429935036",
+   "person": "Vecdi Tamamı Kartta",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 300,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+   "accountRef": "7",
+   "refNo": "7"
+  },
+  {
+   "id": "plan|plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9|item-e227858d-bd36-48a9-8698-9b5afe745060",
+   "source": "plan",
+   "planId": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9",
+   "itemId": "item-e227858d-bd36-48a9-8698-9b5afe745060",
+   "person": "Vefa İade İptali Sonra Bağlı",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+   "accountRef": "10",
+   "refNo": "10"
+  },
+  {
+   "id": "plan|plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d|item-5edf2abb-f7df-4800-a4bc-cc73ee7a20ac",
+   "source": "plan",
+   "planId": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d",
+   "itemId": "item-5edf2abb-f7df-4800-a4bc-cc73ee7a20ac",
+   "person": "Veysel Sil Geri Yükle",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+   "accountRef": "11",
+   "refNo": "11"
+  },
+  {
+   "id": "plan|plan-cd8d5107-0b77-4b9d-8752-d5d02e915486|item-9fd07b10-d52e-40dc-a42b-86ec97dd41d6",
+   "source": "plan",
+   "planId": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486",
+   "itemId": "item-9fd07b10-d52e-40dc-a42b-86ec97dd41d6",
+   "person": "Vahit Kart Öncesi Bağlı",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountRef": "12",
+   "refNo": "12"
+  },
+  {
+   "id": "plan|plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a|item-c8b7a9c3-edd6-4761-8447-7439fcb381eb",
+   "source": "plan",
+   "planId": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a",
+   "itemId": "item-c8b7a9c3-edd6-4761-8447-7439fcb381eb",
+   "person": "Kuzey İki Kart İade",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountRef": "13",
+   "refNo": "13"
+  },
+  {
+   "id": "invoice|invoice-75f8e90e-3ec2-4751-9f14-ec2f29b3ee56",
+   "source": "invoice",
+   "invoiceId": "invoice-75f8e90e-3ec2-4751-9f14-ec2f29b3ee56",
+   "direction": "in",
+   "person": "Veysel Sil Geri Yükle",
+   "caseNo": "",
+   "caseKey": "",
+   "tab": "",
+   "label": "Tahsil Edilecek Fatura FIS2026000000011",
+   "kind": "date",
+   "dueDate": "2026-09-01",
+   "dueText": "01.09.2026",
+   "amount": 300,
+   "partial": true,
+   "days": -49,
+   "state": "overdue"
+  },
+  {
+   "id": "invoice|invoice-4fde56de-aba6-4cec-b387-22fee12be081",
+   "source": "invoice",
+   "invoiceId": "invoice-4fde56de-aba6-4cec-b387-22fee12be081",
+   "direction": "in",
+   "person": "Kerem İki Kart Faturalı İade",
+   "caseNo": "",
+   "caseKey": "",
+   "tab": "",
+   "label": "Tahsil Edilecek Fatura FIS2026000000013",
+   "kind": "date",
+   "dueDate": "2026-10-15",
+   "dueText": "15.10.2026",
+   "amount": 400,
+   "partial": true,
+   "days": -5,
+   "state": "overdue"
+  }
+ ],
+ "k0:takvimV3": {
+  "items": [
+   {
+    "id": "plan|plan-b7f47d9e-4620-40ec-9504-7318f24b59a6|item-1082e05f-df30-4468-8b19-dbbac146e821",
+    "source": "plan",
+    "planId": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6",
+    "itemId": "item-1082e05f-df30-4468-8b19-dbbac146e821",
+    "person": "Vedat Bağlı 300",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+    "accountRef": "1",
+    "refNo": "1"
+   },
+   {
+    "id": "plan|plan-60f4ce54-5a8b-457c-8532-b02601466b2e|item-7a246923-7c27-4faa-8963-0763f4655ddb",
+    "source": "plan",
+    "planId": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e",
+    "itemId": "item-7a246923-7c27-4faa-8963-0763f4655ddb",
+    "person": "Veli Bağlı 600",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+    "accountRef": "2",
+    "refNo": "2"
+   },
+   {
+    "id": "plan|plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0|item-faf8277f-916b-48f9-8f31-d94429935036",
+    "source": "plan",
+    "planId": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0",
+    "itemId": "item-faf8277f-916b-48f9-8f31-d94429935036",
+    "person": "Vecdi Tamamı Kartta",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 300,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+    "accountRef": "7",
+    "refNo": "7"
+   },
+   {
+    "id": "plan|plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9|item-e227858d-bd36-48a9-8698-9b5afe745060",
+    "source": "plan",
+    "planId": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9",
+    "itemId": "item-e227858d-bd36-48a9-8698-9b5afe745060",
+    "person": "Vefa İade İptali Sonra Bağlı",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+    "accountRef": "10",
+    "refNo": "10"
+   },
+   {
+    "id": "plan|plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d|item-5edf2abb-f7df-4800-a4bc-cc73ee7a20ac",
+    "source": "plan",
+    "planId": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d",
+    "itemId": "item-5edf2abb-f7df-4800-a4bc-cc73ee7a20ac",
+    "person": "Veysel Sil Geri Yükle",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+    "accountRef": "11",
+    "refNo": "11"
+   },
+   {
+    "id": "plan|plan-cd8d5107-0b77-4b9d-8752-d5d02e915486|item-9fd07b10-d52e-40dc-a42b-86ec97dd41d6",
+    "source": "plan",
+    "planId": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486",
+    "itemId": "item-9fd07b10-d52e-40dc-a42b-86ec97dd41d6",
+    "person": "Vahit Kart Öncesi Bağlı",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+    "accountRef": "12",
+    "refNo": "12"
+   },
+   {
+    "id": "plan|plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a|item-c8b7a9c3-edd6-4761-8447-7439fcb381eb",
+    "source": "plan",
+    "planId": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a",
+    "itemId": "item-c8b7a9c3-edd6-4761-8447-7439fcb381eb",
+    "person": "Kuzey İki Kart İade",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+    "accountRef": "13",
+    "refNo": "13"
+   },
+   {
+    "id": "invoice|invoice-75f8e90e-3ec2-4751-9f14-ec2f29b3ee56",
+    "source": "invoice",
+    "invoiceId": "invoice-75f8e90e-3ec2-4751-9f14-ec2f29b3ee56",
+    "direction": "in",
+    "person": "Veysel Sil Geri Yükle",
+    "caseNo": "",
+    "caseKey": "",
+    "tab": "",
+    "label": "Tahsil Edilecek Fatura FIS2026000000011",
+    "kind": "date",
+    "dueDate": "2026-09-01",
+    "dueText": "01.09.2026",
+    "amount": 300,
+    "partial": true,
+    "days": -49,
+    "state": "overdue"
+   },
+   {
+    "id": "invoice|invoice-4fde56de-aba6-4cec-b387-22fee12be081",
+    "source": "invoice",
+    "invoiceId": "invoice-4fde56de-aba6-4cec-b387-22fee12be081",
+    "direction": "in",
+    "person": "Kerem İki Kart Faturalı İade",
+    "caseNo": "",
+    "caseKey": "",
+    "tab": "",
+    "label": "Tahsil Edilecek Fatura FIS2026000000013",
+    "kind": "date",
+    "dueDate": "2026-10-15",
+    "dueText": "15.10.2026",
+    "amount": 400,
+    "partial": true,
+    "days": -5,
+    "state": "overdue"
+   }
+  ],
+  "deadlines": []
+ },
+ "k0:vadeTakip": [
+  {
+   "date": "2026-09-01",
+   "direction": "in",
+   "amount": 300,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000011 (kalan)",
+   "party": "Veysel Sil Geri Yükle",
+   "phone": "",
+   "detail": "Fatura tarihi 01.09.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-75f8e90e-3ec2-4751-9f14-ec2f29b3ee56"
+   },
+   "days": -49,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "13",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "detail": "Kart 13",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vahit Kart Öncesi Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "12",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountName": "Vahit Kart Öncesi Bağlı",
+   "detail": "Kart 12",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vecdi Tamamı Kartta",
+   "ref": {
+    "type": "plan",
+    "id": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0"
+   },
+   "seq": 1,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+   "accountName": "Vecdi Tamamı Kartta",
+   "detail": "Kart 7",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vedat Bağlı 300",
+   "ref": {
+    "type": "plan",
+    "id": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountName": "Vedat Bağlı 300",
+   "detail": "Kart 1",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vefa İade İptali Sonra Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+   "accountName": "Vefa İade İptali Sonra Bağlı",
+   "detail": "Kart 10",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Veli Bağlı 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+   "accountName": "Veli Bağlı 600",
+   "detail": "Kart 2",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Veysel Sil Geri Yükle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+   "accountName": "Veysel Sil Geri Yükle",
+   "detail": "Kart 11",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-15",
+   "direction": "in",
+   "amount": 400,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000013 (kalan)",
+   "party": "Kerem İki Kart Faturalı İade",
+   "phone": "",
+   "detail": "Fatura tarihi 15.10.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-4fde56de-aba6-4cec-b387-22fee12be081"
+   },
+   "days": -5,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-695d4f52-fd54-4926-a9d8-c9719b2f906e"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "15",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "detail": "Kart 15",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-0144f5c2-a4ba-4913-a523-bcf7e5e1b299"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "16",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "detail": "Kart 16",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "13",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "detail": "Kart 13",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Vahap Bağsız 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-ddb55527-2ac8-4592-bd6a-03a5fd053bf8"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-7f0935c1-e3af-4743-bcab-b0906749fd27",
+   "accountName": "Vahap Bağsız 600",
+   "detail": "Kart 6",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vahit Kart Öncesi Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "12",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountName": "Vahit Kart Öncesi Bağlı",
+   "detail": "Kart 12",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vecdi Tamamı Kartta",
+   "ref": {
+    "type": "plan",
+    "id": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+   "accountName": "Vecdi Tamamı Kartta",
+   "detail": "Kart 7",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vedat Bağlı 300",
+   "ref": {
+    "type": "plan",
+    "id": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountName": "Vedat Bağlı 300",
+   "detail": "Kart 1",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Vefa İade İptali Sonra Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+   "accountName": "Vefa İade İptali Sonra Bağlı",
+   "detail": "Kart 10",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Veli Bağlı 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+   "accountName": "Veli Bağlı 600",
+   "detail": "Kart 2",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Veysel Sil Geri Yükle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+   "accountName": "Veysel Sil Geri Yükle",
+   "detail": "Kart 11",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-695d4f52-fd54-4926-a9d8-c9719b2f906e"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "15",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "detail": "Kart 15",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-0144f5c2-a4ba-4913-a523-bcf7e5e1b299"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "16",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "detail": "Kart 16",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "13",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "detail": "Kart 13",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-04ec5bc2-722d-4036-adaa-c8152a9d30f4"
+   },
+   "seq": 2,
+   "fullAmount": 100,
+   "partial": false,
+   "phone": "",
+   "refNo": "14",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "detail": "Kart 14",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Vahap Bağsız 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-ddb55527-2ac8-4592-bd6a-03a5fd053bf8"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-7f0935c1-e3af-4743-bcab-b0906749fd27",
+   "accountName": "Vahap Bağsız 600",
+   "detail": "Kart 6",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Vahit Kart Öncesi Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "12",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountName": "Vahit Kart Öncesi Bağlı",
+   "detail": "Kart 12",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Vedat Bağlı 300",
+   "ref": {
+    "type": "plan",
+    "id": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountName": "Vedat Bağlı 300",
+   "detail": "Kart 1",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Veysel Sil Geri Yükle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+   "accountName": "Veysel Sil Geri Yükle",
+   "detail": "Kart 11",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2027-01-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-0144f5c2-a4ba-4913-a523-bcf7e5e1b299"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "16",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "detail": "Kart 16",
+   "days": 77,
+   "state": "upcoming"
+  },
+  {
+   "date": "2027-01-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-04ec5bc2-722d-4036-adaa-c8152a9d30f4"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "14",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "detail": "Kart 14",
+   "days": 77,
+   "state": "upcoming"
+  }
+ ],
+ "k0:projeksiyon": [
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-0144f5c2-a4ba-4913-a523-bcf7e5e1b299"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "16",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "balance": 9000
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vedat Bağlı 300",
+   "ref": {
+    "type": "plan",
+    "id": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountName": "Vedat Bağlı 300",
+   "balance": 9200
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vecdi Tamamı Kartta",
+   "ref": {
+    "type": "plan",
+    "id": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+   "accountName": "Vecdi Tamamı Kartta",
+   "balance": 9500
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Veysel Sil Geri Yükle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+   "accountName": "Veysel Sil Geri Yükle",
+   "balance": 9700
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vahit Kart Öncesi Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "12",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountName": "Vahit Kart Öncesi Bağlı",
+   "balance": 9900
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "13",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "balance": 10100
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-695d4f52-fd54-4926-a9d8-c9719b2f906e"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "15",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "balance": 10300
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Veli Bağlı 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+   "accountName": "Veli Bağlı 600",
+   "balance": 10400
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Vahap Bağsız 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-ddb55527-2ac8-4592-bd6a-03a5fd053bf8"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-7f0935c1-e3af-4743-bcab-b0906749fd27",
+   "accountName": "Vahap Bağsız 600",
+   "balance": 10500
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Vefa İade İptali Sonra Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+   "accountName": "Vefa İade İptali Sonra Bağlı",
+   "balance": 10600
+  },
+  {
+   "date": "2026-09-01",
+   "direction": "in",
+   "amount": 300,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000011 (kalan)",
+   "party": "Veysel Sil Geri Yükle",
+   "phone": "",
+   "detail": "Fatura tarihi 01.09.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-75f8e90e-3ec2-4751-9f14-ec2f29b3ee56"
+   }
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vedat Bağlı 300",
+   "ref": {
+    "type": "plan",
+    "id": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountName": "Vedat Bağlı 300"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Veli Bağlı 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+   "accountName": "Veli Bağlı 600"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vecdi Tamamı Kartta",
+   "ref": {
+    "type": "plan",
+    "id": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0"
+   },
+   "seq": 1,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+   "accountName": "Vecdi Tamamı Kartta"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vefa İade İptali Sonra Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+   "accountName": "Vefa İade İptali Sonra Bağlı"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Veysel Sil Geri Yükle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+   "accountName": "Veysel Sil Geri Yükle"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vahit Kart Öncesi Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "12",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountName": "Vahit Kart Öncesi Bağlı"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "13",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade"
+  },
+  {
+   "date": "2026-10-15",
+   "direction": "in",
+   "amount": 400,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000013 (kalan)",
+   "party": "Kerem İki Kart Faturalı İade",
+   "phone": "",
+   "detail": "Fatura tarihi 15.10.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-4fde56de-aba6-4cec-b387-22fee12be081"
+   }
+  }
+ ],
+ "k1:cari:V1:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:V2:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:V3:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:V4:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:V5:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:V6:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:V7:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:V8:deleteBlock": "Bu carinin 1 cari hareketi, 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:V9:deleteBlock": "Bu carinin 1 cari hareketi, 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:V10:deleteBlock": "Bu carinin 1 cari hareketi, 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:V11:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:V12:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:Q1:deleteBlock": "Bu carinin 2 cari hareketi, 1 stok hareketi ve 2 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:Q2:deleteBlock": "Bu carinin 2 cari hareketi, 1 stok hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 2 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:fatura:FV1": {
+  "open": 0,
+  "ownOpen": 600,
+  "inPlan": 600,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k1:fatura:FV2": {
+  "open": 0,
+  "ownOpen": 300,
+  "inPlan": 300,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k1:fatura:FV3": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k1:fatura:FV4": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k1:fatura:FV5": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k1:fatura:FV6": {
+  "open": 0,
+  "ownOpen": 300,
+  "inPlan": 300,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k1:fatura:FV7": {
+  "open": 0,
+  "ownOpen": 600,
+  "inPlan": 600,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k1:fatura:FV8": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k1:fatura:FV9": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k1:fatura:FV10": {
+  "open": 0,
+  "ownOpen": 300,
+  "inPlan": 300,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k1:fatura:FV11": {
+  "open": 0,
+  "ownOpen": 300,
+  "inPlan": 300,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k1:fatura:FV12": {
+  "open": 0,
+  "ownOpen": 600,
+  "inPlan": 600,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k1:fatura:IV8": {
+  "open": 0,
+  "status": "issued",
+  "payState": "return"
+ },
+ "k1:fatura:IV9": {
+  "open": 0,
+  "status": "issued",
+  "payState": "return"
+ },
+ "k1:fatura:IV10": {
+  "open": 0,
+  "status": "cancelled",
+  "payState": "cancelled"
+ },
+ "k1:fatura:FQ2": {
+  "open": 400,
+  "status": "issued",
+  "payState": "overdue"
+ },
+ "k1:faturaListesi": {
+  "status": 200,
+  "anahtarlar": [
+   "invoices",
+   "totals",
+   "tabCounts",
+   "canManage",
+   "total",
+   "offset",
+   "limit",
+   "hasMore",
+   "restoreNotice"
+  ],
+  "ilk": {
+   "id": "invoice-4fde56de-aba6-4cec-b387-22fee12be081",
+   "kind": "sale",
+   "kindLabel": "Satış Faturası",
+   "scenario": "service_sale",
+   "scenarioLabel": "Hizmet Satışı",
+   "status": "issued",
+   "statusLabel": "Kaydedildi",
+   "number": "FIS2026000000013",
+   "displayNo": "FIS2026000000013",
+   "internalNumber": false,
+   "ettn": "fd208558-3769-4cac-9d63-174f47b2298a",
+   "issueDate": "2026-10-15",
+   "issueTime": "09:00",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "accountRef": "14",
+   "accountPhone": "",
+   "profile": "KAGIT",
+   "profileLabel": "Kâğıt Fatura",
+   "typeCode": "SATIS",
+   "currency": "TRY",
+   "rate": 1,
+   "netTotal": 500,
+   "vatTotal": 0,
+   "withheldTotal": 0,
+   "stoppageTotal": 0,
+   "payableTotal": 500,
+   "tryNet": 500,
+   "tryVat": 0,
+   "tryPayable": 500,
+   "dueDate": "2026-10-15",
+   "planId": "",
+   "originalId": "",
+   "originalNumber": "",
+   "originalDate": "",
+   "note": "",
+   "eStatus": "none",
+   "eStatusLabel": "Gönderilmedi",
+   "eUnsent": false,
+   "eTestLive": false,
+   "eTest": false,
+   "actorName": "Ofis yöneticisi",
+   "createdAt": "2026-10-20T09:00:01.449Z",
+   "payState": "overdue",
+   "payStateLabel": "Vadesi Geçti",
+   "paid": 100,
+   "open": 400,
+   "closers": [
+    {
+     "id": "aentry-03b9c7c8-6920-4312-a93d-0d74e9956985",
+     "date": "2026-10-20",
+     "label": "Alacak",
+     "note": "Satış iadesi: Kâhin Malı 1 Adet × 300,00 TL",
+     "method": "",
+     "amount": 100,
+     "mode": "auto",
+     "modeLabel": "Otomatik (vadesi en önce gelen)",
+     "methodLabel": ""
+    }
+   ],
+   "posCash": false,
+   "eBlocked": false
+  }
+ },
+ "k1:kart:KV1": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:KV2": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:KV3": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:KV4": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:KV5": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 0,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    200
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    200
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    200
+   ]
+  ]
+ },
+ "k1:kart:KV6": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 300,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    200
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    100
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:KV7": {
+  "status": "active",
+  "closedAt": null,
+  "total": 900,
+  "remaining": 900,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    300,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    300,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    300,
+    0
+   ]
+  ]
+ },
+ "k1:kart:KV8": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:KV9": {
+  "status": "active",
+  "closedAt": null,
+  "total": 300,
+  "remaining": 0,
+  "items": [
+   [
+    "2026-11-05",
+    null,
+    100,
+    100
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    200
+   ]
+  ]
+ },
+ "k1:kart:KV10": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:KV11": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:KV12": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:K1Q1": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:K2Q1": {
+  "status": "active",
+  "closedAt": null,
+  "total": 300,
+  "remaining": 300,
+  "items": [
+   [
+    "2026-12-05",
+    null,
+    100,
+    0
+   ],
+   [
+    "2027-01-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:K1Q2": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 400,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:K2Q2": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2027-01-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:takvim": [
+  {
+   "id": "plan|plan-b7f47d9e-4620-40ec-9504-7318f24b59a6|item-1082e05f-df30-4468-8b19-dbbac146e821",
+   "source": "plan",
+   "planId": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6",
+   "itemId": "item-1082e05f-df30-4468-8b19-dbbac146e821",
+   "person": "Vedat Bağlı 300",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountRef": "1",
+   "refNo": "1"
+  },
+  {
+   "id": "plan|plan-60f4ce54-5a8b-457c-8532-b02601466b2e|item-7a246923-7c27-4faa-8963-0763f4655ddb",
+   "source": "plan",
+   "planId": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e",
+   "itemId": "item-7a246923-7c27-4faa-8963-0763f4655ddb",
+   "person": "Veli Bağlı 600",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+   "accountRef": "2",
+   "refNo": "2"
+  },
+  {
+   "id": "plan|plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0|item-faf8277f-916b-48f9-8f31-d94429935036",
+   "source": "plan",
+   "planId": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0",
+   "itemId": "item-faf8277f-916b-48f9-8f31-d94429935036",
+   "person": "Vecdi Tamamı Kartta",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 300,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+   "accountRef": "7",
+   "refNo": "7"
+  },
+  {
+   "id": "plan|plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9|item-e227858d-bd36-48a9-8698-9b5afe745060",
+   "source": "plan",
+   "planId": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9",
+   "itemId": "item-e227858d-bd36-48a9-8698-9b5afe745060",
+   "person": "Vefa İade İptali Sonra Bağlı",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+   "accountRef": "10",
+   "refNo": "10"
+  },
+  {
+   "id": "plan|plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d|item-5edf2abb-f7df-4800-a4bc-cc73ee7a20ac",
+   "source": "plan",
+   "planId": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d",
+   "itemId": "item-5edf2abb-f7df-4800-a4bc-cc73ee7a20ac",
+   "person": "Veysel Sil Geri Yükle",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+   "accountRef": "11",
+   "refNo": "11"
+  },
+  {
+   "id": "plan|plan-cd8d5107-0b77-4b9d-8752-d5d02e915486|item-9fd07b10-d52e-40dc-a42b-86ec97dd41d6",
+   "source": "plan",
+   "planId": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486",
+   "itemId": "item-9fd07b10-d52e-40dc-a42b-86ec97dd41d6",
+   "person": "Vahit Kart Öncesi Bağlı",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountRef": "12",
+   "refNo": "12"
+  },
+  {
+   "id": "plan|plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a|item-c8b7a9c3-edd6-4761-8447-7439fcb381eb",
+   "source": "plan",
+   "planId": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a",
+   "itemId": "item-c8b7a9c3-edd6-4761-8447-7439fcb381eb",
+   "person": "Kuzey İki Kart İade",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountRef": "13",
+   "refNo": "13"
+  },
+  {
+   "id": "invoice|invoice-4fde56de-aba6-4cec-b387-22fee12be081",
+   "source": "invoice",
+   "invoiceId": "invoice-4fde56de-aba6-4cec-b387-22fee12be081",
+   "direction": "in",
+   "person": "Kerem İki Kart Faturalı İade",
+   "caseNo": "",
+   "caseKey": "",
+   "tab": "",
+   "label": "Tahsil Edilecek Fatura FIS2026000000013",
+   "kind": "date",
+   "dueDate": "2026-10-15",
+   "dueText": "15.10.2026",
+   "amount": 400,
+   "partial": true,
+   "days": -5,
+   "state": "overdue"
+  }
+ ],
+ "k1:takvimV3": {
+  "items": [
+   {
+    "id": "plan|plan-b7f47d9e-4620-40ec-9504-7318f24b59a6|item-1082e05f-df30-4468-8b19-dbbac146e821",
+    "source": "plan",
+    "planId": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6",
+    "itemId": "item-1082e05f-df30-4468-8b19-dbbac146e821",
+    "person": "Vedat Bağlı 300",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+    "accountRef": "1",
+    "refNo": "1"
+   },
+   {
+    "id": "plan|plan-60f4ce54-5a8b-457c-8532-b02601466b2e|item-7a246923-7c27-4faa-8963-0763f4655ddb",
+    "source": "plan",
+    "planId": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e",
+    "itemId": "item-7a246923-7c27-4faa-8963-0763f4655ddb",
+    "person": "Veli Bağlı 600",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+    "accountRef": "2",
+    "refNo": "2"
+   },
+   {
+    "id": "plan|plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0|item-faf8277f-916b-48f9-8f31-d94429935036",
+    "source": "plan",
+    "planId": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0",
+    "itemId": "item-faf8277f-916b-48f9-8f31-d94429935036",
+    "person": "Vecdi Tamamı Kartta",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 300,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+    "accountRef": "7",
+    "refNo": "7"
+   },
+   {
+    "id": "plan|plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9|item-e227858d-bd36-48a9-8698-9b5afe745060",
+    "source": "plan",
+    "planId": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9",
+    "itemId": "item-e227858d-bd36-48a9-8698-9b5afe745060",
+    "person": "Vefa İade İptali Sonra Bağlı",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+    "accountRef": "10",
+    "refNo": "10"
+   },
+   {
+    "id": "plan|plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d|item-5edf2abb-f7df-4800-a4bc-cc73ee7a20ac",
+    "source": "plan",
+    "planId": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d",
+    "itemId": "item-5edf2abb-f7df-4800-a4bc-cc73ee7a20ac",
+    "person": "Veysel Sil Geri Yükle",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+    "accountRef": "11",
+    "refNo": "11"
+   },
+   {
+    "id": "plan|plan-cd8d5107-0b77-4b9d-8752-d5d02e915486|item-9fd07b10-d52e-40dc-a42b-86ec97dd41d6",
+    "source": "plan",
+    "planId": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486",
+    "itemId": "item-9fd07b10-d52e-40dc-a42b-86ec97dd41d6",
+    "person": "Vahit Kart Öncesi Bağlı",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+    "accountRef": "12",
+    "refNo": "12"
+   },
+   {
+    "id": "plan|plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a|item-c8b7a9c3-edd6-4761-8447-7439fcb381eb",
+    "source": "plan",
+    "planId": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a",
+    "itemId": "item-c8b7a9c3-edd6-4761-8447-7439fcb381eb",
+    "person": "Kuzey İki Kart İade",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+    "accountRef": "13",
+    "refNo": "13"
+   },
+   {
+    "id": "invoice|invoice-4fde56de-aba6-4cec-b387-22fee12be081",
+    "source": "invoice",
+    "invoiceId": "invoice-4fde56de-aba6-4cec-b387-22fee12be081",
+    "direction": "in",
+    "person": "Kerem İki Kart Faturalı İade",
+    "caseNo": "",
+    "caseKey": "",
+    "tab": "",
+    "label": "Tahsil Edilecek Fatura FIS2026000000013",
+    "kind": "date",
+    "dueDate": "2026-10-15",
+    "dueText": "15.10.2026",
+    "amount": 400,
+    "partial": true,
+    "days": -5,
+    "state": "overdue"
+   }
+  ],
+  "deadlines": []
+ },
+ "k1:vadeTakip": [
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "13",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "detail": "Kart 13",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vahit Kart Öncesi Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "12",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountName": "Vahit Kart Öncesi Bağlı",
+   "detail": "Kart 12",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vecdi Tamamı Kartta",
+   "ref": {
+    "type": "plan",
+    "id": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0"
+   },
+   "seq": 1,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+   "accountName": "Vecdi Tamamı Kartta",
+   "detail": "Kart 7",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vedat Bağlı 300",
+   "ref": {
+    "type": "plan",
+    "id": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountName": "Vedat Bağlı 300",
+   "detail": "Kart 1",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vefa İade İptali Sonra Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+   "accountName": "Vefa İade İptali Sonra Bağlı",
+   "detail": "Kart 10",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Veli Bağlı 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+   "accountName": "Veli Bağlı 600",
+   "detail": "Kart 2",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Veysel Sil Geri Yükle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+   "accountName": "Veysel Sil Geri Yükle",
+   "detail": "Kart 11",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-15",
+   "direction": "in",
+   "amount": 400,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000013 (kalan)",
+   "party": "Kerem İki Kart Faturalı İade",
+   "phone": "",
+   "detail": "Fatura tarihi 15.10.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-4fde56de-aba6-4cec-b387-22fee12be081"
+   },
+   "days": -5,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-695d4f52-fd54-4926-a9d8-c9719b2f906e"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "15",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "detail": "Kart 15",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-0144f5c2-a4ba-4913-a523-bcf7e5e1b299"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "16",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "detail": "Kart 16",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "13",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "detail": "Kart 13",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Vahap Bağsız 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-ddb55527-2ac8-4592-bd6a-03a5fd053bf8"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-7f0935c1-e3af-4743-bcab-b0906749fd27",
+   "accountName": "Vahap Bağsız 600",
+   "detail": "Kart 6",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vahit Kart Öncesi Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "12",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountName": "Vahit Kart Öncesi Bağlı",
+   "detail": "Kart 12",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vecdi Tamamı Kartta",
+   "ref": {
+    "type": "plan",
+    "id": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+   "accountName": "Vecdi Tamamı Kartta",
+   "detail": "Kart 7",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vedat Bağlı 300",
+   "ref": {
+    "type": "plan",
+    "id": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountName": "Vedat Bağlı 300",
+   "detail": "Kart 1",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Vefa İade İptali Sonra Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+   "accountName": "Vefa İade İptali Sonra Bağlı",
+   "detail": "Kart 10",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Veli Bağlı 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+   "accountName": "Veli Bağlı 600",
+   "detail": "Kart 2",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Veysel Sil Geri Yükle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+   "accountName": "Veysel Sil Geri Yükle",
+   "detail": "Kart 11",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-695d4f52-fd54-4926-a9d8-c9719b2f906e"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "15",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "detail": "Kart 15",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-0144f5c2-a4ba-4913-a523-bcf7e5e1b299"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "16",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "detail": "Kart 16",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "13",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "detail": "Kart 13",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-04ec5bc2-722d-4036-adaa-c8152a9d30f4"
+   },
+   "seq": 2,
+   "fullAmount": 100,
+   "partial": false,
+   "phone": "",
+   "refNo": "14",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "detail": "Kart 14",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Vahap Bağsız 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-ddb55527-2ac8-4592-bd6a-03a5fd053bf8"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-7f0935c1-e3af-4743-bcab-b0906749fd27",
+   "accountName": "Vahap Bağsız 600",
+   "detail": "Kart 6",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Vahit Kart Öncesi Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "12",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountName": "Vahit Kart Öncesi Bağlı",
+   "detail": "Kart 12",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Vedat Bağlı 300",
+   "ref": {
+    "type": "plan",
+    "id": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountName": "Vedat Bağlı 300",
+   "detail": "Kart 1",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2027-01-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-0144f5c2-a4ba-4913-a523-bcf7e5e1b299"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "16",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "detail": "Kart 16",
+   "days": 77,
+   "state": "upcoming"
+  },
+  {
+   "date": "2027-01-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-04ec5bc2-722d-4036-adaa-c8152a9d30f4"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "14",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "detail": "Kart 14",
+   "days": 77,
+   "state": "upcoming"
+  }
+ ],
+ "k1:projeksiyon": [
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-0144f5c2-a4ba-4913-a523-bcf7e5e1b299"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "16",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "balance": 9300
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vedat Bağlı 300",
+   "ref": {
+    "type": "plan",
+    "id": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountName": "Vedat Bağlı 300",
+   "balance": 9500
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vecdi Tamamı Kartta",
+   "ref": {
+    "type": "plan",
+    "id": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+   "accountName": "Vecdi Tamamı Kartta",
+   "balance": 9800
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Vahit Kart Öncesi Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "12",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountName": "Vahit Kart Öncesi Bağlı",
+   "balance": 10000
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "13",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade",
+   "balance": 10200
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Kerem İki Kart Faturalı İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-695d4f52-fd54-4926-a9d8-c9719b2f906e"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "15",
+   "accountId": "account-966e5035-8e89-4649-9741-83671fcf11dd",
+   "accountName": "Kerem İki Kart Faturalı İade",
+   "balance": 10400
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Veli Bağlı 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+   "accountName": "Veli Bağlı 600",
+   "balance": 10500
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Vahap Bağsız 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-ddb55527-2ac8-4592-bd6a-03a5fd053bf8"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-7f0935c1-e3af-4743-bcab-b0906749fd27",
+   "accountName": "Vahap Bağsız 600",
+   "balance": 10600
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Vefa İade İptali Sonra Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+   "accountName": "Vefa İade İptali Sonra Bağlı",
+   "balance": 10700
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Veysel Sil Geri Yükle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+   "accountName": "Veysel Sil Geri Yükle",
+   "balance": 10800
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vedat Bağlı 300",
+   "ref": {
+    "type": "plan",
+    "id": "plan-b7f47d9e-4620-40ec-9504-7318f24b59a6"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-466ebc5a-b9d9-43ce-aaa9-7f13882b6e9a",
+   "accountName": "Vedat Bağlı 300"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Veli Bağlı 600",
+   "ref": {
+    "type": "plan",
+    "id": "plan-60f4ce54-5a8b-457c-8532-b02601466b2e"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-36163dd4-8da0-4266-9480-bd7a8913f26e",
+   "accountName": "Veli Bağlı 600"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vecdi Tamamı Kartta",
+   "ref": {
+    "type": "plan",
+    "id": "plan-064cd5a4-89d8-482f-95ff-7033bbfe7df0"
+   },
+   "seq": 1,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "7",
+   "accountId": "account-57ad6749-6bdc-4853-961c-010bc6261224",
+   "accountName": "Vecdi Tamamı Kartta"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vefa İade İptali Sonra Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-fd3a9d69-192d-4ef5-bd51-3adb658c6af9"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-2c93737f-e926-40de-819f-aeceb398e542",
+   "accountName": "Vefa İade İptali Sonra Bağlı"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Veysel Sil Geri Yükle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-3d33a67f-68e4-4824-bb45-c2fb6eeb7d3d"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-574c77ac-93da-4bba-96de-3cd97cd29195",
+   "accountName": "Veysel Sil Geri Yükle"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Vahit Kart Öncesi Bağlı",
+   "ref": {
+    "type": "plan",
+    "id": "plan-cd8d5107-0b77-4b9d-8752-d5d02e915486"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "12",
+   "accountId": "account-7bdced74-dcce-4cc5-8483-73a536514322",
+   "accountName": "Vahit Kart Öncesi Bağlı"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Kuzey İki Kart İade",
+   "ref": {
+    "type": "plan",
+    "id": "plan-5b20a9f3-201e-4b41-bcff-4eebd43a1e4a"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "13",
+   "accountId": "account-67df107d-db09-44a3-a42a-03fcc5e1c926",
+   "accountName": "Kuzey İki Kart İade"
+  },
+  {
+   "date": "2026-10-15",
+   "direction": "in",
+   "amount": 400,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000013 (kalan)",
+   "party": "Kerem İki Kart Faturalı İade",
+   "phone": "",
+   "detail": "Fatura tarihi 15.10.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-4fde56de-aba6-4cec-b387-22fee12be081"
+   }
+  }
+ ]
+}
