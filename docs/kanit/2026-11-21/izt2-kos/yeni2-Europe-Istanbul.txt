@@ -1,0 +1,276 @@
+TAP version 13
+# Subtest: 2.0.24 iade → doğru taksit kartı
+    # Subtest: taksitli fatura + caride başka açık borç: iade faturanın kendi kartını küçültür
+    ok 1 - taksitli fatura + caride başka açık borç: iade faturanın kendi kartını küçültür
+      ---
+      duration_ms: 191.191211
+      type: 'test'
+      ...
+    # Subtest: iki taksitli fatura: iade yalnız asıl faturanın kartını küçültür (daha yeni kart değil)
+    ok 2 - iki taksitli fatura: iade yalnız asıl faturanın kartını küçültür (daha yeni kart değil)
+      ---
+      duration_ms: 110.235766
+      type: 'test'
+      ...
+    # Subtest: iki Mevcut Borç kartı: iade, faturayı kapsayan kartı küçültür (2. tur \#5)
+    ok 3 - iki Mevcut Borç kartı: iade, faturayı kapsayan kartı küçültür (2. tur \#5)
+      ---
+      duration_ms: 130.460356
+      type: 'test'
+      ...
+    # Subtest: kısmen tahsil edilmiş kart: iade kalanı düşürür; kalanı aşan iade avans olur, kart sıfırlanır
+    ok 4 - kısmen tahsil edilmiş kart: iade kalanı düşürür; kalanı aşan iade avans olur, kart sıfırlanır
+      ---
+      duration_ms: 126.689531
+      type: 'test'
+      ...
+    # Subtest: iade iptali kartı geri büyütür (iade ile iptal birbirini götürür)
+    ok 5 - iade iptali kartı geri büyütür (iade ile iptal birbirini götürür)
+      ---
+      duration_ms: 178.790722
+      type: 'test'
+      ...
+    # Subtest: iade düzenlenince kart yeni iadeye göre: 1 → 2 → 1 adet
+    ok 6 - iade düzenlenince kart yeni iadeye göre: 1 → 2 → 1 adet
+      ---
+      duration_ms: 220.870676
+      type: 'test'
+      ...
+    # Subtest: Mevcut Borç kartında iade iptali kartı geri büyütür
+    ok 7 - Mevcut Borç kartında iade iptali kartı geri büyütür
+      ---
+      duration_ms: 154.817318
+      type: 'test'
+      ...
+    # Subtest: iade avansa taşmışken kart tahsilatı silinince/düzeltilince kartın kalanı faturanın açığına eşit kalır (mutabakat bulgusu)
+    ok 8 - iade avansa taşmışken kart tahsilatı silinince/düzeltilince kartın kalanı faturanın açığına eşit kalır (mutabakat bulgusu)
+      ---
+      duration_ms: 271.444777
+      type: 'test'
+      ...
+    # Subtest: G1: parası geri verilen iade kartı küçültmez (müşteri borcu değişmedi)
+    ok 9 - G1: parası geri verilen iade kartı küçültmez (müşteri borcu değişmedi)
+      ---
+      duration_ms: 121.806156
+      type: 'test'
+      ...
+    # Subtest: G1: karttan tahsilattan sonra paralı iade — kart borç kadar kalır
+    ok 10 - G1: karttan tahsilattan sonra paralı iade — kart borç kadar kalır
+      ---
+      duration_ms: 130.147141
+      type: 'test'
+      ...
+    # Subtest: G1: Mevcut Borç kartının kapsadığı faturadan paralı iade kartı küçültmez
+    ok 11 - G1: Mevcut Borç kartının kapsadığı faturadan paralı iade kartı küçültmez
+      ---
+      duration_ms: 87.784628
+      type: 'test'
+      ...
+    # Subtest: G2: kartın DIŞINDAKİ yeni faturadan iade — kart değişmez; yaşlandırma = bakiye (aynı borç iki kez sayılmaz)
+    ok 12 - G2: kartın DIŞINDAKİ yeni faturadan iade — kart değişmez; yaşlandırma = bakiye (aynı borç iki kez sayılmaz)
+      ---
+      duration_ms: 154.314134
+      type: 'test'
+      ...
+    # Subtest: G3: faturanın açığını aşan iade (avans) başka faturayı kapsayan kartı da küçültür — 2.0.23'teki gibi
+    ok 13 - G3: faturanın açığını aşan iade (avans) başka faturayı kapsayan kartı da küçültür — 2.0.23'teki gibi
+      ---
+      duration_ms: 189.868138
+      type: 'test'
+      ...
+    # Subtest: G4: karta sayılan çek karşılıksız / silinir / tutarı düzeltilir → kart = fatura açığı
+    ok 14 - G4: karta sayılan çek karşılıksız / silinir / tutarı düzeltilir → kart = fatura açığı
+      ---
+      duration_ms: 169.25636
+      type: 'test'
+      ...
+    1..14
+ok 1 - 2.0.24 iade → doğru taksit kartı
+  ---
+  duration_ms: 2769.773583
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 2 — S241 = A (Düzenle ile kartın açık kalanından fazla azaltma: fazlası avans, iadeyle aynı)
+    # Subtest: K1a — açık Mevcut Borç kartı: tahsilat 600 + Düzenle 900 → 300 → dört görünümde kart 600 · Tahsil Edilen 600 · Kalan 0; bakiye −300
+    ok 1 - K1a — açık Mevcut Borç kartı: tahsilat 600 + Düzenle 900 → 300 → dört görünümde kart 600 · Tahsil Edilen 600 · Kalan 0; bakiye −300
+      ---
+      duration_ms: 954.927809
+      type: 'test'
+      ...
+    # Subtest: K1k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı: tahsilat 600 + Düzenle 900 → 300 → dört görünümde kart 600 · Tahsil Edilen 600 · Kalan 0; bakiye −300
+    ok 2 - K1k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı: tahsilat 600 + Düzenle 900 → 300 → dört görünümde kart 600 · Tahsil Edilen 600 · Kalan 0; bakiye −300
+      ---
+      duration_ms: 623.788613
+      type: 'test'
+      ...
+    # Subtest: K1o — kendi kartı (taksitli fatura) tahsilatlı: Düzenle 409 (bugünkü — §16.4; bekçi)
+    ok 3 - K1o — kendi kartı (taksitli fatura) tahsilatlı: Düzenle 409 (bugünkü — §16.4; bekçi)
+      ---
+      duration_ms: 548.685595
+      type: 'test'
+      ...
+    1..3
+ok 2 - İzleyen tur 2 — S241 = A (Düzenle ile kartın açık kalanından fazla azaltma: fazlası avans, iadeyle aynı)
+  ---
+  duration_ms: 2129.51141
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 2 — S242 = A (artış kartı büyütmez — bekçi)
+    # Subtest: K2: fatura 300 → kart 300 → Düzenle 300 → 900 → kart 300; artan 600 faturanın vadesiyle (10.09 gecikmiş 600)
+    ok 1 - K2: fatura 300 → kart 300 → Düzenle 300 → 900 → kart 300; artan 600 faturanın vadesiyle (10.09 gecikmiş 600)
+      ---
+      duration_ms: 565.146163
+      type: 'test'
+      ...
+    # Subtest: K2b: K1a'dan sonra Düzenle 300 → 900 → kart 600 · Tahsil Edilen 600 · Kalan 0 değişmez; faturanın 300'ü kendi vadesiyle açık; bakiye 300
+    ok 2 - K2b: K1a'dan sonra Düzenle 300 → 900 → kart 600 · Tahsil Edilen 600 · Kalan 0 değişmez; faturanın 300'ü kendi vadesiyle açık; bakiye 300
+      ---
+      duration_ms: 689.183663
+      type: 'test'
+      ...
+    1..2
+ok 3 - İzleyen tur 2 — S242 = A (artış kartı büyütmez — bekçi)
+  ---
+  duration_ms: 1254.955415
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 2 — kapsam seçimi tek yardımcıda (S110 = A, S120 = A; D 18:28 (2))
+    # Subtest: A1: kuyruk ve kapama defteri kartı AYNI faturaya (A — s2 sırası; S123 = C) bağlar
+    ok 1 - A1: kuyruk ve kapama defteri kartı AYNI faturaya (A — s2 sırası; S123 = C) bağlar
+      ---
+      duration_ms: 537.272435
+      type: 'test'
+      ...
+    # Subtest: A2: B'nin İptal Et'i kartı DEĞİŞTİRMEZ; bakiye 600, A 'Taksitte'
+    ok 2 - A2: B'nin İptal Et'i kartı DEĞİŞTİRMEZ; bakiye 600, A 'Taksitte'
+      ---
+      duration_ms: 542.504165
+      type: 'test'
+      ...
+    # Subtest: A3: A'nın İptal Et'i kartı kapatır (S211 — tahsilatsız kart 0'a iner); B kendi vadesiyle açık
+    ok 3 - A3: A'nın İptal Et'i kartı kapatır (S211 — tahsilatsız kart 0'a iner); B kendi vadesiyle açık
+      ---
+      duration_ms: 651.104835
+      type: 'test'
+      ...
+    # Subtest: A4: iade A'nın kartını küçültür (300); B'ye iade kartı değiştirmez
+    ok 4 - A4: iade A'nın kartını küçültür (300); B'ye iade kartı değiştirmez
+      ---
+      duration_ms: 588.621088
+      type: 'test'
+      ...
+    # Subtest: A5 (S110-elle): elle borç 600 + daha yeni fatura 900, kart 600 → kart elle borcu alır; faturanın İptal Et'i kartı değiştirmez
+    ok 5 - A5 (S110-elle): elle borç 600 + daha yeni fatura 900, kart 600 → kart elle borcu alır; faturanın İptal Et'i kartı değiştirmez
+      ---
+      duration_ms: 518.359337
+      type: 'test'
+      ...
+    # Subtest: A6 (S120): elle X 500 + elle Y 700 + daha yeni fatura F 600, kart 900 → kart X + Y'nin 400'ü; F'nin İptal Et'i kartı değiştirmez
+    ok 6 - A6 (S120): elle X 500 + elle Y 700 + daha yeni fatura F 600, kart 900 → kart X + Y'nin 400'ü; F'nin İptal Et'i kartı değiştirmez
+      ---
+      duration_ms: 625.873226
+      type: 'test'
+      ...
+    1..6
+ok 4 - İzleyen tur 2 — kapsam seçimi tek yardımcıda (S110 = A, S120 = A; D 18:28 (2))
+  ---
+  duration_ms: 3464.585422
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 2 — İş 5 (faturasız stok iadesi: kesinti kaydı; silme / düzeltme / geri yükleme)
+    # Subtest: S1: stok iadesi 300 kartı küçültür; hareket silinince kart AYNI taksitlere geri büyür (S238 = A — iade hiç olmamış gibi); 20.11 gecikmiş 300
+    ok 1 - S1: stok iadesi 300 kartı küçültür; hareket silinince kart AYNI taksitlere geri büyür (S238 = A — iade hiç olmamış gibi); 20.11 gecikmiş 300
+      ---
+      duration_ms: 601.473159
+      type: 'test'
+      ...
+    # Subtest: S2: silinen stok iadesi Silinenler'den geri yüklenince kart iadeden sonraki hâline döner
+    ok 2 - S2: silinen stok iadesi Silinenler'den geri yüklenince kart iadeden sonraki hâline döner
+      ---
+      duration_ms: 624.632652
+      type: 'test'
+      ...
+    # Subtest: S3: stok iadesi düzeltmesi 1 → 2 kartı yeni iade gibi küçültür (kalanla sınırlı); 2 → 1 iadeden sonraki hâline döner
+    ok 3 - S3: stok iadesi düzeltmesi 1 → 2 kartı yeni iade gibi küçültür (kalanla sınırlı); 2 → 1 iadeden sonraki hâline döner
+      ---
+      duration_ms: 650.83033
+      type: 'test'
+      ...
+    1..3
+ok 5 - İzleyen tur 2 — İş 5 (faturasız stok iadesi: kesinti kaydı; silme / düzeltme / geri yükleme)
+  ---
+  duration_ms: 1877.270131
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 2 — İş 4 (iade Düzenle'si iptalle aynı yardımcıdan: aynı taksitlere geri büyüme)
+    # Subtest: R1: kendi kartı — tahsilat 300, iade 600 (05.11 + 05.12 kesilir), iade Düzenle 2 → 1 → 05.10 300 + 05.12 300; 20.11 gecikmiş 0
+    ok 1 - R1: kendi kartı — tahsilat 300, iade 600 (05.11 + 05.12 kesilir), iade Düzenle 2 → 1 → 05.10 300 + 05.12 300; 20.11 gecikmiş 0
+      ---
+      duration_ms: 548.508586
+      type: 'test'
+      ...
+    # Subtest: R2: kapsayan Mevcut Borç kartı — aynı (bekçi)
+    ok 2 - R2: kapsayan Mevcut Borç kartı — aynı (bekçi)
+      ---
+      duration_ms: 510.857627
+      type: 'test'
+      ...
+    1..2
+ok 6 - İzleyen tur 2 — İş 4 (iade Düzenle'si iptalle aynı yardımcıdan: aynı taksitlere geri büyüme)
+  ---
+  duration_ms: 1059.698507
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 2 — yedek → geri yükleme ve kilitli dönem (D 18:28 (6))
+    # Subtest: Y1: S241 kaydı ve iade kesim kaydı yedekle taşınır; geri yüklemeden sonra kart 600 · 600 · 0 ve iade iptali aynı taksitlere; Y2: kilitli dönemde Düzenle reddi bugünkü gibi
+    ok 1 - Y1: S241 kaydı ve iade kesim kaydı yedekle taşınır; geri yüklemeden sonra kart 600 · 600 · 0 ve iade iptali aynı taksitlere; Y2: kilitli dönemde Düzenle reddi bugünkü gibi
+      ---
+      duration_ms: 1387.986985
+      type: 'test'
+      ...
+    1..1
+ok 7 - İzleyen tur 2 — yedek → geri yükleme ve kilitli dönem (D 18:28 (6))
+  ---
+  duration_ms: 1388.187098
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön denetimi, kuyruk girdisinin sorgu planları ve işlem dışı belleği — davranış AYNEN
+    # Subtest: H1 + H2: aday cari kümesi ve kuyruk girdisi (her cari) ESKİ sorgu / gövdeyle aynı — harita sırası dahil, iki şirkette
+    ok 1 - H1 + H2: aday cari kümesi ve kuyruk girdisi (her cari) ESKİ sorgu / gövdeyle aynı — harita sırası dahil, iki şirkette
+      ---
+      duration_ms: 3035.85904
+      type: 'test'
+      ...
+    # Subtest: H3: bellekli ↔ belleksiz ↔ hakem — ilk durum, kilitli dönem, yazım, kapı reddi, store dışı yazım, başka bağlantı, kilit kalkınca; iki şirket
+    ok 2 - H3: bellekli ↔ belleksiz ↔ hakem — ilk durum, kilitli dönem, yazım, kapı reddi, store dışı yazım, başka bağlantı, kilit kalkınca; iki şirket
+      ---
+      duration_ms: 1453.381662
+      type: 'test'
+      ...
+    # Subtest: H3: kesit belleğinin anahtarı görünümü taşır — aynı satır, farklı açık kalan / aynı gün işlenen → belleksiz sonuçla aynı
+    ok 3 - H3: kesit belleğinin anahtarı görünümü taşır — aynı satır, farklı açık kalan / aynı gün işlenen → belleksiz sonuçla aynı
+      ---
+      duration_ms: 9.069053
+      type: 'test'
+      ...
+    # Subtest: H3: geri alınan işlemin İÇİNDE okunan durum bellekte kalmaz (geri alma total_changes'ı azaltmaz — aynı anahtar)
+    ok 4 - H3: geri alınan işlemin İÇİNDE okunan durum bellekte kalmaz (geri alma total_changes'ı azaltmaz — aynı anahtar)
+      ---
+      duration_ms: 5.322505
+      type: 'test'
+      ...
+    1..4
+ok 8 - 2.5.0 TEK ADAY HIZ (t3hiz): şüpheli ↔ kuyruk ayırıcısının ön denetimi, kuyruk girdisinin sorgu planları ve işlem dışı belleği — davranış AYNEN
+  ---
+  duration_ms: 5128.249657
+  type: 'suite'
+  ...
+1..8
+# tests 35
+# suites 8
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11733.114252
