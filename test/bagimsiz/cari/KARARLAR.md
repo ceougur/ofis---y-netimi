@@ -5878,3 +5878,89 @@ senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'
 - **SK-51 (UÇ) — Borçta Kalsın ile kapanmış VE ödemesi olan kendi kartında Düzenle ile AZALTMA (S250'nin azaltma karşılığı; PARA KURALI — ders 43):** örnek: fatura 900 (3 × 300; 05.10 / 05.11 / 05.12), 03.09 tahsilat 300, 08.10 Kartı Kapat,
   Düzenle 3 → 2 (600). **A:** kart S235 = B gibi AÇIK kurulur (3 × 200; tahsilat 300 → 05.10 200 + 05.11 100; Kalan 300; 09.10 gecikmişi **0** — 05.11 / 05.12 gelmedi). **B:** kapanış korunur (kart 600, Kalan 300, KAPALI; açık taksitlerin gecikme günü
   min(vade, 08.10) — 09.10 gecikmişi **300**). **C (ÖNERİ):** Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS; S250 = C ile aynı aile). Bakiye (300) ve kart tutarı / Kalan her seçenekte AYNI. Yaygın programlarda: doğrulanmış kaynak okunmadı.
+
+### Kurallar (bakım 27 kod commit'leri `8f19f6cc` (model), `e05251ce` (öz test), `e7562f53` (bağdaştırıcı okuması); yorumların `model.py`'deki karşılığı)
+- `fatura_duzenle` (Y27-3 — S251 = A): kesilmiş iadesi olan satış faturasının Düzenle'si (taksitli, Mevcut Borç kartlı, kartsız) **ret** (`("ret", "BAŞ MİMAR", "§39 Y27-3 …")`) — hiçbir alan değişmez; taksitli faturada `duzIz` (yalnız çıktı izi: kendi
+  kartı kontrolde yazılır); iz `s251`. `sus_duz` (bakım 26 Y26-9) artık DOLMAZ (kod yolu duruyor, etkisiz). Mutant 354 kabul eder (S251 B), mutant 356 yalnız taksitlide reddeder.
+- `fatura_duzenle` (Y27-1 — S249 = A): taksitli faturada azaltma (Δ > 0, aynı faturada önceki Düzenle yoksa) → `kendi_ = "s249"`: S246 yoluyla AYNI yeniden kurma (`planTutar` = yeni tutar, `kucul` boş, `duz246`, etiket BAŞ MİMAR; kapanmış
+  tahsilatsız kart AÇIK — mutant 350 kapalı bırakır); ödeme tek kuyrukta aynen (fazla = kuyruğun artığı, avans); iz `s249`. §36 / §37'nin kendi kart kolu (`_s234_plan` ile `kucul` + `duzFazla`) yalnız mutant 351'de (S249 B).
+  Mutant 355: kart ödenen tutarın altına inmez (`planTutar` = en çok (yeni, ödenen)).
+- `fatura_duzenle` (Y27-2 — SK-51): kapanmış (`kapanis`) VE ödemeli (`_kendi_kart_odenen` > 0) ya da kuyruğu tanımsız (None) kendi kartında azaltma → SUS (`s234sus` + `_kendiSus`; iz `sk51`); mutant 357 SUS'u kaldırır (S249 (a) gibi açık kurar).
+- `fatura_duzenle` (Y27-4 — S250 = C): SK-49 neden metni "BİLİNEN SINIR (kullanıcı kararı S250 = C) SK-49 (§38 Y26-4, §39 Y27-4)"; kural aynen.
+- `_net_uygun` nedeni "§38 SK-47 / SK-49, §39 SK-51" (SK-48 kalktı).
+- `kos.mjs` (yalnız OKUMA eşlemesi — kural DEĞİL; C14e düzeni): reddedilen Düzenle'den sonra taksitli faturanın kendi kartı Düzenle'den önceki ayrıntının `planId`'siyle kayda alınır (kontrol `kart:fatura:<F>:*` okur). İlk program koşusunda
+  (kâhin `e05251ce`) d58 R4'ün kendi kartı "okunamadı" çıktı (bağdaştırıcı kartı yalnız 200 yanıtlı Düzenle'den sonra kaydediyordu) — neden ham satırda okundu (ders 38).
+
+### Dil ekleri (/3, bakım 27)
+- Yeni dil adımı YOK.
+
+### C8af Nasıl bozulur? (bakım 27 — senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo / mutant |
+|---|---|---|
+| Z285 | S249: kendi kartında azaltma iade gibi küçülür (vadesi en önce gelen açık taksitten; fazla ayrı avans) | d57 K3, d58 T1 / T3, d59 U2 / U4 / U7 (mutant 351) |
+| Z286 | S249: kart ödenen tutarın altına inmez, fazla ödeme avans olmaz | d57 K3, d59 U2 (mutant 355) |
+| Z287 | S249 (b): kapanmış tahsilatsız kart azaltmada kapalı kalır | d58 T2, d59 U4 (mutant 350) |
+| Z288 | SK-51: kapanmış + ödemeli kartta azaltma değerle yazılır (susmaz) | d59 U3 (mutant 357 — SUS kuralı) |
+| Z289 | S251: iadesi olan faturanın Düzenle'si kabul edilir | d58 R4, d59 U5 / U6 (mutant 354) |
+| Z290 | S251: ret yalnız taksitli faturada (Mevcut Borç kartlı / kartsız kabul) | d59 U5 / U6 (mutant 356) |
+| Z291 | S251: iade iptalinden sonra da Düzenle reddedilir (iptal edilmiş iade sayılır) | d59 U7 elle tablosu (mutant yok — iptal edilmiş iade belgesi `kesildi` değil) |
+
+### C10af Mutantlar (bakım 27; `oz-test.py` DEĞERLE)
+- 351 YENİ ANLAMIYLA (S249 B — iade gibi küçülme; bakım 26'da SK-48 SUS kuralının mutantıydı), 354 YENİ ANLAMIYLA (S251 B — kabul; bakım 26'da SK-50 SUS kuralının mutantıydı) — ikisi de artık DEĞERLE (SUS kuralı DEĞİL);
+  yeni 355 (fazla avans yok), 356 (ret yalnız taksitli), 357 (SK-51 SUS yok — SUS kuralı). 350'nin kapsamı S249 (b)'yi de içerir (aynı kod yolu). Öz testin SUS kuralı kümesi {316, 324, 353, 357}.
+
+### Senaryolar (bakım 27)
+- **`d57`** K3 (S249 = A kararın örneği — kendi kartı 300 / Kalan 0, açık; bakiye −300; açık toplamı 0, eşit değil; gecikmiş 0) — bakım 26'nın SK-48 `elleYok` / `elleBelirsiz`'i kalktı.
+- **`d58`** T1 (ödemeli 900 → 600: kart 600 / Kalan 300, gecikmiş 0, bakiye 300), T2 (kapanmış tahsilatsız: kart 600 AÇIK / Kalan 600, 08.10 gecikmişi 200), T3 (açık tahsilatsız: gecikmiş 0 → **200**), R4 (S251: `adim:dr4:durum` **ret**,
+  bakiye 600, kendi kartı 600 / 600 açık, gecikmiş 0 — Düzenle'den önceki sayılar) — SK-48 / SK-50 / SK-49 (R4) `elleYok` / `elleBelirsiz`'i kalktı.
+- **yeni `d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle`** (bugün 20.10.2026; 7 cari, 34 adım; 110 elleBeklenen + 7 elleYok + 1 elleBelirsiz): U1 ödeme = yeni tutar (kart 600 / Kalan 0, bakiye 0), U2 fazla ödeme avans ve sonra doğan
+  faturayı kapatır (C13.4 (4) ANINDA: k0 gecikmiş 200; k1 kart 300 / Kalan 0, bakiye −100, açık toplamı 0), U3 SK-51 SUS (bakiye 300), U4 kapanmış tahsilatsız 900 → 300 (AÇIK 3 × 100; 20.10 gecikmişi 100), U5 / U6 S251 ret (Mevcut
+  Borç kartlı: kart 600 / 0 / 600; kartsız: bakiye 300, gecikmiş 300 — k0 = k1), U7 iade iptalinden sonra Düzenle S249 (c) (kart 3 × 200, 20.10 gecikmişi 200). Elle tablo karar metinlerinden, kâhin koşulmadan (üreteç
+  `docs/kanit/2026-11-22/kahin-cari27-arac/uret-d59.py` — d57 / d58'i de değiştirir; adımlar değişmez). İlk kâhin koşusunda yeni / değişen 475 elle denetimin HEPSİ tuttu (elle hesap düzeltmesi YOK). d58 R3'ün elleBelirsiz'i S250 = C için iki parçalı ("SK-49" + "S250 = C" — neden metninde karar numarası; ayrı commit `a6393855`, kâhin kodu değişmeden).
+
+### C12af DENENMEYEN (bakım 27; neden)
+- Programın ret iletisinin METNİ ("önce iadeleri iptal edin") — API'den yalnız adımın durumu (`ret`) okunur; görünür metin ekran yürüyüşü (ana oturum).
+- Düzenle formunun ödeme planı önizlemesi (S249'un "kullanıcı Düzenle formunda ödeme planını görüp onaylıyor" sözü) — ekran.
+- KAPSAM §1'in "Düzenle'de taksit sayısı / ilk vade değişirse" alt durumu: dilde Düzenle yalnız miktar (Y27-5).
+- Kendi kartına KART SEÇİLEREK ödeme ve kart dışı kapatıcılar (avans / evrak) ile ödemeli kol: dilde yalnız kart seçilmeden tahsilat (bakım 26 C12ae aynen).
+- S249 ile yeniden kurulan kartın sonradan iadesi / ikinci Düzenle'si: SK-47 SUS (Y27-6) — yeni senaryo yok (d58 V1 / V2 artırma tarafında aynı kod yolunu sınıyor).
+- Rastgele üretici Düzenle / Kartı Kapat / iade + Düzenle üretmez (bakım 25 / 26'dan aynen — 2.5.1'E).
+
+### SONRAKİ SÜRÜME (2.5.1 — 20.11 kuralı)
+- `sus_duz` (bakım 26 SK-50) kod yolu ve G3 aracındaki `sk50` sınıfı artık etkisiz — iç bakımda temizlenebilir.
+- Bakım 26'nın 2.5.1 listesi aynen (S244 kart Kalan'ı, rastgele üreticiye Düzenle / Kartı Kapat / iade + Düzenle, öz testin "kuralın kendi senaryosunda yakalandı" zorlaması, kos.sh kilit düzeni).
+
+### C0af Değişen eski beklentiler (G3; bakım 26 (`edd5f828`) ↔ bakım 27 kâhin çıktısı, `2.5.0`; eski kopyanın 112 elle senaryosu + yeni d59 + rastgele s1 / ux18 tohum 1–10 × 120)
+- Üretici 20/20 aynı dizi; eski elle senaryoların adımları DEĞİŞMEDİ; elle fark 112/112 (izinli yalnız d57 K3, d58 T1 / T2 / T3 / R4 ve R3'ün belirsiz kaydı); `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **532/532 bayt bayt aynı**.
+- 2.5.0 G3: eski 79.981 denetim · yeni 80.062 · değişen / kalkan / yeni **83** · **BEKLENMEYEN 0** · yalnız etiketi değişen 0. Sınıflar: S249 yeni 49 + değişen 2 (d58 T3 / d59 U7 gecikmiş 0 → 200 — §36 (e) kolu kalktı), S251 yeni 30
+  (d58 R4 15 + d59 U5 / U6 15 — eski kâhinde SK-50 iki dünya SUS), GENEL yeni 2 (d59 `mizan:120` / `mizan:600` — eski kâhin SK-48 / SK-50 SUS'lu senaryoda mizanı yazmıyordu). SK-51 (U3): fark 0 (iki kâhin de SUS). S250 = C: denetim farkı 0
+  (yalnız `belirsiz` metni). Fark yalnız d57 / d58 / d59'da; öbür 110 elle ve 20 rastgele senaryoda 0. Döküm iki TZ'de bayt bayt aynı.
+
+### Program ↔ kâhin (taban dalının programı — bu dalın tabanı `edd5f828`, kod `izt2-sinama` = 3b420085 ile aynı; `npm run test:kahin-cari` düzeni: bütün elle senaryolar + rastgele 1–2 × 60 + mutasyon taraması)
+- **İlk koşu (kâhin `e05251ce`, UTC):** 24.610/24.613 — 3 fark: d58 R4 `kart:fatura:FR4:toplam / kalan / kapali` program "okunamadı" (bağdaştırıcı reddedilen Düzenle'den sonra kartı kayda almıyordu — OKUMA eşlemesi, program davranışı değil;
+  ders 38: ham satır `duzenle:dr4` = 409 `invoice-locked`). Düzeltme `e7562f53` (yalnız okuma).
+- **Son koşu (kâhin `fe9126b2`; model / bağdaştırıcı kodu son uçla AYNI — sonraki `a6393855` yalnız d58 elle tablosu):** UTC **24.613/24.613**, Europe/Istanbul **24.613/24.613** — **0 fark**, 0 yapım aşaması, 0 okuma hatası, 0 yakalanmayan mutasyon
+  (355 / 356 / 357 ve yeni anlamıyla 351 / 354 programla koşuda da YAKALANDI); 7 bilinen sınır (BILINEN.json — bu bakımla ilgisiz, b3y); 12 atlanan senaryo (2.4.5 kararıyla geçersiz /1 /2 — bugünkü gibi).
+- **Bakım 26'nın P-1'i KAPANDI:** d58 T3 kâhin artık 3 × 200 (gecikmiş 200) — S249 = A'nın kendi metninden ("açık / tahsilatsız kartta 900 → 600 ise kart 3 × 200"); kâhin programa uydurulmadı.
+- **Kararın kendi örnekleri programla AYNI:** S249 (d57 K3 — kart 300 / Kalan 0, bakiye −300, açık toplamı 0), (a) kısmi (T1 600 / 300), (b) (T2 / U4 AÇIK kurulur), (c) (T3), fazla avans sonraki faturaya (U2 bakiye −100); S251 ret (d58 R4,
+  d59 U5 / U6 — program 409 `invoice-locked` "Bu faturanın 1 iade faturası var; düzenlenmez. Önce iadeleri iptal edin."; sayılar Düzenle'siz); iade iptalinden sonra Düzenle (U7 — 200 kabul, kart 3 × 200).
+- **Programın SUS alanındaki davranışı (GÖZLEM — kural kaynağı DEĞİL; yalnız sorunun sayıları için):** d59 U3 (SK-51 — kapanmış + ödemeli kartta azaltma): program kartı **AÇIK** kuruyor (`active`, 3 × 200, Kalan 300) — SK-51'in A seçeneği.
+- **Eski kâhin (bakım 26) aynı programla (d57 / d58 / d59, `--mutasyonsuz`):** **638/642** — 4 fark: d58 T3 / d59 U7 gecikmiş (eski kâhin 0 — §36 (e) kendi kart kolu), d59 `mizan:120` / `mizan:600` (eski kâhin SUS'lu senaryoda mizanı yazmıyor — "kâhinin yazmadığı
+  hesap"); eski kâhinin SK-48 / SK-50 SUS'u öbür farkları gizliyor (yeni kâhinde 642 → yeni denetimlerle 721 denetim, 0 fark).
+
+### Yapım aşaması listesi
+- Kendi kopyada `--yapim-asamasi-yaz` (KAHIN_YAPIM_ASAMASI, UTC ve Europe/Istanbul): **0 kayıt** — ESKİ LİSTEYLE FARK: yeni 0, kapanan 0, değeri değişen 0 (eski 0 → yeni 0); üretilen liste depodakiyle BAYT BAYT AYNI → depodaki liste DEĞİŞMEDİ (ayrı commit yok).
+
+### Eski kâhin kırmızısı (elle tablolar; eski kâhin `edd5f828`, `elle-karsilastir.py --kirmizi-bekle`, iki TZ aynı)
+- **68/475 elle denetim kırmızı** (d57 7/173, d58 26/184, d59 35/118). Kural kural: S249 45 (K3 7, T1 7, T2 7, T3 1, U1 7, U2 8, U4 7, U7 1 — eski kâhinde SK-48 SUS: ANAHTAR YOK; T3 / U7 gecikmiş 0), S251 21 (R4 10 — adım durumu / bakiye /
+  kart ANAHTAR YOK; U5 6, U6 5), SK-51 1 (U3 — eski kâhinin belirsiz kaydı SK-48), S250 = C 1 (R3 — eski neden metninde "S250 = C" yok). **Kırmızısı OLMAYAN:** SK-51'in değer denetimleri (iki kâhin de SUS — yalnız bakiye, aynı).
+
+### Kanıt (bakım 27; iki saat dilimi; kâhin kodu `fe9126b2` (program koşuları) / `a6393855` (öz test, G3, elle); `docs/kanit/2026-11-22/kahin-cari27-kanit/`, araçlar ve koşu betikleri `kahin-cari27-arac/`)
+- oz-test **8.855/8.855** (UTC ve Europe/Istanbul; mutantların hepsi yakalandı, 351 / 354 / 355 / 356 DEĞERLE, 357 SUS kuralı) · G3 **665/665** (BEKLENMEYEN 0; döküm iki TZ'de aynı) · elle fark **112/112** · yeni / değişen elle **475/475** ·
+  ESKİ kâhinde **68/475 kırmızı** · program ↔ yeni kâhin **24.613/24.613** iki TZ (ilk koşu 24.610/24.613 — okuma eşlemesi) · program ↔ eski kâhin **638/642** · yapım aşaması listesi 0 → 0.
+- Not (açıkça): bütün koşular `flock -s -w 3600` altında, süre sınırı kilidin içinde (tek python satırları dahil — ilk başlık taraması kilitsiz koşuldu: KARARLAR.md'nin başlık listesi, birkaç saniye; kural ihlali, açıkça). Program İstanbul ve
+  sonraki adımların başlığında "+1 değişmiş dosya" = üreteç `uret-d59.py`'nin commit'lenmemiş hâli (koşuların okumadığı dosya; `a6393855`'te commit'li).
+
+### KULLANICIYA SORULMALI (bakım 27 — son hâl)
+- **SK-51 (UÇ)** — yorumdaki gibi (A: kart AÇIK kurulur — program GÖZLEMİ bu; B: kapanış korunur; **C (ÖNERİ): Uç durum böyle kalsın (BİLİNEN SINIR)**). Bakiye, kart tutarı ve Kalan her seçenekte aynı; ayrışan kartın açık / kapalı durumu ve
+  kapanış gününün ertesindeki gecikmiş (örnekte 0 ↔ 300).
