@@ -5,6 +5,7 @@
 // sınırlı geçişlerle de yakınsayana dek yinelenir (aynı S101 kuralı). Beklenen = Σ satır (borç − alacak): kuyruktan BAĞIMSIZ, girdiden hesaplanır (ders 5).
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { readFileSync } from "node:fs";
 import { buildObligations, lockAtOf } from "../server/lib/obligation-queue.mjs";
 
 const balanceMinor = lines => Math.round(lines.reduce((sum, l) => sum + l.debit - l.credit, 0) * 100);
@@ -59,13 +60,37 @@ describe("2.5.0 UD — dönem kilidi izi olan caride Mevcut Borç kartı: kaleml
   });
 });
 
+// Mutabakat tohum 6 (işlem 3560, Kartı Kapat): "Taksitli fatura … açık 1.224,58 > imzalı açık hedefi 781,40". Karar (3)'ün sınırı (hedefin kilit gününe kadar BAĞSIZ kapanmış kısmı)
+// SERBEST geçişte ölçülüyor, son geçiş SINIRLI kuruluyordu: sınırlı geçişte o bağsız para başka kaleme gidince taksit ne bağsız parayla ne kartın kendi tahsilatıyla kapanıyor,
+// fatura kartın kendi kalanından fazla açık görünüyordu. Düzeltme: sınır, sınırlı geçişte hedefi kilit gününe kadar GERÇEKTEN kapatan bağsız paraya indirilir (yalnız azalır).
+// Fikstür: gerçek programın (API) yazdığı 149 satırlık cariden satır grubu atılarak 34 satıra küçültüldü (kilit izi: 06:06 → 30.08, 06:22 → 15.10, 06:23 → kaldırıldı).
+const fromFixture = file => {
+  const raw = JSON.parse(readFileSync(new URL(`./fixtures/${file}`, import.meta.url), "utf8"));
+  const map = rows => new Map(rows);
+  return { lines: raw.lines, invoices: raw.invoices, schedules: map(raw.schedules), links: map(raw.links), chequeEvents: map(raw.chequeEvents), reversals: map(raw.reversals), linkMoments: map(raw.linkMoments), linkTimes: map(raw.linkTimes), dueDates: map(raw.dueDates), promises: map(raw.promises), offsets: raw.offsets, doubtfulRecords: raw.doubtfulRecords, today: raw.today, lockAt: lockAtOf(raw.lock) };
+};
+describe("2.5.0 UD — kilit sınırı sınırlı geçişte gerçek kapanışa iner: taksitli faturanın açığı kartın kendi kalanını aşmaz", () => {
+  it("tohum 6'nın en küçük örneği (34 satır): fatura açığı ≤ kartın kendi kalanı 781,40; Σ kalem = bakiye; kilit izi olmadan da aynı tavan", () => {
+    const input = fromFixture("tyk-kilit-tohum6-250.json");
+    const id = "invoice-77b1d5e1-0ed6-4cab-a379-39c8e43f694f";
+    const own = input.lines.filter(l => l.planId === "plan-1d7b2df2-3892-48ec-8e53-c06e4ab2fc52" && l.kind === "plan-in").reduce((sum, l) => sum + l.credit, 0);
+    assert.equal(Math.round(own * 100), 534152, "ön koşul: kartın kendi tahsilatı 5.341,52");
+    const r = buildObligations(input);
+    // Eski kod beklenen nedenle kırmızı: açık 1.068,72 > 781,40.
+    assert.ok(r.invoices.get(id).open <= 781.4 + 0.005, `taksitli fatura açığı ${r.invoices.get(id).open} > kartın kendi kalanı 781,40`);
+    assert.equal(sigmaMinor(r), balanceMinor(input.lines));
+    const free = buildObligations({ ...input, lockAt: undefined });
+    assert.equal(free.invoices.get(id).open, 781.4, "kilit izi olmadan açık = kartın kendi kalanı");
+  });
+});
+
 // Tohumlu rastgele — mutabakat motorunun düzeni (çizelge geçmişten bugüne, dönem kilidi koşu ortasında konup kaldırılır; kilitliyken kilit gününe ya da öncesine yazım yok): taksitli
 // satış, Mevcut Borç kartı, kart tahsilatı (kalanı aşan — avans), Alacak, Borç, tahsilat, stoktan satış. Sınıfı (kilit sınırlı geçişin ölçümü değiştirdiği cari) SAYILIR; hiç
 // üretilmediyse test kırmızı (dişsiz kalmasın).
 describe("2.5.0 UD — değişmez: kilit izli rastgele üretici, 40 tohum × 250 cari (10.000 cari)", () => {
   const rng = seed => () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
   const dayOf = n => new Date(Date.UTC(2026, 6, 1 + n)).toISOString().slice(0, 10);
-  const total = { cari: 0, kilitli: 0, olcum: 0 };
+  const total = { cari: 0, kilitli: 0, olcum: 0, taksitli: 0 };
   const generate = (r, seed, a) => {
     const lines = [];
     const invoices = [];
@@ -159,6 +184,15 @@ describe("2.5.0 UD — değişmez: kilit izli rastgele üretici, 40 tohum × 250
           const input = generate(r, seed, a);
           const res = buildObligations(input);
           assert.equal(sigmaMinor(res), balanceMinor(input.lines), `tohum ${seed} cari ${a}: Σ kalem ${sigmaMinor(res) / 100} ≠ bakiye ${balanceMinor(input.lines) / 100}`);
+          // Taksitli faturanın açığı kartın KENDİ kalanını aşamaz (mutabakat motorunun üst sınırı; S99 = A — tohum 6: kilitli dönemde kapanmış sayılan taksit sınırlı geçişte açık kalıyordu).
+          for (const invoice of input.invoices) {
+            if (!invoice.planId) continue;
+            const own = input.lines.filter(l => l.planId === invoice.planId && l.kind === "plan-in").reduce((sum, l) => sum + Math.round(l.credit * 100), 0);
+            const ceiling = Math.max(0, Math.round(invoice.payable * 100) - own);
+            const open = Math.round((res.invoices.get(invoice.id)?.open ?? 0) * 100);
+            assert.ok(open <= ceiling + 1, `tohum ${seed} cari ${a}: taksitli fatura ${invoice.id} açık ${open / 100} > kartın kendi kalanı ${ceiling / 100}`);
+            total.taksitli += 1;
+          }
           total.cari += 1;
           const free = buildObligations({ ...input, lockAt: undefined });
           if (sigmaMinor(free) === balanceMinor(input.lines) && JSON.stringify(free.items.map(i => [i.key, i.remaining])) !== JSON.stringify(res.items.map(i => [i.key, i.remaining]))) total.kilitli += 1;

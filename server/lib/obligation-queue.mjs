@@ -307,9 +307,27 @@ function runQueue(input, mode, pieces) {
     // kartın taşıdığı borcun bağsız parayla kapanmış kısmı kartın avansla ödenmiş kısmıdır — S101 = A); sınırda yakınsamazsa güvenli kapanış (settleExcess). Kilit izi
     // olmayan ya da sınırlı geçişin ölçümü değiştirmediği caride sonuç önceki tek sınırlı geçişle AYNI (ilk ölçüm kararlı → döngü girmez). Sınırsız ölçüm zaten
     // yakınsamadıysa (güvenli kapanış yolu) önceki gibi tek sınırlı geçiş güvenli kapanışla.
-    if (!stable) return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: true }));
     let capped = prepaid;
     let cappedState = queueOnce(input, mode, caps, { pieces, forced, prepaid: capped });
+    // Aynı tutarsızlığın kilit sınırı yüzü (mutabakat tohum 6): sınır (hedefin kilit gününe kadar BAĞSIZ kapanmış kısmı) bütün kilit bağları SERBEST sayılan ölçüm geçişinde
+    // ölçülür; sınırlı geçişte o bağsız para başka kaleme gidebilir — taksit ne bağsız parayla ne bağıyla kapanır, taksitli faturanın açığı kartın kendi kalanını aşar. Karar (3)
+    // "kilitli dönemde bağsız KAPANMIŞ hedef açılmaz": sınır, sınırlı geçişte hedefi kilit gününe kadar GERÇEKTEN kapatan bağsız paraya indirilir (yalnız azalır → sonlu;
+    // bağ o kadar fazlasını kapatır). Sınırlı geçiş ölçümle uyuşuyorsa döngü girmez — sonuç önceki tek sınırlı geçişle AYNI. Tur sınırı (ders 47): her tur en az bir sınırı
+    // küçültür; en çok PREPAID_MIN_PASSES tur (sınırda bitmezse kalan fark önceki davranış).
+    for (let round = 0; round < Math.min(state.lockLinks.length, PREPAID_MIN_PASSES); round += 1) {
+      let changed = false;
+      for (const link of state.lockLinks) {
+        const target = cappedState.itemByKey.get(link.targetKey);
+        const actual = target ? target.freeClosures.filter(c => c.date <= link.lock).reduce((sum, c) => sum + c.amount, 0) : 0;
+        if (actual < caps.get(link.id)) {
+          caps.set(link.id, actual);
+          changed = true;
+        }
+      }
+      if (!changed) break;
+      cappedState = queueOnce(input, mode, caps, { pieces, forced, prepaid: capped });
+    }
+    if (!stable) return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: true }));
     let cappedStable = false;
     for (let round = 0; round < limit; round += 1) {
       const next = prepaidOf(cappedState, capped);
