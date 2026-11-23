@@ -300,7 +300,30 @@ function runQueue(input, mode, pieces) {
       const closedByL = target ? target.freeClosures.filter(c => c.date <= link.lock).reduce((sum, c) => sum + c.amount, 0) : 0;
       caps.set(link.id, closedByL);
     }
-    return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: !stable }));
+    // 2.5.0 Uzun Doğrulama düzeltmesi (kullanıcının koşulu "kalemler toplamı = cari bakiyesi HER durumda tutar"; mutabakat tohum 2 / 3): sınırlı geçiş bağın serbest kalan
+    // kısmını BAĞSIZ para yapar — bu para bir Mevcut Borç kartının taşıdığı borcu kart açılmadan kapatabilir (kilitli dönemde kapanmış kart taksitine sonradan alınan kart
+    // tahsilatı → aynı gün açılan başka kartın borcu). Yukarıdaki S101 ölçümü sınırsız geçişlerde yapıldığı için bu kapanışı görmüyordu: kart hiçbir şey tüketmiyor, taksiti
+    // kendi tahsilatıyla kapanmış kalıyor, kalemler bakiyeyi kart tutarı kadar aşıyordu. Ölçüm burada SINIRLI geçişlerle yakınsayana dek yinelenir (aynı sınır, aynı kural:
+    // kartın taşıdığı borcun bağsız parayla kapanmış kısmı kartın avansla ödenmiş kısmıdır — S101 = A); sınırda yakınsamazsa güvenli kapanış (settleExcess). Kilit izi
+    // olmayan ya da sınırlı geçişin ölçümü değiştirmediği caride sonuç önceki tek sınırlı geçişle AYNI (ilk ölçüm kararlı → döngü girmez). Sınırsız ölçüm zaten
+    // yakınsamadıysa (güvenli kapanış yolu) önceki gibi tek sınırlı geçiş güvenli kapanışla.
+    if (!stable) return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: true }));
+    let capped = prepaid;
+    let cappedState = queueOnce(input, mode, caps, { pieces, forced, prepaid: capped });
+    let cappedStable = false;
+    for (let round = 0; round < limit; round += 1) {
+      const next = prepaidOf(cappedState, capped);
+      if (samePrepaid(next, capped)) {
+        cappedStable = true;
+        break;
+      }
+      capped = next;
+      passes += 1;
+      cappedState = queueOnce(input, mode, caps, { pieces, forced, prepaid: capped });
+    }
+    prepaid = capped;
+    stable = cappedStable;
+    return tagged(stable ? cappedState : queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: true }));
   }
   return tagged(state);
 }
