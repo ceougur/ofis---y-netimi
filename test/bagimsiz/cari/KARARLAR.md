@@ -6119,3 +6119,146 @@ senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'
   **C (ÖNERİ): Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS)**. Elle senaryo yok; programla karşılaştırılmadı. Yaygın programlarda: doğrulanmış kaynak okunmadı.
 - **Okuma (baş mimar görsün; soru DEĞİL):** kararın "600 → fatura kapanır" sözü GÖSTERİLEN açığın kapanması diye okundu — kâhinde F'nin kendi açığı 300 (kartın içinde), 'Taksitte' (S230 = A / Y23-3 aynen). Program da aynı okumada (fatura sayıları
   programla aynı).
+
+## 41. 2.5.0 Ç5 bakımı 29 — KÜÇÜK BAKIM: S266 = A (S104 'yalın olmayan' caride de — faturasız iade geri ödemesi olan, şüpheli / değersiz kaydı olan cari), S265 = C (tedarikçiden bağsız geri tahsilat + açık alış iadesi + aynı gün stok satışı ile alış iadesi — alış faturalarının açığı SUS) (26.11.2026; girdi ana oturumun özet dosyası `docs/devir/2.5.0-DEVAM/kahin-cari29-kararlar.md`; kodu görmeyen AYRI el) — kural seti `2.5.0` = §13 + … + §40 + bu bölüm
+
+Bu bakım girdinin §1–§2'sini işler. §13–§40'ın öbür kuralları DEĞİŞMEZ. `--kural 2.4.9` (ve 2.4.6 / 2.4.5 / `--legacy`) AYNEN (bu bölümün bütün yolları yalnız `k250`). **Bu bölümün ilk commit'i yalnız YORUMDUR (ders 40 — önce kural, sonra kod);
+senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'lerde eklenir.**
+
+### C00ah Temiz oda (bakım 29)
+- **Girdi (tek kaynak):** `docs/devir/2.5.0-DEVAM/kahin-cari29-kararlar.md` — başındaki OKUMA KURALI bağlayıcı: kural yalnız SEÇİLEN seçeneğin metni (kendi örneğiyle) ve KAPSAM satırlarıdır; kararın söylemediği alt durumda kural UYDURULMAZ
+  (SUS + KULLANICIYA SORULMALI). İkisi de "KULLANICI KURALIYLA ÖNERİ UYGULANDI" (bu kâhinde **BAŞ MİMAR** etiketiyle — §36 … §40'taki düzen).
+- **Birlikte okunan (kâhinin kendi belgesi):** §18 (S104 = A, Y6-1 / Y6-7 / Y6-8 / Y6-10), §17 (Y5-3 / Y5-6 / Y5-7, C17.6 `_s98_iki`), §10 / §11 (KS8, K-b, KS8.1, KS8.2, K-a, KS9 simetri), §16 (C16.2 tanım alanı); `model.py` (`_net_uygun`, `_borc_tarafi_250`,
+  `_alacak_govde250`, `_tyk`, `_geri_odemeler`, `_s98_iki`, `avans_kalemi`, `kontrol_v3`, `kontrol_gosterilen`, `MUTASYONLAR`), `oz-test.py`, `uretici.py`, `senaryolar/` (d26 S11, d33 T11, c12); bakım 28'in araçları `docs/kanit/2026-11-22/kahin-cari28-arac/`
+  (yalnız çalıştırmak / uyarlamak için); `kos.mjs` YALNIZ eşleme ve yapım aşaması listesi için.
+- **Okunmayan:** `server/**`, `client/**`, `bulut/**`, `packaging/**`, `tools/**` (yalnız `kanit.mjs` çalıştırılır), `docs/devir/**` (görev metni ve girdi dışında), `docs/2.5.0-IS-LISTESI*.md` (hiçbir sürümü), `docs/erp/**`, `docs/kanit/**` altındaki
+  ud2-* / ud3-* klasörleri, `YAPIM-ASAMASI.json`'ın kayıt DEĞERLERİ (yalnız yeniden üretilir), `BILINEN.json`, öbür kâhinler, cari kâhini dışındaki `test/**`, git farkı / geçmiş içeriği.
+- **Programla karşılaştırma bu bakımdan ÖNCE de koşuldu (taban, açıkça):** `test:kahin-cari` (CI düzeni) 25.164 / 25.164; Uzun Doğrulama düzeni (tohum 1–30 × 120) iki rastgele senaryoda 22 fark (s1-12 tedarikçi S — alış faturası açığı / gösterilen,
+  15; s1-30 müşteri E — verilen avans kalemi ve sonraki Borç'un Kalan'ı, 7). Bu farklar yalnız ALANI gösterdi; aşağıdaki kurallar karar metninden yazıldı (ders 40 — programın sayısı beklenen değildir).
+
+### Karar metinleri (girdiden; seçilen seçeneğin metni AYNEN)
+- **S104 = A (önceki karar):** "S98'in simetriği, vade sırası (avans 01.03 önce): avans 200 kalır, Alacak 200 açık". Örnek: "01.03 tahsilat 500 (borcu yok) · 05.03 Alacak 200 (vade 30.04) · 10.03 Ödeme 300".
+- **S266 = A:** "EVET — S104'ün metni cari türü ayırmaz; kâhin bu carilerde de S104'ü uygular (bağlamadan yapılan Ödeme, açık avans ile Alacak'ı vade sırasıyla kapatır)." **KAPSAM §1:** "kâhinin bugün bu carilerde S104'ü uygulamayıp tek taraflı
+  kuyruğun artanını avans kalemi diye yazdığı yer(ler) S104'e göre modellenir; beklenen Vade Takip / zil / takvim kalemleri, Kalan / Tahsil Edilecek Borç alanları, bakiye. Faturasız iade geri ödemesi, şüpheli / değersiz kaydının kendi kuralları
+  DEĞİŞMEZ (yalnız avans ↔ Alacak kapama sırası). KARARLAR.md'ye S266 numarasıyla."
+- **S265 = C:** "Uç durum böyle kalsın (BİLİNEN SINIR)." **KAPSAM §2:** "bu bileşimde (tedarikçi carisi + KS9 bağsız geri tahsilatı + açık alış iadesi + aynı gün stok satışı ile alış iadesi) alış faturalarının açığı / belge durumu / Açık Faturalar satırları
+  DENETLENMEZ; neden metnine 'BİLİNEN SINIR — kullanıcı kararı S265 = C'; carinin bakiyesi ve öbür alanlar denetlenir. Sınıfı karar metnindeki koşullardan dar tanımla (bileşim yoksa susma YOK)."
+
+### Kâhinin BUGÜNKÜ (taban `35fbfe44`) okuması — bu alanda (açıkça)
+- Yalın olmayan caride (C16.2 `_net_uygun`) iki taraf AYRI tek taraflı kuyruktur (§13–§15): bağsız Ödeme (borç tarafı 'o' kaynağı) carinin alacak yönlü kalemlerini (Alacak, alış, alacaklı Açılış) ve açık iade notlarını K-b ile, artanını KS8.1 ile
+  iade geri ödemesine verir; ARTANI verilen avanstır (S96 kalemi "Tahsil Edilecek Borç"; `avans_kalemi`, `_son250b`). Müşterinin alacak tarafında duran fazla ödemesi (alınan avans — tahsilat / alınan evrak / bağ fazlasının artanı) Ödeme'nin
+  karşısında HİÇ görünmez (S104 kurulmaz). Verilen avanstan sonra bağsız alacak satırı gelirse Y5-7 (`_s98_iki`) carinin Kalan / belge / gecikmiş / avans kalemini susturur; gelmezse avans kalemi DEĞERLE yazılır (S104'e aykırı yer).
+- Alış faturası açığı (`fatura:<alış>:acik`, `gosterilen`, `liste:gosterilen`, `kartta`, `taksitte`) KS9 carisinde §11 K-b + KS8.1 simetrisiyle değerle yazılır; karşı yönlü kalemli olduğundan (stok satışı yükümlülük) net görünüm zaten tanımsız.
+
+### Yorumlar (ders 40 — kararlardan; kod yazılmadan ÖNCE; baş mimar kullanıcıya gösterir)
+- **Y29-1 — S266 alanı (cari):** C16.2'de yalın olmayan ve nedeni **"şüpheli / değersiz alacak"** ya da **"iade geri ödemesi etkileşimi (KS8)"** olan cari (girdinin saydığı iki tür); carinin en az bir bağsız borç yönlü ödeme kaynağı (Ödeme, ciro, bağ /
+  geri ödeme fazlası — §18'in S104 kuralındaki 'o' sınıfı AYNEN) ve alacak tarafında en az bir PARA kaynağı (tahsilat, alınan evrak, bağ fazlası; faturasız iade, Değersiz, iade faturası artanı DEĞİL — §26 Y15-7 'para dışı') olmalı. Öbür yalın olmayan
+  türler (taksit kartı, fatura iadesi, tabloya bağlı, KS9, kart tahsilatı, iki yönde iade, …) girdinin konusu DEĞİL — bugünkü kural AYNEN (rapora not).
+- **Y29-2 — alınan avansın Ödeme anındaki tutarı (S104'ün 'açık avans'ı):** müşterinin alacak tarafındaki PARA kaynağının, Ödeme'nin yazıldığı ANDAKİ (alacak tarafının ANINDA zaman çizelgesinde Ödeme'nin günü + yazım sırası — ders 31) açık kalanı; sonra
+  doğan borç o anda açık kalanı kullanır (ANINDA — (1) A), Ödeme'nin kapattığı kısım sonraki borçlara GİTMEZ (iki tarafın tutarlı zaman çizelgesi; çözüm kararlı olana dek yeniden — ders 6: kararlı değilse SUS).
+- **Y29-3 — S104'ün sırası yalın olmayan caride:** (a) **carinin alacak yönlü kalemi (Alacak / alış / alacaklı Açılış) YOKSA** S104'ün tek sözü "bağlamadan yapılan Ödeme açık avansı kapatır"dır; faturasız iade geri ödemesinin kuralları (K-b açık notlar,
+  KS8.1 ikinci aşama, KS8.2, K-a) DEĞİŞMEDİĞİ için Ödeme önce bugünkü gibi iade geri ödemesidir, K-a'nın "fazlası avans"ı (bugün verilen avans kalemi) Ödeme'nin gününde açık alınan avansı kapatır — kapattığı kadar verilen avans kalemi
+  YOKTUR; kalan (alınan avans yoksa / yetmiyorsa) bugünkü gibi verilen avanstır (S96). (b) **alacak yönlü kalem VARSA** Ödeme açık avansı ve alacak yönlü kalemleri tek vade sırasıyla kapatır (S104 — avansın vadesi = belge günü = tahsilat günü;
+  Y6-1 aynen); iade notları K-b sırasında (bugünkü gibi). Bu (b) sırası iade geri ödemesinin tutarını (iade başına geri ödenen G) bugünkü (a) okumasından farklı kılıyorsa avans ↔ iade notu / KS8.1 ikinci aşama sırası kararda YOK → o carinin
+  kuyruk denetimleri SUS (C13.4 (11) nedeni; **SK-54** — KULLANICIYA SORULMALI). Aynıysa (b) yazılır.
+- **Y29-4 — değişmeyenler:** bakiye, Kasa; şüpheli / değersiz kaydının kuralları (S130 / S136 / S139 / S145 / S155 …) bu kuyruğun üstünde AYNEN; faturasız iade geri ödemesinin tutarı Y29-3 (a)'da hiç değişmez. Alınan avans kalem DEĞİLDİR
+  (S96 / S103 aynen — "Ödenecek Borç" kalemi yok). Y5-7 (verilen avans + sonra bağsız alacak satırı → SUS) yalnız S266'dan SONRA kalan verilen avansa bakar (avans alınan avansla kapandıysa verilen avans yoktur).
+- **Y29-5 — S98 yönü DEĞİL:** Ödeme'den SONRA gelen tahsilatın verilen avansı kapatması (S98) yalın olmayan caride girdinin konusu değil — Y5-7 AYNEN (SUS). Ödeme yalnız kendi ANINDA açık olan avansı kapatır.
+- **Y29-6 — S265 = C alanı (dar):** cari türü tedarikçi, en az bir etkin faturasız Alış İadesi (KS9), en az bir etkin bağsız tahsilat (KS9 geri tahsilatı), en az bir AÇIK alış iadesi (geri tahsil edilmemiş kısmı > 0 — §11 Gp), ve aynı GÜN hem etkin stok
+  satışı (KS7.1 nedensiz stok çıkışı) hem etkin Alış İadesi — DÖRT koşulun hepsi. Alanda alış faturalarının `acik`, `gosterilen`, `liste:gosterilen`, `kartta`, `taksitte` denetimleri YAZILMAZ; neden "BİLİNEN SINIR (kullanıcı kararı S265 = C) S265".
+  Bakiye ve öbür alanlar (elle kayıt alanları, Kasa, adım sonuçları) yazılır. Koşullardan biri yoksa SUS YOK (bugünkü kural değerle).
+
+### KULLANICIYA SORULMALI (bakım 29 — yorum aşaması; son hâl kanıt bölümünde)
+- **SK-54 (UÇ; PARA KURALI — ders 43) — yalın olmayan (KS8) caride avans ↔ iade geri ödemesi sırası, carinin Alacak'ı da varken:** örnek: 01.03 tahsilat 500 (borcu yok) · 05.03 Alacak 200 (vade 30.04) · 08.03 faturasız stok iadesi 100 (borcu yok — açık
+  not 100) · 10.03 Ödeme 300. **A:** önce iade geri ödemesi (not 100), kalan 200 avans ile Alacak'a vade sırasıyla (avans 01.03 önce): avans 300, Alacak 200 açık. **B:** hepsi tek vade sırası (avans 01.03 → not 08.03 → Alacak): avans 200,
+  not 100 açık, Alacak 200 açık. **C (ÖNERİ): Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS)**. Bakiye her seçenekte −500. Yaygın programlarda: doğrulanmış kaynak okunmadı.
+
+### Kurallar (bakım 29 kod commit'i `ad4d9ae7` (model + öz test); yorumların `model.py`'deki karşılığı)
+- `_s266_alan` (Y29-1): `k250`, mutant 362 değil, `_net_uygun` yalın değil ve nedeni "şüpheli / değersiz alacak" ya da "iade geri ödemesi etkileşimi (KS8)", carinin etkin Ödeme'si / müşteriye cirosu ve alacak tarafında etkin tahsilatı / alınan evrakı var.
+- `_s266_kur` (Y29-2 / Y29-3; `kuyruk`, `kuyruk_borc`, `_geri_odemeler` başında): durum `("s266", cari)` önbellekte (her durum değiştiren adımda boşalır). (1) **temel** geçiş: alacak tarafının `_tyk`'sine borç tarafının her 'o' kaynağının anı
+  (gün, yazım sırası — Ödeme / ciro ve adlarıyla bağ / geri ödeme fazlası) olay "e" olarak girer; o anda açık PARA kaynakları (`_s266_para`: tahsilat, `evrak:`, `bagfazla:`) okunur (`s266anlik`). (2) iki okuma kararlı olana dek (en çok 12 geçiş)
+  yeniden hesaplanır: **"b" (Y29-3 (a))** borç tarafı bugünkü gibi (K-b, KS8.1 ikinci aşama), sonra her 'o' kaynağının artanı (gün, yazım sırasıyla) kendi anındaki açık para kaynaklarını (tavan) en eskiden kapatır; **"a" (Y29-3 (b))** alınan avans
+  parçaları borç tarafının kuyruğunda `"v"` türünde kalem (vade = belge = kaynağın günü), yalnız `tavan`daki (kendisinden SONRA gelen, o anki açık tutar kadar) 'o' kaynaklarıyla kapanır — alacak yönlü kalemlerle TEK vade sırası. Borç tarafının
+  kapattığı tutarlar (`s266kap`) alacak tarafında Ödeme'nin anında kaynaktan düşülür (`s266emis`). (3) seçim: hiçbir anda kapanma yoksa durum yok (bugünkü kural, iz yok); alacak yönlü kalem yoksa "b"; varsa iki okuma aynıysa ya da iade
+  başına geri ödenen (G) aynıysa "a", değilse "b" durumu + C13.4 (11) nedeni "S266: … KULLANICIYA SORULMALI SK-54" (carinin kuyruk denetimleri SUS); kararsızsa "b" + neden "… kararlı değil (kâhinin sınırı)". İz `s266` / `sk54`.
+- `_s98_iki` (Y29-4): tedarikçi türü dalında S266 durumu varsa Ödeme'nin iade geri ödemesine (G, iadenin günü) ve alınan avansa (`s266kap`, Ödeme'nin günü) giden kısmı "kalem" tarafına sayılır (verilen avans değildir); müşteri türü dalı
+  `_son250b`'yi (S266'dan sonra kalan verilen avans) zaten okur. `avans_kalemi`, `gecikmis250`, `_cari_kalemleri` değişmedi (aynı kuyruktan okurlar).
+- `_s265` (Y29-6): `k250`, mutant 366 değil; etkin Alış İadesi + etkin bağsız tahsilat; (mutant 365 değilse) cari türü tedarikçi, en az bir Alış İadesinin geri tahsil edilmemiş kısmı > 0 (Gp), en az bir Alış İadesiyle AYNI GÜN etkin stok satışı. `kontrol_v3`
+  alış faturası kolunda `acik` ve `kontrol_gosterilen` (gosterilen / liste:gosterilen / kartta / taksitte) yazılmaz, belirsiz kaydı "… BİLİNEN SINIR (kullanıcı kararı S265 = C) S265" (fatura başına bir satır). İz `s265`.
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: hiçbir yol değişmedi (bütün yeni dallar `k250`); üretici 2.4.9 modeliyle üretir (dizi aynı).
+
+### C8ah Nasıl bozulur? (bakım 29 — senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo / mutant |
+|---|---|---|
+| Z301 | S266: yalın olmayan caride Ödeme açık alınan avansı görmez — artanı "Tahsil Edilecek Borç" kalemi, sonraki borç avanstan kapanır (bakım 28) | d61 U2 / U3 / U5 (mutant 362) |
+| Z302 | S266: Ödeme önce Alacak'ı kapatır, avans yalnız artanla (S104 B) | d61 U1 (mutant 363 — Alacak 200 → 0) |
+| Z303 | S266: avans ↔ iade notu sırası iade geri ödemesini değiştirirken değer uydurulur | d61 U4 (mutant 364 — SUS kuralı; `elleYok` / `elleBelirsiz`) |
+| Z304 | S266: Alacak'ın vadesi avanstan önceyken avans önce kapanır (vade sırası ters) | d61 U5 (değerle — Alacak 0, verilen avans yok) |
+| Z305 | S266: iade geri ödemesi tamamlanmış KS8 carisinde eski Ödeme verilen avans sanılır (Y5-7 yanlış SUS) | d61 U1 (değerle — `_s98_iki` G sayımı) |
+| Z306 | S266: Ödeme'nin kapattığı avans sonraki borçta yine kullanılır (iki taraf ayrı) | d61 U2 / U3 (değerle — sonraki Borç'un Kalan'ı 50 / 150) |
+| Z307 | S265: bileşimde alış faturası açığı değerle yazılır | d61 U7 (mutant 366 — SUS kuralı) |
+| Z308 | S265: susma bileşim dışına taşar (stok satışı başka gün) | d61 U8 (mutant 365 — alış açığı 750 değerle) |
+
+### C10ah Mutantlar (bakım 29; `oz-test.py` DEĞERLE)
+- 362 (S266 yok), 363 (S104 B), 365 (S265 taşar) DEĞERLE; 364 (SK-54 SUS yok), 366 (S265 SUS yok) SUS kuralı — öz testin SUS kuralı kümesi {316, 324, 353, 357, 361, 364, 366}. Hepsi d61'de yakalandı (ilk yakalayan: 362 / 363
+  `k1:hareket:u1a:kalan`, 364 `k1:hareket:u4a:kalan`, 365 `k1:fatura:A8:acik`, 366 `k1:fatura:A7:acik`).
+
+### Senaryolar (bakım 29)
+- **yeni `d61-c5-s266-s265-yalin-olmayan`** (bugün 15.06.2026; 7 cari, 40 adım + kontrol; 59 elleBeklenen + 13 elleYok + 2 elleBelirsiz = 74): U1 KS8 carisinde kararın örneği (iade geri ödemesi önceden tamamlanmış; S104: Alacak 200 açık,
+  verilen avans yok, bakiye −400), U2 KS8 alacak yönlü kalemsiz (KS8.1 ikinci aşama önce, fazlası 100 avansı kapatır; sonraki Borç 150'nin Kalan'ı 50, gecikmiş 50, Σ açık = bakiye), U3 şüpheli / değersiz kayıtlı cari (Ödeme 200 avansı kapatır;
+  sonraki Borç 250'nin Kalan'ı 150), U4 SK-54 SUS (bakiye −500), U5 Alacak'ın vadesi avanstan önce (Alacak 0, verilen avans yok), U7 S265 bileşimi (alış faturası SUS, bakiye −750), U8 bileşimsiz (alış açığı 750). Elle tablo karar metinlerinden,
+  kâhin koşulmadan (üreteç `docs/kanit/2026-11-26/kahin-cari29-arac/uret-d61.py`, commit `60abbade` — kod commit'inden ÖNCE); ilk kâhin koşusunda 74 elle denetimin HEPSİ tuttu (elle hesap düzeltmesi YOK).
+- Eski elle senaryoların elle tabloları ve adımları DEĞİŞMEDİ.
+
+### Dil ekleri (/3, bakım 29)
+- Yeni dil adımı YOK.
+
+### C12ah DENENMEYEN (bakım 29; neden)
+- S266 alanında ciro (müşteriye ciro edilen evrak) ve bağ / geri ödeme fazlası 'o' kaynağı: kural kodda (§18'in 'o' sınıfı aynen), elle senaryo yok.
+- S266'nın "a" okumasının iade geri ödemesini DEĞİŞTİRMEDİĞİ ama Alacak + açık iade notu birlikte olan kolu (G aynı, sonuç farklı): elle senaryo yalnız U1 (iade geri ödemesi önceden tamamlanmış).
+- S266 alanı dışındaki yalın olmayan türler (taksit kartı, fatura iadesi, tabloya bağlı, KS9, kart tahsilatı, iki yönde iade): girdinin konusu değil — bugünkü kural.
+- Şüpheli kaydı AÇIK (Değersiz yazılmamış) caride S266 (S130 görünümüyle birlikte): elle senaryo yok (U3'te kayıt kapalı).
+- Rastgele üretici müşteriye elle Alacak üretmez (S266'nın Y29-3 (b) kolu yalnız elle senaryoda).
+
+### SONRAKİ SÜRÜME (2.5.1 — 20.11 kuralı)
+- Rastgele üreticiye müşteri carisinde elle Alacak + alınan avans + bağsız Ödeme (S266 (b) kolu) ve açık şüpheli kayıtlı caride Ödeme.
+- S265 belirsiz kaydı fatura başına yineleniyor (bir cari için tek satır yeter — görünüm ayrıntısı).
+- Bakım 28'in 2.5.1 listesi aynen.
+
+### C0ah Değişen eski beklentiler (G3; taban `35fbfe44` ↔ bakım 29 kâhin çıktısı, `2.5.0`; eski kopyanın 114 elle senaryosu + yeni d61 + rastgele s1 / ux18 tohum 1–10 × 120)
+- Üretici 20/20 aynı dizi; eski elle senaryoların adımları DEĞİŞMEDİ; elle fark 114/114 (izinli YOK); `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **540/540 bayt bayt aynı**.
+- 2.5.0 G3: eski 80.743 denetim · yeni 80.568 · değişen / kalkan / yeni **732** · **BEKLENMEYEN 0** · yalnız etiketi değişen 0. Sınıflar: **S266 yeni 265 + değişen 19** (d61 U1 / U2 / U3 / U5 41; rastgele s1-4 166 + s1-5 77 — eski kâhinde Y5-7 SUS,
+  yeni kâhinde Ödeme avansı kapattı, verilen avans kalmadı), **SK54 kalkan 12** (d61 U4), **S265 kalkan 432** (d61 U7 6; rastgele s1-3 222 ve s1-10 204 — eski kâhin değerle yazıyordu), GENEL yeni 4 (s1-4 sayaçlar — aynı kontrolde S266).
+  Eski 114 elle senaryoda fark 0. Döküm UTC ↔ Europe/Istanbul bayt bayt aynı.
+
+### Program ↔ kâhin (taban dalının programı `35fbfe44` — bu dalın tabanı)
+- **Bakımdan ÖNCE (taban kâhin):** CI düzeni (`npm run test:kahin-cari`) UTC 25.164/25.164; Uzun Doğrulama düzeni (`--tohum 1-30 --islem 120`) UTC 175.649/175.671 — **22 fark**: s1-12 tedarikçi S 15 (k9 … kson `fatura:A4` / `A5` `acik`,
+  `gosterilen`, `liste:gosterilen` — program A4 1.415 · kâhin 0, A5 132.071 · 74.189; S265 bileşimi) ve s1-30 müşteri E 7 (k2: Ödeme s015'in verilen avans kalemi program "yok" · kâhin 17.538; Borç s018 Kalan / takvim / Vade Takip /
+  projeksiyon program 88.134 · kâhin 70.596 — S266 (a) alanı).
+- **Bakımdan SONRA (yeni kâhin):** CI düzeni UTC **25.298/25.298**, Europe/Istanbul **25.298/25.298** (d61 134/134; 0 fark, 7 bilinen sınır, 0 yapım aşaması, 0 okuma hatası, 0 yakalanmayan mutasyon — 362–366 programla koşuda da
+  YAKALANDI); Uzun Doğrulama düzeni UTC **175.143/175.143**, Europe/Istanbul **175.143/175.143** (0 fark). s1-30'un 7 farkı S266 (a) ile DEĞERLE kapandı (kâhin kural metninden program sayısını verdi: s018 Kalan 88.134, s015 "yok"); s1-12'nin
+  15 farkı S265 = C ile SUS (BİLİNEN SINIR).
+- **P listesi (program şüphesi): BOŞ.** **GÖZLEM (kural kaynağı DEĞİL):** S265 alanında program s1-12 A4'ü 1.415, A5'i 132.071 açık gösteriyor (taban kâhin 0 / 74.189); SK-54 alanında (d61 U4) program Alacak'ı 200 açık, Σ açık −200
+  gösteriyor (eski kâhin 0 / 0).
+- **Eski kâhin (taban) aynı programla (d61, `--mutasyonsuz`):** 106/130 — 24 fark: U2 / U3 / U5 verilen avans kalemi ve sonraki Borç'un Kalan'ı (S266 (a)), U4 Alacak Kalan / Σ açık (SK-54 alanı; eski kâhin 0). U1 eski kâhinde SUS (Y5-7), U7 / U8
+  eski kâhinle programın değeri aynı.
+
+### Yapım aşaması listesi
+- Kendi kopyada `--yapim-asamasi-yaz` (KAHIN_YAPIM_ASAMASI, UTC): **0 kayıt**; ESKİ LİSTEYLE FARK: yeni 0, kapanan 0, değeri değişen 0 (eski 0 → yeni 0); üretilen dosya depodakiyle bayt bayt AYNI (`cmp`) → depodaki listede değişiklik YOK
+  (ayrı commit gerekmedi). Not: `tools/kanit.mjs` bu koşuyu "BELİRSİZ (özet satırı tanınmadı)" diye yazdı (yazım kipinin son satırı sayı satırı değil); `kos.mjs`'in kendi çıkışı 0.
+
+### Eski kâhin kırmızısı (elle tablo; eski kâhin `35fbfe44`, `elle-karsilastir.py --kirmizi-bekle`, iki TZ aynı)
+- **50/74 elle denetim kırmızı** (d61). Kural kural: S266 — U1'in Alacak Kalan / takvim / Vade Takip / projeksiyon, Ödeme kalemleri, gecikmiş, Σ açık ANAHTAR YOK (eski kâhinde Y5-7 SUS — iade geri ödemesi tamamlanmış Ödeme'yi
+  verilen avans saydı); U2 / U3 / U5 Ödeme'nin "Tahsil Edilecek Borç" kalemi (100 / 200 / 100) ve sonraki Borç'un Kalan'ı 0 (elle 50 / 150), gecikmiş yok; SK-54 — U4'ün `elleYok` anahtarları eski kâhinde DEĞERLE + "SK-54" belirsiz kaydı yok;
+  S265 — U7'nin alış faturası anahtarları DEĞERLE (750) + "S265 = C" belirsiz kaydı yok. **Kırmızısı OLMAYAN (24):** bakiyeler, U8'in alış faturası (bileşimsiz — bugünkü kural), U2 / U3 ilk Borç'un Kalan'ı / takvimi, U5'in Alacak'ı (kapalı) ve Σ açığı — kâhin bunları bugün de aynı veriyordu.
+
+### Kanıt (bakım 29; iki saat dilimi; kâhin kodu `ad4d9ae7`, araçlar `587cc09e`; `docs/kanit/2026-11-26/kahin-cari29-kanit/`, araçlar ve koşu betikleri `kahin-cari29-arac/`)
+- oz-test **9.443/9.443** · G3 **675/675** (BEKLENMEYEN 0) · elle fark **114/114** · d61 **74/74** · ESKİ kâhinde **50/74 kırmızı** · program ↔ yeni kâhin CI **25.298/25.298** ve Uzun Doğrulama **175.143/175.143** iki TZ (taban 25.164/25.164 ve
+  175.649/175.671 — 22 fark) · program ↔ eski kâhin (d61) **106/130** · yapım aşaması listesi 0 → 0.
+- Not (açıkça): koşuların hepsi `flock -s -w 3600 …/olcum.lock` altında, süre sınırı kilidin içinde; hazırlıkta TEK bir KARARLAR.md başlık okuma satırı (`python3 -I -c`) KİLİTSİZ koşuldu — kural ihlali, açıkça.
+
+### KULLANICIYA SORULMALI (bakım 29 — son hâl)
+- **SK-54 (UÇ; PARA KURALI — ders 43)** — yorumdaki gibi (KS8 carisinde Alacak varken avans ↔ açık iade notu sırası): örnek 01.03 tahsilat 500 · 05.03 Alacak 200 (vade 30.04) · 08.03 faturasız stok iadesi 100 (borcu yok) · 10.03 Ödeme 300.
+  **A:** önce iade geri ödemesi: not 100 kapanır, kalan 200 avansı (01.03, Alacak'tan önce) kapatır — avans 300, Alacak 200 açık. **B:** tek vade sırası (avans 01.03 → not 08.03 → Alacak 30.04): avans 200, not 100 açık, Alacak 200 açık.
+  **C (ÖNERİ): Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS)**. Bakiye her seçenekte −500; Alacak her seçenekte 200 açık (programın gösterdiği de 200 — gözlem); ayrışan iade notunun / avansın tutarı. Yaygın programlarda: doğrulanmış kaynak
+  okunmadı.

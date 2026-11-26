@@ -1,0 +1,10 @@
+✗ işlem 2608 supheli-tahsil: supheli-tahsil: beklenmeyen kapı reddi [{"code":"doubtful:balance","name":"Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)","ok":false,"count":1,"sample":["Şüpheli Müşteri B T8: 120 = -924.56 (açık şüpheli 11536.09; geriye tarihli tahsilat/alacak kaydın tarihinden önce)"],"figures":[{"party":"account-01cdc06e-d530-45b2-8ae3-1c6d23c3370e","balanceMinor":1061153,"openMinor":1153609}],"tables":["fin_events","account_entries"]}]
+✗ işlem 3332 fatura-iptal:
+  Taksit kartı Aynı Ad Müşteri T8 (plan-168e80db-8222-4e64-97a3-5e1c5ba4a068, fatura -, durum closed): program 0/0 · model 18525,80/0,00 · taksitler [] · tahsilatlar []
+  Taksit kartı Aynı Ad Müşteri T8: durum closed · model active
+Tohum 8: işlem 3332; uyuşmazlık 2; 1320 sn
+işlem 2608 (supheli-tahsil, 2026-09-26) 
+  supheli-tahsil: beklenmeyen kapı reddi [{"code":"doubtful:balance","name":"Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)","ok":false,"count":1,"sample":["Şüpheli Müşteri B T8: 120 = -924.56 (açık şüpheli 11536.09; geriye tarihli tahsilat/alacak kaydın tarihinden önce)"],"figures":[{"party":"account-01cdc06e-d530-45b2-8ae3-1c6d23c3370e","balanceMinor":1061153,"openMinor":1153609}],"tables":["fin_events","account_entries"]}]
+işlem 3332 (fatura-iptal, 2026-10-13) 
+  Taksit kartı Aynı Ad Müşteri T8 (plan-168e80db-8222-4e64-97a3-5e1c5ba4a068, fatura -, durum closed): program 0/0 · model 18525,80/0,00 · taksitler [] · tahsilatlar []
+  Taksit kartı Aynı Ad Müşteri T8: durum closed · model active

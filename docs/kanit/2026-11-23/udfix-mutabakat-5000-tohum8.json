@@ -1,0 +1,43 @@
+{
+  "ad": "udfix-mutabakat-5000-tohum8",
+  "komut": "npm run test:mutabakat -- --islem 5000 --tohum 8 --tohumlar 1",
+  "commit": "0296d75596e80edc2566e8754e628b5250ad6844",
+  "dal": "udfix-e7934c5e",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-23T01:28:38.309Z",
+  "sure_sn": 3697.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "işlem 2608 supheli-tahsil: supheli-tahsil: beklenmeyen kapı reddi [{\"code\":\"doubtful:balance\",\"name\":\"Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)\",\"ok\":false,\"count\":1,\"sample\":[\"Şüpheli Müşteri B T8: 120 = -924.56 (açık şüpheli 11536.09; geriye tarihli tahsila",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UYUŞMAZLIK (1):",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-23/udfix-mutabakat-5000-tohum8.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4444ad6c4d6abab7",
+  "ham_cikti_sha256": "547ebc349a0f41ecb601fb20096ffd2efc60b5cd7d8e47657a66e8f0bbda5225",
+  "ham_cikti_bayt": 30304
+}

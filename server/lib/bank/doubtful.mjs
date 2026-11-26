@@ -575,17 +575,58 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     const after = stateOf(record);
     return { record: view(record, after.state, after.allocations), event, provisionId: id, minor, date, note };
   }
+  // 2.5.0 UD turu 3 — S264 = A (kullanıcı kararı; 'ÖNERİYİ UYGULA' kuralıyla öneri uygulandı; AYNEN: "'Değersiz' sınır denetimi aynı günün sırasına uyar — Değersiz, o günün
+  // bağlı payından ÖNCE değerlendirilir, tam tutar kabul edilir (kâhin ve v2.4.9 böyle)"): sınır = kaydın kalanı + Değersiz satırının GÜNÜNDEKİ bağlı alacakların (Kapatılacak Fatura /
+  // faturaya bağlı evrak — ayırıcının `linked` payı, S25 (c)) bu kayda düşen payı. Önceden yalnız kalan okunuyordu: aynı gün şüpheliye almadan önce yazılmış bağlı tahsilatın payı sınırdan
+  // düşüyor, tam tutar reddediliyordu. Bağsız alacaklar (tahsilat, Alacak Yaz …) sınırı eskisi gibi küçültür (kâhin ve v2.4.9 böyle; bu karar onları kapsamaz).
+  // Yazımdan sonra (bank.post işlemi içinde) ayırıcı satırın yerinde kalanı aşan kısım (outsideMinor) bırakıyorsa ya da carinin başka bir Değersiz satırını kalanın dışına taşırıyorsa hata
+  // atılır, yazım geri alınır (güvenlik denetimi; doğru sınırla oluşmaz). Geri yükleme (restore 'writeoff') aynı denetimi kullanır.
+  const boundSameDayShare = (record, date) => {
+    const rows = doubtfulRows(store, { parties: [record.party] });
+    if (!rows.linked || !rows.records.length) return 0;
+    const bound = new Set();
+    const linked = (credit, view) => {
+      const out = rows.linked(credit, view);
+      if (out) bound.add(credit.key);
+      return out;
+    };
+    const credits = doubtfulCredits(store, new Set(rows.records.map(item => item.party)));
+    const { allocations } = allocateDoubtful({ records: rows.records, provisions: rows.provisions, credits, linked });
+    let sum = 0;
+    for (const credit of credits) {
+      if (credit.date !== date || !bound.has(credit.key)) continue;
+      for (const item of allocations.get(credit.key)?.records || []) if (item.recordId === record.id) sum += item.minor;
+    }
+    return sum;
+  };
+  const writeOffOutside = record => {
+    const out = new Map();
+    for (const [key, hit] of stateOf(record).allocations) if (hit.outsideMinor > 0) out.set(key, hit.outsideMinor);
+    return out;
+  };
+  const assertWriteOffFits = (record, entryId, minor, before, errors) => {
+    const { allocations } = stateOf(record);
+    const key = `account:${entryId}`;
+    const fit = (allocations.get(key)?.records || []).reduce((sum, item) => sum + item.minor, 0);
+    if (fit < minor) throw errors.exceeds(fit);
+    for (const [other, hit] of allocations) if (other !== key && hit.outsideMinor > (before.get(other) || 0)) throw errors.breaks();
+  };
   /** Değersiz Alacak Yaz (§3.11b/3): cari kartına alacak satırı (source 'doubtful') + başlık; yevmiye B 129/659 / A 128 türetir. */
   function writeOff(ctx, { user, accountId, did, body = {} }) {
     const { record, state } = openRecord(accountId, did);
     const date = period.movementDate(body, { label: "Tarih" });
     dateAfterRecord(date, record, "Değersiz yazma tarihi");
     const minor = amountOf(body.amount, "Değersiz alacak tutarı");
-    if (minor > state.remaining) throw new HttpError(400, `Değersiz yazılacak tutar (${tl(minor)}) kalan şüpheli tutarı (${tl(state.remaining)}) aşıyor.`, { code: "doubtful-writeoff-exceeds", field: "amount", remainingMinor: state.remaining });
+    // S264 = A: sınır kalan + o günün bağlı payı (yukarıdaki not).
+    const room = state.remaining + boundSameDayShare(record, date);
+    const exceeds = fit => new HttpError(400, `Değersiz yazılacak tutar (${tl(minor)}) kalan şüpheli tutarı (${tl(fit)}) aşıyor.`, { code: "doubtful-writeoff-exceeds", field: "amount", remainingMinor: fit });
+    if (minor > room) throw exceeds(room);
     const note = limited(body.note ?? "", 300, "Açıklama");
     const writer = accounts()?.doubtfulEntry;
     if (!writer) throw new HttpError(503, "Cari servisi hazır değil.");
+    const before = writeOffOutside(record);
     const entry = writer.add(user, record.party, { amount: fromMinor(minor), date, note: note ? `Değersiz alacak · ${note}` : "Değersiz alacak", recordId: record.id });
+    assertWriteOffFits(record, entry.id, minor, before, { exceeds, breaks: () => exceeds(room) });
     const event = openEvent(ctx, { type: "doubtful_writeoff", date, srcTable: "account_entries", srcId: entry.id, partyId: record.party, minor, chequeId: record.chequeId, description: describe(record, `Değersiz alacak yazıldı${note ? ` · ${note}` : ""}`), user });
     const after = stateOf(record);
     return { record: view(record, after.state, after.allocations), event, entryId: entry.id, minor, date, note };
@@ -713,8 +754,13 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
       if (store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", payload.id)) throw new HttpError(404, "Bu Değersiz Alacak satırı zaten geri yüklenmiş.");
       period.restoreDate(payload.date, "Bu Değersiz Alacak satırı");
       const { record, state } = openRecord(payload.accountId, payload.recordId);
-      if (Number(payload.amountMinor) > state.remaining) throw new HttpError(409, `Değersiz Alacak satırı geri yüklenemez: kalan şüpheli tutar (${tl(state.remaining)}) tutarı (${tl(payload.amountMinor)}) artık karşılamıyor.`, { code: "doubtful-writeoff-exceeds" });
+      // S264 = A: sınır kalan + satırın günündeki bağlı pay (writeOff ile aynı denetim; yukarıdaki not).
+      const room = state.remaining + boundSameDayShare(record, payload.date);
+      const refused = () => new HttpError(409, `Değersiz Alacak satırı geri yüklenemez: kalan şüpheli tutar (${tl(room)}) tutarı (${tl(payload.amountMinor)}) artık karşılamıyor.`, { code: "doubtful-writeoff-exceeds" });
+      if (Number(payload.amountMinor) > room) throw refused();
+      const before = writeOffOutside(record);
       accounts().doubtfulEntry.reinsert(user, payload.entry);
+      assertWriteOffFits(record, payload.id, Number(payload.amountMinor), before, { exceeds: refused, breaks: refused });
       setEventStatus(ctx, payload.eventId, "active", user);
       return { id: payload.id, accountId: record.party, message: `“${record.accountName}” değersiz alacak satırı (${tl(payload.amountMinor)}) geri geldi.` };
     }

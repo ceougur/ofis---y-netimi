@@ -1,0 +1,7007 @@
+{
+ "toplam": {
+  "K1-S264": 163,
+  "K2-KS8.1-olcum": 413,
+  "K3-s1-12-KS9": 15,
+  "K4-s1-30-S104-yalin-olmayan": 7,
+  "SINIFLANMADI": 0
+ },
+ "senaryo": {
+  "rastgele-s1-3": {
+   "K2-KS8.1-olcum": 42
+  },
+  "rastgele-s1-4": {
+   "K2-KS8.1-olcum": 23
+  },
+  "rastgele-s1-6": {
+   "K2-KS8.1-olcum": 11
+  },
+  "rastgele-s1-7": {
+   "K2-KS8.1-olcum": 78
+  },
+  "rastgele-s1-8": {
+   "K2-KS8.1-olcum": 17
+  },
+  "rastgele-s1-12": {
+   "K3-s1-12-KS9": 15,
+   "K2-KS8.1-olcum": 10
+  },
+  "rastgele-s1-13": {
+   "K1-S264": 163
+  },
+  "rastgele-s1-17": {
+   "K2-KS8.1-olcum": 57
+  },
+  "rastgele-s1-19": {
+   "K2-KS8.1-olcum": 12
+  },
+  "rastgele-s1-20": {
+   "K2-KS8.1-olcum": 23
+  },
+  "rastgele-s1-23": {
+   "K2-KS8.1-olcum": 16
+  },
+  "rastgele-s1-24": {
+   "K2-KS8.1-olcum": 18
+  },
+  "rastgele-s1-25": {
+   "K2-KS8.1-olcum": 45
+  },
+  "rastgele-s1-27": {
+   "K2-KS8.1-olcum": 6
+  },
+  "rastgele-s1-28": {
+   "K2-KS8.1-olcum": 55
+  },
+  "rastgele-s1-30": {
+   "K4-s1-30-S104-yalin-olmayan": 7
+  }
+ },
+ "farklar": [
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:fatura:G9:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 410572,
+   "kahin": 207115
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:fatura:G9:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 410572,
+   "kahin": 207115
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:fatura:G9:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 410572,
+   "kahin": 207115
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:hareket:s001:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 78850
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:hareket:s047:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 291144,
+   "kahin": 390000
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:hareket:s058:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 228372,
+   "kahin": 81227
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:projeksiyon:hareket:s001",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 78850,
+    "date": "2026-07-08",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:projeksiyon:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 291144,
+    "date": "2026-06-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 390000,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:projeksiyon:hareket:s058",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 228372,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 81227,
+    "date": "2026-07-07",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:takvim:fatura:G9",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 237676,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 207115,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:takvim:hareket:s058",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 228372,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 3",
+    "state": "upcoming"
+   },
+   "kahin": {
+    "amount": 81227,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 3",
+    "state": "upcoming"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k10:vadeTakip:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 291144,
+    "date": "2026-06-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 390000,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k5:hareket:s047:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 128580,
+   "kahin": 137700
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k5:projeksiyon:cari",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 8,
+   "kahin": 7
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k5:projeksiyon:hareket:s045",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 9120,
+    "date": "2026-05-02",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k5:projeksiyon:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 128580,
+    "date": "2026-06-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 137700,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k5:takvim:cariKalemSayisi",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 7,
+   "kahin": 6
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k5:takvim:hareket:s045",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 9120,
+    "cari": "E",
+    "days": -59,
+    "direction": "in",
+    "dueDate": "2026-05-02",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 3",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k5:vadeTakip:hareket:s045",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 9120,
+    "date": "2026-05-02",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k5:vadeTakip:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 128580,
+    "date": "2026-06-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 137700,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k6:hareket:s047:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 128580,
+   "kahin": 137700
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k6:hareket:s058:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 64596,
+   "kahin": 55476
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k6:projeksiyon:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 128580,
+    "date": "2026-06-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 137700,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k6:projeksiyon:hareket:s058",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 64596,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 55476,
+    "date": "2026-07-07",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k6:takvim:hareket:s058",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 64596,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 3",
+    "state": "upcoming"
+   },
+   "kahin": {
+    "amount": 55476,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 3",
+    "state": "upcoming"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k6:vadeTakip:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 128580,
+    "date": "2026-06-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 137700,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k7:hareket:s047:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 128580,
+   "kahin": 137700
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k7:hareket:s058:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 64596,
+   "kahin": 55476
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k7:projeksiyon:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 128580,
+    "date": "2026-06-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 137700,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k7:projeksiyon:hareket:s058",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 64596,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 55476,
+    "date": "2026-07-07",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k7:takvim:hareket:s058",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 64596,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 3",
+    "state": "upcoming"
+   },
+   "kahin": {
+    "amount": 55476,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 3",
+    "state": "upcoming"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k7:vadeTakip:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 128580,
+    "date": "2026-06-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 137700,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k8:hareket:s047:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 137700
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k8:hareket:s058:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 193176,
+   "kahin": 55476
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k8:projeksiyon:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 137700,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k8:projeksiyon:hareket:s058",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 193176,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 55476,
+    "date": "2026-07-07",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k8:takvim:hareket:s058",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 193176,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 3",
+    "state": "upcoming"
+   },
+   "kahin": {
+    "amount": 55476,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 3",
+    "state": "upcoming"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k8:vadeTakip:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 137700,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k9:hareket:s047:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 137700
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k9:hareket:s050:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 345240,
+   "kahin": 207540
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k9:projeksiyon:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 137700,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-3",
+   "anahtar": "k9:vadeTakip:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 137700,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s031:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 263648,
+   "kahin": 216559
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:cari",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 5,
+   "kahin": 6
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s031",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 263648,
+    "date": "2026-06-15",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 216559,
+    "date": "2026-06-15",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s105",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 47089,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:cariKalemSayisi",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 5,
+   "kahin": 6
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s031",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 263648,
+    "cari": "E",
+    "days": -15,
+    "direction": "in",
+    "dueDate": "2026-06-15",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 4",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 216559,
+    "cari": "E",
+    "days": -15,
+    "direction": "in",
+    "dueDate": "2026-06-15",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 4",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s105",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 47089,
+    "cari": "E",
+    "days": 0,
+    "direction": "in",
+    "dueDate": "2026-06-30",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 4",
+    "state": "today"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s031",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 263648,
+    "date": "2026-06-15",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 216559,
+    "date": "2026-06-15",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s105",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 47089,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k12:hareket:s031:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 169976,
+   "kahin": 122887
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k12:projeksiyon:hareket:s031",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 169976,
+    "date": "2026-06-15",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 122887,
+    "date": "2026-06-15",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k12:projeksiyon:hareket:s105",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 47089,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k12:takvim:hareket:s031",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 169976,
+    "cari": "E",
+    "days": -15,
+    "direction": "in",
+    "dueDate": "2026-06-15",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 4",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 122887,
+    "cari": "E",
+    "days": -15,
+    "direction": "in",
+    "dueDate": "2026-06-15",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 4",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k12:takvim:hareket:s105",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 47089,
+    "cari": "E",
+    "days": 0,
+    "direction": "in",
+    "dueDate": "2026-06-30",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 4",
+    "state": "today"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k12:vadeTakip:hareket:s031",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 169976,
+    "date": "2026-06-15",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 122887,
+    "date": "2026-06-15",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k12:vadeTakip:hareket:s105",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 47089,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "kson:hareket:s031:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 169976,
+   "kahin": 122887
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "kson:projeksiyon:hareket:s031",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 169976,
+    "date": "2026-06-15",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 122887,
+    "date": "2026-06-15",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "kson:projeksiyon:hareket:s105",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 47089,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "kson:takvim:hareket:s031",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 169976,
+    "cari": "E",
+    "days": -15,
+    "direction": "in",
+    "dueDate": "2026-06-15",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 4",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 122887,
+    "cari": "E",
+    "days": -15,
+    "direction": "in",
+    "dueDate": "2026-06-15",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 4",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "kson:takvim:hareket:s105",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 47089,
+    "cari": "E",
+    "days": 0,
+    "direction": "in",
+    "dueDate": "2026-06-30",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 4",
+    "state": "today"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "kson:vadeTakip:hareket:s031",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 169976,
+    "date": "2026-06-15",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 122887,
+    "date": "2026-06-15",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "kson:vadeTakip:hareket:s105",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 47089,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-6",
+   "anahtar": "k9:hareket:s055:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 0,
+   "kahin": 54043
+  },
+  {
+   "senaryo": "rastgele-s1-6",
+   "anahtar": "k9:hareket:s057:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 89520,
+   "kahin": 100000
+  },
+  {
+   "senaryo": "rastgele-s1-6",
+   "anahtar": "k9:projeksiyon:hareket:s055",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 54043,
+    "date": "2026-05-08",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-6",
+   "anahtar": "k9:projeksiyon:hareket:s057",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 89520,
+    "date": "2026-05-14",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 100000,
+    "date": "2026-05-14",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-6",
+   "anahtar": "k9:projeksiyon:hareket:s076",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 64523,
+    "date": "2026-06-01",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-6",
+   "anahtar": "k9:takvim:hareket:s055",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 54043,
+    "cari": "D",
+    "days": -53,
+    "direction": "in",
+    "dueDate": "2026-05-08",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 6",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-6",
+   "anahtar": "k9:takvim:hareket:s057",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 89520,
+    "cari": "D",
+    "days": -47,
+    "direction": "in",
+    "dueDate": "2026-05-14",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 6",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 100000,
+    "cari": "D",
+    "days": -47,
+    "direction": "in",
+    "dueDate": "2026-05-14",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 6",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-6",
+   "anahtar": "k9:takvim:hareket:s076",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 64523,
+    "cari": "D",
+    "days": -29,
+    "direction": "in",
+    "dueDate": "2026-06-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 6",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-6",
+   "anahtar": "k9:vadeTakip:hareket:s055",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 54043,
+    "date": "2026-05-08",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-6",
+   "anahtar": "k9:vadeTakip:hareket:s057",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 89520,
+    "date": "2026-05-14",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 100000,
+    "date": "2026-05-14",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-6",
+   "anahtar": "k9:vadeTakip:hareket:s076",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 64523,
+    "date": "2026-06-01",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:fatura:G10:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 11867,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:fatura:G10:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 11867,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:fatura:G10:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 11867,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:fatura:G11:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 224469,
+   "kahin": 210956
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:fatura:G11:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 224469,
+   "kahin": 210956
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:fatura:G11:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 224469,
+   "kahin": 210956
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:projeksiyon:cari",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 8,
+   "kahin": 9
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:projeksiyon:hareket:s102",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 25380,
+    "date": "2026-06-27",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:takvim:cariKalemSayisi",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 7,
+   "kahin": 8
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:takvim:fatura:G10",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 11867,
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:takvim:fatura:G11",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 224469,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 210956,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:takvim:hareket:s102",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 25380,
+    "cari": "E",
+    "days": -3,
+    "direction": "in",
+    "dueDate": "2026-06-27",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k11:vadeTakip:hareket:s102",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 25380,
+    "date": "2026-06-27",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:fatura:G10:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 11867,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:fatura:G10:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 11867,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:fatura:G10:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 11867,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:fatura:G11:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 224469,
+   "kahin": 210956
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:fatura:G11:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 224469,
+   "kahin": 210956
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:fatura:G11:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 224469,
+   "kahin": 210956
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:projeksiyon:cari",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 8,
+   "kahin": 9
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:projeksiyon:hareket:s102",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 25380,
+    "date": "2026-06-27",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:takvim:cariKalemSayisi",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 7,
+   "kahin": 8
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:takvim:fatura:G10",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 11867,
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:takvim:fatura:G11",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 224469,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 210956,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:takvim:hareket:s102",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 25380,
+    "cari": "E",
+    "days": -3,
+    "direction": "in",
+    "dueDate": "2026-06-27",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k12:vadeTakip:hareket:s102",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 25380,
+    "date": "2026-06-27",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k3:fatura:G3:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 10000,
+   "kahin": 3731
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k3:fatura:G3:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 10000,
+   "kahin": 3731
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k3:fatura:G3:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 10000,
+   "kahin": 3731
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k3:hareket:s015:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 173731,
+   "kahin": 180000
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k3:projeksiyon:hareket:s015",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 173731,
+    "date": "2026-04-28",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 180000,
+    "date": "2026-04-28",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k3:takvim:fatura:G3",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 10000,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 3731,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k3:takvim:hareket:s015",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 173731,
+    "cari": "E",
+    "days": -63,
+    "direction": "in",
+    "dueDate": "2026-04-28",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 180000,
+    "cari": "E",
+    "days": -63,
+    "direction": "in",
+    "dueDate": "2026-04-28",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k3:vadeTakip:hareket:s015",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 173731,
+    "date": "2026-04-28",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 180000,
+    "date": "2026-04-28",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:fatura:G3:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 10000,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:fatura:G3:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 10000,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:fatura:G3:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 10000,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:hareket:acilis:E:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 113190,
+   "kahin": 114394
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:hareket:s015:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 137086,
+   "kahin": 145882
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:projeksiyon:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 113190,
+    "date": "2026-05-05",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 114394,
+    "date": "2026-05-05",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:projeksiyon:hareket:s015",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 137086,
+    "date": "2026-04-28",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 145882,
+    "date": "2026-04-28",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:takvim:fatura:G3",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 10000,
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:takvim:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 113190,
+    "cari": "E",
+    "days": -56,
+    "direction": "in",
+    "dueDate": "2026-05-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 114394,
+    "cari": "E",
+    "days": -56,
+    "direction": "in",
+    "dueDate": "2026-05-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:takvim:hareket:s015",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 137086,
+    "cari": "E",
+    "days": -63,
+    "direction": "in",
+    "dueDate": "2026-04-28",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 145882,
+    "cari": "E",
+    "days": -63,
+    "direction": "in",
+    "dueDate": "2026-04-28",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:vadeTakip:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 113190,
+    "date": "2026-05-05",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 114394,
+    "date": "2026-05-05",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k4:vadeTakip:hareket:s015",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 137086,
+    "date": "2026-04-28",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 145882,
+    "date": "2026-04-28",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:fatura:G5:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 156166,
+   "kahin": 113088
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:fatura:G5:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 156166,
+   "kahin": 113088
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:fatura:G5:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 156166,
+   "kahin": 113088
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:hareket:acilis:E:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 80112,
+   "kahin": 114394
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:hareket:s015:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 137086,
+   "kahin": 145882
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:projeksiyon:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 80112,
+    "date": "2026-05-05",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 114394,
+    "date": "2026-05-05",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:projeksiyon:hareket:s015",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 137086,
+    "date": "2026-04-28",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 145882,
+    "date": "2026-04-28",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:takvim:fatura:G5",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 156166,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 113088,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:takvim:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 80112,
+    "cari": "E",
+    "days": -56,
+    "direction": "in",
+    "dueDate": "2026-05-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 114394,
+    "cari": "E",
+    "days": -56,
+    "direction": "in",
+    "dueDate": "2026-05-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:takvim:hareket:s015",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 137086,
+    "cari": "E",
+    "days": -63,
+    "direction": "in",
+    "dueDate": "2026-04-28",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 145882,
+    "cari": "E",
+    "days": -63,
+    "direction": "in",
+    "dueDate": "2026-04-28",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:vadeTakip:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 80112,
+    "date": "2026-05-05",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 114394,
+    "date": "2026-05-05",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k5:vadeTakip:hareket:s015",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 137086,
+    "date": "2026-04-28",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 145882,
+    "date": "2026-04-28",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k6:fatura:G6:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 162618,
+   "kahin": 118229
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k6:fatura:G6:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 162618,
+   "kahin": 118229
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k6:fatura:G6:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 162618,
+   "kahin": 118229
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k6:hareket:s017:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 114317,
+   "kahin": 158706
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k6:projeksiyon:hareket:s017",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 114317,
+    "date": "2026-04-25",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 158706,
+    "date": "2026-04-25",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k6:takvim:fatura:G6",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 162618,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 118229,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "k6:vadeTakip:hareket:s017",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 114317,
+    "date": "2026-04-25",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 158706,
+    "date": "2026-04-25",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:fatura:G10:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 11867,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:fatura:G10:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 11867,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:fatura:G10:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 11867,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:fatura:G11:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 224469,
+   "kahin": 210956
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:fatura:G11:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 224469,
+   "kahin": 210956
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:fatura:G11:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 224469,
+   "kahin": 210956
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:projeksiyon:cari",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 8,
+   "kahin": 9
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:projeksiyon:hareket:s102",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 25380,
+    "date": "2026-06-27",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:takvim:cariKalemSayisi",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 7,
+   "kahin": 8
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:takvim:fatura:G10",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 11867,
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:takvim:fatura:G11",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 224469,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 210956,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:takvim:hareket:s102",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 25380,
+    "cari": "E",
+    "days": -3,
+    "direction": "in",
+    "dueDate": "2026-06-27",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 7",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-7",
+   "anahtar": "kson:vadeTakip:hareket:s102",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 25380,
+    "date": "2026-06-27",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:hareket:s084:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 19843
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:fatura:G11",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 119932,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 100089,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:fatura:G11:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 10595,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:fatura:G11:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 10595,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:fatura:G11:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 10595,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:s084:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 10595
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:fatura:G11",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 10595,
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s084:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 10595
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s111:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 12268,
+   "kahin": 1673
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s111",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12268,
+    "date": "2026-06-30",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 1673,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s111",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12268,
+    "cari": "D",
+    "days": 0,
+    "direction": "in",
+    "dueDate": "2026-06-30",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 8",
+    "state": "today"
+   },
+   "kahin": {
+    "amount": 1673,
+    "cari": "D",
+    "days": 0,
+    "direction": "in",
+    "dueDate": "2026-06-30",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 8",
+    "state": "today"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s111",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12268,
+    "date": "2026-06-30",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 1673,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s084:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 10595
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s111:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 12268,
+   "kahin": 1673
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s111",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12268,
+    "date": "2026-06-30",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 1673,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s111",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12268,
+    "cari": "D",
+    "days": 0,
+    "direction": "in",
+    "dueDate": "2026-06-30",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 8",
+    "state": "today"
+   },
+   "kahin": {
+    "amount": 1673,
+    "cari": "D",
+    "days": 0,
+    "direction": "in",
+    "dueDate": "2026-06-30",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 8",
+    "state": "today"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s111",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12268,
+    "date": "2026-06-30",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 1673,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k10:fatura:A4:acik",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 1415,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k10:fatura:A4:gosterilen",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 1415,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k10:fatura:A4:liste:gosterilen",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 1415,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k10:hareket:s018:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 15061,
+   "kahin": 46865
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k10:projeksiyon:hareket:s018",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 15061,
+    "date": "2026-06-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 46865,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k10:projeksiyon:hareket:s071",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 31804,
+    "date": "2026-05-21",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k10:takvim:hareket:s018",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 15061,
+    "cari": "D",
+    "days": -52,
+    "direction": "in",
+    "dueDate": "2026-06-06",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Delta 12",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 46865,
+    "cari": "D",
+    "days": -52,
+    "direction": "in",
+    "dueDate": "2026-06-06",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Delta 12",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k10:takvim:hareket:s071",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 31804,
+    "cari": "D",
+    "days": -40,
+    "direction": "in",
+    "dueDate": "2026-05-21",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 12",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k10:vadeTakip:hareket:s018",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 15061,
+    "date": "2026-06-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 46865,
+    "date": "2026-06-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k10:vadeTakip:hareket:s071",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 31804,
+    "date": "2026-05-21",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k11:fatura:A4:acik",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "SINIF DIŞI",
+   "program": 1415,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k11:fatura:A4:gosterilen",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 1415,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k11:fatura:A4:liste:gosterilen",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 1415,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k12:fatura:A5:acik",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 132071,
+   "kahin": 74189
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k12:fatura:A5:gosterilen",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 132071,
+   "kahin": 74189
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k12:fatura:A5:liste:gosterilen",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 132071,
+   "kahin": 74189
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k5:fatura:A1:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 41620,
+   "kahin": 84609
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k5:fatura:A1:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 41620,
+   "kahin": 84609
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k5:fatura:A1:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 41620,
+   "kahin": 84609
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k9:fatura:A4:acik",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 1415,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k9:fatura:A4:gosterilen",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 1415,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "k9:fatura:A4:liste:gosterilen",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 1415,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "kson:fatura:A5:acik",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 132071,
+   "kahin": 74189
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "kson:fatura:A5:gosterilen",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 132071,
+   "kahin": 74189
+  },
+  {
+   "senaryo": "rastgele-s1-12",
+   "anahtar": "kson:fatura:A5:liste:gosterilen",
+   "kume": "K3-s1-12-KS9",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 132071,
+   "kahin": 74189
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "adim:s011d:durum",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": "ret",
+   "kahin": "ok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 1222080,
+   "kahin": 779909
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:fatura:G11:acik",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 230000,
+   "kahin": 207728
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:fatura:G11:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 230000,
+   "kahin": 207728
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:fatura:G11:liste:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 230000,
+   "kahin": 207728
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:fatura:G7:acik",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 71486,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:fatura:G7:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 71486,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:fatura:G7:liste:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 71486,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 160962,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:hareket:s035:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 187451,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:projeksiyon:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:takvim:fatura:G11",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 230000,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 207728,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:takvim:fatura:G7",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 71486,
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:takvim:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "cari": "E",
+    "days": -58,
+    "direction": "in",
+    "dueDate": "2026-05-03",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k10:vadeTakip:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 1071341,
+   "kahin": 629170
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:fatura:G11:acik",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 150747,
+   "kahin": 56989
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:fatura:G11:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 150747,
+   "kahin": 56989
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:fatura:G11:liste:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 150747,
+   "kahin": 56989
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 160962,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:hareket:s035:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 187451,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:projeksiyon:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:takvim:fatura:G11",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 150747,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 56989,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:takvim:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "cari": "E",
+    "days": -58,
+    "direction": "in",
+    "dueDate": "2026-05-03",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k11:vadeTakip:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 1754479,
+   "kahin": 1312308
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:fatura:G11:acik",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 39001,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:fatura:G11:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 39001,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:fatura:G11:liste:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 39001,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 160962,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:hareket:s035:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 187451,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:hareket:s094:kalan",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 122181,
+   "kahin": 67424
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:projeksiyon:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:projeksiyon:hareket:s094",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 122181,
+    "date": "2026-06-29",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 67424,
+    "date": "2026-06-29",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:takvim:fatura:G11",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 39001,
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:takvim:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "cari": "E",
+    "days": -58,
+    "direction": "in",
+    "dueDate": "2026-05-03",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:takvim:hareket:s094",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 122181,
+    "cari": "E",
+    "days": -1,
+    "direction": "in",
+    "dueDate": "2026-06-29",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 67424,
+    "cari": "E",
+    "days": -1,
+    "direction": "in",
+    "dueDate": "2026-06-29",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:vadeTakip:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k12:vadeTakip:hareket:s094",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 122181,
+    "date": "2026-06-29",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 67424,
+    "date": "2026-06-29",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k2:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 159014,
+   "kahin": -283157
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k2:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 159014,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k2:projeksiyon:cari",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 2,
+   "kahin": 1
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k2:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 159014,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k2:takvim:cariKalemSayisi",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 2,
+   "kahin": 1
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k2:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 159014,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k2:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 159014,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k3:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 20839,
+   "kahin": -421332
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k3:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 20839,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k3:projeksiyon:cari",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 4,
+   "kahin": 3
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k3:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 20839,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k3:takvim:cariKalemSayisi",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 3,
+   "kahin": 2
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k3:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 20839,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k3:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 20839,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k4:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 208290,
+   "kahin": -233881
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k4:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 20839,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k4:hareket:s035:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 187451,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k4:projeksiyon:cari",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 6,
+   "kahin": 4
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k4:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 20839,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k4:projeksiyon:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k4:takvim:cariKalemSayisi",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 5,
+   "kahin": 3
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k4:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 20839,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k4:takvim:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "cari": "E",
+    "days": -58,
+    "direction": "in",
+    "dueDate": "2026-05-03",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k4:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 20839,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k4:vadeTakip:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 697110,
+   "kahin": 254939
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:fatura:G7:acik",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 400000,
+   "kahin": 254939
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:fatura:G7:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 400000,
+   "kahin": 254939
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:fatura:G7:liste:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 400000,
+   "kahin": 254939
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 109659,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:hareket:s035:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 187451,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:projeksiyon:cari",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 5,
+   "kahin": 3
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 109659,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:projeksiyon:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:takvim:cariKalemSayisi",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 4,
+   "kahin": 2
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:takvim:fatura:G7",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 400000,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 254939,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 109659,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:takvim:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "cari": "E",
+    "days": -58,
+    "direction": "in",
+    "dueDate": "2026-05-03",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 109659,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k5:vadeTakip:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 685572,
+   "kahin": 243401
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:fatura:G7:acik",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 388462,
+   "kahin": 243401
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:fatura:G7:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 388462,
+   "kahin": 243401
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:fatura:G7:liste:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 388462,
+   "kahin": 243401
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 109659,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:hareket:s035:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 187451,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:projeksiyon:cari",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 7,
+   "kahin": 5
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 109659,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:projeksiyon:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:takvim:cariKalemSayisi",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 6,
+   "kahin": 4
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:takvim:fatura:G7",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 388462,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 243401,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 109659,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:takvim:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "cari": "E",
+    "days": -58,
+    "direction": "in",
+    "dueDate": "2026-05-03",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 109659,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k6:vadeTakip:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 874437,
+   "kahin": 432266
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:fatura:G7:acik",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 296024,
+   "kahin": 202266
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:fatura:G7:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 296024,
+   "kahin": 202266
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:fatura:G7:liste:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 296024,
+   "kahin": 202266
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 160962,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:hareket:s035:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 187451,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:projeksiyon:cari",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 7,
+   "kahin": 5
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:projeksiyon:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:takvim:cariKalemSayisi",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 6,
+   "kahin": 4
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:takvim:fatura:G7",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 296024,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 202266,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:takvim:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "cari": "E",
+    "days": -58,
+    "direction": "in",
+    "dueDate": "2026-05-03",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k7:vadeTakip:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 709510,
+   "kahin": 267339
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:fatura:G7:acik",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 131097,
+   "kahin": 37339
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:fatura:G7:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 131097,
+   "kahin": 37339
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:fatura:G7:liste:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 131097,
+   "kahin": 37339
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 160962,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:hareket:s035:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 187451,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:projeksiyon:cari",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 6,
+   "kahin": 4
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:projeksiyon:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:takvim:cariKalemSayisi",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 5,
+   "kahin": 3
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:takvim:fatura:G7",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 131097,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 37339,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:takvim:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "cari": "E",
+    "days": -58,
+    "direction": "in",
+    "dueDate": "2026-05-03",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k8:vadeTakip:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 1159510,
+   "kahin": 717339
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:fatura:G7:acik",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 131097,
+   "kahin": 37339
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:fatura:G7:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 131097,
+   "kahin": 37339
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:fatura:G7:liste:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 131097,
+   "kahin": 37339
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 160962,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:hareket:s035:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 187451,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:projeksiyon:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:takvim:fatura:G7",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 131097,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 37339,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:takvim:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "cari": "E",
+    "days": -58,
+    "direction": "in",
+    "dueDate": "2026-05-03",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "k9:vadeTakip:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:cari:E:bakiye",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 1754479,
+   "kahin": 1312308
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:fatura:G11:acik",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 39001,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:fatura:G11:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 39001,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:fatura:G11:liste:gosterilen",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 39001,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:hareket:s006:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 160962,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:hareket:s035:kalan",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": 187451,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:hareket:s094:kalan",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 122181,
+   "kahin": 67424
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:projeksiyon:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:projeksiyon:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:projeksiyon:hareket:s094",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 122181,
+    "date": "2026-06-29",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 67424,
+    "date": "2026-06-29",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:takvim:fatura:G11",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 39001,
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:takvim:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "cari": "E",
+    "days": 7,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "upcoming"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:takvim:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "cari": "E",
+    "days": -58,
+    "direction": "in",
+    "dueDate": "2026-05-03",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:takvim:hareket:s094",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 122181,
+    "cari": "E",
+    "days": -1,
+    "direction": "in",
+    "dueDate": "2026-06-29",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 67424,
+    "cari": "E",
+    "days": -1,
+    "direction": "in",
+    "dueDate": "2026-06-29",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 13",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:vadeTakip:hareket:s006",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 160962,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:vadeTakip:hareket:s035",
+   "kume": "K1-S264",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 187451,
+    "date": "2026-05-03",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-13",
+   "anahtar": "kson:vadeTakip:hareket:s094",
+   "kume": "K1-S264",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 122181,
+    "date": "2026-06-29",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 67424,
+    "date": "2026-06-29",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k10:fatura:A3:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 87078,
+   "kahin": 168245
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k10:fatura:A3:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 87078,
+   "kahin": 168245
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k10:fatura:A3:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 87078,
+   "kahin": 168245
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k11:fatura:A3:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 32882,
+   "kahin": 134322
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k11:fatura:A3:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 32882,
+   "kahin": 134322
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k11:fatura:A3:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 32882,
+   "kahin": 134322
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k12:fatura:A3:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 31937,
+   "kahin": 133377
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k12:fatura:A3:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 31937,
+   "kahin": 133377
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k12:fatura:A3:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 31937,
+   "kahin": 133377
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:fatura:G6:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 20888,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:fatura:G6:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 20888,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:fatura:G6:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 20888,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:fatura:G7:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 150000,
+   "kahin": 62123
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:fatura:G7:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 150000,
+   "kahin": 62123
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:fatura:G7:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 150000,
+   "kahin": 62123
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:hareket:acilis:E:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 112482,
+   "kahin": 221247
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:projeksiyon:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 112482,
+    "date": "2026-05-14",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 221247,
+    "date": "2026-05-14",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:takvim:fatura:G6",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 20888,
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:takvim:fatura:G7",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 150000,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 62123,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:takvim:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 112482,
+    "cari": "E",
+    "days": -47,
+    "direction": "in",
+    "dueDate": "2026-05-14",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 17",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 221247,
+    "cari": "E",
+    "days": -47,
+    "direction": "in",
+    "dueDate": "2026-05-14",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 17",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k7:vadeTakip:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 112482,
+    "date": "2026-05-14",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 221247,
+    "date": "2026-05-14",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:fatura:A2:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 0,
+   "kahin": 34400
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:fatura:A2:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 34400
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:fatura:A2:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 34400
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:fatura:G7:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 104144,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:fatura:G7:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 104144,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:fatura:G7:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 104144,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:hareket:acilis:E:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 81461,
+   "kahin": 185605
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:hareket:s017:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 121234,
+   "kahin": 201492
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:hareket:s075:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 160000,
+   "kahin": 79742
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:projeksiyon:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 81461,
+    "date": "2026-05-14",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 185605,
+    "date": "2026-05-14",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:projeksiyon:hareket:s017",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 121234,
+    "date": "2026-06-01",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 201492,
+    "date": "2026-06-01",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:projeksiyon:hareket:s075",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 160000,
+    "date": "2026-05-11",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 79742,
+    "date": "2026-05-11",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:takvim:fatura:G7",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 104144,
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:takvim:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 81461,
+    "cari": "E",
+    "days": -47,
+    "direction": "in",
+    "dueDate": "2026-05-14",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 17",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 185605,
+    "cari": "E",
+    "days": -47,
+    "direction": "in",
+    "dueDate": "2026-05-14",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 17",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:takvim:hareket:s017",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 121234,
+    "cari": "D",
+    "days": -29,
+    "direction": "in",
+    "dueDate": "2026-06-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 17",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 201492,
+    "cari": "D",
+    "days": -29,
+    "direction": "in",
+    "dueDate": "2026-06-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 17",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:takvim:hareket:s075",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 160000,
+    "cari": "D",
+    "days": -50,
+    "direction": "in",
+    "dueDate": "2026-05-11",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 17",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 79742,
+    "cari": "D",
+    "days": -50,
+    "direction": "in",
+    "dueDate": "2026-05-11",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 17",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:vadeTakip:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 81461,
+    "date": "2026-05-14",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 185605,
+    "date": "2026-05-14",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:vadeTakip:hareket:s017",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 121234,
+    "date": "2026-06-01",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 201492,
+    "date": "2026-06-01",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k8:vadeTakip:hareket:s075",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 160000,
+    "date": "2026-05-11",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 79742,
+    "date": "2026-05-11",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:fatura:A2:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 0,
+   "kahin": 14127
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:fatura:A2:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 14127
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:fatura:A2:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 14127
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:fatura:A3:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 312960,
+   "kahin": 380000
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:fatura:A3:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 312960,
+   "kahin": 380000
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:fatura:A3:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 312960,
+   "kahin": 380000
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:fatura:G7:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 100263,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:fatura:G7:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 100263,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:fatura:G7:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 100263,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:hareket:acilis:E:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 81461,
+   "kahin": 181724
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:projeksiyon:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 81461,
+    "date": "2026-05-14",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 181724,
+    "date": "2026-05-14",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:takvim:fatura:G7",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 100263,
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:takvim:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 81461,
+    "cari": "E",
+    "days": -47,
+    "direction": "in",
+    "dueDate": "2026-05-14",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 17",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 181724,
+    "cari": "E",
+    "days": -47,
+    "direction": "in",
+    "dueDate": "2026-05-14",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 17",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "k9:vadeTakip:hareket:acilis:E",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 81461,
+    "date": "2026-05-14",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 181724,
+    "date": "2026-05-14",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "kson:fatura:A3:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 31937,
+   "kahin": 133377
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "kson:fatura:A3:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 31937,
+   "kahin": 133377
+  },
+  {
+   "senaryo": "rastgele-s1-17",
+   "anahtar": "kson:fatura:A3:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 31937,
+   "kahin": 133377
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "k12:fatura:G11:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 100000,
+   "kahin": 56668
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "k12:fatura:G11:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 100000,
+   "kahin": 56668
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "k12:fatura:G11:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 100000,
+   "kahin": 56668
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "k12:hareket:s017:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 26668,
+   "kahin": 70000
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "k12:projeksiyon:hareket:s017",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 26668,
+    "date": "2026-07-18",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 70000,
+    "date": "2026-07-18",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "k12:takvim:fatura:G11",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 100000,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 56668,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "kson:fatura:G11:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 100000,
+   "kahin": 56668
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "kson:fatura:G11:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 100000,
+   "kahin": 56668
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "kson:fatura:G11:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 100000,
+   "kahin": 56668
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "kson:hareket:s017:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 26668,
+   "kahin": 70000
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "kson:projeksiyon:hareket:s017",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 26668,
+    "date": "2026-07-18",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 70000,
+    "date": "2026-07-18",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-19",
+   "anahtar": "kson:takvim:fatura:G11",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 100000,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 56668,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k4:hareket:s034:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 0,
+   "kahin": 10675
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k4:projeksiyon:cari",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 4,
+   "kahin": 5
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k4:projeksiyon:hareket:s034",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": "yok",
+   "kahin": {
+    "amount": 10675,
+    "date": "2026-04-12",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k4:projeksiyon:hareket:s037",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 11013,
+    "date": "2026-04-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 338,
+    "date": "2026-04-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k4:takvim:cariKalemSayisi",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 3,
+   "kahin": 4
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k4:takvim:hareket:s034",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": "yok",
+   "kahin": {
+    "amount": 10675,
+    "cari": "E",
+    "days": -79,
+    "direction": "in",
+    "dueDate": "2026-04-12",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 20",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k4:takvim:hareket:s037",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 11013,
+    "cari": "E",
+    "days": -85,
+    "direction": "in",
+    "dueDate": "2026-04-06",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 20",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 338,
+    "cari": "E",
+    "days": -85,
+    "direction": "in",
+    "dueDate": "2026-04-06",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 20",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k4:vadeTakip:hareket:s034",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": "yok",
+   "kahin": {
+    "amount": 10675,
+    "date": "2026-04-12",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k4:vadeTakip:hareket:s037",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 11013,
+    "date": "2026-04-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 338,
+    "date": "2026-04-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k5:hareket:s034:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 0,
+   "kahin": 10675
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k5:projeksiyon:hareket:s034",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": "yok",
+   "kahin": {
+    "amount": 10675,
+    "date": "2026-04-12",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k5:projeksiyon:hareket:s037",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 11013,
+    "date": "2026-04-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 338,
+    "date": "2026-04-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k5:takvim:hareket:s034",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": "yok",
+   "kahin": {
+    "amount": 10675,
+    "cari": "E",
+    "days": -79,
+    "direction": "in",
+    "dueDate": "2026-04-12",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 20",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k5:takvim:hareket:s037",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 11013,
+    "cari": "E",
+    "days": -85,
+    "direction": "in",
+    "dueDate": "2026-04-06",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 20",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 338,
+    "cari": "E",
+    "days": -85,
+    "direction": "in",
+    "dueDate": "2026-04-06",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 20",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k5:vadeTakip:hareket:s034",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": "yok",
+   "kahin": {
+    "amount": 10675,
+    "date": "2026-04-12",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k5:vadeTakip:hareket:s037",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 11013,
+    "date": "2026-04-06",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 338,
+    "date": "2026-04-06",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k7:hareket:s033:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 55200,
+   "kahin": 74310
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k7:projeksiyon:hareket:s033",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 55200,
+    "date": "2026-03-28",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 74310,
+    "date": "2026-03-28",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k7:projeksiyon:hareket:s056",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 19110,
+    "date": "2026-05-01",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k7:takvim:hareket:s033",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 55200,
+    "cari": "D",
+    "days": -94,
+    "direction": "in",
+    "dueDate": "2026-03-28",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 20",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 74310,
+    "cari": "D",
+    "days": -94,
+    "direction": "in",
+    "dueDate": "2026-03-28",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 20",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k7:takvim:hareket:s056",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 19110,
+    "cari": "D",
+    "days": -60,
+    "direction": "in",
+    "dueDate": "2026-05-01",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 20",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k7:vadeTakip:hareket:s033",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 55200,
+    "date": "2026-03-28",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 74310,
+    "date": "2026-03-28",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-20",
+   "anahtar": "k7:vadeTakip:hareket:s056",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 19110,
+    "date": "2026-05-01",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k6:fatura:G6:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 112234,
+   "kahin": 111923
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k6:fatura:G6:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 112234,
+   "kahin": 111923
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k6:fatura:G6:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 112234,
+   "kahin": 111923
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k6:hareket:s000:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 12368,
+   "kahin": 12679
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k6:projeksiyon:hareket:s000",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12368,
+    "date": "2026-04-01",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 12679,
+    "date": "2026-04-01",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k6:takvim:fatura:G6",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 112234,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 111923,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k6:takvim:hareket:s000",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12368,
+    "cari": "E",
+    "days": -90,
+    "direction": "in",
+    "dueDate": "2026-04-01",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 23",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 12679,
+    "cari": "E",
+    "days": -90,
+    "direction": "in",
+    "dueDate": "2026-04-01",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 23",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k6:vadeTakip:hareket:s000",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12368,
+    "date": "2026-04-01",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 12679,
+    "date": "2026-04-01",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k7:fatura:G6:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 112234,
+   "kahin": 111923
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k7:fatura:G6:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 112234,
+   "kahin": 111923
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k7:fatura:G6:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 112234,
+   "kahin": 111923
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k7:hareket:s000:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 12368,
+   "kahin": 12679
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k7:projeksiyon:hareket:s000",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12368,
+    "date": "2026-04-01",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 12679,
+    "date": "2026-04-01",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k7:takvim:fatura:G6",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 112234,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 111923,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k7:takvim:hareket:s000",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12368,
+    "cari": "E",
+    "days": -90,
+    "direction": "in",
+    "dueDate": "2026-04-01",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 23",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 12679,
+    "cari": "E",
+    "days": -90,
+    "direction": "in",
+    "dueDate": "2026-04-01",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 23",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-23",
+   "anahtar": "k7:vadeTakip:hareket:s000",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 12368,
+    "date": "2026-04-01",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 12679,
+    "date": "2026-04-01",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "k12:hareket:s047:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 122514,
+   "kahin": 160622
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "k12:projeksiyon:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 122514,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 160622,
+    "date": "2026-07-07",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "k12:projeksiyon:hareket:s056",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 75612,
+    "date": "2026-05-05",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "k12:projeksiyon:hareket:s113",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 37504,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "k12:takvim:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 122514,
+    "cari": "E",
+    "days": -63,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 24",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 160622,
+    "cari": "E",
+    "days": -63,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 24",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "k12:takvim:hareket:s056",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 75612,
+    "cari": "E",
+    "days": -56,
+    "direction": "in",
+    "dueDate": "2026-05-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 24",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "k12:takvim:hareket:s113",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 37504,
+    "cari": "E",
+    "days": 0,
+    "direction": "in",
+    "dueDate": "2026-06-30",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 24",
+    "state": "today"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "k12:vadeTakip:hareket:s056",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 75612,
+    "date": "2026-05-05",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "k12:vadeTakip:hareket:s113",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 37504,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "kson:hareket:s047:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 122514,
+   "kahin": 160622
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "kson:projeksiyon:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 122514,
+    "date": "2026-07-07",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 160622,
+    "date": "2026-07-07",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "kson:projeksiyon:hareket:s056",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 75612,
+    "date": "2026-05-05",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "kson:projeksiyon:hareket:s113",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 37504,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "kson:takvim:hareket:s047",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 122514,
+    "cari": "E",
+    "days": -63,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 24",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 160622,
+    "cari": "E",
+    "days": -63,
+    "direction": "in",
+    "dueDate": "2026-07-07",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 24",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "kson:takvim:hareket:s056",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 75612,
+    "cari": "E",
+    "days": -56,
+    "direction": "in",
+    "dueDate": "2026-05-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 24",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "kson:takvim:hareket:s113",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 37504,
+    "cari": "E",
+    "days": 0,
+    "direction": "in",
+    "dueDate": "2026-06-30",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 24",
+    "state": "today"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "kson:vadeTakip:hareket:s056",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 75612,
+    "date": "2026-05-05",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-24",
+   "anahtar": "kson:vadeTakip:hareket:s113",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 37504,
+    "date": "2026-06-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k10:fatura:G12:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 269912,
+   "kahin": 42901
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k10:fatura:G12:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 269912,
+   "kahin": 42901
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k10:fatura:G12:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 269912,
+   "kahin": 42901
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k11:fatura:G14:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 172416,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k11:fatura:G14:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 172416,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k11:fatura:G14:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 172416,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k11:fatura:G15:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 480000,
+   "kahin": 425405
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k11:fatura:G15:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 480000,
+   "kahin": 425405
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k11:fatura:G15:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 480000,
+   "kahin": 425405
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k12:fatura:G14:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 172416,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k12:fatura:G14:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 172416,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k12:fatura:G14:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 172416,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k12:fatura:G15:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 310701,
+   "kahin": 256106
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k12:fatura:G15:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 310701,
+   "kahin": 256106
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k12:fatura:G15:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 310701,
+   "kahin": 256106
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k6:fatura:G4:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 48909,
+   "kahin": 53530
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k6:fatura:G4:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 48909,
+   "kahin": 53530
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k6:fatura:G4:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 48909,
+   "kahin": 53530
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k6:projeksiyon:cari",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 8,
+   "kahin": 7
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k6:projeksiyon:hareket:s049",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 4621,
+    "date": "2026-05-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k6:takvim:cariKalemSayisi",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 6,
+   "kahin": 5
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k6:takvim:fatura:G4",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 48909,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 53530,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k6:takvim:hareket:s049",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 4621,
+    "cari": "D",
+    "days": -54,
+    "direction": "in",
+    "dueDate": "2026-05-07",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Delta 25",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k6:vadeTakip:hareket:s049",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 4621,
+    "date": "2026-05-07",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k7:fatura:G11:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 227011,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k7:fatura:G11:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 227011,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k7:fatura:G11:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 227011,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k8:fatura:G11:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 91761,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k8:fatura:G11:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 91761,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k8:fatura:G11:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 91761,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k8:fatura:G12:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 440000,
+   "kahin": 304750
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k8:fatura:G12:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 440000,
+   "kahin": 304750
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k8:fatura:G12:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 440000,
+   "kahin": 304750
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k9:fatura:G11:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 91761,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k9:fatura:G11:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 91761,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k9:fatura:G11:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 91761,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k9:fatura:G12:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 440000,
+   "kahin": 304750
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k9:fatura:G12:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 440000,
+   "kahin": 304750
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "k9:fatura:G12:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 440000,
+   "kahin": 304750
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "kson:fatura:G14:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 172416,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "kson:fatura:G14:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 172416,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "kson:fatura:G14:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 172416,
+   "kahin": 0
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "kson:fatura:G15:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 310701,
+   "kahin": 256106
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "kson:fatura:G15:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 310701,
+   "kahin": 256106
+  },
+  {
+   "senaryo": "rastgele-s1-25",
+   "anahtar": "kson:fatura:G15:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 310701,
+   "kahin": 256106
+  },
+  {
+   "senaryo": "rastgele-s1-27",
+   "anahtar": "k6:fatura:A1:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 0,
+   "kahin": 32589
+  },
+  {
+   "senaryo": "rastgele-s1-27",
+   "anahtar": "k6:fatura:A1:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 32589
+  },
+  {
+   "senaryo": "rastgele-s1-27",
+   "anahtar": "k6:fatura:A1:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 32589
+  },
+  {
+   "senaryo": "rastgele-s1-27",
+   "anahtar": "k6:fatura:A2:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 0,
+   "kahin": 2058
+  },
+  {
+   "senaryo": "rastgele-s1-27",
+   "anahtar": "k6:fatura:A2:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 2058
+  },
+  {
+   "senaryo": "rastgele-s1-27",
+   "anahtar": "k6:fatura:A2:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 2058
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k11:fatura:G12:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 20734
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k11:fatura:G12:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 20734
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k11:fatura:G12:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 20734
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k11:hareket:s028:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 26384,
+   "kahin": 60000
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k11:projeksiyon:hareket:s028",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 26384,
+    "date": "2026-05-30",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 60000,
+    "date": "2026-05-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k11:projeksiyon:hareket:s079",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 54350,
+    "date": "2026-06-05",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k11:takvim:fatura:G12",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 20734,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k11:takvim:hareket:s028",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 26384,
+    "cari": "E",
+    "days": -31,
+    "direction": "in",
+    "dueDate": "2026-05-30",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 28",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 60000,
+    "cari": "E",
+    "days": -31,
+    "direction": "in",
+    "dueDate": "2026-05-30",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 28",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k11:takvim:hareket:s079",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 54350,
+    "cari": "E",
+    "days": -25,
+    "direction": "in",
+    "dueDate": "2026-06-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 28",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k11:vadeTakip:hareket:s028",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 26384,
+    "date": "2026-05-30",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 60000,
+    "date": "2026-05-30",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k11:vadeTakip:hareket:s079",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 54350,
+    "date": "2026-06-05",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:fatura:G11:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 9576
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:fatura:G11:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 9576
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:fatura:G11:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 9576
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:fatura:G12:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 26304,
+   "kahin": 60000
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:fatura:G12:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 26304,
+   "kahin": 60000
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:fatura:G12:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 26304,
+   "kahin": 60000
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:hareket:s069:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 0,
+   "kahin": 11078
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:projeksiyon:hareket:s069",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 11078,
+    "date": "2026-05-23",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:projeksiyon:hareket:s079",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 54350,
+    "date": "2026-06-05",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:takvim:fatura:G11",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 9576,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:takvim:fatura:G12",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 26304,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 60000,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:takvim:hareket:s069",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 11078,
+    "cari": "E",
+    "days": -38,
+    "direction": "in",
+    "dueDate": "2026-05-23",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 28",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:takvim:hareket:s079",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 54350,
+    "cari": "E",
+    "days": -25,
+    "direction": "in",
+    "dueDate": "2026-06-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 28",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:vadeTakip:hareket:s069",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 11078,
+    "date": "2026-05-23",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k12:vadeTakip:hareket:s079",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 54350,
+    "date": "2026-06-05",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k8:fatura:G7:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 51531
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k8:fatura:G7:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 51531
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k8:fatura:G7:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 51531
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k8:projeksiyon:hareket:s044",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 51531,
+    "date": "2026-04-23",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k8:takvim:fatura:G7",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 51531,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k8:takvim:hareket:s044",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 51531,
+    "cari": "E",
+    "days": -68,
+    "direction": "in",
+    "dueDate": "2026-04-23",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 28",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k8:vadeTakip:hareket:s044",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 51531,
+    "date": "2026-04-23",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k9:fatura:G7:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 107929,
+   "kahin": 128206
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k9:fatura:G7:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 107929,
+   "kahin": 128206
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k9:fatura:G7:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 107929,
+   "kahin": 128206
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k9:projeksiyon:hareket:s044",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 20277,
+    "date": "2026-04-23",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k9:takvim:fatura:G7",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 107929,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 128206,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k9:takvim:hareket:s044",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 20277,
+    "cari": "E",
+    "days": -68,
+    "direction": "in",
+    "dueDate": "2026-04-23",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 28",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "k9:vadeTakip:hareket:s044",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 20277,
+    "date": "2026-04-23",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:fatura:G11:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 9576
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:fatura:G11:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 9576
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:fatura:G11:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 0,
+   "kahin": 9576
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:fatura:G12:acik",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 26304,
+   "kahin": 60000
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:fatura:G12:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 26304,
+   "kahin": 60000
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:fatura:G12:liste:gosterilen",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": 26304,
+   "kahin": 60000
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:hareket:s069:kalan",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": 0,
+   "kahin": 11078
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:projeksiyon:hareket:s069",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 11078,
+    "date": "2026-05-23",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:projeksiyon:hareket:s079",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 54350,
+    "date": "2026-06-05",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:takvim:fatura:G11",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 9576,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:takvim:fatura:G12",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 26304,
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 60000,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:takvim:hareket:s069",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 11078,
+    "cari": "E",
+    "days": -38,
+    "direction": "in",
+    "dueDate": "2026-05-23",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 28",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:takvim:hareket:s079",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 54350,
+    "cari": "E",
+    "days": -25,
+    "direction": "in",
+    "dueDate": "2026-06-05",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 28",
+    "state": "overdue"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:vadeTakip:hareket:s069",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 11078,
+    "date": "2026-05-23",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-28",
+   "anahtar": "kson:vadeTakip:hareket:s079",
+   "kume": "K2-KS8.1-olcum",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": {
+    "amount": 54350,
+    "date": "2026-06-05",
+    "direction": "in"
+   },
+   "kahin": "yok"
+  },
+  {
+   "senaryo": "rastgele-s1-30",
+   "anahtar": "k2:hareket:s018:kalan",
+   "kume": "K4-s1-30-S104-yalin-olmayan",
+   "sinif246": "SINIF DIŞI",
+   "program": 88134,
+   "kahin": 70596
+  },
+  {
+   "senaryo": "rastgele-s1-30",
+   "anahtar": "k2:projeksiyon:hareket:s015",
+   "kume": "K4-s1-30-S104-yalin-olmayan",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 17538,
+    "date": "2026-03-16",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-30",
+   "anahtar": "k2:projeksiyon:hareket:s018",
+   "kume": "K4-s1-30-S104-yalin-olmayan",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 88134,
+    "date": "2026-04-19",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 70596,
+    "date": "2026-04-19",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-30",
+   "anahtar": "k2:takvim:hareket:s015",
+   "kume": "K4-s1-30-S104-yalin-olmayan",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 17538,
+    "cari": "E",
+    "days": -106,
+    "direction": "in",
+    "dueDate": "2026-03-16",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 30",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-30",
+   "anahtar": "k2:takvim:hareket:s018",
+   "kume": "K4-s1-30-S104-yalin-olmayan",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 88134,
+    "cari": "E",
+    "days": -72,
+    "direction": "in",
+    "dueDate": "2026-04-19",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 30",
+    "state": "overdue"
+   },
+   "kahin": {
+    "amount": 70596,
+    "cari": "E",
+    "days": -72,
+    "direction": "in",
+    "dueDate": "2026-04-19",
+    "label": "Tahsil Edilecek Borç",
+    "person": "Rastgele Epsilon 30",
+    "state": "overdue"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-30",
+   "anahtar": "k2:vadeTakip:hareket:s015",
+   "kume": "K4-s1-30-S104-yalin-olmayan",
+   "sinif246": "2.5.0 kararıyla değişen",
+   "program": "yok",
+   "kahin": {
+    "amount": 17538,
+    "date": "2026-03-16",
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "rastgele-s1-30",
+   "anahtar": "k2:vadeTakip:hareket:s018",
+   "kume": "K4-s1-30-S104-yalin-olmayan",
+   "sinif246": "SINIF DIŞI",
+   "program": {
+    "amount": 88134,
+    "date": "2026-04-19",
+    "direction": "in"
+   },
+   "kahin": {
+    "amount": 70596,
+    "date": "2026-04-19",
+    "direction": "in"
+   }
+  }
+ ]
+}

@@ -1,0 +1,77 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "kc2-iadesiz",
+ "aciklama": "uretici.py --tur s1 --tohum 27 --islem 120",
+ "dayanak": "KARARLAR.md C (2.4.5 madde 6: S1, K6.1–K6.4); ders 17",
+ "bugun": "2026-06-30",
+ "adimlar": [
+  {
+   "id": "c-s",
+   "islem": "cari_ac",
+   "ad": "S",
+   "isim": "Rastgele Sigma Tedarik 27",
+   "tarih": "2026-03-01",
+   "tur": "tedarikci",
+   "acilis": "3021,05",
+   "acilisYon": "alacak",
+   "acilisVade": "2026-03-07",
+   "acilisBeklenen": "2026-06-11"
+  },
+  {
+   "id": "s011",
+   "islem": "stok_satis_hesap",
+   "cari": "S",
+   "tutar": "637,46",
+   "tarih": "2026-03-11"
+  },
+  {
+   "id": "s012",
+   "islem": "odeme",
+   "cari": "S",
+   "tutar": "939,03",
+   "tarih": "2026-03-14"
+  },
+  {
+   "id": "s021",
+   "islem": "fatura",
+   "ad": "A1",
+   "cari": "S",
+   "tur": "alis",
+   "tutar": "2824,40",
+   "tarih": "2026-03-25"
+  },
+  {
+   "id": "s046",
+   "islem": "tahsilat",
+   "cari": "S",
+   "tutar": "2174,77",
+   "tarih": "2026-04-28"
+  },
+  {
+   "id": "s050",
+   "islem": "odeme",
+   "cari": "S",
+   "tutar": "1511,26",
+   "tarih": "2026-05-02"
+  },
+  {
+   "id": "s052",
+   "islem": "odeme",
+   "cari": "S",
+   "tutar": "998,91",
+   "tarih": "2026-05-03",
+   "fatura": "A1"
+  },
+  {
+   "id": "s054",
+   "islem": "odeme",
+   "cari": "S",
+   "tutar": "1655,09",
+   "tarih": "2026-05-05"
+  },
+  {
+   "id": "k6",
+   "islem": "kontrol"
+  }
+ ]
+}

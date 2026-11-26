@@ -1,0 +1,24 @@
+min-s1-12A4: 26/29 tuttu
+  2.5.0 kararıyla değişen beklenti: 5 denetim · farkların 2/3'i bu sınıfta — SINIF DIŞI 1
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:A4:acik: program 150000 · kâhin 138913 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alış iadesi notu), artanı kapatıcı alış iadesinin geri tahsilatı — KS8.1 simetri, kapattığı açık yeniden açılır))
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:A4:gosterilen: program 150000 · kâhin 138913 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:A4:liste:gosterilen: program 150000 · kâhin 138913 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 5 denetim, 1 senaryo · programla farkların 2'i bu sınıfta, 1'i SINIF DIŞI
+
+ÖZET [2.5.0]: 1 senaryo, 29 denetim, 3 fark (BULGU 3), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-m8x4/uc-m-s1-12A4-yeni
+26/29 denetim geçti

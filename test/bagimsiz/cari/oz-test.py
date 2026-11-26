@@ -75,6 +75,9 @@
 28. Bakım 28 (§40; S255 = A, S254 = C): yeni d60 (V1 … V12 — Mevcut Borç kartının içine aldığı faturaya bağlı ödeme önce gösterilen açığı, fazlası tek kuyruğa; bağsız karşılaştırma, tamamı kartta, iade / iade iptalinden
    sonra, sil / geri yükle, kart öncesi bağlı ödeme bugünkü kural; Q1 / Q2 S254 SUS) elle tablosu; mutantlar 358 (S255 B) / 359 (fazlası en son taksite) / 360 (S255 yok — bakım 27) DEĞERLE, 361 (S254 SUS kuralı) `elleYok` /
    `elleBelirsiz` ile.
+29. Bakım 29 (§41; S266 = A, S265 = C): yeni d61 (U1 KS8 carisinde S104'ün örneği — Alacak açık, verilen avans yok; U2 KS8 alacak yönlü kalemsiz — iade geri ödemesi önce, fazlası avansı kapatır; U3 şüpheli / değersiz
+   kayıtlı cari; U4 SK-54 SUS; U5 Alacak'ın vadesi avanstan önce; U7 S265 SUS; U8 S265 bileşimsiz — DENETLENİR) elle tablosu; mutantlar 362 (S266 yok) / 363 (S104 B) / 365 (S265 susması taşar) DEĞERLE, 364 (SK-54 SUS yok) /
+   366 (S265 SUS yok) SUS kuralı `elleYok` / `elleBelirsiz` ile.
 Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
 """
 import importlib.util
@@ -346,7 +349,7 @@ def main():
         eski_sk = [b for b in _m.son_belirsiz if "SK-9 … SK-12" in b or "(SK-13;" in b]
         denetle("%s SK-9 … SK-13 susması yok (S102–S105 A, S99 A)" % ad, not eski_sk, json.dumps(eski_sk[:2], ensure_ascii=False))
     # 2. mutantlar 200–223 (… bakım 20: 313–316)
-    SUSMA_MUTANTLARI = {316, 324, 353, 357, 361}  # bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 26 (§38 — SK-47; 347 KALDIRILDI — S243 = A ile kural oldu) / bakım 27 (§39 — SK-51; 351 / 354 S249 / S251 ile DEĞERLE) / bakım 28 (§40 — S254): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
+    SUSMA_MUTANTLARI = {316, 324, 353, 357, 361, 364, 366}  # bakım 29 (§41 — SK-54 / S265): 364 / 366 da SUS kuralı · bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 26 (§38 — SK-47; 347 KALDIRILDI — S243 = A ile kural oldu) / bakım 27 (§39 — SK-51; 351 / 354 S249 / S251 ile DEĞERLE) / bakım 28 (§40 — S254): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
     for n, ad in M.MUTASYONLAR.items():
         if n < 200:
             continue

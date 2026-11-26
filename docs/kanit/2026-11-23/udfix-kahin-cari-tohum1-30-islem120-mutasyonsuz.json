@@ -1,0 +1,158 @@
+{
+  "ad": "udfix-kahin-cari-tohum1-30-islem120-mutasyonsuz",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --tohum 1-30 --islem 120 --mutasyonsuz --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/udfix-q7k2/kc2",
+  "commit": "0b530461393a3e61aaa2a0378ff9b0184e0effa9",
+  "dal": "udfix-e7934c5e",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-23T00:53:10.301Z",
+  "sure_sn": 358.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 175671,
+    "gecen": 175073,
+    "basarisiz": 598,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 598 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:fatura:G9:acik: program 410572 · kâhin 207115 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9; K-b FIFO + KS8.1 artan): geri ödenen iade kapatıcı değ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:fatura:G9:gosterilen: program 410572 · kâhin 207115 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:fatura:G9:liste:gosterilen: program 410572 · kâhin 207115 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:s001:kalan: program 0 · kâhin 78850 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:s047:kalan: program 291144 · kâhin 390000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:s058:kalan: program 228372 · kâhin 81227 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:projeksiyon:hareket:s001: program \"yok\" · kâhin {\"amount\":78850,\"date\":\"2026-07-08\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k10:projeksiyon:hareket:s047: program {\"amount\":291144,\"date\":\"2026-06-06\",\"direction\":\"in\"} · kâhin {\"amount\":390000,\"date\":\"2026-06-06\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:projeksiyon:hareket:s058: program {\"amount\":228372,\"date\":\"2026-07-07\",\"direction\":\"in\"} · kâhin {\"amount\":81227,\"date\":\"2026-07-07\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30,",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k10:takvim:fatura:G9: program {\"amount\":237676,\"direction\":\"in\"} · kâhin {\"amount\":207115,\"direction\":\"in\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:takvim:hareket:s058: program {\"amount\":228372,\"cari\":\"E\",\"days\":7,\"direction\":\"in\",\"dueDate\":\"2026-07-07\",\"label\":\"Tahsil Edilecek Borç\",\"person\":\"Rastgele Epsilon 3\",\"state\":\"upcoming\"} · kâhin {\"amount\":81227,\"cari\":\"E\",\"days\":7,\"direction\":\"in\",\"dueDate\":\"2026-07-07\",\"label\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:vadeTakip:hareket:s047: program {\"amount\":291144,\"date\":\"2026-06-06\",\"direction\":\"in\"} · kâhin {\"amount\":390000,\"date\":\"2026-06-06\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k5:hareket:s047:kalan: program 128580 · kâhin 137700 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k5:projeksiyon:cari: program 8 · kâhin 7 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k5:projeksiyon:hareket:s045: program {\"amount\":9120,\"date\":\"2026-05-02\",\"direction\":\"in\"} · kâhin \"yok\" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k5:projeksiyon:hareket:s047: program {\"amount\":128580,\"date\":\"2026-06-06\",\"direction\":\"in\"} · kâhin {\"amount\":137700,\"date\":\"2026-06-06\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere b",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k5:takvim:cariKalemSayisi: program 7 · kâhin 6 (K6.3 takvimdeki cari kalemlerinin sayısı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k5:takvim:hareket:s045: program {\"amount\":9120,\"cari\":\"E\",\"days\":-59,\"direction\":\"in\",\"dueDate\":\"2026-05-02\",\"label\":\"Tahsil Edilecek Borç\",\"person\":\"Rastgele Epsilon 3\",\"state\":\"overdue\"} · kâhin \"yok\" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Bor",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k5:vadeTakip:hareket:s045: program {\"amount\":9120,\"date\":\"2026-05-02\",\"direction\":\"in\"} · kâhin \"yok\" (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Ta",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k5:vadeTakip:hareket:s047: program {\"amount\":128580,\"date\":\"2026-06-06\",\"direction\":\"in\"} · kâhin {\"amount\":137700,\"date\":\"2026-06-06\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k6:hareket:s047:kalan: program 128580 · kâhin 137700 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k6:hareket:s058:kalan: program 64596 · kâhin 55476 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k6:projeksiyon:hareket:s047: program {\"amount\":128580,\"date\":\"2026-06-06\",\"direction\":\"in\"} · kâhin {\"amount\":137700,\"date\":\"2026-06-06\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, g",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k6:projeksiyon:hareket:s058: program {\"amount\":64596,\"date\":\"2026-07-07\",\"direction\":\"in\"} · kâhin {\"amount\":55476,\"date\":\"2026-07-07\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, g",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k6:takvim:hareket:s058: program {\"amount\":64596,\"cari\":\"E\",\"days\":7,\"direction\":\"in\",\"dueDate\":\"2026-07-07\",\"label\":\"Tahsil Edilecek Borç\",\"person\":\"Rastgele Epsilon 3\",\"state\":\"upcoming\"} · kâhin {\"amount\":55476,\"cari\":\"E\",\"days\":7,\"direction\":\"in\",\"dueDate\":\"2026-07-07\",\"label\":\"",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-23/udfix-kahin-cari-tohum1-30-islem120-mutasyonsuz.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4444ad6c4d6abab7",
+  "ham_cikti_sha256": "54cb984d2c56914138c062a1c386e6f49de1e0e19469022428dda07d7ec66156",
+  "ham_cikti_bayt": 174080
+}

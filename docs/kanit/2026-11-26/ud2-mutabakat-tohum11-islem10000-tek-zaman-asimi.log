@@ -1,0 +1,6 @@
+# ud2 (ikinci deneme, TEK BAŞINA): npm run test:mutabakat -- --islem 10000 --tohum 11 --tohumlar 1 · commit 5fea60d6 (ürün kodu 3175b26c ile aynı) · flock -s + timeout 6900 · 05:10–07:05 UTC, başka koşu yok (yük ~1 / 4 çekirdek)
+# SONUÇ: ZAMAN AŞIMI (çıkış 124) — 6900 sn'de bitmedi; günlükte ✗ satırı YOK (motor ilk uyuşmazlıkta yazıp durur); kaç işleme ulaşıldığı OKUNAMADI (ders 4) → BELİRSİZ. Yerelde 7000 sn sınırına sığmıyor; yetkili koşu GitHub Uzun Doğrulama (330 dk).
+
+> destekofis@2.5.0 test:mutabakat
+> node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs --islem 10000 --tohum 11 --tohumlar 1
+

@@ -1,0 +1,143 @@
+{
+  "ad": "kahin-cari29-uzun-taban-utc",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --tohum 1-30 --islem 120 --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc29-a51/uzun-taban-utc",
+  "commit": "35fbfe44a427fb04240de1e2f5a5967a2cb17e27",
+  "dal": "worktree-agent-a512c4c9a6a5549a7",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-26T11:58:05.770Z",
+  "sure_sn": 2146.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 175671,
+    "gecen": 175649,
+    "basarisiz": 22,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 22 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:fatura:A4:acik: program 1415 · kâhin 0 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alış iadesi notu), artanı kapatıcı alış",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:fatura:A4:gosterilen: program 1415 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:fatura:A4:liste:gosterilen: program 1415 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k11:fatura:A4:acik: program 1415 · kâhin 0 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alış iadesi notu), artanı ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k11:fatura:A4:gosterilen: program 1415 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k11:fatura:A4:liste:gosterilen: program 1415 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k12:fatura:A5:acik: program 132071 · kâhin 74189 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alış iadesi notu), artanı kapatıc",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k12:fatura:A5:gosterilen: program 132071 · kâhin 74189 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k12:fatura:A5:liste:gosterilen: program 132071 · kâhin 74189 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k9:fatura:A4:acik: program 1415 · kâhin 0 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alış iadesi notu), artanı kapatıcı alış ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k9:fatura:A4:gosterilen: program 1415 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k9:fatura:A4:liste:gosterilen: program 1415 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] kson:fatura:A5:acik: program 132071 · kâhin 74189 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alış iadesi notu), artanı kapatı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] kson:fatura:A5:gosterilen: program 132071 · kâhin 74189 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] kson:fatura:A5:liste:gosterilen: program 132071 · kâhin 74189 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k2:hareket:s018:kalan: program 88134 · kâhin 70596 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:projeksiyon:hareket:s015: program \"yok\" · kâhin {\"amount\":17538,\"date\":\"2026-03-16\",\"direction\":\"in\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k2:projeksiyon:hareket:s018: program {\"amount\":88134,\"date\":\"2026-04-19\",\"direction\":\"in\"} · kâhin {\"amount\":70596,\"date\":\"2026-04-19\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bug",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:takvim:hareket:s015: program \"yok\" · kâhin {\"amount\":17538,\"cari\":\"E\",\"days\":-106,\"direction\":\"in\",\"dueDate\":\"2026-03-16\",\"label\":\"Tahsil Edilecek Borç\",\"person\":\"Rastgele Epsilon 30\",\"state\":\"overdue\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Bo",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k2:takvim:hareket:s018: program {\"amount\":88134,\"cari\":\"E\",\"days\":-72,\"direction\":\"in\",\"dueDate\":\"2026-04-19\",\"label\":\"Tahsil Edilecek Borç\",\"person\":\"Rastgele Epsilon 30\",\"state\":\"overdue\"} · kâhin {\"amount\":70596,\"cari\":\"E\",\"days\":-72,\"direction\":\"in\",\"dueDate\":\"2026-0",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:vadeTakip:hareket:s015: program \"yok\" · kâhin {\"amount\":17538,\"date\":\"2026-03-16\",\"direction\":\"in\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Tak",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k2:vadeTakip:hareket:s018: program {\"amount\":88134,\"date\":\"2026-04-19\",\"direction\":\"in\"} · kâhin {\"amount\":70596,\"date\":\"2026-04-19\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc29-a51/kanit/2026-11-26/kahin-cari29-uzun-taban-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a512c4c9a6a5549a7",
+  "ham_cikti_sha256": "a3d5390c9c8d41badabd69c86e17ed7aebc0e202ae19e9c4d9685c6b09e70688",
+  "ham_cikti_bayt": 81193
+}

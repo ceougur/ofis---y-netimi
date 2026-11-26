@@ -1,0 +1,59 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "min-s1-3",
+ "aciklama": "uretici.py --tur s1 --tohum 3 --islem 120",
+ "dayanak": "KARARLAR.md C (2.4.5 madde 6: S1, K6.1–K6.4); ders 17",
+ "bugun": "2026-06-30",
+ "adimlar": [
+  {
+   "id": "c-e",
+   "islem": "cari_ac",
+   "ad": "E",
+   "isim": "Rastgele Epsilon 3",
+   "tarih": "2026-03-01",
+   "acilis": "842,34",
+   "acilisVade": "2026-06-23",
+   "acilisBeklenen": "2026-03-24"
+  },
+  {
+   "id": "s002",
+   "islem": "borc",
+   "cari": "E",
+   "tutar": "3900,00",
+   "tarih": "2026-03-05"
+  },
+  {
+   "id": "s022",
+   "islem": "supheli_al",
+   "ad": "SPs022",
+   "cari": "E",
+   "tutar": "3412,49",
+   "tarih": "2026-03-28"
+  },
+  {
+   "id": "s022d",
+   "islem": "degersiz",
+   "supheli": "SPs022",
+   "tutar": "3412,49",
+   "tarih": "2026-03-28"
+  },
+  {
+   "id": "s038",
+   "islem": "tahsilat",
+   "cari": "E",
+   "tutar": "3062,41",
+   "tarih": "2026-04-19"
+  },
+  {
+   "id": "s045",
+   "islem": "odeme",
+   "cari": "E",
+   "tutar": "2365,56",
+   "tarih": "2026-05-02"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  }
+ ]
+}

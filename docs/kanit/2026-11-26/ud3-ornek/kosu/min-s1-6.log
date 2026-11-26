@@ -1,0 +1,45 @@
+küçüldü 90
+küçüldü 86
+küçüldü 59
+küçüldü 57
+küçüldü 54
+küçüldü 52
+küçüldü 50
+küçüldü 47
+küçüldü 45
+küçüldü 43
+küçüldü 41
+küçüldü 38
+küçüldü 36
+küçüldü 33
+küçüldü 21
+küçüldü 20
+küçüldü 19
+küçüldü 18
+küçüldü 17
+EN KÜÇÜK 17 adım
+  {"id": "c-d", "islem": "cari_ac", "ad": "D", "isim": "Rastgele Delta 6", "tarih": "2026-03-01", "acilis": "3029,97", "acilisBeklenen": "2026-05-11"}
+  {"id": "s011", "islem": "tahsilat", "cari": "D", "tutar": "1442,79", "tarih": "2026-03-21"}
+  {"id": "s024", "islem": "fatura", "ad": "G2", "cari": "D", "tutar": "2558,23", "tarih": "2026-04-04"}
+  {"id": "s025", "islem": "tahsilat", "cari": "D", "tutar": "1435,58", "tarih": "2026-04-07"}
+  {"id": "s026", "islem": "stok_iade", "cari": "D", "tutar": "1051,49", "tarih": "2026-04-07"}
+  {"id": "s031", "islem": "tahsilat", "cari": "D", "tutar": "1928,83", "tarih": "2026-04-10"}
+  {"id": "s037", "islem": "tahsilat", "cari": "D", "tutar": "1491,97", "tarih": "2026-04-17", "vade": "2026-05-11"}
+  {"id": "s040", "islem": "fatura", "ad": "G5", "cari": "D", "tutar": "2336,05", "tarih": "2026-04-18"}
+  {"id": "s045", "islem": "fatura", "ad": "G6", "cari": "D", "tutar": "61,64", "tarih": "2026-04-23"}
+  {"id": "s047", "islem": "fatura", "ad": "G7", "cari": "D", "tutar": "1377,53", "tarih": "2026-04-27"}
+  {"id": "s053", "islem": "borc", "cari": "D", "tutar": "695,34", "tarih": "2026-05-06", "beklenen": "2026-08-18"}
+  {"id": "s055", "islem": "borc", "cari": "D", "tutar": "2100,00", "tarih": "2026-05-08"}
+  {"id": "s063", "islem": "stok_iade", "cari": "D", "tutar": "79,15", "tarih": "2026-05-23"}
+  {"id": "s066", "islem": "tahsilat", "cari": "D", "tutar": "1821,51", "tarih": "2026-05-26", "vade": "2026-06-15"}
+  {"id": "s076", "islem": "odeme", "cari": "D", "tutar": "2185,66", "tarih": "2026-06-01"}
+  {"id": "s077", "islem": "tahsilat", "cari": "D", "tutar": "1511,81", "tarih": "2026-06-02"}
+  {"id": "s087", "islem": "tahsilat", "cari": "D", "tutar": "2487,98", "tarih": "2026-06-20"}
+  {"id": "k1", "islem": "kontrol"}
+  fark k1:hareket:s055:kalan P= 96 K= 3829 | SINIF DIŞI | C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde aç
+  fark k1:projeksiyon:hareket:s055 P= {"amount": 96, "date": "2026-05-08", "direction": "in"} K= {"amount": 3829, "date": "2026-05-08", "direction": "in"} | 2.5.0 kararıyla değişen | KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa 
+  fark k1:projeksiyon:hareket:s076 P= {"amount": 109235, "date": "2026-06-01", "direction": "in"} K= {"amount": 105502, "date": "2026-06-01", "direction": "in"} | 2.5.0 kararıyla değişen | C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç'
+  fark k1:takvim:hareket:s055 P= {"amount": 96, "cari": "D", "days": -53, "direction": "in", "dueDate": "2026-05-08", "label": "Tahsil Edilecek Borç", "person": "Rastgele Delta 6", "s K= {"amount": 3829, "cari": "D", "days": -53, "direction": "in", "dueDate": "2026-05-08", "label": "Tahsil Edilecek Borç", "person": "Rastgele Delta 6",  | 2.5.0 kararıyla değişen | K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = B
+  fark k1:takvim:hareket:s076 P= {"amount": 109235, "cari": "D", "days": -29, "direction": "in", "dueDate": "2026-06-01", "label": "Tahsil Edilecek Borç", "person": "Rastgele Delta 6" K= {"amount": 105502, "cari": "D", "days": -29, "direction": "in", "dueDate": "2026-06-01", "label": "Tahsil Edilecek Borç", "person": "Rastgele Delta 6" | 2.5.0 kararıyla değişen | C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç'
+  fark k1:vadeTakip:hareket:s055 P= {"amount": 96, "date": "2026-05-08", "direction": "in"} K= {"amount": 3829, "date": "2026-05-08", "direction": "in"} | 2.5.0 kararıyla değişen | K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir
+  fark k1:vadeTakip:hareket:s076 P= {"amount": 109235, "date": "2026-06-01", "direction": "in"} K= {"amount": 105502, "date": "2026-06-01", "direction": "in"} | 2.5.0 kararıyla değişen | C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç'

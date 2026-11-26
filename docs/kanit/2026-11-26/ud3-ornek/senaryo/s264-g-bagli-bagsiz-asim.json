@@ -1,0 +1,66 @@
+{
+ "dil": "destekofis-cari/3",
+ "bugun": "2026-10-08",
+ "aciklama": "UD turu 3 S264 testinin kâhin karşılığı",
+ "dayanak": "S264 = A",
+ "adimlar": [
+  {
+   "id": "c-e",
+   "islem": "cari_ac",
+   "ad": "E",
+   "isim": "Degersiz S264",
+   "tarih": "2026-09-01"
+  },
+  {
+   "id": "s001",
+   "islem": "fatura",
+   "ad": "G1",
+   "cari": "E",
+   "tutar": "2900,00",
+   "tarih": "2026-09-05"
+  },
+  {
+   "id": "s002",
+   "islem": "borc",
+   "cari": "E",
+   "tutar": "3400,00",
+   "tarih": "2026-09-11",
+   "vade": "2026-12-31"
+  },
+  {
+   "id": "s003",
+   "islem": "tahsilat",
+   "cari": "E",
+   "tutar": "1000,00",
+   "tarih": "2026-09-17",
+   "fatura": "G1"
+  },
+  {
+   "id": "s003b",
+   "islem": "tahsilat",
+   "cari": "E",
+   "tutar": "500,00",
+   "tarih": "2026-09-17"
+  },
+  {
+   "id": "s004",
+   "islem": "supheli_al",
+   "ad": "SP",
+   "cari": "E",
+   "tutar": "3000,00",
+   "tarih": "2026-09-17"
+  },
+  {
+   "id": "s005",
+   "islem": "degersiz",
+   "supheli": "SP",
+   "tutar": "2500,01",
+   "tarih": "2026-09-17"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  }
+ ],
+ "ad": "s264-g-bagli-bagsiz-asim"
+}
