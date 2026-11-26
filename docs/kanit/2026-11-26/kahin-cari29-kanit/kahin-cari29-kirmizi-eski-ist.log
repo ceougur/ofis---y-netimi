@@ -1,0 +1,56 @@
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:hareket:u1a:kalan: elle 20000 · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:takvim:hareket:u1a: elle {"amount": 20000, "dueDate": "2026-04-30", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -46, "cari": "U1", "person": "Uğur Birinci"} · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:vadeTakip:hareket:u1a: elle {"amount": 20000, "date": "2026-04-30", "direction": "out"} · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:projeksiyon:hareket:u1a: elle {"amount": 20000, "date": "2026-04-30", "direction": "out"} · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:takvim:hareket:u1o1: elle "yok" · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:vadeTakip:hareket:u1o1: elle "yok" · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:projeksiyon:hareket:u1o1: elle "yok" · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:takvim:hareket:u1o2: elle "yok" · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:vadeTakip:hareket:u1o2: elle "yok" · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:projeksiyon:hareket:u1o2: elle "yok" · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:cari:U1:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:cari:U1:acikToplam: elle -20000 · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:cari:U1:acikEsitBakiye: elle false · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:hareket:u2b2:kalan: elle 5000 · kâhin 0
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:takvim:hareket:u2b2: elle {"amount": 5000, "dueDate": "2026-04-10", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -66, "cari": "U2", "person": "Uğur İkinci"} · kâhin "yok"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:vadeTakip:hareket:u2b2: elle {"amount": 5000, "date": "2026-04-10", "direction": "in"} · kâhin "yok"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:projeksiyon:hareket:u2b2: elle {"amount": 5000, "date": "2026-04-10", "direction": "in"} · kâhin "yok"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:takvim:hareket:u2o: elle "yok" · kâhin {"amount": 10000, "dueDate": "2026-03-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -106, "cari": "U2", "person": "Uğur İkinci"}
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:vadeTakip:hareket:u2o: elle "yok" · kâhin {"amount": 10000, "date": "2026-03-01", "direction": "in"}
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:projeksiyon:hareket:u2o: elle "yok" · kâhin {"amount": 10000, "date": "2026-03-01", "direction": "in"}
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:cari:U2:gecikmis: elle 5000 · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:cari:U2:acikToplam: elle 5000 · kâhin 0
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:cari:U2:acikEsitBakiye: elle true · kâhin false
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:hareket:u3b2:kalan: elle 15000 · kâhin 0
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:takvim:hareket:u3b2: elle {"amount": 15000, "dueDate": "2026-04-10", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -66, "cari": "U3", "person": "Uğur Üçüncü"} · kâhin "yok"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:vadeTakip:hareket:u3b2: elle {"amount": 15000, "date": "2026-04-10", "direction": "in"} · kâhin "yok"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:projeksiyon:hareket:u3b2: elle {"amount": 15000, "date": "2026-04-10", "direction": "in"} · kâhin "yok"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:takvim:hareket:u3o: elle "yok" · kâhin {"amount": 20000, "dueDate": "2026-03-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -106, "cari": "U3", "person": "Uğur Üçüncü"}
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:vadeTakip:hareket:u3o: elle "yok" · kâhin {"amount": 20000, "date": "2026-03-01", "direction": "in"}
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:projeksiyon:hareket:u3o: elle "yok" · kâhin {"amount": 20000, "date": "2026-03-01", "direction": "in"}
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:cari:U3:gecikmis: elle 15000 · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:takvim:hareket:u5o2: elle "yok" · kâhin {"amount": 10000, "dueDate": "2026-03-10", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -97, "cari": "U5", "person": "Uğur Beşinci"}
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:vadeTakip:hareket:u5o2: elle "yok" · kâhin {"amount": 10000, "date": "2026-03-10", "direction": "in"}
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:projeksiyon:hareket:u5o2: elle "yok" · kâhin {"amount": 10000, "date": "2026-03-10", "direction": "in"}
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:cari:U5:gecikmis: elle 0 · kâhin "ANAHTAR YOK"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:hareket:u4a:kalan: elle YOK (tanımsız) · kâhin 0
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:takvim:hareket:u4a: elle YOK (tanımsız) · kâhin "yok"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:vadeTakip:hareket:u4a: elle YOK (tanımsız) · kâhin "yok"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:takvim:hareket:u4o: elle YOK (tanımsız) · kâhin "yok"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:vadeTakip:hareket:u4o: elle YOK (tanımsız) · kâhin "yok"
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:cari:U4:gecikmis: elle YOK (tanımsız) · kâhin 0
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:cari:U4:acikToplam: elle YOK (tanımsız) · kâhin 0
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:fatura:A7:acik: elle YOK (tanımsız) · kâhin 75000
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:fatura:A7:gosterilen: elle YOK (tanımsız) · kâhin 75000
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:fatura:A7:liste:gosterilen: elle YOK (tanımsız) · kâhin 75000
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:fatura:A7:kartta: elle YOK (tanımsız) · kâhin 0
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:fatura:A7:taksitte: elle YOK (tanımsız) · kâhin false
+  ✗ d61-c5-s266-s265-yalin-olmayan.json k1:fatura:A7:liste:taksitte: elle YOK (tanımsız) · kâhin false
+  ✗ d61-c5-s266-s265-yalin-olmayan.json belirsiz kaydı yok: k1: cari U4 tanımsız + SK-54
+  ✗ d61-c5-s266-s265-yalin-olmayan.json belirsiz kaydı yok: k1: cari U7 + S265 = C
+d61-c5-s266-s265-yalin-olmayan.json: 74 elle denetim, 50 kırmızı
+ESKİ KÂHİN KIRMIZISI: 50/74 elle denetim kırmızı, 24 aynı (beklenen: kırmızı > 0; her kırmızının eski değeri yukarıda)
+# tests 50
+# pass 50
+# fail 0
+50/50 denetim geçti
