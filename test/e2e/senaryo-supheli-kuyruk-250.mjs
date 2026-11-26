@@ -148,6 +148,66 @@ try {
   await shot(page, "supheli-kuyruk-3-etiket");
   await page.locator(`${card} .hof-plans-entries`).first().screenshot({ path: path.join(shots, "supheli-kuyruk-3-hareketler.png") }).catch(() => null);
   await escClose(page).catch(() => null);
+
+  // 2.5.0 UD turu 4 — S269 = A / S268 = A (karar metinleri test/supheli-degersiz-s269-250.test.mjs başında AYNEN): ayrı cari — Fatura 2.900 (−30) · Borç 3.400 (−25) · faturaya bağlı
+  // tahsilat 2.876,45 (−5) · Şüpheliye Al 3.000 (−5). Kalan 123,55 ama Değersiz o günün bağlı payından önce sayılır: form 3.000'i (−5 tarihiyle) önerir; 1.000 yazılınca kayıt kapanır
+  // görünür ama düğme kalır ve 2.000'i önerir; 2.000 de kabul, bakiye 423,55 (v2.4.9 ile aynı). Gerçek tıklama, insan hızında yazım, Tab (ders 12); sayılar veri tabanından.
+  console.log("\n■ 4 S269 / S268: Değersiz Alacak Yaz formu yazılabilir tutarı (3.000, o günün tarihiyle) önerir; kısmi 1.000'den sonra düğme kalır, 2.000 önerir ve kabul edilir");
+  const acc2 = await must("cari 2", admin.post("/api/workspace/accounts", { name: "Değersiz Ekran Müşterisi", type: "customer", registeredOn: day(-400) }));
+  const g2 = (await must("fatura 2.900", admin.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc2.id, issueDate: day(-30), lines: [{ name: "Hizmet", qty: 1, unitPrice: "2900", vatRate: 0 }], payment: { rest: "open" } }))).id;
+  await must("borç 3.400", admin.post(`/api/workspace/accounts/${acc2.id}/entries`, { kind: "debt", amount: "3400", date: day(-25), dueDate: day(60), note: "Borç" }));
+  await must("bağlı tahsilat", admin.post(`/api/workspace/accounts/${acc2.id}/entries`, { kind: "in", amount: "2876,45", date: day(-5), method: "cash", cashForce: true, similarOk: true, invoiceId: g2 }));
+  const rid = (await must("şüpheliye al 3.000", admin.post(`/api/workspace/accounts/${acc2.id}/doubtful`, { amount: "3000", date: day(-5), reason: "lawsuit", note: "dava" }))).record.id;
+  const written = () => Number(store.get("SELECT COALESCE(SUM(CAST(ROUND(amount * 100) AS INTEGER)), 0) AS n FROM account_entries WHERE account_id = ? AND source = 'doubtful'", acc2.id).n) / 100;
+  const balance2 = async () => (await must("cari kartı", admin.get(`/api/workspace/accounts/${acc2.id}`))).totals.balance;
+  const money = value => Number(String(value).replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", "."));
+  const woButton = `${card} [data-dbt-act="writeoff"][data-dbt-id="${rid}"]`;
+  const openCard2 = async () => {
+    await escClose(page).catch(() => null);
+    await page.evaluate(id => window.HOF.accounts.open(id), acc2.id);
+    await page.waitForSelector(`${card} table[data-doubtful-list]`, { timeout: 10000 });
+    await page.waitForTimeout(400);
+  };
+  const writeOffStep = async (label, { expectRoom, typed = "" }) => {
+    await page.click(woButton);
+    await page.waitForSelector(`${top} .hof-form input[name="amount"]`);
+    const intro = await textOf(page, top);
+    const suggested = money(await page.inputValue(`${top} input[name="amount"]`));
+    const dateValue = await page.inputValue(`${top} input[name="date"]`);
+    await page.locator(top).first().screenshot({ path: path.join(shots, `supheli-kuyruk-${label}-form.png`) }).catch(() => null);
+    ok(new RegExp(`En çok ₺${expectRoom.replace(".", "\\.")},00 \\(kalan şüpheli`).test(intro), `${label}: ipucu “${(intro.match(/En çok[^)]*\)/) || [""])[0].slice(0, 200)}” (en çok ₺${expectRoom},00)`);
+    ok(suggested === money(`${expectRoom},00`) && dateValue === day(-5), `${label}: önerilen tutar ${suggested}, tarih ${dateValue} (beklenen ${expectRoom},00 · ${day(-5)})`);
+    if (typed) {
+      await page.click(`${top} input[name="amount"]`, { clickCount: 3 });
+      await page.keyboard.type(typed, { delay: 120 });
+      await page.keyboard.press("Tab");
+      await page.waitForTimeout(300);
+    }
+    await page.click(`${top} .hof-form button[type="submit"]`);
+    await page.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+    await page.click(`${top} [data-answer="yes"]`);
+    const closed = await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible .hof-form input[name=\"amount\"]"), null, { timeout: 10000 }).then(() => true).catch(() => false);
+    ok(closed, `${label}: form kapandı (kayıt alındı)`);
+    await page.waitForTimeout(800);
+  };
+  await openCard2();
+  ok(Boolean(await page.$(woButton)), "açık kayıtta (kalan 123,55) Değersiz Alacak Yaz düğmesi var");
+  await writeOffStep("4a", { expectRoom: "3.000", typed: "1000" });
+  ok(written() === 1000, `veri tabanı: Değersiz toplamı ${written()} (1.000)`);
+  await openCard2();
+  ok(Boolean(await page.$(woButton)), "kalanı aynı günün bağlı payıyla 0'a inmiş kayıtta düğme GÖRÜNÜR (S269 = A)");
+  await page.$eval(`${card} table[data-doubtful-list]`, node => node.scrollIntoView({ block: "center" })).catch(() => null);
+  await page.locator(`${card} table[data-doubtful-list]`).first().screenshot({ path: path.join(shots, "supheli-kuyruk-4-dugme.png") }).catch(() => null);
+  await writeOffStep("4b", { expectRoom: "2.000" });
+  ok(written() === 3000, `veri tabanı: Değersiz toplamı ${written()} (3.000)`);
+  const bal2 = await balance2();
+  ok(bal2 === 423.55, `bakiye ${bal2} (2.900 + 3.400 − 2.876,45 − 3.000 = 423,55; v2.4.9 ile aynı)`);
+  await openCard2();
+  ok(!(await page.$(woButton)), "sınır doldu: Değersiz Alacak Yaz düğmesi yok");
+  const integrity2 = await must("Mutabakat Testi", admin.get("/api/workspace/ledger/integrity"));
+  ok(integrity2.ok === true, "Mutabakat Testi tamam");
+  await shot(page, "supheli-kuyruk-4-son");
+  await escClose(page).catch(() => null);
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);

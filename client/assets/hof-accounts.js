@@ -1209,7 +1209,7 @@
         ].join("");
       const actions = record =>
         can
-          ? `${record.stateKey === "open" ? `<button type="button" class="hof-mini hof-mini-text" data-dbt-act="provision" data-dbt-id="${esc(record.id)}" title="VUK 323: B 654 / A 129; en çok kalan şüpheli tutar">Karşılık Ayır</button><button type="button" class="hof-mini hof-mini-text" data-dbt-act="writeoff" data-dbt-id="${esc(record.id)}" title="Kesinleşmiş kayıp: cari bakiyesi o tutar kadar kapanır">Değersiz Alacak Yaz</button><button type="button" class="hof-mini hof-mini-text" data-dbt-act="release" data-dbt-id="${esc(record.id)}" title="Kalanı 120'ye geri alır (B 120 / A 128); karşılık 644'e çözülür">Şüpheliden Çıkar</button>` : ""}<button type="button" class="hof-mini hof-mini-danger" data-dbt-act="delete" data-dbt-id="${esc(record.id)}" title="Kaydı sil (Silinenler'e)" aria-label="Kaydı sil">×</button>`
+          ? `${record.stateKey === "open" ? `<button type="button" class="hof-mini hof-mini-text" data-dbt-act="provision" data-dbt-id="${esc(record.id)}" title="VUK 323: B 654 / A 129; en çok kalan şüpheli tutar">Karşılık Ayır</button><button type="button" class="hof-mini hof-mini-text" data-dbt-act="writeoff" data-dbt-id="${esc(record.id)}" title="Kesinleşmiş kayıp: cari bakiyesi o tutar kadar kapanır">Değersiz Alacak Yaz</button><button type="button" class="hof-mini hof-mini-text" data-dbt-act="release" data-dbt-id="${esc(record.id)}" title="Kalanı 120'ye geri alır (B 120 / A 128); karşılık 644'e çözülür">Şüpheliden Çıkar</button>` : record.status === "open" && record.writeOffRoomMinor > 0 ? `<button type="button" class="hof-mini hof-mini-text" data-dbt-act="writeoff" data-dbt-id="${esc(record.id)}" title="Kesinleşmiş kayıp: cari bakiyesi o tutar kadar kapanır">Değersiz Alacak Yaz</button>` : ""}<button type="button" class="hof-mini hof-mini-danger" data-dbt-act="delete" data-dbt-id="${esc(record.id)}" title="Kaydı sil (Silinenler'e)" aria-label="Kaydı sil">×</button>`
           : "";
       slot.outerHTML = data.records.length
         ? `<table class="hof-table hof-cash-table hof-acc-doubtful-table" data-doubtful-list><thead><tr><th>Tarih</th><th>Neden</th><th class="num">Tutar</th><th class="num">Karşılık</th><th class="num">Tahsil Edilen</th><th class="num">Değersiz</th><th class="num">Kalan</th><th>Durum</th><th></th></tr></thead><tbody>${data.records
@@ -1270,13 +1270,21 @@
   }
   function doubtfulWriteOffForm(account, record) {
     const requestId = HOF.requestId();
+    // UD turu 4 — S268 = A / S269 = A: üst sınır ve önerilen tutar sunucunun yazılabilir tutarı (writeOffRoomMinor: kalan + o günün faturaya bağlı tahsilat payı — Değersiz o günün
+    // tahsilatından önce sayılır); bu pay yalnız başka bir günde varsa (writeOffRoomDate) tarih o güne kurulur.
+    const room = Math.max(record.remainingMinor, Number(record.writeOffRoomMinor) || 0);
+    const roomDate = room > record.remainingMinor ? record.writeOffRoomDate || "" : "";
+    const roomText =
+      room > record.remainingMinor
+        ? `En çok ${minorMoney(room)} (kalan şüpheli ${minorMoney(record.remainingMinor)} + ${roomDate ? `${HOF.formatDate(roomDate)} tarihli` : "bugünkü"} faturaya bağlı tahsilatın bu kayda düşen payı; Değersiz o günün tahsilatından önce sayılır${roomDate ? ", tarih o güne kuruldu" : ""}).`
+        : `En çok ${minorMoney(room)} (kalan şüpheli).`;
     HOF.formModal({
       title: "Değersiz Alacak Yaz",
       eyebrow: `${account.name} · ${record.reasonLabel} · ${minorMoney(record.amountMinor)}`,
-      intro: `Kesinleşmiş kayıp: karşılık varsa önce 129'dan, kalanı 659 Diğer Olağandışı Gider'den düşer; A 128. Cari kartına "Değersiz Alacak" alacak satırı yazılır, bakiye o tutar kadar kapanır. En çok ${minorMoney(record.remainingMinor)} (kalan şüpheli).`,
+      intro: `Kesinleşmiş kayıp: karşılık varsa önce 129'dan, kalanı 659 Diğer Olağandışı Gider'den düşer; A 128. Cari kartına "Değersiz Alacak" alacak satırı yazılır, bakiye o tutar kadar kapanır. ${roomText}`,
       fields: [
-        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: office().amountText?.(record.remainingMinor / 100) || String(record.remainingMinor / 100), autofocus: true },
-        { name: "date", label: "Tarih", type: "date", max: "today", required: true, value: office().todayIso?.() || "" },
+        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: office().amountText?.(room / 100) || String(room / 100), autofocus: true },
+        { name: "date", label: "Tarih", type: "date", max: "today", required: true, value: roomDate || office().todayIso?.() || "" },
         { name: "note", label: "Açıklama", maxlength: 300, placeholder: "Ör. mahkeme kararı, aciz vesikası" },
       ],
       submitLabel: "Değersiz Alacak Yaz",
