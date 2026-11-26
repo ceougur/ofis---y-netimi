@@ -1,0 +1,10 @@
+Y1-c ENJEKTE EDİLEMEDİ (0 eşleşme) — Y-1 — ön geçişte kart bilinen satırların sonunda değil Kayıt Tarihi'nde
+API TABAN (mutantsız): tests 137, pass 137, fail 0, çıkış 0
+S110-a ENJEKTE EDİLEMEDİ (0 eşleşme) — S110 B — kart açık borç fazlayken de vade sırasıyla (S2) bütün borçları içine alır
+S120-a ENJEKTE EDİLEMEDİ (0 eşleşme) — S120 B — eşit tek elle borç yoksa bütün borçlar vade sırasıyla (faturalar da)
+S126-b ENJEKTE EDİLEMEDİ (0 eşleşme) — S126 — açık borca eşit kartın içine alma sırası elle borçlar önce (S120 kolu gibi; fatura dahil eskiden yeniye değil)
+S98S99-d ÖLDÜ (tests 81, pass 80, fail 1) — S98 × S99 — faturasız stok iadesinin açık kalanı da karşı tarafın parasıyla bu kuralla kapanır (K-b / KS8.1 kaybolur — kâhin c12 B1) · öldüren: KS8.1 korunur (kâhin c12 B1): Borç 200 · faturasız stok iadesi 500 · bağsız Ödeme 400 ⇒ ödeme önce iadenin açık 300'ünü geri öder, artan 100 Borç'u yeniden açar (Borç 100 = bakiye) | Ç5-B tur 2b-2 — S99 (fatura durumu tek kuyruktan)
+KD3-b ENJEKTE EDİLEMEDİ (0 eşleşme) — S129 — satırın Ödenen'i tutar − kuyruk kalanı (netleşme / kırpma da ödenmiş görünür)
+# tests 6
+# pass 1
+# fail 5

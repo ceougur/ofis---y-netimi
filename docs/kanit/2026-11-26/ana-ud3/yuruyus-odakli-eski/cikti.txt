@@ -1,0 +1,35 @@
+(node:13725) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kurulum: şüpheli kayıt dbt-96a095f8-aed8-48d1-a899-0eef3a8207c9 kalan 12355
+
+■ 1 Cari kartı — faturasız iade geri ödemesi (beklenen: Açılış Kalan 918,61, bakiye 1.389,50)
+  iade carisi:
+     TarihİşlemBorçAlacakBakiye
+     01.03.2026BorçAçılış bakiyesi₺1.483,45₺1.483,45Borçlu✎×
+     25.06.2026AlacakSatış iadesi: UD3 Malı 1 Adet × 1.914,34 TL₺1.914,34₺430,89Alacaklıstoktan
+     26.06.2026Tahsilat Nakit Makbuz 1₺564,84₺995,73AlacaklıMakbuz✎×
+     30.06.2026Ödeme Nakit₺2.385,23₺1.389,50BorçluMakbuz✎×
+     Toplam₺3.868,68₺2.479,18
+
+■ 2 Zil — iade carisinin kalemleri (beklenen: Ödeme avansı 'Tahsil Edilecek Borç' 470,89)
+     Tahsil Edilecek Borç · 2026-03-01 · 824.66
+     Tahsil Edilecek Borç · 2026-06-30 · 564.84
+
+■ 3 EKRANDAN: aynı gün Değersiz Yaz 3.000 (beklenen: kabul, Değersiz Yazıldı, bakiye 423,55)
+  onay sorusu: var
+  form hatası: ["Değersiz yazılacak tutar (3.000,00 TL) kalan şüpheli tutarı (123,55 TL) aşıyor."]
+  bildirim: []
+  bakiye (veri tabanı): 3423.55
+  kayıt: open · değersiz 0 · kalan 12355
+  değersiz carisi:
+     TarihNoTürDurumTutarAçık
+     05.09.2026FIS2026000000001Satış FaturasıVadesi Geçti₺2.900,00₺23,55
+     TarihNedenTutarKarşılıkTahsil EdilenDeğersizKalanDurum
+     17.09.2026BNK-2026-000004Dava₺3.000,00₺0,00₺2.876,45₺0,00₺123,55Şüpheli AlacaktaKarşılık AyırDeğersiz Alacak YazŞüpheliden Çıkar×
+     TarihİşlemBorçAlacakBakiye
+     05.09.2026FaturaSatış Faturası FIS2026000000001₺2.900,00₺2.900,00BorçluFatura
+     11.09.2026BorçBorçVade 31.12.2026 · Kalan ₺3.400,00₺3.400,00₺6.300,00Borçlu✎×
+     17.09.2026Tahsilat Nakit Makbuz 2 Faturaya BağlıTahsilat₺2.876,45₺3.423,55BorçluMakbuz✎×
+     Toplam₺6.300,00₺2.876,45
+
+sayfa hatası: yok

@@ -1,0 +1,140 @@
+HIZ KABUL UD3 ŞÜPHELİ · nproc 4 · başta 0.91 1.07 1.24 1/114 13131 · 15:37:51
+=== eski (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski ) · başta 0.91 1.07 1.24 1/114 13140 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/kopya · yük (başta) 0.91 1.07 1.24
+açılış 23827 ms
+veri: 1484 cari, 102295 cari satırı, 34026 fatura, 13992 kart; ölçülen kart plan-aa6e56f8-791a-4203-b94c-c119ff3f32de (2 taksit; carisinin satırı 100)
+en yoğun müşteri account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 (100 satır); fatura invoice-c1bf72cb-c934-4252-93a3-32e9d81da6ff
+şüpheli ölçüm carisi account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~99 (100 satır)
+tur 1 · yük 1.01 1.08 1.24
+  YAZIM Şüpheliye Al: 200 · 6873.9 ms · olay döngüsü en çok 6866.1 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6631.4 ms
+  YAZIM Değersiz Yaz: 200 · 6841.3 ms · olay döngüsü en çok 6840.9 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6673.1 ms
+  şüpheli listesi: 200 · 9 ms · olay döngüsü en çok 5.8 ms
+  cari kartı (yazımdan sonra ilk): 200 · 169.6 ms · olay döngüsü en çok 0 ms
+tur 2 · yük 1.00 1.07 1.23
+  YAZIM Şüpheliye Al: 200 · 7501.6 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 7299.9 ms
+  YAZIM Değersiz Yaz: 200 · 6742.1 ms · olay döngüsü en çok 6736.1 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6608.1 ms
+  şüpheli listesi: 200 · 5.5 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 171 ms · olay döngüsü en çok 163.7 ms
+tur 3 · yük 1.08 1.09 1.23
+  YAZIM Şüpheliye Al: 200 · 6159.2 ms · olay döngüsü en çok 6157.2 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 5953.4 ms
+  YAZIM Değersiz Yaz: 200 · 6296.7 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6169.8 ms
+  şüpheli listesi: 200 · 3.9 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 148.2 ms · olay döngüsü en çok 0 ms
+yük (sonda) 1.15 1.10 1.24
+çıkış 0 · sonda 1.15 1.10 1.24 1/110 13159
+=== yeni (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud2-sinama 2dd4071f) · başta 1.15 1.10 1.24 1/110 13167 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud2-sinama · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/kopya · yük (başta) 1.15 1.10 1.24
+açılış 25324 ms
+veri: 1484 cari, 102295 cari satırı, 34026 fatura, 13992 kart; ölçülen kart plan-aa6e56f8-791a-4203-b94c-c119ff3f32de (2 taksit; carisinin satırı 100)
+en yoğun müşteri account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 (100 satır); fatura invoice-c1bf72cb-c934-4252-93a3-32e9d81da6ff
+şüpheli ölçüm carisi account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~99 (100 satır)
+tur 1 · yük 1.10 1.09 1.23
+  YAZIM Şüpheliye Al: 200 · 6639.1 ms · olay döngüsü en çok 6627 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6474.1 ms
+  YAZIM Değersiz Yaz: 200 · 6575.7 ms · olay döngüsü en çok 6572.5 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6289.2 ms
+  şüpheli listesi: 200 · 11.7 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 168.5 ms · olay döngüsü en çok 165.4 ms
+tur 2 · yük 1.22 1.12 1.24
+  YAZIM Şüpheliye Al: 200 · 6601.8 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6385.4 ms
+  YAZIM Değersiz Yaz: 200 · 6688 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6413 ms
+  şüpheli listesi: 200 · 5.4 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 144.9 ms · olay döngüsü en çok 0 ms
+tur 3 · yük 1.17 1.11 1.23
+  YAZIM Şüpheliye Al: 200 · 6574.6 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6363.8 ms
+  YAZIM Değersiz Yaz: 200 · 6306.8 ms · olay döngüsü en çok 6308.2 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6076.7 ms
+  şüpheli listesi: 200 · 3.8 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 146.9 ms · olay döngüsü en çok 0 ms
+yük (sonda) 1.15 1.11 1.23
+çıkış 0 · sonda 1.15 1.11 1.23 1/110 13186
+=== eski (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski ) · başta 1.14 1.11 1.23 1/110 13194 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/kopya · yük (başta) 1.14 1.11 1.23
+açılış 22360 ms
+veri: 1484 cari, 102295 cari satırı, 34026 fatura, 13992 kart; ölçülen kart plan-aa6e56f8-791a-4203-b94c-c119ff3f32de (2 taksit; carisinin satırı 100)
+en yoğun müşteri account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 (100 satır); fatura invoice-c1bf72cb-c934-4252-93a3-32e9d81da6ff
+şüpheli ölçüm carisi account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~99 (100 satır)
+tur 1 · yük 1.17 1.12 1.23
+  YAZIM Şüpheliye Al: 200 · 6428.3 ms · olay döngüsü en çok 6421.5 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6291.9 ms
+  YAZIM Değersiz Yaz: 200 · 6209.1 ms · olay döngüsü en çok 6207.6 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6100.3 ms
+  şüpheli listesi: 200 · 5.7 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 153.4 ms · olay döngüsü en çok 0 ms
+tur 2 · yük 1.13 1.11 1.22
+  YAZIM Şüpheliye Al: 200 · 6449.1 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6261.9 ms
+  YAZIM Değersiz Yaz: 200 · 6184.9 ms · olay döngüsü en çok 6182.4 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6073.5 ms
+  şüpheli listesi: 200 · 5 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 136.5 ms · olay döngüsü en çok 130.2 ms
+tur 3 · yük 1.11 1.11 1.22
+  YAZIM Şüpheliye Al: 200 · 6518.4 ms · olay döngüsü en çok 6513.8 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6340.5 ms
+  YAZIM Değersiz Yaz: 200 · 5930.1 ms · olay döngüsü en çok 5930.7 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 5821.9 ms
+  şüpheli listesi: 200 · 4 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 151.3 ms · olay döngüsü en çok 0 ms
+yük (sonda) 1.09 1.10 1.22
+çıkış 0 · sonda 1.09 1.10 1.22 1/110 13214
+=== yeni (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud2-sinama 2dd4071f) · başta 1.09 1.10 1.22 1/110 13222 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud2-sinama · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/kopya · yük (başta) 1.09 1.10 1.22
+açılış 21493 ms
+veri: 1484 cari, 102295 cari satırı, 34026 fatura, 13992 kart; ölçülen kart plan-aa6e56f8-791a-4203-b94c-c119ff3f32de (2 taksit; carisinin satırı 100)
+en yoğun müşteri account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 (100 satır); fatura invoice-c1bf72cb-c934-4252-93a3-32e9d81da6ff
+şüpheli ölçüm carisi account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~99 (100 satır)
+tur 1 · yük 1.20 1.13 1.22
+  YAZIM Şüpheliye Al: 200 · 6066.1 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 5935.6 ms
+  YAZIM Değersiz Yaz: 200 · 6280.9 ms · olay döngüsü en çok 6274.7 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6020.9 ms
+  şüpheli listesi: 200 · 7 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 178.1 ms · olay döngüsü en çok 170.8 ms
+tur 2 · yük 1.40 1.17 1.23
+  YAZIM Şüpheliye Al: 200 · 6155.9 ms · olay döngüsü en çok 6153 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 5963.1 ms
+  YAZIM Değersiz Yaz: 200 · 6568 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6342.2 ms
+  şüpheli listesi: 200 · 5 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 145 ms · olay döngüsü en çok 138.7 ms
+tur 3 · yük 1.38 1.18 1.24
+  YAZIM Şüpheliye Al: 200 · 6273.9 ms · olay döngüsü en çok 6270.5 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6080.3 ms
+  YAZIM Değersiz Yaz: 200 · 6262.1 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6002.5 ms
+  şüpheli listesi: 200 · 4 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 145.8 ms · olay döngüsü en çok 0 ms
+yük (sonda) 1.32 1.17 1.23
+çıkış 0 · sonda 1.32 1.17 1.23 1/110 13242
+=== yeni (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud2-sinama 2dd4071f) · başta 1.32 1.17 1.23 1/110 13250 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud2-sinama · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/kopya · yük (başta) 1.32 1.17 1.23
+açılış 22057 ms
+veri: 1484 cari, 102295 cari satırı, 34026 fatura, 13992 kart; ölçülen kart plan-aa6e56f8-791a-4203-b94c-c119ff3f32de (2 taksit; carisinin satırı 100)
+en yoğun müşteri account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 (100 satır); fatura invoice-c1bf72cb-c934-4252-93a3-32e9d81da6ff
+şüpheli ölçüm carisi account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~99 (100 satır)
+tur 1 · yük 1.21 1.16 1.22
+  YAZIM Şüpheliye Al: 200 · 6573.5 ms · olay döngüsü en çok 6568.3 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6435.8 ms
+  YAZIM Değersiz Yaz: 200 · 6215.4 ms · olay döngüsü en çok 6211.8 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 5995.4 ms
+  şüpheli listesi: 200 · 4.3 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 141.9 ms · olay döngüsü en çok 0 ms
+tur 2 · yük 1.57 1.23 1.25
+  YAZIM Şüpheliye Al: 200 · 6193.9 ms · olay döngüsü en çok 6195 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6019.7 ms
+  YAZIM Değersiz Yaz: 200 · 6081.5 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 5860.9 ms
+  şüpheli listesi: 200 · 6 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 214 ms · olay döngüsü en çok 207.5 ms
+tur 3 · yük 1.44 1.22 1.25
+  YAZIM Şüpheliye Al: 200 · 6302.9 ms · olay döngüsü en çok 6304 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6111.2 ms
+  YAZIM Değersiz Yaz: 200 · 5889 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 5668.4 ms
+  şüpheli listesi: 200 · 3.9 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 124.8 ms · olay döngüsü en çok 122.4 ms
+yük (sonda) 1.38 1.21 1.24
+çıkış 0 · sonda 1.38 1.21 1.24 1/109 13270
+=== eski (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski ) · başta 1.35 1.21 1.24 1/109 13278 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/kopya · yük (başta) 1.35 1.21 1.24
+açılış 21066 ms
+veri: 1484 cari, 102295 cari satırı, 34026 fatura, 13992 kart; ölçülen kart plan-aa6e56f8-791a-4203-b94c-c119ff3f32de (2 taksit; carisinin satırı 100)
+en yoğun müşteri account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66 (100 satır); fatura invoice-c1bf72cb-c934-4252-93a3-32e9d81da6ff
+şüpheli ölçüm carisi account-c76d48dd-a0bb-4137-9a77-3805e2d9ac66~99 (100 satır)
+tur 1 · yük 1.25 1.20 1.24
+  YAZIM Şüpheliye Al: 200 · 6200.5 ms · olay döngüsü en çok 6195 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 6043.5 ms
+  YAZIM Değersiz Yaz: 200 · 6207.8 ms · olay döngüsü en çok 6203.4 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6069.4 ms
+  şüpheli listesi: 200 · 4.6 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 130.3 ms · olay döngüsü en çok 0 ms
+tur 2 · yük 1.21 1.19 1.23
+  YAZIM Şüpheliye Al: 200 · 6150.4 ms · olay döngüsü en çok 6144.7 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 5978.8 ms
+  YAZIM Değersiz Yaz: 200 · 6504.7 ms · olay döngüsü en çok 6501.2 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6380.8 ms
+  şüpheli listesi: 200 · 7.4 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 156.4 ms · olay döngüsü en çok 153.1 ms
+tur 3 · yük 1.16 1.18 1.23
+  YAZIM Şüpheliye Al: 200 · 6075.6 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: doubtful_receivables yazımı (kapsam dışı)) · kapı 5880.9 ms
+  YAZIM Değersiz Yaz: 200 · 6619.7 ms · olay döngüsü en çok 0 ms · kapı yolu full (neden: account_entries: tanınmayan kaynak (doubtful)) · kapı 6497.5 ms
+  şüpheli listesi: 200 · 5.6 ms · olay döngüsü en çok 0 ms
+  cari kartı (yazımdan sonra ilk): 200 · 165.6 ms · olay döngüsü en çok 0 ms
+yük (sonda) 1.14 1.17 1.22
+çıkış 0 · sonda 1.12 1.17 1.22 1/109 13296
+bitti 15:44:10

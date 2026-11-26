@@ -1,0 +1,437 @@
+TAP version 13
+# (node:26743) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S264 = A — Değersiz sınırı aynı günün sırasına uyar (o günün bağlı payından ÖNCE)
+    # Subtest: (a) aynı gün, şüpheliye almadan önce yazılmış BAĞLI tahsilat: Değersiz 3.000 (tam tutar) kabul; kayıt Değersiz Yazıldı, kalan 0; bakiye 423,55
+    not ok 1 - (a) aynı gün, şüpheliye almadan önce yazılmış BAĞLI tahsilat: Değersiz 3.000 (tam tutar) kabul; kayıt Değersiz Yazıldı, kalan 0; bakiye 423,55
+      ---
+      duration_ms: 156.351306
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/supheli-degersiz-s264-250.test.mjs:34:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        değersiz 3.000: 400 {"ok":false,"error":"Değersiz yazılacak tutar (3.000,00 TL) kalan şüpheli tutarı (123,55 TL) aşıyor.","code":"doubtful-writeoff-exceeds","field":"amount","remainingMinor":12355}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/supheli-degersiz-s264-250.test.mjs:36:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (a′) aynı kurulumda kalanı aşan Değersiz (3.000,01) yine 400 doubtful-writeoff-exceeds — sınır 3.000; hiçbir satır yazılmaz
+    not ok 2 - (a′) aynı kurulumda kalanı aşan Değersiz (3.000,01) yine 400 doubtful-writeoff-exceeds — sınır 3.000; hiçbir satır yazılmaz
+      ---
+      duration_ms: 105.148601
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/supheli-degersiz-s264-250.test.mjs:45:3'
+      failureType: 'testCodeFailure'
+      error: 'iletide sınır 3.000,00 TL'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Değersiz yazılacak tutar (3.000,01 TL) kalan şüpheli tutarı (123,55 TL) aşıyor.'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/supheli-degersiz-s264-250.test.mjs:50:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b) aynı gün BAĞSIZ tahsilat: karar kapsamaz — sınır kalan 123,55; Değersiz 3.000 400 doubtful-writeoff-exceeds (kâhin ve v2.4.9 aynı)
+    ok 3 - (b) aynı gün BAĞSIZ tahsilat: karar kapsamaz — sınır kalan 123,55; Değersiz 3.000 400 doubtful-writeoff-exceeds (kâhin ve v2.4.9 aynı)
+      ---
+      duration_ms: 128.189424
+      type: 'test'
+      ...
+    # Subtest: (e) aynı gün BAĞLI 1.000 + BAĞSIZ 500 tahsilat, sonra Şüpheliye Al 3.000: sınır 3.000 − 500 = 2.500 (yalnız bağlı pay geri sayılır); 2.500,01 400, 2.500 kabul
+    not ok 4 - (e) aynı gün BAĞLI 1.000 + BAĞSIZ 500 tahsilat, sonra Şüpheliye Al 3.000: sınır 3.000 − 500 = 2.500 (yalnız bağlı pay geri sayılır); 2.500,01 400, 2.500 kabul
+      ---
+      duration_ms: 108.261986
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/supheli-degersiz-s264-250.test.mjs:65:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /2\.500,00 TL/. Input:
+        
+        'Değersiz yazılacak tutar (2.500,01 TL) kalan şüpheli tutarı (1.500,00 TL) aşıyor.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Değersiz yazılacak tutar (2.500,01 TL) kalan şüpheli tutarı (1.500,00 TL) aşıyor.'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/supheli-degersiz-s264-250.test.mjs:75:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (c) bağlı tahsilat kayıttan SONRAKİ bir günde (S25 (c)): payı şüpheliden düşer — ertesi günün Değersiz'inde sınır 123,55 (S264 yalnız aynı günü söyler)
+    ok 5 - (c) bağlı tahsilat kayıttan SONRAKİ bir günde (S25 (c)): payı şüpheliden düşer — ertesi günün Değersiz'inde sınır 123,55 (S264 yalnız aynı günü söyler)
+      ---
+      duration_ms: 154.231201
+      type: 'test'
+      ...
+    # Subtest: (d) komşu yol — (a)'da kabul edilen Değersiz satırı silinip Silinenler'den geri yüklenir (aynı sınır; önceden 409)
+    not ok 6 - (d) komşu yol — (a)'da kabul edilen Değersiz satırı silinip Silinenler'den geri yüklenir (aynı sınır; önceden 409)
+      ---
+      duration_ms: 129.811653
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/supheli-degersiz-s264-250.test.mjs:90:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        değersiz 3.000: 400 {"ok":false,"error":"Değersiz yazılacak tutar (3.000,00 TL) kalan şüpheli tutarı (123,55 TL) aşıyor.","code":"doubtful-writeoff-exceeds","field":"amount","remainingMinor":12355}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/supheli-degersiz-s264-250.test.mjs:92:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 1 - S264 = A — Değersiz sınırı aynı günün sırasına uyar (o günün bağlı payından ÖNCE)
+  ---
+  duration_ms: 1424.782881
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/supheli-degersiz-s264-250.test.mjs:16:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:26744) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: TYK — faturasız stok iadesinin geri ödemesi (KS8.1) para ↔ para eşleşmesiyle eksik ölçülmez (UD turu 3)
+    # Subtest: A (s1-4): Açılış 1.483,45 · 25.06 iade 1.914,34 · 26.06 tahsilat 564,84 · 30.06 Ödeme 2.385,23 ⇒ Açılış Kalan 918,61, Ödeme avansı 470,89, bakiye 1.389,50
+    not ok 1 - A (s1-4): Açılış 1.483,45 · 25.06 iade 1.914,34 · 26.06 tahsilat 564,84 · 30.06 Ödeme 2.385,23 ⇒ Açılış Kalan 918,61, Ödeme avansı 470,89, bakiye 1.389,50
+      ---
+      duration_ms: 110.70299
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-iade-geri-odeme-ud3-250.test.mjs:44:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Açılış Bakiyesi Kalan
+        + actual - expected
+        
+          [
+        +   824.66
+        -   918.61
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 918.61
+      actual:
+        0: 824.66
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-iade-geri-odeme-ud3-250.test.mjs:53:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: B (s1-28): borç ödendikten sonra 16.04 iade 1.372,46 · 23.04 Ödeme 1.372,46 (iadenin tamamı geri ödenir) · sonra tahsilat ⇒ Ödeme avansı YOK, açılan fatura açık kalır
+    not ok 2 - B (s1-28): borç ödendikten sonra 16.04 iade 1.372,46 · 23.04 Ödeme 1.372,46 (iadenin tamamı geri ödenir) · sonra tahsilat ⇒ Ödeme avansı YOK, açılan fatura açık kalır
+      ---
+      duration_ms: 227.395145
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-iade-geri-odeme-ud3-250.test.mjs:59:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        G7 açığı: {"open":950.32,"status":"issued"}
+        + actual - expected
+        
+        + 950.32
+        - 1161.39
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1161.39
+      actual: 950.32
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-iade-geri-odeme-ud3-250.test.mjs:79:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - TYK — faturasız stok iadesinin geri ödemesi (KS8.1) para ↔ para eşleşmesiyle eksik ölçülmez (UD turu 3)
+  ---
+  duration_ms: 959.438296
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-iade-geri-odeme-ud3-250.test.mjs:19:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# \# kilit izli değişmez: {"cari":624,"kilitli":52,"olcum":0,"taksitli":867} (kilitli = kilit izinin kalemleri değiştirdiği cari; olcum = ön ödeme ölçümlü cari)
+# Subtest: 2.5.0 UD — dönem kilidi izi olan caride Mevcut Borç kartı: kalemler toplamı = bakiye
+    # Subtest: tohum 3'ün en küçük örneği: Σ kalem = bakiye 211.719,68; F2'nin açığı bakiye kadar; C2'nin taksiti Ödendi (taşıdığı borç bağsız parayla kapanmıştı — S101)
+    not ok 1 - tohum 3'ün en küçük örneği: Σ kalem = bakiye 211.719,68; F2'nin açığı bakiye kadar; C2'nin taksiti Ödendi (taşıdığı borç bağsız parayla kapanmıştı — S101)
+      ---
+      duration_ms: 18.694756
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:41:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Σ kalem 211926.73 ≠ bakiye 211719.68
+        + actual - expected
+        
+        + 21192673
+        - 21171968
+             ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 21171968
+      actual: 21192673
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:46:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: aynı satırlar kilit izi OLMADAN: sonuç kilitliyle aynı (Σ kalem = bakiye, F2 211.719,68, C2 Ödendi)
+    ok 2 - aynı satırlar kilit izi OLMADAN: sonuç kilitliyle aynı (Σ kalem = bakiye, F2 211.719,68, C2 Ödendi)
+      ---
+      duration_ms: 2.640924
+      type: 'test'
+      ...
+    1..2
+not ok 3 - 2.5.0 UD — dönem kilidi izi olan caride Mevcut Borç kartı: kalemler toplamı = bakiye
+  ---
+  duration_ms: 22.251359
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:40:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 UD — kilit sınırı sınırlı geçişte gerçek kapanışa iner: taksitli faturanın açığı kartın kendi kalanını aşmaz
+    # Subtest: tohum 6'nın en küçük örneği (34 satır): fatura açığı ≤ kartın kendi kalanı 781,40; Σ kalem = bakiye; kilit izi olmadan da aynı tavan
+    not ok 1 - tohum 6'nın en küçük örneği (34 satır): fatura açığı ≤ kartın kendi kalanı 781,40; Σ kalem = bakiye; kilit izi olmadan da aynı tavan
+      ---
+      duration_ms: 4.086112
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:73:3'
+      failureType: 'testCodeFailure'
+      error: 'taksitli fatura açığı 1068.72 > kartın kendi kalanı 781,40'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:80:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 4 - 2.5.0 UD — kilit sınırı sınırlı geçişte gerçek kapanışa iner: taksitli faturanın açığı kartın kendi kalanını aşmaz
+  ---
+  duration_ms: 4.210987
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:72:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 UD — değişmez: kilit izli rastgele üretici, 40 tohum × 250 cari (10.000 cari)
+    # Subtest: tohum 7000–7009: 10 × 250 cari — Σ kalem = bakiye
+    not ok 1 - tohum 7000–7009: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 344.294041
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:180:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 7001 cari 30: Σ kalem -1982.12 ≠ bakiye -2007.57
+        + actual - expected
+        
+        + -198212
+        - -200757
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -200757
+      actual: -198212
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:186:18)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: tohum 7010–7019: 10 × 250 cari — Σ kalem = bakiye
+    not ok 2 - tohum 7010–7019: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 164.341669
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:180:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 7011 cari 3: Σ kalem 15832 ≠ bakiye 15768.08
+        + actual - expected
+        
+        + 1583200
+        - 1576808
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1576808
+      actual: 1583200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:186:18)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 7020–7029: 10 × 250 cari — Σ kalem = bakiye
+    not ok 3 - tohum 7020–7029: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 46.754522
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:180:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 7020 cari 46: Σ kalem -2794.21 ≠ bakiye -3428.57
+        + actual - expected
+        
+        + -279421
+        - -342857
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -342857
+      actual: -279421
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:186:18)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 7030–7039: 10 × 250 cari — Σ kalem = bakiye
+    not ok 4 - tohum 7030–7039: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 43.100009
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:180:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 7030 cari 45: Σ kalem -2794.21 ≠ bakiye -3428.57
+        + actual - expected
+        
+        + -279421
+        - -342857
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -342857
+      actual: -279421
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:186:18)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: üretici sınıfı gördü: kilidin kalemleri değiştirdiği ve ön ödeme ölçümü yapılan cariler üretildi
+    not ok 5 - üretici sınıfı gördü: kilidin kalemleri değiştirdiği ve ön ödeme ölçümü yapılan cariler üretildi
+      ---
+      duration_ms: 1.01906
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:204:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        624 !== 10000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 10000
+      actual: 624
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:206:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 5 - 2.5.0 UD — değişmez: kilit izli rastgele üretici, 40 tohum × 250 cari (10.000 cari)
+  ---
+  duration_ms: 600.053766
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-ana-eski/test/tyk-kilit-olcum-250.test.mjs:90:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 16
+# suites 5
+# pass 3
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1872.995839
+cikis 1

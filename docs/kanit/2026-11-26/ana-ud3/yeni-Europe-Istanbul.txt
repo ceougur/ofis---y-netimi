@@ -1,0 +1,147 @@
+TAP version 13
+# (node:29753) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S264 = A — Değersiz sınırı aynı günün sırasına uyar (o günün bağlı payından ÖNCE)
+    # Subtest: (a) aynı gün, şüpheliye almadan önce yazılmış BAĞLI tahsilat: Değersiz 3.000 (tam tutar) kabul; kayıt Değersiz Yazıldı, kalan 0; bakiye 423,55
+    ok 1 - (a) aynı gün, şüpheliye almadan önce yazılmış BAĞLI tahsilat: Değersiz 3.000 (tam tutar) kabul; kayıt Değersiz Yazıldı, kalan 0; bakiye 423,55
+      ---
+      duration_ms: 265.823396
+      type: 'test'
+      ...
+    # Subtest: (a′) aynı kurulumda kalanı aşan Değersiz (3.000,01) yine 400 doubtful-writeoff-exceeds — sınır 3.000; hiçbir satır yazılmaz
+    ok 2 - (a′) aynı kurulumda kalanı aşan Değersiz (3.000,01) yine 400 doubtful-writeoff-exceeds — sınır 3.000; hiçbir satır yazılmaz
+      ---
+      duration_ms: 159.332127
+      type: 'test'
+      ...
+    # Subtest: (b) aynı gün BAĞSIZ tahsilat: karar kapsamaz — sınır kalan 123,55; Değersiz 3.000 400 doubtful-writeoff-exceeds (kâhin ve v2.4.9 aynı)
+    ok 3 - (b) aynı gün BAĞSIZ tahsilat: karar kapsamaz — sınır kalan 123,55; Değersiz 3.000 400 doubtful-writeoff-exceeds (kâhin ve v2.4.9 aynı)
+      ---
+      duration_ms: 189.822395
+      type: 'test'
+      ...
+    # Subtest: (e) aynı gün BAĞLI 1.000 + BAĞSIZ 500 tahsilat, sonra Şüpheliye Al 3.000: sınır 3.000 − 500 = 2.500 (yalnız bağlı pay geri sayılır); 2.500,01 400, 2.500 kabul
+    ok 4 - (e) aynı gün BAĞLI 1.000 + BAĞSIZ 500 tahsilat, sonra Şüpheliye Al 3.000: sınır 3.000 − 500 = 2.500 (yalnız bağlı pay geri sayılır); 2.500,01 400, 2.500 kabul
+      ---
+      duration_ms: 274.440552
+      type: 'test'
+      ...
+    # Subtest: (c) bağlı tahsilat kayıttan SONRAKİ bir günde (S25 (c)): payı şüpheliden düşer — ertesi günün Değersiz'inde sınır 123,55 (S264 yalnız aynı günü söyler)
+    ok 5 - (c) bağlı tahsilat kayıttan SONRAKİ bir günde (S25 (c)): payı şüpheliden düşer — ertesi günün Değersiz'inde sınır 123,55 (S264 yalnız aynı günü söyler)
+      ---
+      duration_ms: 149.582528
+      type: 'test'
+      ...
+    # Subtest: (d) komşu yol — (a)'da kabul edilen Değersiz satırı silinip Silinenler'den geri yüklenir (aynı sınır; önceden 409)
+    ok 6 - (d) komşu yol — (a)'da kabul edilen Değersiz satırı silinip Silinenler'den geri yüklenir (aynı sınır; önceden 409)
+      ---
+      duration_ms: 237.016798
+      type: 'test'
+      ...
+    1..6
+ok 1 - S264 = A — Değersiz sınırı aynı günün sırasına uyar (o günün bağlı payından ÖNCE)
+  ---
+  duration_ms: 2151.648272
+  type: 'suite'
+  ...
+# (node:29754) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: TYK — faturasız stok iadesinin geri ödemesi (KS8.1) para ↔ para eşleşmesiyle eksik ölçülmez (UD turu 3)
+    # Subtest: A (s1-4): Açılış 1.483,45 · 25.06 iade 1.914,34 · 26.06 tahsilat 564,84 · 30.06 Ödeme 2.385,23 ⇒ Açılış Kalan 918,61, Ödeme avansı 470,89, bakiye 1.389,50
+    ok 1 - A (s1-4): Açılış 1.483,45 · 25.06 iade 1.914,34 · 26.06 tahsilat 564,84 · 30.06 Ödeme 2.385,23 ⇒ Açılış Kalan 918,61, Ödeme avansı 470,89, bakiye 1.389,50
+      ---
+      duration_ms: 185.589466
+      type: 'test'
+      ...
+    # Subtest: B (s1-28): borç ödendikten sonra 16.04 iade 1.372,46 · 23.04 Ödeme 1.372,46 (iadenin tamamı geri ödenir) · sonra tahsilat ⇒ Ödeme avansı YOK, açılan fatura açık kalır
+    ok 2 - B (s1-28): borç ödendikten sonra 16.04 iade 1.372,46 · 23.04 Ödeme 1.372,46 (iadenin tamamı geri ödenir) · sonra tahsilat ⇒ Ödeme avansı YOK, açılan fatura açık kalır
+      ---
+      duration_ms: 279.383351
+      type: 'test'
+      ...
+    1..2
+ok 2 - TYK — faturasız stok iadesinin geri ödemesi (KS8.1) para ↔ para eşleşmesiyle eksik ölçülmez (UD turu 3)
+  ---
+  duration_ms: 1745.962574
+  type: 'suite'
+  ...
+# \# kilit izli değişmez: {"cari":10000,"kilitli":528,"olcum":81,"taksitli":13800} (kilitli = kilit izinin kalemleri değiştirdiği cari; olcum = ön ödeme ölçümlü cari)
+# Subtest: 2.5.0 UD — dönem kilidi izi olan caride Mevcut Borç kartı: kalemler toplamı = bakiye
+    # Subtest: tohum 3'ün en küçük örneği: Σ kalem = bakiye 211.719,68; F2'nin açığı bakiye kadar; C2'nin taksiti Ödendi (taşıdığı borç bağsız parayla kapanmıştı — S101)
+    ok 1 - tohum 3'ün en küçük örneği: Σ kalem = bakiye 211.719,68; F2'nin açığı bakiye kadar; C2'nin taksiti Ödendi (taşıdığı borç bağsız parayla kapanmıştı — S101)
+      ---
+      duration_ms: 26.669525
+      type: 'test'
+      ...
+    # Subtest: aynı satırlar kilit izi OLMADAN: sonuç kilitliyle aynı (Σ kalem = bakiye, F2 211.719,68, C2 Ödendi)
+    ok 2 - aynı satırlar kilit izi OLMADAN: sonuç kilitliyle aynı (Σ kalem = bakiye, F2 211.719,68, C2 Ödendi)
+      ---
+      duration_ms: 3.37394
+      type: 'test'
+      ...
+    1..2
+ok 3 - 2.5.0 UD — dönem kilidi izi olan caride Mevcut Borç kartı: kalemler toplamı = bakiye
+  ---
+  duration_ms: 31.327045
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 UD — kilit sınırı sınırlı geçişte gerçek kapanışa iner: taksitli faturanın açığı kartın kendi kalanını aşmaz
+    # Subtest: tohum 6'nın en küçük örneği (34 satır): fatura açığı ≤ kartın kendi kalanı 781,40; Σ kalem = bakiye; kilit izi olmadan da aynı tavan
+    ok 1 - tohum 6'nın en küçük örneği (34 satır): fatura açığı ≤ kartın kendi kalanı 781,40; Σ kalem = bakiye; kilit izi olmadan da aynı tavan
+      ---
+      duration_ms: 12.50426
+      type: 'test'
+      ...
+    1..1
+ok 4 - 2.5.0 UD — kilit sınırı sınırlı geçişte gerçek kapanışa iner: taksitli faturanın açığı kartın kendi kalanını aşmaz
+  ---
+  duration_ms: 12.73721
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 UD — değişmez: kilit izli rastgele üretici, 40 tohum × 250 cari (10.000 cari)
+    # Subtest: tohum 7000–7009: 10 × 250 cari — Σ kalem = bakiye
+    ok 1 - tohum 7000–7009: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 2250.011373
+      type: 'test'
+      ...
+    # Subtest: tohum 7010–7019: 10 × 250 cari — Σ kalem = bakiye
+    ok 2 - tohum 7010–7019: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 1449.973153
+      type: 'test'
+      ...
+    # Subtest: tohum 7020–7029: 10 × 250 cari — Σ kalem = bakiye
+    ok 3 - tohum 7020–7029: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 1206.082981
+      type: 'test'
+      ...
+    # Subtest: tohum 7030–7039: 10 × 250 cari — Σ kalem = bakiye
+    ok 4 - tohum 7030–7039: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 1119.26844
+      type: 'test'
+      ...
+    # Subtest: üretici sınıfı gördü: kilidin kalemleri değiştirdiği ve ön ödeme ölçümü yapılan cariler üretildi
+    ok 5 - üretici sınıfı gördü: kilidin kalemleri değiştirdiği ve ön ödeme ölçümü yapılan cariler üretildi
+      ---
+      duration_ms: 1.542676
+      type: 'test'
+      ...
+    1..5
+ok 5 - 2.5.0 UD — değişmez: kilit izli rastgele üretici, 40 tohum × 250 cari (10.000 cari)
+  ---
+  duration_ms: 6027.5532
+  type: 'suite'
+  ...
+1..5
+# tests 16
+# suites 5
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6216.69678
+cikis 0
