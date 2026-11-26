@@ -1,0 +1,200 @@
+TAP version 13
+# (node:28752) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir
+    # Subtest: S268 = A — açık kayıtta (kalan 123,55) yazılabilir tutar 3.000 ve günü 17.09 listede; bağsızda kalan 123,55, gün boş
+    not ok 1 - S268 = A — açık kayıtta (kalan 123,55) yazılabilir tutar 3.000 ve günü 17.09 listede; bağsızda kalan 123,55, gün boş
+      ---
+      duration_ms: 156.730004
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:36:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ipucu / önerilen tutar S264 sınırı
+        + actual - expected
+        
+        + undefined
+        - 300000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 300000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:40:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: S268 = A — bağlı pay BUGÜN düşüyorsa yazılabilir tutar bugünün sınırı, gün boş (form bugünle açılır)
+    not ok 2 - S268 = A — bağlı pay BUGÜN düşüyorsa yazılabilir tutar bugünün sınırı, gün boş (form bugünle açılır)
+      ---
+      duration_ms: 115.174023
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:48:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - 300000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 300000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:51:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: P1 — Değersiz 1.000 sonra 2.000 (17.09): ikisi de kabul; ara durumda düğme verisi 2.000; sonunda bakiye 423,55 (v2.4.9)
+    not ok 3 - P1 — Değersiz 1.000 sonra 2.000 (17.09): ikisi de kabul; ara durumda düğme verisi 2.000; sonunda bakiye 423,55 (v2.4.9)
+      ---
+      duration_ms: 119.491063
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:55:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        2.000,01 > 2.000 (kayıt kapalı sayılmaz; sınır 2.000): 409 {"ok":false,"error":"Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok.","code":"doubtful-closed","recordId":"dbt-41ca9977-0006-4da1-98bc-d6c7b0fab1da"} Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok.
+        
+        409 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:62:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: P1′ — kalanı kapanmış kayıtta ERTESİ gün Değersiz: o günün bağlı payı yok → 409 doubtful-closed (eskisi gibi); satır yazılmaz
+    ok 4 - P1′ — kalanı kapanmış kayıtta ERTESİ gün Değersiz: o günün bağlı payı yok → 409 doubtful-closed (eskisi gibi); satır yazılmaz
+      ---
+      duration_ms: 122.193723
+      type: 'test'
+      ...
+    # Subtest: P2 — bağlı tahsilat 3.000 = şüpheli 3.000 (kayıt Tahsil Edildi): yazılabilir 3.000; Değersiz 3.000 kabul, bakiye 400 (v2.4.9)
+    not ok 5 - P2 — bağlı tahsilat 3.000 = şüpheli 3.000 (kayıt Tahsil Edildi): yazılabilir 3.000; Değersiz 3.000 kabul, bakiye 400 (v2.4.9)
+      ---
+      duration_ms: 114.703723
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        değersiz 3.000: 409 {"ok":false,"error":"Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.","code":"doubtful-closed","recordId":"dbt-bf18a27c-ba3d-4e28-924d-bae08982fa9f"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:88:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: P3 — aynı gün iki kayıt (1.500 + 1.500): R1'e (Tahsil Edildi) Değersiz 1.500 kabul, sonra R2'ye 1.500 kabul; bakiye 1.923,55 → 423,55 (v2.4.9)
+    not ok 6 - P3 — aynı gün iki kayıt (1.500 + 1.500): R1'e (Tahsil Edildi) Değersiz 1.500 kabul, sonra R2'ye 1.500 kabul; bakiye 1.923,55 → 423,55 (v2.4.9)
+      ---
+      duration_ms: 184.768466
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:97:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        R1 değersiz 1.500: 409 {"ok":false,"error":"Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.","code":"doubtful-closed","recordId":"dbt-8cc17f32-220d-46b4-9030-015ede84159b"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:100:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: P5 — aynı gün R2 Şüpheliden Çıkar, sonra R1'e Değersiz 1.500 kabul; bakiye 1.923,55 (v2.4.9); çıkarılmış kayıtta düğme verisi 0
+    not ok 7 - P5 — aynı gün R2 Şüpheliden Çıkar, sonra R1'e Değersiz 1.500 kabul; bakiye 1.923,55 (v2.4.9); çıkarılmış kayıtta düğme verisi 0
+      ---
+      duration_ms: 240.392679
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:110:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        R1 değersiz 1.500: 409 {"ok":false,"error":"Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.","code":"doubtful-closed","recordId":"dbt-6c076452-b50f-43d2-946e-64c1785ef4eb"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:116:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Silinenler — Değersiz 3.000 silinir, SONRA aynı gün bağlı tahsilat 3.000 kaydı kapatır; geri yükleme kabul (önceden 409 doubtful-closed); bakiye 400
+    not ok 8 - Silinenler — Değersiz 3.000 silinir, SONRA aynı gün bağlı tahsilat 3.000 kaydı kapatır; geri yükleme kabul (önceden 409 doubtful-closed); bakiye 400
+      ---
+      duration_ms: 194.845196
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri yükle: 409 {"ok":false,"error":"Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.","code":"doubtful-closed","recordId":"dbt-8b3f6470-54d0-4682-b944-06247f1ed46c"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:133:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 1 - S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir
+  ---
+  duration_ms: 1725.488884
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-ana-eski/test/supheli-degersiz-s269-250.test.mjs:16:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 1
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2224.147871
+cikis 1

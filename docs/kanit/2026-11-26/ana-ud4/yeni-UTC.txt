@@ -1,0 +1,113 @@
+TAP version 13
+# (node:28704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S264 = A — Değersiz sınırı aynı günün sırasına uyar (o günün bağlı payından ÖNCE)
+    # Subtest: (a) aynı gün, şüpheliye almadan önce yazılmış BAĞLI tahsilat: Değersiz 3.000 (tam tutar) kabul; kayıt Değersiz Yazıldı, kalan 0; bakiye 423,55
+    ok 1 - (a) aynı gün, şüpheliye almadan önce yazılmış BAĞLI tahsilat: Değersiz 3.000 (tam tutar) kabul; kayıt Değersiz Yazıldı, kalan 0; bakiye 423,55
+      ---
+      duration_ms: 262.925155
+      type: 'test'
+      ...
+    # Subtest: (a′) aynı kurulumda kalanı aşan Değersiz (3.000,01) yine 400 doubtful-writeoff-exceeds — sınır 3.000; hiçbir satır yazılmaz
+    ok 2 - (a′) aynı kurulumda kalanı aşan Değersiz (3.000,01) yine 400 doubtful-writeoff-exceeds — sınır 3.000; hiçbir satır yazılmaz
+      ---
+      duration_ms: 120.145334
+      type: 'test'
+      ...
+    # Subtest: (b) aynı gün BAĞSIZ tahsilat: karar kapsamaz — sınır kalan 123,55; Değersiz 3.000 400 doubtful-writeoff-exceeds (kâhin ve v2.4.9 aynı)
+    ok 3 - (b) aynı gün BAĞSIZ tahsilat: karar kapsamaz — sınır kalan 123,55; Değersiz 3.000 400 doubtful-writeoff-exceeds (kâhin ve v2.4.9 aynı)
+      ---
+      duration_ms: 141.975927
+      type: 'test'
+      ...
+    # Subtest: (e) aynı gün BAĞLI 1.000 + BAĞSIZ 500 tahsilat, sonra Şüpheliye Al 3.000: sınır 3.000 − 500 = 2.500 (yalnız bağlı pay geri sayılır); 2.500,01 400, 2.500 kabul
+    ok 4 - (e) aynı gün BAĞLI 1.000 + BAĞSIZ 500 tahsilat, sonra Şüpheliye Al 3.000: sınır 3.000 − 500 = 2.500 (yalnız bağlı pay geri sayılır); 2.500,01 400, 2.500 kabul
+      ---
+      duration_ms: 174.635121
+      type: 'test'
+      ...
+    # Subtest: (c) bağlı tahsilat kayıttan SONRAKİ bir günde (S25 (c)): payı şüpheliden düşer — ertesi günün Değersiz'inde sınır 123,55 (S264 yalnız aynı günü söyler)
+    ok 5 - (c) bağlı tahsilat kayıttan SONRAKİ bir günde (S25 (c)): payı şüpheliden düşer — ertesi günün Değersiz'inde sınır 123,55 (S264 yalnız aynı günü söyler)
+      ---
+      duration_ms: 143.352438
+      type: 'test'
+      ...
+    # Subtest: (d) komşu yol — (a)'da kabul edilen Değersiz satırı silinip Silinenler'den geri yüklenir (aynı sınır; önceden 409)
+    ok 6 - (d) komşu yol — (a)'da kabul edilen Değersiz satırı silinip Silinenler'den geri yüklenir (aynı sınır; önceden 409)
+      ---
+      duration_ms: 306.536649
+      type: 'test'
+      ...
+    1..6
+ok 1 - S264 = A — Değersiz sınırı aynı günün sırasına uyar (o günün bağlı payından ÖNCE)
+  ---
+  duration_ms: 1623.105067
+  type: 'suite'
+  ...
+# (node:28705) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir
+    # Subtest: S268 = A — açık kayıtta (kalan 123,55) yazılabilir tutar 3.000 ve günü 17.09 listede; bağsızda kalan 123,55, gün boş
+    ok 1 - S268 = A — açık kayıtta (kalan 123,55) yazılabilir tutar 3.000 ve günü 17.09 listede; bağsızda kalan 123,55, gün boş
+      ---
+      duration_ms: 324.974041
+      type: 'test'
+      ...
+    # Subtest: S268 = A — bağlı pay BUGÜN düşüyorsa yazılabilir tutar bugünün sınırı, gün boş (form bugünle açılır)
+    ok 2 - S268 = A — bağlı pay BUGÜN düşüyorsa yazılabilir tutar bugünün sınırı, gün boş (form bugünle açılır)
+      ---
+      duration_ms: 103.202277
+      type: 'test'
+      ...
+    # Subtest: P1 — Değersiz 1.000 sonra 2.000 (17.09): ikisi de kabul; ara durumda düğme verisi 2.000; sonunda bakiye 423,55 (v2.4.9)
+    ok 3 - P1 — Değersiz 1.000 sonra 2.000 (17.09): ikisi de kabul; ara durumda düğme verisi 2.000; sonunda bakiye 423,55 (v2.4.9)
+      ---
+      duration_ms: 179.16857
+      type: 'test'
+      ...
+    # Subtest: P1′ — kalanı kapanmış kayıtta ERTESİ gün Değersiz: o günün bağlı payı yok → 409 doubtful-closed (eskisi gibi); satır yazılmaz
+    ok 4 - P1′ — kalanı kapanmış kayıtta ERTESİ gün Değersiz: o günün bağlı payı yok → 409 doubtful-closed (eskisi gibi); satır yazılmaz
+      ---
+      duration_ms: 135.694413
+      type: 'test'
+      ...
+    # Subtest: P2 — bağlı tahsilat 3.000 = şüpheli 3.000 (kayıt Tahsil Edildi): yazılabilir 3.000; Değersiz 3.000 kabul, bakiye 400 (v2.4.9)
+    ok 5 - P2 — bağlı tahsilat 3.000 = şüpheli 3.000 (kayıt Tahsil Edildi): yazılabilir 3.000; Değersiz 3.000 kabul, bakiye 400 (v2.4.9)
+      ---
+      duration_ms: 155.569101
+      type: 'test'
+      ...
+    # Subtest: P3 — aynı gün iki kayıt (1.500 + 1.500): R1'e (Tahsil Edildi) Değersiz 1.500 kabul, sonra R2'ye 1.500 kabul; bakiye 1.923,55 → 423,55 (v2.4.9)
+    ok 6 - P3 — aynı gün iki kayıt (1.500 + 1.500): R1'e (Tahsil Edildi) Değersiz 1.500 kabul, sonra R2'ye 1.500 kabul; bakiye 1.923,55 → 423,55 (v2.4.9)
+      ---
+      duration_ms: 246.570426
+      type: 'test'
+      ...
+    # Subtest: P5 — aynı gün R2 Şüpheliden Çıkar, sonra R1'e Değersiz 1.500 kabul; bakiye 1.923,55 (v2.4.9); çıkarılmış kayıtta düğme verisi 0
+    ok 7 - P5 — aynı gün R2 Şüpheliden Çıkar, sonra R1'e Değersiz 1.500 kabul; bakiye 1.923,55 (v2.4.9); çıkarılmış kayıtta düğme verisi 0
+      ---
+      duration_ms: 231.623991
+      type: 'test'
+      ...
+    # Subtest: Silinenler — Değersiz 3.000 silinir, SONRA aynı gün bağlı tahsilat 3.000 kaydı kapatır; geri yükleme kabul (önceden 409 doubtful-closed); bakiye 400
+    ok 8 - Silinenler — Değersiz 3.000 silinir, SONRA aynı gün bağlı tahsilat 3.000 kaydı kapatır; geri yükleme kabul (önceden 409 doubtful-closed); bakiye 400
+      ---
+      duration_ms: 281.69742
+      type: 'test'
+      ...
+    1..8
+ok 2 - S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir
+  ---
+  duration_ms: 2139.370531
+  type: 'suite'
+  ...
+1..2
+# tests 14
+# suites 2
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2585.690974
+cikis 0
