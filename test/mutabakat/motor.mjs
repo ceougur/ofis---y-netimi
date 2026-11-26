@@ -2257,10 +2257,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const amount = over ? s.remaining + moneyCents(1, 100) : R.chance(0.5) ? s.remaining : moneyCents(1, Math.max(1, Math.floor(s.remaining / 100)));
         const r = await api("POST", `/api/workspace/accounts/${rec.party}/doubtful/${rec.id}/write-off`, { amount: tl(amount), date: day, note: "Değersiz" });
         if (!open(day)) return expectReject(r, "period-locked", kind);
-        // S264 = A (2.5.0 UD turu 3; kullanıcı kararı — 'ÖNERİYİ UYGULA'): sınır aynı günün sırasındaki yer — K3'te Değersiz o günün alacaklarından ÖNCE işlenir; ret yalnız modelde
-        // satır kendi yerinde kalanı aşıyorsa (ya da sonraki bir Değersiz satırını taşırıyorsa): writeOffOverflow artar. Önceden 'over' (gün sonu kalanı + 1..100 TL) her zaman ret sayılıyordu.
-        const exceeds = doubtfulModel([...D.events, { kind: "credit", party: rec.party, date: day, cents: amount, target: rec.id, seq: Number.MAX_SAFE_INTEGER }]).writeOffOverflow > dm.writeOffOverflow;
-        if (exceeds) return expectReject(r, "doubtful-writeoff-exceeds", `${kind}/aşım`);
+        // S264 = A (UD turu 3) yalnız o günün BAĞLI (faturaya bağlı) payını sınıra geri sayar; motorun şüpheli müşterilerinin tahsilatı bağsızdır → sınır gün sonu kalanı (değişmedi).
+        if (over) return expectReject(r, "doubtful-writeoff-exceeds", `${kind}/aşım`);
         mustOk(r, kind);
         cariAdd(rec.party, -amount);
         D.events.push({ kind: "credit", party: rec.party, date: day, cents: amount, target: rec.id, seq: ++D.seq });
