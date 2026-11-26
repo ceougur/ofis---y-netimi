@@ -1,0 +1,19 @@
+# ROOT=v249 (eski = aday e7934c5e git archive + yalnız obligationInputFor okuma kancası; v249 = git archive v2.4.9) · F2_VADE=2026-09-29 · node surucu3.mjs 
+hizmet: 200
+mal: 200
+cari: 200
+F1 taksitli satış 5.944,84: 200
+Alacak 32.083,69 (24.08): 200
+F2 satış 250.811,27 (02.09): 200
+kilit 30.08: 200
+stoktan satış 393,67 (21.09): 200
+C1 Taksit Tahsilatı 4.817,64 (21.09): 200
+C2 Mevcut Borç kartı 207,05 (21.09): 200
+C2 Taksit Tahsilatı 8.528,77 (25.09): 200
+kilit kaldır: 200
+cari bakiyesi undefined
+F1 açık 1127.2 kendi açığı undefined ödenen 4817.64
+F2 açık 242489.55 kendi açığı undefined ödenen 8321.72
+C1 durum active toplam 5944.84 ödenen 4817.64 kalan 1127.2 taksitler [["2026-09-02",990.8,990.8,null],["2026-10-02",990.8,990.8,null],["2026-11-02",990.8,990.8,null],["2026-12-02",990.8,990.8,null],["2027-01-02",990.8,854.44,null],["2027-02-02",990.84,0,null]]
+C2 durum active toplam 207.05 ödenen 8528.77 kalan 0 taksitler [["2026-10-12",207.05,207.05,null]]
+Tek Yükümlülük Kuyruğu: YOK (bu sürümde)

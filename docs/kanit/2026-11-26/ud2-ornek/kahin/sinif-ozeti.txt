@@ -1,0 +1,56 @@
+# tam koşu (npm run test:kahin-cari -- --tohum 1-30 --islem 120; mutasyonlu) — senaryo başına ilk fark
+özet: {"ic": 431, "ks9": 0, "dis": 167} genelToplam 175671 genelFark 598
+rastgele-s1-3: fark 42 bulgu 34 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k10:fatura:G9:acik", "beklenen": 207115, "program": 410572, "etiket": "BAŞ MİMAR", "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk · KS8 iade 
+rastgele-s1-4: fark 23 bulgu 1 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k11:hareket:s031:kalan", "beklenen": 216559, "program": 263648, "etiket": "AJAN", "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)", "sinif": "İNCELE", "sinif246": "2.
+rastgele-s1-6: fark 11 bulgu 0 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k9:hareket:s055:kalan", "beklenen": 54043, "program": 0, "etiket": "AJAN", "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)", "sinif": "İNCELE", "sinif246": "SINIF DIŞ
+rastgele-s1-7: fark 78 bulgu 27 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k11:fatura:G10:acik", "beklenen": 0, "program": 11867, "etiket": "AJAN", "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk · KS8 iade geri ödeme
+rastgele-s1-8: fark 17 bulgu 0 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k10:hareket:s084:kalan", "beklenen": 19843, "program": 0, "etiket": "AJAN", "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)", "sinif": "İNCELE", "sinif246": "2.5.0 ka
+rastgele-s1-12: fark 25 bulgu 18 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k10:fatura:A4:acik", "beklenen": 0, "program": 1415, "etiket": "BAŞ MİMAR", "kural": "S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce
+rastgele-s1-13: fark 163 bulgu 36 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "adim:s011d:durum", "beklenen": "ok", "program": "ret", "etiket": "PLAN", "kural": "adım kabul edilir", "sinif": "BULGU", "sinif246": "SINIF DIŞI"}
+rastgele-s1-17: fark 57 bulgu 42 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k10:fatura:A3:acik", "beklenen": 168245, "program": 87078, "etiket": "BAŞ MİMAR", "kural": "S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'
+rastgele-s1-19: fark 12 bulgu 0 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k12:fatura:G11:acik", "beklenen": 56668, "program": 100000, "etiket": "AJAN", "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk · KS8 iade geri 
+rastgele-s1-20: fark 23 bulgu 7 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k4:hareket:s034:kalan", "beklenen": 10675, "program": 0, "etiket": "AJAN", "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)", "sinif": "İNCELE", "sinif246": "SINIF DIŞ
+rastgele-s1-23: fark 16 bulgu 0 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k6:fatura:G6:acik", "beklenen": 111923, "program": 112234, "etiket": "AJAN", "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk · KS8 iade geri ö
+rastgele-s1-24: fark 18 bulgu 0 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k12:hareket:s047:kalan", "beklenen": 160622, "program": 122514, "etiket": "AJAN", "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)", "sinif": "İNCELE", "sinif246": "SI
+rastgele-s1-25: fark 45 bulgu 1 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k10:fatura:G12:acik", "beklenen": 42901, "program": 269912, "etiket": "AJAN", "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk · KS8 iade geri 
+rastgele-s1-27: fark 6 bulgu 6 · türler ['karsiliksiz'] · ilk {"anahtar": "k6:fatura:A1:acik", "beklenen": 32589, "program": 0, "etiket": "BAŞ MİMAR", "kural": "S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce
+rastgele-s1-28: fark 55 bulgu 12 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k11:fatura:G12:acik", "beklenen": 20734, "program": 0, "etiket": "YAYGIN", "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk · KS8 iade geri öde
+rastgele-s1-30: fark 7 bulgu 0 · türler ['degersiz', 'karsiliksiz', 'supheli_al'] · ilk {"anahtar": "k2:hareket:s018:kalan", "beklenen": 70596, "program": 88134, "etiket": "YAYGIN", "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)", "sinif": "İNCELE", "sinif246": "SIN
+kural başına: [('§35 Y23-4', 130), ('KS10 madde 11', 81), ('C13.4 TYK', 72), ('C17 S96 A', 69), ('K6.3 Kalan > 0 ve Vade / Beklenen Ödeme ', 57), ('C13.4 TYK açık = tutar − bağlı − kuyruk ', 50), ("madde 4 'fatura kalemleri aynen'", 39), ('K6.3 Vade Takip', 36), ("K6.3 kalem olmayan kayıt Vade Takip'te y", 22), ('S1 borç tarafı', 15), ('K6.3 takvimdeki cari kalemlerinin sayısı', 14), ('B1.1/B2.7 bakiye = borçlar − alacaklar', 12), ('adım kabul edilir', 1)]
+
+# 16 farklı senaryo yeni kod ↔ v2.4.9 programı (aynı kâhin; KAHIN_PROGRAM_KOKU) — SINIF DIŞI farkların v2.4.9'da durumu
+rastgele-s1-3: fark 42 (2.5.0 sınıfı 39, SINIF DIŞI 3: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 3) · örnek k5:hareket:s047:kalan: program 128580 · kâhin 137700 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, ) · v2.4.9 programı 137700
+rastgele-s1-4: fark 23 (2.5.0 sınıfı 23, SINIF DIŞI 0: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 0)
+rastgele-s1-6: fark 11 (2.5.0 sınıfı 9, SINIF DIŞI 2: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 2) · örnek k9:hareket:s055:kalan: program 0 · kâhin 54043 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, ) · v2.4.9 programı 54043
+rastgele-s1-7: fark 78 (2.5.0 sınıfı 74, SINIF DIŞI 4: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 4) · örnek k3:hareket:s015:kalan: program 173731 · kâhin 180000 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, ) · v2.4.9 programı 180000
+rastgele-s1-8: fark 17 (2.5.0 sınıfı 17, SINIF DIŞI 0: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 0)
+rastgele-s1-12: fark 25 (2.5.0 sınıfı 23, SINIF DIŞI 2: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 2) · örnek k11:fatura:A4:acik: program 1415 · kâhin 0 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız öd) · v2.4.9 programı 0
+rastgele-s1-13: fark 163 (2.5.0 sınıfı 40, SINIF DIŞI 123: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 123) · örnek adim:s011d:durum: program ret · kâhin ok (adım kabul edilir) · v2.4.9 programı ok
+rastgele-s1-17: fark 57 (2.5.0 sınıfı 50, SINIF DIŞI 7: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 7) · örnek k10:fatura:A3:acik: program 87078 · kâhin 168245 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız öd) · v2.4.9 programı 168245
+rastgele-s1-19: fark 12 (2.5.0 sınıfı 12, SINIF DIŞI 0: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 0)
+rastgele-s1-20: fark 23 (2.5.0 sınıfı 15, SINIF DIŞI 8: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 8) · örnek k4:hareket:s034:kalan: program 0 · kâhin 10675 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, ) · v2.4.9 programı 10675
+rastgele-s1-23: fark 16 (2.5.0 sınıfı 16, SINIF DIŞI 0: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 0)
+rastgele-s1-24: fark 18 (2.5.0 sınıfı 14, SINIF DIŞI 4: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 4) · örnek k12:hareket:s047:kalan: program 122514 · kâhin 160622 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, ) · v2.4.9 programı 160622
+rastgele-s1-25: fark 45 (2.5.0 sınıfı 43, SINIF DIŞI 2: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 2) · örnek k6:fatura:G4:acik: program 48909 · kâhin 53530 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 t) · v2.4.9 programı 53530
+rastgele-s1-27: fark 6 (2.5.0 sınıfı 4, SINIF DIŞI 2: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 2) · örnek k6:fatura:A1:acik: program 0 · kâhin 32589 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız öd) · v2.4.9 programı 32589
+rastgele-s1-28: fark 55 (2.5.0 sınıfı 49, SINIF DIŞI 6: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 6) · örnek k12:fatura:G12:acik: program 26304 · kâhin 60000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 t) · v2.4.9 programı 60000
+rastgele-s1-30: fark 7 (2.5.0 sınıfı 3, SINIF DIŞI 4: v2.4.9'da da fark 0, YALNIZ 2.5.0'da 4) · örnek k2:hareket:s018:kalan: program 88134 · kâhin 70596 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, ) · v2.4.9 programı 70596
+TOPLAM {'fark': 598, 'dis': 167, 'dis_v249de_de': 0, 'dis_yalniz_250': 167, 'ic': 431}
+
+# aynı 16 senaryo 'degersiz' adımları atılmış hâliyle (yeni kod)
+rastgele-s1-12-degersizsiz: 1834/1859 denetim geçti · ✗ 25
+rastgele-s1-13-degersizsiz: 2579/2584 denetim geçti · ✗ 5
+rastgele-s1-17-degersizsiz: 2097/2174 denetim geçti · ✗ 77
+rastgele-s1-19-degersizsiz: 2716/2716 denetim geçti · ✗ 0
+rastgele-s1-20-degersizsiz: 2201/2224 denetim geçti · ✗ 23
+rastgele-s1-23-degersizsiz: 2858/2874 denetim geçti · ✗ 16
+rastgele-s1-24-degersizsiz: 2866/2884 denetim geçti · ✗ 18
+rastgele-s1-25-degersizsiz: 3080/3080 denetim geçti · ✗ 0
+rastgele-s1-27-degersizsiz: 2870/2876 denetim geçti · ✗ 6
+rastgele-s1-28-degersizsiz: 2557/2571 denetim geçti · ✗ 14
+rastgele-s1-3-degersizsiz: 2729/2747 denetim geçti · ✗ 18
+rastgele-s1-30-degersizsiz: 1940/1947 denetim geçti · ✗ 7
+rastgele-s1-4-degersizsiz: 3120/3143 denetim geçti · ✗ 23
+rastgele-s1-6-degersizsiz: 1915/1929 denetim geçti · ✗ 14
+rastgele-s1-7-degersizsiz: 3173/3245 denetim geçti · ✗ 72
+rastgele-s1-8-degersizsiz: 2570/2570 denetim geçti · ✗ 0

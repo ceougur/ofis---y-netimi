@@ -1,0 +1,61 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "kc1-supheli-ertesi",
+ "aciklama": "uretici.py --tur s1 --tohum 13 --islem 120",
+ "dayanak": "KARARLAR.md C (2.4.5 madde 6: S1, K6.1–K6.4); ders 17",
+ "bugun": "2026-06-30",
+ "adimlar": [
+  {
+   "id": "c-e",
+   "islem": "cari_ac",
+   "ad": "E",
+   "isim": "Rastgele Epsilon 13",
+   "tarih": "2026-03-01",
+   "acilis": "2347,11",
+   "acilisVade": "2026-07-07"
+  },
+  {
+   "id": "s001",
+   "islem": "fatura",
+   "ad": "G1",
+   "cari": "E",
+   "tutar": "2900,00",
+   "tarih": "2026-03-05"
+  },
+  {
+   "id": "s006",
+   "islem": "borc",
+   "cari": "E",
+   "tutar": "3400,00",
+   "tarih": "2026-03-11",
+   "vade": "2026-07-07"
+  },
+  {
+   "id": "s010",
+   "islem": "tahsilat",
+   "cari": "E",
+   "tutar": "2876,45",
+   "tarih": "2026-03-17",
+   "fatura": "G1"
+  },
+  {
+   "id": "s011",
+   "islem": "supheli_al",
+   "ad": "SPs011",
+   "cari": "E",
+   "tutar": "4421,71",
+   "tarih": "2026-03-18"
+  },
+  {
+   "id": "s011d",
+   "islem": "degersiz",
+   "supheli": "SPs011",
+   "tutar": "4421,71",
+   "tarih": "2026-03-18"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  }
+ ]
+}

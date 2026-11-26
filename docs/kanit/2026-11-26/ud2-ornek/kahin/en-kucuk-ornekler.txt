@@ -1,0 +1,91 @@
+# KC-1 (s1-13 en küçük örneği) ve değişkeleri — kmin-kos.sh (yeni / eski aday / v2.4.9)
+== kc1-asil-yeni: 19/33 denetim geçti
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:s011d:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt: doubtful-writeoff-exceeds Değersiz yazılacak tutar (4.421,71 TL) kalan şüpheli tutarı (1.545,26 TL) aşıyor.
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:cari:E:bakiye: program 577066 · kâhin 134895 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:G1:acik: program 2355 · kâhin 0 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:G1:gosterilen: program 2355 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+== kc1-bagsiz-yeni: 33/33 denetim geçti
+== kc1-degersiz-ertesi-yeni: 19/33 denetim geçti
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:s011d:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt: doubtful-writeoff-exceeds Değersiz yazılacak tutar (4.421,71 TL) kalan şüpheli tutarı (1.545,26 TL) aşıyor.
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:cari:E:bakiye: program 577066 · kâhin 134895 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:G1:acik: program 2355 · kâhin 0 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:G1:gosterilen: program 2355 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+== kc1-supheli-ertesi-yeni: 33/33 denetim geçti
+== kc1-tahsilat-onceki-gun-yeni: 33/33 denetim geçti
+== kc1-asil-eski: 19/33 denetim geçti
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:s011d:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt: doubtful-writeoff-exceeds Değersiz yazılacak tutar (4.421,71 TL) kalan şüpheli tutarı (1.545,26 TL) aşıyor.
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:cari:E:bakiye: program 577066 · kâhin 134895 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:G1:acik: program 2355 · kâhin 0 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:G1:gosterilen: program 2355 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+== kc1-bagsiz-eski: 33/33 denetim geçti
+== kc1-degersiz-ertesi-eski: 19/33 denetim geçti
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:s011d:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt: doubtful-writeoff-exceeds Değersiz yazılacak tutar (4.421,71 TL) kalan şüpheli tutarı (1.545,26 TL) aşıyor.
+  ✗ [BULGU PLAN · SINIF DIŞI] k1:cari:E:bakiye: program 577066 · kâhin 134895 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:G1:acik: program 2355 · kâhin 0 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:G1:gosterilen: program 2355 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+== kc1-supheli-ertesi-eski: 33/33 denetim geçti
+== kc1-tahsilat-onceki-gun-eski: 33/33 denetim geçti
+== kc1-asil-v249: 33/33 denetim geçti
+== kc1-bagsiz-v249: 24/33 denetim geçti
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:G1:acik: program 237066 · kâhin 2355 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:G1:gosterilen: program 237066 · kâhin 2355 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:G1:liste:gosterilen: program 237066 · kâhin 2355 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+  ✗ [BULGU BAŞ MİMAR] k1:hareket:acilis:E:kalan: program 0 · kâhin 234711 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))
+== kc1-degersiz-ertesi-v249: 33/33 denetim geçti
+== kc1-supheli-ertesi-v249: 33/33 denetim geçti
+== kc1-tahsilat-onceki-gun-v249: 33/33 denetim geçti
+== s1-13-degersiz-ret-yeni: 5/6 denetim geçti
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:s011d:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt: doubtful-writeoff-exceeds Değersiz yazılacak tutar (4.421,71 TL) kalan şüpheli tutarı (1.545,26 TL) aşıyor.
+== s1-27-alis-faturasi-A1-yeni: 20/23 denetim geçti
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k6:fatura:A1:acik: program 13057 · kâhin 74116 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alı
+  ✗ [BULGU BAŞ MİMAR] k6:fatura:A1:gosterilen: program 13057 · kâhin 74116 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+  ✗ [BULGU BAŞ MİMAR] k6:fatura:A1:liste:gosterilen: program 13057 · kâhin 74116 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+== s1-3-k5-degersiz-ayni-gun-s047-yeni: 43/51 denetim geçti
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k5:hareket:s047:kalan: program 0 · kâhin 14605 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:cari: program 1 · kâhin 2 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:hareket:s045: program {"amount":104341,"date":"2026-05-02","direction":"in"} · kâhin {"amount":89736,"date":"2026-05-02","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6);
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k5:projeksiyon:hareket:s047: program "yok" · kâhin {"amount":14605,"date":"2026-06-06","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+== s1-3-k5-degersiz-odeme-s045-yeni: 27/30 denetim geçti
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:hareket:s045: program {"amount":63300,"date":"2026-05-02","direction":"in"} · kâhin {"amount":236556,"date":"2026-05-02","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6);
+  ✗ [BULGU KULLANICI] k5:takvim:hareket:s045: program {"amount":63300,"cari":"E","days":-59,"direction":"in","dueDate":"2026-05-02","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 3","state":"overdue"} · kâhin {"amount":236556,"cari":"E","days":-59,"direction":"in","dueDate":"2026-05-02","label":"Tahsil Edilecek B
+  ✗ [BULGU KULLANICI] k5:vadeTakip:hareket:s045: program {"amount":63300,"date":"2026-05-02","direction":"in"} · kâhin {"amount":236556,"date":"2026-05-02","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); 
+== s1-3-supheliSiz-kontrol-yeni: 20/20 denetim geçti
+== s1-13-degersiz-ret-eski: 5/6 denetim geçti
+  ✗ [BULGU PLAN · SINIF DIŞI] adim:s011d:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt: doubtful-writeoff-exceeds Değersiz yazılacak tutar (4.421,71 TL) kalan şüpheli tutarı (1.545,26 TL) aşıyor.
+== s1-27-alis-faturasi-A1-eski: 20/23 denetim geçti
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k6:fatura:A1:acik: program 13057 · kâhin 74116 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alı
+  ✗ [BULGU BAŞ MİMAR] k6:fatura:A1:gosterilen: program 13057 · kâhin 74116 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+  ✗ [BULGU BAŞ MİMAR] k6:fatura:A1:liste:gosterilen: program 13057 · kâhin 74116 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+== s1-3-k5-degersiz-ayni-gun-s047-eski: 43/51 denetim geçti
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k5:hareket:s047:kalan: program 0 · kâhin 14605 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:cari: program 1 · kâhin 2 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:hareket:s045: program {"amount":104341,"date":"2026-05-02","direction":"in"} · kâhin {"amount":89736,"date":"2026-05-02","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6);
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k5:projeksiyon:hareket:s047: program "yok" · kâhin {"amount":14605,"date":"2026-06-06","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+== s1-3-k5-degersiz-odeme-s045-eski: 27/30 denetim geçti
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:hareket:s045: program {"amount":63300,"date":"2026-05-02","direction":"in"} · kâhin {"amount":236556,"date":"2026-05-02","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6);
+  ✗ [BULGU KULLANICI] k5:takvim:hareket:s045: program {"amount":63300,"cari":"E","days":-59,"direction":"in","dueDate":"2026-05-02","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 3","state":"overdue"} · kâhin {"amount":236556,"cari":"E","days":-59,"direction":"in","dueDate":"2026-05-02","label":"Tahsil Edilecek B
+  ✗ [BULGU KULLANICI] k5:vadeTakip:hareket:s045: program {"amount":63300,"date":"2026-05-02","direction":"in"} · kâhin {"amount":236556,"date":"2026-05-02","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); 
+== s1-3-supheliSiz-kontrol-eski: 20/20 denetim geçti
+== s1-13-degersiz-ret-v249: 6/6 denetim geçti
+== s1-27-alis-faturasi-A1-v249: 23/23 denetim geçti
+== s1-3-k5-degersiz-ayni-gun-s047-v249: 46/51 denetim geçti
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:cari: program 1 · kâhin 2 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:hareket:s045: program "yok" · kâhin {"amount":89736,"date":"2026-05-02","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit A
+  ✗ [BULGU BAŞ MİMAR] k5:takvim:cariKalemSayisi: program 1 · kâhin 2 (K6.3 takvimdeki cari kalemlerinin sayısı)
+  ✗ [BULGU KULLANICI] k5:takvim:hareket:s045: program "yok" · kâhin {"amount":89736,"cari":"E","days":-59,"direction":"in","dueDate":"2026-05-02","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 3","state":"overdue"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme
+== s1-3-k5-degersiz-odeme-s045-v249: 25/30 denetim geçti
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:cari: program 0 · kâhin 1 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:hareket:s045: program "yok" · kâhin {"amount":236556,"date":"2026-05-02","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit 
+  ✗ [BULGU BAŞ MİMAR] k5:takvim:cariKalemSayisi: program 0 · kâhin 1 (K6.3 takvimdeki cari kalemlerinin sayısı)
+  ✗ [BULGU KULLANICI] k5:takvim:hareket:s045: program "yok" · kâhin {"amount":236556,"cari":"E","days":-59,"direction":"in","dueDate":"2026-05-02","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 3","state":"overdue"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödem
+== s1-3-supheliSiz-kontrol-v249: 15/20 denetim geçti
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:cari: program 0 · kâhin 1 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)
+  ✗ [İNCELE YAYGIN] k5:projeksiyon:hareket:s045: program "yok" · kâhin {"amount":14549,"date":"2026-05-02","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit A
+  ✗ [BULGU BAŞ MİMAR] k5:takvim:cariKalemSayisi: program 0 · kâhin 1 (K6.3 takvimdeki cari kalemlerinin sayısı)
+  ✗ [BULGU KULLANICI] k5:takvim:hareket:s045: program "yok" · kâhin {"amount":14549,"cari":"E","days":-59,"direction":"in","dueDate":"2026-05-02","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 3","state":"overdue"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme
+== kc2-iadesiz-yeni: 41/41 denetim geçti
+== kc2-s012suz-yeni: 22/22 denetim geçti
+== kc2-s050suz-yeni: 22/22 denetim geçti
+== kc2-s054suz-yeni: 22/22 denetim geçti
+== kc2-stoksuz-yeni: 41/41 denetim geçti
+== kc2-tahsilatsiz-yeni: 41/41 denetim geçti

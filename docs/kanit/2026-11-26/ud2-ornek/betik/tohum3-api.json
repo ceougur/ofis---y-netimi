@@ -1,0 +1,20 @@
+{
+  "dil": "destekofis-cari/3",
+  "ad": "ud2-tohum3-api",
+  "aciklama": "UD tur 2: mutabakat tohum 3 en küçük örneğinin programın HTTP uçlarıyla girilmiş hâli (8 satır; kilit 30.08 → kaldır)",
+  "dayanak": "ud2-istem.txt madde 5 (v2.4.9 karşılaştırması); ders 6",
+  "bugun": "2026-11-23",
+  "adimlar": [
+    {"id": "c", "islem": "cari_ac", "ad": "M", "isim": "Uc Musteri", "tarih": "2026-07-01"},
+    {"id": "f1", "islem": "stok_satis_taksit", "ad": "F1", "cari": "M", "tutar": "5944,84", "taksit": 6, "ilkVade": "2026-09-02", "tarih": "2026-08-16"},
+    {"id": "a1", "islem": "alacak", "cari": "M", "tutar": "32083,69", "tarih": "2026-08-24"},
+    {"id": "dk1", "islem": "donem_kilitle", "tarih": "2026-08-30"},
+    {"id": "f2", "islem": "fatura", "ad": "F2", "cari": "M", "tutar": "250811,27", "tarih": "2026-09-02"},
+    {"id": "s1", "islem": "stok_satis_hesap", "cari": "M", "tutar": "393,67", "tarih": "2026-09-21"},
+    {"id": "p1", "islem": "kart_tahsilat", "kayit": "F1", "tutar": "4817,64", "tarih": "2026-09-21", "fazlasiniAvansYaz": true},
+    {"id": "k2", "islem": "kart_ac", "ad": "C2", "cari": "M", "tutar": "207,05", "taksit": 1, "ilkVade": "2026-10-12", "tarih": "2026-09-21", "mevcut": true},
+    {"id": "p2", "islem": "kart_tahsilat", "kayit": "C2", "tutar": "8528,77", "tarih": "2026-09-25", "fazlasiniAvansYaz": true},
+    {"id": "dk2", "islem": "donem_kilitle", "tarih": ""},
+    {"id": "kk", "islem": "kontrol"}
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "ud2-mutasyon-kd2d-kd4",
+  "komut": "node test/tyk-mutasyon-250.mjs --klasor /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud2-r4k9/mut/k1 --yalniz KD2-d,KD4-a,KD4-b",
+  "commit": "3175b26c3a40173d0614dca18dc0a2e306c608f8",
+  "dal": "worktree-agent-a3efe37d598ece90c",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-26T03:28:55.582Z",
+  "sure_sn": 23.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-26/ud2-mutasyon-kd2d-kd4.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3efe37d598ece90c",
+  "ham_cikti_sha256": "25bfb3997b9753c7a939e6d2f4ceb9fa046c02a4b1b9e877c6c4081b415ce067",
+  "ham_cikti_bayt": 1370
+}

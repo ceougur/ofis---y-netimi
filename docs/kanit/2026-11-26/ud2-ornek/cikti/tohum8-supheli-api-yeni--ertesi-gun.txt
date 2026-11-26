@@ -1,0 +1,9 @@
+# ROOT=yeni · node surucu8.mjs --ertesi-gun
+cari: 200
+Borç 33.847,62 (01.09): 200
+Şüpheliye Al 924,56 (20.09): 200
+Şüpheliden Çıkar (26.09): 200
+Şüpheliye Al 33.847,62 (26.09): 200
+Tahsilat 23.236,09 (2026-09-27): 200
+  kayıt Eski 2026-09-20 durum Şüpheliden Çıkarıldı kalan 0 tahsil 0
+  kayıt Yeni 2026-09-26 durum Şüpheli Alacakta kalan 10611.53 tahsil 23236.09
