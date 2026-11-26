@@ -313,6 +313,23 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   }
   const doubtfulOpenOf = party => [...doubtfulModel().records.values()].filter(s => s.party === party).reduce((sum, s) => sum + s.remaining, 0);
   const doubtfulRoom = party => (M.cari.get(party) || 0) - doubtfulOpenOf(party);
+  /**
+   * S263 = C (2.5.0 UD turu 3; kullanıcı kararı — 'ÖNERİYİ UYGULA' kuralıyla öneri uygulandı; BİLİNEN SINIR, 2.4.9'dan beri böyle, veri bozulmuyor): aynı gün önce Şüpheliden Çıkar,
+   * sonra yeni Şüpheliye Al, sonra bağsız tahsilat. Plan K3 aynı gün sırası (al → karşılık → değersiz → alacak satırı → çıkar) tahsilatı, yazım sırasında daha önce çıkarılmış eski
+   * kayda düşürür (çıkarma günün SONUNDA işlenir); yeni kaydın kalanı borç bakiyesini aşar ve kapı (doubtful:balance, 120 = kart − açık şüpheli ≥ 0) tahsilatı reddeder. Motor bu
+   * reddi YALNIZ bu sınıfta beklenen ret sayar: (1) carinin bugün çıkarılmış kaydı VE bugün alınmış kaydı var, (2) modelin K3 sırasıyla tahsilat çıkarılan kayda düşüyor (çıkarılan
+   * tutar azalıyor), (3) modelde tahsilattan sonra 120 < 0. Öbür her ret eskisi gibi uyuşmazlıktır.
+   */
+  const sameDayReleaseReject = (party, amount, day) => {
+    if (!D.events.some(e => e.party === party && e.kind === "take" && e.date === day)) return false;
+    const released = [...D.records.values()].filter(x => x.party === party && x.closedDate === day);
+    if (!released.length) return false;
+    const before = doubtfulModel();
+    const after = doubtfulModel([...D.events, { kind: "credit", party, date: day, cents: amount, seq: Number.MAX_SAFE_INTEGER }]);
+    if (!released.some(x => (after.records.get(x.id)?.releasedCents ?? 0) < (before.records.get(x.id)?.releasedCents ?? 0))) return false;
+    const open = [...after.records.values()].filter(s => s.party === party).reduce((sum, s) => sum + s.remaining, 0);
+    return (M.cari.get(party) || 0) - amount - open < 0;
+  };
   // v2.1.0: iki vadesiz banka hesabı, açılış çizelgenin ilk günü (Bakiye Doğrulandı). Açılış 102.k borç / 500 alacak; banka etkisi modelde.
   const banks = [];
   for (const bankName of bank ? ["Ziraat Bankası", "Garanti BBVA"] : []) {
@@ -2183,6 +2200,11 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (!open(day)) return expectReject(r, "period-locked", kind);
         // Sınır yalnız AÇIK şüpheli kaydı (kalan > 0) varken: açık kayıt yoksa fazlası bugünkü gibi avans olur (plan §3.11b/2 (a) "Sınır").
         if (normal && doubtfulOpenOf(c.id) > 0 && amount > doubtfulRoom(c.id)) return expectReject(r, "doubtful-normal-exceeds", `${kind}/normal-aşım`);
+        // S263 = C (BİLİNEN SINIR; program değişmez): aynı gün Şüpheliden Çıkar + yeni Şüpheliye Al, sonra tahsilat — K3 sırası tahsilatı çıkarılan kayda düşürüyor, kapı 409.
+        if (!normal && sameDayReleaseReject(c.id, amount, day)) {
+          if (r.status !== 409 || r.code !== "ledger-integrity" || !String(r.full).includes("doubtful:balance")) throw Object.assign(new Error(`${kind}: S263 sınıfında kapının doubtful:balance reddi bekleniyordu: ${r.status} ${r.text}`), { unexpected: true });
+          return expectReject(r, "ledger-integrity", `${kind}/S263-aynı-gün-çıkar-al`);
+        }
         await doubtfulDiag(kind, c.id, r);
         mustOk(r, kind);
         cariAdd(c.id, -amount);
@@ -2238,7 +2260,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const amount = over ? s.remaining + moneyCents(1, 100) : R.chance(0.5) ? s.remaining : moneyCents(1, Math.max(1, Math.floor(s.remaining / 100)));
         const r = await api("POST", `/api/workspace/accounts/${rec.party}/doubtful/${rec.id}/write-off`, { amount: tl(amount), date: day, note: "Değersiz" });
         if (!open(day)) return expectReject(r, "period-locked", kind);
-        if (over) return expectReject(r, "doubtful-writeoff-exceeds", `${kind}/aşım`);
+        // S264 = A (2.5.0 UD turu 3; kullanıcı kararı — 'ÖNERİYİ UYGULA'): sınır aynı günün sırasındaki yer — K3'te Değersiz o günün alacaklarından ÖNCE işlenir; ret yalnız modelde
+        // satır kendi yerinde kalanı aşıyorsa (ya da sonraki bir Değersiz satırını taşırıyorsa): writeOffOverflow artar. Önceden 'over' (gün sonu kalanı + 1..100 TL) her zaman ret sayılıyordu.
+        const exceeds = doubtfulModel([...D.events, { kind: "credit", party: rec.party, date: day, cents: amount, target: rec.id, seq: Number.MAX_SAFE_INTEGER }]).writeOffOverflow > dm.writeOffOverflow;
+        if (exceeds) return expectReject(r, "doubtful-writeoff-exceeds", `${kind}/aşım`);
         mustOk(r, kind);
         cariAdd(rec.party, -amount);
         D.events.push({ kind: "credit", party: rec.party, date: day, cents: amount, target: rec.id, seq: ++D.seq });
