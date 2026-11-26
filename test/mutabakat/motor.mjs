@@ -318,7 +318,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
    * sonra yeni Şüpheliye Al, sonra bağsız tahsilat. Plan K3 aynı gün sırası (al → karşılık → değersiz → alacak satırı → çıkar) tahsilatı, yazım sırasında daha önce çıkarılmış eski
    * kayda düşürür (çıkarma günün SONUNDA işlenir); yeni kaydın kalanı borç bakiyesini aşar ve kapı (doubtful:balance, 120 = kart − açık şüpheli ≥ 0) tahsilatı reddeder. Motor bu
    * reddi YALNIZ bu sınıfta beklenen ret sayar: (1) carinin bugün çıkarılmış kaydı VE bugün alınmış kaydı var, (2) modelin K3 sırasıyla tahsilat çıkarılan kayda düşüyor (çıkarılan
-   * tutar azalıyor), (3) modelde tahsilattan sonra 120 < 0. Öbür her ret eskisi gibi uyuşmazlıktır.
+   * tutar azalıyor). Sınıfta program kabul de edebilir (yeni kaydın kalanı borç bakiyesine sığıyorsa — tohum 2 işlem 4790): o zaman yol eskisi gibi (mustOk + model). İlk sürümdeki
+   * "(3) modelde 120 < 0" koşulu kapının kararını her durumda öngörmedi (tohum 2'de model 120 < 0 dedi, program kabul etti) → kaldırıldı; ret kabulü sınıfla sınırlı kalır.
+   * Öbür her ret eskisi gibi uyuşmazlıktır.
    */
   const sameDayReleaseReject = (party, amount, day) => {
     if (!D.events.some(e => e.party === party && e.kind === "take" && e.date === day)) return false;
@@ -326,9 +328,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     if (!released.length) return false;
     const before = doubtfulModel();
     const after = doubtfulModel([...D.events, { kind: "credit", party, date: day, cents: amount, seq: Number.MAX_SAFE_INTEGER }]);
-    if (!released.some(x => (after.records.get(x.id)?.releasedCents ?? 0) < (before.records.get(x.id)?.releasedCents ?? 0))) return false;
-    const open = [...after.records.values()].filter(s => s.party === party).reduce((sum, s) => sum + s.remaining, 0);
-    return (M.cari.get(party) || 0) - amount - open < 0;
+    return released.some(x => (after.records.get(x.id)?.releasedCents ?? 0) < (before.records.get(x.id)?.releasedCents ?? 0));
   };
   // v2.1.0: iki vadesiz banka hesabı, açılış çizelgenin ilk günü (Bakiye Doğrulandı). Açılış 102.k borç / 500 alacak; banka etkisi modelde.
   const banks = [];
@@ -2201,10 +2201,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         // Sınır yalnız AÇIK şüpheli kaydı (kalan > 0) varken: açık kayıt yoksa fazlası bugünkü gibi avans olur (plan §3.11b/2 (a) "Sınır").
         if (normal && doubtfulOpenOf(c.id) > 0 && amount > doubtfulRoom(c.id)) return expectReject(r, "doubtful-normal-exceeds", `${kind}/normal-aşım`);
         // S263 = C (BİLİNEN SINIR; program değişmez): aynı gün Şüpheliden Çıkar + yeni Şüpheliye Al, sonra tahsilat — K3 sırası tahsilatı çıkarılan kayda düşürüyor, kapı 409.
-        if (!normal && sameDayReleaseReject(c.id, amount, day)) {
-          if (r.status !== 409 || r.code !== "ledger-integrity" || !String(r.full).includes("doubtful:balance")) throw Object.assign(new Error(`${kind}: S263 sınıfında kapının doubtful:balance reddi bekleniyordu: ${r.status} ${r.text}`), { unexpected: true });
-          return expectReject(r, "ledger-integrity", `${kind}/S263-aynı-gün-çıkar-al`);
-        }
+        if (!normal && r.status === 409 && r.code === "ledger-integrity" && String(r.full).includes("doubtful:balance") && sameDayReleaseReject(c.id, amount, day)) return expectReject(r, "ledger-integrity", `${kind}/S263-aynı-gün-çıkar-al`);
         await doubtfulDiag(kind, c.id, r);
         mustOk(r, kind);
         cariAdd(c.id, -amount);
