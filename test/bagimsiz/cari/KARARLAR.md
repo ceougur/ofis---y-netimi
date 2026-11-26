@@ -6250,7 +6250,7 @@ senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'
 ### Eski kâhin kırmızısı (elle tablo; eski kâhin `35fbfe44`, `elle-karsilastir.py --kirmizi-bekle`, iki TZ aynı)
 - **50/74 elle denetim kırmızı** (d61). Kural kural: S266 — U1'in Alacak Kalan / takvim / Vade Takip / projeksiyon, Ödeme kalemleri, gecikmiş, Σ açık ANAHTAR YOK (eski kâhinde Y5-7 SUS — iade geri ödemesi tamamlanmış Ödeme'yi
   verilen avans saydı); U2 / U3 / U5 Ödeme'nin "Tahsil Edilecek Borç" kalemi (100 / 200 / 100) ve sonraki Borç'un Kalan'ı 0 (elle 50 / 150), gecikmiş yok; SK-54 — U4'ün `elleYok` anahtarları eski kâhinde DEĞERLE + "SK-54" belirsiz kaydı yok;
-  S265 — U7'nin alış faturası anahtarları DEĞERLE (750) + "S265 = C" belirsiz kaydı yok. **Kırmızısı OLMAYAN:** bakiyeler (7), U8'in alış açığı (bileşimsiz — bugünkü kural), U2 / U3 ilk Borç'un Kalan'ı 0.
+  S265 — U7'nin alış faturası anahtarları DEĞERLE (750) + "S265 = C" belirsiz kaydı yok. **Kırmızısı OLMAYAN (24):** bakiyeler, U8'in alış faturası (bileşimsiz — bugünkü kural), U2 / U3 ilk Borç'un Kalan'ı / takvimi, U5'in Alacak'ı (kapalı) ve Σ açığı — kâhin bunları bugün de aynı veriyordu.
 
 ### Kanıt (bakım 29; iki saat dilimi; kâhin kodu `ad4d9ae7`, araçlar `587cc09e`; `docs/kanit/2026-11-26/kahin-cari29-kanit/`, araçlar ve koşu betikleri `kahin-cari29-arac/`)
 - oz-test **9.443/9.443** · G3 **675/675** (BEKLENMEYEN 0) · elle fark **114/114** · d61 **74/74** · ESKİ kâhinde **50/74 kırmızı** · program ↔ yeni kâhin CI **25.298/25.298** ve Uzun Doğrulama **175.143/175.143** iki TZ (taban 25.164/25.164 ve
