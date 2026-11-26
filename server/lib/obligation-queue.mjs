@@ -127,13 +127,18 @@ function implicitRefunds(input) {
     out.get(lineId).push({ noteKey, amount });
   };
   const isMoney = item => !item.linkedOnly && item.kind === "payment" && (item.line?.origin === "account" || item.line?.origin === "cheque");
-  const first = queueOnce(input, "side", null);
+  // 2.5.0 UD turu 3 (kâhin cari rastgele s1-28 / s1-4 / s1-6 / s1-7 / s1-12; v2.4.9 ve kâhin): ölçüm geçişleri para ↔ para eşleşmesi OLMADAN (pairMoney: false). Tur 2b-2'nin
+  // S98 fatura durumu kuralı (queueOnce againstOf: karşı tarafın netleşmemiş bağsız parası gelen bağsız paranın karşısında kalemdir) bu geçişlerde de çalışıyordu: müşteriye Ödeme
+  // müşterinin tahsilatıyla (avans ↔ avans) kapanıyor, `left` küçülüyor → KS8.1 (b)'nin "yükümlülüklerden ARTANI" eksik ölçülüyor, iadenin geri ödemesi eksik, artanı 'Tahsil
+  // Edilecek Borç' avansı, açılması gereken borç kapalı kalıyordu (tedarikçide simetriği: KS9 geri tahsilatı). Kalemler toplamı = bakiye tutuyordu; dağılım yanlıştı. Son geçiş
+  // (runQueue) DEĞİŞMEZ: geri ödeme orada bağ gibi önce yazılır, artan para S98 / S104'e kalır.
+  const first = queueOnce(input, "side", null, { pairMoney: false });
   const noteKeyOf = item => (item.kind === "note" ? item.line.sourceId : item.line?.origin === "stock" ? item.line.sourceId || "" : "");
   const isNote = item => Boolean(noteKeyOf(item)) && !item.due;
   const openNotes = first.items.filter(item => isNote(item) && item.left > 0);
   const hasMoney = sideName => first.items.some(item => isMoney(item) && item.side === sideName);
   const pseudo = openNotes.filter(note => hasMoney(note.side === "r" ? "p" : "r")).map(note => ({ noteKey: noteKeyOf(note), side: note.side === "r" ? "p" : "r", amount: note.left, date: note.date, at: note.at, rank: note.rank }));
-  const second = pseudo.length ? queueOnce(input, "side", null, { pseudo }) : first;
+  const second = pseudo.length ? queueOnce(input, "side", null, { pseudo, pairMoney: false }) : first;
   for (const item of second.items) if (item.kind === "pseudo") for (const c of item.closures) if (!c.reverse && c.payer?.lineId) give(c.payer.lineId, item.noteKey, c.amount);
   for (const sideName of ["r", "p"]) {
     const otherSide = sideName === "r" ? "p" : "r";
@@ -300,11 +305,52 @@ function runQueue(input, mode, pieces) {
       const closedByL = target ? target.freeClosures.filter(c => c.date <= link.lock).reduce((sum, c) => sum + c.amount, 0) : 0;
       caps.set(link.id, closedByL);
     }
-    return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: !stable }));
+    // 2.5.0 Uzun Doğrulama düzeltmesi (kullanıcının koşulu "kalemler toplamı = cari bakiyesi HER durumda tutar"; mutabakat tohum 2 / 3): sınırlı geçiş bağın serbest kalan
+    // kısmını BAĞSIZ para yapar — bu para bir Mevcut Borç kartının taşıdığı borcu kart açılmadan kapatabilir (kilitli dönemde kapanmış kart taksitine sonradan alınan kart
+    // tahsilatı → aynı gün açılan başka kartın borcu). Yukarıdaki S101 ölçümü sınırsız geçişlerde yapıldığı için bu kapanışı görmüyordu: kart hiçbir şey tüketmiyor, taksiti
+    // kendi tahsilatıyla kapanmış kalıyor, kalemler bakiyeyi kart tutarı kadar aşıyordu. Ölçüm burada SINIRLI geçişlerle yakınsayana dek yinelenir (aynı sınır, aynı kural:
+    // kartın taşıdığı borcun bağsız parayla kapanmış kısmı kartın avansla ödenmiş kısmıdır — S101 = A); sınırda yakınsamazsa güvenli kapanış (settleExcess). Kilit izi
+    // olmayan ya da sınırlı geçişin ölçümü değiştirmediği caride sonuç önceki tek sınırlı geçişle AYNI (ilk ölçüm kararlı → döngü girmez). Sınırsız ölçüm zaten
+    // yakınsamadıysa (güvenli kapanış yolu) önceki gibi tek sınırlı geçiş güvenli kapanışla.
+    let capped = prepaid;
+    let cappedState = queueOnce(input, mode, caps, { pieces, forced, prepaid: capped });
+    // Aynı tutarsızlığın kilit sınırı yüzü (mutabakat tohum 6): sınır (hedefin kilit gününe kadar BAĞSIZ kapanmış kısmı) bütün kilit bağları SERBEST sayılan ölçüm geçişinde
+    // ölçülür; sınırlı geçişte o bağsız para başka kaleme gidebilir — taksit ne bağsız parayla ne bağıyla kapanır, taksitli faturanın açığı kartın kendi kalanını aşar. Karar (3)
+    // "kilitli dönemde bağsız KAPANMIŞ hedef açılmaz": sınır, sınırlı geçişte hedefi kilit gününe kadar GERÇEKTEN kapatan bağsız paraya indirilir (yalnız azalır → sonlu;
+    // bağ o kadar fazlasını kapatır). Sınırlı geçiş ölçümle uyuşuyorsa döngü girmez — sonuç önceki tek sınırlı geçişle AYNI. Tur sınırı (ders 47): her tur en az bir sınırı
+    // küçültür; en çok PREPAID_MIN_PASSES tur (sınırda bitmezse kalan fark önceki davranış).
+    for (let round = 0; round < Math.min(state.lockLinks.length, PREPAID_MIN_PASSES); round += 1) {
+      let changed = false;
+      for (const link of state.lockLinks) {
+        const target = cappedState.itemByKey.get(link.targetKey);
+        const actual = target ? target.freeClosures.filter(c => c.date <= link.lock).reduce((sum, c) => sum + c.amount, 0) : 0;
+        if (actual < caps.get(link.id)) {
+          caps.set(link.id, actual);
+          changed = true;
+        }
+      }
+      if (!changed) break;
+      cappedState = queueOnce(input, mode, caps, { pieces, forced, prepaid: capped });
+    }
+    if (!stable) return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: true }));
+    let cappedStable = false;
+    for (let round = 0; round < limit; round += 1) {
+      const next = prepaidOf(cappedState, capped);
+      if (samePrepaid(next, capped)) {
+        cappedStable = true;
+        break;
+      }
+      capped = next;
+      passes += 1;
+      cappedState = queueOnce(input, mode, caps, { pieces, forced, prepaid: capped });
+    }
+    prepaid = capped;
+    stable = cappedStable;
+    return tagged(stable ? cappedState : queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: true }));
   }
   return tagged(state);
 }
-function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced = null, endCover = "", prepaid = null, settle = false, extraCap = null, cutList: cutRows = null } = {}) {
+function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced = null, endCover = "", prepaid = null, settle = false, extraCap = null, cutList: cutRows = null, pairMoney = true } = {}) {
   // §19.2: bu geçişin iade kesintileri (ön geçişte yalnız o anda bilinen iadeler; asıl geçişte hepsi).
   const cutList = cutRows || returnCutsOf(input);
   const { lines = [], invoices = [], links = new Map(), chequeEvents = new Map(), reversals = new Map(), offsets = [], schedules = new Map(), dueDates = new Map(), promises = new Map(), lockAt = () => "", linkTimes = new Map(), linkMoments = new Map() } = input;
@@ -923,7 +969,7 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
   const freeMoney = item => !item.due && !item.linkedOnly && item.kind === "payment" && (item.line?.origin === "account" || item.line?.origin === "cheque");
   const againstOf = item => {
     const own = listFor(item, false);
-    if (mode !== "side" || !freeMoney(item)) return [own];
+    if (mode !== "side" || !pairMoney || !freeMoney(item)) return [own];
     return [own, open[`${item.side === "r" ? "p" : "r"}Pay`]];
   };
   const arrive = item => {

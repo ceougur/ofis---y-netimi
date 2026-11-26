@@ -1,0 +1,6 @@
+✗ işlem 2713 taksit-tahsil:
+  Cari Aynı Ad Müşteri T2 (3): açık kalemlerin toplamı 28303,83 ≠ bakiye (model) 28052,86 — kalemler toplamı = cari bakiyesi
+Tohum 2: işlem 2713; uyuşmazlık 1; 742 sn
+işlem 2713 (taksit-tahsil, 2026-09-29) 
+  Cari Aynı Ad Müşteri T2 (3): açık kalemlerin toplamı 28303,83 ≠ bakiye (model) 28052,86 — kalemler toplamı = cari bakiyesi
+DÖKÜM Aynı Ad Müşteri T2 3 kimlik account-24f44c5a-e063-40ee-a904-9f4c9c5b60bb bakiye 28052.86 sigmaÖnbellek 2830383 sigmaTaze 2830383 geçiş {"count":0,"stable":true}

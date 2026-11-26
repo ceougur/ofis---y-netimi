@@ -1,0 +1,96 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "min-s1-28",
+ "aciklama": "uretici.py --tur s1 --tohum 28 --islem 120",
+ "dayanak": "KARARLAR.md C (2.4.5 madde 6: S1, K6.1–K6.4); ders 17",
+ "bugun": "2026-06-30",
+ "adimlar": [
+  {
+   "id": "c-e",
+   "islem": "cari_ac",
+   "ad": "E",
+   "isim": "Rastgele Epsilon 28",
+   "tarih": "2026-03-01",
+   "acilis": "3736,76",
+   "acilisBeklenen": "2026-03-01"
+  },
+  {
+   "id": "s009",
+   "islem": "tahsilat",
+   "cari": "E",
+   "tutar": "2516,50",
+   "tarih": "2026-03-14"
+  },
+  {
+   "id": "s012",
+   "islem": "tahsilat",
+   "cari": "E",
+   "tutar": "3434,29",
+   "tarih": "2026-03-16"
+  },
+  {
+   "id": "s018",
+   "islem": "fatura",
+   "ad": "G4",
+   "cari": "E",
+   "tutar": "3000,00",
+   "tarih": "2026-03-22"
+  },
+  {
+   "id": "s020",
+   "islem": "fatura",
+   "ad": "G5",
+   "cari": "E",
+   "tutar": "2842,44",
+   "tarih": "2026-03-25"
+  },
+  {
+   "id": "s033",
+   "islem": "fatura",
+   "ad": "G7",
+   "cari": "E",
+   "tutar": "2466,53",
+   "tarih": "2026-04-11"
+  },
+  {
+   "id": "s036",
+   "islem": "stok_iade",
+   "cari": "E",
+   "tutar": "1372,46",
+   "tarih": "2026-04-16"
+  },
+  {
+   "id": "s037",
+   "islem": "tahsilat",
+   "cari": "E",
+   "tutar": "1861,54",
+   "tarih": "2026-04-18"
+  },
+  {
+   "id": "s044",
+   "islem": "odeme",
+   "cari": "E",
+   "tutar": "1372,46",
+   "tarih": "2026-04-23"
+  },
+  {
+   "id": "s070",
+   "islem": "stok_iade",
+   "cari": "E",
+   "tutar": "1350,84",
+   "tarih": "2026-05-26"
+  },
+  {
+   "id": "s078",
+   "islem": "tahsilat",
+   "cari": "E",
+   "tutar": "1721,17",
+   "tarih": "2026-06-04",
+   "vade": "2026-06-07"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  }
+ ]
+}

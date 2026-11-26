@@ -1,0 +1,32 @@
+{
+  "ad": "ud2-yeni-tyk-kilit-olcum-UTC",
+  "komut": "node --test test/tyk-kilit-olcum-250.test.mjs",
+  "commit": "3175b26c3a40173d0614dca18dc0a2e306c608f8",
+  "dal": "worktree-agent-a3efe37d598ece90c",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-26T03:28:37.966Z",
+  "sure_sn": 5.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 8,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-26/ud2-yeni-tyk-kilit-olcum-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3efe37d598ece90c",
+  "ham_cikti_sha256": "378083fa040d42d6a2d0792fdffb787df1fc17d4aaf763d7754b8caa7253f0ff",
+  "ham_cikti_bayt": 3479
+}

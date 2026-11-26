@@ -1,0 +1,32 @@
+{
+  "ad": "udfix-komsu-tyk-Europe-Istanbul",
+  "komut": "node --test test/cari-vade-245.test.mjs test/kapama-tek-gecis-245.test.mjs test/kasa-acilis-once-250.test.mjs test/obligation-input-250.test.mjs test/supheli-kuyruk-defter-250.test.mjs test/tablodan-aktar-244.test.mjs test/takvim-govde-250.test.mjs test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/tyk-birlesik8-iade-250.test.mjs test/tyk-fark-v249-250.test.mjs test/tyk-goc-249-250.test.mjs test/tyk-kapanis-250.test.mjs test/tyk-kapanis-dis-250.test.mjs test/tyk-kapanis-sigma-250.test.mjs test/tyk-kilit-olcum-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-son-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-tur2b2-250.test.mjs",
+  "commit": "fa87ae7b618c1e3d43cea5031db46032e3c61834",
+  "dal": "udfix-e7934c5e",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-23T01:04:46.594Z",
+  "sure_sn": 69.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 351,
+    "gecen": 351,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-23/udfix-komsu-tyk-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4444ad6c4d6abab7",
+  "ham_cikti_sha256": "a98dd53a71621cb385f7578ea31b97eb7faa499c99ca0fe8ece8b1126eda5678",
+  "ham_cikti_bayt": 162368
+}
