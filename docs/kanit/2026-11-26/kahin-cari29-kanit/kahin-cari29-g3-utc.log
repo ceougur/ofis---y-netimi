@@ -1,0 +1,40 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 114 elle senaryonun 0'inin adımları değişti: yok · izinli: yok · yeni elle senaryo: d61-c5-s266-s265-yalin-olmayan
+DİL EKİ (bakım 24): eski kâhinin dilinde olmayan adımlı yeni elle senaryo — eşdeğerlik / G3 dışında: yok
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 114 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 540/540 bayt bayt aynı
+G3 (kural 2.5.0; 135 senaryo — eski kopyanın 114 elle senaryosu + yeni elle + 20 rastgele): eski 80743 denetim · yeni 80568 denetim · değişen / kalkan / yeni toplam 732 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  GENEL          yeni         4
+      örn. rastgele-s1-4 k12:projeksiyon:cari: "(denetim yok)" → 7
+      örn. rastgele-s1-4 k12:takvim:cariKalemSayisi: "(denetim yok)" → 6
+      örn. rastgele-s1-4 kson:projeksiyon:cari: "(denetim yok)" → 7
+      örn. rastgele-s1-4 kson:takvim:cariKalemSayisi: "(denetim yok)" → 6
+  S265           kalkan     432
+      örn. d61-c5-s266-s265-yalin-olmayan k1:fatura:A7:acik: 75000 → "(denetim yok)"
+      örn. d61-c5-s266-s265-yalin-olmayan k1:fatura:A7:gosterilen: 75000 → "(denetim yok)"
+      örn. d61-c5-s266-s265-yalin-olmayan k1:fatura:A7:kartta: 0 → "(denetim yok)"
+      örn. d61-c5-s266-s265-yalin-olmayan k1:fatura:A7:liste:gosterilen: 75000 → "(denetim yok)"
+  S266           degisen     19
+      örn. d61-c5-s266-s265-yalin-olmayan k1:cari:U2:acikEsitBakiye: false → true
+      örn. d61-c5-s266-s265-yalin-olmayan k1:cari:U2:acikToplam: 0 → 5000
+      örn. d61-c5-s266-s265-yalin-olmayan k1:hareket:u2b2:kalan: 0 → 5000
+      örn. d61-c5-s266-s265-yalin-olmayan k1:hareket:u3b2:kalan: 0 → 15000
+  S266           yeni       265
+      örn. d61-c5-s266-s265-yalin-olmayan k1:cari:U1:acikEsitBakiye: "(denetim yok)" → false
+      örn. d61-c5-s266-s265-yalin-olmayan k1:cari:U1:acikToplam: "(denetim yok)" → -20000
+      örn. d61-c5-s266-s265-yalin-olmayan k1:cari:U1:gecikmis: "(denetim yok)" → 0
+      örn. d61-c5-s266-s265-yalin-olmayan k1:cari:U2:gecikmis: "(denetim yok)" → 5000
+  SK54           kalkan      12
+      örn. d61-c5-s266-s265-yalin-olmayan k1:cari:U4:acikEsitBakiye: false → "(denetim yok)"
+      örn. d61-c5-s266-s265-yalin-olmayan k1:cari:U4:acikToplam: 0 → "(denetim yok)"
+      örn. d61-c5-s266-s265-yalin-olmayan k1:cari:U4:gecikmis: 0 → "(denetim yok)"
+      örn. d61-c5-s266-s265-yalin-olmayan k1:hareket:u4a:beklenen: "" → "(denetim yok)"
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d61-c5-s266-s265-yalin-olmayan           S265/kalkan 6 · S266/degisen 19 · S266/yeni 22 · SK54/kalkan 12
+  rastgele-s1-10                           S265/kalkan 204
+  rastgele-s1-3                            S265/kalkan 222
+  rastgele-s1-4                            GENEL/yeni 4 · S266/yeni 166
+  rastgele-s1-5                            S266/yeni 77
+# tests 675
+# pass 675
+# fail 0
+675/675 denetim geçti

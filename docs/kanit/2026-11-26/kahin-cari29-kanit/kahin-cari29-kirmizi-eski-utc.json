@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-cari29-kirmizi-eski-utc",
+  "komut": "python3 -I -B docs/kanit/2026-11-26/kahin-cari29-arac/elle-karsilastir.py --kirmizi-bekle --model /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc29-a51/eski/test/bagimsiz/cari test/bagimsiz/cari/senaryolar/d61-c5-s266-s265-yalin-olmayan.json",
+  "commit": "ad4d9ae792815b91db051e8ec412345a2bea2269",
+  "dal": "worktree-agent-a512c4c9a6a5549a7",
+  "kirli": 0,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-26T12:16:39.702Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc29-a51/kanit/2026-11-26/kahin-cari29-kirmizi-eski-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a512c4c9a6a5549a7",
+  "ham_cikti_sha256": "78e3266666d76513058e0d4679b5da4a3fb55659ef097f05039f8a2086b63663",
+  "ham_cikti_bayt": 6796
+}
