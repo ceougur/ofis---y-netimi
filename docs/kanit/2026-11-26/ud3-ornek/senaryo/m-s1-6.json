@@ -1,0 +1,141 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "min-s1-6",
+ "aciklama": "uretici.py --tur s1 --tohum 6 --islem 120",
+ "dayanak": "KARARLAR.md C (2.4.5 madde 6: S1, K6.1–K6.4); ders 17",
+ "bugun": "2026-06-30",
+ "adimlar": [
+  {
+   "id": "c-d",
+   "islem": "cari_ac",
+   "ad": "D",
+   "isim": "Rastgele Delta 6",
+   "tarih": "2026-03-01",
+   "acilis": "3029,97",
+   "acilisBeklenen": "2026-05-11"
+  },
+  {
+   "id": "s011",
+   "islem": "tahsilat",
+   "cari": "D",
+   "tutar": "1442,79",
+   "tarih": "2026-03-21"
+  },
+  {
+   "id": "s024",
+   "islem": "fatura",
+   "ad": "G2",
+   "cari": "D",
+   "tutar": "2558,23",
+   "tarih": "2026-04-04"
+  },
+  {
+   "id": "s025",
+   "islem": "tahsilat",
+   "cari": "D",
+   "tutar": "1435,58",
+   "tarih": "2026-04-07"
+  },
+  {
+   "id": "s026",
+   "islem": "stok_iade",
+   "cari": "D",
+   "tutar": "1051,49",
+   "tarih": "2026-04-07"
+  },
+  {
+   "id": "s031",
+   "islem": "tahsilat",
+   "cari": "D",
+   "tutar": "1928,83",
+   "tarih": "2026-04-10"
+  },
+  {
+   "id": "s037",
+   "islem": "tahsilat",
+   "cari": "D",
+   "tutar": "1491,97",
+   "tarih": "2026-04-17",
+   "vade": "2026-05-11"
+  },
+  {
+   "id": "s040",
+   "islem": "fatura",
+   "ad": "G5",
+   "cari": "D",
+   "tutar": "2336,05",
+   "tarih": "2026-04-18"
+  },
+  {
+   "id": "s045",
+   "islem": "fatura",
+   "ad": "G6",
+   "cari": "D",
+   "tutar": "61,64",
+   "tarih": "2026-04-23"
+  },
+  {
+   "id": "s047",
+   "islem": "fatura",
+   "ad": "G7",
+   "cari": "D",
+   "tutar": "1377,53",
+   "tarih": "2026-04-27"
+  },
+  {
+   "id": "s053",
+   "islem": "borc",
+   "cari": "D",
+   "tutar": "695,34",
+   "tarih": "2026-05-06",
+   "beklenen": "2026-08-18"
+  },
+  {
+   "id": "s055",
+   "islem": "borc",
+   "cari": "D",
+   "tutar": "2100,00",
+   "tarih": "2026-05-08"
+  },
+  {
+   "id": "s063",
+   "islem": "stok_iade",
+   "cari": "D",
+   "tutar": "79,15",
+   "tarih": "2026-05-23"
+  },
+  {
+   "id": "s066",
+   "islem": "tahsilat",
+   "cari": "D",
+   "tutar": "1821,51",
+   "tarih": "2026-05-26",
+   "vade": "2026-06-15"
+  },
+  {
+   "id": "s076",
+   "islem": "odeme",
+   "cari": "D",
+   "tutar": "2185,66",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "s077",
+   "islem": "tahsilat",
+   "cari": "D",
+   "tutar": "1511,81",
+   "tarih": "2026-06-02"
+  },
+  {
+   "id": "s087",
+   "islem": "tahsilat",
+   "cari": "D",
+   "tutar": "2487,98",
+   "tarih": "2026-06-20"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  }
+ ]
+}

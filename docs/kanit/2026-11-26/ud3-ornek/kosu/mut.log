@@ -1,0 +1,13 @@
+API TABAN (mutantsız): tests 7, pass 7, fail 0, çıkış 0
+UD3-a ÖLDÜ (tests 2, pass 0, fail 2) — UD3 geri — ölçüm geçişlerinde para ↔ para eşleşmesi (S98 fatura durumu) açık (taban: geri ödeme eksik, artanı avans) · öldüren: A (s1-4): Açılış 1.483,45 · 25.06 iade 1.914,34 · 26.06 tahsilat 564,84 · 30.06 Ödeme 2.385,23 ⇒ Açılış Kalan 918,61, Ödeme avansı 470,89, bakiye 1.389,50 | B (s1-28): borç ödendikten sonra 16.04 iade 1.372,46 · 23.04 Ödeme 1.372,46 (iadenin tamamı geri ödenir) · sonra tahsilat ⇒ Ödeme avansı YOK, a
+UD3-b ÖLDÜ (tests 2, pass 1, fail 1) — UD3 — yalnız ikinci (açık iadeli) ölçüm geçişinde para ↔ para eşleşmesi açık · öldüren: A (s1-4): Açılış 1.483,45 · 25.06 iade 1.914,34 · 26.06 tahsilat 564,84 · 30.06 Ödeme 2.385,23 ⇒ Açılış Kalan 918,61, Ödeme avansı 470,89, bakiye 1.389,50 | TYK — faturasız stok iadesinin geri ödemesi (KS8.1) para ↔ para eşleşmesiyle eksik ölçülmez (UD turu 3)
+S264-a ÖLDÜ (tests 5, pass 2, fail 3) — S264 B — Değersiz sınırı gün sonu kalanı (o günün bağlı payı sınırdan düşer; taban davranışı) · öldüren: (a) aynı gün, şüpheliye almadan önce yazılmış BAĞLI tahsilat: Değersiz 3.000 (tam tutar) kabul; kayıt Değersiz Yazıldı, kalan 0; bakiye 423,55 | (a′) aynı kurulumda kalanı aşan Değersiz (3.000,01) yine 400 doubtful-writeoff-exceeds — sınır 3.000; hiçbir satır yazılmaz | (d) komşu yol — (a)'da kabul 
+S264-b YAŞADI (tests 5, pass 5, fail 0) — S264 sınır kayması — önceki günlerin bağlı payı da sınıra eklenir (S25 (c) payı geri sayılır)
+S264-c YAŞADI (tests 5, pass 5, fail 0) — S264 sınır kayması — aynı günün BAĞSIZ alacakları da sınıra eklenir (kâhin ve v2.4.9 reddeder)
+S264-d ÖLDÜ (tests 5, pass 4, fail 1) — S264 komşu yol — Silinenler'den geri yüklemede sınır gün sonu kalanı (kabul edilmiş satır geri gelmez) · öldüren: (d) komşu yol — (a)'da kabul edilen Değersiz satırı silinip Silinenler'den geri yüklenir (aynı sınır; önceden 409) | S264 = A — Değersiz sınırı aynı günün sırasına uyar (o günün bağlı payından ÖNCE)
+# tests 6
+# pass 4
+# fail 2
+
+[kanit] ud3-mutasyon-yeni: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 4/6 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 3974c93 +4 değişmiş dosya +3 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+çıkış 1

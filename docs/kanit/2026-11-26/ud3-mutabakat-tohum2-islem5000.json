@@ -1,0 +1,48 @@
+{
+  "ad": "ud3-mutabakat-tohum2-islem5000",
+  "komut": "npm run test:mutabakat -- --islem 5000 --tohum 2 --tohumlar 1",
+  "commit": "0c860fabb359000d8afc90151f7c3853d689327f",
+  "dal": "worktree-agent-acb2a64a5f6cdf8f2",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-26T09:19:31.074Z",
+  "sure_sn": 1901.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "işlem 4790 supheli-tahsil: supheli-tahsil: S263 sınıfında kapının doubtful:balance reddi bekleniyordu: 200 {\"ok\":true,\"data\":{\"id\":\"account-5c090568-f850-4a63-a026-e7f11a6860f9\",\"refNo\":\"14\",\"type\":\"customer\",\"name\":\"Şüpheli Müşteri B T2\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-07-29",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "işlem 4790 supheli-tahsil:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UYUŞMAZLIK (2):",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-26/ud3-mutabakat-tohum2-islem5000.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-acb2a64a5f6cdf8f2",
+  "ham_cikti_sha256": "bf46cfeb432fe86fb32c5368a6c0f002c1f02b6c78974f2eb21f713800229deb",
+  "ham_cikti_bayt": 5150
+}

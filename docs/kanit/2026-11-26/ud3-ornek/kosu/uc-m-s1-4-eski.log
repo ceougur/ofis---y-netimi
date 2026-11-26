@@ -1,0 +1,28 @@
+min-s1-4: 16/23 tuttu
+  2.5.0 kararıyla değişen beklenti: 8 denetim · farkların 6/7'i bu sınıfta — SINIF DIŞI 1
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:hareket:acilis:E:kalan: program 82466 · kâhin 91861 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:acilis:E: program {"amount":82466,"date":"2026-03-01","direction":"in"} · kâhin {"amount":91861,"date":"2026-03-01","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:s105: program {"amount":56484,"date":"2026-06-30","direction":"in"} · kâhin {"amount":47089,"date":"2026-06-30","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [İNCELE YAYGIN] k1:takvim:hareket:acilis:E: program {"amount":82466,"cari":"E","days":-121,"direction":"in","dueDate":"2026-03-01","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 4","state":"overdue"} · kâhin {"amount":91861,"cari":"E","days":-121,"direction":"in","dueDate":"2026-03-01","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 4","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün · C16.1 S91 A: vadesiz kayıt kayıt gününde vadeli kalem (gün = kayıt günü))
+  ✗ [İNCELE YAYGIN] k1:takvim:hareket:s105: program {"amount":56484,"cari":"E","days":0,"direction":"in","dueDate":"2026-06-30","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 4","state":"today"} · kâhin {"amount":47089,"cari":"E","days":0,"direction":"in","dueDate":"2026-06-30","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 4","state":"today"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [İNCELE YAYGIN] k1:vadeTakip:hareket:acilis:E: program {"amount":82466,"date":"2026-03-01","direction":"in"} · kâhin {"amount":91861,"date":"2026-03-01","direction":"in"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+  ✗ [İNCELE YAYGIN] k1:vadeTakip:hareket:s105: program {"amount":56484,"date":"2026-06-30","direction":"in"} · kâhin {"amount":47089,"date":"2026-06-30","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 8 denetim, 1 senaryo · programla farkların 6'i bu sınıfta, 1'i SINIF DIŞI
+
+ÖZET [2.5.0]: 1 senaryo, 23 denetim, 7 fark (BULGU 0), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-m8x4/uc-m-s1-4-eski
+16/23 denetim geçti

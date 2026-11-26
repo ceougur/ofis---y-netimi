@@ -1,0 +1,43 @@
+{
+  "ad": "ud3-mutabakat-tohum7-islem5000",
+  "komut": "npm run test:mutabakat -- --islem 5000 --tohum 7 --tohumlar 1",
+  "commit": "0c860fabb359000d8afc90151f7c3853d689327f",
+  "dal": "worktree-agent-acb2a64a5f6cdf8f2",
+  "kirli": 0,
+  "izlenmeyen": 15,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-26T09:55:01.473Z",
+  "sure_sn": 2133.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "işlem 4160 supheli-degersiz: supheli-degersiz: beklenmeyen ret 400 {\"ok\":false,\"error\":\"Değersiz yazılacak tutar (5.371,86 TL) kalan şüpheli tutarı (5.317,86 TL) aşıyor.\",\"code\":\"doubtful-writeoff-exceeds\",\"field\":\"amount\",\"remainingMinor\":531786}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UYUŞMAZLIK (1):",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-26/ud3-mutabakat-tohum7-islem5000.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-acb2a64a5f6cdf8f2",
+  "ham_cikti_sha256": "5a394800599c38b0cc813afcf94c444c2666bf96032f2141dfde6beb30054fc5",
+  "ham_cikti_bayt": 3371
+}

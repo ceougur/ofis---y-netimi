@@ -1,0 +1,29 @@
+
+> destekofis@2.5.0 test:mutabakat
+> node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs --islem 5000 --tohum 2 --tohumlar 1
+
+✗ işlem 4790 supheli-tahsil: supheli-tahsil: S263 sınıfında kapının doubtful:balance reddi bekleniyordu: 200 {"ok":true,"data":{"id":"account-5c090568-f850-4a63-a026-e7f11a6860f9","refNo":"14","type":"customer","name":"Şüpheli Müşteri B T2","phone":"","email":"","address":"","registeredOn":"2026-07-29","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName
+✗ işlem 4790 supheli-tahsil:
+  Kasa cash: program 805985.77 · model 794958,30
+  İşlem zinciri Kasa/account: program 315 satır 1407534,45 · model 314 satır 1396506,98
+  Cari Şüpheli Müşteri B T2 (14): program -246.26 · model 10781,21
+  Cari Şüpheli Müşteri B T2 (14): açık kalemlerin toplamı -246,26 ≠ bakiye (model) 10781,21 — kalemler toplamı = cari bakiyesi
+  Ana defter kasa hesapları ≠ model: 100 805985.77, 102 -850545.01, 108 716106.54 (model 108 716106,54)
+  Ana defter cari hesapları ≠ model: 120 289993.47/301020.94, 320 -7562805.41/-7562805.41, 336 -147914.75/-147914.75
+
+Tohum 2: 4790 işlem, 4790 doğrulama, 1129 beklenen ret (eksiye düşürme / aşım), eşzamanlı 0 istek · 1900.5 sn
+  Beklenen retler: period-locked 199, date-invalid 104, date-missing 72, due-before-start 70, cash-negative 67, date-future 48, 400 43, bank-account-flag 42, plan-overpay 35, cheque-duplicate 35, issueDate 25, stock-negative 25, bank-similar 24, invoice-linked 24, plan-paid 22, invoice-cancelled 22, refund-exceeds 21, cash-method 17, return-before-original 16, return-exceeds 14, cheque-deposited 12, payment-exceeds 11, cheque-not-in-portfolio 11, doubtful-exceeds-balance 11, chronology 11, lines 10, cheque-due-before-issue 10, vatRate 10, invoice-duplicate 10, invoice-has-returns 9, cheque-moved 9, originalId 9, doubtful-provision-exceeds 7, payment.cheques 7, amount-precision 7, bank-account-required 6, cash-blocked 6, pos-has-refunds 5, payment.rest 5, cheque-deposited-method 5, 404 4, bank-channel 4, 409 3, bank-reversal-of-reversal 3, bank-already-reversed 3, bank-before-opening 3, doubtful-closed 3, bank-account-invalid 2, doubtful-has-writeoffs 2, doubtful-normal-exceeds 2, bank-correct-type 2, doubtful-writeoff-exceeds 1, plan-bank-linked 1
+  İşlem türleri: alim 242, kasa 201, banka-fis 145, kart-kapat 43, fatura-hatasi 185, fatura-taslak 68, kilit-ihlali 98, taksit-tahsil 246, fatura-iptal 110, iade 96, satis 411, supheli-tahsil 74, supheli-borc 65, vade-hatasi 69, tarih-hatasi 188, fatura-alis 193, kayit-tahsil 98, pos-tahsil 105, supheli-al 72, banka-duzelt 46, pos-iade 57, kayit-duzelt 35, banka-ters 38, supheli-karsilik 41, fatura-acid 86, cek-bankadan-geri-al 16, cek-ode 72, hareket-sil 46, fatura-satis 272, kart 126, cari-duzelt 73, cari 240, taksit-sil 70, fatura-iade 115, kasa-duzelt 67, supheli-sil 19, banka-transfer-ters 22, hareket-duzelt 67, kart-sil 47, cek-tahsile-ver 61, kasa-sil 48, cari-sil 37, cek-tahsil 70, banka-benzer 24, kayit-sil 63, fatura-bagli 16, supheli-degersiz 26, cek-geri-al 37, pos-sil 18, banka-transfer 70, geri-yukle 44, supheli-cikar 23
+  Model: {"kasa":{"cash":"794958,30","bank":"-850545,01","card":"171703,61"},"cariler":12,"urunler":10,"kartlar":150,"kasaHareketi":174,"bankaSatiri":563,"bankaTersKayit":106,"bankalarArasiTransfer":49,"cariHareketi":486,"stokHareketi":1387,"taksitHareketi":94,"hesabaBagliModulHavalesi":371,"kurumsalKartaBagli":44,"kurumsalKartBakiyesi":"-548403,27","supheliKayit":26,"supheliAcik":"0,00"}
+  Fatura: {"kesilen":527,"iptal":41,"taslak":0,"turler":{"purchase":190,"sale":246,"sale_return":75,"purchase_return":40,"smm":17},"cek":226} · seriler {} · tekil ETTN -
+  Mutabakat kapısı süresi: ortanca 118 ms, en çok 423 ms
+  ✗ UYUŞMAZLIK (2):
+    işlem 4790 (supheli-tahsil, 2026-11-20)
+      supheli-tahsil: S263 sınıfında kapının doubtful:balance reddi bekleniyordu: 200 {"ok":true,"data":{"id":"account-5c090568-f850-4a63-a026-e7f11a6860f9","refNo":"14","type":"customer","name":"Şüpheli Müşteri B T2","phone":"","email":"","address":"","registeredOn":"2026-07-29","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName
+    işlem 4790 (supheli-tahsil, 2026-11-20)
+      Kasa cash: program 805985.77 · model 794958,30
+      İşlem zinciri Kasa/account: program 315 satır 1407534,45 · model 314 satır 1396506,98
+      Cari Şüpheli Müşteri B T2 (14): program -246.26 · model 10781,21
+      Cari Şüpheli Müşteri B T2 (14): açık kalemlerin toplamı -246,26 ≠ bakiye (model) 10781,21 — kalemler toplamı = cari bakiyesi
+      Ana defter kasa hesapları ≠ model: 100 805985.77, 102 -850545.01, 108 716106.54 (model 108 716106,54)
+      Ana defter cari hesapları ≠ model: 120 289993.47/301020.94, 320 -7562805.41/-7562805.41, 336 -147914.75/-147914.75
