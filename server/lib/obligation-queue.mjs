@@ -127,13 +127,18 @@ function implicitRefunds(input) {
     out.get(lineId).push({ noteKey, amount });
   };
   const isMoney = item => !item.linkedOnly && item.kind === "payment" && (item.line?.origin === "account" || item.line?.origin === "cheque");
-  const first = queueOnce(input, "side", null);
+  // 2.5.0 UD turu 3 (kâhin cari rastgele s1-28 / s1-4 / s1-6 / s1-7 / s1-12; v2.4.9 ve kâhin): ölçüm geçişleri para ↔ para eşleşmesi OLMADAN (pairMoney: false). Tur 2b-2'nin
+  // S98 fatura durumu kuralı (queueOnce againstOf: karşı tarafın netleşmemiş bağsız parası gelen bağsız paranın karşısında kalemdir) bu geçişlerde de çalışıyordu: müşteriye Ödeme
+  // müşterinin tahsilatıyla (avans ↔ avans) kapanıyor, `left` küçülüyor → KS8.1 (b)'nin "yükümlülüklerden ARTANI" eksik ölçülüyor, iadenin geri ödemesi eksik, artanı 'Tahsil
+  // Edilecek Borç' avansı, açılması gereken borç kapalı kalıyordu (tedarikçide simetriği: KS9 geri tahsilatı). Kalemler toplamı = bakiye tutuyordu; dağılım yanlıştı. Son geçiş
+  // (runQueue) DEĞİŞMEZ: geri ödeme orada bağ gibi önce yazılır, artan para S98 / S104'e kalır.
+  const first = queueOnce(input, "side", null, { pairMoney: false });
   const noteKeyOf = item => (item.kind === "note" ? item.line.sourceId : item.line?.origin === "stock" ? item.line.sourceId || "" : "");
   const isNote = item => Boolean(noteKeyOf(item)) && !item.due;
   const openNotes = first.items.filter(item => isNote(item) && item.left > 0);
   const hasMoney = sideName => first.items.some(item => isMoney(item) && item.side === sideName);
   const pseudo = openNotes.filter(note => hasMoney(note.side === "r" ? "p" : "r")).map(note => ({ noteKey: noteKeyOf(note), side: note.side === "r" ? "p" : "r", amount: note.left, date: note.date, at: note.at, rank: note.rank }));
-  const second = pseudo.length ? queueOnce(input, "side", null, { pseudo }) : first;
+  const second = pseudo.length ? queueOnce(input, "side", null, { pseudo, pairMoney: false }) : first;
   for (const item of second.items) if (item.kind === "pseudo") for (const c of item.closures) if (!c.reverse && c.payer?.lineId) give(c.payer.lineId, item.noteKey, c.amount);
   for (const sideName of ["r", "p"]) {
     const otherSide = sideName === "r" ? "p" : "r";
@@ -345,7 +350,7 @@ function runQueue(input, mode, pieces) {
   }
   return tagged(state);
 }
-function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced = null, endCover = "", prepaid = null, settle = false, extraCap = null, cutList: cutRows = null } = {}) {
+function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced = null, endCover = "", prepaid = null, settle = false, extraCap = null, cutList: cutRows = null, pairMoney = true } = {}) {
   // §19.2: bu geçişin iade kesintileri (ön geçişte yalnız o anda bilinen iadeler; asıl geçişte hepsi).
   const cutList = cutRows || returnCutsOf(input);
   const { lines = [], invoices = [], links = new Map(), chequeEvents = new Map(), reversals = new Map(), offsets = [], schedules = new Map(), dueDates = new Map(), promises = new Map(), lockAt = () => "", linkTimes = new Map(), linkMoments = new Map() } = input;
@@ -964,7 +969,7 @@ function queueOnce(input, mode, lockCaps, { pieces = null, pseudo = null, forced
   const freeMoney = item => !item.due && !item.linkedOnly && item.kind === "payment" && (item.line?.origin === "account" || item.line?.origin === "cheque");
   const againstOf = item => {
     const own = listFor(item, false);
-    if (mode !== "side" || !freeMoney(item)) return [own];
+    if (mode !== "side" || !pairMoney || !freeMoney(item)) return [own];
     return [own, open[`${item.side === "r" ? "p" : "r"}Pay`]];
   };
   const arrive = item => {
