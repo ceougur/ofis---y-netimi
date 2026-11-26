@@ -1,0 +1,32 @@
+{
+  "ad": "birlesim-check",
+  "komut": "npm run check",
+  "commit": "9b6b427de3e944efd3d285b98a3c8a1ec9ea1d6c",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 10,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-26T23:43:53.272Z",
+  "sure_sn": 40,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "check",
+    "toplam": 1436,
+    "gecen": 1436,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-26/birlesim-check.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "96ec2b2ec0536649f979deda7331539bacebdf27252b8e57c024963d52e6b9f8",
+  "ham_cikti_bayt": 313
+}
