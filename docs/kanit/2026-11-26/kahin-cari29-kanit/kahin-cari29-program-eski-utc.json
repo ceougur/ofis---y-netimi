@@ -1,0 +1,153 @@
+{
+  "ad": "kahin-cari29-program-eski-utc",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc29-a51/eski/test/bagimsiz/cari/kos.mjs --mutasyonsuz --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc29-a51/program-eski-utc test/bagimsiz/cari/senaryolar/d61-c5-s266-s265-yalin-olmayan.json",
+  "commit": "4f436a62b110fc99a30524adc3d0372bb82ee246",
+  "dal": "worktree-agent-a512c4c9a6a5549a7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-26T13:55:37.858Z",
+  "sure_sn": 3.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 130,
+    "gecen": 106,
+    "basarisiz": 24,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 24 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:U2:acikEsitBakiye: program true · kâhin false (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:U2:acikToplam: program 5000 · kâhin 0 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:U4:acikToplam: program -20000 · kâhin 0 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:hareket:u2b2:kalan: program 5000 · kâhin 0 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:hareket:u3b2:kalan: program 15000 · kâhin 0 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k1:hareket:u4a:kalan: program 20000 · kâhin 0 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:projeksiyon:hareket:u2b2: program {\"amount\":5000,\"date\":\"2026-04-10\",\"direction\":\"in\"} · kâhin \"yok\" (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:projeksiyon:hareket:u2o: program \"yok\" · kâhin {\"amount\":10000,\"date\":\"2026-03-01\",\"direction\":\"in\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit A",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:projeksiyon:hareket:u3b2: program {\"amount\":15000,\"date\":\"2026-04-10\",\"direction\":\"in\"} · kâhin \"yok\" (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:projeksiyon:hareket:u3o: program \"yok\" · kâhin {\"amount\":20000,\"date\":\"2026-03-01\",\"direction\":\"in\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit A",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k1:projeksiyon:hareket:u4a: program {\"amount\":20000,\"date\":\"2026-04-30\",\"direction\":\"out\"} · kâhin \"yok\" (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:projeksiyon:hareket:u5o2: program \"yok\" · kâhin {\"amount\":10000,\"date\":\"2026-03-10\",\"direction\":\"in\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:hareket:u2b2: program {\"amount\":5000,\"cari\":\"U2\",\"days\":-66,\"direction\":\"in\",\"dueDate\":\"2026-04-10\",\"label\":\"Tahsil Edilecek Borç\",\"person\":\"Uğur İkinci\",\"state\":\"overdue\"} · kâhin \"yok\" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:hareket:u2o: program \"yok\" · kâhin {\"amount\":10000,\"cari\":\"U2\",\"days\":-106,\"direction\":\"in\",\"dueDate\":\"2026-03-01\",\"label\":\"Tahsil Edilecek Borç\",\"person\":\"Uğur İkinci\",\"state\":\"overdue\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ö",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:hareket:u3b2: program {\"amount\":15000,\"cari\":\"U3\",\"days\":-66,\"direction\":\"in\",\"dueDate\":\"2026-04-10\",\"label\":\"Tahsil Edilecek Borç\",\"person\":\"Uğur Üçüncü\",\"state\":\"overdue\"} · kâhin \"yok\" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir;",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:hareket:u3o: program \"yok\" · kâhin {\"amount\":20000,\"cari\":\"U3\",\"days\":-106,\"direction\":\"in\",\"dueDate\":\"2026-03-01\",\"label\":\"Tahsil Edilecek Borç\",\"person\":\"Uğur Üçüncü\",\"state\":\"overdue\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ö",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k1:takvim:hareket:u4a: program {\"amount\":20000,\"cari\":\"U4\",\"days\":-46,\"direction\":\"out\",\"dueDate\":\"2026-04-30\",\"label\":\"Ödenecek Borç\",\"person\":\"Uğur Dördüncü\",\"state\":\"overdue\"} · kâhin \"yok\" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:takvim:hareket:u5o2: program \"yok\" · kâhin {\"amount\":10000,\"cari\":\"U5\",\"days\":-97,\"direction\":\"in\",\"dueDate\":\"2026-03-10\",\"label\":\"Tahsil Edilecek Borç\",\"person\":\"Uğur Beşinci\",\"state\":\"overdue\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', öd",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:vadeTakip:hareket:u2b2: program {\"amount\":5000,\"date\":\"2026-04-10\",\"direction\":\"in\"} · kâhin \"yok\" (K6.3 kalem olmayan kayıt Vade Takip'te yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:vadeTakip:hareket:u2o: program \"yok\" · kâhin {\"amount\":10000,\"date\":\"2026-03-01\",\"direction\":\"in\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Ta",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:vadeTakip:hareket:u3b2: program {\"amount\":15000,\"date\":\"2026-04-10\",\"direction\":\"in\"} · kâhin \"yok\" (K6.3 kalem olmayan kayıt Vade Takip'te yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:vadeTakip:hareket:u3o: program \"yok\" · kâhin {\"amount\":20000,\"date\":\"2026-03-01\",\"direction\":\"in\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Ta",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · SINIF DIŞI] k1:vadeTakip:hareket:u4a: program {\"amount\":20000,\"date\":\"2026-04-30\",\"direction\":\"out\"} · kâhin \"yok\" (K6.3 kalem olmayan kayıt Vade Takip'te yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:vadeTakip:hareket:u5o2: program \"yok\" · kâhin {\"amount\":10000,\"date\":\"2026-03-10\",\"direction\":\"in\"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Tak",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc29-a51/kanit/2026-11-26/kahin-cari29-program-eski-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a512c4c9a6a5549a7",
+  "ham_cikti_sha256": "3a46018ada0b1e8de481c7ae5eb89889b17ee54bad89bde7170fe41d4a00f803",
+  "ham_cikti_bayt": 8923
+}
