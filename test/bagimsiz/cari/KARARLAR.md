@@ -6224,3 +6224,41 @@ senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'
 - Rastgele üreticiye müşteri carisinde elle Alacak + alınan avans + bağsız Ödeme (S266 (b) kolu) ve açık şüpheli kayıtlı caride Ödeme.
 - S265 belirsiz kaydı fatura başına yineleniyor (bir cari için tek satır yeter — görünüm ayrıntısı).
 - Bakım 28'in 2.5.1 listesi aynen.
+
+### C0ah Değişen eski beklentiler (G3; taban `35fbfe44` ↔ bakım 29 kâhin çıktısı, `2.5.0`; eski kopyanın 114 elle senaryosu + yeni d61 + rastgele s1 / ux18 tohum 1–10 × 120)
+- Üretici 20/20 aynı dizi; eski elle senaryoların adımları DEĞİŞMEDİ; elle fark 114/114 (izinli YOK); `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: **540/540 bayt bayt aynı**.
+- 2.5.0 G3: eski 80.743 denetim · yeni 80.568 · değişen / kalkan / yeni **732** · **BEKLENMEYEN 0** · yalnız etiketi değişen 0. Sınıflar: **S266 yeni 265 + değişen 19** (d61 U1 / U2 / U3 / U5 41; rastgele s1-4 166 + s1-5 77 — eski kâhinde Y5-7 SUS,
+  yeni kâhinde Ödeme avansı kapattı, verilen avans kalmadı), **SK54 kalkan 12** (d61 U4), **S265 kalkan 432** (d61 U7 6; rastgele s1-3 222 ve s1-10 204 — eski kâhin değerle yazıyordu), GENEL yeni 4 (s1-4 sayaçlar — aynı kontrolde S266).
+  Eski 114 elle senaryoda fark 0. Döküm UTC ↔ Europe/Istanbul bayt bayt aynı.
+
+### Program ↔ kâhin (taban dalının programı `35fbfe44` — bu dalın tabanı)
+- **Bakımdan ÖNCE (taban kâhin):** CI düzeni (`npm run test:kahin-cari`) UTC 25.164/25.164; Uzun Doğrulama düzeni (`--tohum 1-30 --islem 120`) UTC 175.649/175.671 — **22 fark**: s1-12 tedarikçi S 15 (k9 … kson `fatura:A4` / `A5` `acik`,
+  `gosterilen`, `liste:gosterilen` — program A4 1.415 · kâhin 0, A5 132.071 · 74.189; S265 bileşimi) ve s1-30 müşteri E 7 (k2: Ödeme s015'in verilen avans kalemi program "yok" · kâhin 17.538; Borç s018 Kalan / takvim / Vade Takip /
+  projeksiyon program 88.134 · kâhin 70.596 — S266 (a) alanı).
+- **Bakımdan SONRA (yeni kâhin):** CI düzeni UTC **25.298/25.298**, Europe/Istanbul **25.298/25.298** (d61 134/134; 0 fark, 7 bilinen sınır, 0 yapım aşaması, 0 okuma hatası, 0 yakalanmayan mutasyon — 362–366 programla koşuda da
+  YAKALANDI); Uzun Doğrulama düzeni UTC **175.143/175.143**, Europe/Istanbul **175.143/175.143** (0 fark). s1-30'un 7 farkı S266 (a) ile DEĞERLE kapandı (kâhin kural metninden program sayısını verdi: s018 Kalan 88.134, s015 "yok"); s1-12'nin
+  15 farkı S265 = C ile SUS (BİLİNEN SINIR).
+- **P listesi (program şüphesi): BOŞ.** **GÖZLEM (kural kaynağı DEĞİL):** S265 alanında program s1-12 A4'ü 1.415, A5'i 132.071 açık gösteriyor (taban kâhin 0 / 74.189); SK-54 alanında (d61 U4) program Alacak'ı 200 açık, Σ açık −200
+  gösteriyor (eski kâhin 0 / 0).
+- **Eski kâhin (taban) aynı programla (d61, `--mutasyonsuz`):** 106/130 — 24 fark: U2 / U3 / U5 verilen avans kalemi ve sonraki Borç'un Kalan'ı (S266 (a)), U4 Alacak Kalan / Σ açık (SK-54 alanı; eski kâhin 0). U1 eski kâhinde SUS (Y5-7), U7 / U8
+  eski kâhinle programın değeri aynı.
+
+### Yapım aşaması listesi
+- Kendi kopyada `--yapim-asamasi-yaz` (KAHIN_YAPIM_ASAMASI, UTC): **0 kayıt**; ESKİ LİSTEYLE FARK: yeni 0, kapanan 0, değeri değişen 0 (eski 0 → yeni 0); üretilen dosya depodakiyle bayt bayt AYNI (`cmp`) → depodaki listede değişiklik YOK
+  (ayrı commit gerekmedi). Not: `tools/kanit.mjs` bu koşuyu "BELİRSİZ (özet satırı tanınmadı)" diye yazdı (yazım kipinin son satırı sayı satırı değil); `kos.mjs`'in kendi çıkışı 0.
+
+### Eski kâhin kırmızısı (elle tablo; eski kâhin `35fbfe44`, `elle-karsilastir.py --kirmizi-bekle`, iki TZ aynı)
+- **50/74 elle denetim kırmızı** (d61). Kural kural: S266 — U1'in Alacak Kalan / takvim / Vade Takip / projeksiyon, Ödeme kalemleri, gecikmiş, Σ açık ANAHTAR YOK (eski kâhinde Y5-7 SUS — iade geri ödemesi tamamlanmış Ödeme'yi
+  verilen avans saydı); U2 / U3 / U5 Ödeme'nin "Tahsil Edilecek Borç" kalemi (100 / 200 / 100) ve sonraki Borç'un Kalan'ı 0 (elle 50 / 150), gecikmiş yok; SK-54 — U4'ün `elleYok` anahtarları eski kâhinde DEĞERLE + "SK-54" belirsiz kaydı yok;
+  S265 — U7'nin alış faturası anahtarları DEĞERLE (750) + "S265 = C" belirsiz kaydı yok. **Kırmızısı OLMAYAN:** bakiyeler (7), U8'in alış açığı (bileşimsiz — bugünkü kural), U2 / U3 ilk Borç'un Kalan'ı 0.
+
+### Kanıt (bakım 29; iki saat dilimi; kâhin kodu `ad4d9ae7`, araçlar `587cc09e`; `docs/kanit/2026-11-26/kahin-cari29-kanit/`, araçlar ve koşu betikleri `kahin-cari29-arac/`)
+- oz-test **9.443/9.443** · G3 **675/675** (BEKLENMEYEN 0) · elle fark **114/114** · d61 **74/74** · ESKİ kâhinde **50/74 kırmızı** · program ↔ yeni kâhin CI **25.298/25.298** ve Uzun Doğrulama **175.143/175.143** iki TZ (taban 25.164/25.164 ve
+  175.649/175.671 — 22 fark) · program ↔ eski kâhin (d61) **106/130** · yapım aşaması listesi 0 → 0.
+- Not (açıkça): koşuların hepsi `flock -s -w 3600 …/olcum.lock` altında, süre sınırı kilidin içinde; hazırlıkta TEK bir KARARLAR.md başlık okuma satırı (`python3 -I -c`) KİLİTSİZ koşuldu — kural ihlali, açıkça.
+
+### KULLANICIYA SORULMALI (bakım 29 — son hâl)
+- **SK-54 (UÇ; PARA KURALI — ders 43)** — yorumdaki gibi (KS8 carisinde Alacak varken avans ↔ açık iade notu sırası): örnek 01.03 tahsilat 500 · 05.03 Alacak 200 (vade 30.04) · 08.03 faturasız stok iadesi 100 (borcu yok) · 10.03 Ödeme 300.
+  **A:** önce iade geri ödemesi: not 100 kapanır, kalan 200 avansı (01.03, Alacak'tan önce) kapatır — avans 300, Alacak 200 açık. **B:** tek vade sırası (avans 01.03 → not 08.03 → Alacak 30.04): avans 200, not 100 açık, Alacak 200 açık.
+  **C (ÖNERİ): Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS)**. Bakiye her seçenekte −500; Alacak her seçenekte 200 açık (programın gösterdiği de 200 — gözlem); ayrışan iade notunun / avansın tutarı. Yaygın programlarda: doğrulanmış kaynak
+  okunmadı.
