@@ -1,0 +1,32 @@
+{
+  "ad": "udfix-mutasyon-kd2d-kd4a",
+  "komut": "node test/tyk-mutasyon-250.mjs --yalniz KD2-d,KD4-a --klasor /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/udfix-q7k2/mut",
+  "commit": "cd33accdf58fb7baa1f69d2ac988d34f050dc507",
+  "dal": "udfix-e7934c5e",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-23T00:41:03.002Z",
+  "sure_sn": 27.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-23/udfix-mutasyon-kd2d-kd4a.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4444ad6c4d6abab7",
+  "ham_cikti_sha256": "736ff26e7a5365ef41e461a307f8d84453838d460bd26875673d124709151bdc",
+  "ham_cikti_bayt": 938
+}

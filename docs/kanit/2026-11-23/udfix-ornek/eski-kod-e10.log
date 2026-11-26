@@ -1,0 +1,6 @@
+✗ işlem 2454 taksit-tahsil:
+  Cari Müşteri 4 T10 (4): açık kalemlerin toplamı 15221,43 ≠ bakiye (model) 12877,25 — kalemler toplamı = cari bakiyesi
+Tohum 10: işlem 2454; uyuşmazlık 1; 930 sn
+işlem 2454 (taksit-tahsil, 2026-09-22) 
+  Cari Müşteri 4 T10 (4): açık kalemlerin toplamı 15221,43 ≠ bakiye (model) 12877,25 — kalemler toplamı = cari bakiyesi
+DÖKÜM Müşteri 4 T10 4 kimlik account-a3b64d1e-c757-4b3f-97ab-96c197cbc3b2 bakiye 12877.25 sigmaÖnbellek 1522143 sigmaTaze 1522143 geçiş {"count":0,"stable":true}

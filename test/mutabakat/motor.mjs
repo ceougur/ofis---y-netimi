@@ -127,7 +127,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
 
   // ---------- Bağımsız model ----------
   // deleted: Silinenler'deki cari hareketleri (Yargıç K2: geri yükleme K7'den ve dönem kilidinden geçer).
-  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [], deleted: [], payments: [], posLines: [], posSales: [] };
+  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [], deleted: [], payments: [], posLines: [], posSales: [], pendingS206: [] };
   const report = { seed, operations: 0, byKind: {}, rejectedAsExpected: 0, rejections: {}, mismatches: [], checks: 0, reportChecks: 0, integrityMs: [], timeline: { from: D0, to: T }, locks: [], yilDonumu: { kronolojiOncekiYilRet: 0, kronolojiOncekiYilKabul: 0 } };
   const count = kind => (report.byKind[kind] = (report.byKind[kind] || 0) + 1);
   const accounts = [];
@@ -391,6 +391,20 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const stock = (await api("GET", "/api/workspace/stock")).data.items;
     for (const s of stock) if (M.stok.has(s.id) && Math.round(s.qty * 1000) !== M.stok.get(s.id)) problems.push(`Stok ${s.name}: program ${s.qty} · model ${qtyText(M.stok.get(s.id))}`);
     const plans = (await api("GET", "/api/workspace/plans?status=all")).data.plans || [];
+    // S206 = A (applyCancel): bekleyen iptal adayları — programın kapattığı aday kart benimsenir, sonra modelin kırpması.
+    if (M.pendingS206.length) {
+      const byId = new Map(plans.map(p => [p.id, p]));
+      for (const pending of M.pendingS206.splice(0)) {
+        for (const [id, m] of pending.cards) {
+          const got = byId.get(id);
+          if (got && m.status === "active" && got.status === "closed" && centsOf(got.totals.total) === centsOf(ownPaidOf(got)) && centsOf(ownPaidOf(got)) === m.paid) {
+            m.status = "closed";
+            m.total = centsOf(got.totals.total);
+          }
+        }
+        for (const [pl] of trimCovers(pending.accountId, { closed: false })) if (planLeft(pl) === 0) pl.status = "closed";
+      }
+    }
     const seen = new Set();
     for (const p of plans) {
       const m = M.plans.get(p.id);
@@ -898,6 +912,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       for (const [pl, cut] of inv.coverCuts) pl.over = (pl.over || 0) + cut;
     }
     if (series && day > lastOf(series, day)) lastSeries.set(seriesKey(series, day), day);
+    // 2.5.0 UD (S206): faturadan SONRA açılan Mevcut Borç kartları onu içine almış olabilir (kart yalnız kendisinden önce doğmuş borcu tüketir) — iptalde aday.
+    inv.planSeqAt = planSeq;
     M.invoices.set(inv.id, inv);
     if (kind === "sale_return" && originalId) syncOwn(M.plans.get(M.invoices.get(originalId)?.planId));
     return inv;
@@ -960,8 +976,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       } else M.plans.delete(inv.planId);
     }
     // 2.5.0 Ç7b tur 3 — S206 = A / S211 = A (+ karar (4)): carinin borcundan büyük kalan Mevcut Borç kartları küçülür (trimCovers); kalanı 0'a inen kapanır.
+    // 2.5.0 UD düzeltmesi (mutabakat tohum 8 işlem 3332, uzun tohum 11 işlem 6089 — "durum closed · model active"): S206 = A'nın İLK yarısı ("faturayı İÇİNE ALMIŞ Mevcut Borç
+    // kartı KAPANIR; kart tutarı = net tahsilat; bakiye değişmez") modelde yoktu. Model kartın hangi borcu tükettiğini (S110 / S120 kapsam seçimi) kurmaz; faturadan SONRA açılan
+    // açık Mevcut Borç kartları ADAY olarak bekletilir, bir sonraki doğrulamada programın kapattığı aday (durum kapalı, tutar = kendi tahsilatı = modelin tahsilatı) benimsenir,
+    // ardından kırpma (ikinci yarı — trimCovers) yapılır (programın sırası: önce kapanış, sonra kırpma). Aday olmayan kartta kapanış yine uyuşmazlıktır.
     if (inv.kind === "sale" || inv.kind === "smm") {
-      for (const [pl] of trimCovers(inv.accountId, { closed: false })) if (planLeft(pl) === 0) pl.status = "closed";
+      const candidates = [...M.plans.entries()].filter(([, p]) => p.accountId === inv.accountId && p.covers && !p.invoiceId && p.status === "active" && p.order > (inv.planSeqAt ?? Infinity));
+      if (candidates.length) M.pendingS206.push({ accountId: inv.accountId, cards: candidates });
+      else for (const [pl] of trimCovers(inv.accountId, { closed: false })) if (planLeft(pl) === 0) pl.status = "closed";
     }
     // İade iptali: iadenin küçülttüğü Mevcut Borç kartları aynı tutarda geri büyür (silinmiş kart değişmez; 2.5.0 S234 = A: Borçta Kalsın ile kapatılmış kart da büyür —
     // motorun kapalı kartları güncel kodla kapatılır; iptalle kapanmış kartın kalanı 0, kesimi de yok).

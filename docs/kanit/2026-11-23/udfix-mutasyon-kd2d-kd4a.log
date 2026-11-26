@@ -1,0 +1,6 @@
+API TABAN (mutantsız): tests 22, pass 22, fail 0, çıkış 0
+KD2-d ÖLDÜ (tests 15, pass 14, fail 1) — ORTA-2 — kilit ölçümlü yolda güvenli kapanış yok · öldüren: güvenli kapanış kilit ölçümlü yolda da (karar (3): kilitli dönemde bağlı ödeme varken son geçiş ayrı kurulur) | Ç5-B kapanış — ORTA-2: ön ödeme ölçümü yakınsayana kadar sürer; yakınsamazsa güvenli kapanış — kalemler toplamı = bakiye
+KD4-a ÖLDÜ (tests 7, pass 1, fail 6) — UD — kilit sınırlı geçişte ön ödeme ölçümü yinelenmez (taban) · öldüren: tohum 3'ün en küçük örneği: Σ kalem = bakiye 211.719,68; F2'nin açığı bakiye kadar; C2'nin taksiti Ödendi (taşıdığı borç bağsız parayla kapanmıştı — S101) | 2.5.0 UD — dönem kilidi izi olan caride Mevcut Borç kartı: kalemler toplamı = bakiye | tohum 7000–7009: 10 × 250 cari — Σ kalem = bakiye
+# tests 2
+# pass 2
+# fail 0

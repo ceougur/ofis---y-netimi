@@ -1,0 +1,32 @@
+{
+  "ad": "udfix-mutabakat-5000-tohum3",
+  "komut": "npm run test:mutabakat -- --islem 5000 --tohum 3 --tohumlar 1",
+  "commit": "fa87ae7b618c1e3d43cea5031db46032e3c61834",
+  "dal": "udfix-e7934c5e",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-23T01:01:34.804Z",
+  "sure_sn": 2528,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-23/udfix-mutabakat-5000-tohum3.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4444ad6c4d6abab7",
+  "ham_cikti_sha256": "54aba79a4dcfbec749fcc0232ac12ef7bcac3e1e663fb35d9575ee2a879fbaae",
+  "ham_cikti_bayt": 2932
+}
