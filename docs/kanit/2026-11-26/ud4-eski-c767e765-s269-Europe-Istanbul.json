@@ -1,0 +1,68 @@
+{
+  "ad": "ud4-eski-c767e765-s269-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-k7p3/eski/test/supheli-degersiz-s269-250.test.mjs",
+  "commit": "126aa0682013ae2e99cceb05e706893c89a9b81d",
+  "dal": "ud4-s269",
+  "kirli": 0,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-26T16:23:50.367Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 1,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir › S268 = A — açık kayıtta (kalan 123,55) yazılabilir tutar 3.000 ve günü 17.09 listede; bağsızda kalan 123,55, gün boş",
+      "konum": "test/supheli-degersiz-s269-250.test.mjs:36:3",
+      "hata": "ipucu / önerilen tutar S264 sınırı · + actual - expected · + undefined"
+    },
+    {
+      "ad": "S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir › S268 = A — bağlı pay BUGÜN düşüyorsa yazılabilir tutar bugünün sınırı, gün boş (form bugünle açılır)",
+      "konum": "test/supheli-degersiz-s269-250.test.mjs:48:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir › P1 — Değersiz 1.000 sonra 2.000 (17.09): ikisi de kabul; ara durumda düğme verisi 2.000; sonunda bakiye 423,55 (v2.4.9)",
+      "konum": "test/supheli-degersiz-s269-250.test.mjs:55:3",
+      "hata": "2.000,01 > 2.000 (kayıt kapalı sayılmaz; sınır 2.000): 409 {\"ok\":false,\"error\":\"Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok.\",\"code\":\"doubtful-closed\",\"recordId\":\"dbt-89d828c6-3a8e-42aa-82e3-9bfa4a112b09\"} Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok. · 409 !== 400 (beklenen 400, gelen 409)"
+    },
+    {
+      "ad": "S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir › P2 — bağlı tahsilat 3.000 = şüpheli 3.000 (kayıt Tahsil Edildi): yazılabilir 3.000; Değersiz 3.000 kabul, bakiye 400 (v2.4.9)",
+      "konum": "test/supheli-degersiz-s269-250.test.mjs:84:3",
+      "hata": "değersiz 3.000: 409 {\"ok\":false,\"error\":\"Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.\",\"code\":\"doubtful-closed\",\"recordId\":\"dbt-a5d67460-eaec-4f62-9ad0-2c805a26b5d8\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir › P3 — aynı gün iki kayıt (1.500 + 1.500): R1'e (Tahsil Edildi) Değersiz 1.500 kabul, sonra R2'ye 1.500 kabul; bakiye 1.923,55 → 423,55 (v2.4.9)",
+      "konum": "test/supheli-degersiz-s269-250.test.mjs:97:3",
+      "hata": "R1 değersiz 1.500: 409 {\"ok\":false,\"error\":\"Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.\",\"code\":\"doubtful-closed\",\"recordId\":\"dbt-089ae04a-5a6b-441a-8580-b56a11f656ab\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir › P5 — aynı gün R2 Şüpheliden Çıkar, sonra R1'e Değersiz 1.500 kabul; bakiye 1.923,55 (v2.4.9); çıkarılmış kayıtta düğme verisi 0",
+      "konum": "test/supheli-degersiz-s269-250.test.mjs:110:3",
+      "hata": "R1 değersiz 1.500: 409 {\"ok\":false,\"error\":\"Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.\",\"code\":\"doubtful-closed\",\"recordId\":\"dbt-47b83378-d112-4207-bb4d-ee7cf142b11e\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir › Silinenler — Değersiz 3.000 silinir, SONRA aynı gün bağlı tahsilat 3.000 kaydı kapatır; geri yükleme kabul (önceden 409 doubtful-closed); bakiye 400",
+      "konum": "test/supheli-degersiz-s269-250.test.mjs:123:3",
+      "hata": "geri yükle: 409 {\"ok\":false,\"error\":\"Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.\",\"code\":\"doubtful-closed\",\"recordId\":\"dbt-9c24eea4-6a99-4f19-a76c-60ffc12ded5e\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-26/ud4-eski-c767e765-s269-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af5447eb2af85a0d6",
+  "ham_cikti_sha256": "e4cea8d832a91a2747c456f2693acc2dde9b9aa6f49bcc111339ec1082ced9af",
+  "ham_cikti_bayt": 11323
+}

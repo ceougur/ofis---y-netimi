@@ -1,0 +1,108 @@
+TAP version 13
+# Subtest: S264 = A — Değersiz sınırı aynı günün sırasına uyar (o günün bağlı payından ÖNCE)
+    # Subtest: (a) aynı gün, şüpheliye almadan önce yazılmış BAĞLI tahsilat: Değersiz 3.000 (tam tutar) kabul; kayıt Değersiz Yazıldı, kalan 0; bakiye 423,55
+    ok 1 - (a) aynı gün, şüpheliye almadan önce yazılmış BAĞLI tahsilat: Değersiz 3.000 (tam tutar) kabul; kayıt Değersiz Yazıldı, kalan 0; bakiye 423,55
+      ---
+      duration_ms: 220.008035
+      type: 'test'
+      ...
+    # Subtest: (a′) aynı kurulumda kalanı aşan Değersiz (3.000,01) yine 400 doubtful-writeoff-exceeds — sınır 3.000; hiçbir satır yazılmaz
+    ok 2 - (a′) aynı kurulumda kalanı aşan Değersiz (3.000,01) yine 400 doubtful-writeoff-exceeds — sınır 3.000; hiçbir satır yazılmaz
+      ---
+      duration_ms: 128.527318
+      type: 'test'
+      ...
+    # Subtest: (b) aynı gün BAĞSIZ tahsilat: karar kapsamaz — sınır kalan 123,55; Değersiz 3.000 400 doubtful-writeoff-exceeds (kâhin ve v2.4.9 aynı)
+    ok 3 - (b) aynı gün BAĞSIZ tahsilat: karar kapsamaz — sınır kalan 123,55; Değersiz 3.000 400 doubtful-writeoff-exceeds (kâhin ve v2.4.9 aynı)
+      ---
+      duration_ms: 136.760395
+      type: 'test'
+      ...
+    # Subtest: (e) aynı gün BAĞLI 1.000 + BAĞSIZ 500 tahsilat, sonra Şüpheliye Al 3.000: sınır 3.000 − 500 = 2.500 (yalnız bağlı pay geri sayılır); 2.500,01 400, 2.500 kabul
+    ok 4 - (e) aynı gün BAĞLI 1.000 + BAĞSIZ 500 tahsilat, sonra Şüpheliye Al 3.000: sınır 3.000 − 500 = 2.500 (yalnız bağlı pay geri sayılır); 2.500,01 400, 2.500 kabul
+      ---
+      duration_ms: 169.904323
+      type: 'test'
+      ...
+    # Subtest: (c) bağlı tahsilat kayıttan SONRAKİ bir günde (S25 (c)): payı şüpheliden düşer — ertesi günün Değersiz'inde sınır 123,55 (S264 yalnız aynı günü söyler)
+    ok 5 - (c) bağlı tahsilat kayıttan SONRAKİ bir günde (S25 (c)): payı şüpheliden düşer — ertesi günün Değersiz'inde sınır 123,55 (S264 yalnız aynı günü söyler)
+      ---
+      duration_ms: 137.406859
+      type: 'test'
+      ...
+    # Subtest: (d) komşu yol — (a)'da kabul edilen Değersiz satırı silinip Silinenler'den geri yüklenir (aynı sınır; önceden 409)
+    ok 6 - (d) komşu yol — (a)'da kabul edilen Değersiz satırı silinip Silinenler'den geri yüklenir (aynı sınır; önceden 409)
+      ---
+      duration_ms: 260.002861
+      type: 'test'
+      ...
+    1..6
+ok 1 - S264 = A — Değersiz sınırı aynı günün sırasına uyar (o günün bağlı payından ÖNCE)
+  ---
+  duration_ms: 1490.697965
+  type: 'suite'
+  ...
+# Subtest: S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir
+    # Subtest: S268 = A — açık kayıtta (kalan 123,55) yazılabilir tutar 3.000 ve günü 17.09 listede; bağsızda kalan 123,55, gün boş
+    ok 1 - S268 = A — açık kayıtta (kalan 123,55) yazılabilir tutar 3.000 ve günü 17.09 listede; bağsızda kalan 123,55, gün boş
+      ---
+      duration_ms: 276.355469
+      type: 'test'
+      ...
+    # Subtest: S268 = A — bağlı pay BUGÜN düşüyorsa yazılabilir tutar bugünün sınırı, gün boş (form bugünle açılır)
+    ok 2 - S268 = A — bağlı pay BUGÜN düşüyorsa yazılabilir tutar bugünün sınırı, gün boş (form bugünle açılır)
+      ---
+      duration_ms: 122.92658
+      type: 'test'
+      ...
+    # Subtest: P1 — Değersiz 1.000 sonra 2.000 (17.09): ikisi de kabul; ara durumda düğme verisi 2.000; sonunda bakiye 423,55 (v2.4.9)
+    ok 3 - P1 — Değersiz 1.000 sonra 2.000 (17.09): ikisi de kabul; ara durumda düğme verisi 2.000; sonunda bakiye 423,55 (v2.4.9)
+      ---
+      duration_ms: 197.03678
+      type: 'test'
+      ...
+    # Subtest: P1′ — kalanı kapanmış kayıtta ERTESİ gün Değersiz: o günün bağlı payı yok → 409 doubtful-closed (eskisi gibi); satır yazılmaz
+    ok 4 - P1′ — kalanı kapanmış kayıtta ERTESİ gün Değersiz: o günün bağlı payı yok → 409 doubtful-closed (eskisi gibi); satır yazılmaz
+      ---
+      duration_ms: 138.159175
+      type: 'test'
+      ...
+    # Subtest: P2 — bağlı tahsilat 3.000 = şüpheli 3.000 (kayıt Tahsil Edildi): yazılabilir 3.000; Değersiz 3.000 kabul, bakiye 400 (v2.4.9)
+    ok 5 - P2 — bağlı tahsilat 3.000 = şüpheli 3.000 (kayıt Tahsil Edildi): yazılabilir 3.000; Değersiz 3.000 kabul, bakiye 400 (v2.4.9)
+      ---
+      duration_ms: 158.837486
+      type: 'test'
+      ...
+    # Subtest: P3 — aynı gün iki kayıt (1.500 + 1.500): R1'e (Tahsil Edildi) Değersiz 1.500 kabul, sonra R2'ye 1.500 kabul; bakiye 1.923,55 → 423,55 (v2.4.9)
+    ok 6 - P3 — aynı gün iki kayıt (1.500 + 1.500): R1'e (Tahsil Edildi) Değersiz 1.500 kabul, sonra R2'ye 1.500 kabul; bakiye 1.923,55 → 423,55 (v2.4.9)
+      ---
+      duration_ms: 282.054336
+      type: 'test'
+      ...
+    # Subtest: P5 — aynı gün R2 Şüpheliden Çıkar, sonra R1'e Değersiz 1.500 kabul; bakiye 1.923,55 (v2.4.9); çıkarılmış kayıtta düğme verisi 0
+    ok 7 - P5 — aynı gün R2 Şüpheliden Çıkar, sonra R1'e Değersiz 1.500 kabul; bakiye 1.923,55 (v2.4.9); çıkarılmış kayıtta düğme verisi 0
+      ---
+      duration_ms: 315.641477
+      type: 'test'
+      ...
+    # Subtest: Silinenler — Değersiz 3.000 silinir, SONRA aynı gün bağlı tahsilat 3.000 kaydı kapatır; geri yükleme kabul (önceden 409 doubtful-closed); bakiye 400
+    ok 8 - Silinenler — Değersiz 3.000 silinir, SONRA aynı gün bağlı tahsilat 3.000 kaydı kapatır; geri yükleme kabul (önceden 409 doubtful-closed); bakiye 400
+      ---
+      duration_ms: 261.7521
+      type: 'test'
+      ...
+    1..8
+ok 2 - S269 = A / S268 = A — Değersiz sınırı 'kayıt kapalı' denetiminden önce; düğme / ipucu yazılabilir tutarı gösterir
+  ---
+  duration_ms: 2158.611839
+  type: 'suite'
+  ...
+1..2
+# tests 14
+# suites 2
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4496.089174
