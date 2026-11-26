@@ -241,37 +241,6 @@ export function doubtfulState(store, { parties = null } = {}) {
   return { records, provisions, state, allocations };
 }
 
-/**
- * 2.5.0 UD turu 4 — S269 = A / S268 = A: doubtfulState'in AYNI koşusu (aynı girdiler, aynı `linked`; sonuç birebir) + bağlı (Kapatılacak Fatura / faturaya bağlı evrak — ayırıcının
- * `linked` payı) alacakların kayıt ve gün başına bu kayda düşen payı: shares = Map(kayıt → Map(gün → kuruş)). S264 = A sınırı (Değersiz o günün bağlı payından ÖNCE) bundan okunur;
- * ayrı ayırıcı koşusu gerekmez (liste ve Değersiz Yaz tek koşu).
- */
-export function doubtfulStateBound(store, { parties = null } = {}) {
-  const rows = doubtfulRows(store, { parties });
-  const { records, provisions } = rows;
-  if (!records.length) return { records, provisions, state: new Map(), allocations: new Map(), shares: new Map() };
-  const credits = doubtfulCredits(store, new Set(records.map(record => record.party)));
-  const bound = new Set();
-  const linked = rows.linked
-    ? (credit, view) => {
-        const out = rows.linked(credit, view);
-        if (out) bound.add(credit.key);
-        return out;
-      }
-    : null;
-  const { state, allocations } = allocateDoubtful({ records, provisions, credits, linked });
-  const shares = new Map();
-  for (const credit of credits) {
-    if (!bound.has(credit.key)) continue;
-    for (const item of allocations.get(credit.key)?.records || []) {
-      if (!shares.has(item.recordId)) shares.set(item.recordId, new Map());
-      const byDay = shares.get(item.recordId);
-      byDay.set(credit.date, (byDay.get(credit.date) || 0) + item.minor);
-    }
-  }
-  return { records, provisions, state, allocations, shares };
-}
-
 /** Ana Defter'in beklenenleri (routes/ledger.mjs expected): 128 = Σ kalan; 129 = −Σ karşılık; kontrol hesabı (120/320/336) başına düşülecek kalan. */
 export function doubtfulExpected(store) {
   const { records, state } = doubtfulState(store);
@@ -461,30 +430,8 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
   }
   /** Carinin kayıtları (iptal edilenler hariç) ve özeti. */
   function listFor(accountId) {
-    const { records, state, allocations, shares } = doubtfulStateBound(store, { parties: [accountId] });
-    const today = period.today();
-    return { records: records.map(record => ({ ...view(record, state.get(record.id), allocations), ...writeOffRoomOf(record, state.get(record.id), shares.get(record.id), today) })), summary: doubtfulSummary(store, accountId) };
-  }
-  // UD turu 4 — S268 = A / S269 = A: Değersiz Alacak Yaz düğmesinin ve formunun yazılabilir tutarı — Değersiz Yaz'ın KENDİ sınırı (kalan + o günün bağlı payı; S264 = A). Aday günler:
-  // bugün (formun tarihi), sonra bağlı payın düştüğü günler (kayıt gününden bugüne; dönemi açık); en büyüğü, eşitlikte bugün. writeOffRoomDate yalnız bugünden başka bir gün
-  // daha çok yazdırıyorsa dolar (form o güne kurulur). Çıkarılmış / iptal kayıtta 0 (Şüpheliden Çıkar / Karşılık davranışı değişmez).
-  function writeOffRoomOf(record, state, byDay, today) {
-    if (record.status !== "open" || !state) return { writeOffRoomMinor: 0, writeOffRoomDate: "" };
-    let best = state.remaining + (byDay?.get(today) || 0);
-    let bestDate = "";
-    const days = [...(byDay?.keys() || [])].filter(day => day !== today && day >= record.date && day <= today).sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
-    for (const day of days) {
-      const room = state.remaining + byDay.get(day);
-      if (room <= best) continue;
-      try {
-        period.assertOpen(day, "Değersiz Alacak satırı");
-      } catch {
-        continue;
-      }
-      best = room;
-      bestDate = day;
-    }
-    return { writeOffRoomMinor: Math.max(0, best), writeOffRoomDate: bestDate };
+    const { records, state, allocations } = doubtfulState(store, { parties: [accountId] });
+    return { records: records.map(record => view(record, state.get(record.id), allocations)), summary: doubtfulSummary(store, accountId) };
   }
   /** Rapor verisi: bütün (silinmemiş) carilerin kayıtları; status open | closed | all; from/to kayıt tarihine. "Açık" durumu TARİH İTİBARIYLA
    *  listedir (eleştirmen E1, 15.10.2026): dönem başlangıcı süzmez — geçen yıl açılmış, hâlâ açık kayıt "Bu Yıl"da görünür, TOPLAM Kalan = 128. */
@@ -588,22 +535,15 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     const record = recordRow(id);
     return { record: view(record, stateOf(record).state, stateOf(record).allocations), event, account, minor, date, reason, note };
   }
-  /**
-   * Açık (kalanı olan) kayıt; değilse 409 doubtful-closed. UD turu 4 — S269 = A: Değersiz Yaz ve Silinenler'den Değersiz geri yüklemesi `writeOffOn` (Değersiz satırının günü) verir —
-   * kalanı o günün bağlı payıyla 0'a inmiş kayıt o payı geri sayınca yazılabilir tutar taşıyorsa açık sayılır (S264 = A sınırı 'kayıt kapalı' denetiminden ÖNCE de; önceden yalnız
-   * tutar denetiminde — kısmi Değersiz'den sonra ya da bağlı tahsilat şüpheli tutarına eşitken 409). Şüpheliden Çıkar / Karşılık bu yolu kullanmaz (değişmedi). share(gün): o günün bağlı payı.
-   */
-  function openRecord(accountId, did, { writeOffOn = null } = {}) {
+  /** Açık (kalanı olan) kayıt; değilse 409 doubtful-closed. */
+  function openRecord(accountId, did) {
     const record = recordRow(did, { accountId });
-    const { state, allocations, shares } = doubtfulStateBound(store, { parties: [record.party] });
-    const s = state.get(record.id) || null;
-    const share = date => shares.get(record.id)?.get(date) || 0;
-    const extra = writeOffOn && record.status === "open" && s && s.remaining <= 0 ? share(writeOffOn()) : 0;
-    if (record.status !== "open" || !s || s.remaining + extra <= 0) {
-      const why = record.status === "released" ? "şüpheliden çıkarılmış" : s?.writtenOff > 0 ? "değersiz yazılarak kapanmış" : "tamamı tahsil edilmiş";
+    const { state, allocations } = stateOf(record);
+    if (record.status !== "open" || !state || state.remaining <= 0) {
+      const why = record.status === "released" ? "şüpheliden çıkarılmış" : state?.writtenOff > 0 ? "değersiz yazılarak kapanmış" : "tamamı tahsil edilmiş";
       throw new HttpError(409, `Bu şüpheli alacak kaydı ${why}; kalan tutar yok.`, { code: "doubtful-closed", recordId: record.id });
     }
-    return { record, state: s, allocations, share };
+    return { record, state, allocations };
   }
   /** Şüpheliden Çıkar (§3.11b/2): kalan B 120 / A 128, karşılık B 129 / A 644 — yevmiye türetir; burada kapanış başlığı + durum. */
   function release(ctx, { user, accountId, did, body = {} }) {
@@ -641,7 +581,24 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
   // düşüyor, tam tutar reddediliyordu. Bağsız alacaklar (tahsilat, Alacak Yaz …) sınırı eskisi gibi küçültür (kâhin ve v2.4.9 böyle; bu karar onları kapsamaz).
   // Yazımdan sonra (bank.post işlemi içinde) ayırıcı satırın yerinde kalanı aşan kısım (outsideMinor) bırakıyorsa ya da carinin başka bir Değersiz satırını kalanın dışına taşırıyorsa hata
   // atılır, yazım geri alınır (güvenlik denetimi; doğru sınırla oluşmaz). Geri yükleme (restore 'writeoff') aynı denetimi kullanır.
-  // UD turu 4: o günün bağlı payı openRecord'un share(gün)'ünden (doubtfulStateBound; önceki ayrı ayırıcı koşusuyla aynı toplam — bağlı alacakların bu kayda düşen kuruşu).
+  const boundSameDayShare = (record, date) => {
+    const rows = doubtfulRows(store, { parties: [record.party] });
+    if (!rows.linked || !rows.records.length) return 0;
+    const bound = new Set();
+    const linked = (credit, view) => {
+      const out = rows.linked(credit, view);
+      if (out) bound.add(credit.key);
+      return out;
+    };
+    const credits = doubtfulCredits(store, new Set(rows.records.map(item => item.party)));
+    const { allocations } = allocateDoubtful({ records: rows.records, provisions: rows.provisions, credits, linked });
+    let sum = 0;
+    for (const credit of credits) {
+      if (credit.date !== date || !bound.has(credit.key)) continue;
+      for (const item of allocations.get(credit.key)?.records || []) if (item.recordId === record.id) sum += item.minor;
+    }
+    return sum;
+  };
   const writeOffOutside = record => {
     const out = new Map();
     for (const [key, hit] of stateOf(record).allocations) if (hit.outsideMinor > 0) out.set(key, hit.outsideMinor);
@@ -656,21 +613,12 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
   };
   /** Değersiz Alacak Yaz (§3.11b/3): cari kartına alacak satırı (source 'doubtful') + başlık; yevmiye B 129/659 / A 128 türetir. */
   function writeOff(ctx, { user, accountId, did, body = {} }) {
-    // UD turu 4 — S269 = A: 'kayıt kapalı' denetimi de o günün bağlı payını geri sayar (openRecord). Tarih burada okunamazsa (geçersiz / ileri) pay 0 — kapalı kayıtta 409 eskisi gibi,
-    // açık kayıtta tarih hatası aşağıda eskisi gibi.
-    const dayOf = () => {
-      try {
-        return period.movementDate(body, { label: "Tarih" });
-      } catch {
-        return "";
-      }
-    };
-    const { record, state, share } = openRecord(accountId, did, { writeOffOn: dayOf });
+    const { record, state } = openRecord(accountId, did);
     const date = period.movementDate(body, { label: "Tarih" });
     dateAfterRecord(date, record, "Değersiz yazma tarihi");
     const minor = amountOf(body.amount, "Değersiz alacak tutarı");
     // S264 = A: sınır kalan + o günün bağlı payı (yukarıdaki not).
-    const room = state.remaining + share(date);
+    const room = state.remaining + boundSameDayShare(record, date);
     const exceeds = fit => new HttpError(400, `Değersiz yazılacak tutar (${tl(minor)}) kalan şüpheli tutarı (${tl(fit)}) aşıyor.`, { code: "doubtful-writeoff-exceeds", field: "amount", remainingMinor: fit });
     if (minor > room) throw exceeds(room);
     const note = limited(body.note ?? "", 300, "Açıklama");
@@ -805,10 +753,9 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     if (kind === "writeoff") {
       if (store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", payload.id)) throw new HttpError(404, "Bu Değersiz Alacak satırı zaten geri yüklenmiş.");
       period.restoreDate(payload.date, "Bu Değersiz Alacak satırı");
-      // UD turu 4 — S269 = A: 'kayıt kapalı' denetimi de satırın günündeki bağlı payı geri sayar (writeOff ile aynı).
-      const { record, state, share } = openRecord(payload.accountId, payload.recordId, { writeOffOn: () => payload.date });
+      const { record, state } = openRecord(payload.accountId, payload.recordId);
       // S264 = A: sınır kalan + satırın günündeki bağlı pay (writeOff ile aynı denetim; yukarıdaki not).
-      const room = state.remaining + share(payload.date);
+      const room = state.remaining + boundSameDayShare(record, payload.date);
       const refused = () => new HttpError(409, `Değersiz Alacak satırı geri yüklenemez: kalan şüpheli tutar (${tl(room)}) tutarı (${tl(payload.amountMinor)}) artık karşılamıyor.`, { code: "doubtful-writeoff-exceeds" });
       if (Number(payload.amountMinor) > room) throw refused();
       const before = writeOffOutside(record);
