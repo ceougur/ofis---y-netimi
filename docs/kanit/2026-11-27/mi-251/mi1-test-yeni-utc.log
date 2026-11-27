@@ -1,0 +1,67 @@
+TAP version 13
+# (node:24166) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz
+    # Subtest: ödenmemiş kart: en eski geciken 1. taksit; 1. taksit ödenince satır 2. taksitten (… gün gecikti (2. taksit))
+    ok 1 - ödenmemiş kart: en eski geciken 1. taksit; 1. taksit ödenince satır 2. taksitten (… gün gecikti (2. taksit))
+      ---
+      duration_ms: 132.863506
+      type: 'test'
+      ...
+    # Subtest: SİLİNMİŞ taksit: saklanan sıra 2, 3 kalır — kart ve liste 1, 2 der (boşluk yok)
+    ok 2 - SİLİNMİŞ taksit: saklanan sıra 2, 3 kalır — kart ve liste 1, 2 der (boşluk yok)
+      ---
+      duration_ms: 102.481671
+      type: 'test'
+      ...
+    # Subtest: sonradan EKLENEN, vadesi öncekilerden önce taksit: saklanan sıra 4 — görünen 1; eskiler 2, 3, 4
+    ok 3 - sonradan EKLENEN, vadesi öncekilerden önce taksit: saklanan sıra 4 — görünen 1; eskiler 2, 3, 4
+      ---
+      duration_ms: 84.839935
+      type: 'test'
+      ...
+    # Subtest: VADESİ DEĞİŞEN taksit: 3. taksitin vadesi öne alınınca kart sırası ve numara vadeden
+    ok 4 - VADESİ DEĞİŞEN taksit: 3. taksitin vadesi öne alınınca kart sırası ve numara vadeden
+      ---
+      duration_ms: 47.712008
+      type: 'test'
+      ...
+    # Subtest: bağsız cari tahsilatı 1. taksiti kapatır (kuyruk): liste ve kart 2. taksit der
+    ok 5 - bağsız cari tahsilatı 1. taksiti kapatır (kuyruk): liste ve kart 2. taksit der
+      ---
+      duration_ms: 63.990616
+      type: 'test'
+      ...
+    # Subtest: iade: 2000 tahsil, 1000 iade → iade en yeni taksitten düşer; satır 2. taksit
+    ok 6 - iade: 2000 tahsil, 1000 iade → iade en yeni taksitten düşer; satır 2. taksit
+      ---
+      duration_ms: 76.115753
+      type: 'test'
+      ...
+    # Subtest: birden çok kart: satır vadesi en erken geciken taksitten — numara O KARTTAKİ sırası
+    ok 7 - birden çok kart: satır vadesi en erken geciken taksitten — numara O KARTTAKİ sırası
+      ---
+      duration_ms: 95.753521
+      type: 'test'
+      ...
+    # Subtest: geciken yokken: sıradaki taksit ileride (gün ≥ 0) — numara alanı var, gecikme eki yalnız days < 0'da (istemci)
+    ok 8 - geciken yokken: sıradaki taksit ileride (gün ≥ 0) — numara alanı var, gecikme eki yalnız days < 0'da (istemci)
+      ---
+      duration_ms: 32.565276
+      type: 'test'
+      ...
+    1..8
+ok 1 - Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz
+  ---
+  duration_ms: 1152.62987
+  type: 'suite'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1618.371731

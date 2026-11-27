@@ -1,0 +1,32 @@
+{
+  "ad": "mi2-kahin-cari-europe-istanbul",
+  "komut": "npm run test:kahin-cari",
+  "commit": "51109662dc569e5d0c4ce955fe69fea2596cc4f4",
+  "dal": "worktree-agent-ad6b71f2b91ca7ee7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T14:58:27.206Z",
+  "sure_sn": 638.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 25298,
+    "gecen": 25298,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi2-t2/kanit/2026-11-27/mi2-kahin-cari-europe-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7",
+  "ham_cikti_sha256": "81548a580e520d2c2f2059fde37140c58cb772e2cdbd88a75b7d059db3e52db9",
+  "ham_cikti_bayt": 83958
+}

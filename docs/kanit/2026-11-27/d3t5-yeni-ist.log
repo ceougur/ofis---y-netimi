@@ -1,0 +1,1416 @@
+TAP version 13
+# (node:27251) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — tur 2'nin açıkları: K'den sonra Düzenle ile eklenen peşin ve K'den sonra kurulan çek bağı (ikisi de ≤K satırda)
+    # Subtest: veri tabanı (ders 3): peşin satırı 15.12.2026 tarihli (10.01.2027'de yazıldı); çekin ilk olayı 20.12.2026 tarihli ve faturaya bağlı
+    ok 1 - veri tabanı (ders 3): peşin satırı 15.12.2026 tarihli (10.01.2027'de yazıldı); çekin ilk olayı 20.12.2026 tarihli ve faturaya bağlı
+      ---
+      duration_ms: 6.569491
+      type: 'test'
+      ...
+    # Subtest: plan: faturanın K açık kalemi 300,00 (1.000 − 400 peşin − 300 çek; elle); bağ listesinde bu fatura YOK; DURDURUR yok
+    ok 2 - plan: faturanın K açık kalemi 300,00 (1.000 − 400 peşin − 300 çek; elle); bağ listesinde bu fatura YOK; DURDURUR yok
+      ---
+      duration_ms: 0.253183
+      type: 'test'
+      ...
+    # Subtest: devirsiz eşi: programın bugünkü fatura kalanı = planın K açık kalemi (300,00; K'den sonra başka hareket yok)
+    ok 3 - devirsiz eşi: programın bugünkü fatura kalanı = planın K açık kalemi (300,00; K'den sonra başka hareket yok)
+      ---
+      duration_ms: 14.121902
+      type: 'test'
+      ...
+    1..3
+ok 1 - D3 tur 3 — tur 2'nin açıkları: K'den sonra Düzenle ile eklenen peşin ve K'den sonra kurulan çek bağı (ikisi de ≤K satırda)
+  ---
+  duration_ms: 1270.364067
+  type: 'suite'
+  ...
+# (node:27259) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27259) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27259) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — K sonrası bağlar (bağ yönlendirmesi) ve K / K+1 aynı tutarlı kayıtlar
+    # Subtest: bağ listesi (elle): K sonrası satırın ≤K belgeye HER bağı — Kapatılacak Fatura, çek olayı, banka havalesi, Mahsup Et'in iki tarafı, iade → asıl fatura; iki tarafı ≤K ya da >K olan bağ YOK
+    ok 1 - bağ listesi (elle): K sonrası satırın ≤K belgeye HER bağı — Kapatılacak Fatura, çek olayı, banka havalesi, Mahsup Et'in iki tarafı, iade → asıl fatura; iki tarafı ≤K ya da >K olan bağ YOK
+      ---
+      duration_ms: 2.569791
+      type: 'test'
+      ...
+    # Subtest: açık kalemler (elle): K sonrası bağlı tahsilat K'deki kalanı DÜŞÜRMEZ; ≤K bağlı kısım düşer; kapanmış fatura açık kalem değil; iki tarafı >K olan cariye satır YOK
+    ok 2 - açık kalemler (elle): K sonrası bağlı tahsilat K'deki kalanı DÜŞÜRMEZ; ≤K bağlı kısım düşer; kapanmış fatura açık kalem değil; iki tarafı >K olan cariye satır YOK
+      ---
+      duration_ms: 0.423794
+      type: 'test'
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER (aynı kilitle — S24 = A): bağı açık kaleme YÖNLENDİRİLMİŞ devirli kuyruk = devirsiz (gecikmiş, açık kalemler, en eski vade); elle: A1 02.01 = 600, A2 02.01 = 0, A8 11.01 = 900
+    ok 3 - DEVİRSİZ EŞDEĞER (aynı kilitle — S24 = A): bağı açık kaleme YÖNLENDİRİLMİŞ devirli kuyruk = devirsiz (gecikmiş, açık kalemler, en eski vade); elle: A1 02.01 = 600, A2 02.01 = 0, A8 11.01 = 900
+      ---
+      duration_ms: 40.745578
+      type: 'test'
+      ...
+    # Subtest: S-T2-1 = B (KULLANICI 27.11.2026; D3 tur 4 — tur 2'de sayılar 400 ↔ 250 idi): K sonrası Mahsup Et'in KARŞI belgesi ≤K (B2) — gecikmiş 01.01–29.01 devirsiz 400,00 = devirli 400,00
+    ok 4 - S-T2-1 = B (KULLANICI 27.11.2026; D3 tur 4 — tur 2'de sayılar 400 ↔ 250 idi): K sonrası Mahsup Et'in KARŞI belgesi ≤K (B2) — gecikmiş 01.01–29.01 devirsiz 400,00 = devirli 400,00
+      ---
+      duration_ms: 1.639184
+      type: 'test'
+      ...
+    # Subtest: DİŞ (D4a şartı): K sonrası bağ açık kaleme yönlendirilmezse (bağsız gibi dağılırsa) A8'de devirli ≠ devirsiz — planın `baglar` listesi gerekli
+    ok 5 - DİŞ (D4a şartı): K sonrası bağ açık kaleme yönlendirilmezse (bağsız gibi dağılırsa) A8'de devirli ≠ devirsiz — planın `baglar` listesi gerekli
+      ---
+      duration_ms: 5.035714
+      type: 'test'
+      ...
+    # Subtest: K günü / K+1 günü aynı tutarlı iki kayıt (h1): 31.12'ler K bakiyesinde (150,00), 01.01'ler yeni yılda; tablo sayımı ≤K 17 / >K 12 (elle: 13 fatura + 4 elle / 3 fatura + 8 elle + 1 çek)
+    ok 6 - K günü / K+1 günü aynı tutarlı iki kayıt (h1): 31.12'ler K bakiyesinde (150,00), 01.01'ler yeni yılda; tablo sayımı ≤K 17 / >K 12 (elle: 13 fatura + 4 elle / 3 fatura + 8 elle + 1 çek)
+      ---
+      duration_ms: 0.48042
+      type: 'test'
+      ...
+    1..6
+ok 2 - D3 tur 2 — K sonrası bağlar (bağ yönlendirmesi) ve K / K+1 aynı tutarlı kayıtlar
+  ---
+  duration_ms: 2779.156353
+  type: 'suite'
+  ...
+# (node:27269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — banka, POS, kredi kartı, kredi alt hesapları: K bakiyesi = açılış
+    # Subtest: her alt hesap K bakiyesiyle (elle): Z 390,00 · G 11.000,00 · POS 780,00 (bekleyen; komisyon tahsilat günü gider) · kart −200,00 · kredi −10.000,00; sahibi (banka hesabı / POS) belli
+    ok 1 - her alt hesap K bakiyesiyle (elle): Z 390,00 · G 11.000,00 · POS 780,00 (bekleyen; komisyon tahsilat günü gider) · kart −200,00 · kredi −10.000,00; sahibi (banka hesabı / POS) belli
+      ---
+      duration_ms: 4.061555
+      type: 'test'
+      ...
+    # Subtest: kapanış = açılış: her alt hesapta arşiv K bakiyesi = yeni yıl açılışı; K sonrası havale K'ye girmez; modül farkı YOK; sayılar (2 hesap, 11.390,00, kart −200,00, kredi −10.000,00, POS 780,00)
+    ok 2 - kapanış = açılış: her alt hesapta arşiv K bakiyesi = yeni yıl açılışı; K sonrası havale K'ye girmez; modül farkı YOK; sayılar (2 hesap, 11.390,00, kart −200,00, kredi −10.000,00, POS 780,00)
+      ---
+      duration_ms: 0.635915
+      type: 'test'
+      ...
+    1..2
+ok 3 - D3 tur 2 — banka, POS, kredi kartı, kredi alt hesapları: K bakiyesi = açılış
+  ---
+  duration_ms: 1763.752364
+  type: 'suite'
+  ...
+# (node:27277) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — veri damgasının iz türü listesi (kaynak taraması)
+    # Subtest: tarama boş değil (ders 4): bilinen iz türleri bulunur (fatura, cari hareketi, kilit, defter dondurması, banka)
+    ok 1 - tarama boş değil (ders 4): bilinen iz türleri bulunur (fatura, cari hareketi, kilit, defter dondurması, banka)
+      ---
+      duration_ms: 238.780465
+      type: 'test'
+      ...
+    # Subtest: her iz türü sınıflandırılmış: ya veri damgasında ya gerekçeli VERİ DIŞI listede (yeni para yazıcısı listeye girmeden eklenemez)
+    ok 2 - her iz türü sınıflandırılmış: ya veri damgasında ya gerekçeli VERİ DIŞI listede (yeni para yazıcısı listeye girmeden eklenemez)
+      ---
+      duration_ms: 272.109832
+      type: 'test'
+      ...
+    # Subtest: çakışma yok: veri damgasındaki bir tür VERİ DIŞI listede değil; dışlananlar (görüntüleme / dışa aktarma) veri ad alanında ve gerçekten var
+    ok 3 - çakışma yok: veri damgasındaki bir tür VERİ DIŞI listede değil; dışlananlar (görüntüleme / dışa aktarma) veri ad alanında ve gerçekten var
+      ---
+      duration_ms: 217.363374
+      type: 'test'
+      ...
+    # Subtest: v-5: devirde budanan / kalan (B / A) her tablo ya damganın saydığı tablolarda ya yazımı iz türüyle / gerekçeyle karşılanmış
+    ok 4 - v-5: devirde budanan / kalan (B / A) her tablo ya damganın saydığı tablolarda ya yazımı iz türüyle / gerekçeyle karşılanmış
+      ---
+      duration_ms: 0.616186
+      type: 'test'
+      ...
+    # Subtest: ders 27: tarama CRLF'li kaynakta da aynı türleri bulur
+    ok 5 - ders 27: tarama CRLF'li kaynakta da aynı türleri bulur
+      ---
+      duration_ms: 0.599339
+      type: 'test'
+      ...
+    1..5
+ok 4 - D3 tur 5 — veri damgasının iz türü listesi (kaynak taraması)
+  ---
+  duration_ms: 731.231603
+  type: 'suite'
+  ...
+# (node:27284) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — veri damgası: veriyi değiştirmeyen yazım damgayı değiştirmez, para tablosuna yazan değiştirir
+    # Subtest: ön izlemenin damgası = okuyucunun damgası; hemen sonra 'değişmedi'
+    ok 1 - ön izlemenin damgası = okuyucunun damgası; hemen sonra 'değişmedi'
+      ---
+      duration_ms: 2.583393
+      type: 'test'
+      ...
+    # Subtest: v-1 ARKA PLAN (veriyi değiştirmeyen): zamanlanmış yedeğin turu, bütünlük taraması, analiz işçisi, defter dondurmasının boş turu → damga AYNI
+    ok 2 - v-1 ARKA PLAN (veriyi değiştirmeyen): zamanlanmış yedeğin turu, bütünlük taraması, analiz işçisi, defter dondurmasının boş turu → damga AYNI
+      ---
+      duration_ms: 524.943001
+      type: 'test'
+      ...
+    # Subtest: v-1 KULLANICI (veriyi değiştirmeyen): ikinci giriş + çıkış, şirket seçimi (002 ↔ 001), ekran durumu, fatura PDF'i, cari ekstresi, Devir Raporu PDF'i → damga AYNI
+    ok 3 - v-1 KULLANICI (veriyi değiştirmeyen): ikinci giriş + çıkış, şirket seçimi (002 ↔ 001), ekran durumu, fatura PDF'i, cari ekstresi, Devir Raporu PDF'i → damga AYNI
+      ---
+      duration_ms: 162.98546
+      type: 'test'
+      ...
+    # Subtest: v-2 PARA TABLOSUNA YAZAN: cari kartı düzeltmesi, taksit tahsilatı tutar düzeltmesi, kayıt tahsilatı tutar düzeltmesi, tekrarlayan faturanın taslağı → damga DEĞİŞİR (her biri ayrı)
+    ok 4 - v-2 PARA TABLOSUNA YAZAN: cari kartı düzeltmesi, taksit tahsilatı tutar düzeltmesi, kayıt tahsilatı tutar düzeltmesi, tekrarlayan faturanın taslağı → damga DEĞİŞİR (her biri ayrı)
+      ---
+      duration_ms: 154.612919
+      type: 'test'
+      ...
+    1..4
+ok 5 - D3 tur 5 — veri damgası: veriyi değiştirmeyen yazım damgayı değiştirmez, para tablosuna yazan değiştirir
+  ---
+  duration_ms: 2507.935203
+  type: 'suite'
+  ...
+# (node:27294) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmiş / kalan / bakiye
+    # Subtest: plan elle hesaplanan sayılarla: C1 açık kalemler (vade, söz), net 0; C2 avans net −300 ve açık kalem yok; S1 alacak kalemi 700
+    ok 1 - plan elle hesaplanan sayılarla: C1 açık kalemler (vade, söz), net 0; C2 avans net −300 ve açık kalem yok; S1 alacak kalemi 700
+      ---
+      duration_ms: 387.94394
+      type: 'test'
+      ...
+    # Subtest: borc-alacak: her t ≥ K+1 için gecikmiş(t) ve borç tarafı açık kalemleri (vade, kalan) devirli = devirsiz; elle: C1 01.01 = 500, 11.01 = 500, 01.02 = 1.100
+    ok 2 - borc-alacak: her t ≥ K+1 için gecikmiş(t) ve borç tarafı açık kalemleri (vade, kalan) devirli = devirsiz; elle: C1 01.01 = 500, 11.01 = 500, 01.02 = 1.100
+      ---
+      duration_ms: 332.78042
+      type: 'test'
+      ...
+    # Subtest: sadece-bakiye: her t ≥ K+1 için gecikmiş(t) ve borç tarafı açık kalemleri (vade, kalan) devirli = devirsiz; elle: C1 01.01 = 500, 11.01 = 500, 01.02 = 1.100
+    ok 3 - sadece-bakiye: her t ≥ K+1 için gecikmiş(t) ve borç tarafı açık kalemleri (vade, kalan) devirli = devirsiz; elle: C1 01.01 = 500, 11.01 = 500, 01.02 = 1.100
+      ---
+      duration_ms: 409.838201
+      type: 'test'
+      ...
+    # Subtest: TEHLİKE (tasarım §3.5 madde 4): Borç / Alacak Toplamı kuyruğa AYRI ve bağsız alacak gibi girerse gecikmiş değişir — netleşme kuralı gerekli (bu testin dişi)
+    ok 4 - TEHLİKE (tasarım §3.5 madde 4): Borç / Alacak Toplamı kuyruğa AYRI ve bağsız alacak gibi girerse gecikmiş değişir — netleşme kuralı gerekli (bu testin dişi)
+      ---
+      duration_ms: 455.004852
+      type: 'test'
+      ...
+    # Subtest: ROL (D4a şartı): ödeme rolündeki kalem Borç Yaz gibi (yükümlülük) yazılırsa sonraki alışla netleşme değişir — planın `rol` alanı gerekli (bu testin dişi)
+    ok 5 - ROL (D4a şartı): ödeme rolündeki kalem Borç Yaz gibi (yükümlülük) yazılırsa sonraki alışla netleşme değişir — planın `rol` alanı gerekli (bu testin dişi)
+      ---
+      duration_ms: 333.060273
+      type: 'test'
+      ...
+# (node:27294) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: bakiye: devirli kuyruğun satırları (net + açık kalemler + K sonrası) = devirsiz carinin bugünkü bakiyesi
+    ok 6 - bakiye: devirli kuyruğun satırları (net + açık kalemler + K sonrası) = devirsiz carinin bugünkü bakiyesi
+      ---
+      duration_ms: 380.827931
+      type: 'test'
+      ...
+    1..6
+ok 6 - D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmiş / kalan / bakiye
+  ---
+  duration_ms: 3494.456859
+  type: 'suite'
+  ...
+# (node:27309) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — çek / senet yön × durum: planın açılışı doğru yönde ve durumda
+    # Subtest: veri tabanı (ders 3): evrakların bugünkü durumu
+    ok 1 - veri tabanı (ders 3): evrakların bugünkü durumu
+      ---
+      duration_ms: 2.115657
+      type: 'test'
+      ...
+    # Subtest: her sınıf doğru hesapta / alt hesapta / yönde; tahsil edilmiş ve ödenmiş evrak listede YOK (elle)
+    ok 2 - her sınıf doğru hesapta / alt hesapta / yönde; tahsil edilmiş ve ödenmiş evrak listede YOK (elle)
+      ---
+      duration_ms: 0.660231
+      type: 'test'
+      ...
+    # Subtest: kapanış = açılış: evrak hesaplarının arşiv K bakiyesi = planın açılışı (işaretli; alınan +, verilen −); modül farkı / sorun YOK
+    ok 3 - kapanış = açılış: evrak hesaplarının arşiv K bakiyesi = planın açılışı (işaretli; alınan +, verilen −); modül farkı / sorun YOK
+      ---
+      duration_ms: 0.429548
+      type: 'test'
+      ...
+    # Subtest: karşılıksızın carisi: faturası yeniden açık (kendi vadesiyle); devirli = devirsiz (portföyden, senet, cirodan)
+    ok 4 - karşılıksızın carisi: faturası yeniden açık (kendi vadesiyle); devirli = devirsiz (portföyden, senet, cirodan)
+      ---
+      duration_ms: 3.467241
+      type: 'test'
+      ...
+    1..4
+ok 7 - D3 tur 4 — çek / senet yön × durum: planın açılışı doğru yönde ve durumda
+  ---
+  duration_ms: 1996.579382
+  type: 'suite'
+  ...
+# (node:27317) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — evrakın K'deki durumu (çek / senet, alınan / verilen, bankada tahsil, ciro, karşılıksız, K sonrası değişen)
+    # Subtest: her evrak K'deki durumuyla (elle): durum, hesap / alt hesap, tutar, vade; kapanmış / K sonrası alınmış / silinmiş evrak YOK; K sonrası olay K durumunu değiştirmez
+    ok 1 - her evrak K'deki durumuyla (elle): durum, hesap / alt hesap, tutar, vade; kapanmış / K sonrası alınmış / silinmiş evrak YOK; K sonrası olay K durumunu değiştirmez
+      ---
+      duration_ms: 3.464949
+      type: 'test'
+      ...
+    # Subtest: ön izleme sayıları (elle): portföy 5 / 2.270,00 · tahsilde 2 / 1.300,00 · ciroda 2 / 550,00 · karşılıksız 1 / 350,00 · verilen ödenmemiş 3 / 1.600,00
+    ok 2 - ön izleme sayıları (elle): portföy 5 / 2.270,00 · tahsilde 2 / 1.300,00 · ciroda 2 / 550,00 · karşılıksız 1 / 350,00 · verilen ödenmemiş 3 / 1.600,00
+      ---
+      duration_ms: 0.240172
+      type: 'test'
+      ...
+    # Subtest: kapanış = açılış (elle): 101.01 1.770,00 · 121.01 500,00 · 101.02 1.300,00 · 103 −1.300,00 · 321 −300,00; modül farkı YOK; Z'nin bakiyesi 0 ve satırı yok
+    ok 3 - kapanış = açılış (elle): 101.01 1.770,00 · 121.01 500,00 · 101.02 1.300,00 · 103 −1.300,00 · 321 −300,00; modül farkı YOK; Z'nin bakiyesi 0 ve satırı yok
+      ---
+      duration_ms: 0.472088
+      type: 'test'
+      ...
+    1..3
+ok 8 - D3 tur 2 — evrakın K'deki durumu (çek / senet, alınan / verilen, bankada tahsil, ciro, karşılıksız, K sonrası değişen)
+  ---
+  duration_ms: 1963.851664
+  type: 'suite'
+  ...
+# (node:27325) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# tutamaç benzetimden önce 2026: 0 — arsiv/2026
+# Subtest: D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket)
+    # Subtest: devir yokken: üç neden de YOK (yanlış durdurma yok)
+    ok 1 - devir yokken: üç neden de YOK (yanlış durdurma yok)
+      ---
+      duration_ms: 342.024683
+      type: 'test'
+      ...
+    # Subtest: y-1: aynı yıl (dosya ayarı + arşiv kaydı) → DURDURUR 'Bu Yıl Zaten Devredildi'; çare Devri Yenile / Devri Geri Al; dört alan
+    ok 2 - y-1: aynı yıl (dosya ayarı + arşiv kaydı) → DURDURUR 'Bu Yıl Zaten Devredildi'; çare Devri Yenile / Devri Geri Al; dört alan
+      ---
+      duration_ms: 371.497448
+      type: 'test'
+      ...
+# tutamaç benzetimden önce 2026: 0 — arsiv/2026
+    # Subtest: y-4: ayarda 2026 var, arşiv kaydı yok (yarıda kalmış devir) → DURDURUR 'Önceki Devir Yarıda Kalmış' (Devir Yedekleri); 'bu yıl devredildi' DEĞİL
+    ok 3 - y-4: ayarda 2026 var, arşiv kaydı yok (yarıda kalmış devir) → DURDURUR 'Önceki Devir Yarıda Kalmış' (Devir Yedekleri); 'bu yıl devredildi' DEĞİL
+      ---
+      duration_ms: 340.918128
+      type: 'test'
+      ...
+# (node:27325) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: y-2: arşiv kaydı var, dosya ayarı yok → DURDURUR 'Bu Yıl Zaten Devredildi'
+    ok 4 - y-2: arşiv kaydı var, dosya ayarı yok → DURDURUR 'Bu Yıl Zaten Devredildi'
+      ---
+      duration_ms: 386.588928
+      type: 'test'
+      ...
+# tutamaç y-3 (dosya silinir): 0 — arsiv/2026
+    # Subtest: y-3: arşiv kaydı var ama arşiv dosyası yok → DURDURUR; ilette 'arşiv dosyası bulunamadı' + Devir Yedekleri
+    ok 5 - y-3: arşiv kaydı var ama arşiv dosyası yok → DURDURUR; ilette 'arşiv dosyası bulunamadı' + Devir Yedekleri
+      ---
+      duration_ms: 730.796476
+      type: 'test'
+      ...
+# tutamaç benzetimden önce 2027: 0 — arsiv/2027
+    # Subtest: y-7: Devri Geri Al'dan sonra (kayıt ve ayar kalktı) → GEÇER
+    ok 6 - y-7: Devri Geri Al'dan sonra (kayıt ve ayar kalktı) → GEÇER
+      ---
+      duration_ms: 381.939568
+      type: 'test'
+      ...
+# tutamaç benzetimden önce 2025: 0 — arsiv/2025
+    # Subtest: y-5: sonraki yıl (2027) devredilmiş, 2026 seçildi → DURDURUR 'Sonraki Yıl Devredilmiş'
+    ok 7 - y-5: sonraki yıl (2027) devredilmiş, 2026 seçildi → DURDURUR 'Sonraki Yıl Devredilmiş'
+      ---
+      duration_ms: 439.037429
+      type: 'test'
+      ...
+    # Subtest: y-6: önceki yıl (2025) devredilmiş, 2026 seçildi → GEÇER
+    ok 8 - y-6: önceki yıl (2025) devredilmiş, 2026 seçildi → GEÇER
+      ---
+      duration_ms: 371.924433
+      type: 'test'
+      ...
+# tutamaç benzetimden önce 2026: 0 — arsiv/2026
+    # Subtest: y-9: devir yılları ayarı bozuk (JSON değil) → ayar yok sayılır, arşiv kaydı yok → GEÇER
+    ok 9 - y-9: devir yılları ayarı bozuk (JSON değil) → ayar yok sayılır, arşiv kaydı yok → GEÇER
+      ---
+      duration_ms: 391.045275
+      type: 'test'
+      ...
+# (node:27325) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: y-8: iki şirket — 002'nin 2026 devri 001'i durdurmaz; 002'nin kendi ön izlemesi durur
+    ok 10 - y-8: iki şirket — 002'nin 2026 devri 001'i durdurmaz; 002'nin kendi ön izlemesi durur
+      ---
+      duration_ms: 763.964889
+      type: 'test'
+      ...
+    1..10
+ok 9 - D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket)
+  ---
+  duration_ms: 5341.255519
+  type: 'suite'
+  ...
+# (node:27349) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — her neden üretilir ve dört alanı temiz (iç kod / İngilizce / alan adı / tablo adı yok)
+    # Subtest: bütün ön denetim maddeleri + bütün plan sorunları + bütün değişmezler + redler: dört alan, yasak kalıp yok, tablo adı yok, adımlar var
+    ok 1 - bütün ön denetim maddeleri + bütün plan sorunları + bütün değişmezler + redler: dört alan, yasak kalıp yok, tablo adı yok, adımlar var
+      ---
+      duration_ms: 19.198707
+      type: 'test'
+      ...
+    # Subtest: kâhin ↔ plan karşılaştırması §9'un EKSİK maddeleri tamam: plan sorunlarında adım adım + Ön İzleme'yi yeniden başlat; tutar yönüyle; modülün adı; şüphelide Şüpheli Alacaklar
+    ok 2 - kâhin ↔ plan karşılaştırması §9'un EKSİK maddeleri tamam: plan sorunlarında adım adım + Ön İzleme'yi yeniden başlat; tutar yönüyle; modülün adı; şüphelide Şüpheli Alacaklar
+      ---
+      duration_ms: 1.981895
+      type: 'test'
+      ...
+    # Subtest: KAYNAK TARAMASI: kaynaktaki her neden kodu üretildi; planın / okuyucunun her sorun türünün kendi iletisi var (varsayılana düşmez)
+    ok 3 - KAYNAK TARAMASI: kaynaktaki her neden kodu üretildi; planın / okuyucunun her sorun türünün kendi iletisi var (varsayılana düşmez)
+      ---
+      duration_ms: 6.186873
+      type: 'test'
+      ...
+    1..3
+ok 10 - D3 tur 4 — her neden üretilir ve dört alanı temiz (iç kod / İngilizce / alan adı / tablo adı yok)
+  ---
+  duration_ms: 28.343209
+  type: 'suite'
+  ...
+# (node:27356) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık
+    # Subtest: (a) her DURDURUR nedeni dört alanlı; sayı / belge no / tarih veri tabanıyla aynı
+    ok 1 - (a) her DURDURUR nedeni dört alanlı; sayı / belge no / tarih veri tabanıyla aynı
+      ---
+      duration_ms: 5.840692
+      type: 'test'
+      ...
+    # Subtest: (a) UYARIR maddeleri de dört alanlı; uyarılar durdururla karışmaz
+    ok 2 - (a) UYARIR maddeleri de dört alanlı; uyarılar durdururla karışmaz
+      ---
+      duration_ms: 0.780295
+      type: 'test'
+      ...
+    # Subtest: (b) iki ön izleme: nedenler ve sıraları bayt bayt aynı
+    ok 3 - (b) iki ön izleme: nedenler ve sıraları bayt bayt aynı
+      ---
+      duration_ms: 0.3064
+      type: 'test'
+      ...
+    # Subtest: (e) Devir Raporu: 'Devri Durduran Nedenler' ve 'Uyarılar' ayrı başlıklar; ekran = Excel = PDF aynı cümleler
+    ok 4 - (e) Devir Raporu: 'Devri Durduran Nedenler' ve 'Uyarılar' ayrı başlıklar; ekran = Excel = PDF aynı cümleler
+      ---
+      duration_ms: 83.281665
+      type: 'test'
+      ...
+    1..4
+ok 11 - D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık
+  ---
+  duration_ms: 1941.234775
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — (a) Defter Mutabakatı (kural kancası; ön izlemenin aynı işlevi, iş parçacığısız)
+    # Subtest: Defter Mutabakatı DURDURUR (120 farkı 500,00 TL; dört alan)
+    ok 1 - Defter Mutabakatı DURDURUR (120 farkı 500,00 TL; dört alan)
+      ---
+      duration_ms: 0.979101
+      type: 'test'
+      ...
+    1..1
+ok 12 - D3 tur 3 — (a) Defter Mutabakatı (kural kancası; ön izlemenin aynı işlevi, iş parçacığısız)
+  ---
+  duration_ms: 506.39672
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — (a) planın kendi sorunları (program tutarlı veride üretmez — OLGU düzeyinde, her sorun türü): cari adı, hesap, iki tutar
+    # Subtest: her plan sorunu ve değişmez dört alanlı; tutarlar sorundaki sayılarla aynı
+    ok 1 - her plan sorunu ve değişmez dört alanlı; tutarlar sorundaki sayılarla aynı
+      ---
+      duration_ms: 4.05595
+      type: 'test'
+      ...
+    1..1
+ok 13 - D3 tur 3 — (a) planın kendi sorunları (program tutarlı veride üretmez — OLGU düzeyinde, her sorun türü): cari adı, hesap, iki tutar
+  ---
+  duration_ms: 4.281039
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir
+    # Subtest: (c) temiz şirket: DURDURUR yok, yalnız uyarı (Aralık mahsubu, 001) → geçilebilir
+    ok 1 - (c) temiz şirket: DURDURUR yok, yalnız uyarı (Aralık mahsubu, 001) → geçilebilir
+      ---
+      duration_ms: 334.977968
+      type: 'test'
+      ...
+    # Subtest: ret: 31.12 olmayan tarih / bu yıl / geçersiz seçenek → 400, kod makine alanında, ileti dört alanlı
+    ok 2 - ret: 31.12 olmayan tarih / bu yıl / geçersiz seçenek → 400, kod makine alanında, ileti dört alanlı
+      ---
+      duration_ms: 12.379063
+      type: 'test'
+      ...
+    # Subtest: beklenmeyen hata (okuyucunun okuduğu sütun yok — ham veri): Türkçe cümle + 'Verileriniz değişmedi.'; ham ileti yanıta girmez; veri aynı
+    ok 3 - beklenmeyen hata (okuyucunun okuduğu sütun yok — ham veri): Türkçe cümle + 'Verileriniz değişmedi.'; ham ileti yanıta girmez; veri aynı
+      ---
+      duration_ms: 308.075408
+      type: 'test'
+      ...
+    1..3
+ok 14 - D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir
+  ---
+  duration_ms: 1061.995122
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\r?\\n/ — ders 27)
+    # Subtest: preflight.mjs: stop / warn listesine yalnız devirIletisi ya da problemIletisi girer; ham 'metin:' yok
+    ok 1 - preflight.mjs: stop / warn listesine yalnız devirIletisi ya da problemIletisi girer; ham 'metin:' yok
+      ---
+      duration_ms: 1.717596
+      type: 'test'
+      ...
+    # Subtest: routes/devir.mjs ön izleme bölümü: HttpError yalnız refuse() ile; başarısız işin iletisi ham hata iletisi değil
+    ok 2 - routes/devir.mjs ön izleme bölümü: HttpError yalnız refuse() ile; başarısız işin iletisi ham hata iletisi değil
+      ---
+      duration_ms: 0.809787
+      type: 'test'
+      ...
+    # Subtest: devir modüllerinde iletiler.mjs dışında seviye / metin nesnesi kurulmaz
+    ok 3 - devir modüllerinde iletiler.mjs dışında seviye / metin nesnesi kurulmaz
+      ---
+      duration_ms: 1.997639
+      type: 'test'
+      ...
+    # Subtest: iletiDenetimi yasak kalıpları yakalar (dişi)
+    ok 4 - iletiDenetimi yasak kalıpları yakalar (dişi)
+      ---
+      duration_ms: 0.560203
+      type: 'test'
+      ...
+    1..4
+ok 15 - D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\r?\\n/ — ders 27)
+  ---
+  duration_ms: 5.31412
+  type: 'suite'
+  ...
+# (node:27369) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil)
+    # Subtest: veri tabanı (ders 3): Kayıt Tarihleri 20.12.2026 / 31.12.2026 / 01.01.2027, yükleme 03.01.2027
+    ok 1 - veri tabanı (ders 3): Kayıt Tarihleri 20.12.2026 / 31.12.2026 / 01.01.2027, yükleme 03.01.2027
+      ---
+      duration_ms: 2.287613
+      type: 'test'
+      ...
+    # Subtest: defter maddesi Kayıt Tarihi'nde (yükleme günü değil): Excel 20.12.2026 B 120 / A 519 9.000; K günü 31.12.2026; K+1 01.01.2027
+    ok 2 - defter maddesi Kayıt Tarihi'nde (yükleme günü değil): Excel 20.12.2026 B 120 / A 519 9.000; K günü 31.12.2026; K+1 01.01.2027
+      ---
+      duration_ms: 3.036523
+      type: 'test'
+      ...
+    # Subtest: plan (K = 31.12.2026): Excel kartı ESKİ yılda — carinin K bakiyesi 9.000, açılış satırları 9.000, kart 9.000 açık; K günü kartı 5.000; K+1 kartı yeni yılda (planda yok)
+    ok 3 - plan (K = 31.12.2026): Excel kartı ESKİ yılda — carinin K bakiyesi 9.000, açılış satırları 9.000, kart 9.000 açık; K günü kartı 5.000; K+1 kartı yeni yılda (planda yok)
+      ---
+      duration_ms: 0.435131
+      type: 'test'
+      ...
+    # Subtest: elle girilmiş kart (aynı Kayıt Tarihi, 9.000) Excel kartıyla AYNI plan sayıları; taksit vadeleri programın kart ekranıyla aynı (devirsiz eşdeğer)
+    ok 4 - elle girilmiş kart (aynı Kayıt Tarihi, 9.000) Excel kartıyla AYNI plan sayıları; taksit vadeleri programın kart ekranıyla aynı (devirsiz eşdeğer)
+      ---
+      duration_ms: 9.38057
+      type: 'test'
+      ...
+    1..4
+ok 16 - D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil)
+  ---
+  duration_ms: 1220.591219
+  type: 'suite'
+  ...
+# (node:27377) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27377) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — S-T4-1 = A: kilitten sonra kurulan bağ kilitli bağsız kapanışı kaydırmaz (plan A'yı verir; devirsiz farkı ayrı sınıf)
+    # Subtest: veri tabanı (ders 3): kilit K, bağlı tahsilatlar kilitten SONRA yazıldı ve ≤K faturaya bağlı; iade asıl faturaya bağlı
+    ok 1 - veri tabanı (ders 3): kilit K, bağlı tahsilatlar kilitten SONRA yazıldı ve ≤K faturaya bağlı; iade asıl faturaya bağlı
+      ---
+      duration_ms: 2.610557
+      type: 'test'
+      ...
+    # Subtest: K1 plan (elle; S-T4-1 = A): K'de FIS-3 408,00 + FIS-2 1.245,40 açık; FIS-1 kapalı; 128,00'in bağı ARŞİV BAŞVURUSU (FIS-1'in belge numarası); K bakiyesi 1.653,40
+    ok 2 - K1 plan (elle; S-T4-1 = A): K'de FIS-3 408,00 + FIS-2 1.245,40 açık; FIS-1 kapalı; 128,00'in bağı ARŞİV BAŞVURUSU (FIS-1'in belge numarası); K bakiyesi 1.653,40
+      ---
+      duration_ms: 0.823066
+      type: 'test'
+      ...
+    # Subtest: K1 DEVİRLİ görünüm (sayılar AYNEN): 280,00 (22.12.2026) + 1.245,40 (19.01.2027); 19.01'e kadar gecikmiş 280,00, 20.01'den 1.525,40; bakiye 1.525,40
+    ok 3 - K1 DEVİRLİ görünüm (sayılar AYNEN): 280,00 (22.12.2026) + 1.245,40 (19.01.2027); 19.01'e kadar gecikmiş 280,00, 20.01'den 1.525,40; bakiye 1.525,40
+      ---
+      duration_ms: 15.373784
+      type: 'test'
+      ...
+    # Subtest: K1 DEVİRSİZ (programın bugünkü tek borç sırası): ya S-T4-1 öncesi 408,00 / 1.117,40 (BEKLENEN FARK — imza: bağ 128,00 kilitli bağsız kapanışı kaydırıyor) ya kilit paketi sonrası A; başkası BAŞARISIZ
+    ok 4 - K1 DEVİRSİZ (programın bugünkü tek borç sırası): ya S-T4-1 öncesi 408,00 / 1.117,40 (BEKLENEN FARK — imza: bağ 128,00 kilitli bağsız kapanışı kaydırıyor) ya kilit paketi sonrası A; başkası BAŞARISIZ
+      ---
+      duration_ms: 8.585032
+      type: 'test'
+      ...
+    # Subtest: K2 (iadesiz aynı sınıf) ve K4 (kilit K, kısmi bağsız kapanmış belgeye Ocak mahsubu): devirli = devirsiz, S-T4-1 imzası YOK; K4'te ayrılan = devirsiz kuyruğun payı 300
+    ok 5 - K2 (iadesiz aynı sınıf) ve K4 (kilit K, kısmi bağsız kapanmış belgeye Ocak mahsubu): devirli = devirsiz, S-T4-1 imzası YOK; K4'te ayrılan = devirsiz kuyruğun payı 300
+      ---
+      duration_ms: 13.575304
+      type: 'test'
+      ...
+    # Subtest: imza başka farkları yutmaz: K1'in devirli satırları bozulursa (kalem tutarı değişir — bakiye kayar) imza null
+    ok 6 - imza başka farkları yutmaz: K1'in devirli satırları bozulursa (kalem tutarı değişir — bakiye kayar) imza null
+      ---
+      duration_ms: 13.02506
+      type: 'test'
+      ...
+    1..6
+ok 17 - D3 tur 5 — S-T4-1 = A: kilitten sonra kurulan bağ kilitli bağsız kapanışı kaydırmaz (plan A'yı verir; devirsiz farkı ayrı sınıf)
+  ---
+  duration_ms: 2077.56431
+  type: 'suite'
+  ...
+# (node:27377) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27377) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — Dönem Kilidi K'den ÖNCE (30.06): kilitli dönemdeki belgeye K sonrası Mahsup Et (DOĞRULANMADI-2)
+    # Subtest: K3: ayrılan 150 = devirsiz kuyruğun payı (kilit sınırı dahil); K'de satış 150 açık kalem (vade 01.05); devirli = devirsiz her gün
+    ok 1 - K3: ayrılan 150 = devirsiz kuyruğun payı (kilit sınırı dahil); K'de satış 150 açık kalem (vade 01.05); devirli = devirsiz her gün
+      ---
+      duration_ms: 3.694843
+      type: 'test'
+      ...
+    1..1
+ok 18 - D3 tur 5 — Dönem Kilidi K'den ÖNCE (30.06): kilitli dönemdeki belgeye K sonrası Mahsup Et (DOĞRULANMADI-2)
+  ---
+  duration_ms: 1872.392407
+  type: 'suite'
+  ...
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter farkı (cari / alt hesap başına; toplamı 0 olsa da) devri DURDURUR; Kilidi Aç → Yeniden Kilitle ile geçer
+    # Subtest: aynı caride 120 −4.000 / 128 +4.000 (toplam 0): DURDURUR, ileti iki satırı ve çareyi söyler; Kilidi Aç → Yeniden Kilitle (gerçek API) → GEÇER
+    ok 1 - aynı caride 120 −4.000 / 128 +4.000 (toplam 0): DURDURUR, ileti iki satırı ve çareyi söyler; Kilidi Aç → Yeniden Kilitle (gerçek API) → GEÇER
+      ---
+      duration_ms: 1089.498702
+      type: 'test'
+      ...
+    # Subtest: iki AYRI caride +4.000 / −4.000 (hesap toplamı 0): DURDURUR (cari başına)
+    ok 2 - iki AYRI caride +4.000 / −4.000 (hesap toplamı 0): DURDURUR (cari başına)
+      ---
+      duration_ms: 524.514818
+      type: 'test'
+      ...
+    # Subtest: aynı cari, aynı hesap, aynı yılın iki maddesinde +4.000 / −4.000 (kilit günündeki birikim 0): kural farkı DURDURMAZ (yanlış durdurma yok)
+    ok 3 - aynı cari, aynı hesap, aynı yılın iki maddesinde +4.000 / −4.000 (kilit günündeki birikim 0): kural farkı DURDURMAZ (yanlış durdurma yok)
+      ---
+      duration_ms: 554.30364
+      type: 'test'
+      ...
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: fark hiç yokken (kilit 31.12.2026, kanca yok): kural farkı DURDURMAZ
+    ok 4 - fark hiç yokken (kilit 31.12.2026, kanca yok): kural farkı DURDURMAZ
+      ---
+      duration_ms: 975.945346
+      type: 'test'
+      ...
+    1..4
+ok 19 - D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter farkı (cari / alt hesap başına; toplamı 0 olsa da) devri DURDURUR; Kilidi Aç → Yeniden Kilitle ile geçer
+  ---
+  duration_ms: 3146.025111
+  type: 'suite'
+  ...
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir
+    # Subtest: kilit = 31.12.2026: DURDURUR (fiş 01.01.2027'ye düşüyor); ileti fiş tutarını (3.000,00 TL) ve kâr etkisini söyler; çare (kilit 30.12 → fiş 31.12 → kilit 31.12) → GEÇER, kâr 10.000 → 7.000
+    ok 1 - kilit = 31.12.2026: DURDURUR (fiş 01.01.2027'ye düşüyor); ileti fiş tutarını (3.000,00 TL) ve kâr etkisini söyler; çare (kilit 30.12 → fiş 31.12 → kilit 31.12) → GEÇER, kâr 10.000 → 7.000
+      ---
+      duration_ms: 1687.665247
+      type: 'test'
+      ...
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilit = 31.12.2026 iken fiş YENİ YILA yazılmış (01.01.2027): DURDURUR; Ters Kaydet → kilit 30.12 → fiş 31.12 → kilit 31.12 → GEÇER, kâr 7.000
+    ok 2 - kilit = 31.12.2026 iken fiş YENİ YILA yazılmış (01.01.2027): DURDURUR; Ters Kaydet → kilit 30.12 → fiş 31.12 → kilit 31.12 → GEÇER, kâr 7.000
+      ---
+      duration_ms: 1630.543433
+      type: 'test'
+      ...
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilit K'den ÖNCE (30.06.2026): S-3 iletisi (fiş 01.07.2026, eski yılda) — S-KD-2 değil; fiş yazılınca GEÇER, kâr 7.000
+    ok 3 - kilit K'den ÖNCE (30.06.2026): S-3 iletisi (fiş 01.07.2026, eski yılda) — S-KD-2 değil; fiş yazılınca GEÇER, kâr 7.000
+      ---
+      duration_ms: 939.364452
+      type: 'test'
+      ...
+    # Subtest: kilit hiç yok: kural farkı tanımsız — DURDURMAZ; kâr canlı türetmeden 7.000
+    ok 4 - kilit hiç yok: kural farkı tanımsız — DURDURMAZ; kâr canlı türetmeden 7.000
+      ---
+      duration_ms: 504.123215
+      type: 'test'
+      ...
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilit K'yi AŞIYOR (15.01.2027), fark ≤K maddede: DURDURUR (fiş 16.01.2027); fark YALNIZ K'den sonraki maddedeyse S-3 genel iletisi
+    ok 5 - kilit K'yi AŞIYOR (15.01.2027), fark ≤K maddede: DURDURUR (fiş 16.01.2027); fark YALNIZ K'den sonraki maddedeyse S-3 genel iletisi
+      ---
+      duration_ms: 2037.907934
+      type: 'test'
+      ...
+    1..5
+ok 20 - D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir
+  ---
+  duration_ms: 6800.848796
+  type: 'suite'
+  ...
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — S-KD-2 GERÇEK eski sürüm verisiyle (ders 17): v2.4.9'un GERÇEK kodunun ürettiği fikstür (surum-2.4.9-s127; kilit 31.12.2025, Excel kartları) — K = 31.12.2025
+    # Subtest: kilit K'de (31.12.2025), kural farkı ≤K maddelerde: DURDURUR 'Kural Farkı Eski Yılda Düzeltilmeli'; ilette yazan fiş tutarı = kilit 30.12.2025'e alınınca Kural Farkı Düzeltme ön izlemesinin tutarı; çare → GEÇER
+    ok 1 - kilit K'de (31.12.2025), kural farkı ≤K maddelerde: DURDURUR 'Kural Farkı Eski Yılda Düzeltilmeli'; ilette yazan fiş tutarı = kilit 30.12.2025'e alınınca Kural Farkı Düzeltme ön izlemesinin tutarı; çare → GEÇER
+      ---
+      duration_ms: 1339.872083
+      type: 'test'
+      ...
+    1..1
+ok 21 - D3 tur 3 — S-KD-2 GERÇEK eski sürüm verisiyle (ders 17): v2.4.9'un GERÇEK kodunun ürettiği fikstür (surum-2.4.9-s127; kilit 31.12.2025, Excel kartları) — K = 31.12.2025
+  ---
+  duration_ms: 1863.026597
+  type: 'suite'
+  ...
+# (node:27430) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27430) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27430) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — S-T2-1 = B: Borç Yaz karşısıyla K sonrası Mahsup Et (devirli = devirsiz)
+    # Subtest: veri tabanı (ders 3): mahsuplar yerinde (B6'nınki silindi), Borç Yaz satırları ve Vade Tarihleri; 002'nin mahsubu 002'nin dosyasında
+    ok 1 - veri tabanı (ders 3): mahsuplar yerinde (B6'nınki silindi), Borç Yaz satırları ve Vade Tarihleri; 002'nin mahsubu 002'nin dosyasında
+      ---
+      duration_ms: 10.829514
+      type: 'test'
+      ...
+    # Subtest: açık kalemler (elle): Borç Yaz'ın ayrılan payı Borç Yaz'ın açık kaleminde (Vade Tarihi korunur); ana belgesi ≤K alışta alışın kaleminde; K bakiyesi değişmez
+    ok 2 - açık kalemler (elle): Borç Yaz'ın ayrılan payı Borç Yaz'ın açık kaleminde (Vade Tarihi korunur); ana belgesi ≤K alışta alışın kaleminde; K bakiyesi değişmez
+      ---
+      duration_ms: 0.7277
+      type: 'test'
+      ...
+    # Subtest: ayırım listesi (elle): Borç Yaz karşısı yeni yıla ayrıldı / iki belge ≤K K'de kapandı; silinen ve K günü mahsubu YOK
+    ok 3 - ayırım listesi (elle): Borç Yaz karşısı yeni yıla ayrıldı / iki belge ≤K K'de kapandı; silinen ve K günü mahsubu YOK
+      ---
+      duration_ms: 0.359985
+      type: 'test'
+      ...
+    # Subtest: bağ listesi (elle): mahsubun ≤K Borç Yaz karşısı satırın DEVİR KALEMİNE (line:); ana belgesi ≤K alış faturanın kalemine; iki belgesi ≤K mahsup işaretli
+    ok 4 - bağ listesi (elle): mahsubun ≤K Borç Yaz karşısı satırın DEVİR KALEMİNE (line:); ana belgesi ≤K alış faturanın kalemine; iki belgesi ≤K mahsup işaretli
+      ---
+      duration_ms: 0.53992
+      type: 'test'
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, borç tarafı açık kalemler, en eski vade — her senaryo, her gün; B1 01.01 = 100, B3 her gün 0
+    ok 5 - DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, borç tarafı açık kalemler, en eski vade — her senaryo, her gün; B1 01.01 = 100, B3 her gün 0
+      ---
+      duration_ms: 23.696508
+      type: 'test'
+      ...
+    # Subtest: 002: kendi Borç Yaz mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+    ok 6 - 002: kendi Borç Yaz mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+      ---
+      duration_ms: 0.391452
+      type: 'test'
+      ...
+    # Subtest: iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+    ok 7 - iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+      ---
+      duration_ms: 332.429673
+      type: 'test'
+      ...
+    1..7
+ok 22 - D3 tur 5 — S-T2-1 = B: Borç Yaz karşısıyla K sonrası Mahsup Et (devirli = devirsiz)
+  ---
+  duration_ms: 3060.152776
+  type: 'suite'
+  ...
+# (node:27443) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27443) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba ayrılır (devirli = devirsiz)
+    # Subtest: veri tabanı (ders 3): mahsuplar — M4'ün mahsubu silindi, öbürleri yerinde; 002'nin mahsubu 002'nin dosyasında
+    ok 1 - veri tabanı (ders 3): mahsuplar — M4'ün mahsubu silindi, öbürleri yerinde; 002'nin mahsubu 002'nin dosyasında
+      ---
+      duration_ms: 2.410475
+      type: 'test'
+      ...
+    # Subtest: açık kalemler (elle): ayrılan pay ≤K belgenin açık kaleminde; K bakiyesi değişmez
+    ok 2 - açık kalemler (elle): ayrılan pay ≤K belgenin açık kaleminde; K bakiyesi değişmez
+      ---
+      duration_ms: 0.63396
+      type: 'test'
+      ...
+    # Subtest: ayırım listesi (elle): yeni yıla ayrılan / K'de kapanan; tutar = devirsiz kuyruğun mahsuba verdiği pay; silinmiş mahsup ve ≤K mahsup YOK
+    ok 3 - ayırım listesi (elle): yeni yıla ayrılan / K'de kapanan; tutar = devirsiz kuyruğun mahsuba verdiği pay; silinmiş mahsup ve ≤K mahsup YOK
+      ---
+      duration_ms: 1.449892
+      type: 'test'
+      ...
+    # Subtest: bağ listesi (elle): ayrılan belgeye K sonrası mahsup → DEVİR KALEMİNE (Alacak Yaz satırı dahil); iki belgesi ≤K mahsup 'k-de-kapandi' işaretli
+    ok 4 - bağ listesi (elle): ayrılan belgeye K sonrası mahsup → DEVİR KALEMİNE (Alacak Yaz satırı dahil); iki belgesi ≤K mahsup 'k-de-kapandi' işaretli
+      ---
+      duration_ms: 0.582557
+      type: 'test'
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, açık kalemler, en eski vade — her senaryo, her gün; örnek AYNEN: M1 01.01 = 400, 01.02 = 550
+    ok 5 - DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, açık kalemler, en eski vade — her senaryo, her gün; örnek AYNEN: M1 01.01 = 400, 01.02 = 550
+      ---
+      duration_ms: 28.134854
+      type: 'test'
+      ...
+    # Subtest: 002: kendi mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+    ok 6 - 002: kendi mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+      ---
+      duration_ms: 0.406177
+      type: 'test'
+      ...
+    # Subtest: iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+    ok 7 - iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+      ---
+      duration_ms: 391.283153
+      type: 'test'
+      ...
+    1..7
+ok 23 - D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba ayrılır (devirli = devirsiz)
+  ---
+  duration_ms: 3259.737711
+  type: 'suite'
+  ...
+# (node:27455) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — e-Belge, taslak ve tekrarlayan fatura olguları gerçek veri tabanından
+    # Subtest: veri tabanındaki durumlar (önce bunlar — ders 3): W1 / W5 Gönderilecek, W2 Gönderilmeyecek, W3 'none' + entegratör izi (Sonucu Belirsiz; gönderim 502), W4 Gönderildi, W6 numaralı 'none', T1 / T2 taslak
+    ok 1 - veri tabanındaki durumlar (önce bunlar — ders 3): W1 / W5 Gönderilecek, W2 Gönderilmeyecek, W3 'none' + entegratör izi (Sonucu Belirsiz; gönderim 502), W4 Gönderildi, W6 numaralı 'none', T1 / T2 taslak
+      ---
+      duration_ms: 2.101271
+      type: 'test'
+      ...
+    # Subtest: ön denetim (10.02.2027; elle): DURDURUR bekleyen 2 (W1 + W6), listeden silinen 1, sonucu belirsiz 1, taslak 1; UYARIR şablon 1; K sonrası W5 / T2 / R3 sayılmaz
+    ok 2 - ön denetim (10.02.2027; elle): DURDURUR bekleyen 2 (W1 + W6), listeden silinen 1, sonucu belirsiz 1, taslak 1; UYARIR şablon 1; K sonrası W5 / T2 / R3 sayılmaz
+      ---
+      duration_ms: 397.352502
+      type: 'test'
+      ...
+    # Subtest: iptal süresi (05.01.2027): 30.12'de iletilen e-Arşiv için UYARIR 1; aynı belge 10.02.2027'de sayılmaz (yukarıda)
+    ok 3 - iptal süresi (05.01.2027): 30.12'de iletilen e-Arşiv için UYARIR 1; aynı belge 10.02.2027'de sayılmaz (yukarıda)
+      ---
+      duration_ms: 396.374596
+      type: 'test'
+      ...
+    1..3
+ok 24 - D3 tur 2 — e-Belge, taslak ve tekrarlayan fatura olguları gerçek veri tabanından
+  ---
+  duration_ms: 2080.795506
+  type: 'suite'
+  ...
+# (node:27455) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27455) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27455) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27455) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — Dönem Kilidi: kilit yok / K'den önce / K / K'yi aşan → aynı plan; ön izleme kilide dokunmaz
+    # Subtest: dört kilit durumunda plan (veri damgası hariç) bayt bayt AYNI, değişmezler tutar; her ön izlemeden önce ve sonra kilit + kilit izi AYNI
+    ok 1 - dört kilit durumunda plan (veri damgası hariç) bayt bayt AYNI, değişmezler tutar; her ön izlemeden önce ve sonra kilit + kilit izi AYNI
+      ---
+      duration_ms: 2804.37453
+      type: 'test'
+      ...
+    1..1
+ok 25 - D3 tur 2 — Dönem Kilidi: kilit yok / K'den önce / K / K'yi aşan → aynı plan; ön izleme kilide dokunmaz
+  ---
+  duration_ms: 3400.06289
+  type: 'suite'
+  ...
+# (node:27455) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27455) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — kilitli dönemde KURAL DEĞİŞİKLİĞİ: plan donmuş defteri (karma yevmiye) okur, canlı türetmeyi değil; Kural Farkı devri DURDURUR (S-3 = A)
+    # Subtest: elle: K kapanışında 600 = 1.000,00 (donmuş), 120 = 1.000,00; Dönem Net Kârı 1.000,00; ön denetim 'Kural Farkı Düzeltme Fişi'ni Yazın' DURDURUR
+    ok 1 - elle: K kapanışında 600 = 1.000,00 (donmuş), 120 = 1.000,00; Dönem Net Kârı 1.000,00; ön denetim 'Kural Farkı Düzeltme Fişi'ni Yazın' DURDURUR
+      ---
+      duration_ms: 37.253995
+      type: 'test'
+      ...
+    1..1
+ok 26 - D3 tur 2 — kilitli dönemde KURAL DEĞİŞİKLİĞİ: plan donmuş defteri (karma yevmiye) okur, canlı türetmeyi değil; Kural Farkı devri DURDURUR (S-3 = A)
+  ---
+  duration_ms: 903.409868
+  type: 'suite'
+  ...
+# (node:27478) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları
+    # Subtest: kesim tarihi: yalnız geçmiş bir yılın 31 Aralık'ı (EK-1 M11)
+    ok 1 - kesim tarihi: yalnız geçmiş bir yılın 31 Aralık'ı (EK-1 M11)
+      ---
+      duration_ms: 1.702842
+      type: 'test'
+      ...
+    # Subtest: kapanış fişleri elle hesaplanan satırlarla ve sırayla: önceki yıl (570.2025) → N-01 → N-02 → N-03 → N-04 (691 hariç) → N-06 (691 → 692) → N-07
+    ok 2 - kapanış fişleri elle hesaplanan satırlarla ve sırayla: önceki yıl (570.2025) → N-01 → N-02 → N-03 → N-04 (691 hariç) → N-06 (691 → 692) → N-07
+      ---
+      duration_ms: 12.855051
+      type: 'test'
+      ...
+    # Subtest: arşiv K kapanışı ve değişmezler: 6 / 7 = 0, 153 = DSS, 590 = Ç6 Dönem Net Kârı, Σ önceki yıl = Ç6 Geçmiş Yıllar, yeni yıl 519 = arşiv 519, bilanço dengede
+    ok 3 - arşiv K kapanışı ve değişmezler: 6 / 7 = 0, 153 = DSS, 590 = Ç6 Dönem Net Kârı, Σ önceki yıl = Ç6 Geçmiş Yıllar, yeni yıl 519 = arşiv 519, bilanço dengede
+      ---
+      duration_ms: 3.502562
+      type: 'test'
+      ...
+    # Subtest: N-13 fişi yalnız alt defteri olmayan hesaplara (570.2025, 590) ve 519'a; modül açılışları (kasa, banka, stok, KDV) alt defterden; S-1 = A (590 aynen)
+    ok 4 - N-13 fişi yalnız alt defteri olmayan hesaplara (570.2025, 590) ve 519'a; modül açılışları (kasa, banka, stok, KDV) alt defterden; S-1 = A (590 aynen)
+      ---
+      duration_ms: 5.283852
+      type: 'test'
+      ...
+    # Subtest: cari satırları (M12): Borç Toplamı / Alacak Toplamı + açık kalemler (asıl vade; açıklama belge no + tarih); bakiyesi 0 + kalemsiz cariye satır YOK; satırlar = K bakiyesi
+    ok 5 - cari satırları (M12): Borç Toplamı / Alacak Toplamı + açık kalemler (asıl vade; açıklama belge no + tarih); bakiyesi 0 + kalemsiz cariye satır YOK; satırlar = K bakiyesi
+      ---
+      duration_ms: 1.316714
+      type: 'test'
+      ...
+    # Subtest: Sadece Bakiyeyi Aktar: tek Devir Bakiyesi satırı (net ≠ 0 ise) + aynı açık kalemler; iki seçenekte kuyruğa giren net AYNI
+    ok 6 - Sadece Bakiyeyi Aktar: tek Devir Bakiyesi satırı (net ≠ 0 ise) + aynı açık kalemler; iki seçenekte kuyruğa giren net AYNI
+      ---
+      duration_ms: 2.075478
+      type: 'test'
+      ...
+    # Subtest: belirlenimli: aynı olgular → bayt bayt aynı plan (iki koşu)
+    ok 7 - belirlenimli: aynı olgular → bayt bayt aynı plan (iki koşu)
+      ---
+      duration_ms: 2.430766
+      type: 'test'
+      ...
+    # Subtest: zarar yılı: 692 → 591 (B 591 / A 692)
+    ok 8 - zarar yılı: 692 → 591 (B 591 / A 692)
+      ---
+      duration_ms: 2.017887
+      type: 'test'
+      ...
+    # Subtest: carisiz cari kontrol hücresi (336.90 kayıt tahsilatları — KG-3 A) ayrı listede; modül farkı DEĞİL
+    ok 9 - carisiz cari kontrol hücresi (336.90 kayıt tahsilatları — KG-3 A) ayrı listede; modül farkı DEĞİL
+      ---
+      duration_ms: 1.877618
+      type: 'test'
+      ...
+    # Subtest: K yılı zaten kapanmış (Kapanış Fişi var) → plan sorunu, ön denetim DURDURUR
+    ok 10 - K yılı zaten kapanmış (Kapanış Fişi var) → plan sorunu, ön denetim DURDURUR
+      ---
+      duration_ms: 7.2392
+      type: 'test'
+      ...
+    1..10
+ok 27 - D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları
+  ---
+  duration_ms: 41.948556
+  type: 'suite'
+  ...
+# Subtest: D3 devir planı — ÖRNEK B (elle): şüpheli, kartlar, stok, KDV dönem boyutu
+    # Subtest: kapanış: N-01 = SMM 130,00; 770 → 632 yansıtma; Dönem Net Kârı 1.220,00; değişmezler tutar
+    ok 1 - kapanış: N-01 = SMM 130,00; 770 → 632 yansıtma; Dönem Net Kârı 1.220,00; değişmezler tutar
+      ---
+      duration_ms: 2.307102
+      type: 'test'
+      ...
+    # Subtest: şüpheli (M13): CH açık kalemi = fatura kalanı − şüpheli pay (600,00); 128 / 129 ayrı açılış; aynı tutar iki kez taşınmaz
+    ok 2 - şüpheli (M13): CH açık kalemi = fatura kalanı − şüpheli pay (600,00); 128 / 129 ayrı açılış; aynı tutar iki kez taşınmaz
+      ---
+      duration_ms: 3.778135
+      type: 'test'
+      ...
+    # Subtest: kartlar: açık kartın taksitleri açık kalem DEĞİL (net satırda — M2); Borçta Kalsın kalanı açık kalem; kapalı kart da tek açılış; carisiz kart 127
+    ok 3 - kartlar: açık kartın taksitleri açık kalem DEĞİL (net satırda — M2); Borçta Kalsın kalanı açık kalem; kapalı kart da tek açılış; carisiz kart 127
+      ---
+      duration_ms: 1.63973
+      type: 'test'
+      ...
+    # Subtest: stok (KG-9, M5, S207): eksi miktar devreder, değer 0; silinmiş ve sıfır miktarlı ürüne açılış YOK; eksi stoklu ürün sayısı
+    ok 4 - stok (KG-9, M5, S207): eksi miktar devreder, değer 0; silinmiş ve sıfır miktarlı ürüne açılış YOK; eksi stoklu ürün sayısı
+      ---
+      duration_ms: 1.571851
+      type: 'test'
+      ...
+    # Subtest: KDV dönem boyutu (M8): Aralık alışının dönemi Ocak → 191@2027-01 (yeni yılın Ocak mahsubuna girer); Kasım 191'i önceki yıl
+    ok 5 - KDV dönem boyutu (M8): Aralık alışının dönemi Ocak → 191@2027-01 (yeni yılın Ocak mahsubuna girer); Kasım 191'i önceki yıl
+      ---
+      duration_ms: 1.376335
+      type: 'test'
+      ...
+    # Subtest: modül ↔ Ana Defter farkı (kartın ödenen tutarı defterle tutmuyor) → plan sorunu 'modul-farki', ön denetim DURDURUR
+    ok 6 - modül ↔ Ana Defter farkı (kartın ödenen tutarı defterle tutmuyor) → plan sorunu 'modul-farki', ön denetim DURDURUR
+      ---
+      duration_ms: 2.07757
+      type: 'test'
+      ...
+    1..6
+ok 28 - D3 devir planı — ÖRNEK B (elle): şüpheli, kartlar, stok, KDV dönem boyutu
+  ---
+  duration_ms: 13.324157
+  type: 'suite'
+  ...
+# Subtest: D3 ön denetim (DEVIR-PLANI §5 + G4 + S-2 / S-3)
+    # Subtest: temiz veri: DURDURUR yok, geçilebilir
+    ok 1 - temiz veri: DURDURUR yok, geçilebilir
+      ---
+      duration_ms: 4.212942
+      type: 'test'
+      ...
+    # Subtest: her DURDURUR maddesi kendi olgusuyla (Türkçe cümle + gidilecek yer)
+    ok 2 - her DURDURUR maddesi kendi olgusuyla (Türkçe cümle + gidilecek yer)
+      ---
+      duration_ms: 19.810205
+      type: 'test'
+      ...
+    # Subtest: S-2 / S-3 tek yerden: B seçilirse UYARIR, C seçilirse hiç söylenmez
+    ok 3 - S-2 / S-3 tek yerden: B seçilirse UYARIR, C seçilirse hiç söylenmez
+      ---
+      duration_ms: 1.861389
+      type: 'test'
+      ...
+    # Subtest: UYARIR maddeleri: Aralık mahsubu (belirgin + bağlantı), içe aktarma, şablon, gelen kutusu, iptal süresi, eksi stok, eksi kasa, 001 yeniden başlatma, erken devir
+    ok 4 - UYARIR maddeleri: Aralık mahsubu (belirgin + bağlantı), içe aktarma, şablon, gelen kutusu, iptal süresi, eksi stok, eksi kasa, 001 yeniden başlatma, erken devir
+      ---
+      duration_ms: 1.817028
+      type: 'test'
+      ...
+    1..4
+ok 29 - D3 ön denetim (DEVIR-PLANI §5 + G4 + S-2 / S-3)
+  ---
+  duration_ms: 27.939332
+  type: 'suite'
+  ...
+# Subtest: D3 tablo sınıflaması (plan §8.16; tasarım §2): şemadaki her tablo bir sınıfta
+    # Subtest: bugünkü şemanın 86 tablosu DEVIR_TABLE_CLASSES'ta; ortak katman O; beş defter tablosu B (BAŞ MİMAR 27.11 (4))
+    ok 1 - bugünkü şemanın 86 tablosu DEVIR_TABLE_CLASSES'ta; ortak katman O; beş defter tablosu B (BAŞ MİMAR 27.11 (4))
+      ---
+      duration_ms: 122.588953
+      type: 'test'
+      ...
+    1..1
+ok 30 - D3 tablo sınıflaması (plan §8.16; tasarım §2): şemadaki her tablo bir sınıfta
+  ---
+  duration_ms: 122.795216
+  type: 'suite'
+  ...
+# (node:27488) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27488) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — K kuyruğunda payı sıfıra inmiş belgeye ≤K bağlı tahsilat (devirli = devirsiz)
+    # Subtest: veri tabanı (ders 3): bağlı tahsilatlar ≤K tarihli ve satışa bağlı; mahsuplar yerinde
+    ok 1 - veri tabanı (ders 3): bağlı tahsilatlar ≤K tarihli ve satışa bağlı; mahsuplar yerinde
+      ---
+      duration_ms: 5.274972
+      type: 'test'
+      ...
+    # Subtest: plan (elle): ayrılan pay açık kalemde; bağın kapatamadığı kısım bağsız (avans net satırda ya da başka borcu kapatır); K bakiyesi değişmez
+    ok 2 - plan (elle): ayrılan pay açık kalemde; bağın kapatamadığı kısım bağsız (avans net satırda ya da başka borcu kapatır); K bakiyesi değişmez
+      ---
+      duration_ms: 0.82091
+      type: 'test'
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER: gecikmiş, açık kalemler, en eski vade her gün AYNI; Z1 / Z2 gecikmiş 0, Z3 200
+    ok 3 - DEVİRSİZ EŞDEĞER: gecikmiş, açık kalemler, en eski vade her gün AYNI; Z1 / Z2 gecikmiş 0, Z3 200
+      ---
+      duration_ms: 8.730476
+      type: 'test'
+      ...
+    1..3
+ok 31 - D3 tur 5 — K kuyruğunda payı sıfıra inmiş belgeye ≤K bağlı tahsilat (devirli = devirsiz)
+  ---
+  duration_ms: 1656.825735
+  type: 'suite'
+  ...
+# (node:27498) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — stok ürün ürün değişmezi (eksi, silinmiş, sıfır, K sonrası hareket)
+    # Subtest: veri tabanı (ders 3): P3 kartı silindi (200), stok hareketleri K'ye kadar P1 7, P2 −3, P3 4, P4 0, P5 5
+    ok 1 - veri tabanı (ders 3): P3 kartı silindi (200), stok hareketleri K'ye kadar P1 7, P2 −3, P3 4, P4 0, P5 5
+      ---
+      duration_ms: 3.467531
+      type: 'test'
+      ...
+    # Subtest: plan (elle): P1 7 / 350,00 · P2 −3 / 0 (eksi) · P5 5 / 50,00; silinmiş P3 ve sıfır P4 satırsız; ürün değişmezi TUTAR
+    ok 2 - plan (elle): P1 7 / 350,00 · P2 −3 / 0 (eksi) · P5 5 / 50,00; silinmiş P3 ve sıfır P4 satırsız; ürün değişmezi TUTAR
+      ---
+      duration_ms: 0.642335
+      type: 'test'
+      ...
+    # Subtest: bozulma (olgu): P1 ile P5'in K miktarı yer değiştirir (toplam aynı) → 'stok-urun' kırılır; toplam değişmezleri tutar; ön denetim ürün adlarıyla DURDURUR (dört alan, Stok)
+    ok 3 - bozulma (olgu): P1 ile P5'in K miktarı yer değiştirir (toplam aynı) → 'stok-urun' kırılır; toplam değişmezleri tutar; ön denetim ürün adlarıyla DURDURUR (dört alan, Stok)
+      ---
+      duration_ms: 36.496934
+      type: 'test'
+      ...
+    1..3
+ok 32 - D3 tur 4 — stok ürün ürün değişmezi (eksi, silinmiş, sıfır, K sonrası hareket)
+  ---
+  duration_ms: 1344.727149
+  type: 'suite'
+  ...
+# (node:27506) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27506) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — şüpheli cari (K sonrası bağlı tahsilat), K sonrası Borçta Kalsın kartı, BM-1, BM-6
+    # Subtest: (e) şüpheli K payı (elle): D1 128 = 600 (K sonrası bağlı tahsilat düşmez), D2 128 = 600 (yalnız ≤K tahsilat), D3 128 = 500 / 129 = 500 (Değersiz K sonrası); şüpheli farkı YOK, DURDURUR YOK
+    ok 1 - (e) şüpheli K payı (elle): D1 128 = 600 (K sonrası bağlı tahsilat düşmez), D2 128 = 600 (yalnız ≤K tahsilat), D3 128 = 500 / 129 = 500 (Değersiz K sonrası); şüpheli farkı YOK, DURDURUR YOK
+      ---
+      duration_ms: 2.339035
+      type: 'test'
+      ...
+    # Subtest: BM-1 (SABİT — kâhin sonucu beklenir; davranış değişmez): D1 Borç Toplamı 600,00 · Alacak Toplamı 600,00 · açık kalem S1 400,00 (vade 01.11); CH K bakiyesi 400,00
+    ok 2 - BM-1 (SABİT — kâhin sonucu beklenir; davranış değişmez): D1 Borç Toplamı 600,00 · Alacak Toplamı 600,00 · açık kalem S1 400,00 (vade 01.11); CH K bakiyesi 400,00
+      ---
+      duration_ms: 0.229212
+      type: 'test'
+      ...
+    # Subtest: (f) K'den SONRA Borçta Kalsın: kart K'de AÇIK, ödenen 300 / kalan 900; taksitler 2–4 300'er; kartın taşıdığı kalem açık kalem DEĞİL; ≤K Borçta Kalsın kartı KAPALI, kalanı açık kalem 2 × 300 (vade 15.11 / 15.12)
+    ok 3 - (f) K'den SONRA Borçta Kalsın: kart K'de AÇIK, ödenen 300 / kalan 900; taksitler 2–4 300'er; kartın taşıdığı kalem açık kalem DEĞİL; ≤K Borçta Kalsın kartı KAPALI, kalanı açık kalem 2 × 300 (vade 15.11 / 15.12)
+      ---
+      duration_ms: 0.243013
+      type: 'test'
+      ...
+    # Subtest: (f) DEVİRSİZ EŞDEĞER (taksitler): planın taksit vadesi ve kalanı = devirsiz programın bugünkü taksitleri (S205 = A: Borçta Kalsın kalemin vadesi MIN(asıl, kapanış günü 10.01.2027) — elle)
+    ok 4 - (f) DEVİRSİZ EŞDEĞER (taksitler): planın taksit vadesi ve kalanı = devirsiz programın bugünkü taksitleri (S205 = A: Borçta Kalsın kalemin vadesi MIN(asıl, kapanış günü 10.01.2027) — elle)
+      ---
+      duration_ms: 2.555896
+      type: 'test'
+      ...
+    # Subtest: BM-6: ödeme rolündeki açık kalem ÖDEME satırı yazmaya yetecek alanları taşır — rol, asıl tarih (vade), tutar, yön, karşı kalem (kaynak satırın kimliği, veri tabanında)
+    ok 5 - BM-6: ödeme rolündeki açık kalem ÖDEME satırı yazmaya yetecek alanları taşır — rol, asıl tarih (vade), tutar, yön, karşı kalem (kaynak satırın kimliği, veri tabanında)
+      ---
+      duration_ms: 0.337579
+      type: 'test'
+      ...
+    1..5
+ok 33 - D3 tur 2 — şüpheli cari (K sonrası bağlı tahsilat), K sonrası Borçta Kalsın kartı, BM-1, BM-6
+  ---
+  duration_ms: 1898.72068
+  type: 'suite'
+  ...
+# (node:27514) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27514) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27514) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — kâhin okuması (a): K sonrası mahsup kendi gününden itibaren — tarih tarih devirli = devirsiz
+    # Subtest: devirsiz PROGRAM (cari kartının Gecikmiş Borç'u, o günün verisiyle) — elle: 250 · 250 · 400 · 400 · 550 (kâhinin (a) okumasıyla aynı)
+    ok 1 - devirsiz PROGRAM (cari kartının Gecikmiş Borç'u, o günün verisiyle) — elle: 250 · 250 · 400 · 400 · 550 (kâhinin (a) okumasıyla aynı)
+      ---
+      duration_ms: 2.808506
+      type: 'test'
+      ...
+    # Subtest: o gün hazırlanan ön izlemenin DEVİRLİ eşdeğeri = devirsiz program, TARİH TARİH; mahsuptan önce ayırım YOK (alış satışı netler), mahsuptan sonra alış 150 ayrılır
+    ok 2 - o gün hazırlanan ön izlemenin DEVİRLİ eşdeğeri = devirsiz program, TARİH TARİH; mahsuptan önce ayırım YOK (alış satışı netler), mahsuptan sonra alış 150 ayrılır
+      ---
+      duration_ms: 0.47118
+      type: 'test'
+      ...
+    # Subtest: GERİYE DÖNÜK görünüm (bütün veriyle, geçmiş günün gecikmişi): Mahsup Et tarihten bağımsız 0. adım → devirsiz = devirli = 400 · 400 · 400 · 400 · 550; programda ileri tarihli Mahsup Et girilemez
+    ok 3 - GERİYE DÖNÜK görünüm (bütün veriyle, geçmiş günün gecikmişi): Mahsup Et tarihten bağımsız 0. adım → devirsiz = devirli = 400 · 400 · 400 · 400 · 550; programda ileri tarihli Mahsup Et girilemez
+      ---
+      duration_ms: 12.413568
+      type: 'test'
+      ...
+    1..3
+ok 34 - D3 tur 5 — kâhin okuması (a): K sonrası mahsup kendi gününden itibaren — tarih tarih devirli = devirsiz
+  ---
+  duration_ms: 3112.946213
+  type: 'suite'
+  ...
+# (node:27514) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27514) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27514) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — kâhin okuması (b): bakiyesi 0 caride S-T2-1 ayırmasıyla iki yönlü kalem
+    # Subtest: doğal sırada program Mahsup Et'i REDDEDER (409, satışın açık tutarı 0,00 TL) — örnek yalnız geriye tarihli girişle oluşur
+    ok 1 - doğal sırada program Mahsup Et'i REDDEDER (409, satışın açık tutarı 0,00 TL) — örnek yalnız geriye tarihli girişle oluşur
+      ---
+      duration_ms: 3.23675
+      type: 'test'
+      ...
+    # Subtest: plan (elle): K bakiyesi 0; Kasım satışının 150'si ayrılır (açık kalem 150, vade 30.11); avans 150 net satırda (EK-1 M2 A); iki seçenekte satırlar
+    ok 2 - plan (elle): K bakiyesi 0; Kasım satışının 150'si ayrılır (açık kalem 150, vade 30.11); avans 150 net satırda (EK-1 M2 A); iki seçenekte satırlar
+      ---
+      duration_ms: 0.72621
+      type: 'test'
+      ...
+    # Subtest: devirli = devirsiz (iki seçenek, her gün): gecikmiş 0, açık kalem yok; cari kartı bakiyesi −150 (avans)
+    ok 3 - devirli = devirsiz (iki seçenek, her gün): gecikmiş 0, açık kalem yok; cari kartı bakiyesi −150 (avans)
+      ---
+      duration_ms: 26.634322
+      type: 'test'
+      ...
+    1..3
+ok 35 - D3 tur 5 — kâhin okuması (b): bakiyesi 0 caride S-T2-1 ayırmasıyla iki yönlü kalem
+  ---
+  duration_ms: 2030.722267
+  type: 'suite'
+  ...
+# (node:27534) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 devir ön izleme uçları
+    # Subtest: yetki: yalnız system.manage — Muhasebe ve Personel 403, oturumsuz 401
+    ok 1 - yetki: yalnız system.manage — Muhasebe ve Personel 403, oturumsuz 401
+      ---
+      duration_ms: 219.999588
+      type: 'test'
+      ...
+    # Subtest: ret: K 31 Aralık değil (400 DEVIR_K_31_ARALIK), geçmiş yıl değil (400 DEVIR_K_GELECEK), seçenek geçersiz (400), şirket yok (404), ön izleme yok (404)
+    ok 2 - ret: K 31 Aralık değil (400 DEVIR_K_31_ARALIK), geçmiş yıl değil (400 DEVIR_K_GELECEK), seçenek geçersiz (400), şirket yok (404), ön izleme yok (404)
+      ---
+      duration_ms: 18.448037
+      type: 'test'
+      ...
+    # Subtest: sonuç: plan + ön denetim + rapor; aynı adlı iki cari ayrı; K günündeki kayıt arşivde, K+1'deki yeni yılda (madde 9); budama sayıları ortak katmanı saymaz (madde 42)
+    ok 3 - sonuç: plan + ön denetim + rapor; aynı adlı iki cari ayrı; K günündeki kayıt arşivde, K+1'deki yeni yılda (madde 9); budama sayıları ortak katmanı saymaz (madde 42)
+      ---
+      duration_ms: 391.106606
+      type: 'test'
+      ...
+    # Subtest: belirlenimli + iş parçacığı = iş parçacığısız: aynı veride iki ön izleme bayt bayt aynı plan; şirket örneğinin kendi hizmetleriyle (runPreview) de aynı
+    ok 4 - belirlenimli + iş parçacığı = iş parçacığısız: aynı veride iki ön izleme bayt bayt aynı plan; şirket örneğinin kendi hizmetleriyle (runPreview) de aynı
+      ---
+      duration_ms: 702.908336
+      type: 'test'
+      ...
+    # Subtest: veri damgası: ön izlemeden sonra girilen kayıt damgayı değiştirir (madde 38)
+    ok 5 - veri damgası: ön izlemeden sonra girilen kayıt damgayı değiştirir (madde 38)
+      ---
+      duration_ms: 754.558147
+      type: 'test'
+      ...
+    # Subtest: aynı şirkette tek ön izleme: eşzamanlı iki istek aynı işi döndürür (madde 39)
+    ok 6 - aynı şirkette tek ön izleme: eşzamanlı iki istek aynı işi döndürür (madde 39)
+      ---
+      duration_ms: 392.716
+      type: 'test'
+      ...
+    # Subtest: iki şirket: 002'nin planı yalnız 002'nin verisi (madde 12)
+    ok 7 - iki şirket: 002'nin planı yalnız 002'nin verisi (madde 12)
+      ---
+      duration_ms: 327.158222
+      type: 'test'
+      ...
+    # Subtest: Devir Raporu: ekran = PDF = Excel (aynı satırlar, TOPLAM satırları); yazım düzeni
+    ok 8 - Devir Raporu: ekran = PDF = Excel (aynı satırlar, TOPLAM satırları); yazım düzeni
+      ---
+      duration_ms: 408.24533
+      type: 'test'
+      ...
+    # Subtest: bakım kipi ön izleme sürerken açılırsa sonuç bayat (madde 40)
+    ok 9 - bakım kipi ön izleme sürerken açılırsa sonuç bayat (madde 40)
+      ---
+      duration_ms: 813.091946
+      type: 'test'
+      ...
+    # Subtest: iş parçacığı öldürülünce veri aynı; sonraki ön izleme baştan ve aynı sonuç (madde 10)
+    ok 10 - iş parçacığı öldürülünce veri aynı; sonraki ön izleme baştan ve aynı sonuç (madde 10)
+      ---
+      duration_ms: 688.833273
+      type: 'test'
+      ...
+    1..10
+ok 36 - D3 devir ön izleme uçları
+  ---
+  duration_ms: 5885.694478
+  type: 'suite'
+  ...
+# (node:27553) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27553) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — uzmanın ilk kabul testi (saf hesap): açılış 6.000, Ocak tahsilatı 1.000 yeni yılda, 05.01'de bakiye 5.000, asıl vade
+    # Subtest: veri tabanı (ders 3): fatura 10.000 (vade 20.12.2026), Aralık tahsilatı 4.000, 02.01.2027 banka tahsilatı 1.000
+    ok 1 - veri tabanı (ders 3): fatura 10.000 (vade 20.12.2026), Aralık tahsilatı 4.000, 02.01.2027 banka tahsilatı 1.000
+      ---
+      duration_ms: 2.474339
+      type: 'test'
+      ...
+    # Subtest: (1) planın cari açılışı 6.000 (iki seçenek): açık kalem 6.000 — ASIL VADE 20.12.2026, belge no ve tarihi; Ocak tahsilatı açılışa girmez
+    ok 2 - (1) planın cari açılışı 6.000 (iki seçenek): açık kalem 6.000 — ASIL VADE 20.12.2026, belge no ve tarihi; Ocak tahsilatı açılışa girmez
+      ---
+      duration_ms: 0.525321
+      type: 'test'
+      ...
+    # Subtest: (1) K sonrası 1.000 tahsilat yeni yılda AYNEN kalır: budanmaz (K sonrası sayımda), açılışa katılmaz, bağ listesinde yok (bağsız)
+    ok 3 - (1) K sonrası 1.000 tahsilat yeni yılda AYNEN kalır: budanmaz (K sonrası sayımda), açılışa katılmaz, bağ listesinde yok (bağsız)
+      ---
+      duration_ms: 2.985613
+      type: 'test'
+      ...
+    # Subtest: (1) DEVİRLİ = DEVİRSİZ 05.01.2027: bakiye 5.000, gecikmiş 5.000 (vade 20.12.2026); vadesiz fatura belge günüyle (10.12.2026) gecikmişte
+    ok 4 - (1) DEVİRLİ = DEVİRSİZ 05.01.2027: bakiye 5.000, gecikmiş 5.000 (vade 20.12.2026); vadesiz fatura belge günüyle (10.12.2026) gecikmişte
+      ---
+      duration_ms: 4.719017
+      type: 'test'
+      ...
+    # Subtest: (2) veri damgası: giriş, ekranları okuma, rapor indirme ve ikinci ön izleme DEĞİŞTİRMEZ; tahsilat girişi ve var olan kaydın tutar düzeltmesi DEĞİŞTİRİR
+    ok 5 - (2) veri damgası: giriş, ekranları okuma, rapor indirme ve ikinci ön izleme DEĞİŞTİRMEZ; tahsilat girişi ve var olan kaydın tutar düzeltmesi DEĞİŞTİRİR
+      ---
+      duration_ms: 528.92176
+      type: 'test'
+      ...
+    # Subtest: (2) ileti: 'Ön İzlemeden Sonra Kayıt Girildi' — DURDURUR, dört alan, yeni ön izlemeyi inceleyip yeniden onaylayın
+    ok 6 - (2) ileti: 'Ön İzlemeden Sonra Kayıt Girildi' — DURDURUR, dört alan, yeni ön izlemeyi inceleyip yeniden onaylayın
+      ---
+      duration_ms: 3.075123
+      type: 'test'
+      ...
+    # Subtest: (6) Devir Raporu başlığı: hazırlayan, aktarılan kalem sayıları, uyarılar / istisnalar — en başta 'Özet' bölümü; ekran = PDF = Excel
+    ok 7 - (6) Devir Raporu başlığı: hazırlayan, aktarılan kalem sayıları, uyarılar / istisnalar — en başta 'Özet' bölümü; ekran = PDF = Excel
+      ---
+      duration_ms: 39.849905
+      type: 'test'
+      ...
+    1..7
+ok 37 - D3 tur 4 — uzmanın ilk kabul testi (saf hesap): açılış 6.000, Ocak tahsilatı 1.000 yeni yılda, 05.01'de bakiye 5.000, asıl vade
+  ---
+  duration_ms: 2166.248432
+  type: 'suite'
+  ...
+# Subtest: D3 tur 4 — (3) ön izleme e-Belge servisine istek GÖNDERMEZ, kullanım kaydını DEĞİŞTİRMEZ
+    # Subtest: sahte EDM'ye istek 0; şirketin ve makinenin kullanım satırları aynı; ön denetim bekleyen belgeyi yine söyler (sayım veriden)
+    ok 1 - sahte EDM'ye istek 0; şirketin ve makinenin kullanım satırları aynı; ön denetim bekleyen belgeyi yine söyler (sayım veriden)
+      ---
+      duration_ms: 379.105034
+      type: 'test'
+      ...
+    1..1
+ok 38 - D3 tur 4 — (3) ön izleme e-Belge servisine istek GÖNDERMEZ, kullanım kaydını DEĞİŞTİRMEZ
+  ---
+  duration_ms: 1007.33415
+  type: 'suite'
+  ...
+# (node:27565) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYARIR (durdurmaz); sayılar şirketin kuyruğundan
+    # Subtest: veri tabanı (ders 3): 001'de iş 1 Sürüyor (2 iş bekliyor), iş 2 Duraklatıldı (1 iş)
+    ok 1 - veri tabanı (ders 3): 001'de iş 1 Sürüyor (2 iş bekliyor), iş 2 Duraklatıldı (1 iş)
+      ---
+      duration_ms: 2.068095
+      type: 'test'
+      ...
+    # Subtest: 001: UYARIR 'WhatsApp Gönderimi Durdurulacak' — 2 iş (1 süren, 1 duraklatılmış), 3 kişi; dört alan; kuyruk değişmedi; 002'nin işi sayılmadı
+    ok 2 - 001: UYARIR 'WhatsApp Gönderimi Durdurulacak' — 2 iş (1 süren, 1 duraklatılmış), 3 kişi; dört alan; kuyruk değişmedi; 002'nin işi sayılmadı
+      ---
+      duration_ms: 387.370058
+      type: 'test'
+      ...
+    # Subtest: 002: yalnız kendi işi (1 iş, 1 kişi) — öbür şirketin işi sayılmaz
+    ok 3 - 002: yalnız kendi işi (1 iş, 1 kişi) — öbür şirketin işi sayılmaz
+      ---
+      duration_ms: 338.569617
+      type: 'test'
+      ...
+    # Subtest: işler bitince / iptal edilince uyarı YOK; durdurur listesi uyarıyla değişmemişti
+    ok 4 - işler bitince / iptal edilince uyarı YOK; durdurur listesi uyarıyla değişmemişti
+      ---
+      duration_ms: 964.178332
+      type: 'test'
+      ...
+    1..4
+ok 39 - D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYARIR (durdurmaz); sayılar şirketin kuyruğundan
+  ---
+  duration_ms: 2757.243983
+  type: 'suite'
+  ...
+# (node:27578) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 ön izleme ve zaman (sahte saat, iki saat dilimi)
+    # Subtest: saat 2026-12-31T23:59:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+    ok 1 - saat 2026-12-31T23:59:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+      ---
+      duration_ms: 599.111822
+      type: 'test'
+      ...
+    # Subtest: saat 2027-01-01T00:00:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+    ok 2 - saat 2027-01-01T00:00:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+      ---
+      duration_ms: 983.53752
+      type: 'test'
+      ...
+    # Subtest: saat 2027-01-01T03:00:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+    ok 3 - saat 2027-01-01T03:00:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+      ---
+      duration_ms: 842.166138
+      type: 'test'
+      ...
+    # Subtest: Şubat'ta devir (15.02.2027): ocak ve şubat kayıtları yeni yılda; Aralık uyarısı gün sayısıyla
+    ok 4 - Şubat'ta devir (15.02.2027): ocak ve şubat kayıtları yeni yılda; Aralık uyarısı gün sayısıyla
+      ---
+      duration_ms: 835.826945
+      type: 'test'
+      ...
+# (node:27578) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27578) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: 29 Şubat'lı yıl (bugün 29.02.2028): K = 31.12.2027; 29.02 kaydı yeni yılda; iki yıl geride K = 31.12.2026 da hesaplanır
+    ok 5 - 29 Şubat'lı yıl (bugün 29.02.2028): K = 31.12.2027; 29.02 kaydı yeni yılda; iki yıl geride K = 31.12.2026 da hesaplanır
+      ---
+      duration_ms: 1134.482947
+      type: 'test'
+      ...
+    1..5
+ok 40 - D3 ön izleme ve zaman (sahte saat, iki saat dilimi)
+  ---
+  duration_ms: 4396.641892
+  type: 'suite'
+  ...
+1..40
+# tests 164
+# suites 40
+# pass 164
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 94526.872319

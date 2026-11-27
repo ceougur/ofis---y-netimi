@@ -1,0 +1,2 @@
+Hız ölçümü (betik-olc-mi2.mjs.txt; taban t251-mi-tur1 ↔ tur 2, temiz-100k kopyaları /dev/shm):
+flock -x -w 1800 olcum.lock → çıkış 1 (30 dk içinde özel kilit alınamadı; başka ajanların paylaşımlı yük koşuları) → ÖLÇÜLEMEDİ. Başta yük 1.79 1.48 1.77.

@@ -1,0 +1,16 @@
+(node:12489) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12489) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af273e8dbdb200a7c/test/devir-d3-gercek-veri.mjs:76
+  if (res.status >= 500) throw new Error(`${cls}: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
+                               ^
+
+Error: supheli-bagli-tahsilat-k-sonrasi: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (dates:future:cash_entries, dates:future:account_entries, dates:future:stock_moves, dates:future:plan_entries, dates:future:cheque_events, dates:future:fin_events).","code":"gate-equivalence","failure
+    at tryApi (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af273e8dbdb200a7c/test/devir-d3-gercek-veri.mjs:76:32)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async runAgenda (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af273e8dbdb200a7c/test/devir-d3-gercek-veri.mjs:137:7)
+    at async generate (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af273e8dbdb200a7c/test/devir-d3-gercek-veri.mjs:210:9)
+    at async file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af273e8dbdb200a7c/test/devir-d3-gercek-veri.mjs:445:15
+
+Node.js v22.23.4

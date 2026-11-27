@@ -1,0 +1,370 @@
+TAP version 13
+# (node:29433) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ tur 2 — görünen taksit numarası kuyruğun girdisine girmez (taksiti silinmiş / vadesi öne alınmış kart)
+    # Subtest: kartın kendi hesabı (allocate) ve cari kartının kart listesi (forAccount): taksit satırında ve sıradaki taksitte numara alanı YOK
+    not ok 1 - kartın kendi hesabı (allocate) ve cari kartının kart listesi (forAccount): taksit satırında ve sıradaki taksitte numara alanı YOK
+      ---
+      duration_ms: 6.799787
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-kuyruk-girdisi-251.test.mjs:65:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        allocate çıktısında 'no' yok
+        + actual - expected
+        
+        + [
+        +   '.items[0].no',
+        +   '.items[1].no',
+        +   '.next.no'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '.items[0].no'
+        1: '.items[1].no'
+        2: '.next.no'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-kuyruk-girdisi-251.test.mjs:67:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: carinin defter okuması (detail withRemaining: false — fatura kapaması / kuyruk) ve toplu defter (allLedgers): satır metni SAKLANAN sırayla, numara alanı yok
+    ok 2 - carinin defter okuması (detail withRemaining: false — fatura kapaması / kuyruk) ve toplu defter (allLedgers): satır metni SAKLANAN sırayla, numara alanı yok
+      ---
+      duration_ms: 2.27431
+      type: 'test'
+      ...
+    # Subtest: gösterim yolları görünen numarayı yazar: cari kartı ekranı ve Tüm Cari Hareketleri'nin okuduğu numaralı defter
+    not ok 3 - gösterim yolları görünen numarayı yazar: cari kartı ekranı ve Tüm Cari Hareketleri'nin okuduğu numaralı defter
+      ---
+      duration_ms: 11.438732
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-kuyruk-girdisi-251.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ekran: kart 2'nin öne alınan taksiti 1., kart 1'in kalan 3.'sü 2.
+        + actual - expected
+        
+          [
+        +   'Taksit Tahsilatı · 3. taksit',
+        +   'Taksit Tahsilatı · 3. taksit'
+        -   'Taksit Tahsilatı · 1. taksit',
+        -   'Taksit Tahsilatı · 2. taksit'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Taksit Tahsilatı · 1. taksit'
+        1: 'Taksit Tahsilatı · 2. taksit'
+      actual:
+        0: 'Taksit Tahsilatı · 3. taksit'
+        1: 'Taksit Tahsilatı · 3. taksit'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-kuyruk-girdisi-251.test.mjs:87:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kuyruğun çıktısı numara alanı taşımaz; girdi ile ekranın okuduğu sayılar AYNI (bakiye, gecikmiş, taksit kalanları)
+    ok 4 - kuyruğun çıktısı numara alanı taşımaz; girdi ile ekranın okuduğu sayılar AYNI (bakiye, gecikmiş, taksit kalanları)
+      ---
+      duration_ms: 7.592323
+      type: 'test'
+      ...
+    1..4
+not ok 1 - Mİ tur 2 — görünen taksit numarası kuyruğun girdisine girmez (taksiti silinmiş / vadesi öne alınmış kart)
+  ---
+  duration_ms: 1244.768879
+  type: 'suite'
+  location: '/dev/shm/mi2-t2/eski/test/mi2-kuyruk-girdisi-251.test.mjs:32:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:29434) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar
+    # Subtest: kart penceresi: saklanan 1, 3 → görünen 1, 2; para sayıları (Toplam 2.000, Tahsil Edilen 1.400, Kalan 600) ELLE
+    ok 1 - kart penceresi: saklanan 1, 3 → görünen 1, 2; para sayıları (Toplam 2.000, Tahsil Edilen 1.400, Kalan 600) ELLE
+      ---
+      duration_ms: 14.12798
+      type: 'test'
+      ...
+    # Subtest: makbuz PDF'i (anlık üretilir): '2. taksit (vade 06.10.2026)' — saklanan '3. taksit' değil
+    not ok 2 - makbuz PDF'i (anlık üretilir): '2. taksit (vade 06.10.2026)' — saklanan '3. taksit' değil
+      ---
+      duration_ms: 20.658612
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:109:3'
+      failureType: 'testCodeFailure'
+      error: "makbuzda '2. taksit (vade 06.10.2026)': TAHSİLAT MAKBUZU No 2 · 18.10.2026 Kimden Mİ2 Silinmiş Sıra No 1 Açıklama 3. taksit (vade 06.10.2026) Tutar 400,00 TL # dört yüz TL # Toplam borç 2.000,00 TL Tahsil edilen 1.400,00 TL Kalan borç 600,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 12:35"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:111:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taksit kartı PDF'i (ekstre / Yazdır): taksit satırları '1.' ve '2.' — '3.' satırı yok
+    not ok 3 - taksit kartı PDF'i (ekstre / Yazdır): taksit satırları '1.' ve '2.' — '3.' satırı yok
+      ---
+      duration_ms: 13.114205
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart PDF'inin taksit satırları: ["1. 06.08.2026","3. 06.10.2026"]
+        + actual - expected
+        
+          [
+            '1. 06.08.2026',
+        +   '3. 06.10.2026'
+        -   '2. 06.10.2026'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '1. 06.08.2026'
+        1: '2. 06.10.2026'
+      actual:
+        0: '1. 06.08.2026'
+        1: '3. 06.10.2026'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:121:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Taksitler listesi (ekran + PDF): sıradaki '06.10.2026 · 2. taksit'
+    not ok 4 - Taksitler listesi (ekran + PDF): sıradaki '06.10.2026 · 2. taksit'
+      ---
+      duration_ms: 17.656462
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: "liste PDF'inde '06.10.2026 · 2. taksit': Taksitler Listesi Tümü · Tüm gruplar · “Mİ2 Silinmiş” Oluşturma: 20.10.2026 12:36 Hazırlayan: Ofis yöneticisi Kart 1 Kalan Alacak 600,00 TL Geciken 600,00 TL · 1 taksit Bu Ay Beklenen 600,00 TL Tahsil Edilen 1.400,00 TL No Ad Soyad Grup Telefon Kayıt Toplam Ödenen Kalan Sıradaki Vade Durum Bilgi Notu 1 Mİ2 Silinmiş 22.06.2026 2.000,00 TL 1.400,00 TL 600,00 TL 06.10.2026 · 3. taksit Gecikti · 1 tak"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:129:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: cari ekstresi — ekran (cari kartı), PDF, Anlık Durum ekstresi (ekran / PDF / Excel): 'Taksit Tahsilatı · 1. taksit' ve '· 2. taksit'
+    not ok 5 - cari ekstresi — ekran (cari kartı), PDF, Anlık Durum ekstresi (ekran / PDF / Excel): 'Taksit Tahsilatı · 1. taksit' ve '· 2. taksit'
+      ---
+      duration_ms: 4.378913
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:133:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari kartının ekstresi
+        + actual - expected
+        
+          [
+            'Taksit Tahsilatı · 1. taksit',
+        +   'Taksit Tahsilatı · 3. taksit'
+        -   'Taksit Tahsilatı · 2. taksit'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Taksit Tahsilatı · 1. taksit'
+        1: 'Taksit Tahsilatı · 2. taksit'
+      actual:
+        0: 'Taksit Tahsilatı · 1. taksit'
+        1: 'Taksit Tahsilatı · 3. taksit'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:136:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Rapor Merkezi: Cari Ekstre, Tüm Cari Hareketleri, Taksit Tahsilatları (+ Excel / PDF), Taksit Vadeleri, Geciken Taksitler — '2. taksit'
+    not ok 6 - Rapor Merkezi: Cari Ekstre, Tüm Cari Hareketleri, Taksit Tahsilatları (+ Excel / PDF), Taksit Vadeleri, Geciken Taksitler — '2. taksit'
+      ---
+      duration_ms: 6.271006
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Cari Ekstre:  | Devir | Dönem başı bakiye |  |  | 0,00 TL
+        22.06.2026 | Taksit Planı | Mİ2 Silinmiş · 2 taksit | 2.000,00 TL |  | 2.000,00 TL B
+        17.10.2026 | Taksit Tahsilatı · 1. taksit | Makbuz 1 |  | 1.000,00 TL | 1.000,00 TL B
+        18.10.2026 | Taksit Tahsilatı · 3. taksit | Makbuz 2 |  | 400,00 TL | 600,00 TL B
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:152:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WhatsApp ekstresi (elle, wa.me metni): 'Taksit Tahsilatı · 2. taksit'
+    not ok 7 - WhatsApp ekstresi (elle, wa.me metni): 'Taksit Tahsilatı · 2. taksit'
+      ---
+      duration_ms: 5.995906
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:171:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Sayın Mİ2 Silinmiş,
+        cari hesap ekstreniz:
+        
+        22.06.2026 Taksit Planı · Mİ2 Silinmiş · 2 taksit: +2.000,00 TL
+        17.10.2026 Taksit Tahsilatı · 1. taksit: −1.000,00 TL
+        18.10.2026 Taksit Tahsilatı · 3. taksit: −400,00 TL
+        
+        *Güncel bakiye: 600,00 TL (borcunuz)*
+        Vadesi geçen: 1 taksit, 600,00 TL
+        Sıradaki taksit: 06.10.2026 · 600,00 TL
+        
+        İyi günler dileriz.
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:174:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: zil / takvim ve Vade Takip: kalem etiketi '2. taksit'
+    not ok 8 - zil / takvim ve Vade Takip: kalem etiketi '2. taksit'
+      ---
+      duration_ms: 20.958195
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:178:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        zil / takvim
+        + actual - expected
+        
+          [
+        +   '3. taksit'
+        -   '2. taksit'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2. taksit'
+      actual:
+        0: '3. taksit'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:180:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ödenmiş taksite yeniden tahsilat: 409 iletisi 'Seçilen 1. taksit ödendi' (görünen numara)
+    ok 9 - ödenmiş taksite yeniden tahsilat: 409 iletisi 'Seçilen 1. taksit ödendi' (görünen numara)
+      ---
+      duration_ms: 5.529134
+      type: 'test'
+      ...
+    # Subtest: AYNI VADELİ iki taksit: sıra saklanan sıradan (1 → 1., sonradan eklenen 3 → 2.); makbuz '2. taksit (vade 06.08.2026)'
+    not ok 10 - AYNI VADELİ iki taksit: sıra saklanan sıradan (1 → 1., sonradan eklenen 3 → 2.); makbuz '2. taksit (vade 06.08.2026)'
+      ---
+      duration_ms: 8.792017
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:192:3'
+      failureType: 'testCodeFailure'
+      error: 'makbuz: TAHSİLAT MAKBUZU No 3 · 19.10.2026 Kimden Mİ2 Aynı Vade Sıra No 2 Açıklama 3. taksit (vade 06.08.2026) Tutar 300,00 TL # üç yüz TL # Toplam borç 3.000,00 TL Tahsil edilen 300,00 TL Kalan borç 2.700,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 12:41'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:196:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tablo (kayda bağlı kart): taksit bloğu '1.' (saklanan 2) ve işlem geçmişi '· 1. taksit'
+    not ok 11 - Tablo (kayda bağlı kart): taksit bloğu '1.' (saklanan 2) ve işlem geçmişi '· 1. taksit'
+      ---
+      duration_ms: 8.12748
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:201:3'
+      failureType: 'testCodeFailure'
+      error: 'geçmişte itemNo 1: {"caseKey":"mi2-kayit-1","items":[{"id":"entry-add2e002-1f02-4577-8754-f919f025712e","planId":"plan-a014ddac-868a-45bb-8683-e2dcb767aab8","planName":"Mİ2 Kayıt Kişisi","itemId":"item-afe29c73-0c00-4368-aa72-f5808b0af7c3","itemSeq":2,"kind":"in","amount":250,"date":"2026-10-19","note":"","receiptNo":4,"opening":0,"actorId":"user-3a2faaa2-0a01-4b55-9e4b-ec1c756e8479","createdAt":"2026-10-20T09:25:00.000Z","updatedAt":null,"actorName":"Ofis yöneticisi","type":"plan-entry"}],"paidTotal":250,"planPaid":250,"accountPaid":0,"account":{"id":"account-5be4f6df-d560-48a3-960d-566f9fbec0ca","refNo":"3","n'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:209:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: fatura penceresi 'Bu Faturayı Kapatanlar': vadesi öne alınan taksitin tahsilatı '· 1. taksit' (saklanan 3)
+    not ok 12 - fatura penceresi 'Bu Faturayı Kapatanlar': vadesi öne alınan taksitin tahsilatı '· 1. taksit' (saklanan 3)
+      ---
+      duration_ms: 5.9368
+      type: 'test'
+      location: '/dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:212:3'
+      failureType: 'testCodeFailure'
+      error: 'kapatanlar: [{"id":"plan-entry:entry-57caf629-616c-4f76-b8a1-9ac88ff78452","date":"2026-10-19","label":"Taksit Tahsilatı · 3. taksit","note":"","method":"","amount":500,"mode":"linked","modeLabel":"Bağlı","methodLabel":""}]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:218:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..12
+not ok 2 - Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar
+  ---
+  duration_ms: 1566.242432
+  type: 'suite'
+  location: '/dev/shm/mi2-t2/eski/test/mi2-tek-numara-251.test.mjs:24:1'
+  failureType: 'subtestsFailed'
+  error: '10 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 16
+# suites 2
+# pass 4
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2171.726698

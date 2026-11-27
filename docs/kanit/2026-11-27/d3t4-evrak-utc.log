@@ -1,0 +1,43 @@
+TAP version 13
+# (node:22316) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — çek / senet yön × durum: planın açılışı doğru yönde ve durumda
+    # Subtest: veri tabanı (ders 3): evrakların bugünkü durumu
+    ok 1 - veri tabanı (ders 3): evrakların bugünkü durumu
+      ---
+      duration_ms: 2.225387
+      type: 'test'
+      ...
+    # Subtest: her sınıf doğru hesapta / alt hesapta / yönde; tahsil edilmiş ve ödenmiş evrak listede YOK (elle)
+    ok 2 - her sınıf doğru hesapta / alt hesapta / yönde; tahsil edilmiş ve ödenmiş evrak listede YOK (elle)
+      ---
+      duration_ms: 0.597666
+      type: 'test'
+      ...
+    # Subtest: kapanış = açılış: evrak hesaplarının arşiv K bakiyesi = planın açılışı (işaretli; alınan +, verilen −); modül farkı / sorun YOK
+    ok 3 - kapanış = açılış: evrak hesaplarının arşiv K bakiyesi = planın açılışı (işaretli; alınan +, verilen −); modül farkı / sorun YOK
+      ---
+      duration_ms: 0.319526
+      type: 'test'
+      ...
+    # Subtest: karşılıksızın carisi: faturası yeniden açık (kendi vadesiyle); devirli = devirsiz (portföyden, senet, cirodan)
+    ok 4 - karşılıksızın carisi: faturası yeniden açık (kendi vadesiyle); devirli = devirsiz (portföyden, senet, cirodan)
+      ---
+      duration_ms: 3.481251
+      type: 'test'
+      ...
+    1..4
+ok 1 - D3 tur 4 — çek / senet yön × durum: planın açılışı doğru yönde ve durumda
+  ---
+  duration_ms: 3207.257515
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3923.388904

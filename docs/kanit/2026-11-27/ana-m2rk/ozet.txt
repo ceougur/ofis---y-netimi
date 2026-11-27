@@ -1,0 +1,66 @@
+başladı 18:58 0.55 0.98 1.26 2/118 16674
+m2rk-yeni-UTC cikis=0 18:59 yük 1.29 1.12 1.30
+
+[kanit] m2rk-yeni-UTC: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6f3135a +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+m2rk-eski-UTC cikis=1 18:59 yük 1.58 1.21 1.32
+
+[kanit] m2rk-eski-UTC: BAŞARISIZ (çıkış 1; 18 başarısız, 0 iptal) · çıkış 1 · 3/21 geçti, 18 başarısız, 0 iptal, 0 atlanan · commit 0e96418 +6 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+m2rk-yeni-Istanbul cikis=0 19:02 yük 4.29 2.65 1.85
+
+[kanit] m2rk-yeni-Istanbul: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6f3135a +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+m2rk-eski-Istanbul cikis=1 19:03 yük 4.02 2.88 1.99
+
+[kanit] m2rk-eski-Istanbul: BAŞARISIZ (çıkış 1; 18 başarısız, 0 iptal) · çıkış 1 · 3/21 geçti, 18 başarısız, 0 iptal, 0 atlanan · commit 0e96418 +6 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+m2rk-e2e-yeni cikis=0 19:04 yük 4.63 3.11 2.09
+
+[kanit] m2rk-e2e-yeni: GEÇTİ · çıkış 0 · 24/24 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6f3135a +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+m2rk-e2e-eski cikis=1 19:04 yük 4.41 3.17 2.13
+
+[kanit] m2rk-e2e-eski: BAŞARISIZ (çıkış 1; 6 başarısız, 0 iptal) · çıkış 1 · 6/12 geçti, 6 başarısız, 0 iptal, 0 atlanan · commit 0e96418 +6 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+m2rk-sinama-kahin-cari-UTC cikis=0 19:14 yük 3.57 3.90 3.10
+
+[kanit] m2rk-sinama-kahin-cari-UTC: GEÇTİ · çıkış 0 · 25957/25957 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit bcb57de +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+m2rk-sinama-kahin-defter-UTC cikis=0 19:14 yük 3.52 3.88 3.10
+
+[kanit] m2rk-sinama-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit bcb57de +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+m2rk-sinama-kahin-cari-Istanbul cikis=0 19:25 yük 4.29 4.69 4.03
+
+[kanit] m2rk-sinama-kahin-cari-Istanbul: GEÇTİ · çıkış 0 · 25957/25957 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit bcb57de +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+m2rk-sinama-kahin-defter-Istanbul cikis=0 19:25 yük 4.19 4.66 4.02
+
+[kanit] m2rk-sinama-kahin-defter-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit bcb57de +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+M1-sonradan-bagsiz: uygulandı (server/lib/bank/doubtful.mjs)
+M1-sonradan-bagsiz: geri alındı
+MUTANT M1-sonradan-bagsiz çıkış 1 · # tests 21 # pass 14 # fail 7 
+M2-sonraki-degersiz: uygulandı (server/lib/bank/doubtful.mjs)
+M2-sonraki-degersiz: geri alındı
+MUTANT M2-sonraki-degersiz çıkış 1 · # tests 21 # pass 19 # fail 2 
+M3-onceki-gun-payi: uygulandı (server/lib/bank/doubtful.mjs)
+M3-onceki-gun-payi: geri alındı
+MUTANT M3-onceki-gun-payi çıkış 1 · # tests 21 # pass 17 # fail 4 
+M4-o-gun-payi-once: uygulandı (server/lib/bank/doubtful.mjs)
+M4-o-gun-payi-once: geri alındı
+MUTANT M4-o-gun-payi-once çıkış 1 · # tests 21 # pass 4 # fail 8 
+M5a-yazim-denetimi-yok: uygulandı (server/lib/bank/doubtful.mjs)
+M5a-yazim-denetimi-yok: geri alındı
+MUTANT M5a-yazim-denetimi-yok çıkış 1 · # tests 21 # pass 18 # fail 3 
+M5b-mutabakat-degismezi-yok: uygulandı (server/lib/bank/doubtful.mjs)
+M5b-mutabakat-degismezi-yok: geri alındı
+MUTANT M5b-mutabakat-degismezi-yok çıkış 1 · # tests 21 # pass 20 # fail 1 
+M6-oneri-bakiye-kurali-yok: uygulandı (server/lib/bank/doubtful.mjs)
+M6-oneri-bakiye-kurali-yok: geri alındı
+MUTANT M6-oneri-bakiye-kurali-yok çıkış 1 · # tests 21 # pass 20 # fail 1 
+M6b-bakiye-siniri-yok: uygulandı (server/lib/bank/doubtful.mjs)
+M6b-bakiye-siniri-yok: geri alındı
+MUTANT M6b-bakiye-siniri-yok çıkış 1 · # tests 21 # pass 18 # fail 3 
+M7-geri-yukleme-siniri-yok: uygulandı (server/lib/bank/doubtful.mjs)
+M7-geri-yukleme-siniri-yok: geri alındı
+MUTANT M7-geri-yukleme-siniri-yok çıkış 1 · # tests 21 # pass 16 # fail 5 
+M8-form-eski-kalan: uygulandı (client/assets/hof-accounts.js)
+M8-form-eski-kalan: geri alındı
+MUTANT M8-form-eski-kalan çıkış 1 · 23 geçti, 1 kaldı
+M8b-form-ipucu-eski: uygulandı (client/assets/hof-accounts.js)
+M8b-form-ipucu-eski: geri alındı
+MUTANT M8b-form-ipucu-eski çıkış 1 · 22 geçti, 2 kaldı
+?? node_modules
+BİTTİ 19:34 6.82 6.37 5.21 5/273 32278

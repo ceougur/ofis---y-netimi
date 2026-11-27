@@ -1,0 +1,244 @@
+TAP version 13
+# (node:27684) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evrakı, carisiz evrak, sınıf, denetim
+    # Subtest: modül açılışları tek madde, karşı hesap 519, açılış sınıfı (M-01, M-02 / M-03, M-04, M-05, M-07; KG-1); 500 Sermaye'ye hiçbir olay yazmaz
+    ok 1 - modül açılışları tek madde, karşı hesap 519, açılış sınıfı (M-01, M-02 / M-03, M-04, M-05, M-07; KG-1); 500 Sermaye'ye hiçbir olay yazmaz
+      ---
+      duration_ms: 6.882465
+      type: 'test'
+      ...
+    # Subtest: açılış İŞARETTEN tanınır: göçten sonra yazılmış 'AÇILIŞ BAKİYESİ' Borç Yaz 602, 'Açılış bakiyesi' Alacak Yaz 770 (C-01 / C-02; P1, K8-1)
+    ok 2 - açılış İŞARETTEN tanınır: göçten sonra yazılmış 'AÇILIŞ BAKİYESİ' Borç Yaz 602, 'Açılış bakiyesi' Alacak Yaz 770 (C-01 / C-02; P1, K8-1)
+      ---
+      duration_ms: 7.79303
+      type: 'test'
+      ...
+    # Subtest: açılış evrakı 519 (M-08 / M-09: 602 / 770'e yazılmaz); formdan carisiz evrak 649.90 / 770.90 (S49); karşılıksız: açılışta B 519 / A 101, carisizde B 649.90 / A 101, cari seçilince cari borçlanır (S48, S66)
+    ok 3 - açılış evrakı 519 (M-08 / M-09: 602 / 770'e yazılmaz); formdan carisiz evrak 649.90 / 770.90 (S49); karşılıksız: açılışta B 519 / A 101, carisizde B 649.90 / A 101, cari seçilince cari borçlanır (S48, S66)
+      ---
+      duration_ms: 64.499342
+      type: 'test'
+      ...
+    # Subtest: KG-5: yüklenen kart TEK madde B CH (T − P) / A 519, P maddesiz, tarih kartın KAYIT TARİHİ (S-KD-3 = B); P = 0 → T; P = T → madde yok (H-06)
+    ok 4 - KG-5: yüklenen kart TEK madde B CH (T − P) / A 519, P maddesiz, tarih kartın KAYIT TARİHİ (S-KD-3 = B); P = 0 → T; P = T → madde yok (H-06)
+      ---
+      duration_ms: 7.546723
+      type: 'test'
+      ...
+    # Subtest: açılış sınıfı yalnız SIRAYI değiştirir: aynı gün Kasa açılışı olağan Kasa girişinden önce; borç = alacak her maddede
+    ok 5 - açılış sınıfı yalnız SIRAYI değiştirir: aynı gün Kasa açılışı olağan Kasa girişinden önce; borç = alacak her maddede
+      ---
+      duration_ms: 7.730393
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi: 'Açılış Karşılığı' (519 / 500) denetimi temiz ve ikinci yükleyici = defter (B2); stock:opening 519'a göre; expected() 519'u içermez (K6)
+    ok 6 - Mutabakat Testi: 'Açılış Karşılığı' (519 / 500) denetimi temiz ve ikinci yükleyici = defter (B2); stock:opening 519'a göre; expected() 519'u içermez (K6)
+      ---
+      duration_ms: 51.838735
+      type: 'test'
+      ...
+    # Subtest: Banka İşlem Kartı ve Banka Ayarları 519 okur; saklı satır kodu 500 kalır (B3)
+    ok 7 - Banka İşlem Kartı ve Banka Ayarları 519 okur; saklı satır kodu 500 kalır (B3)
+      ---
+      duration_ms: 9.567969
+      type: 'test'
+      ...
+# (node:27684) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: S53: kilitsiz geçmiş yılda Ç5-A maddesi varsa Defter Mutabakatı / Mutabakat Testi uyarısı; yıl kilitlenince kalkar
+    ok 8 - S53: kilitsiz geçmiş yılda Ç5-A maddesi varsa Defter Mutabakatı / Mutabakat Testi uyarısı; yıl kilitlenince kalkar
+      ---
+      duration_ms: 748.579994
+      type: 'test'
+      ...
+    1..8
+ok 1 - 2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evrakı, carisiz evrak, sınıf, denetim
+  ---
+  duration_ms: 2945.349466
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-A tur 1 — KG-16 'Açılış Olabilir' (göç 48): aday kuralı, onay / ret, yetki, kilit izi, göç 49
+    # Subtest: göç 48: aday kuralı (B6, S65) — Türkçe küçük harf + ç/ı/ş katlaması, baştaki boşluk; 'Devir' / 'Devreden' / ortada geçen girmez; Açılış Bakiyesi satırı (is_opening) aday değil; onaya kadar 519 (S47)
+    ok 1 - göç 48: aday kuralı (B6, S65) — Türkçe küçük harf + ç/ı/ş katlaması, baştaki boşluk; 'Devir' / 'Devreden' / ortada geçen girmez; Açılış Bakiyesi satırı (is_opening) aday değil; onaya kadar 519 (S47)
+      ---
+      duration_ms: 12.109384
+      type: 'test'
+      ...
+# (node:27684) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: onay → 519 (M-02 / M-03), ret → 602 / 770 (C-01 / C-02); tutar / tarih / yön / is_opening DEĞİŞMEZ; kilit izi değişmez (B4); aynı karar tekrarı yazmaz; yetkisiz 403; listede olmayan 404
+    ok 2 - onay → 519 (M-02 / M-03), ret → 602 / 770 (C-01 / C-02); tutar / tarih / yön / is_opening DEĞİŞMEZ; kilit izi değişmez (B4); aynı karar tekrarı yazmaz; yetkisiz 403; listede olmayan 404
+      ---
+      duration_ms: 739.969906
+      type: 'test'
+      ...
+    # Subtest: göç eşgüçlü: yeniden koşan göç 48 kararları bozmaz (onay / ret aynen), adayları çoğaltmaz
+    ok 3 - göç eşgüçlü: yeniden koşan göç 48 kararları bozmaz (onay / ret aynen), adayları çoğaltmaz
+      ---
+      duration_ms: 305.035861
+      type: 'test'
+      ...
+    # Subtest: göçten sonra yazılan 'Açılış…' Borç Yaz aday OLMAZ (K8-1)
+    ok 4 - göçten sonra yazılan 'Açılış…' Borç Yaz aday OLMAZ (K8-1)
+      ---
+      duration_ms: 23.036637
+      type: 'test'
+      ...
+    1..4
+ok 2 - 2.5.0 Ç5-A tur 1 — KG-16 'Açılış Olabilir' (göç 48): aday kuralı, onay / ret, yetki, kilit izi, göç 49
+  ---
+  duration_ms: 2410.88396
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-A tur 1 — Silinenler bağlantı noktası (B8 / S51; routes/accounts.mjs tur 2b-2 sonrası bağlanır)
+    # Subtest: restoredOpeningReview: işaretli silinmiş + başka açılış → candidate; 2.4.x yükü 'Açılış…' → candidate; 2.5.0 yükü durumunu korur; işaretle dönen ''
+    ok 1 - restoredOpeningReview: işaretli silinmiş + başka açılış → candidate; 2.4.x yükü 'Açılış…' → candidate; 2.5.0 yükü durumunu korur; işaretle dönen ''
+      ---
+      duration_ms: 0.642602
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.5.0 Ç5-A tur 1 — Silinenler bağlantı noktası (B8 / S51; routes/accounts.mjs tur 2b-2 sonrası bağlanır)
+  ---
+  duration_ms: 0.756751
+  type: 'suite'
+  ...
+# (node:27772) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27772) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: H1 — cari satırının açılış işareti (ayrı sorgu) ↔ veri tabanının kolonları
+    # Subtest: 2.0.26 verisi (göç 48 adayları + Açılış Olabilir kararları): karşı hesap 519 / 602 / 770 kolonlardan beklenenle aynı; süzgeçli = süzgeçsiz
+    ok 1 - 2.0.26 verisi (göç 48 adayları + Açılış Olabilir kararları): karşı hesap 519 / 602 / 770 kolonlardan beklenenle aynı; süzgeçli = süzgeçsiz
+      ---
+      duration_ms: 2065.416686
+      type: 'test'
+      ...
+    1..1
+ok 4 - H1 — cari satırının açılış işareti (ayrı sorgu) ↔ veri tabanının kolonları
+  ---
+  duration_ms: 2066.85541
+  type: 'suite'
+  ...
+# Subtest: H2 — yüklenen kartın alanları (ayrı sorgu) ↔ veri tabanı
+    # Subtest: surum-2.4.9-s127-kilitsiz: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz
+    ok 1 - surum-2.4.9-s127-kilitsiz: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz
+      ---
+      duration_ms: 308.905684
+      type: 'test'
+      ...
+# (node:27772) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: surum-2.4.9-s127: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz
+    ok 2 - surum-2.4.9-s127: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz
+      ---
+      duration_ms: 597.216653
+      type: 'test'
+      ...
+    1..2
+ok 5 - H2 — yüklenen kartın alanları (ayrı sorgu) ↔ veri tabanı
+  ---
+  duration_ms: 906.65398
+  type: 'suite'
+  ...
+# Subtest: H3 — journalSort ≡ sort(journalOrder)
+    # Subtest: gerçek maddeler (2.4.9 S127 kilitli fikstürü + 2.0.26) karıştırılmış girdiyle; eşit anahtarlar, yazım sırası olmayan, açılış sınıflı ve bilinmeyen önekli maddeler
+    ok 1 - gerçek maddeler (2.4.9 S127 kilitli fikstürü + 2.0.26) karıştırılmış girdiyle; eşit anahtarlar, yazım sırası olmayan, açılış sınıflı ve bilinmeyen önekli maddeler
+      ---
+      duration_ms: 15.199171
+      type: 'test'
+      ...
+    1..1
+ok 6 - H3 — journalSort ≡ sort(journalOrder)
+  ---
+  duration_ms: 15.343131
+  type: 'suite'
+  ...
+# (node:27866) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S127 = A — eski kuralla donmuş yılın iki yanına düşen Excel kartı bir kez yazılır (v2.4.9 gerçek koduyla üretilmiş kilitli veri)
+    # Subtest: v2.4.9'un kendi sayıları (kâhin): mizan 120 = müşteri carileri, Mutabakat Testi tamam, kilit 31.12.2025
+    ok 1 - v2.4.9'un kendi sayıları (kâhin): mizan 120 = müşteri carileri, Mutabakat Testi tamam, kilit 31.12.2025
+      ---
+      duration_ms: 2.985216
+      type: 'test'
+      ...
+# (node:27866) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: göç penceresi (bekleyen 2.4.9 koşusu donmadan): karma mizan 120 = cariler; sonra donma tamamlanınca da (i, ii, iii, iv, ters)
+    ok 2 - göç penceresi (bekleyen 2.4.9 koşusu donmadan): karma mizan 120 = cariler; sonra donma tamamlanınca da (i, ii, iii, iv, ters)
+      ---
+      duration_ms: 712.948506
+      type: 'test'
+      ...
+    # Subtest: donmuş veri: cariler v2.4.9 ile aynı; mizan 120 = cariler; kilitli 2025 mizanı ve Yevmiye Defteri BAYT BAYT aynı; bütün zaman mizanında fark YALNIZ karar numaralı beklenen farklar
+    ok 3 - donmuş veri: cariler v2.4.9 ile aynı; mizan 120 = cariler; kilitli 2025 mizanı ve Yevmiye Defteri BAYT BAYT aynı; bütün zaman mizanında fark YALNIZ karar numaralı beklenen farklar
+      ---
+      duration_ms: 314.806125
+      type: 'test'
+      ...
+    # Subtest: Kural Değişikliği Farkı yalnız gerçekten kural farkı olan hesaplarda (500 / 519 / 602); 120'de kartın çift sayımından doğan fark YOK
+    ok 4 - Kural Değişikliği Farkı yalnız gerçekten kural farkı olan hesaplarda (500 / 519 / 602); 120'de kartın çift sayımından doğan fark YOK
+      ---
+      duration_ms: 5.029179
+      type: 'test'
+      ...
+    # Subtest: sınıflar: eski yapıya bağlı kartlar YALNIZ i / ters (P > 0; S-KD-3 = B'den sonra); kartların yevmiye tarihleri Kayıt Tarihi'nde
+    ok 5 - sınıflar: eski yapıya bağlı kartlar YALNIZ i / ters (P > 0; S-KD-3 = B'den sonra); kartların yevmiye tarihleri Kayıt Tarihi'nde
+      ---
+      duration_ms: 7.929029
+      type: 'test'
+      ...
+    # Subtest: vii: kilitli Kayıt Tarihli kart silinemez / Geri Al yapılamaz (409); açık dönemdeki açılış satırı düzeltilir → 120 = cariler
+    ok 6 - vii: kilitli Kayıt Tarihli kart silinemez / Geri Al yapılamaz (409); açık dönemdeki açılış satırı düzeltilir → 120 = cariler
+      ---
+      duration_ms: 453.654279
+      type: 'test'
+      ...
+# (node:27866) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:27866) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: vi: Kilidi Aç → Yeniden Kilitle — yıl GÜNCEL kuralla yeniden donar, kart yeni kuralla (yükleme günü), çift / eksik yok; kural farkı kalmaz
+    ok 7 - vi: Kilidi Aç → Yeniden Kilitle — yıl GÜNCEL kuralla yeniden donar, kart yeni kuralla (yükleme günü), çift / eksik yok; kural farkı kalmaz
+      ---
+      duration_ms: 576.918399
+      type: 'test'
+      ...
+    1..7
+ok 7 - S127 = A — eski kuralla donmuş yılın iki yanına düşen Excel kartı bir kez yazılır (v2.4.9 gerçek koduyla üretilmiş kilitli veri)
+  ---
+  duration_ms: 2147.268746
+  type: 'suite'
+  ...
+# Subtest: S127 — kilitsiz v2.4.9 verisi: viii (kilitsiz, hiçbir şey eski yapıya bağlanmaz) ve v (kilit güncellemeden SONRA konur)
+    # Subtest: viii: kilitsiz veride bağlı kart YOK; bütün kartlar KG-5 (yükleme günü, T − P); 120 = cariler; fark yalnız KG-5
+    ok 1 - viii: kilitsiz veride bağlı kart YOK; bütün kartlar KG-5 (yükleme günü, T − P); 120 = cariler; fark yalnız KG-5
+      ---
+      duration_ms: 454.470145
+      type: 'test'
+      ...
+# (node:27866) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: v: kilit güncellemeden SONRA konur → yıl yeni kuralla donar; bağlı kart yok; 120 = cariler; kural farkı yok
+    ok 2 - v: kilit güncellemeden SONRA konur → yıl yeni kuralla donar; bağlı kart yok; 120 = cariler; kural farkı yok
+      ---
+      duration_ms: 636.257859
+      type: 'test'
+      ...
+    1..2
+ok 8 - S127 — kilitsiz v2.4.9 verisi: viii (kilitsiz, hiçbir şey eski yapıya bağlanmaz) ve v (kilit güncellemeden SONRA konur)
+  ---
+  duration_ms: 1211.486823
+  type: 'suite'
+  ...
+1..8
+# tests 26
+# suites 8
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13916.125306

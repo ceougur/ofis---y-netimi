@@ -1,0 +1,1 @@
+Hız düzeltmesi (777c8bf8) sonrası ölçüm: ÖLÇÜLEMEDİ — özel kilit (flock -x -w 1800 olcum.lock) iki denemede (12:47–13:17 ve 13:17–13:47 UTC) alınamadı; başka ajanların paylaşımlı kilitleri sürekli açıktı (13:47 ps: pid 13458, 29106 flock -s). Kural gereği bekleme döngüsü kurulmadı.

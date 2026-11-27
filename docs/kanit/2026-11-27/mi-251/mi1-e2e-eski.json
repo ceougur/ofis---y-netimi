@@ -1,0 +1,53 @@
+{
+  "ad": "mi1-e2e-eski",
+  "komut": "node test/e2e/senaryo-mi1-251.mjs",
+  "commit": "3e63b38ee2d3e32b17c2a0dee8e0278489d6bbfd",
+  "dal": "worktree-agent-a6937363537df626a",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T06:36:06.424Z",
+  "sure_sn": 41,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7,
+    "gecen": 3,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ayşe: \"₺2.000,001 kart · 2 geciken13.10.2026 · 45 gün gecikti\" (beklenen \"… gün gecikti (2. taksit)\")",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Burak: \"₺3.000,001 kart · 2 geciken13.10.2026 · 45 gün gecikti\" (beklenen \"… gün gecikti (1. taksit)\" — silinen taksitten sonra boşluk yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kart penceresinde numaralar [\"2.\",\"3.\"] (beklenen [\"1.\",\"2.\"]; eski kod [\"2.\",\"3.\"])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ilk satırın sil düğmesi \"2. taksiti sil\" (beklenen \"1. taksiti sil\")",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/kanit/2026-11-27/mi1-e2e-eski.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6937363537df626a",
+  "ham_cikti_sha256": "ddc31257df9f06db75dfdff2511183e9c654133ee20e4ab0da45dbf4c98d846d",
+  "ham_cikti_bayt": 1336
+}

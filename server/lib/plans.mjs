@@ -58,6 +58,10 @@ export function distribute({ total, count, firstDue, everyMonths = 1 }) {
   return items;
 }
 
+// Kartın taksit SIRASI: vade, vade eşitse saklanan sıra (seq). allocate bu sırayla dağıtır; taksitin GÖRÜNEN numarası (2.5.1 Mİ — lib/plan-item-no.mjs itemNumbers,
+// tek kaynak) bu sıradaki yeridir: 1, 2, 3…, boşluksuz (saklanan seq silinen taksitten sonra boşluk bırakır, sonradan eklenen / vadesi değişen taksitte sırayı tutmaz).
+export const compareItems = (a, b) => (a.dueDate === b.dueDate ? a.seq - b.seq : a.dueDate < b.dueDate ? -1 : 1);
+
 /**
  * Hareketleri taksitlere eşler ve kartın özetini çıkarır.
  * @param {{ total: number, status?: string }} plan
@@ -66,7 +70,7 @@ export function distribute({ total, count, firstDue, everyMonths = 1 }) {
  * @param {{ today?: string, soonDays?: number }} options
  */
 export function allocate(plan, items, entries, { today = isoDay(new Date()), soonDays = 7 } = {}) {
-  const ordered = [...items].sort((a, b) => (a.dueDate === b.dueDate ? a.seq - b.seq : a.dueDate < b.dueDate ? -1 : 1));
+  const ordered = [...items].sort(compareItems);
   const paidByItem = new Map(ordered.map(item => [item.id, 0]));
   let pool = 0;
   let paidIn = 0;
@@ -110,6 +114,9 @@ export function allocate(plan, items, entries, { today = isoDay(new Date()), soo
   }
   const extra = Math.max(0, roundMoney(pool)); // taksitlerin üstünde kalan fazla tahsilat
   const closed = plan.status === "closed";
+  // Görünen taksit numarası (no) BURADA YOK (2.5.1 Mİ tur 2 — BAŞ MİMAR KARARI 27.11 (1)): allocate'in çıktısı Tek Yükümlülük Kuyruğu'nun girdisine de gider (cari kartının
+  // kart listesi forAccount → cari defteri); o girdi eskisiyle bayt bayt aynı kalır (test/obligation-input-250 hakemi). Numara yalnız gösterim / çıktı yollarında,
+  // lib/plan-item-no.mjs'ten (tek kaynak; bu dosyanın compareItems sırası).
   const shaped = ordered.map(item => {
     const paid = roundMoney(paidByItem.get(item.id));
     const remaining = roundMoney(Math.max(0, item.amount - paid));

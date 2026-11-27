@@ -1,0 +1,14 @@
+taban: 9 geçti / 0 kaldı (çıkış 0)
+N1 kopyayı yine yarım klasöre doğrudan yaz (uzun yol): YAKALANDI (çıkış 1, 3 geçti / 2 kaldı; ilk kırmızı: Y1 SQLite'ın açtığı her yol (kopya + günlük) varsayılan kurulum kökünde ve 80 karakterlik )
+N2 kopyanın geçici adından asıl adına taşımada yeniden deneme yok: YAKALANDI (çıkış 1, 4 geçti / 1 kaldı; ilk kırmızı: Y3 iç dosya taşımaları (kopyanın geçici adından asıl adına; çalışma klasöründen yarım klas)
+N3 çalışma klasöründen yarım klasöre taşımada yeniden deneme yok: YAKALANDI (çıkış 1, 4 geçti / 1 kaldı; ilk kırmızı: Y3 iç dosya taşımaları (kopyanın geçici adından asıl adına; çalışma klasöründen yarım klas)
+N4 özet akışın sonunda (end) döner, tutamak kapanmadan: YAKALANDI (çıkış 1, 4 geçti / 1 kaldı; ilk kırmızı: Y4 yedek klasörü son adına alınırken programın kendi okuma akışlarının hepsi kapanmış (açı)
+N5 yazma hatası olduğu gibi (İngilizce SQLite iletisi) gider: YAKALANDI (çıkış 1, 4 geçti / 1 kaldı; ilk kırmızı: Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne )
+N6 taşıma iletisine iç kod sızar: YAKALANDI (çıkış 1, 7 geçti / 2 kaldı; ilk kırmızı: yeniden denenmeyen hata (EXDEV) → hemen 503 (tek deneme, bekleme yok); klasör listede Yarı)
+N7 çalışma klasörü listede görünür: YAKALANDI (çıkış 1, 4 geçti / 1 kaldı; ilk kırmızı: Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne )
+N8 açılamayan kopyanın nedeni genel iletiye düşer: YAKALANDI (çıkış 1, 4 geçti / 1 kaldı; ilk kırmızı: Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne )
+N9 iletide iş adı hep Devir: YAKALANDI (çıkış 1, 3 geçti / 2 kaldı; ilk kırmızı: Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne )
+N10 backup.mjs: devir yedeğinin iç taşıması yine tek deneme: YAKALANDI (çıkış 1, 4 geçti / 1 kaldı; ilk kırmızı: Y3 iç dosya taşımaları (kopyanın geçici adından asıl adına; çalışma klasöründen yarım klas)
+SONUÇ: 10/10 mutasyon yakalandı
+
+[kanit] d4t2-mut2: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit fc4c5fc +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4

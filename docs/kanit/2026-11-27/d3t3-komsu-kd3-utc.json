@@ -1,0 +1,53 @@
+{
+  "ad": "d3t3-komsu-kd3-utc",
+  "komut": "node --test --test-concurrency=1 test/acilis-519-250.test.mjs test/acilis-duzeni-v249-250.test.mjs test/acilis-olabilir-250.test.mjs test/acilis-onarimi-hiz-250.test.mjs test/acilis-sinir-250.test.mjs test/asama0-226.test.mjs test/banka-210-eslesmis.test.mjs test/banka-210-gg-olay.test.mjs test/banka-210-gg2-bag.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-post.test.mjs test/banka-210-saat.test.mjs test/banka-210-sira.test.mjs test/banka-220-senet-121.test.mjs test/banka-230-k8-taksit.test.mjs test/c6h-alt-hesap-farki.test.mjs test/c6h-bilanco-uc.test.mjs test/c6h-bilanco.test.mjs test/c6h-esdegerlik.test.mjs test/c6h-gelir-tablosu.test.mjs test/c6h-kural-farki-fis.test.mjs test/c6h-tek-okuma.test.mjs test/c6h-uc.test.mjs test/c7b-eski-surum-sinif-250.test.mjs test/c7bt-ayni-adli-excel-karti-250.test.mjs test/cari-hareket-249.test.mjs test/defter-hiz-esdegerlik-250.test.mjs test/defter-hiz-esdegerlik-tur1d-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/devir-d3-kart-tarihi.test.mjs test/devir-d3-kural.test.mjs test/devir-d3-olgu.test.mjs test/devir-d3-plan.test.mjs test/donmus-defter-tur1-250.test.mjs test/donmus-defter-tur3-250.test.mjs test/donmus-defter-tur4-250.test.mjs test/donmus-defter-yasam-250.test.mjs test/duzeltmeler-212.test.mjs test/hesapsiz-acilis-v249-250.test.mjs test/hiz-243-hesap-defter.test.mjs test/ice-aktarma-istek-kimligi-248.test.mjs test/ice-alma-sayi-hucre-api.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/kapi-para-245.test.mjs test/kasa-acilis-iz-250.test.mjs test/kasa-acilis-once-250.test.mjs test/kg16-geri-alma-250.test.mjs test/kilit-izi-alanlar-250.test.mjs test/kural-farki-alarm-250.test.mjs test/kural-farki-duzeltme-250.test.mjs test/kural-farki-kapi-disi-250.test.mjs test/kural-farki-yil-250.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/pos-komisyon-v249-250.test.mjs test/rapor-220.test.mjs test/rapor-tablodaki-kisiler-f1.test.mjs test/s127-tek-kez-250.test.mjs test/s223-eski-surum-sinif-250.test.mjs test/s223-turkce-ad-eslesme-250.test.mjs test/s231-eski-surum-sinif-250.test.mjs test/s231-grup-adi-turkce-250.test.mjs test/sema-kapisi-bs7.test.mjs test/supheli-kuyruk-defter-250.test.mjs test/tablodan-aktar-244.test.mjs test/tyk-kapanis-dis-250.test.mjs test/tyk-tur2b1-250.test.mjs",
+  "commit": "bc13cdefc8659a909f539761d04b2c9c093d861a",
+  "dal": "worktree-agent-af273e8dbdb200a7c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T14:02:46.770Z",
+  "sure_sn": 762.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 828,
+    "gecen": 824,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evrakı, carisiz evrak, sınıf, denetim › KG-5: yüklenen kart TEK madde B CH (T − P) / A 519, P maddesiz, tarih yüklemenin YEREL günü; P = 0 → T; P = T → madde yok (H-06, B5)",
+      "konum": "test/acilis-519-250.test.mjs:134:3",
+      "hata": "yüklemenin yerel günü (kartın Kayıt Tarihi 01.03.2026 değil) · + actual - expected · + '2026-03-01' (beklenen 2026-11-22, gelen 2026-03-01)"
+    },
+    {
+      "ad": "H2 — yüklenen kartın alanları (ayrı sorgu) ↔ veri tabanı › surum-2.4.9-s127-kilitsiz: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz",
+      "konum": "test/defter-hiz-esdegerlik-250.test.mjs:90:5",
+      "hata": "kart plan-5d9aa035-cdc7-4e2e-ac69-9d87cb157858: madde yükleme gününde · + actual - expected · + '2025-06-01' (beklenen 2025-11-10, gelen 2025-06-01)"
+    },
+    {
+      "ad": "H2 — yüklenen kartın alanları (ayrı sorgu) ↔ veri tabanı › surum-2.4.9-s127: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz",
+      "konum": "test/defter-hiz-esdegerlik-250.test.mjs:90:5",
+      "hata": "kart plan-5d9aa035-cdc7-4e2e-ac69-9d87cb157858: madde yükleme gününde · + actual - expected · + '2025-06-01' (beklenen 2025-11-10, gelen 2025-06-01)"
+    },
+    {
+      "ad": "S127 = A — eski kuralla donmuş yılın iki yanına düşen Excel kartı bir kez yazılır (v2.4.9 gerçek koduyla üretilmiş kilitli veri) › sınıflar: eski yapıya bağlı kartlar YALNIZ i / ii / ters (iii ve iv yeni kuralla); kartların yevmiye tarihleri",
+      "konum": "test/s127-tek-kez-250.test.mjs:112:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t3/kanit/2026-11-27/d3t3-komsu-kd3-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af273e8dbdb200a7c",
+  "ham_cikti_sha256": "885fa5246514f90b24ce0feea5f453b85c4655702b96a82cf4113582344e5a31",
+  "ham_cikti_bayt": 438670
+}

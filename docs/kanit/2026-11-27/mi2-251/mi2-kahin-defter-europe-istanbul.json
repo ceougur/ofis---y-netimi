@@ -1,0 +1,32 @@
+{
+  "ad": "mi2-kahin-defter-europe-istanbul",
+  "komut": "npm run test:kahin-defter",
+  "commit": "51109662dc569e5d0c4ce955fe69fea2596cc4f4",
+  "dal": "worktree-agent-ad6b71f2b91ca7ee7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T15:09:05.701Z",
+  "sure_sn": 7.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi2-t2/kanit/2026-11-27/mi2-kahin-defter-europe-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7",
+  "ham_cikti_sha256": "8076c8c108fcc10ead7b25843705185624ff85c895040740a824bf98e027d03c",
+  "ham_cikti_bayt": 2825
+}

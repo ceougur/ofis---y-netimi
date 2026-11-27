@@ -1,0 +1,32 @@
+{
+  "ad": "m2-son-komsular-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/acilis-duzeni-v249-250.test.mjs test/backup.test.mjs test/banka-210-altin.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-raporlar.test.mjs test/banka-230-k8-cek.test.mjs test/banka-230-supheli-ayni-gun.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli-ekran.test.mjs test/banka-230-supheli.test.mjs test/c7b-tur3b-borcta-kalsin-250.test.mjs test/cari-hareket-249.test.mjs test/cheques-overview.test.mjs test/defter-243-raporlar.test.mjs test/defter-kaynak-iz-250.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-yasam-250.test.mjs test/ekstre-ayrinti-245.test.mjs test/geri-yukleme-uyari-244.test.mjs test/hesap-plani-sinif-250.test.mjs test/iade-geri-odeme-246.test.mjs test/kapama-ks7-245.test.mjs test/kapama-tek-gecis-245.test.mjs test/kasa-acilis-once-250.test.mjs test/kilit-izi-alanlar-250.test.mjs test/kural-farki-duzeltme-250.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/mobil-yazma-247.test.mjs test/obligation-input-250.test.mjs test/platform-tasinabilirlik.test.mjs test/rapor-230-iz5.test.mjs test/raporlar-224.test.mjs test/s160-iptal-yollari-250.test.mjs test/s160-kilitli-tahsilat-bagi-250.test.mjs test/s223-turkce-ad-eslesme-250.test.mjs test/s229-acik-fatura-kart-payi-250.test.mjs test/schema-flex.test.mjs test/sema-kapisi-bs7.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/supheli-230-ayni-gun-degersiz.test.mjs test/supheli-230-elestirmen.test.mjs test/supheli-230-karar.test.mjs test/supheli-230-kontrol2.test.mjs test/supheli-230-sil-cakisma.test.mjs test/supheli-230-yargic.test.mjs test/supheli-240-k4-iptal.test.mjs test/supheli-degersiz-s264-250.test.mjs test/supheli-etiket-pay-250.test.mjs test/supheli-ileti-b8-250.test.mjs test/supheli-kuyruk-defter-250.test.mjs test/t3hiz-esdegerlik-250.test.mjs test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-birlesik8-iade-250.test.mjs test/tyk-kilit-olcum-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2a-250.test.mjs test/ux18-cek-fatura-244.test.mjs test/vade-takip-soz-b7-250.test.mjs test/yazim-duzeni.test.mjs test/yedek-220.test.mjs test/yevmiye-sira-244.test.mjs",
+  "commit": "25acf40c8818801f9f31573bdfdbc09044e44966",
+  "dal": "worktree-agent-afce913f2c07f70a9",
+  "kirli": 0,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T13:49:22.870Z",
+  "sure_sn": 371.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 734,
+    "gecen": 734,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-27/m2-son-komsular-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afce913f2c07f70a9",
+  "ham_cikti_sha256": "947534549170299ebf92640f50b0dedc7a4d9ef2d69ccf35ad065b0b3ae714ac",
+  "ham_cikti_bayt": 291270
+}

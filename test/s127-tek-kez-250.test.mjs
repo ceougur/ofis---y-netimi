@@ -109,15 +109,22 @@ describe("S127 = A — eski kuralla donmuş yılın iki yanına düşen Excel ka
     assert.equal(Math.abs(of("602")), T("Kilitli Kart") + T("Kart Bir") + T("Kart İki"));
   });
 
-  it("sınıflar: eski yapıya bağlı kartlar YALNIZ i / ii / ters (iii ve iv yeni kuralla); kartların yevmiye tarihleri", () => {
-    assert.deepEqual(pinnedNames(server), ["Kart Bir", "Kart İki", "Ters Kart", "Ters Sıfır"].sort());
+  // 2.5.1 D3 tur 3 — BEKLENTİ BİLEREK DEĞİŞTİ (KULLANICI KARARI S-KD-3 = B, 27.11.2026: yüklenen kartın maddesi Kayıt Tarihi'nde, yükleme anı değil). Yeni kuralın yerleşimi artık
+  // Kayıt Tarihi → eski (2.4.9) yerleşimle kilit sınırının İKİ YANINA düşen yalnız açılış satırı (P > 0) olan kartlar: i (Kart Bir) ve ters (Ters Kart). P = 0 kartlar (ii-0 Kart İki,
+  // ters-0 Ters Sıfır) iki kuralda da AYNI tarafta (Kayıt Tarihi) → eski yapıya bağlanmaz, tek madde yeni kuralla (bir olay yine tek kez; tur 1b'de yükleme günü karşı tarafa düşürüyordu).
+  // iii / iv kartlarının maddesi yükleme günü yerine Kayıt Tarihi'nde.
+  it("sınıflar: eski yapıya bağlı kartlar YALNIZ i / ters (P > 0; S-KD-3 = B'den sonra); kartların yevmiye tarihleri Kayıt Tarihi'nde", () => {
+    assert.deepEqual(pinnedNames(server), ["Kart Bir", "Ters Kart"].sort());
     const entries = server.app.ledger.build();
     const plans = Object.fromEntries(server.app.store.all("SELECT name, id FROM plans").map(row => [row.name, row.id]));
     const of = name => entries.find(entry => entry.id === `plan:${plans[name]}`);
     assert.equal(of("Kart Bir").date, "2025-10-01");
     assert.equal(of("Ters Kart").date, "2026-01-15");
-    assert.equal(of("Açık Kart").date, "2026-11-10", "iv: yükleme günü (KG-5)");
-    assert.equal(of("Kilitli Kart").date, "2025-11-10", "iii: yükleme günü (KG-5; donmuş dönemde — karma okuma donmuş defterden)");
+    // Kayıt Tarihi veri tabanından (v2.4.9'un yazdığı plans.registered_on; ilk vadeye göre ayarlanmış olabilir).
+    const registered = name => server.app.store.get("SELECT COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS day FROM plans WHERE name = ?", name).day;
+    for (const [name, label] of [["Açık Kart", "iv"], ["Kilitli Kart", "iii (donmuş dönemde — karma okuma donmuş defterden)"], ["Kart İki", "ii-0 (bağlanmadan)"], ["Ters Sıfır", "ters-0 (bağlanmadan)"]]) {
+      assert.equal(of(name).date, registered(name), `${label}: Kayıt Tarihi (S-KD-3 = B; yükleme günü değil)`);
+    }
     for (const entry of entries) assert.equal(entry.lines.reduce((sum, line) => sum + line.debit - line.credit, 0), 0, `${entry.id} dengesiz`);
   });
 

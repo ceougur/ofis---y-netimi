@@ -1,0 +1,175 @@
+TAP version 13
+# (node:24957) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows)
+    # Subtest: Y1 SQLite'ın açtığı her yol (kopya + günlük) varsayılan kurulum kökünde ve 80 karakterlik şirket adında Windows sınırının (260) altında; üç etiket de Tamam
+    not ok 1 - Y1 SQLite'ın açtığı her yol (kopya + günlük) varsayılan kurulum kökünde ve 80 karakterlik şirket adında Windows sınırının (260) altında; üç etiket de Tamam
+      ---
+      duration_ms: 1989.807868
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:93:3'
+      failureType: 'testCodeFailure'
+      error: '2026-11-27T15-26-08-340Z-devir-oncesi-2026: günlük yolu 260 karakter (sınır 259; kopya 252) — C:\\DestekOfis\\backups\\002 - Yılmaz İnşaat Taahhüt Sanayi ve Ticaret Limited Şirketi Danışmanlık ve Müşavirli\\devir-yedekleri\\2026-11-27T15-26-08-340Z-devir-oncesi-2026.yaziliyor\\destekofis-002-2026-11-27T15-26-08-340Z-devir-oncesi-2026.sqlite.yaziliyor-journal'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:110:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne oldu, neden, ne yapmalı, nereye); iç kod yalnız makine alanında; yarım klasör kalmaz
+    not ok 2 - Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne oldu, neden, ne yapmalı, nereye); iç kod yalnız makine alanında; yarım klasör kalmaz
+      ---
+      duration_ms: 16.518158
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:119:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        undefined unable to open database file
+        
+        undefined !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:136:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Y3 iç dosya taşımaları (kopyanın geçici adından asıl adına; çalışma klasöründen yarım klasöre) geçici hatada yeniden denenir; yedek Tamam
+    not ok 3 - Y3 iç dosya taşımaları (kopyanın geçici adından asıl adına; çalışma klasöründen yarım klasöre) geçici hatada yeniden denenir; yedek Tamam
+      ---
+      duration_ms: 113.840725
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:147:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taşıma yeniden denenmeliydi: undefined EPERM: test: enjekte, rename
+        + actual - expected
+        
+        + Error: EPERM: test: enjekte, rename
+        +     at fsError (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:66:65)
+        +     at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:163:31
+        +     at fs.renameSync (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:70:33)
+        +     at createBackup (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/server/lib/backup.mjs:164:5)
+        +     at createDevirBackup (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/server/lib/devir/devir-backups.mjs:82:22)
+        +     at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/server/lib/company-backups.mjs:763:17
+        +     at withCompanyDb (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/server/app.mjs:226:77)
+        +     at Object.createDevirBackupFor (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/server/lib/company-backups.mjs:762:20)
+        +     at take (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:58:51)
+        +     at attempt (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:61:26) {
+        +   code: 'EPERM'
+        + }
+        - null
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ~
+      actual:
+      error: 'EPERM: test: enjekte, rename'
+      stack: |-
+        fsError (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:66:65)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:163:31
+        fs.renameSync (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:70:33)
+        createBackup (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/server/lib/backup.mjs:164:5)
+        createDevirBackup (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/server/lib/devir/devir-backups.mjs:82:22)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/server/lib/company-backups.mjs:763:17
+        withCompanyDb (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/server/app.mjs:226:77)
+        Object.createDevirBackupFor (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/server/lib/company-backups.mjs:762:20)
+        take (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:58:51)
+        attempt (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:61:26)
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:179:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Y4 yedek klasörü son adına alınırken programın kendi okuma akışlarının hepsi kapanmış (açık tutamak yok)
+    not ok 4 - Y4 yedek klasörü son adına alınırken programın kendi okuma akışlarının hepsi kapanmış (açık tutamak yok)
+      ---
+      duration_ms: 130.909527
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:187:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taşıma anında kapanmamış okuma akışı: ["secret.key"]
+        + actual - expected
+        
+        + [
+        +   'secret.key'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'secret.key'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:213:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Y5 taşıma hatası iletisinde iç kod / İngilizce yok: yeniden denenmeyen kod (EXDEV) ve kodsuz hata → 503 devir-backup-move, neden yalnız makine alanında
+    not ok 5 - Y5 taşıma hatası iletisinde iç kod / İngilizce yok: yeniden denenmeyen kod (EXDEV) ve kodsuz hata → 503 devir-backup-move, neden yalnız makine alanında
+      ---
+      duration_ms: 131.828761
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:216:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /^Devir yedeği yazıldı ama tamamlanamadı: yedek klasörü son adına alınamadı \(dosya sistemi taşımaya izin vermedi\)\. Devri Geri Al bu yedek tamamlanmadan yapılmaz; verilerinizde değişiklik olmadı\. Birkaç dakika bekleyip yeniden deneyin\. Yazılan yedek silinmedi: Yönetim → Yedekler → Devir Yedekleri'nde “Yarım Kaldı” olarak görünür\.$/. Input:
+        
+        'Devir yedeği yazıldı ama son adına alınamadı (dosya sistemi hatası EXDEV). Yedek Devir Yedekleri listesinde “Yarım Kaldı” görünür; birkaç dakika sonra yeniden deneyin.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Devir yedeği yazıldı ama son adına alınamadı (dosya sistemi hatası EXDEV). Yedek Devir Yedekleri listesinde “Yarım Kaldı” görünür; birkaç dakika sonra yeniden deneyin.'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:233:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows)
+  ---
+  duration_ms: 2384.794709
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e/test/devir-d4on-yol-251.test.mjs:92:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3303.261606
+
+[kanit] başarısız testler (5):
+  ✖ D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows) › Y1 SQLite'ın açtığı her yol (kopya + günlük) varsayılan kurulum kökünde ve 80 karakterlik şirket adında Windows sınırının (260) altında; üç etiket de Tamam [test/devir-d4on-yol-251.test.mjs:93:3] — 2026-11-27T15-26-08-340Z-devir-oncesi-2026: günlük yolu 260 karakter (sınır 259; kopya 252) — C:\\DestekOfis\\backups\\002 - Yılmaz İnşaat Taahhüt Sanayi ve Ticaret Limited Şirketi Danışmanlık ve Müşavirli\\devir-yedekleri\\2026-11-27T15-26-08-340Z-devir-oncesi-2026.yaziliyor\\destekofis-002-2026-11-27T15-26-08-340Z-devir-oncesi-2026.sqlite.yaziliyor-journal (beklenen true, gelen false)
+  ✖ D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows) › Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne oldu, neden, ne yapmalı, nereye); iç kod yalnız makine alanında; yarım klasör kalmaz [test/devir-d4on-yol-251.test.mjs:119:3] — undefined unable to open database file · undefined !== 503
+  ✖ D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows) › Y3 iç dosya taşımaları (kopyanın geçici adından asıl adına; çalışma klasöründen yarım klasöre) geçici hatada yeniden denenir; yedek Tamam [test/devir-d4on-yol-251.test.mjs:147:3] — EPERM: test: enjekte, rename (beklenen ~, gelen )
+  ✖ D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows) › Y4 yedek klasörü son adına alınırken programın kendi okuma akışlarının hepsi kapanmış (açık tutamak yok) [test/devir-d4on-yol-251.test.mjs:187:3] — taşıma anında kapanmamış okuma akışı: ["secret.key"] · + actual - expected · + [ (beklenen , gelen )
+  ✖ D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows) › Y5 taşıma hatası iletisinde iç kod / İngilizce yok: yeniden denenmeyen kod (EXDEV) ve kodsuz hata → 503 devir-backup-move, neden yalnız makine alanında [test/devir-d4on-yol-251.test.mjs:216:3] — The input did not match the regular expression /^Devir yedeği yazıldı ama tamamlanamadı: yedek klasörü son adına alınamadı \(dosya sistemi taşımaya izin vermedi\)\. Devri Geri Al bu yedek tamamlanmadan yapılmaz; verilerinizde değişiklik olmadı\. Birkaç dakika bekleyip yeniden deneyin\. Yazılan yedek silinmedi: Yönetim → Yedekler → Devir Yedekleri'nde “Yarım Kaldı” olarak görünür\.$/. Input: · 'Devir yedeği yazıldı ama son adına alınamadı (dosya sistemi hatası EXDEV). Yedek Devir Yedekleri listesinde “Yarım Kaldı” görünür; birkaç dakika sonra yeniden deneyin.' (beklenen , gelen Devir yedeği yazıldı ama son adına alınamadı (dosya sistemi hatası EXDEV). Yedek Devir Yedekleri listesinde “Yarım Kaldı” görünür; birkaç dakika sonra yeniden deneyin.)
+
+[kanit] d4t2-eski-Istanbul: BAŞARISIZ (çıkış 1; 5 başarısız, 0 iptal) · çıkış 1 · 0/5 geçti, 5 başarısız, 0 iptal, 0 atlanan · commit 1fc3955 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4

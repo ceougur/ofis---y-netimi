@@ -1,0 +1,275 @@
+TAP version 13
+# (node:798) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ-2 — dönemlik tahsilat ve Grup Özeti
+    # Subtest: ön koşul: Excel kartı cariye bağlandı ve açılışı bugün; silinen tahsilat veri tabanında yok
+    ok 1 - ön koşul: Excel kartı cariye bağlandı ve açılışı bugün; silinen tahsilat veri tabanında yok
+      ---
+      duration_ms: 7.409131
+      type: 'test'
+      ...
+    # Subtest: dönem yokken Liste'nin yanıtı bugünkü gibi: period / collected alanı YOK
+    ok 2 - dönem yokken Liste'nin yanıtı bugünkü gibi: period / collected alanı YOK
+      ---
+      duration_ms: 33.729163
+      type: 'test'
+      ...
+    # Subtest: (b) ELLE: Bugün — her yol ayrı; tedarikçi ödemesi, silinen tahsilat, dünkü tahsilat sayılmaz; açılış ayrı
+    not ok 3 - (b) ELLE: Bugün — her yol ayrı; tedarikçi ödemesi, silinen tahsilat, dünkü tahsilat sayılmaz; açılış ayrı
+      ---
+      duration_ms: 15.233401
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:104:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        önceden ödenen 300 ayrı, Tahsilat'a karışmaz
+        + actual - expected
+        
+          [
+        +   300,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+        -   0,
+            300
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 300
+      actual:
+        0: 300
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 300
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:114:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b) ELLE: Dün, Bu Hafta, Bu Ay, Tarih Aralığı; Tümü durumunda pasif dahil
+    not ok 4 - (b) ELLE: Dün, Bu Hafta, Bu Ay, Tarih Aralığı; Tümü durumunda pasif dahil
+      ---
+      duration_ms: 11.571696
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:120:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        1980 !== 1680
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1680
+      actual: 1980
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:124:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b) 'Bu Dönemde Ödeme Yapanlar' grup / tür / bakiye / gecikme süzgeçleriyle BİRLİKTE; kartlar süzgeçten SONRA
+    not ok 5 - (b) 'Bu Dönemde Ödeme Yapanlar' grup / tür / bakiye / gecikme süzgeçleriyle BİRLİKTE; kartlar süzgeçten SONRA
+      ---
+      duration_ms: 4.398561
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'Ali Kaya',
+            'Ayla Kaya',
+            'Bora Er',
+        +   'Excel Velisi',
+            'Nur Su'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Ali Kaya'
+        1: 'Ayla Kaya'
+        2: 'Bora Er'
+        3: 'Nur Su'
+      actual:
+        0: 'Ali Kaya'
+        1: 'Ayla Kaya'
+        2: 'Bora Er'
+        3: 'Excel Velisi'
+        4: 'Nur Su'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:136:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (c) Grup Özeti: her grup bir satır (boş grup dahil), alt grup kırılımı, Grupsuz; satırlar = TOPLAM = süzgeçsiz Liste kartları — HER süzgeç seçeneğiyle
+    not ok 6 - (c) Grup Özeti: her grup bir satır (boş grup dahil), alt grup kırılımı, Grupsuz; satırlar = TOPLAM = süzgeçsiz Liste kartları — HER süzgeç seçeneğiyle
+      ---
+      duration_ms: 6.602252
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:154:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            3,
+        +   360,
+        -   60,
+            300
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 3
+        1: 60
+        2: 300
+      actual:
+        0: 3
+        1: 360
+        2: 300
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:162:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (a) EŞDEĞERLİK: cari başına Tahsilat + Önceden Ödenen = 'Cari Bazında Tahsilat' raporunun Toplam'ı; açılış = raporun açılış sütunu (Bugün, Bu Ay, tüm yıl)
+    not ok 7 - (a) EŞDEĞERLİK: cari başına Tahsilat + Önceden Ödenen = 'Cari Bazında Tahsilat' raporunun Toplam'ı; açılış = raporun açılış sütunu (Bugün, Bu Ay, tüm yıl)
+      ---
+      duration_ms: 10.713133
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:208:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        period=today: Excel Velisi Tahsilat + Önceden Ödenen = rapor Toplam
+        
+        600 !== 300
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 300
+      actual: 600
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:223:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (d) karşılıksız çıkan çek: raporun kuralıyla aynı (alınan çek tahsilattan düşmez; karşılıksız ayrı borç satırı) — eşdeğerlik korunur
+    ok 8 - (d) karşılıksız çıkan çek: raporun kuralıyla aynı (alınan çek tahsilattan düşmez; karşılıksız ayrı borç satırı) — eşdeğerlik korunur
+      ---
+      duration_ms: 26.95201
+      type: 'test'
+      ...
+    # Subtest: (d) dönem sınırları sahte saatle: gece yarısı, ay başı, yıl başı (pazartesi başlangıçlı hafta)
+    ok 9 - (d) dönem sınırları sahte saatle: gece yarısı, ay başı, yıl başı (pazartesi başlangıçlı hafta)
+      ---
+      duration_ms: 5.823292
+      type: 'test'
+      ...
+    # Subtest: (d) dönem sınırı: bitiş günü DAHİL, ertesi gün HARİÇ; başlangıçtan önceki gün HARİÇ — yardımcı, bellek içi küçük veri tabanıyla (program ileri tarihli hareketi zaten reddeder)
+    ok 10 - (d) dönem sınırı: bitiş günü DAHİL, ertesi gün HARİÇ; başlangıçtan önceki gün HARİÇ — yardımcı, bellek içi küçük veri tabanıyla (program ileri tarihli hareketi zaten reddeder)
+      ---
+      duration_ms: 2.937988
+      type: 'test'
+      ...
+    # Subtest: (d) Grup Özeti PDF ve Excel ekranla aynı: satırlar, sütunlar, TOPLAM
+    ok 11 - (d) Grup Özeti PDF ve Excel ekranla aynı: satırlar, sütunlar, TOPLAM
+      ---
+      duration_ms: 57.108128
+      type: 'test'
+      ...
+    # Subtest: (d) Liste PDF / Excel: dönem seçiliyse Tahsilat sütunu; Excel'in 'Gecikmiş Borç' sütunu dolu (önceden 'Geciken' başlığı hep boştu)
+    not ok 12 - (d) Liste PDF / Excel: dönem seçiliyse Tahsilat sütunu; Excel'in 'Gecikmiş Borç' sütunu dolu (önceden 'Geciken' başlığı hep boştu)
+      ---
+      duration_ms: 38.100297
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:298:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        1930 !== 1630
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1630
+      actual: 1930
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:313:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (e) yetki: Cari'yi görmeyen özel rol 403; personel (Carileri Görme) görür — cari kartının defterinde de her tahsilatı görüyor
+    not ok 13 - (e) yetki: Cari'yi görmeyen özel rol 403; personel (Carileri Görme) görür — cari kartının defterinde de her tahsilatı görüyor
+      ---
+      duration_ms: 317.232359
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:318:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        1930 !== 1630
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1630
+      actual: 1930
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:332:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..13
+not ok 1 - Mİ-2 — dönemlik tahsilat ve Grup Özeti
+  ---
+  duration_ms: 2803.036307
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7/test/mi2-grup-ozeti-251.test.mjs:25:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 13
+# suites 1
+# pass 6
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3626.670453

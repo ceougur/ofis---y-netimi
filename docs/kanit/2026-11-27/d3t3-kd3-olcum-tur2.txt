@@ -1,0 +1,12 @@
+# S-KD-3 ölçümü — kod: tur2 (/dev/shm/d3t3-k3/eski) commit 0ae33184; TZ=UTC; komut: node scratchpad/d3t3/kd3-olc.mjs <kod>
+import 200 {"ok":true,"data":{"created":1,"skipped":[],"groups":0,"linked":0,"records":0,"opening":0,"shape":"summary","importId":"import-b25c7d1e-9839-4811-aecb-7318cf3ccc50"}}
+plans [{"id":"plan-3aede85a-f7d3-47cc-b0ec-ab79eb5ad515","account_id":"account-a888d686-ab7b-49a4-8b29-5b52fa08b564","total":9000,"registered_on":"2026-12-20","created_at":"2027-01-03T07:00:00.000Z","import_id":"import-b25c7d1e-9839-4811-aecb-7318cf3ccc50"}]
+plan_imports [{"id":"import-b25c7d1e-9839-4811-aecb-7318cf3ccc50","created_at":"2027-01-03T07:00:00.000Z"}]
+defter [{"id":"plan:plan-3aede85a-f7d3-47cc-b0ec-ab79eb5ad515","date":"2027-01-03","lines":["B 120 9000","A 519 9000"]}]
+account_entries []
+cari hareket 405 {"ok":false,"error":"Bu yöntem desteklenmiyor."}
+preview 200 {"ok":true,"data":{"id":"onizleme-229eea4f-e88c-4f46-bb4e-71c753c2e187","company":"sirket-001","cutoff":"2026-12-31","option":"borc-alacak","state":"running","asama":"basladi","startedAt":"2027-01-03T07:00:00.000Z","finishedAt":"","stale":false}}
+plan cariler [{"ad":"Kart Müşterisi","k":0,"satir":[]}]
+plan kartlar [{"toplam":900000,"kalan":900000,"durum":"acik"}]
+sorunlar [] durdurur []
+120/519 kapanış []

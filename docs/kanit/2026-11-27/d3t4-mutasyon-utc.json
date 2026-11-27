@@ -1,0 +1,32 @@
+{
+  "ad": "d3t4-mutasyon-utc",
+  "komut": "node test/devir-d3-mutasyon.mjs --kopya /dev/shm/d3t4-k4/mut-utc",
+  "commit": "b5f2d4e49c3971bf1ea9122830bce9d0f973938d",
+  "dal": "worktree-agent-a922ed4d1d1297419",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T17:21:54.969Z",
+  "sure_sn": 431.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t4/kanit/2026-11-27/d3t4-mutasyon-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a922ed4d1d1297419",
+  "ham_cikti_sha256": "92eb23b89a0c441e8c4e8382d9fd1ea0bda188eb9c346348046dc45a0c9b0ec4",
+  "ham_cikti_bayt": 22934
+}

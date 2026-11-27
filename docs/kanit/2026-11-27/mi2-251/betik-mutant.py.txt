@@ -1,0 +1,15 @@
+# Kullanım: python3 -I mutant.py <ad> <dosya> <eski> <yeni> -- <komut…>
+# Dosyada <eski> tam bir kez geçmeli; yerine <yeni> yazılır, komut kanit.mjs kos ile koşulur, dosya HER durumda geri yazılır.
+# Sonuç satırı: komutun çıkış kodu ve özet; mutant "YAKALANDI" = komut KIRMIZI (çıkış ≠ 0).
+import os, subprocess, sys
+ad, dosya, eski, yeni = sys.argv[1:5]
+komut = sys.argv[sys.argv.index("--") + 1:]
+asil = open(dosya, encoding="utf-8").read()
+assert asil.count(eski) == 1, f"{ad}: eski metin {asil.count(eski)} kez"
+try:
+    open(dosya, "w", encoding="utf-8").write(asil.replace(eski, yeni))
+    r = subprocess.run(["node", "tools/kanit.mjs", "kos", f"mi2-mutant-{ad}", "--", *komut], env=dict(os.environ), capture_output=True, text=True)
+    son = (r.stdout + r.stderr).strip().splitlines()
+    print(f"{ad}: çıkış {r.returncode} → {'YAKALANDI' if r.returncode else 'YAŞADI'} · {son[-1] if son else ''}")
+finally:
+    open(dosya, "w", encoding="utf-8").write(asil)

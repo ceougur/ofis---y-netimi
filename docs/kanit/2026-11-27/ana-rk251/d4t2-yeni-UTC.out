@@ -1,0 +1,84 @@
+TAP version 13
+# (node:21421) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D4-ÖN: devir yedeğinin son adına taşınması (Windows yeniden denemesi)
+    # Subtest: geçici hata (EPERM, EBUSY, EACCES, ENOTEMPTY — dört kez) → yeniden denenir, 5. denemede taşınır; yedek Tamam, doğrulama geçer, yarım klasör kalmaz
+    ok 1 - geçici hata (EPERM, EBUSY, EACCES, ENOTEMPTY — dört kez) → yeniden denenir, 5. denemede taşınır; yedek Tamam, doğrulama geçer, yarım klasör kalmaz
+      ---
+      duration_ms: 1300.866471
+      type: 'test'
+      ...
+    # Subtest: kalıcı geçici hata (EBUSY hiç bitmez) → sınırlı deneme (12), 503 devir-backup-move + Türkçe neden; yazılmış klasör silinmez, listede Yarım
+    ok 2 - kalıcı geçici hata (EBUSY hiç bitmez) → sınırlı deneme (12), 503 devir-backup-move + Türkçe neden; yazılmış klasör silinmez, listede Yarım
+      ---
+      duration_ms: 3341.448754
+      type: 'test'
+      ...
+    # Subtest: yeniden denenmeyen hata (EXDEV) → hemen 503 (tek deneme, bekleme yok); klasör listede Yarım
+    ok 3 - yeniden denenmeyen hata (EXDEV) → hemen 503 (tek deneme, bekleme yok); klasör listede Yarım
+      ---
+      duration_ms: 45.764389
+      type: 'test'
+      ...
+    # Subtest: açık tutamak: klasördeki veri tabanı kopyası açık tutulurken taşıma düşer (Windows'ta GERÇEK EPERM, Linux'ta eşdeğer enjeksiyon), tutamak bırakılınca yeniden denemeyle taşınır
+    ok 4 - açık tutamak: klasördeki veri tabanı kopyası açık tutulurken taşıma düşer (Windows'ta GERÇEK EPERM, Linux'ta eşdeğer enjeksiyon), tutamak bırakılınca yeniden denemeyle taşınır
+      ---
+      duration_ms: 194.808936
+      type: 'test'
+      ...
+    1..4
+ok 1 - D4-ÖN: devir yedeğinin son adına taşınması (Windows yeniden denemesi)
+  ---
+  duration_ms: 4884.33968
+  type: 'suite'
+  ...
+# (node:21441) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows)
+    # Subtest: Y1 SQLite'ın açtığı her yol (kopya + günlük) varsayılan kurulum kökünde ve 80 karakterlik şirket adında Windows sınırının (260) altında; üç etiket de Tamam
+    ok 1 - Y1 SQLite'ın açtığı her yol (kopya + günlük) varsayılan kurulum kökünde ve 80 karakterlik şirket adında Windows sınırının (260) altında; üç etiket de Tamam
+      ---
+      duration_ms: 867.53542
+      type: 'test'
+      ...
+    # Subtest: Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne oldu, neden, ne yapmalı, nereye); iç kod yalnız makine alanında; yarım klasör kalmaz
+    ok 2 - Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne oldu, neden, ne yapmalı, nereye); iç kod yalnız makine alanında; yarım klasör kalmaz
+      ---
+      duration_ms: 5.418727
+      type: 'test'
+      ...
+    # Subtest: Y3 iç dosya taşımaları (kopyanın geçici adından asıl adına; çalışma klasöründen yarım klasöre) geçici hatada yeniden denenir; yedek Tamam
+    ok 3 - Y3 iç dosya taşımaları (kopyanın geçici adından asıl adına; çalışma klasöründen yarım klasöre) geçici hatada yeniden denenir; yedek Tamam
+      ---
+      duration_ms: 342.654762
+      type: 'test'
+      ...
+    # Subtest: Y4 yedek klasörü son adına alınırken programın kendi okuma akışlarının hepsi kapanmış (açık tutamak yok)
+    ok 4 - Y4 yedek klasörü son adına alınırken programın kendi okuma akışlarının hepsi kapanmış (açık tutamak yok)
+      ---
+      duration_ms: 44.890422
+      type: 'test'
+      ...
+    # Subtest: Y5 taşıma hatası iletisinde iç kod / İngilizce yok: yeniden denenmeyen kod (EXDEV) ve kodsuz hata → 503 devir-backup-move, neden yalnız makine alanında
+    ok 5 - Y5 taşıma hatası iletisinde iç kod / İngilizce yok: yeniden denenmeyen kod (EXDEV) ve kodsuz hata → 503 devir-backup-move, neden yalnız makine alanında
+      ---
+      duration_ms: 85.420517
+      type: 'test'
+      ...
+    1..5
+ok 2 - D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows)
+  ---
+  duration_ms: 1347.259952
+  type: 'suite'
+  ...
+1..2
+# tests 9
+# suites 2
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7396.418765
+
+[kanit] d4t2-yeni-UTC: GEÇTİ · çıkış 0 · 9/9 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fc4c5fc +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4

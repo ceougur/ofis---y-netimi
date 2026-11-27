@@ -1,0 +1,195 @@
+TAP version 13
+# Subtest: M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12)
+    # Subtest: her adımın sonucu (durum + kod) beklenen
+    ok 1 - her adımın sonucu (durum + kod) beklenen
+      ---
+      duration_ms: 2.662736
+      type: 'test'
+      ...
+    # Subtest: carilerin bakiyesi (k1)
+    ok 2 - carilerin bakiyesi (k1)
+      ---
+      duration_ms: 0.368125
+      type: 'test'
+      ...
+    # Subtest: liste / form ucunun okuduğu defter bakiyesi her caride cari kartının bakiyesiyle aynı (yazım yolu kartın bakiyesini okur)
+    ok 3 - liste / form ucunun okuduğu defter bakiyesi her caride cari kartının bakiyesiyle aynı (yazım yolu kartın bakiyesini okur)
+      ---
+      duration_ms: 3.248803
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi tamam (değişmez; m.10 düzeltmeleri ve m.11 avansı reddedilmedi, ihlal yok)
+    ok 4 - Mutabakat Testi tamam (değişmez; m.10 düzeltmeleri ve m.11 avansı reddedilmedi, ihlal yok)
+      ---
+      duration_ms: 97.823587
+      type: 'test'
+      ...
+    # Subtest: ret iletileri gerçek sınırı ve nedeni söyler (dk-ud3 DÜŞÜK-1, dk-ud4 'breaks')
+    ok 5 - ret iletileri gerçek sınırı ve nedeni söyler (dk-ud3 DÜŞÜK-1, dk-ud4 'breaks')
+      ---
+      duration_ms: 0.793156
+      type: 'test'
+      ...
+    # Subtest: kayıtların durumu: kısmi zincir (A2 / A3) ve bağlı = şüpheli (A4) Değersiz Yazıldı, kalan 0
+    ok 6 - kayıtların durumu: kısmi zincir (A2 / A3) ve bağlı = şüpheli (A4) Değersiz Yazıldı, kalan 0
+      ---
+      duration_ms: 0.477752
+      type: 'test'
+      ...
+    1..6
+ok 1 - M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12)
+  ---
+  duration_ms: 17116.688996
+  type: 'suite'
+  ...
+# Subtest: M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5)
+    # Subtest: S269: kısmi Değersiz'den sonra kayıt 'Değersiz Yazıldı' (kalan 0) görünür ama yazılabilir — liste alanı 17.09 tarihiyle 2.000, bugün 0
+    ok 1 - S269: kısmi Değersiz'den sonra kayıt 'Değersiz Yazıldı' (kalan 0) görünür ama yazılabilir — liste alanı 17.09 tarihiyle 2.000, bugün 0
+      ---
+      duration_ms: 3.835598
+      type: 'test'
+      ...
+    # Subtest: formun ucu: seçilen tarihin sınırı + en çok yazdıran gün; kayıttan önce / ileri tarih yazılamaz
+    ok 2 - formun ucu: seçilen tarihin sınırı + en çok yazdıran gün; kayıttan önce / ileri tarih yazılamaz
+      ---
+      duration_ms: 11.348148
+      type: 'test'
+      ...
+    # Subtest: S-M2-1 = B: @17.09 3.000 (o günün bağlı payından önce), @18.09 123,55 (önceki günün payı düşülmüş); sonradan gelen bağsız (S270) @17.09 2.000
+    ok 3 - S-M2-1 = B: @17.09 3.000 (o günün bağlı payından önce), @18.09 123,55 (önceki günün payı düşülmüş); sonradan gelen bağsız (S270) @17.09 2.000
+      ---
+      duration_ms: 13.832612
+      type: 'test'
+      ...
+    # Subtest: Y30-6: S155 — sınır 3.000, önerilen 2.923,55 (öbür açık kayıt 500); önerilen tutar kabul, sınır reddedilir
+    ok 4 - Y30-6: S155 — sınır 3.000, önerilen 2.923,55 (öbür açık kayıt 500); önerilen tutar kabul, sınır reddedilir
+      ---
+      duration_ms: 93.940087
+      type: 'test'
+      ...
+    # Subtest: bildirim verisi: bu yazımın tutarı, yazımdan sonraki gerçek kalan ve aynı tarihle daha yazılabilecek tutar
+    ok 5 - bildirim verisi: bu yazımın tutarı, yazımdan sonraki gerçek kalan ve aynı tarihle daha yazılabilecek tutar
+      ---
+      duration_ms: 46.135903
+      type: 'test'
+      ...
+    # Subtest: Değersiz'den SONRA Şüpheliden Çıkar kabul; değişmez çıkarılmış kaydı Değersiz anının dünyasında açık sayar (ihlal yok)
+    ok 6 - Değersiz'den SONRA Şüpheliden Çıkar kabul; değişmez çıkarılmış kaydı Değersiz anının dünyasında açık sayar (ihlal yok)
+      ---
+      duration_ms: 7.738588
+      type: 'test'
+      ...
+    # Subtest: m.12 Dönem Kilidi 17.09: liste en çok yazdıran gün 18.09 (123,55), formun ucu 17.09'u kilitli söyler
+    ok 7 - m.12 Dönem Kilidi 17.09: liste en çok yazdıran gün 18.09 (123,55), formun ucu 17.09'u kilitli söyler
+      ---
+      duration_ms: 411.679255
+      type: 'test'
+      ...
+    1..7
+ok 2 - M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5)
+  ---
+  duration_ms: 2093.740905
+  type: 'suite'
+  ...
+# Subtest: M2 — S270 değişmezi: geri alınan uygulamanın bozuk durumu (Değersiz 3.000, bakiye −576,45) Mutabakat Testi'nde ve kapıda YAKALANIR
+    # Subtest: meşru sıra temiz; bağsız tahsilat Değersiz'den ÖNCE yazılmış ve Değersiz 3.000 yapılınca (geri alınan uygulamanın durumu, bakiye −576,45) iki koşul da kırmızı, kapı sonraki yazımı reddeder
+    ok 1 - meşru sıra temiz; bağsız tahsilat Değersiz'den ÖNCE yazılmış ve Değersiz 3.000 yapılınca (geri alınan uygulamanın durumu, bakiye −576,45) iki koşul da kırmızı, kapı sonraki yazımı reddeder
+      ---
+      duration_ms: 118.313583
+      type: 'test'
+      ...
+    1..1
+ok 3 - M2 — S270 değişmezi: geri alınan uygulamanın bozuk durumu (Değersiz 3.000, bakiye −576,45) Mutabakat Testi'nde ve kapıda YAKALANIR
+  ---
+  duration_ms: 1002.535662
+  type: 'suite'
+  ...
+# Subtest: M2 — iki şirket ve yedekten geri yükleme (ders 17)
+    # Subtest: 002'de aynı sınıflar aynı sonucu verir (sınır işlevi şirketler arasında bellek paylaşmaz); 001'in yedeği geri yüklenince sınır ve öneri aynı
+    ok 1 - 002'de aynı sınıflar aynı sonucu verir (sınır işlevi şirketler arasında bellek paylaşmaz); 001'in yedeği geri yüklenince sınır ve öneri aynı
+      ---
+      duration_ms: 4556.795014
+      type: 'test'
+      ...
+    1..1
+ok 4 - M2 — iki şirket ve yedekten geri yükleme (ders 17)
+  ---
+  duration_ms: 4612.860311
+  type: 'suite'
+  ...
+# \# M2 rastgele tohum 1: {"written":12,"refusedOver":34,"restored":1}
+# Subtest: M2 — rastgele sıra, tohum 1 (girdi §3 m.13)
+    # Subtest: her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+    ok 1 - her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+      ---
+      duration_ms: 5134.547187
+      type: 'test'
+      ...
+    1..1
+ok 5 - M2 — rastgele sıra, tohum 1 (girdi §3 m.13)
+  ---
+  duration_ms: 5825.087265
+  type: 'suite'
+  ...
+# \# M2 rastgele tohum 2: {"written":5,"refusedOver":21,"restored":0}
+# Subtest: M2 — rastgele sıra, tohum 2 (girdi §3 m.13)
+    # Subtest: her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+    ok 1 - her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+      ---
+      duration_ms: 4472.81903
+      type: 'test'
+      ...
+    1..1
+ok 6 - M2 — rastgele sıra, tohum 2 (girdi §3 m.13)
+  ---
+  duration_ms: 4906.113581
+  type: 'suite'
+  ...
+# \# M2 rastgele tohum 3: {"written":12,"refusedOver":31,"restored":1}
+# Subtest: M2 — rastgele sıra, tohum 3 (girdi §3 m.13)
+    # Subtest: her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+    ok 1 - her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+      ---
+      duration_ms: 4898.276083
+      type: 'test'
+      ...
+    1..1
+ok 7 - M2 — rastgele sıra, tohum 3 (girdi §3 m.13)
+  ---
+  duration_ms: 5462.118459
+  type: 'suite'
+  ...
+# Subtest: M2 — Değersiz sınırı ↔ v2.4.9'un gerçek kodu (sınıf sınıf; ders 53 (b))
+    # Subtest: üreticinin sürümü ve saati
+    ok 1 - üreticinin sürümü ve saati
+      ---
+      duration_ms: 0.64167
+      type: 'test'
+      ...
+    # Subtest: aynı olması gerekenler birebir, farklar yalnız beklenen farklar listesinde (karar numarasıyla)
+    ok 2 - aynı olması gerekenler birebir, farklar yalnız beklenen farklar listesinde (karar numarasıyla)
+      ---
+      duration_ms: 2.167543
+      type: 'test'
+      ...
+    # Subtest: v2.4.9 ile AYNI sınıflar: tam tutar (A1), kısmi zincir (A2, A3), bağlı = şüpheli (A4), sonradan bağsız → 2.000 (A9), altı yazım sırası (A11–A18), m.10, m.11
+    ok 3 - v2.4.9 ile AYNI sınıflar: tam tutar (A1), kısmi zincir (A2, A3), bağlı = şüpheli (A4), sonradan bağsız → 2.000 (A9), altı yazım sırası (A11–A18), m.10, m.11
+      ---
+      duration_ms: 0.407958
+      type: 'test'
+      ...
+    1..3
+ok 8 - M2 — Değersiz sınırı ↔ v2.4.9'un gerçek kodu (sınıf sınıf; ders 53 (b))
+  ---
+  duration_ms: 17968.334942
+  type: 'suite'
+  ...
+1..8
+# tests 21
+# suites 8
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 60277.705768

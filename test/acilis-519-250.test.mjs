@@ -131,14 +131,15 @@ describe("2.5.0 Ç5-A tur 1 — modül açılışları 519, KG-5, açılış evr
     await refused("carili evrakta başka cari", admin.post(`/api/workspace/cheques/${carili}/actions`, { action: "bounce", date: "2026-06-02", accountId: ids.creditor }), 400);
   });
 
-  it("KG-5: yüklenen kart TEK madde B CH (T − P) / A 519, P maddesiz, tarih yüklemenin YEREL günü; P = 0 → T; P = T → madde yok (H-06, B5)", async () => {
+  // 2.5.1 D3 tur 3 — BEKLENTİ BİLEREK DEĞİŞTİ (KULLANICI KARARI S-KD-3 = B, 27.11.2026: "kart ve defter maddesi Kayıt Tarihi'ne göre ... tarih esas alınır, yükleme anı değil"):
+  // madde kartın Kayıt Tarihi'nde (önceden yüklemenin yerel günü — B5 BİLİNEN SINIR kalktı).
+  it("KG-5: yüklenen kart TEK madde B CH (T − P) / A 519, P maddesiz, tarih kartın KAYIT TARİHİ (S-KD-3 = B); P = 0 → T; P = T → madde yok (H-06)", async () => {
     need("Excel kartı", "Excel kartı sayısı");
     const entries = server.app.ledger.build();
-    const today = (await must("bugün", admin.get("/api/workspace/ledger/lock"))).today;
     const cards = entries.filter(entry => entry.source === "Taksit kartı açılışı (Excel / tablo)");
     assert.deepEqual(cards.map(entry => linesOf(entry).join("|")).sort(), ["A 519 2000|B 120 2000", "A 519 4500|B 120 4500"]);
     for (const entry of cards) {
-      assert.equal(entry.date, today, "yüklemenin yerel günü (kartın Kayıt Tarihi 01.03.2026 değil)");
+      assert.equal(entry.date, "2026-03-01", "kartın Kayıt Tarihi (S-KD-3 = B; yükleme günü değil)");
       assert.equal(entry.cls, 2);
     }
     assert.equal(entries.filter(entry => entry.source === "Taksit açılışı (devir)").length, 0, "P maddesiz");

@@ -1,0 +1,58 @@
+{
+  "ad": "d3t2-eski-utc",
+  "komut": "node --test --test-concurrency=1 test/devir-d3-bag.test.mjs test/devir-d3-evrak.test.mjs test/devir-d3-banka.test.mjs test/devir-d3-olgu.test.mjs test/devir-d3-supheli.test.mjs",
+  "commit": "e1a6f2631b48d999c395b8f8e0b59521b25a6f0a",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T11:35:12.860Z",
+  "sure_sn": 19.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 21,
+    "gecen": 16,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D3 tur 2 — K sonrası bağlar (bağ yönlendirmesi) ve K / K+1 aynı tutarlı kayıtlar › bağ listesi (elle): K sonrası satırın ≤K belgeye HER bağı — Kapatılacak Fatura, çek olayı, banka havalesi, Mahsup Et'in iki tarafı, iade → asıl fatura; iki tarafı ≤K ya da >K olan bağ YOK",
+      "konum": "test/devir-d3-bag.test.mjs:106:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "D3 tur 2 — banka, POS, kredi kartı, kredi alt hesapları: K bakiyesi = açılış › her alt hesap K bakiyesiyle (elle): Z 390,00 · G 11.000,00 · POS 780,00 (bekleyen; komisyon tahsilat günü gider) · kart −200,00 · kredi −10.000,00; sahibi (banka hesabı / POS) belli",
+      "konum": "test/devir-d3-banka.test.mjs:66:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "D3 tur 2 — evrakın K'deki durumu (çek / senet, alınan / verilen, bankada tahsil, ciro, karşılıksız, K sonrası değişen) › kapanış = açılış (elle): 101.01 1.770,00 · 121.01 500,00 · 101.02 1.300,00 · 103 −1.300,00 · 321 −300,00; modül farkı YOK; Z'nin bakiyesi 0 ve satırı yok",
+      "konum": "test/devir-d3-evrak.test.mjs:127:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 2 — e-Belge, taslak ve tekrarlayan fatura olguları gerçek veri tabanından › ön denetim (10.02.2027; elle): DURDURUR bekleyen 2 (W1 + W6), listeden silinen 1, sonucu belirsiz 1, taslak 1; UYARIR şablon 1; K sonrası W5 / T2 / R3 sayılmaz",
+      "konum": "test/devir-d3-olgu.test.mjs:105:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 2 — şüpheli cari (K sonrası bağlı tahsilat), K sonrası Borçta Kalsın kartı, BM-1, BM-6 › (e) şüpheli K payı (elle): D1 128 = 600 (K sonrası bağlı tahsilat düşmez), D2 128 = 600 (yalnız ≤K tahsilat), D3 128 = 500 / 129 = 500 (Değersiz K sonrası); şüpheli farkı YOK, DURDURUR YOK",
+      "konum": "test/devir-d3-supheli.test.mjs:81:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t2/kanit/2026-11-27/d3t2-eski-utc.log",
+  "klasor": "/dev/shm/d3t2-t2/eski",
+  "ham_cikti_sha256": "77bef9266567c84b9103b7618e6f8d60262c26e13c866a7f582fe7f1042ef4bb",
+  "ham_cikti_bayt": 28202
+}

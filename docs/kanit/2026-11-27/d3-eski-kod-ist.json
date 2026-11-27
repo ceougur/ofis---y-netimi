@@ -1,0 +1,158 @@
+{
+  "ad": "d3-eski-kod-ist",
+  "komut": "node --test test/devir-d3-plan.test.mjs test/devir-d3-esdeger.test.mjs test/devir-d3-uc.test.mjs test/devir-d3-zaman.test.mjs",
+  "commit": "643964786dac426963eecaf2b7556f29849e8cb3",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T07:26:37.811Z",
+  "sure_sn": 3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 40,
+    "gecen": 0,
+    "basarisiz": 40,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 40 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmiş / kalan / bakiye › plan elle hesaplanan sayılarla: C1 açık kalemler (vade, söz), net 0; C2 avans net −300 ve açık kalem yok; S1 alacak kalemi 700",
+      "konum": "test/devir-d3-esdeger.test.mjs:60:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmiş / kalan / bakiye › borc-alacak: her t ≥ K+1 için gecikmiş(t) ve borç tarafı açık kalemleri (vade, kalan) devirli = devirsiz; elle: C1 01.01 = 500, 11.01 = 500, 01.02 = 1.100",
+      "konum": "test/devir-d3-esdeger.test.mjs:78:5",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmiş / kalan / bakiye › sadece-bakiye: her t ≥ K+1 için gecikmiş(t) ve borç tarafı açık kalemleri (vade, kalan) devirli = devirsiz; elle: C1 01.01 = 500, 11.01 = 500, 01.02 = 1.100",
+      "konum": "test/devir-d3-esdeger.test.mjs:78:5",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmiş / kalan / bakiye › TEHLİKE (tasarım §3.5 madde 4): Borç / Alacak Toplamı kuyruğa AYRI ve bağsız alacak gibi girerse gecikmiş değişir — netleşme kuralı gerekli (bu testin dişi)",
+      "konum": "test/devir-d3-esdeger.test.mjs:98:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmiş / kalan / bakiye › bakiye: devirli kuyruğun satırları (net + açık kalemler + K sonrası) = devirsiz carinin bugünkü bakiyesi",
+      "konum": "test/devir-d3-esdeger.test.mjs:108:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları › kesim tarihi: yalnız geçmiş bir yılın 31 Aralık'ı (EK-1 M11)",
+      "konum": "test/devir-d3-plan.test.mjs:94:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları › kapanış fişleri elle hesaplanan satırlarla ve sırayla: önceki yıl (570.2025) → N-01 → N-02 → N-03 → N-04 (691 hariç) → N-06 (691 → 692) → N-07",
+      "konum": "test/devir-d3-plan.test.mjs:104:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları › arşiv K kapanışı ve değişmezler: 6 / 7 = 0, 153 = DSS, 590 = Ç6 Dönem Net Kârı, Σ önceki yıl = Ç6 Geçmiş Yıllar, yeni yıl 519 = arşiv 519, bilanço dengede",
+      "konum": "test/devir-d3-plan.test.mjs:130:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları › N-13 fişi yalnız alt defteri olmayan hesaplara (570.2025, 590) ve 519'a; modül açılışları (kasa, banka, stok, KDV) alt defterden; S-1 = A (590 aynen)",
+      "konum": "test/devir-d3-plan.test.mjs:144:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları › cari satırları (M12): Borç Toplamı / Alacak Toplamı + açık kalemler (asıl vade; açıklama belge no + tarih); bakiyesi 0 + kalemsiz cariye satır YOK; satırlar = K bakiyesi",
+      "konum": "test/devir-d3-plan.test.mjs:157:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları › Sadece Bakiyeyi Aktar: tek Devir Bakiyesi satırı (net ≠ 0 ise) + aynı açık kalemler; iki seçenekte kuyruğa giren net AYNI",
+      "konum": "test/devir-d3-plan.test.mjs:175:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları › belirlenimli: aynı olgular → bayt bayt aynı plan (iki koşu)",
+      "konum": "test/devir-d3-plan.test.mjs:189:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları › zarar yılı: 692 → 591 (B 591 / A 692)",
+      "konum": "test/devir-d3-plan.test.mjs:194:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları › K yılı zaten kapanmış (Kapanış Fişi var) → plan sorunu, ön denetim DURDURUR",
+      "konum": "test/devir-d3-plan.test.mjs:205:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK B (elle): şüpheli, kartlar, stok, KDV dönem boyutu › kapanış: N-01 = SMM 130,00; 770 → 632 yansıtma; Dönem Net Kârı 1.220,00; değişmezler tutar",
+      "konum": "test/devir-d3-plan.test.mjs:274:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK B (elle): şüpheli, kartlar, stok, KDV dönem boyutu › şüpheli (M13): CH açık kalemi = fatura kalanı − şüpheli pay (600,00); 128 / 129 ayrı açılış; aynı tutar iki kez taşınmaz",
+      "konum": "test/devir-d3-plan.test.mjs:286:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK B (elle): şüpheli, kartlar, stok, KDV dönem boyutu › kartlar: açık kartın taksitleri açık kalem DEĞİL (net satırda — M2); Borçta Kalsın kalanı açık kalem; kapalı kart da tek açılış; carisiz kart 127",
+      "konum": "test/devir-d3-plan.test.mjs:296:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK B (elle): şüpheli, kartlar, stok, KDV dönem boyutu › stok (KG-9, M5, S207): eksi miktar devreder, değer 0; silinmiş ve sıfır miktarlı ürüne açılış YOK; eksi stoklu ürün sayısı",
+      "konum": "test/devir-d3-plan.test.mjs:308:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK B (elle): şüpheli, kartlar, stok, KDV dönem boyutu › KDV dönem boyutu (M8): Aralık alışının dönemi Ocak → 191@2027-01 (yeni yılın Ocak mahsubuna girer); Kasım 191'i önceki yıl",
+      "konum": "test/devir-d3-plan.test.mjs:315:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 devir planı — ÖRNEK B (elle): şüpheli, kartlar, stok, KDV dönem boyutu › modül ↔ Ana Defter farkı (kartın ödenen tutarı defterle tutmuyor) → plan sorunu 'modul-farki', ön denetim DURDURUR",
+      "konum": "test/devir-d3-plan.test.mjs:323:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 ön denetim (DEVIR-PLANI §5 + G4 + S-2 / S-3) › temiz veri: DURDURUR yok, geçilebilir",
+      "konum": "test/devir-d3-plan.test.mjs:337:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 ön denetim (DEVIR-PLANI §5 + G4 + S-2 / S-3) › her DURDURUR maddesi kendi olgusuyla (Türkçe cümle + gidilecek yer)",
+      "konum": "test/devir-d3-plan.test.mjs:344:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 ön denetim (DEVIR-PLANI §5 + G4 + S-2 / S-3) › S-2 / S-3 tek yerden: B seçilirse UYARIR, C seçilirse hiç söylenmez",
+      "konum": "test/devir-d3-plan.test.mjs:369:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 ön denetim (DEVIR-PLANI §5 + G4 + S-2 / S-3) › UYARIR maddeleri: Aralık mahsubu (belirgin + bağlantı), içe aktarma, şablon, gelen kutusu, iptal süresi, eksi stok, eksi kasa, 001 yeniden başlatma, erken devir",
+      "konum": "test/devir-d3-plan.test.mjs:378:3",
+      "hata": "D3 devir planı modülü yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 tablo sınıflaması (plan §8.16; tasarım §2): şemadaki her tablo bir sınıfta › bugünkü şemanın 86 tablosu DEVIR_TABLE_CLASSES'ta; ortak katman O; beş defter tablosu B (BAŞ MİMAR 27.11 (4))",
+      "konum": "test/devir-d3-plan.test.mjs:393:3",
+      "hata": "D3 okuyucu modülü yok (eski kod) (beklenen true, gelen ~)"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3-ajan/kanit/2026-11-27/d3-eski-kod-ist.log",
+  "klasor": "/dev/shm/d3-a1207/eski",
+  "ham_cikti_sha256": "fa647f9869e390aedab4c434f89ec3012d7a70104e063ab059f58fbda5517598",
+  "ham_cikti_bayt": 49801
+}

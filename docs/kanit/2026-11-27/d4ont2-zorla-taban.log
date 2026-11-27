@@ -1,0 +1,8 @@
+ROOT /dev/shm/d4ont2-ys/eski
+H1 — CI geçici klasörü C:\Users\RUNNER~1\AppData\Local\Temp (36 karakter); sınır 260 (NUL dahil → en çok 259)
+  devir-oncesi-2026          VACUUM hedefi 238 / günlük 246 karakter → Tamam (3 dosya)
+  devri-yenile-oncesi-2026   VACUUM hedefi 252 / günlük 260 karakter (≥ 260 → günlük açılamaz) → HATA status=undefined ileti="unable to open database file" code=ERR_SQLITE_ERROR
+  devri-geri-al-oncesi-2026  VACUUM hedefi 254 / günlük 262 karakter (≥ 260 → günlük açılamaz) → HATA status=undefined ileti="unable to open database file" code=ERR_SQLITE_ERROR
+  devir-oncesi-2027          VACUUM hedefi 238 / günlük 246 karakter → Tamam (3 dosya)
+H3 — ilk yedeğin veri tabanı kopyası açık tutuldu (sonraki yedekler yukarıda; etkilenen yok ise H3 elendi)
+H2 — isMove(klasör)=true isMove(iç dosya)=false isMove(ileri eğik çizgili klasör)=true

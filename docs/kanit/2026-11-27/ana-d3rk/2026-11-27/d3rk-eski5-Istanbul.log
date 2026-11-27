@@ -1,0 +1,424 @@
+TAP version 13
+# (node:18017) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — veri damgasının iz türü listesi (kaynak taraması)
+    # Subtest: tarama boş değil (ders 4): bilinen iz türleri bulunur (fatura, cari hareketi, kilit, defter dondurması, banka)
+    ok 1 - tarama boş değil (ders 4): bilinen iz türleri bulunur (fatura, cari hareketi, kilit, defter dondurması, banka)
+      ---
+      duration_ms: 204.262133
+      type: 'test'
+      ...
+    # Subtest: her iz türü sınıflandırılmış: ya veri damgasında ya gerekçeli VERİ DIŞI listede (yeni para yazıcısı listeye girmeden eklenemez)
+    not ok 2 - her iz türü sınıflandırılmış: ya veri damgasında ya gerekçeli VERİ DIŞI listede (yeni para yazıcısı listeye girmeden eklenemez)
+      ---
+      duration_ms: 210.723461
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga-kaynak.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'some')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        isData (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga-kaynak.test.mjs:84:48)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga-kaynak.test.mjs:95:59
+        Array.filter (<anonymous>)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga-kaynak.test.mjs:95:39)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+      ...
+    # Subtest: çakışma yok: veri damgasındaki bir tür VERİ DIŞI listede değil; dışlananlar (görüntüleme / dışa aktarma) veri ad alanında ve gerçekten var
+    not ok 3 - çakışma yok: veri damgasındaki bir tür VERİ DIŞI listede değil; dışlananlar (görüntüleme / dışa aktarma) veri ad alanında ve gerçekten var
+      ---
+      duration_ms: 149.692834
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga-kaynak.test.mjs:99:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'some')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        isData (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga-kaynak.test.mjs:84:48)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga-kaynak.test.mjs:102:51
+        Array.filter (<anonymous>)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga-kaynak.test.mjs:102:36)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: v-5: devirde budanan / kalan (B / A) her tablo ya damganın saydığı tablolarda ya yazımı iz türüyle / gerekçeyle karşılanmış
+    not ok 4 - v-5: devirde budanan / kalan (B / A) her tablo ya damganın saydığı tablolarda ya yazımı iz türüyle / gerekçeyle karşılanmış
+      ---
+      duration_ms: 2.544259
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga-kaynak.test.mjs:113:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        B / A tablosu damgada sayılmıyor ve gerekçesi yok
+        + actual - expected
+        
+        + [
+        +   'payments',
+        +   'cash_entries',
+        +   'account_entries',
+        +   'stock_moves',
+        +   'plan_entries',
+        +   'fin_events',
+        +   'bank_lines',
+        +   'vat_offsets',
+        +   'invoice_offsets',
+        +   'invoices',
+        +   'invoice_lines',
+        +   'ledger_vouchers',
+        +   'pos_items',
+        +   'bank_jobs',
+        +   'cheques',
+        +   'cheque_events',
+        +   'doubtful_receivables',
+        +   'doubtful_provisions',
+        +   'plans',
+        +   'plan_items'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'payments'
+        1: 'cash_entries'
+        2: 'account_entries'
+        3: 'stock_moves'
+        4: 'plan_entries'
+        5: 'fin_events'
+        6: 'bank_lines'
+        7: 'vat_offsets'
+        8: 'invoice_offsets'
+        9: 'invoices'
+        10: 'invoice_lines'
+        11: 'ledger_vouchers'
+        12: 'pos_items'
+        13: 'bank_jobs'
+        14: 'cheques'
+        15: 'cheque_events'
+        16: 'doubtful_receivables'
+        17: 'doubtful_provisions'
+        18: 'plans'
+        19: 'plan_items'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga-kaynak.test.mjs:128:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ders 27: tarama CRLF'li kaynakta da aynı türleri bulur
+    ok 5 - ders 27: tarama CRLF'li kaynakta da aynı türleri bulur
+      ---
+      duration_ms: 0.475166
+      type: 'test'
+      ...
+    1..5
+not ok 1 - D3 tur 5 — veri damgasının iz türü listesi (kaynak taraması)
+  ---
+  duration_ms: 569.190293
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga-kaynak.test.mjs:87:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:18024) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — veri damgası: veriyi değiştirmeyen yazım damgayı değiştirmez, para tablosuna yazan değiştirir
+    # Subtest: ön izlemenin damgası = okuyucunun damgası; hemen sonra 'değişmedi'
+    ok 1 - ön izlemenin damgası = okuyucunun damgası; hemen sonra 'değişmedi'
+      ---
+      duration_ms: 3.79167
+      type: 'test'
+      ...
+    # Subtest: v-1 ARKA PLAN (veriyi değiştirmeyen): zamanlanmış yedeğin turu, bütünlük taraması, analiz işçisi, defter dondurmasının boş turu → damga AYNI
+    ok 2 - v-1 ARKA PLAN (veriyi değiştirmeyen): zamanlanmış yedeğin turu, bütünlük taraması, analiz işçisi, defter dondurmasının boş turu → damga AYNI
+      ---
+      duration_ms: 454.464609
+      type: 'test'
+      ...
+    # Subtest: v-1 KULLANICI (veriyi değiştirmeyen): ikinci giriş + çıkış, şirket seçimi (002 ↔ 001), ekran durumu, fatura PDF'i, cari ekstresi, Devir Raporu PDF'i → damga AYNI
+    not ok 3 - v-1 KULLANICI (veriyi değiştirmeyen): ikinci giriş + çıkış, şirket seçimi (002 ↔ 001), ekran durumu, fatura PDF'i, cari ekstresi, Devir Raporu PDF'i → damga AYNI
+      ---
+      duration_ms: 193.723709
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga.test.mjs:73:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        şirket seçimi (company.selected izi bu dosyada)
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga.test.mjs:81:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: v-2 PARA TABLOSUNA YAZAN: cari kartı düzeltmesi, taksit tahsilatı tutar düzeltmesi, kayıt tahsilatı tutar düzeltmesi, tekrarlayan faturanın taslağı → damga DEĞİŞİR (her biri ayrı)
+    not ok 4 - v-2 PARA TABLOSUNA YAZAN: cari kartı düzeltmesi, taksit tahsilatı tutar düzeltmesi, kayıt tahsilatı tutar düzeltmesi, tekrarlayan faturanın taslağı → damga DEĞİŞİR (her biri ayrı)
+      ---
+      duration_ms: 150.138371
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kayıt tahsilatı düzeltmesi (250 → 240): damga değişmeli (satır sayıları 1/1/1/1 → 1/1/1/1)
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        step (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga.test.mjs:101:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga.test.mjs:109:21)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - D3 tur 5 — veri damgası: veriyi değiştirmeyen yazım damgayı değiştirmez, para tablosuna yazan değiştirir
+  ---
+  duration_ms: 2248.524622
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski5/test/devir-d3-damga.test.mjs:27:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:18034) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18034) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — S-T4-1 = A: kilitten sonra kurulan bağ kilitli bağsız kapanışı kaydırmaz (plan A'yı verir; devirsiz farkı ayrı sınıf)
+    # Subtest: veri tabanı (ders 3): kilit K, bağlı tahsilatlar kilitten SONRA yazıldı ve ≤K faturaya bağlı; iade asıl faturaya bağlı
+    ok 1 - veri tabanı (ders 3): kilit K, bağlı tahsilatlar kilitten SONRA yazıldı ve ≤K faturaya bağlı; iade asıl faturaya bağlı
+      ---
+      duration_ms: 2.317067
+      type: 'test'
+      ...
+    # Subtest: K1 plan (elle; S-T4-1 = A): K'de FIS-3 408,00 + FIS-2 1.245,40 açık; FIS-1 kapalı; 128,00'in bağı ARŞİV BAŞVURUSU (FIS-1'in belge numarası); K bakiyesi 1.653,40
+    ok 2 - K1 plan (elle; S-T4-1 = A): K'de FIS-3 408,00 + FIS-2 1.245,40 açık; FIS-1 kapalı; 128,00'in bağı ARŞİV BAŞVURUSU (FIS-1'in belge numarası); K bakiyesi 1.653,40
+      ---
+      duration_ms: 0.582882
+      type: 'test'
+      ...
+    # Subtest: K1 DEVİRLİ görünüm (sayılar AYNEN): 280,00 (22.12.2026) + 1.245,40 (19.01.2027); 19.01'e kadar gecikmiş 280,00, 20.01'den 1.525,40; bakiye 1.525,40
+    ok 3 - K1 DEVİRLİ görünüm (sayılar AYNEN): 280,00 (22.12.2026) + 1.245,40 (19.01.2027); 19.01'e kadar gecikmiş 280,00, 20.01'den 1.525,40; bakiye 1.525,40
+      ---
+      duration_ms: 11.773019
+      type: 'test'
+      ...
+    # Subtest: K1 DEVİRSİZ (programın bugünkü tek borç sırası): ya S-T4-1 öncesi 408,00 / 1.117,40 (BEKLENEN FARK — imza: bağ 128,00 kilitli bağsız kapanışı kaydırıyor) ya kilit paketi sonrası A; başkası BAŞARISIZ
+    ok 4 - K1 DEVİRSİZ (programın bugünkü tek borç sırası): ya S-T4-1 öncesi 408,00 / 1.117,40 (BEKLENEN FARK — imza: bağ 128,00 kilitli bağsız kapanışı kaydırıyor) ya kilit paketi sonrası A; başkası BAŞARISIZ
+      ---
+      duration_ms: 4.95854
+      type: 'test'
+      ...
+    # Subtest: K2 (iadesiz aynı sınıf) ve K4 (kilit K, kısmi bağsız kapanmış belgeye Ocak mahsubu): devirli = devirsiz, S-T4-1 imzası YOK; K4'te ayrılan = devirsiz kuyruğun payı 300
+    ok 5 - K2 (iadesiz aynı sınıf) ve K4 (kilit K, kısmi bağsız kapanmış belgeye Ocak mahsubu): devirli = devirsiz, S-T4-1 imzası YOK; K4'te ayrılan = devirsiz kuyruğun payı 300
+      ---
+      duration_ms: 5.069841
+      type: 'test'
+      ...
+    # Subtest: imza başka farkları yutmaz: K1'in devirli satırları bozulursa (kalem tutarı değişir — bakiye kayar) imza null
+    ok 6 - imza başka farkları yutmaz: K1'in devirli satırları bozulursa (kalem tutarı değişir — bakiye kayar) imza null
+      ---
+      duration_ms: 5.596655
+      type: 'test'
+      ...
+    1..6
+ok 3 - D3 tur 5 — S-T4-1 = A: kilitten sonra kurulan bağ kilitli bağsız kapanışı kaydırmaz (plan A'yı verir; devirsiz farkı ayrı sınıf)
+  ---
+  duration_ms: 2197.197893
+  type: 'suite'
+  ...
+# (node:18034) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18034) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18034) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — Dönem Kilidi K'den ÖNCE (30.06): kilitli dönemdeki belgeye K sonrası Mahsup Et (DOĞRULANMADI-2)
+    # Subtest: K3: ayrılan 150 = devirsiz kuyruğun payı (kilit sınırı dahil); K'de satış 150 açık kalem (vade 01.05); devirli = devirsiz her gün
+    ok 1 - K3: ayrılan 150 = devirsiz kuyruğun payı (kilit sınırı dahil); K'de satış 150 açık kalem (vade 01.05); devirli = devirsiz her gün
+      ---
+      duration_ms: 4.31785
+      type: 'test'
+      ...
+    1..1
+ok 4 - D3 tur 5 — Dönem Kilidi K'den ÖNCE (30.06): kilitli dönemdeki belgeye K sonrası Mahsup Et (DOĞRULANMADI-2)
+  ---
+  duration_ms: 2482.373482
+  type: 'suite'
+  ...
+# (node:18050) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18050) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — S-T2-1 = B: Borç Yaz karşısıyla K sonrası Mahsup Et (devirli = devirsiz)
+    # Subtest: veri tabanı (ders 3): mahsuplar yerinde (B6'nınki silindi), Borç Yaz satırları ve Vade Tarihleri; 002'nin mahsubu 002'nin dosyasında
+    ok 1 - veri tabanı (ders 3): mahsuplar yerinde (B6'nınki silindi), Borç Yaz satırları ve Vade Tarihleri; 002'nin mahsubu 002'nin dosyasında
+      ---
+      duration_ms: 14.38216
+      type: 'test'
+      ...
+    # Subtest: açık kalemler (elle): Borç Yaz'ın ayrılan payı Borç Yaz'ın açık kaleminde (Vade Tarihi korunur); ana belgesi ≤K alışta alışın kaleminde; K bakiyesi değişmez
+    ok 2 - açık kalemler (elle): Borç Yaz'ın ayrılan payı Borç Yaz'ın açık kaleminde (Vade Tarihi korunur); ana belgesi ≤K alışta alışın kaleminde; K bakiyesi değişmez
+      ---
+      duration_ms: 0.72918
+      type: 'test'
+      ...
+    # Subtest: ayırım listesi (elle): Borç Yaz karşısı yeni yıla ayrıldı / iki belge ≤K K'de kapandı; silinen ve K günü mahsubu YOK
+    ok 3 - ayırım listesi (elle): Borç Yaz karşısı yeni yıla ayrıldı / iki belge ≤K K'de kapandı; silinen ve K günü mahsubu YOK
+      ---
+      duration_ms: 0.444816
+      type: 'test'
+      ...
+    # Subtest: bağ listesi (elle): mahsubun ≤K Borç Yaz karşısı satırın DEVİR KALEMİNE (line:); ana belgesi ≤K alış faturanın kalemine; iki belgesi ≤K mahsup işaretli
+    ok 4 - bağ listesi (elle): mahsubun ≤K Borç Yaz karşısı satırın DEVİR KALEMİNE (line:); ana belgesi ≤K alış faturanın kalemine; iki belgesi ≤K mahsup işaretli
+      ---
+      duration_ms: 0.270554
+      type: 'test'
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, borç tarafı açık kalemler, en eski vade — her senaryo, her gün; B1 01.01 = 100, B3 her gün 0
+    ok 5 - DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, borç tarafı açık kalemler, en eski vade — her senaryo, her gün; B1 01.01 = 100, B3 her gün 0
+      ---
+      duration_ms: 23.821931
+      type: 'test'
+      ...
+    # Subtest: 002: kendi Borç Yaz mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+    ok 6 - 002: kendi Borç Yaz mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+      ---
+      duration_ms: 0.391487
+      type: 'test'
+      ...
+    # Subtest: iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+    ok 7 - iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+      ---
+      duration_ms: 392.206013
+      type: 'test'
+      ...
+    1..7
+ok 5 - D3 tur 5 — S-T2-1 = B: Borç Yaz karşısıyla K sonrası Mahsup Et (devirli = devirsiz)
+  ---
+  duration_ms: 4443.780205
+  type: 'suite'
+  ...
+# (node:18068) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18068) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — K kuyruğunda payı sıfıra inmiş belgeye ≤K bağlı tahsilat (devirli = devirsiz)
+    # Subtest: veri tabanı (ders 3): bağlı tahsilatlar ≤K tarihli ve satışa bağlı; mahsuplar yerinde
+    ok 1 - veri tabanı (ders 3): bağlı tahsilatlar ≤K tarihli ve satışa bağlı; mahsuplar yerinde
+      ---
+      duration_ms: 6.331862
+      type: 'test'
+      ...
+    # Subtest: plan (elle): ayrılan pay açık kalemde; bağın kapatamadığı kısım bağsız (avans net satırda ya da başka borcu kapatır); K bakiyesi değişmez
+    ok 2 - plan (elle): ayrılan pay açık kalemde; bağın kapatamadığı kısım bağsız (avans net satırda ya da başka borcu kapatır); K bakiyesi değişmez
+      ---
+      duration_ms: 0.5588
+      type: 'test'
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER: gecikmiş, açık kalemler, en eski vade her gün AYNI; Z1 / Z2 gecikmiş 0, Z3 200
+    ok 3 - DEVİRSİZ EŞDEĞER: gecikmiş, açık kalemler, en eski vade her gün AYNI; Z1 / Z2 gecikmiş 0, Z3 200
+      ---
+      duration_ms: 15.333564
+      type: 'test'
+      ...
+    1..3
+ok 6 - D3 tur 5 — K kuyruğunda payı sıfıra inmiş belgeye ≤K bağlı tahsilat (devirli = devirsiz)
+  ---
+  duration_ms: 3316.038486
+  type: 'suite'
+  ...
+# (node:18085) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18085) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — kâhin okuması (a): K sonrası mahsup kendi gününden itibaren — tarih tarih devirli = devirsiz
+    # Subtest: devirsiz PROGRAM (cari kartının Gecikmiş Borç'u, o günün verisiyle) — elle: 250 · 250 · 400 · 400 · 550 (kâhinin (a) okumasıyla aynı)
+    ok 1 - devirsiz PROGRAM (cari kartının Gecikmiş Borç'u, o günün verisiyle) — elle: 250 · 250 · 400 · 400 · 550 (kâhinin (a) okumasıyla aynı)
+      ---
+      duration_ms: 1.923432
+      type: 'test'
+      ...
+    # Subtest: o gün hazırlanan ön izlemenin DEVİRLİ eşdeğeri = devirsiz program, TARİH TARİH; mahsuptan önce ayırım YOK (alış satışı netler), mahsuptan sonra alış 150 ayrılır
+    ok 2 - o gün hazırlanan ön izlemenin DEVİRLİ eşdeğeri = devirsiz program, TARİH TARİH; mahsuptan önce ayırım YOK (alış satışı netler), mahsuptan sonra alış 150 ayrılır
+      ---
+      duration_ms: 0.430247
+      type: 'test'
+      ...
+    # Subtest: GERİYE DÖNÜK görünüm (bütün veriyle, geçmiş günün gecikmişi): Mahsup Et tarihten bağımsız 0. adım → devirsiz = devirli = 400 · 400 · 400 · 400 · 550; programda ileri tarihli Mahsup Et girilemez
+    ok 3 - GERİYE DÖNÜK görünüm (bütün veriyle, geçmiş günün gecikmişi): Mahsup Et tarihten bağımsız 0. adım → devirsiz = devirli = 400 · 400 · 400 · 400 · 550; programda ileri tarihli Mahsup Et girilemez
+      ---
+      duration_ms: 13.984452
+      type: 'test'
+      ...
+    1..3
+ok 7 - D3 tur 5 — kâhin okuması (a): K sonrası mahsup kendi gününden itibaren — tarih tarih devirli = devirsiz
+  ---
+  duration_ms: 4149.301762
+  type: 'suite'
+  ...
+# (node:18085) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 5 — kâhin okuması (b): bakiyesi 0 caride S-T2-1 ayırmasıyla iki yönlü kalem
+    # Subtest: doğal sırada program Mahsup Et'i REDDEDER (409, satışın açık tutarı 0,00 TL) — örnek yalnız geriye tarihli girişle oluşur
+    ok 1 - doğal sırada program Mahsup Et'i REDDEDER (409, satışın açık tutarı 0,00 TL) — örnek yalnız geriye tarihli girişle oluşur
+      ---
+      duration_ms: 0.561096
+      type: 'test'
+      ...
+    # Subtest: plan (elle): K bakiyesi 0; Kasım satışının 150'si ayrılır (açık kalem 150, vade 30.11); avans 150 net satırda (EK-1 M2 A); iki seçenekte satırlar
+    ok 2 - plan (elle): K bakiyesi 0; Kasım satışının 150'si ayrılır (açık kalem 150, vade 30.11); avans 150 net satırda (EK-1 M2 A); iki seçenekte satırlar
+      ---
+      duration_ms: 0.392985
+      type: 'test'
+      ...
+    # Subtest: devirli = devirsiz (iki seçenek, her gün): gecikmiş 0, açık kalem yok; cari kartı bakiyesi −150 (avans)
+    ok 3 - devirli = devirsiz (iki seçenek, her gün): gecikmiş 0, açık kalem yok; cari kartı bakiyesi −150 (avans)
+      ---
+      duration_ms: 12.700043
+      type: 'test'
+      ...
+    1..3
+ok 8 - D3 tur 5 — kâhin okuması (b): bakiyesi 0 caride S-T2-1 ayırmasıyla iki yönlü kalem
+  ---
+  duration_ms: 2791.862008
+  type: 'suite'
+  ...
+1..8
+# tests 32
+# suites 8
+# pass 27
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 25795.571013

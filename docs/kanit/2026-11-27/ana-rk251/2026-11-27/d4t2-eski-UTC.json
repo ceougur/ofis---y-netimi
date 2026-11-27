@@ -1,0 +1,58 @@
+{
+  "ad": "d4t2-eski-UTC",
+  "komut": "node --test --test-concurrency=1 test/devir-d4on-yol-251.test.mjs",
+  "commit": "1fc39558e80a2b913905f5614d8abc2fde97140c",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T15:16:14.795Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 0,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows) › Y1 SQLite'ın açtığı her yol (kopya + günlük) varsayılan kurulum kökünde ve 80 karakterlik şirket adında Windows sınırının (260) altında; üç etiket de Tamam",
+      "konum": "test/devir-d4on-yol-251.test.mjs:93:3",
+      "hata": "2026-11-27T15-16-15-993Z-devir-oncesi-2026: günlük yolu 260 karakter (sınır 259; kopya 252) — C:\\\\DestekOfis\\\\backups\\\\002 - Yılmaz İnşaat Taahhüt Sanayi ve Ticaret Limited Şirketi Danışmanlık ve Müşavirli\\\\devir-yedekleri\\\\2026-11-27T15-16-15-993Z-devir-oncesi-2026.yaziliyor\\\\destekofis-002-2026-11-27T15-16-15-993Z-devir-oncesi-2026.sqlite.yaziliyor-journal (beklenen true, gelen false)"
+    },
+    {
+      "ad": "D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows) › Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne oldu, neden, ne yapmalı, nereye); iç kod yalnız makine alanında; yarım klasör kalmaz",
+      "konum": "test/devir-d4on-yol-251.test.mjs:119:3",
+      "hata": "undefined unable to open database file · undefined !== 503"
+    },
+    {
+      "ad": "D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows) › Y3 iç dosya taşımaları (kopyanın geçici adından asıl adına; çalışma klasöründen yarım klasöre) geçici hatada yeniden denenir; yedek Tamam",
+      "konum": "test/devir-d4on-yol-251.test.mjs:147:3",
+      "hata": "EPERM: test: enjekte, rename (beklenen ~, gelen )"
+    },
+    {
+      "ad": "D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows) › Y4 yedek klasörü son adına alınırken programın kendi okuma akışlarının hepsi kapanmış (açık tutamak yok)",
+      "konum": "test/devir-d4on-yol-251.test.mjs:187:3",
+      "hata": "taşıma anında kapanmamış okuma akışı: [\"secret.key\"] · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows) › Y5 taşıma hatası iletisinde iç kod / İngilizce yok: yeniden denenmeyen kod (EXDEV) ve kodsuz hata → 503 devir-backup-move, neden yalnız makine alanında",
+      "konum": "test/devir-d4on-yol-251.test.mjs:216:3",
+      "hata": "The input did not match the regular expression /^Devir yedeği yazıldı ama tamamlanamadı: yedek klasörü son adına alınamadı \\(dosya sistemi taşımaya izin vermedi\\)\\. Devri Geri Al bu yedek tamamlanmadan yapılmaz; verilerinizde değişiklik olmadı\\. Birkaç dakika bekleyip yeniden deneyin\\. Yazılan yedek silinmedi: Yönetim → Yedekler → Devir Yedekleri'nde “Yarım Kaldı” olarak görünür\\.$/. Input: · 'Devir yedeği yazıldı ama son adına alınamadı (dosya sistemi hatası EXDEV). Yedek Devir Yedekleri listesinde “Yarım Kaldı” görünür; birkaç dakika sonra yeniden deneyin.' (beklenen , gelen Devir yedeği yazıldı ama son adına alınamadı (dosya sistemi hatası EXDEV). Yedek Devir Yedekleri listesinde “Yarım Kaldı” görünür; birkaç dakika sonra yeniden deneyin.)"
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-27/d4t2-eski-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/d4e",
+  "ham_cikti_sha256": "2d5db395e22faad205d02d179a884967be2e0d5fda2cfa68fc9bb00a1bbfa3d2",
+  "ham_cikti_bayt": 11469
+}

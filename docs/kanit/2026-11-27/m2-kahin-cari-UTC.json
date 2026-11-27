@@ -1,0 +1,158 @@
+{
+  "ad": "m2-kahin-cari-UTC",
+  "komut": "npm run test:kahin-cari",
+  "commit": "80ef0d123dedf133e656456fe1b19cedb20bff29",
+  "dal": "worktree-agent-afce913f2c07f70a9",
+  "kirli": 0,
+  "izlenmeyen": 20,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T12:02:05.693Z",
+  "sure_sn": 696.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 25957,
+    "gecen": 25905,
+    "basarisiz": 52,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 52 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:a20d1:durum: program \"tuttu\" · kâhin \"ok\" (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program \"ret\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:a27d2:durum: program \"tuttu\" · kâhin \"ok\" (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program \"ret\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:a2d2:durum: program \"tuttu\" · kâhin \"ok\" (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program \"ret\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:a3d2:durum: program \"tuttu\" · kâhin \"ok\" (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program \"ret\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:a3d3:durum: program \"tuttu\" · kâhin \"ok\" (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program \"ret\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:a4d1:durum: program \"tuttu\" · kâhin \"ok\" (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program \"ret\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:a5d1:kod: program \"tuttu\" · kâhin \"doubtful-writeoff-exceeds\" (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program \"doubtful-closed\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:a5d2:durum: program \"tuttu\" · kâhin \"ok\" (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program \"ret\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:a9d1:kod: program \"tuttu\" · kâhin \"doubtful-writeoff-exceeds\" (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program \"doubtful-closed\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:a9d2:kod: program \"tuttu\" · kâhin \"doubtful-writeoff-exceeds\" (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program \"doubtful-closed\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] adim:a9d3:durum: program \"tuttu\" · kâhin \"ok\" (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program \"ret\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:A20:bakiye: program \"tuttu\" · kâhin 192355 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 342355))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:A27:bakiye: program \"tuttu\" · kâhin 42355 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 342355))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:A2:bakiye: program \"tuttu\" · kâhin 42355 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 242355))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:A3:bakiye: program \"tuttu\" · kâhin 42355 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 242355))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:A4:bakiye: program \"tuttu\" · kâhin 40000 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 340000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:A5:bakiye: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 40000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:cari:A9:bakiye: program \"tuttu\" · kâhin 42355 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 242355))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:fatura:FA20:acik: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 2355))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:fatura:FA20:gosterilen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 2355))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:fatura:FA20:liste:gosterilen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 2355))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:fatura:FA27:acik: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 2355))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:fatura:FA27:gosterilen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 2355))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:fatura:FA27:liste:gosterilen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 2355))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:hareket:b-a20:kalan: program \"tuttu\" · kâhin 192355 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 340000))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-27/m2-kahin-cari-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afce913f2c07f70a9",
+  "ham_cikti_sha256": "a2e02cd6213b66547d32bbd3bf97cd48bc9578fbc323257af02dc5586de9758a",
+  "ham_cikti_bayt": 98830
+}

@@ -1,0 +1,850 @@
+TAP version 13
+# (node:17901) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — çek / senet yön × durum: planın açılışı doğru yönde ve durumda
+    # Subtest: veri tabanı (ders 3): evrakların bugünkü durumu
+    ok 1 - veri tabanı (ders 3): evrakların bugünkü durumu
+      ---
+      duration_ms: 2.352129
+      type: 'test'
+      ...
+    # Subtest: her sınıf doğru hesapta / alt hesapta / yönde; tahsil edilmiş ve ödenmiş evrak listede YOK (elle)
+    ok 2 - her sınıf doğru hesapta / alt hesapta / yönde; tahsil edilmiş ve ödenmiş evrak listede YOK (elle)
+      ---
+      duration_ms: 0.48799
+      type: 'test'
+      ...
+    # Subtest: kapanış = açılış: evrak hesaplarının arşiv K bakiyesi = planın açılışı (işaretli; alınan +, verilen −); modül farkı / sorun YOK
+    ok 3 - kapanış = açılış: evrak hesaplarının arşiv K bakiyesi = planın açılışı (işaretli; alınan +, verilen −); modül farkı / sorun YOK
+      ---
+      duration_ms: 0.291089
+      type: 'test'
+      ...
+    # Subtest: karşılıksızın carisi: faturası yeniden açık (kendi vadesiyle); devirli = devirsiz (portföyden, senet, cirodan)
+    ok 4 - karşılıksızın carisi: faturası yeniden açık (kendi vadesiyle); devirli = devirsiz (portföyden, senet, cirodan)
+      ---
+      duration_ms: 17.400235
+      type: 'test'
+      ...
+    1..4
+ok 1 - D3 tur 4 — çek / senet yön × durum: planın açılışı doğru yönde ve durumda
+  ---
+  duration_ms: 2505.204073
+  type: 'suite'
+  ...
+# (node:17909) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket)
+    # Subtest: devir yokken: üç neden de YOK (yanlış durdurma yok)
+    ok 1 - devir yokken: üç neden de YOK (yanlış durdurma yok)
+      ---
+      duration_ms: 431.922164
+      type: 'test'
+      ...
+    # Subtest: y-1: aynı yıl (dosya ayarı + arşiv kaydı) → DURDURUR 'Bu Yıl Zaten Devredildi'; çare Devri Yenile / Devri Geri Al; dört alan
+    not ok 2 - y-1: aynı yıl (dosya ayarı + arşiv kaydı) → DURDURUR 'Bu Yıl Zaten Devredildi'; çare Devri Yenile / Devri Geri Al; dört alan
+      ---
+      duration_ms: 513.87766
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'devir-yil-devredilmis'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'devir-yil-devredilmis'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:82:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: y-4: ayarda 2026 var, arşiv kaydı yok (yarıda kalmış devir) → DURDURUR 'Önceki Devir Yarıda Kalmış' (Devir Yedekleri); 'bu yıl devredildi' DEĞİL
+    not ok 3 - y-4: ayarda 2026 var, arşiv kaydı yok (yarıda kalmış devir) → DURDURUR 'Önceki Devir Yarıda Kalmış' (Devir Yedekleri); 'bu yıl devredildi' DEĞİL
+      ---
+      duration_ms: 543.529906
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:92:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'devir-yarim-kalmis'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'devir-yarim-kalmis'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:95:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: y-2: arşiv kaydı var, dosya ayarı yok → DURDURUR 'Bu Yıl Zaten Devredildi'
+    not ok 4 - y-2: arşiv kaydı var, dosya ayarı yok → DURDURUR 'Bu Yıl Zaten Devredildi'
+      ---
+      duration_ms: 531.501749
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:102:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'devir-yil-devredilmis'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'devir-yil-devredilmis'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:105:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: y-3: arşiv kaydı var ama arşiv dosyası yok → DURDURUR; ilette 'arşiv dosyası bulunamadı' + Devir Yedekleri
+    not ok 5 - y-3: arşiv kaydı var ama arşiv dosyası yok → DURDURUR; ilette 'arşiv dosyası bulunamadı' + Devir Yedekleri
+      ---
+      duration_ms: 280.593187
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:108:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'devir-yil-devredilmis'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'devir-yil-devredilmis'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:111:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: y-7: Devri Geri Al'dan sonra (kayıt ve ayar kalktı) → GEÇER
+    ok 6 - y-7: Devri Geri Al'dan sonra (kayıt ve ayar kalktı) → GEÇER
+      ---
+      duration_ms: 283.322109
+      type: 'test'
+      ...
+    # Subtest: y-5: sonraki yıl (2027) devredilmiş, 2026 seçildi → DURDURUR 'Sonraki Yıl Devredilmiş'
+    not ok 7 - y-5: sonraki yıl (2027) devredilmiş, 2026 seçildi → DURDURUR 'Sonraki Yıl Devredilmiş'
+      ---
+      duration_ms: 461.38
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'devir-sonraki-yil-devredilmis'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'devir-sonraki-yil-devredilmis'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:127:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: y-6: önceki yıl (2025) devredilmiş, 2026 seçildi → GEÇER
+    ok 8 - y-6: önceki yıl (2025) devredilmiş, 2026 seçildi → GEÇER
+      ---
+      duration_ms: 445.514188
+      type: 'test'
+      ...
+    # Subtest: y-9: devir yılları ayarı bozuk (JSON değil) → ayar yok sayılır, arşiv kaydı yok → GEÇER
+    ok 9 - y-9: devir yılları ayarı bozuk (JSON değil) → ayar yok sayılır, arşiv kaydı yok → GEÇER
+      ---
+      duration_ms: 331.865958
+      type: 'test'
+      ...
+    # Subtest: y-8: iki şirket — 002'nin 2026 devri 001'i durdurmaz; 002'nin kendi ön izlemesi durur
+    not ok 10 - y-8: iki şirket — 002'nin 2026 devri 001'i durdurmaz; 002'nin kendi ön izlemesi durur
+      ---
+      duration_ms: 786.466515
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:146:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'devir-yil-devredilmis'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'devir-yil-devredilmis'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:149:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..10
+not ok 2 - D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket)
+  ---
+  duration_ms: 6383.708702
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ikinci.test.mjs:31:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:17932) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — her neden üretilir ve dört alanı temiz (iç kod / İngilizce / alan adı / tablo adı yok)
+    # Subtest: bütün ön denetim maddeleri + bütün plan sorunları + bütün değişmezler + redler: dört alan, yasak kalıp yok, tablo adı yok, adımlar var
+    ok 1 - bütün ön denetim maddeleri + bütün plan sorunları + bütün değişmezler + redler: dört alan, yasak kalıp yok, tablo adı yok, adımlar var
+      ---
+      duration_ms: 13.161874
+      type: 'test'
+      ...
+    # Subtest: kâhin ↔ plan karşılaştırması §9'un EKSİK maddeleri tamam: plan sorunlarında adım adım + Ön İzleme'yi yeniden başlat; tutar yönüyle; modülün adı; şüphelide Şüpheli Alacaklar
+    not ok 2 - kâhin ↔ plan karşılaştırması §9'un EKSİK maddeleri tamam: plan sorunlarında adım adım + Ön İzleme'yi yeniden başlat; tutar yönüyle; modülün adı; şüphelide Şüpheli Alacaklar
+      ---
+      duration_ms: 1.523781
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ileti-tum.test.mjs:90:3'
+      failureType: 'testCodeFailure'
+      error: "plan-donem-sonucu-farki: Ön İzleme'yi yeniden başlat adımı"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ileti-tum.test.mjs:99:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: KAYNAK TARAMASI: kaynaktaki her neden kodu üretildi; planın / okuyucunun her sorun türünün kendi iletisi var (varsayılana düşmez)
+    ok 3 - KAYNAK TARAMASI: kaynaktaki her neden kodu üretildi; planın / okuyucunun her sorun türünün kendi iletisi var (varsayılana düşmez)
+      ---
+      duration_ms: 10.22364
+      type: 'test'
+      ...
+    1..3
+not ok 3 - D3 tur 4 — her neden üretilir ve dört alanı temiz (iç kod / İngilizce / alan adı / tablo adı yok)
+  ---
+  duration_ms: 25.738115
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-ileti-tum.test.mjs:75:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:17940) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:17940) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:17940) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:17940) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba ayrılır (devirli = devirsiz)
+    # Subtest: veri tabanı (ders 3): mahsuplar — M4'ün mahsubu silindi, öbürleri yerinde; 002'nin mahsubu 002'nin dosyasında
+    ok 1 - veri tabanı (ders 3): mahsuplar — M4'ün mahsubu silindi, öbürleri yerinde; 002'nin mahsubu 002'nin dosyasında
+      ---
+      duration_ms: 3.256433
+      type: 'test'
+      ...
+    # Subtest: açık kalemler (elle): ayrılan pay ≤K belgenin açık kaleminde; K bakiyesi değişmez
+    not ok 2 - açık kalemler (elle): ayrılan pay ≤K belgenin açık kaleminde; K bakiyesi değişmez
+      ---
+      duration_ms: 3.268867
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-mahsup.test.mjs:122:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+        -     'm1a',
+        -     'credit',
+        -     15000,
+        -     '2026-12-03'
+        -   ],
+        -   [
+              'm1s',
+              'debt',
+        +     25000,
+        -     40000,
+              '2026-12-20'
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'm1a'
+          1: 'credit'
+          2: 15000
+          3: '2026-12-03'
+        1:
+          0: 'm1s'
+          1: 'debt'
+          2: 40000
+          3: '2026-12-20'
+      actual:
+        0:
+          0: 'm1s'
+          1: 'debt'
+          2: 25000
+          3: '2026-12-20'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-mahsup.test.mjs:125:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ayırım listesi (elle): yeni yıla ayrılan / K'de kapanan; tutar = devirsiz kuyruğun mahsuba verdiği pay; silinmiş mahsup ve ≤K mahsup YOK
+    not ok 3 - ayırım listesi (elle): yeni yıla ayrılan / K'de kapanan; tutar = devirsiz kuyruğun mahsuba verdiği pay; silinmiş mahsup ve ≤K mahsup YOK
+      ---
+      duration_ms: 0.222753
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-mahsup.test.mjs:139:3'
+      failureType: 'testCodeFailure'
+      error: 'planda mahsup ayırım listesi yok (S-T2-1 = B kodu yok)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-mahsup.test.mjs:141:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bağ listesi (elle): ayrılan belgeye K sonrası mahsup → DEVİR KALEMİNE (Alacak Yaz satırı dahil); iki belgesi ≤K mahsup 'k-de-kapandi' işaretli
+    not ok 4 - bağ listesi (elle): ayrılan belgeye K sonrası mahsup → DEVİR KALEMİNE (Alacak Yaz satırı dahil); iki belgesi ≤K mahsup 'k-de-kapandi' işaretli
+      ---
+      duration_ms: 1.547795
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-mahsup.test.mjs:155:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              'counter_id',
+              'm10a',
+              'acik-kalem',
+              'm10a',
+        +     ''
+        -     'yeni-yila-ayrildi'
+            ],
+            [
+              'counter_id',
+              'm1a',
+        +     'arsiv-basvurusu',
+        +     '',
+        +     ''
+        -     'acik-kalem',
+        -     'm1a',
+        -     'yeni-yila-ayrildi'
+            ],
+            [
+              'counter_id',
+              'm3a',
+        +     'arsiv-basvurusu',
+        +     '',
+        +     ''
+        -     'acik-kalem',
+        -     'm3a',
+        -     'yeni-yila-ayrildi'
+            ],
+            [
+              'counter_id',
+              'm5a',
+        +     'arsiv-basvurusu',
+        +     '',
+        +     ''
+        -     'acik-kalem',
+        -     'm5a',
+        -     'yeni-yila-ayrildi'
+            ],
+            [
+              'counter_id',
+              'm5a',
+        +     'arsiv-basvurusu',
+        +     '',
+        +     ''
+        -     'acik-kalem',
+        -     'm5a',
+        -     'yeni-yila-ayrildi'
+            ],
+            [
+              'counter_id',
+              'm6a',
+              'arsiv-basvurusu',
+              '',
+        +     ''
+        -     'k-de-kapandi'
+            ],
+            [
+        -     'counter_id',
+        -     'm7e',
+        -     'acik-kalem',
+        -     'm7e',
+        -     'yeni-yila-ayrildi'
+        -   ],
+        -   [
+              'invoice_id',
+              'm2s',
+              'acik-kalem',
+              'm2s',
+        +     ''
+        -     'yeni-yila-ayrildi'
+            ],
+            [
+              'invoice_id',
+              'm6s2',
+              'acik-kalem',
+              'm6s2',
+        +     ''
+        -     'k-de-kapandi'
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'counter_id'
+          1: 'm10a'
+          2: 'acik-kalem'
+          3: 'm10a'
+          4: 'yeni-yila-ayrildi'
+        1:
+          0: 'counter_id'
+          1: 'm1a'
+          2: 'acik-kalem'
+          3: 'm1a'
+          4: 'yeni-yila-ayrildi'
+        2:
+          0: 'counter_id'
+          1: 'm3a'
+          2: 'acik-kalem'
+          3: 'm3a'
+          4: 'yeni-yila-ayrildi'
+        3:
+          0: 'counter_id'
+          1: 'm5a'
+          2: 'acik-kalem'
+          3: 'm5a'
+          4: 'yeni-yila-ayrildi'
+        4:
+          0: 'counter_id'
+          1: 'm5a'
+          2: 'acik-kalem'
+          3: 'm5a'
+          4: 'yeni-yila-ayrildi'
+        5:
+          0: 'counter_id'
+          1: 'm6a'
+          2: 'arsiv-basvurusu'
+          3: ''
+          4: 'k-de-kapandi'
+        6:
+          0: 'counter_id'
+          1: 'm7e'
+          2: 'acik-kalem'
+          3: 'm7e'
+          4: 'yeni-yila-ayrildi'
+        7:
+          0: 'invoice_id'
+          1: 'm2s'
+          2: 'acik-kalem'
+          3: 'm2s'
+          4: 'yeni-yila-ayrildi'
+        8:
+          0: 'invoice_id'
+          1: 'm6s2'
+          2: 'acik-kalem'
+          3: 'm6s2'
+          4: 'k-de-kapandi'
+      actual:
+        0:
+          0: 'counter_id'
+          1: 'm10a'
+          2: 'acik-kalem'
+          3: 'm10a'
+          4: ''
+        1:
+          0: 'counter_id'
+          1: 'm1a'
+          2: 'arsiv-basvurusu'
+          3: ''
+          4: ''
+        2:
+          0: 'counter_id'
+          1: 'm3a'
+          2: 'arsiv-basvurusu'
+          3: ''
+          4: ''
+        3:
+          0: 'counter_id'
+          1: 'm5a'
+          2: 'arsiv-basvurusu'
+          3: ''
+          4: ''
+        4:
+          0: 'counter_id'
+          1: 'm5a'
+          2: 'arsiv-basvurusu'
+          3: ''
+          4: ''
+        5:
+          0: 'counter_id'
+          1: 'm6a'
+          2: 'arsiv-basvurusu'
+          3: ''
+          4: ''
+        6:
+          0: 'invoice_id'
+          1: 'm2s'
+          2: 'acik-kalem'
+          3: 'm2s'
+          4: ''
+        7:
+          0: 'invoice_id'
+          1: 'm6s2'
+          2: 'acik-kalem'
+          3: 'm6s2'
+          4: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-mahsup.test.mjs:158:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, açık kalemler, en eski vade — her senaryo, her gün; örnek AYNEN: M1 01.01 = 400, 01.02 = 550
+    not ok 5 - DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, açık kalemler, en eski vade — her senaryo, her gün; örnek AYNEN: M1 01.01 = 400, 01.02 = 550
+      ---
+      duration_ms: 6.473498
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-mahsup.test.mjs:171:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        m1 2027-01-01 gecikmiş
+        
+        25000 !== 40000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 40000
+      actual: 25000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-mahsup.test.mjs:177:16)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002: kendi mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+    not ok 6 - 002: kendi mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+      ---
+      duration_ms: 0.455431
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-mahsup.test.mjs:187:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+        -     'credit',
+        -     15000
+        -   ],
+        -   [
+              'debt',
+        +     25000
+        -     40000
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'credit'
+          1: 15000
+        1:
+          0: 'debt'
+          1: 40000
+      actual:
+        0:
+          0: 'debt'
+          1: 25000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-mahsup.test.mjs:192:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+    ok 7 - iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+      ---
+      duration_ms: 389.665354
+      type: 'test'
+      ...
+    1..7
+not ok 4 - D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba ayrılır (devirli = devirsiz)
+  ---
+  duration_ms: 4987.992973
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-mahsup.test.mjs:42:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:17955) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — stok ürün ürün değişmezi (eksi, silinmiş, sıfır, K sonrası hareket)
+    # Subtest: veri tabanı (ders 3): P3 kartı silindi (200), stok hareketleri K'ye kadar P1 7, P2 −3, P3 4, P4 0, P5 5
+    ok 1 - veri tabanı (ders 3): P3 kartı silindi (200), stok hareketleri K'ye kadar P1 7, P2 −3, P3 4, P4 0, P5 5
+      ---
+      duration_ms: 6.492424
+      type: 'test'
+      ...
+    # Subtest: plan (elle): P1 7 / 350,00 · P2 −3 / 0 (eksi) · P5 5 / 50,00; silinmiş P3 ve sıfır P4 satırsız; ürün değişmezi TUTAR
+    not ok 2 - plan (elle): P1 7 / 350,00 · P2 −3 / 0 (eksi) · P5 5 / 50,00; silinmiş P3 ve sıfır P4 satırsız; ürün değişmezi TUTAR
+      ---
+      duration_ms: 0.786407
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-stok.test.mjs:69:3'
+      failureType: 'testCodeFailure'
+      error: 'ürün ürün değişmezi planda yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-stok.test.mjs:75:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bozulma (olgu): P1 ile P5'in K miktarı yer değiştirir (toplam aynı) → 'stok-urun' kırılır; toplam değişmezleri tutar; ön denetim ürün adlarıyla DURDURUR (dört alan, Stok)
+    not ok 3 - bozulma (olgu): P1 ile P5'in K miktarı yer değiştirir (toplam aynı) → 'stok-urun' kırılır; toplam değişmezleri tutar; ön denetim ürün adlarıyla DURDURUR (dört alan, Stok)
+      ---
+      duration_ms: 12.773117
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-stok.test.mjs:81:3'
+      failureType: 'testCodeFailure'
+      error: 'okuyucunun bağımsız stok miktarı yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-stok.test.mjs:84:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 5 - D3 tur 4 — stok ürün ürün değişmezi (eksi, silinmiş, sıfır, K sonrası hareket)
+  ---
+  duration_ms: 2372.944146
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-stok.test.mjs:32:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:17964) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — uzmanın ilk kabul testi (saf hesap): açılış 6.000, Ocak tahsilatı 1.000 yeni yılda, 05.01'de bakiye 5.000, asıl vade
+    # Subtest: veri tabanı (ders 3): fatura 10.000 (vade 20.12.2026), Aralık tahsilatı 4.000, 02.01.2027 banka tahsilatı 1.000
+    ok 1 - veri tabanı (ders 3): fatura 10.000 (vade 20.12.2026), Aralık tahsilatı 4.000, 02.01.2027 banka tahsilatı 1.000
+      ---
+      duration_ms: 2.26998
+      type: 'test'
+      ...
+    # Subtest: (1) planın cari açılışı 6.000 (iki seçenek): açık kalem 6.000 — ASIL VADE 20.12.2026, belge no ve tarihi; Ocak tahsilatı açılışa girmez
+    ok 2 - (1) planın cari açılışı 6.000 (iki seçenek): açık kalem 6.000 — ASIL VADE 20.12.2026, belge no ve tarihi; Ocak tahsilatı açılışa girmez
+      ---
+      duration_ms: 0.448321
+      type: 'test'
+      ...
+    # Subtest: (1) K sonrası 1.000 tahsilat yeni yılda AYNEN kalır: budanmaz (K sonrası sayımda), açılışa katılmaz, bağ listesinde yok (bağsız)
+    ok 3 - (1) K sonrası 1.000 tahsilat yeni yılda AYNEN kalır: budanmaz (K sonrası sayımda), açılışa katılmaz, bağ listesinde yok (bağsız)
+      ---
+      duration_ms: 0.326242
+      type: 'test'
+      ...
+    # Subtest: (1) DEVİRLİ = DEVİRSİZ 05.01.2027: bakiye 5.000, gecikmiş 5.000 (vade 20.12.2026); vadesiz fatura belge günüyle (10.12.2026) gecikmişte
+    ok 4 - (1) DEVİRLİ = DEVİRSİZ 05.01.2027: bakiye 5.000, gecikmiş 5.000 (vade 20.12.2026); vadesiz fatura belge günüyle (10.12.2026) gecikmişte
+      ---
+      duration_ms: 4.459183
+      type: 'test'
+      ...
+    # Subtest: (2) veri damgası: giriş, ekranları okuma, rapor indirme ve ikinci ön izleme DEĞİŞTİRMEZ; tahsilat girişi ve var olan kaydın tutar düzeltmesi DEĞİŞTİRİR
+    not ok 5 - (2) veri damgası: giriş, ekranları okuma, rapor indirme ve ikinci ön izleme DEĞİŞTİRMEZ; tahsilat girişi ve var olan kaydın tutar düzeltmesi DEĞİŞTİRİR
+      ---
+      duration_ms: 0.83683
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-uzman.test.mjs:114:3'
+      failureType: 'testCodeFailure'
+      error: 'onIzlemedenSonraDegisti yok (eski kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-uzman.test.mjs:115:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (2) ileti: 'Ön İzlemeden Sonra Kayıt Girildi' — DURDURUR, dört alan, yeni ön izlemeyi inceleyip yeniden onaylayın
+    not ok 6 - (2) ileti: 'Ön İzlemeden Sonra Kayıt Girildi' — DURDURUR, dört alan, yeni ön izlemeyi inceleyip yeniden onaylayın
+      ---
+      duration_ms: 0.23218
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-uzman.test.mjs:138:3'
+      failureType: 'testCodeFailure'
+      error: 'ileti yok (eski kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-uzman.test.mjs:139:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (6) Devir Raporu başlığı: hazırlayan, aktarılan kalem sayıları, uyarılar / istisnalar — en başta 'Özet' bölümü; ekran = PDF = Excel
+    not ok 7 - (6) Devir Raporu başlığı: hazırlayan, aktarılan kalem sayıları, uyarılar / istisnalar — en başta 'Özet' bölümü; ekran = PDF = Excel
+      ---
+      duration_ms: 0.792854
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-uzman.test.mjs:150:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        rapor Özet bölümüyle başlar
+        + actual - expected
+        
+        + 'Devri Durduran Nedenler'
+        - 'Özet'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Özet'
+      actual: 'Devri Durduran Nedenler'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-uzman.test.mjs:153:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 6 - D3 tur 4 — uzmanın ilk kabul testi (saf hesap): açılış 6.000, Ocak tahsilatı 1.000 yeni yılda, 05.01'de bakiye 5.000, asıl vade
+  ---
+  duration_ms: 1903.387449
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski4/test/devir-d3-uzman.test.mjs:38:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:17964) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — (3) ön izleme e-Belge servisine istek GÖNDERMEZ, kullanım kaydını DEĞİŞTİRMEZ
+    # Subtest: sahte EDM'ye istek 0; şirketin ve makinenin kullanım satırları aynı; ön denetim bekleyen belgeyi yine söyler (sayım veriden)
+    ok 1 - sahte EDM'ye istek 0; şirketin ve makinenin kullanım satırları aynı; ön denetim bekleyen belgeyi yine söyler (sayım veriden)
+      ---
+      duration_ms: 389.482443
+      type: 'test'
+      ...
+    1..1
+ok 7 - D3 tur 4 — (3) ön izleme e-Belge servisine istek GÖNDERMEZ, kullanım kaydını DEĞİŞTİRMEZ
+  ---
+  duration_ms: 1027.205698
+  type: 'suite'
+  ...
+1..7
+# tests 35
+# suites 7
+# pass 18
+# fail 17
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22536.862085

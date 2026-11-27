@@ -1,0 +1,48 @@
+{
+  "ad": "mi2-mutant-t2-ekstre-numarasiz",
+  "komut": "node --test test/mi1-taksit-no-251.test.mjs test/mi2-tek-numara-251.test.mjs",
+  "commit": "51109662dc569e5d0c4ce955fe69fea2596cc4f4",
+  "dal": "worktree-agent-ad6b71f2b91ca7ee7",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T14:21:34.028Z",
+  "sure_sn": 6.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 17,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › cari ekstresi — ekran (cari kartı), PDF, Anlık Durum ekstresi (ekran / PDF / Excel): 'Taksit Tahsilatı · 1. taksit' ve '· 2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:133:3",
+      "hata": "cari kartının ekstresi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › Rapor Merkezi: Cari Ekstre, Tüm Cari Hareketleri, Taksit Tahsilatları (+ Excel / PDF), Taksit Vadeleri, Geciken Taksitler — '2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:149:3",
+      "hata": "Cari Ekstre:  | Devir | Dönem başı bakiye |  |  | 0,00 TL · 22.06.2026 | Taksit Planı | Mİ2 Silinmiş · 2 taksit | 2.000,00 TL |  | 2.000,00 TL B · 17.10.2026 | Taksit Tahsilatı · 1. taksit | Makbuz 1 |  | 1.000,00 TL | 1.000,00 TL B (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › AYNI VADELİ iki taksit: sıra saklanan sıradan (1 → 1., sonradan eklenen 3 → 2.); makbuz '2. taksit (vade 06.08.2026)'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:192:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi2-t2/kanit/2026-11-27/mi2-mutant-t2-ekstre-numarasiz.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7",
+  "ham_cikti_sha256": "b32c0d32d0edb54c794969cc27526bf094d2990ac742c432af4164c13ece390e",
+  "ham_cikti_bayt": 10317
+}

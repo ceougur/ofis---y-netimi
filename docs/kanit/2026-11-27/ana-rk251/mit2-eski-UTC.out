@@ -1,0 +1,693 @@
+TAP version 13
+# (node:21505) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz
+    # Subtest: ödenmemiş kart: en eski geciken 1. taksit; 1. taksit ödenince satır 2. taksitten (… gün gecikti (2. taksit))
+    ok 1 - ödenmemiş kart: en eski geciken 1. taksit; 1. taksit ödenince satır 2. taksitten (… gün gecikti (2. taksit))
+      ---
+      duration_ms: 181.540393
+      type: 'test'
+      ...
+    # Subtest: SİLİNMİŞ taksit: saklanan sıra 2, 3 kalır — kart ve liste 1, 2 der (boşluk yok)
+    ok 2 - SİLİNMİŞ taksit: saklanan sıra 2, 3 kalır — kart ve liste 1, 2 der (boşluk yok)
+      ---
+      duration_ms: 121.327433
+      type: 'test'
+      ...
+    # Subtest: sonradan EKLENEN, vadesi öncekilerden önce taksit: saklanan sıra 4 — görünen 1; eskiler 2, 3, 4
+    ok 3 - sonradan EKLENEN, vadesi öncekilerden önce taksit: saklanan sıra 4 — görünen 1; eskiler 2, 3, 4
+      ---
+      duration_ms: 97.651527
+      type: 'test'
+      ...
+    # Subtest: VADESİ DEĞİŞEN taksit: 3. taksitin vadesi öne alınınca kart sırası ve numara vadeden
+    ok 4 - VADESİ DEĞİŞEN taksit: 3. taksitin vadesi öne alınınca kart sırası ve numara vadeden
+      ---
+      duration_ms: 81.758189
+      type: 'test'
+      ...
+    # Subtest: bağsız cari tahsilatı 1. taksiti kapatır (kuyruk): liste ve kart 2. taksit der
+    ok 5 - bağsız cari tahsilatı 1. taksiti kapatır (kuyruk): liste ve kart 2. taksit der
+      ---
+      duration_ms: 71.695599
+      type: 'test'
+      ...
+    # Subtest: iade: 2000 tahsil, 1000 iade → iade en yeni taksitten düşer; satır 2. taksit
+    ok 6 - iade: 2000 tahsil, 1000 iade → iade en yeni taksitten düşer; satır 2. taksit
+      ---
+      duration_ms: 90.353615
+      type: 'test'
+      ...
+    # Subtest: birden çok kart: satır vadesi en erken geciken taksitten — numara O KARTTAKİ sırası
+    ok 7 - birden çok kart: satır vadesi en erken geciken taksitten — numara O KARTTAKİ sırası
+      ---
+      duration_ms: 99.387332
+      type: 'test'
+      ...
+    # Subtest: geciken yokken: sıradaki taksit ileride (gün ≥ 0) — numara alanı var, gecikme eki yalnız days < 0'da (istemci)
+    ok 8 - geciken yokken: sıradaki taksit ileride (gün ≥ 0) — numara alanı var, gecikme eki yalnız days < 0'da (istemci)
+      ---
+      duration_ms: 31.869221
+      type: 'test'
+      ...
+    1..8
+ok 1 - Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz
+  ---
+  duration_ms: 1341.893402
+  type: 'suite'
+  ...
+# (node:21514) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ-2 — dönemlik tahsilat ve Grup Özeti
+    # Subtest: ön koşul: Excel kartı cariye bağlandı ve açılışı bugün; silinen tahsilat veri tabanında yok
+    ok 1 - ön koşul: Excel kartı cariye bağlandı ve açılışı bugün; silinen tahsilat veri tabanında yok
+      ---
+      duration_ms: 2.288209
+      type: 'test'
+      ...
+    # Subtest: dönem yokken Liste'nin yanıtı bugünkü gibi: period / collected alanı YOK
+    ok 2 - dönem yokken Liste'nin yanıtı bugünkü gibi: period / collected alanı YOK
+      ---
+      duration_ms: 19.734343
+      type: 'test'
+      ...
+    # Subtest: (b) ELLE: Bugün — her yol ayrı; tedarikçi ödemesi, silinen tahsilat, dünkü tahsilat sayılmaz; açılış ayrı
+    ok 3 - (b) ELLE: Bugün — her yol ayrı; tedarikçi ödemesi, silinen tahsilat, dünkü tahsilat sayılmaz; açılış ayrı
+      ---
+      duration_ms: 8.689433
+      type: 'test'
+      ...
+    # Subtest: (b) ELLE: Dün, Bu Hafta, Bu Ay, Tarih Aralığı; Tümü durumunda pasif dahil
+    ok 4 - (b) ELLE: Dün, Bu Hafta, Bu Ay, Tarih Aralığı; Tümü durumunda pasif dahil
+      ---
+      duration_ms: 20.890646
+      type: 'test'
+      ...
+    # Subtest: (b) 'Bu Dönemde Ödeme Yapanlar' grup / tür / bakiye / gecikme süzgeçleriyle BİRLİKTE; kartlar süzgeçten SONRA
+    ok 5 - (b) 'Bu Dönemde Ödeme Yapanlar' grup / tür / bakiye / gecikme süzgeçleriyle BİRLİKTE; kartlar süzgeçten SONRA
+      ---
+      duration_ms: 16.191997
+      type: 'test'
+      ...
+    # Subtest: (c) Grup Özeti: her grup bir satır (boş grup dahil), alt grup kırılımı, Grupsuz; satırlar = TOPLAM = süzgeçsiz Liste kartları — HER süzgeç seçeneğiyle
+    ok 6 - (c) Grup Özeti: her grup bir satır (boş grup dahil), alt grup kırılımı, Grupsuz; satırlar = TOPLAM = süzgeçsiz Liste kartları — HER süzgeç seçeneğiyle
+      ---
+      duration_ms: 315.228113
+      type: 'test'
+      ...
+    # Subtest: (a) EŞDEĞERLİK: cari başına Tahsilat + Önceden Ödenen = 'Cari Bazında Tahsilat' raporunun Toplam'ı; açılış = raporun açılış sütunu (Bugün, Bu Ay, tüm yıl)
+    ok 7 - (a) EŞDEĞERLİK: cari başına Tahsilat + Önceden Ödenen = 'Cari Bazında Tahsilat' raporunun Toplam'ı; açılış = raporun açılış sütunu (Bugün, Bu Ay, tüm yıl)
+      ---
+      duration_ms: 20.664672
+      type: 'test'
+      ...
+    # Subtest: (d) karşılıksız çıkan çek: raporun kuralıyla aynı (alınan çek tahsilattan düşmez; karşılıksız ayrı borç satırı) — eşdeğerlik korunur
+    ok 8 - (d) karşılıksız çıkan çek: raporun kuralıyla aynı (alınan çek tahsilattan düşmez; karşılıksız ayrı borç satırı) — eşdeğerlik korunur
+      ---
+      duration_ms: 26.310254
+      type: 'test'
+      ...
+    # Subtest: (d) dönem sınırları sahte saatle: gece yarısı, ay başı, yıl başı (pazartesi başlangıçlı hafta)
+    ok 9 - (d) dönem sınırları sahte saatle: gece yarısı, ay başı, yıl başı (pazartesi başlangıçlı hafta)
+      ---
+      duration_ms: 0.879668
+      type: 'test'
+      ...
+    # Subtest: (d) dönem sınırı: bitiş günü DAHİL, ertesi gün HARİÇ; başlangıçtan önceki gün HARİÇ — yardımcı, bellek içi küçük veri tabanıyla (program ileri tarihli hareketi zaten reddeder)
+    ok 10 - (d) dönem sınırı: bitiş günü DAHİL, ertesi gün HARİÇ; başlangıçtan önceki gün HARİÇ — yardımcı, bellek içi küçük veri tabanıyla (program ileri tarihli hareketi zaten reddeder)
+      ---
+      duration_ms: 1.835029
+      type: 'test'
+      ...
+    # Subtest: (d) Grup Özeti PDF ve Excel ekranla aynı: satırlar, sütunlar, TOPLAM
+    ok 11 - (d) Grup Özeti PDF ve Excel ekranla aynı: satırlar, sütunlar, TOPLAM
+      ---
+      duration_ms: 59.335864
+      type: 'test'
+      ...
+    # Subtest: (d) Liste PDF / Excel: dönem seçiliyse Tahsilat sütunu; Excel'in 'Gecikmiş Borç' sütunu dolu (önceden 'Geciken' başlığı hep boştu)
+    ok 12 - (d) Liste PDF / Excel: dönem seçiliyse Tahsilat sütunu; Excel'in 'Gecikmiş Borç' sütunu dolu (önceden 'Geciken' başlığı hep boştu)
+      ---
+      duration_ms: 25.144684
+      type: 'test'
+      ...
+    # Subtest: (e) yetki: Cari'yi görmeyen özel rol 403; personel (Carileri Görme) görür — cari kartının defterinde de her tahsilatı görüyor
+    ok 13 - (e) yetki: Cari'yi görmeyen özel rol 403; personel (Carileri Görme) görür — cari kartının defterinde de her tahsilatı görüyor
+      ---
+      duration_ms: 202.832447
+      type: 'test'
+      ...
+    1..13
+ok 2 - Mİ-2 — dönemlik tahsilat ve Grup Özeti
+  ---
+  duration_ms: 1878.820718
+  type: 'suite'
+  ...
+# (node:21521) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ tur 2 — görünen taksit numarası kuyruğun girdisine girmez (taksiti silinmiş / vadesi öne alınmış kart)
+    # Subtest: kartın kendi hesabı (allocate) ve cari kartının kart listesi (forAccount): taksit satırında ve sıradaki taksitte numara alanı YOK
+    not ok 1 - kartın kendi hesabı (allocate) ve cari kartının kart listesi (forAccount): taksit satırında ve sıradaki taksitte numara alanı YOK
+      ---
+      duration_ms: 3.012745
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-kuyruk-girdisi-251.test.mjs:65:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        allocate çıktısında 'no' yok
+        + actual - expected
+        
+        + [
+        +   '.items[0].no',
+        +   '.items[1].no',
+        +   '.next.no'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '.items[0].no'
+        1: '.items[1].no'
+        2: '.next.no'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-kuyruk-girdisi-251.test.mjs:67:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: carinin defter okuması (detail withRemaining: false — fatura kapaması / kuyruk) ve toplu defter (allLedgers): satır metni SAKLANAN sırayla, numara alanı yok
+    ok 2 - carinin defter okuması (detail withRemaining: false — fatura kapaması / kuyruk) ve toplu defter (allLedgers): satır metni SAKLANAN sırayla, numara alanı yok
+      ---
+      duration_ms: 2.160853
+      type: 'test'
+      ...
+    # Subtest: gösterim yolları görünen numarayı yazar: cari kartı ekranı ve Tüm Cari Hareketleri'nin okuduğu numaralı defter
+    not ok 3 - gösterim yolları görünen numarayı yazar: cari kartı ekranı ve Tüm Cari Hareketleri'nin okuduğu numaralı defter
+      ---
+      duration_ms: 6.326968
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-kuyruk-girdisi-251.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ekran: kart 2'nin öne alınan taksiti 1., kart 1'in kalan 3.'sü 2.
+        + actual - expected
+        
+          [
+        +   'Taksit Tahsilatı · 3. taksit',
+        +   'Taksit Tahsilatı · 3. taksit'
+        -   'Taksit Tahsilatı · 1. taksit',
+        -   'Taksit Tahsilatı · 2. taksit'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Taksit Tahsilatı · 1. taksit'
+        1: 'Taksit Tahsilatı · 2. taksit'
+      actual:
+        0: 'Taksit Tahsilatı · 3. taksit'
+        1: 'Taksit Tahsilatı · 3. taksit'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-kuyruk-girdisi-251.test.mjs:87:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kuyruğun çıktısı numara alanı taşımaz; girdi ile ekranın okuduğu sayılar AYNI (bakiye, gecikmiş, taksit kalanları)
+    ok 4 - kuyruğun çıktısı numara alanı taşımaz; girdi ile ekranın okuduğu sayılar AYNI (bakiye, gecikmiş, taksit kalanları)
+      ---
+      duration_ms: 5.239939
+      type: 'test'
+      ...
+    1..4
+not ok 3 - Mİ tur 2 — görünen taksit numarası kuyruğun girdisine girmez (taksiti silinmiş / vadesi öne alınmış kart)
+  ---
+  duration_ms: 781.280553
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-kuyruk-girdisi-251.test.mjs:32:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:21528) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar
+    # Subtest: kart penceresi: saklanan 1, 3 → görünen 1, 2; para sayıları (Toplam 2.000, Tahsil Edilen 1.400, Kalan 600) ELLE
+    ok 1 - kart penceresi: saklanan 1, 3 → görünen 1, 2; para sayıları (Toplam 2.000, Tahsil Edilen 1.400, Kalan 600) ELLE
+      ---
+      duration_ms: 11.457482
+      type: 'test'
+      ...
+    # Subtest: makbuz PDF'i (anlık üretilir): '2. taksit (vade 06.10.2026)' — saklanan '3. taksit' değil
+    not ok 2 - makbuz PDF'i (anlık üretilir): '2. taksit (vade 06.10.2026)' — saklanan '3. taksit' değil
+      ---
+      duration_ms: 45.191972
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:109:3'
+      failureType: 'testCodeFailure'
+      error: "makbuzda '2. taksit (vade 06.10.2026)': TAHSİLAT MAKBUZU No 2 · 18.10.2026 Kimden Mİ2 Silinmiş Sıra No 1 Açıklama 3. taksit (vade 06.10.2026) Tutar 400,00 TL # dört yüz TL # Toplam borç 2.000,00 TL Tahsil edilen 1.400,00 TL Kalan borç 600,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 09:35"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:111:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taksit kartı PDF'i (ekstre / Yazdır): taksit satırları '1.' ve '2.' — '3.' satırı yok
+    not ok 3 - taksit kartı PDF'i (ekstre / Yazdır): taksit satırları '1.' ve '2.' — '3.' satırı yok
+      ---
+      duration_ms: 19.807016
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart PDF'inin taksit satırları: ["1. 06.08.2026","3. 06.10.2026"]
+        + actual - expected
+        
+          [
+            '1. 06.08.2026',
+        +   '3. 06.10.2026'
+        -   '2. 06.10.2026'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '1. 06.08.2026'
+        1: '2. 06.10.2026'
+      actual:
+        0: '1. 06.08.2026'
+        1: '3. 06.10.2026'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:121:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Taksitler listesi (ekran + PDF): sıradaki '06.10.2026 · 2. taksit'
+    not ok 4 - Taksitler listesi (ekran + PDF): sıradaki '06.10.2026 · 2. taksit'
+      ---
+      duration_ms: 26.687018
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: "liste PDF'inde '06.10.2026 · 2. taksit': Taksitler Listesi Tümü · Tüm gruplar · “Mİ2 Silinmiş” Oluşturma: 20.10.2026 09:36 Hazırlayan: Ofis yöneticisi Kart 1 Kalan Alacak 600,00 TL Geciken 600,00 TL · 1 taksit Bu Ay Beklenen 600,00 TL Tahsil Edilen 1.400,00 TL No Ad Soyad Grup Telefon Kayıt Toplam Ödenen Kalan Sıradaki Vade Durum Bilgi Notu 1 Mİ2 Silinmiş 22.06.2026 2.000,00 TL 1.400,00 TL 600,00 TL 06.10.2026 · 3. taksit Gecikti · 1 tak"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:129:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: cari ekstresi — ekran (cari kartı), PDF, Anlık Durum ekstresi (ekran / PDF / Excel): 'Taksit Tahsilatı · 1. taksit' ve '· 2. taksit'
+    not ok 5 - cari ekstresi — ekran (cari kartı), PDF, Anlık Durum ekstresi (ekran / PDF / Excel): 'Taksit Tahsilatı · 1. taksit' ve '· 2. taksit'
+      ---
+      duration_ms: 14.661047
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:133:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari kartının ekstresi
+        + actual - expected
+        
+          [
+            'Taksit Tahsilatı · 1. taksit',
+        +   'Taksit Tahsilatı · 3. taksit'
+        -   'Taksit Tahsilatı · 2. taksit'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Taksit Tahsilatı · 1. taksit'
+        1: 'Taksit Tahsilatı · 2. taksit'
+      actual:
+        0: 'Taksit Tahsilatı · 1. taksit'
+        1: 'Taksit Tahsilatı · 3. taksit'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:136:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Rapor Merkezi: Cari Ekstre, Tüm Cari Hareketleri, Taksit Tahsilatları (+ Excel / PDF), Taksit Vadeleri, Geciken Taksitler — '2. taksit'
+    not ok 6 - Rapor Merkezi: Cari Ekstre, Tüm Cari Hareketleri, Taksit Tahsilatları (+ Excel / PDF), Taksit Vadeleri, Geciken Taksitler — '2. taksit'
+      ---
+      duration_ms: 10.47436
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Cari Ekstre:  | Devir | Dönem başı bakiye |  |  | 0,00 TL
+        22.06.2026 | Taksit Planı | Mİ2 Silinmiş · 2 taksit | 2.000,00 TL |  | 2.000,00 TL B
+        17.10.2026 | Taksit Tahsilatı · 1. taksit | Makbuz 1 |  | 1.000,00 TL | 1.000,00 TL B
+        18.10.2026 | Taksit Tahsilatı · 3. taksit | Makbuz 2 |  | 400,00 TL | 600,00 TL B
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:152:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WhatsApp ekstresi (elle, wa.me metni): 'Taksit Tahsilatı · 2. taksit'
+    not ok 7 - WhatsApp ekstresi (elle, wa.me metni): 'Taksit Tahsilatı · 2. taksit'
+      ---
+      duration_ms: 7.856698
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:171:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Sayın Mİ2 Silinmiş,
+        cari hesap ekstreniz:
+        
+        22.06.2026 Taksit Planı · Mİ2 Silinmiş · 2 taksit: +2.000,00 TL
+        17.10.2026 Taksit Tahsilatı · 1. taksit: −1.000,00 TL
+        18.10.2026 Taksit Tahsilatı · 3. taksit: −400,00 TL
+        
+        *Güncel bakiye: 600,00 TL (borcunuz)*
+        Vadesi geçen: 1 taksit, 600,00 TL
+        Sıradaki taksit: 06.10.2026 · 600,00 TL
+        
+        İyi günler dileriz.
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:174:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: zil / takvim ve Vade Takip: kalem etiketi '2. taksit'
+    not ok 8 - zil / takvim ve Vade Takip: kalem etiketi '2. taksit'
+      ---
+      duration_ms: 28.131583
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:178:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        zil / takvim
+        + actual - expected
+        
+          [
+        +   '3. taksit'
+        -   '2. taksit'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2. taksit'
+      actual:
+        0: '3. taksit'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:180:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ödenmiş taksite yeniden tahsilat: 409 iletisi 'Seçilen 1. taksit ödendi' (görünen numara)
+    ok 9 - ödenmiş taksite yeniden tahsilat: 409 iletisi 'Seçilen 1. taksit ödendi' (görünen numara)
+      ---
+      duration_ms: 5.986319
+      type: 'test'
+      ...
+    # Subtest: AYNI VADELİ iki taksit: sıra saklanan sıradan (1 → 1., sonradan eklenen 3 → 2.); makbuz '2. taksit (vade 06.08.2026)'
+    not ok 10 - AYNI VADELİ iki taksit: sıra saklanan sıradan (1 → 1., sonradan eklenen 3 → 2.); makbuz '2. taksit (vade 06.08.2026)'
+      ---
+      duration_ms: 10.967661
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:192:3'
+      failureType: 'testCodeFailure'
+      error: 'makbuz: TAHSİLAT MAKBUZU No 3 · 19.10.2026 Kimden Mİ2 Aynı Vade Sıra No 2 Açıklama 3. taksit (vade 06.08.2026) Tutar 300,00 TL # üç yüz TL # Toplam borç 3.000,00 TL Tahsil edilen 300,00 TL Kalan borç 2.700,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 09:41'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:196:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tablo (kayda bağlı kart): taksit bloğu '1.' (saklanan 2) ve işlem geçmişi '· 1. taksit'
+    not ok 11 - Tablo (kayda bağlı kart): taksit bloğu '1.' (saklanan 2) ve işlem geçmişi '· 1. taksit'
+      ---
+      duration_ms: 7.637856
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:201:3'
+      failureType: 'testCodeFailure'
+      error: 'geçmişte itemNo 1: {"caseKey":"mi2-kayit-1","items":[{"id":"entry-26153a45-aff7-4860-a471-495cd058dfea","planId":"plan-04beb8a0-b26a-4409-80f6-e6f1e4a03e1e","planName":"Mİ2 Kayıt Kişisi","itemId":"item-0b0cb697-cda0-4460-87f1-269c5262a351","itemSeq":2,"kind":"in","amount":250,"date":"2026-10-19","note":"","receiptNo":4,"opening":0,"actorId":"user-0bbe4bc5-48e9-4c36-9acc-c46bbbed19a6","createdAt":"2026-10-20T09:25:00.000Z","updatedAt":null,"actorName":"Ofis yöneticisi","type":"plan-entry"}],"paidTotal":250,"planPaid":250,"accountPaid":0,"account":{"id":"account-7379ee8f-e831-44e0-928e-bb10728cf4b3","refNo":"3","n'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:209:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: fatura penceresi 'Bu Faturayı Kapatanlar': vadesi öne alınan taksitin tahsilatı '· 1. taksit' (saklanan 3)
+    not ok 12 - fatura penceresi 'Bu Faturayı Kapatanlar': vadesi öne alınan taksitin tahsilatı '· 1. taksit' (saklanan 3)
+      ---
+      duration_ms: 6.096565
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:212:3'
+      failureType: 'testCodeFailure'
+      error: 'kapatanlar: [{"id":"plan-entry:entry-73fbda53-7565-4c16-b256-2195c20f50fa","date":"2026-10-19","label":"Taksit Tahsilatı · 3. taksit","note":"","method":"","amount":500,"mode":"linked","modeLabel":"Bağlı","methodLabel":""}]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:218:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..12
+not ok 4 - Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar
+  ---
+  duration_ms: 1406.837827
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/mi2-tek-numara-251.test.mjs:24:1'
+  failureType: 'subtestsFailed'
+  error: '10 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:21564) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:21564) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:21564) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:21564) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-A tur 3a — kuyruğun girdi kurucusu (lib/obligation-input.mjs): yalnız store ile = servis yüzü; davranış taşımadan önceki kodla aynı
+    # Subtest: sınıf verisi iki şirkette, kilitli ↔ kilitsiz: modül (yalnız store) = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+    ok 1 - sınıf verisi iki şirkette, kilitli ↔ kilitsiz: modül (yalnız store) = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+      ---
+      duration_ms: 3292.944143
+      type: 'test'
+      ...
+    1..1
+ok 5 - 2.5.0 Ç5-A tur 3a — kuyruğun girdi kurucusu (lib/obligation-input.mjs): yalnız store ile = servis yüzü; davranış taşımadan önceki kodla aynı
+  ---
+  duration_ms: 3791.25027
+  type: 'suite'
+  ...
+# (node:21564) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:21564) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı
+    # Subtest: sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+    not ok 1 - sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+      ---
+      duration_ms: 2095.043565
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/obligation-input-250.test.mjs:415:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hakemden farklı çıktı (taşıma davranışı değiştirdi): ilk|001|OZ 001 Silinen Kart · ilk|001|OZ 001 Stok Taksit · iade-sil|001|OZ 001 Stok Taksit · geri|001|OZ 001 Silinen Kart · geri|001|OZ 001 Stok Taksit
+        + actual - expected
+        
+        + [
+        +   'ilk|001|OZ 001 Silinen Kart',
+        +   'ilk|001|OZ 001 Stok Taksit',
+        +   'iade-sil|001|OZ 001 Stok Taksit',
+        +   'geri|001|OZ 001 Silinen Kart',
+        +   'geri|001|OZ 001 Stok Taksit'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'ilk|001|OZ 001 Silinen Kart'
+        1: 'ilk|001|OZ 001 Stok Taksit'
+        2: 'iade-sil|001|OZ 001 Stok Taksit'
+        3: 'geri|001|OZ 001 Silinen Kart'
+        4: 'geri|001|OZ 001 Stok Taksit'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/obligation-input-250.test.mjs:450:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 6 - 2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı
+  ---
+  duration_ms: 2729.604764
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie/test/obligation-input-250.test.mjs:282:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:21586) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: taksit motoru (saf)
+    # Subtest: toplamı eşit taksitlere böler; kuruş farkı son taksitte, her ay aynı gün
+    ok 1 - toplamı eşit taksitlere böler; kuruş farkı son taksitte, her ay aynı gün
+      ---
+      duration_ms: 1.965046
+      type: 'test'
+      ...
+    # Subtest: tahsilatlar en eski taksite sayılır; taksite bağlı tahsilat önce o taksite; iade en yeni taksitten düşer
+    ok 2 - tahsilatlar en eski taksite sayılır; taksite bağlı tahsilat önce o taksite; iade en yeni taksitten düşer
+      ---
+      duration_ms: 1.159882
+      type: 'test'
+      ...
+    # Subtest: Excel başlıklarını ve tarihleri tanır
+    ok 3 - Excel başlıklarını ve tarihleri tanır
+      ---
+      duration_ms: 4.991971
+      type: 'test'
+      ...
+    # Subtest: tutarı yazıyla yazar
+    ok 4 - tutarı yazıyla yazar
+      ---
+      duration_ms: 0.474722
+      type: 'test'
+      ...
+    1..4
+ok 7 - taksit motoru (saf)
+  ---
+  duration_ms: 9.566215
+  type: 'suite'
+  ...
+# Subtest: taksit modülü API (v2.0.4)
+    # Subtest: gruplar: grup ve alt grup açılır, ad çakışması reddedilir, kart varken silinmez
+    ok 1 - gruplar: grup ve alt grup açılır, ad çakışması reddedilir, kart varken silinmez
+      ---
+      duration_ms: 37.36463
+      type: 'test'
+      ...
+    # Subtest: kart açılır (taksit sorulmadan), sonra otomatik dağıtılır; tahsilat kalanı düşürür ve Kasa'ya iner
+    ok 2 - kart açılır (taksit sorulmadan), sonra otomatik dağıtılır; tahsilat kalanı düşürür ve Kasa'ya iner
+      ---
+      duration_ms: 248.109481
+      type: 'test'
+      ...
+    # Subtest: gecikmiş taksit tahsilat takvimine ve bildirimlere düşer; kart kapatılınca da düşmez (Borçta Kalsın — kalan bugünden vadeli, hatırlatma sürer)
+    ok 3 - gecikmiş taksit tahsilat takvimine ve bildirimlere düşer; kart kapatılınca da düşmez (Borçta Kalsın — kalan bugünden vadeli, hatırlatma sürer)
+      ---
+      duration_ms: 86.223377
+      type: 'test'
+      ...
+    # Subtest: ekstre ve makbuz PDF üretilir
+    ok 4 - ekstre ve makbuz PDF üretilir
+      ---
+      duration_ms: 77.982734
+      type: 'test'
+      ...
+    # Subtest: hareket silinip geri yüklenir; kart silinip geri yüklenir; Kasa yeniden hesaplanır
+    ok 5 - hareket silinip geri yüklenir; kart silinip geri yüklenir; Kasa yeniden hesaplanır
+      ---
+      duration_ms: 121.566074
+      type: 'test'
+      ...
+    # Subtest: Excel'den ilk yükleme: başlıklar eşlenir, gruplar tanımlanır, taksitler dağıtılır, çiftler atlanır
+    ok 6 - Excel'den ilk yükleme: başlıklar eşlenir, gruplar tanımlanır, taksitler dağıtılır, çiftler atlanır
+      ---
+      duration_ms: 60.346691
+      type: 'test'
+      ...
+    # Subtest: Sıra No: Excel'deki S.N kolonu kartın numarası olur; liste numaraya göre sıralanır, numarayla aranır; PDF süzgeçle iner
+    ok 7 - Sıra No: Excel'deki S.N kolonu kartın numarası olur; liste numaraya göre sıralanır, numarayla aranır; PDF süzgeçle iner
+      ---
+      duration_ms: 94.734525
+      type: 'test'
+      ...
+    # Subtest: kayıt tarihi: programda açılan kartta bugün, elle değişir; Excel'deki kolondan okunur; listede sıralanır (v2.0.6)
+    ok 8 - kayıt tarihi: programda açılan kartta bugün, elle değişir; Excel'deki kolondan okunur; listede sıralanır (v2.0.6)
+      ---
+      duration_ms: 74.574831
+      type: 'test'
+      ...
+    1..8
+ok 8 - taksit modülü API (v2.0.4)
+  ---
+  duration_ms: 1421.455777
+  type: 'suite'
+  ...
+1..8
+# tests 51
+# suites 8
+# pass 38
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16551.10783
+
+[kanit] başarısız testler (13):
+  ✖ Mİ tur 2 — görünen taksit numarası kuyruğun girdisine girmez (taksiti silinmiş / vadesi öne alınmış kart) › kartın kendi hesabı (allocate) ve cari kartının kart listesi (forAccount): taksit satırında ve sıradaki taksitte numara alanı YOK [test/mi2-kuyruk-girdisi-251.test.mjs:65:3] — allocate çıktısında 'no' yok · + actual - expected · + [ (beklenen , gelen )
+  ✖ Mİ tur 2 — görünen taksit numarası kuyruğun girdisine girmez (taksiti silinmiş / vadesi öne alınmış kart) › gösterim yolları görünen numarayı yazar: cari kartı ekranı ve Tüm Cari Hareketleri'nin okuduğu numaralı defter [test/mi2-kuyruk-girdisi-251.test.mjs:84:3] — ekran: kart 2'nin öne alınan taksiti 1., kart 1'in kalan 3.'sü 2. · + actual - expected · [ (beklenen , gelen )
+  ✖ Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › makbuz PDF'i (anlık üretilir): '2. taksit (vade 06.10.2026)' — saklanan '3. taksit' değil [test/mi2-tek-numara-251.test.mjs:109:3] — makbuzda '2. taksit (vade 06.10.2026)': TAHSİLAT MAKBUZU No 2 · 18.10.2026 Kimden Mİ2 Silinmiş Sıra No 1 Açıklama 3. taksit (vade 06.10.2026) Tutar 400,00 TL # dört yüz TL # Toplam borç 2.000,00 TL Tahsil edilen 1.400,00 TL Kalan borç 600,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 09:35 (beklenen true, gelen false)
+  ✖ Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › taksit kartı PDF'i (ekstre / Yazdır): taksit satırları '1.' ve '2.' — '3.' satırı yok [test/mi2-tek-numara-251.test.mjs:117:3] — kart PDF'inin taksit satırları: ["1. 06.08.2026","3. 06.10.2026"] · + actual - expected · [ (beklenen , gelen )
+  ✖ Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › Taksitler listesi (ekran + PDF): sıradaki '06.10.2026 · 2. taksit' [test/mi2-tek-numara-251.test.mjs:124:3] — liste PDF'inde '06.10.2026 · 2. taksit': Taksitler Listesi Tümü · Tüm gruplar · “Mİ2 Silinmiş” Oluşturma: 20.10.2026 09:36 Hazırlayan: Ofis yöneticisi Kart 1 Kalan Alacak 600,00 TL Geciken 600,00 TL · 1 taksit Bu Ay Beklenen 600,00 TL Tahsil Edilen 1.400,00 TL No Ad Soyad Grup Telefon Kayıt Toplam Ödenen Kalan Sıradaki Vade Durum Bilgi Notu 1 Mİ2 Silinmiş 22.06.2026 2.000,00 TL 1.400,00 TL 600,00 TL 06.10.2026 · 3. taksit Gecikti · 1 tak (beklenen true, gelen false)
+  ✖ Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › cari ekstresi — ekran (cari kartı), PDF, Anlık Durum ekstresi (ekran / PDF / Excel): 'Taksit Tahsilatı · 1. taksit' ve '· 2. taksit' [test/mi2-tek-numara-251.test.mjs:133:3] — cari kartının ekstresi · + actual - expected · [ (beklenen , gelen )
+  ✖ Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › Rapor Merkezi: Cari Ekstre, Tüm Cari Hareketleri, Taksit Tahsilatları (+ Excel / PDF), Taksit Vadeleri, Geciken Taksitler — '2. taksit' [test/mi2-tek-numara-251.test.mjs:149:3] — Cari Ekstre:  | Devir | Dönem başı bakiye |  |  | 0,00 TL · 22.06.2026 | Taksit Planı | Mİ2 Silinmiş · 2 taksit | 2.000,00 TL |  | 2.000,00 TL B · 17.10.2026 | Taksit Tahsilatı · 1. taksit | Makbuz 1 |  | 1.000,00 TL | 1.000,00 TL B (beklenen true, gelen false)
+  ✖ Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › WhatsApp ekstresi (elle, wa.me metni): 'Taksit Tahsilatı · 2. taksit' [test/mi2-tek-numara-251.test.mjs:171:3] — Sayın Mİ2 Silinmiş, · cari hesap ekstreniz: · 22.06.2026 Taksit Planı · Mİ2 Silinmiş · 2 taksit: +2.000,00 TL (beklenen true, gelen false)
+  ✖ Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › zil / takvim ve Vade Takip: kalem etiketi '2. taksit' [test/mi2-tek-numara-251.test.mjs:178:3] — zil / takvim · + actual - expected · [ (beklenen , gelen )
+  ✖ Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › AYNI VADELİ iki taksit: sıra saklanan sıradan (1 → 1., sonradan eklenen 3 → 2.); makbuz '2. taksit (vade 06.08.2026)' [test/mi2-tek-numara-251.test.mjs:192:3] — makbuz: TAHSİLAT MAKBUZU No 3 · 19.10.2026 Kimden Mİ2 Aynı Vade Sıra No 2 Açıklama 3. taksit (vade 06.08.2026) Tutar 300,00 TL # üç yüz TL # Toplam borç 3.000,00 TL Tahsil edilen 300,00 TL Kalan borç 2.700,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 09:41 (beklenen true, gelen false)
+  ✖ Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › Tablo (kayda bağlı kart): taksit bloğu '1.' (saklanan 2) ve işlem geçmişi '· 1. taksit' [test/mi2-tek-numara-251.test.mjs:201:3] — geçmişte itemNo 1: {"caseKey":"mi2-kayit-1","items":[{"id":"entry-26153a45-aff7-4860-a471-495cd058dfea","planId":"plan-04beb8a0-b26a-4409-80f6-e6f1e4a03e1e","planName":"Mİ2 Kayıt Kişisi","itemId":"item-0b0cb697-cda0-4460-87f1-269c5262a351","itemSeq":2,"kind":"in","amount":250,"date":"2026-10-19","note":"","receiptNo":4,"opening":0,"actorId":"user-0bbe4bc5-48e9-4c36-9acc-c46bbbed19a6","createdAt":"2026-10-20T09:25:00.000Z","updatedAt":null,"actorName":"Ofis yöneticisi","type":"plan-entry"}],"paidTotal":250,"planPaid":250,"accountPaid":0,"account":{"id":"account-7379ee8f-e831-44e0-928e-bb10728cf4b3","refNo":"3","n (beklenen true, gelen false)
+  ✖ Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › fatura penceresi 'Bu Faturayı Kapatanlar': vadesi öne alınan taksitin tahsilatı '· 1. taksit' (saklanan 3) [test/mi2-tek-numara-251.test.mjs:212:3] — kapatanlar: [{"id":"plan-entry:entry-73fbda53-7565-4c16-b256-2195c20f50fa","date":"2026-10-19","label":"Taksit Tahsilatı · 3. taksit","note":"","method":"","amount":500,"mode":"linked","modeLabel":"Bağlı","methodLabel":""}] (beklenen true, gelen false)
+  ✖ 2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı › sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi [test/obligation-input-250.test.mjs:415:3] — hakemden farklı çıktı (taşıma davranışı değiştirdi): ilk|001|OZ 001 Silinen Kart · ilk|001|OZ 001 Stok Taksit · iade-sil|001|OZ 001 Stok Taksit · geri|001|OZ 001 Silinen Kart · geri|001|OZ 001 Stok Taksit · + actual - expected · + [ (beklenen , gelen )
+
+[kanit] mit2-eski-UTC: BAŞARISIZ (çıkış 1; 13 başarısız, 0 iptal) · çıkış 1 · 38/51 geçti, 13 başarısız, 0 iptal, 0 atlanan · commit c674b41 +3 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4

@@ -1,0 +1,78 @@
+TAP version 13
+# Subtest: D4-ÖN: devir yedeğinin son adına taşınması (Windows yeniden denemesi)
+    # Subtest: geçici hata (EPERM, EBUSY, EACCES, ENOTEMPTY — dört kez) → yeniden denenir, 5. denemede taşınır; yedek Tamam, doğrulama geçer, yarım klasör kalmaz
+    ok 1 - geçici hata (EPERM, EBUSY, EACCES, ENOTEMPTY — dört kez) → yeniden denenir, 5. denemede taşınır; yedek Tamam, doğrulama geçer, yarım klasör kalmaz
+      ---
+      duration_ms: 1904.624257
+      type: 'test'
+      ...
+    # Subtest: kalıcı geçici hata (EBUSY hiç bitmez) → sınırlı deneme (12), 503 devir-backup-move + Türkçe neden; yazılmış klasör silinmez, listede Yarım
+    ok 2 - kalıcı geçici hata (EBUSY hiç bitmez) → sınırlı deneme (12), 503 devir-backup-move + Türkçe neden; yazılmış klasör silinmez, listede Yarım
+      ---
+      duration_ms: 3403.789355
+      type: 'test'
+      ...
+    # Subtest: yeniden denenmeyen hata (EXDEV) → hemen 503 (tek deneme, bekleme yok); klasör listede Yarım
+    ok 3 - yeniden denenmeyen hata (EXDEV) → hemen 503 (tek deneme, bekleme yok); klasör listede Yarım
+      ---
+      duration_ms: 115.980849
+      type: 'test'
+      ...
+    # Subtest: açık tutamak: klasördeki veri tabanı kopyası açık tutulurken taşıma düşer (Windows'ta GERÇEK EPERM, Linux'ta eşdeğer enjeksiyon), tutamak bırakılınca yeniden denemeyle taşınır
+    ok 4 - açık tutamak: klasördeki veri tabanı kopyası açık tutulurken taşıma düşer (Windows'ta GERÇEK EPERM, Linux'ta eşdeğer enjeksiyon), tutamak bırakılınca yeniden denemeyle taşınır
+      ---
+      duration_ms: 368.81884
+      type: 'test'
+      ...
+    1..4
+ok 1 - D4-ÖN: devir yedeğinin son adına taşınması (Windows yeniden denemesi)
+  ---
+  duration_ms: 5794.518918
+  type: 'suite'
+  ...
+# Subtest: D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows)
+    # Subtest: Y1 SQLite'ın açtığı her yol (kopya + günlük) varsayılan kurulum kökünde ve 80 karakterlik şirket adında Windows sınırının (260) altında; üç etiket de Tamam
+    ok 1 - Y1 SQLite'ın açtığı her yol (kopya + günlük) varsayılan kurulum kökünde ve 80 karakterlik şirket adında Windows sınırının (260) altında; üç etiket de Tamam
+      ---
+      duration_ms: 1830.600607
+      type: 'test'
+      ...
+    # Subtest: Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne oldu, neden, ne yapmalı, nereye); iç kod yalnız makine alanında; yarım klasör kalmaz
+    ok 2 - Y2 yazma hatası (SQLite günlüğü açılamaz) → 503 devir-backup-write, açık Türkçe ileti (ne oldu, neden, ne yapmalı, nereye); iç kod yalnız makine alanında; yarım klasör kalmaz
+      ---
+      duration_ms: 6.603094
+      type: 'test'
+      ...
+    # Subtest: Y3 iç dosya taşımaları (kopyanın geçici adından asıl adına; çalışma klasöründen yarım klasöre) geçici hatada yeniden denenir; yedek Tamam
+    ok 3 - Y3 iç dosya taşımaları (kopyanın geçici adından asıl adına; çalışma klasöründen yarım klasöre) geçici hatada yeniden denenir; yedek Tamam
+      ---
+      duration_ms: 395.768605
+      type: 'test'
+      ...
+    # Subtest: Y4 yedek klasörü son adına alınırken programın kendi okuma akışlarının hepsi kapanmış (açık tutamak yok)
+    ok 4 - Y4 yedek klasörü son adına alınırken programın kendi okuma akışlarının hepsi kapanmış (açık tutamak yok)
+      ---
+      duration_ms: 54.419544
+      type: 'test'
+      ...
+    # Subtest: Y5 taşıma hatası iletisinde iç kod / İngilizce yok: yeniden denenmeyen kod (EXDEV) ve kodsuz hata → 503 devir-backup-move, neden yalnız makine alanında
+    ok 5 - Y5 taşıma hatası iletisinde iç kod / İngilizce yok: yeniden denenmeyen kod (EXDEV) ve kodsuz hata → 503 devir-backup-move, neden yalnız makine alanında
+      ---
+      duration_ms: 112.685518
+      type: 'test'
+      ...
+    1..5
+ok 2 - D4-ÖN tur 2: devir yedeğinin yolu, yazma ve taşıma hataları (Windows)
+  ---
+  duration_ms: 2401.331058
+  type: 'suite'
+  ...
+1..2
+# tests 9
+# suites 2
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9812.395647

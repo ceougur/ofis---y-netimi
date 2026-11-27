@@ -1,0 +1,48 @@
+{
+  "ad": "mi2-mutant-t2-etiket-donemde-gizli",
+  "komut": "node test/e2e/senaryo-mi2-251.mjs",
+  "commit": "3297eb639cc6f8d535dac96e521b2d0cb1742ef0",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T15:42:25.908Z",
+  "sure_sn": 87.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 27,
+    "gecen": 24,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Grup Özeti'nde (dönem Bugün) etiket görünür: {\"text\":\"\",\"visible\":false,\"selected\":\"Bugün\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Liste'de dönem seçiliyken etiket görünür: {\"text\":\"\",\"visible\":false,\"selected\":\"Bugün\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tarih Aralığı seçiliyken etiket görünür: {\"text\":\"\",\"visible\":false,\"selected\":\"Tarih Aralığı\"}",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-27/mi2-mutant-t2-etiket-donemde-gizli.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim",
+  "ham_cikti_sha256": "76ace2a13c881beff11cd679bbb554d479deae14aa88ee1909345c54974aef02",
+  "ham_cikti_bayt": 3818
+}

@@ -1,0 +1,103 @@
+{
+  "ad": "mi2-mutant-t1-mi1-saklanan-sira",
+  "komut": "node --test test/mi1-taksit-no-251.test.mjs test/mi2-tek-numara-251.test.mjs",
+  "commit": "3297eb639cc6f8d535dac96e521b2d0cb1742ef0",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T15:44:09.020Z",
+  "sure_sn": 3.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 6,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz › SİLİNMİŞ taksit: saklanan sıra 2, 3 kalır — kart ve liste 1, 2 der (boşluk yok)",
+      "konum": "test/mi1-taksit-no-251.test.mjs:79:3",
+      "hata": "silinmiş: kartta numaralar boşluksuz 1..n · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz › sonradan EKLENEN, vadesi öncekilerden önce taksit: saklanan sıra 4 — görünen 1; eskiler 2, 3, 4",
+      "konum": "test/mi1-taksit-no-251.test.mjs:94:3",
+      "hata": "eklenen: kartta numaralar boşluksuz 1..n · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz › VADESİ DEĞİŞEN taksit: 3. taksitin vadesi öne alınınca kart sırası ve numara vadeden",
+      "konum": "test/mi1-taksit-no-251.test.mjs:104:3",
+      "hata": "vadesi değişen: kartta numaralar boşluksuz 1..n · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › kart penceresi: saklanan 1, 3 → görünen 1, 2; para sayıları (Toplam 2.000, Tahsil Edilen 1.400, Kalan 600) ELLE",
+      "konum": "test/mi2-tek-numara-251.test.mjs:100:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › makbuz PDF'i (anlık üretilir): '2. taksit (vade 06.10.2026)' — saklanan '3. taksit' değil",
+      "konum": "test/mi2-tek-numara-251.test.mjs:109:3",
+      "hata": "makbuzda '2. taksit (vade 06.10.2026)': TAHSİLAT MAKBUZU No 2 · 18.10.2026 Kimden Mİ2 Silinmiş Sıra No 1 Açıklama 3. taksit (vade 06.10.2026) Tutar 400,00 TL # dört yüz TL # Toplam borç 2.000,00 TL Tahsil edilen 1.400,00 TL Kalan borç 600,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 09:34 (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › taksit kartı PDF'i (ekstre / Yazdır): taksit satırları '1.' ve '2.' — '3.' satırı yok",
+      "konum": "test/mi2-tek-numara-251.test.mjs:117:3",
+      "hata": "kart PDF'inin taksit satırları: [\"1. 06.08.2026\",\"3. 06.10.2026\"] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › Taksitler listesi (ekran + PDF): sıradaki '06.10.2026 · 2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:124:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › cari ekstresi — ekran (cari kartı), PDF, Anlık Durum ekstresi (ekran / PDF / Excel): 'Taksit Tahsilatı · 1. taksit' ve '· 2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:133:3",
+      "hata": "cari kartının ekstresi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › Rapor Merkezi: Cari Ekstre, Tüm Cari Hareketleri, Taksit Tahsilatları (+ Excel / PDF), Taksit Vadeleri, Geciken Taksitler — '2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:149:3",
+      "hata": "Cari Ekstre:  | Devir | Dönem başı bakiye |  |  | 0,00 TL · 22.06.2026 | Taksit Planı | Mİ2 Silinmiş · 2 taksit | 2.000,00 TL |  | 2.000,00 TL B · 17.10.2026 | Taksit Tahsilatı · 1. taksit | Makbuz 1 |  | 1.000,00 TL | 1.000,00 TL B (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › WhatsApp ekstresi (elle, wa.me metni): 'Taksit Tahsilatı · 2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:171:3",
+      "hata": "Sayın Mİ2 Silinmiş, · cari hesap ekstreniz: · 22.06.2026 Taksit Planı · Mİ2 Silinmiş · 2 taksit: +2.000,00 TL (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › zil / takvim ve Vade Takip: kalem etiketi '2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:178:3",
+      "hata": "zil / takvim · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › AYNI VADELİ iki taksit: sıra saklanan sıradan (1 → 1., sonradan eklenen 3 → 2.); makbuz '2. taksit (vade 06.08.2026)'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:192:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › Tablo (kayda bağlı kart): taksit bloğu '1.' (saklanan 2) ve işlem geçmişi '· 1. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:201:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › fatura penceresi 'Bu Faturayı Kapatanlar': vadesi öne alınan taksitin tahsilatı '· 1. taksit' (saklanan 3)",
+      "konum": "test/mi2-tek-numara-251.test.mjs:212:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-27/mi2-mutant-t1-mi1-saklanan-sira.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim",
+  "ham_cikti_sha256": "3fbed2c365d577f846b4e39341bfc2003e2e112f9b0f4c3ae78fd5f1c12fb225",
+  "ham_cikti_bayt": 23459
+}

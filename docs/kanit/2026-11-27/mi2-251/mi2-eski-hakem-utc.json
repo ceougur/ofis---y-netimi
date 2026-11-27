@@ -1,0 +1,38 @@
+{
+  "ad": "mi2-eski-hakem-utc",
+  "komut": "node --test test/obligation-input-250.test.mjs",
+  "commit": "c674b41bb9df381fa784b9279b123e195185b066",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T13:03:25.568Z",
+  "sure_sn": 6.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 1,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı › sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi",
+      "konum": "test/obligation-input-250.test.mjs:415:3",
+      "hata": "hakemden farklı çıktı (taşıma davranışı değiştirdi): ilk|001|OZ 001 Silinen Kart · ilk|001|OZ 001 Stok Taksit · iade-sil|001|OZ 001 Stok Taksit · geri|001|OZ 001 Silinen Kart · geri|001|OZ 001 Stok Taksit · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi2-t2/kanit/2026-11-27/mi2-eski-hakem-utc.log",
+  "klasor": "/dev/shm/mi2-t2/eski",
+  "ham_cikti_sha256": "40a1b4a1e1e3137bc2bb7e0c944174be1a1bbb2e39ab15dde61ff697e307a32f",
+  "ham_cikti_bayt": 4252
+}

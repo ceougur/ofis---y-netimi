@@ -13,6 +13,7 @@
 //   Mevcut = girişler − çıkışlar (hareketlerden hesaplanır; "kalan" saklanmaz, hareket silinince/düzeltilince doğru kalır).
 //   Kritik: mevcut ≤ kritik seviye (kritik seviye > 0 ise). Değer = mevcut × son birim fiyat.
 import { roundMoney } from "./money.mjs";
+import { planInLabel } from "./plan-item-no.mjs";
 
 const EPS = 0.005;
 
@@ -152,7 +153,9 @@ export function accountLedger(entries = [], plans = []) {
         at: entry.createdAt || "",
         // Açılış (devir, v2.0.8): Excel'de programa girmeden önce ödenmiş kısım; alacak tarafına yazılır, Kasa'da yoktur.
         // Çekli ters kayıt (doğrulama T11): taksite sayılmış evrak karşılıksız döndü — iade değil, tahsilatın geri alınması.
-        label: incoming ? `${entry.opening ? "Açılış (devir)" : "Taksit Tahsilatı"}${entry.itemSeq ? ` · ${entry.itemSeq}. taksit` : ""}` : entry.chequeId ? "Karşılıksız Çek / Senet (taksit)" : "Taksit İadesi",
+        // 2.5.1 Mİ tur 2: metin SAKLANAN sırayla (itemSeq) — bu satırlar Tek Yükümlülük Kuyruğu'nun girdisidir (bayt bayt aynı); ekrana / ekstreye giden metin görünen
+        // numarayla lib/plan-item-no.mjs numberedLines'tan (aynı kalıp, planInLabel).
+        label: incoming ? planInLabel(entry.opening, entry.itemSeq) : entry.chequeId ? "Karşılıksız Çek / Senet (taksit)" : "Taksit İadesi",
         note: entry.note || "",
         receiptNo: entry.receiptNo || null,
         debit: incoming ? 0 : amount,

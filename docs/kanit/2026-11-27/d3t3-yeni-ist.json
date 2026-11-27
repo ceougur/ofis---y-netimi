@@ -1,0 +1,32 @@
+{
+  "ad": "d3t3-yeni-ist",
+  "komut": "node --test --test-concurrency=1 test/devir-d3-plan.test.mjs test/devir-d3-esdeger.test.mjs test/devir-d3-uc.test.mjs test/devir-d3-zaman.test.mjs test/devir-d3-bag.test.mjs test/devir-d3-evrak.test.mjs test/devir-d3-banka.test.mjs test/devir-d3-olgu.test.mjs test/devir-d3-supheli.test.mjs test/devir-d3-ileti.test.mjs test/devir-d3-kural.test.mjs test/devir-d3-kart-tarihi.test.mjs test/devir-d3-wa.test.mjs test/devir-d3-acik.test.mjs",
+  "commit": "d0fc3ce4ef9642e527c0ae8929846184c927e160",
+  "dal": "worktree-agent-af273e8dbdb200a7c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T14:17:45.877Z",
+  "sure_sn": 54.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 97,
+    "gecen": 97,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t3/kanit/2026-11-27/d3t3-yeni-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af273e8dbdb200a7c",
+  "ham_cikti_sha256": "7d46742f56f83ccfaf4580411b9c59709f0a9a5f997c1f6625e6f1db764fdc8f",
+  "ham_cikti_bayt": 49797
+}
