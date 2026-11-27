@@ -75,3 +75,87 @@ Her satır: "ne ters giderse devir yanlış geçer / yanlış durur / kullanıc�
 | o-1 | Saat dilimi: UTC ↔ İstanbul'da gün sınırı (K / K+1; 01.01 03:30) | iki TZ aynı sayılar |
 | o-2 | Yarıda kesilme: ön izleme iş parçacığı kesilirse | veri aynı (D3 yazmaz); sonraki ön izleme baştan |
 | o-3 | İleti: yeni neden eklenirse iç kod / İngilizce / tablo adı sızar | bu turda yeni ileti yok; eklenirse aynı yardımcı + iletiDenetimi |
+
+## 1. DEĞİŞEN GÖZLENEBİLİR DAVRANIŞ (önce → sonra)
+
+Ekran YOK (D5). Planın / ön izlemenin SAYILARI (açık kalemler, net, bağlar, ayırımlar, ön denetim, Devir Raporu) bu turda DEĞİŞMEDİ — iş 1 / 2 / 3a / 4 tur 4 kodunun bugünkü davranışını sabitledi
+(hepsi eski kodda da yeşil; §4). Değişen TEK ürün davranışı veri damgası (plan `meta.veriSurumu` ve `onIzlemedenSonraDegisti` — kullanımı devri UYGULAYAN pakette; bugün hiçbir uç bu sonuçla durmaz):
+
+| # | Ne | Önce (tur 4) | Sonra (tur 5) | Örnek (test) |
+|---|---|---|---|---|
+| H1 | Ön izlemeden sonra **fatura PDF'ini açmak** (Fatura › PDF; iz `invoice.pdf`), cari ekstresi / listelerin PDF / Excel'i (`*.exported`), toplu PDF / UBL, entegratör bağlantı denemesi, geri yükleme bildirimini kapatmak, içe aktarmanın ön okuması | "veri değişti" (tur 4 önekleri `invoice.%` / `account.%` / … bu izleri de sayıyordu) — devri uygulayan paket devri SEBEPSİZ durdururdu | "değişmedi" | devir-d3-damga v-1 KULLANICI (fatura PDF'i, ekstre) |
+| H2 | **Şirket seçimi** (002'ye geçip 001'e dönmek; iz `company.selected` 001'in dosyasına yazılır), şirket erişimi, öbür şirketin açılması / silinmesi | "değişti" | "değişmedi" | devir-d3-damga v-1 (eski kodda İLK kırmızı adım) |
+| H3 | Ekran durumu (`settings.client.updated` — ör. senkron sıklığı), Tabela Adı (`settings.office.updated`) | "değişti" | "değişmedi" | devir-d3-damga v-1 |
+| H4 | **Kayıt tahsilatı tutar düzeltmesi** (`case.payment.updated`; `payments` para tablosu, satır sayısı değişmez) ve kayıt eşleştirmesinin tahsilatı başka kayda taşıması (`dataset.bonds.moved`) | "değişmedi" (bayat ön izlemeyle devir sürerdi) | "değişti" | devir-d3-damga v-2 (250 → 240) — gerçek kurulumda kayıt tahsilatı yolu KAPALI (410; ders 14) — zararsız ama eksiksiz |
+| H5 | `meta.veriSurumu` değeri | tur 4'ün özeti | aynı veride FARKLI özet (iz sorgusunun kümesi değişti) — iki koşu bayt bayt aynı (gerçek veri "iki koşu bayt bayt aynı plan" 22/22) | — |
+
+Değişmeyen (ölçüldü, sabitlendi): zamanlanmış yedeğin turu (`app.runDueBackups`), elle yedek, bütünlük taraması (`app.integrity.scanInBackground`), analiz işçisi, defter dondurmasının boş turu,
+ikinci giriş / çıkış → "değişmedi"; cari kartı düzeltmesi, taksit tahsilatı düzeltmesi (300 → 280), tekrarlayan faturanın günü gelen taslağı → "değişti" (tur 4 kodunda da).
+
+## 2. DEĞİŞEN DOSYALAR
+- Ürün (D3): `server/lib/devir/plan-reader.mjs` — veri damgasının iz kümesi: `DATA_AUDIT_TYPES` (+ `case.payment.%`, `dataset.bonds.moved`), yeni `NON_DATA_AUDIT_TYPES` (görüntüleme / dışa aktarma /
+  şirket seçimi / ekran durumu — SQL'de `AND NOT (…)`), damga tablo listesi `DEVIR_DAMGA_TABLES` (aynı liste, dışa açık). Başka ürün dosyası YOK (tek borç sırası, mahsup yolu, plan.mjs, ön denetim,
+  rapor, rota DOKUNULMADI).
+- Testler (YENİ): `test/devir-d3-mahsup-borc.test.mjs` (iş 1), `test/devir-d3-kilit-bag.test.mjs` (iş 2), `test/devir-d3-sifir-pay.test.mjs` (iş 3a), `test/devir-d3-damga.test.mjs` +
+  `test/devir-d3-damga-kaynak.test.mjs` (iş 3b), `test/devir-d3-tarih.test.mjs` (iş 4).
+- Testler (DEĞİŞEN — beklenti değişmedi): `test/devir-d3-ikinci.test.mjs` (iş 6 tutamaç ölçümü + ölçümün dişi; iletideki devir günü sahte saatten — y-1 beklentisi
+  `\d{2}.\d{2}.\d{4}` deseninden TAM metne "2026 yılı 10.02.2027 tarihinde zaten devredilmiş; …" daraldı).
+- Yardımcı: `test/fixtures/devir-d3-esdeger.mjs` (+ `kilitBagImzasi` — S-T4-1 sınıfının imzası). CI dışı: `test/devir-d3-gercek-veri.mjs` (S-T4-1 ayrı sayaç), `test/devir-d3-mutasyon.mjs`
+  (taban D3'ün 26 dosyası + 8 mutant + M52 çapası), `test/devir-d3-ileti-katalog.mjs` (koşu sırasından bağımsız).
+- Belge: bu rapor, `docs/devir/2.5.1-DEVAM/d3t5-iletiler.md` (katalog). Kanıt: `docs/kanit/2026-11-27/d3t5-*`.
+
+## 3. TARAMA
+
+### 3a. Tur 4'ün DOĞRULANMADI maddeleri ve kararların programdaki karşılığı
+| Madde | Ne ölçüldü | Sonuç | Test |
+|---|---|---|---|
+| DOĞRULANMADI-1 (Borç Yaz karşısı) | ≤K Borç Yaz ↔ Ocak alış (Vade Tarihi'yle), geriye tarihli sıra, kısmi, iki belge ≤K, ana belge ≤K alış ↔ Ocak Borç Yaz, silinen, K günü, 002, iki seçenek | tur 4 kodu DOĞRU (kod iki yönde aynı yol): ayrılan pay Borç Yaz'ın açık kaleminde, vade = Vade Tarihi (25.12), bağ `line:` devir kalemine; devirli = devirsiz 10 gün × 7 cari | devir-d3-mahsup-borc 7/7 |
+| DOĞRULANMADI-2 (kilitli belge) | S-T4-1 sınıfının küçük eşdeğeri (sayılar AYNEN), iadesiz aynı sınıf, kilit K'de kısmi bağsız kapanmış belgeye Ocak mahsubu, kilit 30.06 + K | plan A'yı veriyor (280,00 / 1.245,40, gecikmiş 280,00, bakiye 1.525,40); devirsiz program bugün 408,00 / 1.117,40 — fark YALNIZ S-T4-1 imzasıyla "BEKLENEN FARK"; mahsuplarda ayrılan = devirsiz kuyruğun payı (kilit sınırı dahil), devirli = devirsiz | devir-d3-kilit-bag 7/7 |
+| — S-T4-1'in koşulu (yeni ölçüm) | aynı biçim iadesiz (yalnız bağsız tahsilat kilitli dönemde kapatmış) | program bağsız kapanışı KAYDIRMIYOR (172,00 / 800,00 = plan) → S-T4-1 yalnız kilitli kapanışta BAĞLI bir kapatıcı (iade) da varken oluşuyor (tur 4'ün kök neden okumasıyla uyumlu: ölçüm geçişinde bağ, bağsız ödemeden önce kapatıyor) — kilit paketinin girdisi | devir-d3-kilit-bag K2 |
+| DOĞRULANMADI-3 (payı 0 belge) | Aralık satışının tamamı Ocak mahsubuna ayrılır, ≤K bağlı tahsilat geriye tarihli; kısmi; başka açık borç | tur 4 kodu DOĞRU: bağın kapatamadığı kısım bağsız (avans net satırda ya da Kasım satışını 200'e indirir); devirsizde de satış yalnız mahsupla kapalı (bağın payı 0); devirli = devirsiz | devir-d3-sifir-pay 3/3 |
+| DOĞRULANMADI-4 (arka plan yazıcıları) | §1 | yedek / tarama / analiz / dondurma / giriş damgayı değiştirmiyor; fatura PDF'i, ekstre, şirket seçimi DEĞİŞTİRİYORDU (düzeltildi); kayıt tahsilatı düzeltmesi DEĞİŞTİRMİYORDU (düzeltildi) | devir-d3-damga 4/4, devir-d3-damga-kaynak 5/5 |
+| Kâhin (a) | gerçek zaman çizgisi (sahte saat o gün, kayıt o gün): devirsiz programın cari kartı ↔ o gün hazırlanan ön izlemenin devirli eşdeğeri, 01.01 / 16.01 / 17.01 / 29.01 / 01.02 | ikisi de 250 · 250 · 400 · 400 · 550 = kâhinin okuması → plan zaten "mahsup kendi gününden itibaren" veriyor; KODLANMADI (gerek yok) | devir-d3-tarih (a) |
+| Kâhin (a) — geriye dönük görünüm | bütün veri girildikten sonra geçmiş günün gecikmişi (tek borç sırasının görünüm günü parametresi; programın EKRANINDA böyle görünüm yok, ileri tarihli Mahsup Et 400 date-future) | devirsiz = devirli = 400 · 400 · 400 · 400 · 550 (Mahsup Et tarihten bağımsız 0. adım — karar (2) = A; kuyruk görünüm gününden bağımsız bütün satırlarla kurulur) — kâhinin "250"si bu görünümde ayrışır → §9 BM-T5-1 | devir-d3-tarih (a) |
+| Kâhin (b) | bakiyesi 0 cari, iki seçenek | açık kalem (satış 150) taşınıyor, satırlar yazılıyor (M12 açık kalem varken uygulanmıyor), devirli = devirsiz; avans 150 EK-1 M2 A gereği NET satırda (Borç ve Alacakları Aktar: Borç Toplamı 250 + Alacak Toplamı 400; Sadece Bakiyeyi Aktar: Devir Bakiyesi alacak 150) — kâhinin "iki kalem devir satırı olmadan" biçimiyle ayrışır → §9 BM-T5-2; doğal sırada program bu mahsubu 409 ile reddediyor | devir-d3-tarih (b) |
+| S-KD2-3 = A | ön denetimin dört Kural Farkı iletisi OKUNDU (değiştirilmedi; katalog §"Kural Farkı …") | `kural-farki` (fişi yaz), `kural-farki-kilit` (kilidi 30.12'ye al → fişi yaz → yeniden kilitle — etkin fiş yokken), `kural-farki-fis-yeni-yilda` (ÖNCE Ters Kaydet, sonra kilit — S-KD2-3 = A ile UYUMLU sıra), `kural-farki-alt-defter` (1. adım "Kilidi Aç"). Alt defter farkıyla AYNI ANDA etkin bir düzeltme fişi varsa bu iletinin 1. adımı kilit paketinden sonra reddedilir → §9 BM-T5-3 (kilit paketinin şartı); devir tarafında bu turda değişiklik YOK | katalog |
+
+### 3b. Komşular (ders 10; değişen işlevlerin ADLARI + çağıranları `git grep`)
+`git grep -l -E "devirVeriSurumu|onIzlemedenSonraDegisti|DATA_AUDIT_TYPES|NON_DATA_AUDIT_TYPES|DEVIR_DAMGA_TABLES|dataVersionOf|veriSurumu|kilitBagImzasi|createEquivalence|devir-d3-esdeger" -- server test tools`
+→ yalnız `server/lib/devir/{plan-reader,plan,report,iletiler}.mjs` ve `test/devir-d3-*` (+ fixture, gerçek veri, mutasyon). Değişen işlevin çağıranlarının testleri D3'ün tamamında; tur 4'ün komşu
+kümesi (D2 arşiv / yedek / bakım + yazım / taşınabilirlik / lisans / kanıt aracı) ayrıca:
+| Koşu | TZ | Sonuç |
+|---|---|---|
+| `d3t5-yeni-utc` / `-ist` — D3 tur 1–5 testlerinin TAMAMI (26 dosya; İstanbul koşusu TERS dosya sırasıyla) | UTC / İstanbul | **164/164** / **164/164** |
+| `d3t5-komsu-utc` / `-ist` | UTC / İstanbul | **103/103** / **103/103** |
+
+## 4. Yeni / değişen testler — eski kod (t251-d3-tur4; AYRI kopya `git worktree add --detach /dev/shm/d3t5-k5/eski t251-d3-tur4`; YALNIZ 6 yeni test + yeni yardımcı `test/fixtures/devir-d3-esdeger.mjs` — ders 51) ↔ yeni kod
+`d3t5-eski-utc` / `d3t5-eski-ist`: **27/32 geçti, 5 KIRMIZI** (iki TZ'de AYNI 5 test, aynı nedenler); `d3t5-yeni-utc` / `-ist`: **164/164** (D3'ün tamamı; yeni 32 dahil).
+
+**E-1 — eski kodda KIRMIZI (neden iletiden okundu — ders 38):**
+| Test | Eski kodda kırmızı nedeni | Neyin kanıtı |
+|---|---|---|
+| damga: v-1 KULLANICI | "şirket seçimi (company.selected izi bu dosyada) — true !== false" (ilk kırmızı adım; fatura PDF'i ve ekstre adımları sonradır — tek başına dişleri M62'de) | tur 4 damgası görüntüleme / seçim izini "veri değişti" sayıyordu (devir sebepsiz durur) |
+| damga: v-2 PARA TABLOSUNA YAZAN | "kayıt tahsilatı düzeltmesi (250 → 240): damga değişmeli (satır sayıları 1/1/1/1 → 1/1/1/1) — false !== true" | tur 4 iz listesinde kayıt tahsilatı yoktu |
+| damga-kaynak: her iz türü sınıflandırılmış | "Cannot read properties of undefined (reading 'some')" — iz listeleri dışa açık değildi | YAPISAL (liste yok) — kırmızı kanıt diye SAYILMAZ; dişi M60 / M61 mutantlarında |
+| damga-kaynak: çakışma yok | aynı (liste yok) | YAPISAL — dişi mutantta |
+| damga-kaynak: v-5 B / A tabloları | "B / A tablosu damgada sayılmıyor ve gerekçesi yok" (`DEVIR_DAMGA_TABLES` dışa açık değildi → bütün B / A tabloları "sayılmıyor") | YAPISAL — dişi mutantta |
+
+**E-2 — eski kodda da YEŞİL (SABİTLEME testleri; tur 4 kodu bu sınıflarda zaten doğruydu — kırmızı kanıt diye YAZILMAZ, dişi mutasyonda — ders 7 / 38):**
+| Test | Gerekçe |
+|---|---|
+| devir-d3-mahsup-borc (7) | S-T2-1 ayırımı Alacak / Borç Yaz için tek yol (`docKeyOf` debt / credit) — tur 4 Borç Yaz'ı denemedi ama kod doğruydu; dişi M57 |
+| devir-d3-kilit-bag (7) | devir planı S-T4-1 = A'yı tur 4'te de veriyordu (görev metni: "DEVİR PLANI BUGÜN ZATEN A'YI VERİYOR — bu turda plan DEĞİŞMEZ"); dişi M58 (kilitli bağsız kapanış kayar) |
+| devir-d3-sifir-pay (3) | sıfır paylı belgeye bağ tur 4 kodunda bağsız dağılıyordu (doğru); dişi M59 |
+| devir-d3-tarih (6) | (a) plan kendi gününden itibaren veriyordu; (b) açık kalem taşınıyordu; dişi M63 / M64 |
+| damga: ön izlemenin damgası; v-1 ARKA PLAN | arka plan yazıcıları tur 4 damgasını da değiştirmiyordu (ölçüldü) |
+| damga-kaynak: tarama boş değil; CRLF | tarayıcının kendi denetimi |
+
+**Beklentisi değişen test:** yok (devir-d3-ikinci'nin y-1 beklentisi desenden tam metne DARALDI — gün sahte saatten; eski kodda da aynı sayılar, yeni kodda iki TZ yeşil).
+
+## 5. Kabul koşullarının sayıları
+- **A** `test:kahin-defter` UTC **187/187** + İstanbul **187/187**; `test:kahin-cari` ⏳ — tur 4 ile (187 / 25.298) karşılaştırma; kâhin dosyalarına dokunulmadı.
+- **B** yeni testler eski kodda beklenen nedenle kırmızı (§4 E-1: 2 davranış testi + 3 yapısal; iki TZ aynı) ve sabitleme listesi gerekçesiyle (E-2); yeni kodda iki TZ **164/164**.
+- **C** mutantlar ⏳.
+- **D** gerçek veri (v2.5.0 GERÇEK kodu → yeni kod) 3 tohum × 2 TZ ⏳ (t11 iki TZ **22/22**, sınıf dışı fark 0, S-T4-1 sınıfı 12 karşılaştırma — §7).
+- **E** katalog 56 neden (durdurur 46, uyarı 10), 176 ileti; iç kod / İngilizce / alan adı / tablo adı **0**; koşu sırasından bağımsız (§8).
+- **F** komşular iki TZ **103/103** + D3'ün tamamı **164/164** (§3b).
