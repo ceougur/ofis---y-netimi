@@ -72,7 +72,7 @@ export function devirReport(plan, preflight = null, { companyLabel = "", measure
   const total = (ad, arsiv, yeni, money3 = true) => row("TOPLAM", ad, arsiv, yeni, arsiv - yeni, money3);
   const opening = measured || plannedOpenings(plan);
   // 1. Hesap hesap (kuruşu kuruşuna): arşiv K kapanışı ↔ yeni yıl K+1 açılışı; fark ≠ 0 → devir durur (değişmez kitap §6.2).
-  open("hesaplar", "Hesap Hesap Kapanış ve Açılış");
+  open("hesaplar", "Hesaplar");
   const keys = new Set([...plan.archive.kapanisBakiyeleri.map(item => `${item.hesap}|${item.alt}|${item.cari}`), ...[...opening.entries()].filter(([, minor]) => minor !== 0).map(([key]) => key)]);
   const closingOf = new Map(plan.archive.kapanisBakiyeleri.map(item => [`${item.hesap}|${item.alt}|${item.cari}`, item.minor]));
   let debitA = 0;
@@ -93,14 +93,14 @@ export function devirReport(plan, preflight = null, { companyLabel = "", measure
   total("Alacak Bakiyeli Hesaplar", creditA, creditN);
   total(`${OPENING_GL} ${accountName(OPENING_GL)}`, closingOf.get(`${OPENING_GL}||`) || 0, opening.get(`${OPENING_GL}||`) || 0);
   // 2. Kapanış: fişlerin dokunduğu hesaplar (kapanış öncesi ↔ sonrası); 590 / 591 = Ç6 Dönem Net Kârı; önceki yıl sonuçları.
-  open("kapanis", "Kapanış (Arşivde, Kesim Günü)");
+  open("kapanis", "Kapanış");
   for (const item of plan.archive.kapanisEtkisi) row(`${item.hesap}${item.alt ? ` · ${item.alt}` : ""}`, `${accountName(item.hesap)} — Kapanış Öncesi / Sonrası`, item.onceMinor, item.sonraMinor, item.onceMinor - item.sonraMinor);
   for (const item of plan.archive.oncekiYillar) row(`Önceki Yıl ${item.yil}`, `Önceki Yıl Sonucu Fişi (${item.yil}) — ${item.tutarMinor >= 0 ? "570 Geçmiş Yıllar Kârları" : "580 Geçmiş Yıllar Zararları"}`, item.tutarMinor, item.tutarMinor, 0);
   const result = plan.archive.donemSonucuMinor ?? 0;
   const expected = plan.degismezler.find(item => item.kod === "donem-sonucu")?.beklenenMinor ?? result;
   total(`Dönem Net Kârı (Zararı) ${plan.meta.yil} — Vergi Öncesi`, expected, result);
   // 3. Modül modül (K'de iki dosyada eşit — kitap §6.4).
-  open("moduller", "Modül Modül");
+  open("moduller", "Modüller");
   const moduleRow = (kod, ad, minor) => row(kod, ad, minor, minor, 0);
   moduleRow("Kasa", "Kasa (Nakit)", plan.newYear.kasa.minor);
   for (const item of plan.newYear.banka) moduleRow(`${item.hesap} · ${item.alt}`, item.ad, item.minor);
@@ -122,7 +122,7 @@ export function devirReport(plan, preflight = null, { companyLabel = "", measure
   for (const item of plan.newYear.vergi) moduleRow(item.hesap, `${accountName(item.hesap)}${item.donem ? ` — ${monthText(item.donem)}` : ""}`, item.minor);
   for (const item of plan.newYear.supheli) moduleRow("Şüpheli Alacak", `${partyLabel(item.cari)} — Karşılık ${tl(item.karsilikMinor)}`, item.kalanMinor);
   // 4. Hareket sayıları: devir öncesi = arşiv ≤K + yeni yıl >K (kitap §6.6).
-  open("hareketler", "Hareket Sayıları");
+  open("hareketler", "Hareketler");
   let le = 0;
   let gt = 0;
   for (const item of plan.newYear.budama) {
@@ -133,7 +133,7 @@ export function devirReport(plan, preflight = null, { companyLabel = "", measure
   }
   row("TOPLAM", "Kesim Günü ve Öncesi / Sonrası", le, gt, 0, false);
   // 5. Listeler: UYARIR maddeleri, arşiv başvurusuna çevrilen bağlar, taşınan şablonlar, eksi stoklu ürünler.
-  open("listeler", "Uyarılar ve Listeler");
+  open("listeler", "Listeler");
   const textRow = (kod, ad) => {
     rows.push([current.ad, kod, ad, "", "", ""]);
     current.satirSayisi += 1;

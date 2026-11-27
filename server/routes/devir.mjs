@@ -144,7 +144,11 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
     // Şirket ÖNCE açılır (bekleyen göçü koşar; meşgulse 503 — geri yükleme / ayırma sürüyor).
     const target = appFor(company);
     const today = target.context?.period?.today?.() || clockNow().toISOString().slice(0, 10);
-    checkCutoff(cutoff, today);
+    try {
+      checkCutoff(cutoff, today);
+    } catch (error) {
+      throw new HttpError(error.status || 400, error.message, { code: error.code });
+    }
     const existing = running.get(company.id);
     if (existing && previews.get(existing)?.state === "running") return ok(res, { ...publicJob(previews.get(existing), false), joined: true });
     const label = createReportHeader({ store: target.store, company: () => company }).companyLabel() || `${company.code} · ${company.name}`;
