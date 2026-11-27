@@ -1,0 +1,1034 @@
+{
+ "beklenmeyen": [],
+ "eski_senaryolarda_degisen": [
+  {
+   "dosya": "senaryo/s04-gider-yansitma-stopaj-devir",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": -1180000,
+   "yol": "elle/A/bil_yeni/detay/V.E/Önceki Yıl Zararı (2026)"
+  },
+  {
+   "dosya": "senaryo/s04-gider-yansitma-stopaj-devir",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": -1180000,
+   "yol": "elle/A/bil_yeni/pasif/V.E"
+  },
+  {
+   "dosya": "senaryo/s04-gider-yansitma-stopaj-devir",
+   "eski": -1180000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 0,
+   "yol": "elle/A/bil_yeni/pasif/V.F"
+  },
+  {
+   "dosya": "senaryo/s21-devir-ayni-adli-iki-cari",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 150000,
+   "yol": "elle/A/bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "senaryo/s21-devir-ayni-adli-iki-cari",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 150000,
+   "yol": "elle/A/bil/pasif/V.D"
+  },
+  {
+   "dosya": "senaryo/s21-devir-ayni-adli-iki-cari",
+   "eski": 150000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 0,
+   "yol": "elle/A/bil/pasif/V.F"
+  },
+  {
+   "dosya": "senaryo/s22-devir-temel",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 124000,
+   "yol": "elle/A/bil/pasif/V.D"
+  },
+  {
+   "dosya": "senaryo/s22-devir-temel",
+   "eski": 154000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 30000,
+   "yol": "elle/A/bil/pasif/V.F"
+  },
+  {
+   "dosya": "senaryo/s23-devir-pos-valor-kg6",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 97000,
+   "yol": "elle/A/bil/pasif/V.D"
+  },
+  {
+   "dosya": "senaryo/s23-devir-pos-valor-kg6",
+   "eski": 97000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 0,
+   "yol": "elle/A/bil/pasif/V.F"
+  },
+  {
+   "dosya": "senaryo/s23-devir-pos-valor-kg6",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 100000,
+   "yol": "elle/KG6=B/bil/pasif/V.D"
+  },
+  {
+   "dosya": "senaryo/s23-devir-pos-valor-kg6",
+   "eski": 97000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": -3000,
+   "yol": "elle/KG6=B/bil/pasif/V.F"
+  },
+  {
+   "dosya": "senaryo/s25-devir-onceki-yil-kg12",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 25000,
+   "yol": "elle/A/bil_yeni/detay/V.D/570.2025"
+  },
+  {
+   "dosya": "senaryo/s25-devir-onceki-yil-kg12",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 92500,
+   "yol": "elle/A/bil_yeni/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "senaryo/s25-devir-onceki-yil-kg12",
+   "eski": 25000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 117500,
+   "yol": "elle/A/bil_yeni/pasif/V.D"
+  },
+  {
+   "dosya": "senaryo/s25-devir-onceki-yil-kg12",
+   "eski": 92500,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 0,
+   "yol": "elle/A/bil_yeni/pasif/V.F"
+  },
+  {
+   "dosya": "senaryo/s27-devir-yoldaki-supheli-evrak-taksit",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 170000,
+   "yol": "elle/A/bil/pasif/V.D"
+  },
+  {
+   "dosya": "senaryo/s27-devir-yoldaki-supheli-evrak-taksit",
+   "eski": 180000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 10000,
+   "yol": "elle/A/bil/pasif/V.F"
+  },
+  {
+   "dosya": "senaryo/s28-devri-yenile-kg7",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 50000,
+   "yol": "elle/A/bil/pasif/V.D"
+  },
+  {
+   "dosya": "senaryo/s28-devri-yenile-kg7",
+   "eski": 50000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 0,
+   "yol": "elle/A/bil/pasif/V.F"
+  },
+  {
+   "dosya": "senaryo/s31-eslestirme-sonra-devir",
+   "eski": 10000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 20000,
+   "yol": "elle/A/bil/pasif/V.D"
+  },
+  {
+   "dosya": "senaryo/s31-eslestirme-sonra-devir",
+   "eski": 10000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 0,
+   "yol": "elle/A/bil/pasif/V.F"
+  },
+  {
+   "dosya": "senaryo/s32-yil-donumu-29-subat",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 100000,
+   "yol": "elle/A/bil_yeni/pasif/V.D"
+  },
+  {
+   "dosya": "senaryo/s32-yil-donumu-29-subat",
+   "eski": 130000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 30000,
+   "yol": "elle/A/bil_yeni/pasif/V.F"
+  },
+  {
+   "dosya": "senaryo/s34-ocakta-aralik-iadesi",
+   "eski": null,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": 100000,
+   "yol": "elle/A/bil/pasif/V.D"
+  },
+  {
+   "dosya": "senaryo/s34-ocakta-aralik-iadesi",
+   "eski": 80000,
+   "neden": "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu",
+   "yeni": -20000,
+   "yol": "elle/A/bil/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/rastgele-1",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/rastgele-1",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 27939966,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/rastgele-1",
+   "eski": 27939966,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/rastgele-1",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 27939966,
+   "yol": "dallar/A/raporlar/bil_yeni/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/rastgele-1",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 27939966,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/rastgele-1",
+   "eski": 29824064,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 1884098,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/rastgele-2",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/rastgele-2",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 24092554,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/rastgele-2",
+   "eski": 24092554,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/rastgele-2",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 24092554,
+   "yol": "dallar/A/raporlar/bil_yeni/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/rastgele-2",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 24092554,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/rastgele-2",
+   "eski": 27469443,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 3376889,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/rastgele-3",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/rastgele-3",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 23798390,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/rastgele-3",
+   "eski": 23798390,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/rastgele-3",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 23798390,
+   "yol": "dallar/A/raporlar/bil_yeni/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/rastgele-3",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 23798390,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/rastgele-3",
+   "eski": 26329246,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 2530856,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s04-gider-yansitma-stopaj-devir",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s04-gider-yansitma-stopaj-devir",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": -1180000,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.E/Önceki Yıl Zararı (2026)"
+  },
+  {
+   "dosya": "beklenen/s04-gider-yansitma-stopaj-devir",
+   "eski": -1180000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.F/591"
+  },
+  {
+   "dosya": "beklenen/s04-gider-yansitma-stopaj-devir",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": -1180000,
+   "yol": "dallar/A/raporlar/bil_yeni/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s04-gider-yansitma-stopaj-devir",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": -1180000,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.E"
+  },
+  {
+   "dosya": "beklenen/s04-gider-yansitma-stopaj-devir",
+   "eski": -1180000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s21-devir-ayni-adli-iki-cari",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s21-devir-ayni-adli-iki-cari",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 150000,
+   "yol": "dallar/A/raporlar/bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s21-devir-ayni-adli-iki-cari",
+   "eski": 150000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s21-devir-ayni-adli-iki-cari",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 150000,
+   "yol": "dallar/A/raporlar/bil/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s21-devir-ayni-adli-iki-cari",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 150000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s21-devir-ayni-adli-iki-cari",
+   "eski": 150000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s22-devir-temel",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s22-devir-temel",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 124000,
+   "yol": "dallar/A/raporlar/bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s22-devir-temel",
+   "eski": 124000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s22-devir-temel",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 124000,
+   "yol": "dallar/A/raporlar/bil/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s22-devir-temel",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 124000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s22-devir-temel",
+   "eski": 154000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 30000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 97000,
+   "yol": "dallar/A/raporlar/bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": 97000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 97000,
+   "yol": "dallar/A/raporlar/bil/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 97000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": 97000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/KG6=B/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/KG6=B/raporlar/bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": 100000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/KG6=B/raporlar/bil/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/KG6=B/raporlar/bil/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/KG6=B/raporlar/bil/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s23-devir-pos-valor-kg6",
+   "eski": 97000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": -3000,
+   "yol": "dallar/KG6=B/raporlar/bil/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s24-devir-eksi-stok-kg9",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s24-devir-eksi-stok-kg9",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/KG9=B/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 92500,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": 92500,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 92500,
+   "yol": "dallar/A/raporlar/bil_yeni/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": 25000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 117500,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": 92500,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/KG12=B/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 117500,
+   "yol": "dallar/KG12=B/raporlar/bil_yeni/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": 117500,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/KG12=B/raporlar/bil_yeni/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 117500,
+   "yol": "dallar/KG12=B/raporlar/bil_yeni/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 117500,
+   "yol": "dallar/KG12=B/raporlar/bil_yeni/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s25-devir-onceki-yil-kg12",
+   "eski": 117500,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/KG12=B/raporlar/bil_yeni/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s26a-devir-borc-ve-alacaklari-aktar",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s26b-devir-sadece-bakiyeyi-aktar",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s27-devir-yoldaki-supheli-evrak-taksit",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s27-devir-yoldaki-supheli-evrak-taksit",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 170000,
+   "yol": "dallar/A/raporlar/bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s27-devir-yoldaki-supheli-evrak-taksit",
+   "eski": 170000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s27-devir-yoldaki-supheli-evrak-taksit",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 170000,
+   "yol": "dallar/A/raporlar/bil/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s27-devir-yoldaki-supheli-evrak-taksit",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 170000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s27-devir-yoldaki-supheli-evrak-taksit",
+   "eski": 180000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 10000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s28-devri-yenile-kg7",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s28-devri-yenile-kg7",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 50000,
+   "yol": "dallar/A/raporlar/bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s28-devri-yenile-kg7",
+   "eski": 50000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s28-devri-yenile-kg7",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 50000,
+   "yol": "dallar/A/raporlar/bil/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s28-devri-yenile-kg7",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 50000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s28-devri-yenile-kg7",
+   "eski": 50000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s31-eslestirme-sonra-devir",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s31-eslestirme-sonra-devir",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 10000,
+   "yol": "dallar/A/raporlar/bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s31-eslestirme-sonra-devir",
+   "eski": 10000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s31-eslestirme-sonra-devir",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 10000,
+   "yol": "dallar/A/raporlar/bil/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s31-eslestirme-sonra-devir",
+   "eski": 10000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 20000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s31-eslestirme-sonra-devir",
+   "eski": 10000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s32-yil-donumu-29-subat",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s32-yil-donumu-29-subat",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2027)"
+  },
+  {
+   "dosya": "beklenen/s32-yil-donumu-29-subat",
+   "eski": 100000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil_yeni/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s32-yil-donumu-29-subat",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/A/raporlar/bil_yeni/onceki_yil_dagitilmamis/2027"
+  },
+  {
+   "dosya": "beklenen/s32-yil-donumu-29-subat",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s32-yil-donumu-29-subat",
+   "eski": 130000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 30000,
+   "yol": "dallar/A/raporlar/bil_yeni/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s34-ocakta-aralik-iadesi",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s34-ocakta-aralik-iadesi",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/A/raporlar/bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s34-ocakta-aralik-iadesi",
+   "eski": 100000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s34-ocakta-aralik-iadesi",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/A/raporlar/bil/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s34-ocakta-aralik-iadesi",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s34-ocakta-aralik-iadesi",
+   "eski": 80000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": -20000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s39-mahsup-acik-kalem",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s45-m2-devirde-gecikmis-ayni",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s46-m3-m12-tek-net-satir-ekstre",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s47-m4-onceki-yil-kilitli",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s48-m5-eksi-stok-devri",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s48-m5-eksi-stok-devri",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 50000,
+   "yol": "dallar/A/raporlar/bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s48-m5-eksi-stok-devri",
+   "eski": 50000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s48-m5-eksi-stok-devri",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 50000,
+   "yol": "dallar/A/raporlar/bil/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s48-m5-eksi-stok-devri",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 50000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s48-m5-eksi-stok-devri",
+   "eski": 14000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": -36000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s48-m5-eksi-stok-devri",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 50000,
+   "yol": "dallar/A/raporlar/bil0101/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s48-m5-eksi-stok-devri",
+   "eski": 50000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil0101/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s48-m5-eksi-stok-devri",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 50000,
+   "yol": "dallar/A/raporlar/bil0101/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s48-m5-eksi-stok-devri",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 50000,
+   "yol": "dallar/A/raporlar/bil0101/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s48-m5-eksi-stok-devri",
+   "eski": 50000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil0101/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s50-m13-supheli-devir",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s50-m13-supheli-devir",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/A/raporlar/bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)"
+  },
+  {
+   "dosya": "beklenen/s50-m13-supheli-devir",
+   "eski": 100000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/detay/V.F/590"
+  },
+  {
+   "dosya": "beklenen/s50-m13-supheli-devir",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/A/raporlar/bil/onceki_yil_dagitilmamis/2026"
+  },
+  {
+   "dosya": "beklenen/s50-m13-supheli-devir",
+   "eski": null,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": 100000,
+   "yol": "dallar/A/raporlar/bil/pasif/V.D"
+  },
+  {
+   "dosya": "beklenen/s50-m13-supheli-devir",
+   "eski": 100000,
+   "neden": "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis",
+   "yeni": null,
+   "yol": "dallar/A/raporlar/bil/pasif/V.F"
+  },
+  {
+   "dosya": "beklenen/s56-r3-kilitli-bag",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s63-s11-kilitli-karsiliksiz",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s66-s18-avans-evrak-karsiliksiz",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s72-s21-pos-valor-resmi-tatil",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  },
+  {
+   "dosya": "beklenen/s73-s24-devir-k-kilidi",
+   "eski": null,
+   "neden": "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []",
+   "yeni": [],
+   "yol": "dallar/A/degismezler/canli/devir_tabani"
+  }
+ ],
+ "sayac": {
+  "BM§2 (5) yeni değişmez anahtarı (KD9) devir_tabani = []": 30,
+  "S-1 = A elle beklenen (KD1) — README K-D G3 tablosu": 26,
+  "S-1 = A gösterim (KD1): önceki yılın 590 / 591'i V.F → V.D / V.E 'Önceki Yıl …', onceki_yil_dagitilmamis": 90,
+  "YENI (K-D senaryosu / tohumu)": 12594
+ },
+ "toplam_yaprak": 77002
+}

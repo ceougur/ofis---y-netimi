@@ -1,0 +1,378 @@
+..........................EEFF.EEF.............E...F.............................EEFFF.EEF.EFFEEE........FFF.F..FF..FF.F...............................................................................................................................
+======================================================================
+ERROR: test_KD23_geri_al_yeniden_devir_raporu_ayni (__main__.BakimKD.test_KD23_geri_al_yeniden_devir_raporu_ayni)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1495, in test_KD23_geri_al_yeniden_devir_raporu_ayni
+    self.assertEqual(r2["raporlar"]["h"]["odeme_sozu_var"], {"C3": 700})
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+KeyError: 'odeme_sozu_var'
+
+======================================================================
+ERROR: test_KD2_aktarim_M4_kapanmamis_yildan_once_eskiden_yeniye (__main__.BakimKD.test_KD2_aktarim_M4_kapanmamis_yildan_once_eskiden_yeniye)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1427, in test_KD2_aktarim_M4_kapanmamis_yildan_once_eskiden_yeniye
+    self.assertEqual((b28["onceki_yil_dagitilmamis"], b28["gecmis_yillar_kapanmamis"], b28["donem_net_kari"]), ({"2026": 100000}, 50000, 20000))
+                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'onceki_yil_dagitilmamis'
+
+======================================================================
+ERROR: test_KD7_soz_tasinmazsa_degismez_yakalar (__main__.BakimKD.test_KD7_soz_tasinmazsa_degismez_yakalar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1515, in test_KD7_soz_tasinmazsa_degismez_yakalar
+    self.assertEqual(r["devirler"][0]["degismezler"]["soz_hatirlatma_ayni"], [])
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'soz_hatirlatma_ayni'
+
+======================================================================
+ERROR: test_KD9_devir_tabani_degismezi_disi (__main__.BakimKD.test_KD9_devir_tabani_degismezi_disi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1524, in test_KD9_devir_tabani_degismezi_disi
+    self.assertEqual(r["degismezler"]["canli"]["devir_tabani"], [])
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+KeyError: 'devir_tabani'
+
+======================================================================
+ERROR: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1803, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+                     ~~~~~~~^^^^^^^^^^^^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/uret_beklenen.py", line 54, in main
+    for yol, icerik in ((os.path.join(SEN, s["ad"] + ".json"), metin(s)), (os.path.join(BEK, s["ad"] + ".json"), metin(beklenen(s)))):
+                                                                                                                       ~~~~~~~~^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/uret_beklenen.py", line 41, in beklenen
+    r = M.kos(s, M.Kurallar.etiketten(et))
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/model.py", line 4251, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/model.py", line 2775, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/model.py", line 2801, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Model' object has no attribute '_o_defter_turu_degistir'. Did you mean: '_o_cari_tur_degistir'?
+
+======================================================================
+ERROR: test_s122_kd_kredi_devri (__main__.ElleSenaryolar.test_s122_kd_kredi_devri)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1540, in test
+    gercek = yol_al(r, yol, bek)
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 37, in yol_al
+    raise KeyError(f"{yol}: '{seg}' yok")
+KeyError: "bil/pasif/V.E: 'V.E' yok"
+
+======================================================================
+ERROR: test_s123_kd_hesapsiz_acilis_oncesi_devir (__main__.ElleSenaryolar.test_s123_kd_hesapsiz_acilis_oncesi_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1540, in test
+    gercek = yol_al(r, yol, bek)
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 37, in yol_al
+    raise KeyError(f"{yol}: '{seg}' yok")
+KeyError: "bil/pasif/V.D: 'V.D' yok"
+
+======================================================================
+ERROR: test_s127_kd_kapali_odenmis_kart_devir (__main__.ElleSenaryolar.test_s127_kd_kapali_odenmis_kart_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1540, in test
+    gercek = yol_al(r, yol, bek)
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 37, in yol_al
+    raise KeyError(f"{yol}: '{seg}' yok")
+KeyError: "kt1/TK1/taksitler: 'TK1' yok"
+
+======================================================================
+ERROR: test_s128_kd_degersiz_alacak_devir (__main__.ElleSenaryolar.test_s128_kd_degersiz_alacak_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1540, in test
+    gercek = yol_al(r, yol, bek)
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 37, in yol_al
+    raise KeyError(f"{yol}: '{seg}' yok")
+KeyError: "bil/pasif/V.D: 'V.D' yok"
+
+======================================================================
+ERROR: test_s130_kd_esmm_defter_turu_devir (__main__.ElleSenaryolar.test_s130_kd_esmm_defter_turu_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1538, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/model.py", line 4251, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/model.py", line 2775, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/model.py", line 2801, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Model' object has no attribute '_o_defter_turu_degistir'. Did you mean: '_o_cari_tur_degistir'?
+
+======================================================================
+ERROR: test_s133_kd_geri_al_yeniden_devir (__main__.ElleSenaryolar.test_s133_kd_geri_al_yeniden_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1540, in test
+    gercek = yol_al(r, yol, bek)
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 37, in yol_al
+    raise KeyError(f"{yol}: '{seg}' yok")
+KeyError: "bil/pasif/V.D: 'V.D' yok"
+
+======================================================================
+ERROR: test_s134_kd_ikinci_yil_devri_kar (__main__.ElleSenaryolar.test_s134_kd_ikinci_yil_devri_kar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1540, in test
+    gercek = yol_al(r, yol, bek)
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 37, in yol_al
+    raise KeyError(f"{yol}: '{seg}' yok")
+KeyError: "bil27/pasif/V.D: 'V.D' yok"
+
+======================================================================
+ERROR: test_s135_kd_ikinci_yil_devri_zarar (__main__.ElleSenaryolar.test_s135_kd_ikinci_yil_devri_zarar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1540, in test
+    gercek = yol_al(r, yol, bek)
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 37, in yol_al
+    raise KeyError(f"{yol}: '{seg}' yok")
+KeyError: "bil27/pasif/V.E: 'V.E' yok"
+
+======================================================================
+FAIL: test_KD3_S2_bekleyen_aday_tarihinden_bagimsiz_durdurur (__main__.BakimKD.test_KD3_S2_bekleyen_aday_tarihinden_bagimsiz_durdurur)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1443, in test_KD3_S2_bekleyen_aday_tarihinden_bagimsiz_durdurur
+    self.assertEqual([x["kod"] for x in r["redler"]], ["DEVIR_ACILIS_OLABILIR"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['DEVIR_ACILIS_OLABILIR']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'DEVIR_ACILIS_OLABILIR'
+
+- []
++ ['DEVIR_ACILIS_OLABILIR']
+
+======================================================================
+FAIL: test_KD4_S3_alt_defter_farki_ve_yeni_yila_dusen_fis_susar (__main__.BakimKD.test_KD4_S3_alt_defter_farki_ve_yeni_yila_dusen_fis_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1457, in test_KD4_S3_alt_defter_farki_ve_yeni_yila_dusen_fis_susar
+    with self.assertRaises(AssertionError) as c:
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_KD9_excel_yukleme_K_sonrasi_susar (__main__.BakimKD.test_KD9_excel_yukleme_K_sonrasi_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1473, in test_KD9_excel_yukleme_K_sonrasi_susar
+    with self.assertRaises(AssertionError) as c:
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_s04_gider_yansitma_stopaj_devir (__main__.ElleSenaryolar.test_s04_gider_yansitma_stopaj_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: -1180000 != 0 : s04-gider-yansitma-stopaj-devir [A] bil_yeni/pasif/V.F
+
+======================================================================
+FAIL: test_s124a_kd_acilis_olabilir_onay_devir (__main__.ElleSenaryolar.test_s124a_kd_acilis_olabilir_onay_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['YOK'] != ['DEVIR_ACILIS_OLABILIR']
+
+First differing element 0:
+'YOK'
+'DEVIR_ACILIS_OLABILIR'
+
+- ['YOK']
++ ['DEVIR_ACILIS_OLABILIR'] : s124a-kd-acilis-olabilir-onay-devir [A] redler
+
+======================================================================
+FAIL: test_s124b_kd_acilis_olabilir_ret_devir (__main__.ElleSenaryolar.test_s124b_kd_acilis_olabilir_ret_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['YOK'] != ['DEVIR_ACILIS_OLABILIR']
+
+First differing element 0:
+'YOK'
+'DEVIR_ACILIS_OLABILIR'
+
+- ['YOK']
++ ['DEVIR_ACILIS_OLABILIR'] : s124b-kd-acilis-olabilir-ret-devir [A] redler
+
+======================================================================
+FAIL: test_s125_kd_kural_farki_devir (__main__.ElleSenaryolar.test_s125_kd_kural_farki_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['KURAL_FARKI_YOK'] != ['DEVIR_KURAL_FARKI']
+
+First differing element 0:
+'KURAL_FARKI_YOK'
+'DEVIR_KURAL_FARKI'
+
+- ['KURAL_FARKI_YOK']
+?              ----
+
++ ['DEVIR_KURAL_FARKI']
+?   ++++++
+ : s125-kd-kural-farki-devir [A] redler
+
+======================================================================
+FAIL: test_s129_kd_k_oncesi_kayit_devir_tabani (__main__.ElleSenaryolar.test_s129_kd_k_oncesi_kayit_devir_tabani)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['YOK', 'YOK', 'YOK', 'YOK', 'KILITLI_DONEM'] != ['DEVIR_TABANI', 'DEVIR_TABANI', 'DEVIR_TAB[33 chars]NEM']
+
+First differing element 0:
+'YOK'
+'DEVIR_TABANI'
+
+- ['YOK', 'YOK', 'YOK', 'YOK', 'KILITLI_DONEM']
++ ['DEVIR_TABANI',
++  'DEVIR_TABANI',
++  'DEVIR_TABANI',
++  'DEVIR_TABANI',
++  'KILITLI_DONEM'] : s129-kd-k-oncesi-kayit-devir-tabani [A] redler
+
+======================================================================
+FAIL: test_s131_kd_cari_turu_devir (__main__.ElleSenaryolar.test_s131_kd_cari_turu_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['KILITLI_DONEM']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'KILITLI_DONEM'
+
+- []
++ ['KILITLI_DONEM'] : s131-kd-cari-turu-devir [A] redler
+
+======================================================================
+FAIL: test_s132_kd_odeme_sozu_devir (__main__.ElleSenaryolar.test_s132_kd_odeme_sozu_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'C1': 50000} != {}
+- {'C1': 50000}
++ {} : s132-kd-odeme-sozu-devir [A] h1/otomatik
+
+======================================================================
+FAIL: test_s21_devir_ayni_adli_iki_cari (__main__.ElleSenaryolar.test_s21_devir_ayni_adli_iki_cari)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 150000 != 0 : s21-devir-ayni-adli-iki-cari [A] bil/pasif/V.F
+
+======================================================================
+FAIL: test_s22_devir_temel (__main__.ElleSenaryolar.test_s22_devir_temel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 154000 != 30000 : s22-devir-temel [A] bil/pasif/V.F
+
+======================================================================
+FAIL: test_s23_devir_pos_valor_kg6 (__main__.ElleSenaryolar.test_s23_devir_pos_valor_kg6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 97000 != 0 : s23-devir-pos-valor-kg6 [A] bil/pasif/V.F
+
+======================================================================
+FAIL: test_s25_devir_onceki_yil_kg12 (__main__.ElleSenaryolar.test_s25_devir_onceki_yil_kg12)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 25000 != 117500 : s25-devir-onceki-yil-kg12 [A] bil_yeni/pasif/V.D
+
+======================================================================
+FAIL: test_s27_devir_yoldaki_supheli_evrak_taksit (__main__.ElleSenaryolar.test_s27_devir_yoldaki_supheli_evrak_taksit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 180000 != 10000 : s27-devir-yoldaki-supheli-evrak-taksit [A] bil/pasif/V.F
+
+======================================================================
+FAIL: test_s28_devri_yenile_kg7 (__main__.ElleSenaryolar.test_s28_devri_yenile_kg7)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 50000 != 0 : s28-devri-yenile-kg7 [A] bil/pasif/V.F
+
+======================================================================
+FAIL: test_s31_eslestirme_sonra_devir (__main__.ElleSenaryolar.test_s31_eslestirme_sonra_devir)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 10000 != 20000 : s31-eslestirme-sonra-devir [A] bil/pasif/V.D
+
+======================================================================
+FAIL: test_s32_yil_donumu_29_subat (__main__.ElleSenaryolar.test_s32_yil_donumu_29_subat)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 130000 != 30000 : s32-yil-donumu-29-subat [A] bil_yeni/pasif/V.F
+
+======================================================================
+FAIL: test_s34_ocakta_aralik_iadesi (__main__.ElleSenaryolar.test_s34_ocakta_aralik_iadesi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d/test/bagimsiz/muhasebe/test_model.py", line 1541, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 80000 != -20000 : s34-ocakta-aralik-iadesi [A] bil/pasif/V.F
+
+----------------------------------------------------------------------
+Ran 247 tests in 40.557s
+
+FAILED (failures=19, errors=13)
+# tests 247
+# pass 215
+# fail 32
+# skipped 0

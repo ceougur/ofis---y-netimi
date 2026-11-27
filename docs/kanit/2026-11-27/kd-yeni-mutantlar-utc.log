@@ -1,0 +1,22 @@
+temel (bozulmamış model): 243 test, 0 kırmızı
+aralık 330:347: 17 / 347 mutant
+KD01 S-1: önceki yılın 590 kârı yeni yılda Dönem Net Kârı'nda (Geçmiş Yıllar satırı yok) ÖLDÜ       (23/243 test kırmızı: test_KD18_590_yalniz_K_yili_degismezinin_disi, test_s04_gider_yansitma_stopaj_devir, test_s124a_kd_acilis_olabilir_onay_devir …)
+KD02 S-1: ikinci yıl kapanışında 590 → 570.<yıl> aktarımı atlanır              ÖLDÜ       (4/243 test kırmızı: test_KD18_590_yalniz_K_yili_degismezinin_disi, test_KD2_aktarim_M4_kapanmamis_yildan_once_eskiden_yeniye, test_s134_kd_ikinci_yil_devri_kar …)
+KD03 S-2: bekleyen 'Açılış Olabilir' adayıyla devir geçer                      ÖLDÜ       (3/243 test kırmızı: test_KD3_S2_bekleyen_aday_tarihinden_bagimsiz_durdurur, test_s124a_kd_acilis_olabilir_onay_devir, test_s124b_kd_acilis_olabilir_ret_devir)
+KD04 S-3: düzeltilmemiş Kural Değişikliği Farkıyla devir geçer                 ÖLDÜ       (2/243 test kırmızı: test_KD4_S3_alt_defter_farki_ve_yeni_yila_dusen_fis_susar, test_s125_kd_kural_farki_devir)
+KD05 BM§2 (1): Borç / Alacak Toplamı satırları kuyruğa girer (Alacak Toplamı gecikmiş kalemi kapatır) ÖLDÜ       (14/243 test kırmızı: test_KD5_KD6_iki_secenek_ayni_sayilar, test_s123_kd_hesapsiz_acilis_oncesi_devir, test_s126_kd_excel_karti_devir …)
+KD06 BM§2 (2): vadesiz açık kalem devirde vadesini kaybeder (K+1)              ÖLDÜ       (32/243 test kırmızı: test_N06_691_692ye_kapanir, test_KD2_aktarim_M4_kapanmamis_yildan_once_eskiden_yeniye, test_s123_kd_hesapsiz_acilis_oncesi_devir …)
+KD07 BM§2 (4): kapalı kart devirde K'ye kadar ödenen açılışını almaz           ÖLDÜ       (2/243 test kırmızı: test_tohum_7, test_s127_kd_kapali_odenmis_kart_devir)
+KD08 BM§2 (6): K öncesi (arşivdeki) kayıt yeni yılda Silinenler'den geri alınır / düzenlenir ÖLDÜ       (1/243 test kırmızı: test_s129_kd_k_oncesi_kayit_devir_tabani)
+KD10 BM§2 (3): Ödeme Sözü yeni yıla taşınmaz                                   ÖLDÜ       (3/243 test kırmızı: test_KD7_soz_tasinmazsa_degismez_yakalar, test_s132_kd_odeme_sozu_devir, test_KD23_geri_al_yeniden_devir_raporu_ayni)
+KD11 §3 (10): cari türü değişiminde arşivdeki (K öncesi) hareket görülmez      ÖLDÜ       (1/243 test kırmızı: test_s131_kd_cari_turu_devir)
+KD12 §3 (9): Defter Türü değişimi arşive de uygulanır                          ÖLDÜ       (1/243 test kırmızı: test_s130_kd_esmm_defter_turu_devir)
+KD13 BM§2 (4): bakiyesi 0 carinin (ödenmiş) kartı yeni yılda görünmez          ÖLDÜ       (1/243 test kırmızı: test_s127_kd_kapali_odenmis_kart_devir)
+KD14 BM§2 (4): iptalle kapanan (S15) kart devirde taşınmaz                     ÖLDÜ       (1/243 test kırmızı: test_s127_kd_kapali_odenmis_kart_devir)
+KD15 S-1: aktarım kapanan yılın alt hesabına (570.<K yılı>)                    ÖLDÜ       (3/243 test kırmızı: test_KD2_aktarim_M4_kapanmamis_yildan_once_eskiden_yeniye, test_s134_kd_ikinci_yil_devri_kar, test_s135_kd_ikinci_yil_devri_zarar)
+KD16 S-2: yalnız K öncesi tarihli bekleyen aday devri durdurur                 ÖLDÜ       (1/243 test kırmızı: test_KD3_S2_bekleyen_aday_tarihinden_bagimsiz_durdurur)
+KD17 BM§2 (5): devir tabanı değişmezi dişsiz                                   ÖLDÜ       (1/243 test kırmızı: test_KD9_devir_tabani_degismezi_disi)
+KD18 S-1: kapanıştan sonra 590 = yalnız K yılı denetimi yok                    ÖLDÜ       (1/243 test kırmızı: test_KD18_590_yalniz_K_yili_degismezinin_disi)
+# tests 17
+# pass 17
+# fail 0
