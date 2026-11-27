@@ -19,6 +19,7 @@
     "canli": {
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
+     "devir_tabani": [],
      "gt_bilanco_kar": [],
      "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
@@ -66,8 +67,8 @@
       "I.A": {
        "102.B1": 97000
       },
-      "V.F": {
-       "590": 97000
+      "V.D": {
+       "Önceki Yıl Kârı — Dağıtılmamış (2026)": 97000
       }
      },
      "donem_net_kari": 0,
@@ -76,8 +77,11 @@
      "gecmis_yillar_kar": 0,
      "gecmis_yillar_zarar": 0,
      "kesin_degil": [],
+     "onceki_yil_dagitilmamis": {
+      "2026": 97000
+     },
      "pasif": {
-      "V.F": 97000
+      "V.D": 97000
      },
      "pasif_toplam": 97000,
      "tarih": "2027-01-31"
@@ -216,6 +220,7 @@
     "canli": {
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
+     "devir_tabani": [],
      "gt_bilanco_kar": [],
      "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
@@ -263,8 +268,10 @@
       "I.A": {
        "102.B1": 97000
       },
+      "V.D": {
+       "Önceki Yıl Kârı — Dağıtılmamış (2026)": 100000
+      },
       "V.F": {
-       "590": 100000,
        "Dönem Net Kârı (Hesaplanmış)": -3000
       }
      },
@@ -274,8 +281,12 @@
      "gecmis_yillar_kar": 0,
      "gecmis_yillar_zarar": 0,
      "kesin_degil": [],
+     "onceki_yil_dagitilmamis": {
+      "2026": 100000
+     },
      "pasif": {
-      "V.F": 97000
+      "V.D": 100000,
+      "V.F": -3000
      },
      "pasif_toplam": 97000,
      "tarih": "2027-01-31"

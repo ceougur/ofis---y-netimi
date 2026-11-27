@@ -19,6 +19,7 @@
     "canli": {
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
+     "devir_tabani": [],
      "gt_bilanco_kar": [],
      "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
@@ -73,8 +74,8 @@
       "III.D": {
        "120|C2": 30000
       },
-      "V.F": {
-       "590": 150000
+      "V.D": {
+       "Önceki Yıl Kârı — Dağıtılmamış (2026)": 150000
       }
      },
      "donem_net_kari": 0,
@@ -83,9 +84,12 @@
      "gecmis_yillar_kar": 0,
      "gecmis_yillar_zarar": 0,
      "kesin_degil": [],
+     "onceki_yil_dagitilmamis": {
+      "2026": 150000
+     },
      "pasif": {
       "III.D": 30000,
-      "V.F": 150000
+      "V.D": 150000
      },
      "pasif_toplam": 180000,
      "tarih": "2027-01-01"

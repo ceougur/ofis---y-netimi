@@ -1,0 +1,281 @@
+{
+ "aciklama": "K-D BM§2 (4): ödenmiş kart (bakiyesi 0 cari), Kartı Kapat'lı kart ve iptalle kapanan kart (S15) yeni yılda kalır; tek açılış.",
+ "ad": "s127-kd-kapali-odenmis-kart-devir",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "devir/acilis/acik_kalemler/0/k": "kart_kalani:TK2",
+   "devir/acilis/acik_kalemler/0/kalan": 30000,
+   "devir/acilis/acik_kalemler/0/vade": "2026-07-01",
+   "devir/acilis/acik_kalemler/1/k": "kart_kalani:TK2",
+   "devir/acilis/acik_kalemler/1/kalan": 30000,
+   "devir/acilis/acik_kalemler/1/vade": "2026-11-01",
+   "devir/acilis/cariler/C2/acilis": -20000,
+   "devir/acilis/kartlar/TK1/acik_taksitler": [],
+   "devir/acilis/kartlar/TK2/acik_taksitler": [],
+   "devir/yeni_acilis/120|C1": 0,
+   "devir/yeni_acilis/120|C2": -20000,
+   "devir/yeni_acilis/120|C3": 60000,
+   "gec3/gecikmis": 60000,
+   "kt1/TK1/kapali": false,
+   "kt1/TK1/taksitler": [],
+   "kt2/TK3/kapali": true,
+   "kt2/TK3/taksitler": [],
+   "kt3/TK2/kapali": true,
+   "kt3/TK2/taksitler": [],
+   "mod/taksit_odenen|TK1": 60000,
+   "mod/taksit_odenen|TK2": 30000,
+   "mod/taksit_odenen|TK3": 20000
+  }
+ },
+ "kapsam": [
+  "§3 (6)",
+  "BM§2 (4)",
+  "M1d",
+  "S220",
+  "S15",
+  "H-01",
+  "H-04",
+  "H-07",
+  "G3",
+  "M12"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 60000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-02-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "fatura": "F1",
+   "id": "TK1",
+   "kaynak": "fatura",
+   "taksitler": [
+    {
+     "tutar": 30000,
+     "vade": "2026-03-01"
+    },
+    {
+     "tutar": 30000,
+     "vade": "2026-04-01"
+    }
+   ],
+   "tarih": "2026-02-01",
+   "toplam": 60000,
+   "tur": "taksit_karti"
+  },
+  {
+   "cari": "C1",
+   "taksit_karti": "TK1",
+   "tarih": "2026-03-01",
+   "tur": "tahsilat",
+   "tutar": 30000,
+   "yol": "nakit"
+  },
+  {
+   "cari": "C1",
+   "taksit_karti": "TK1",
+   "tarih": "2026-04-01",
+   "tur": "tahsilat",
+   "tutar": 30000,
+   "yol": "nakit"
+  },
+  {
+   "K": 0,
+   "M": 90000,
+   "cari": "C3",
+   "id": "F2",
+   "tarih": "2026-05-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C3",
+   "fatura": "F2",
+   "id": "TK2",
+   "kaynak": "fatura",
+   "taksitler": [
+    {
+     "tutar": 30000,
+     "vade": "2026-06-01"
+    },
+    {
+     "tutar": 30000,
+     "vade": "2026-07-01"
+    },
+    {
+     "tutar": 30000,
+     "vade": "2027-02-01"
+    }
+   ],
+   "tarih": "2026-05-01",
+   "toplam": 90000,
+   "tur": "taksit_karti"
+  },
+  {
+   "cari": "C3",
+   "taksit_karti": "TK2",
+   "tarih": "2026-06-01",
+   "tur": "tahsilat",
+   "tutar": 30000,
+   "yol": "nakit"
+  },
+  {
+   "kart": "TK2",
+   "tarih": "2026-11-01",
+   "tur": "taksit_kapat"
+  },
+  {
+   "K": 0,
+   "M": 40000,
+   "cari": "C2",
+   "id": "F3",
+   "tarih": "2026-08-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C2",
+   "fatura": "F3",
+   "id": "TK3",
+   "kaynak": "fatura",
+   "taksitler": [
+    {
+     "tutar": 20000,
+     "vade": "2026-09-01"
+    },
+    {
+     "tutar": 20000,
+     "vade": "2026-10-01"
+    }
+   ],
+   "tarih": "2026-08-01",
+   "toplam": 40000,
+   "tur": "taksit_karti"
+  },
+  {
+   "cari": "C2",
+   "taksit_karti": "TK3",
+   "tarih": "2026-09-01",
+   "tur": "tahsilat",
+   "tutar": 20000,
+   "yol": "nakit"
+  },
+  {
+   "kaynak": "F3",
+   "tur": "iptal"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "tur": "devir"
+  },
+  {
+   "ad": "kt1",
+   "cari": "C1",
+   "rapor": "kartlar",
+   "tarih": "2027-01-02",
+   "tur": "rapor"
+  },
+  {
+   "ad": "kt3",
+   "cari": "C3",
+   "rapor": "kartlar",
+   "tarih": "2027-01-02",
+   "tur": "rapor"
+  },
+  {
+   "ad": "kt2",
+   "cari": "C2",
+   "rapor": "kartlar",
+   "tarih": "2027-01-02",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gec3",
+   "cari": "C3",
+   "rapor": "gecikmis",
+   "tarih": "2027-01-02",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod",
+   "rapor": "moduller",
+   "tarih": "2027-01-02",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

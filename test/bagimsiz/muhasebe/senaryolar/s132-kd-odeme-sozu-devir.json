@@ -1,0 +1,159 @@
+{
+ "aciklama": "K-D BM§2 (3): K öncesi verilen, yeni yıla uzanan Ödeme Sözü devirle taşınır; hatırlatma devirli = devirsiz.",
+ "ad": "s132-kd-odeme-sozu-devir",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "devir/acilis/acik_kalemler/0/vade": "2026-11-01",
+   "g/gecikmis": 50000,
+   "h0/odeme_sozu_var": {
+    "C1": 50000
+   },
+   "h0/otomatik": {},
+   "h1/odeme_sozu_var": {
+    "C1": 50000
+   },
+   "h1/otomatik": {},
+   "h2/odeme_sozu_var": {
+    "C1": 50000
+   },
+   "h2/otomatik": {},
+   "h3/otomatik": {
+    "C1": 50000
+   }
+  }
+ },
+ "kapsam": [
+  "§3 (11)",
+  "BM§2 (3)",
+  "S52",
+  "S72",
+  "S73",
+  "S67",
+  "M2"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 50000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-10-01",
+   "tur": "satis_faturasi",
+   "vade": "2026-11-01"
+  },
+  {
+   "cari": "C1",
+   "soz_tarihi": "2027-01-20",
+   "tarih": "2026-12-15",
+   "tur": "odeme_sozu"
+  },
+  {
+   "ad": "h0",
+   "rapor": "hatirlatma",
+   "tarih": "2026-12-20",
+   "tur": "rapor"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "tur": "devir"
+  },
+  {
+   "ad": "h1",
+   "rapor": "hatirlatma",
+   "tarih": "2027-01-10",
+   "tur": "rapor"
+  },
+  {
+   "ad": "h2",
+   "rapor": "hatirlatma",
+   "tarih": "2027-01-20",
+   "tur": "rapor"
+  },
+  {
+   "ad": "h3",
+   "rapor": "hatirlatma",
+   "tarih": "2027-01-21",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2027-01-10",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

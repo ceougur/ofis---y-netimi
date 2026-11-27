@@ -19,6 +19,7 @@
     "canli": {
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
+     "devir_tabani": [],
      "gt_bilanco_kar": [],
      "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
@@ -129,10 +130,8 @@
        "320|T1": 280000
       },
       "V.D": {
-       "570.2025": 25000
-      },
-      "V.F": {
-       "590": 92500
+       "570.2025": 25000,
+       "Önceki Yıl Kârı — Dağıtılmamış (2026)": 92500
       },
       "V.G": {
        "519": 100000
@@ -147,10 +146,12 @@
       "SATISLARIN_MALIYETI_TAHMINI",
       "TAMAMLANMAMIS_ACILIS"
      ],
+     "onceki_yil_dagitilmamis": {
+      "2026": 92500
+     },
      "pasif": {
       "III.B": 280000,
-      "V.D": 25000,
-      "V.F": 92500,
+      "V.D": 117500,
       "V.G": 100000
      },
      "pasif_toplam": 497500,
@@ -410,6 +411,7 @@
     "canli": {
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
+     "devir_tabani": [],
      "gt_bilanco_kar": [],
      "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
@@ -515,8 +517,8 @@
       "III.B": {
        "320|T1": 280000
       },
-      "V.F": {
-       "590": 117500
+      "V.D": {
+       "Önceki Yıl Kârı — Dağıtılmamış (2026)": 117500
       },
       "V.G": {
        "519": 100000
@@ -531,9 +533,12 @@
       "SATISLARIN_MALIYETI_TAHMINI",
       "TAMAMLANMAMIS_ACILIS"
      ],
+     "onceki_yil_dagitilmamis": {
+      "2026": 117500
+     },
      "pasif": {
       "III.B": 280000,
-      "V.F": 117500,
+      "V.D": 117500,
       "V.G": 100000
      },
      "pasif_toplam": 497500,

@@ -682,6 +682,49 @@ MUTANTLAR = [
     ("B130b İ4 susması yok: Değersiz yazılmış şüpheli faturalı cari de karşılaştırılır", [('return any(x.get("degersiz") and x["tur"] == "fatura" for x in self.kuyruk(c, t, fg=True).supheli)', "return False")]),
     ("B131 İ8 S220 B: önceden gecikmiş kalem de kapanış gününe çekilir", [('                if o["vade"] < tarih:\n                    # bakım 14', '                if False:\n                    # bakım 14')]),
     ("B131b İ8 S205 B: vadesi gelmemiş kalemler de kendi vadesinde", [('                if o["vade"] < tarih:\n                    # bakım 14', '                if True:\n                    # bakım 14')]),
+    # ---- kâhin bakımı K-D (2.5.1; README KD1–KD26): devir kararları S-1 / S-2 / S-3 = A ve BAŞ MİMAR §2. "691, 690'a kapansın" = mevcut B23 / B23b.
+    ("KD01 S-1: önceki yılın 590 kârı yeni yılda Dönem Net Kârı'nda (Geçmiş Yıllar satırı yok)",
+     [("        oy = self.onceki_yil_sonuc(t)                 # K-D S-1 = A", "        oy = {}                 # K-D S-1 = A")]),
+    ("KD02 S-1: ikinci yıl kapanışında 590 → 570.<yıl> aktarımı atlanır",
+     [("        for (h, Y), v in sorted(arsiv.onceki_yil_sonuc(K).items(), key=lambda x: (x[0][1], x[0][0])):", "        for (h, Y), v in []:")]),
+    ("KD03 S-2: bekleyen 'Açılış Olabilir' adayıyla devir geçer", [("        if bekleyen:                                 # S-2 = A", "        if False:                                 # S-2 = A")]),
+    ("KD04 S-3: düzeltilmemiş Kural Değişikliği Farkıyla devir geçer",
+     [("        if duz:                                      # S-3 = A", "        if False:                                      # S-3 = A"),
+      ("        if fark:\n            raise AssertionError(\"senaryo hatası: S-3", "        if False:\n            raise AssertionError(\"senaryo hatası: S-3")]),
+    ("KD05 BM§2 (1): Borç / Alacak Toplamı satırları kuyruğa girer (Alacak Toplamı gecikmiş kalemi kapatır)",
+     [("            kalemler = list(ayri)\n",
+       "            kalemler = list(ayri)\n"
+       "            if secenek == \"borc_alacak\":\n"
+       "                _hb = sum(s[\"b\"] for m in arsiv.maddeler() if m.tarih <= K for s in m.satirlar if s[\"h\"] == ch and s[\"c\"] == c) - sum(x[\"kalan\"] for x in ayri if x[\"taraf\"] == \"b\")\n"
+       "                _ha = sum(s[\"a\"] for m in arsiv.maddeler() if m.tarih <= K for s in m.satirlar if s[\"h\"] == ch and s[\"c\"] == c) - sum(x[\"kalan\"] for x in ayri if x[\"taraf\"] == \"a\")\n"
+       "                if _hb and _ha:\n"
+       "                    kalemler += [{\"k\": \"devir_bt:\" + c, \"tur\": \"devir_net\", \"taraf\": \"b\", \"kalan\": _hb, \"tarih\": t, \"vade\": t, \"sira\": [0, 0, 0]},\n"
+       "                                 {\"k\": \"devir_at:\" + c, \"tur\": \"devir_net\", \"taraf\": \"a\", \"kalan\": _ha, \"tarih\": t, \"vade\": t, \"sira\": [0, 0, 1]}]\n"
+       "                    artik = artik - _hb + _ha\n")]),
+    ("KD06 BM§2 (2): vadesiz açık kalem devirde vadesini kaybeder (K+1)",
+     [('"vade": o["vade"], "sira": list(o["sira"])})', '"vade": t if o["vade"] == o["tarih"] else o["vade"], "sira": list(o["sira"])})')]),
+    ("KD07 BM§2 (4): kapalı kart devirde K'ye kadar ödenen açılışını almaz",
+     [('            ekle("devir_taksit", {"kart": kid, "kart_kaydi": kayit, "odenen": mod.get(("taksit_odenen", kid), 0)})\n            out["kartlar"][kid] = {"cari": kt["cari"]',
+       '            ekle("devir_taksit", {"kart": kid, "kart_kaydi": kayit, "odenen": 0 if kt.get("kapali") else mod.get(("taksit_odenen", kid), 0)})\n            out["kartlar"][kid] = {"cari": kt["cari"]')]),
+    ("KD08 BM§2 (6): K öncesi (arşivdeki) kayıt yeni yılda Silinenler'den geri alınır / düzenlenir",
+     [('                raise Red("DEVIR_TABANI", f"{a.id} ({a.tarih}) devir tabanından önce (arşivde)")\n',
+       '                d.kaynaklar[a.id] = copy.deepcopy(a)\n                d.degisti()\n                return d.kaynaklar[a.id]\n')]),
+    ("KD10 BM§2 (3): Ödeme Sözü yeni yıla taşınmaz", [("        yeni.sozler = [dict(x) for x in canli.sozler]   # K-D", "        yeni.sozler = []   # K-D")]),
+    ("KD11 §3 (10): cari türü değişiminde arşivdeki (K öncesi) hareket görülmez",
+     [("        arsiv = [k for x in (self.arsivler if d is self.canli else []) for k in x.kaynaklar.values()]", "        arsiv = []")]),
+    ("KD12 §3 (9): Defter Türü değişimi arşive de uygulanır",
+     [('        d.defter_turu = o["defter_turu"]\n        d.degisti()\n', '        for x in [d] + self.arsivler:\n            x.defter_turu = o["defter_turu"]\n            x.degisti()\n')]),
+    ("KD13 BM§2 (4): bakiyesi 0 carinin (ödenmiş) kartı yeni yılda görünmez",
+     [('            if kt["cari"] == c and kt["kaynak"] == "devir" and kid not in q.kartlar:\n', "            if False:\n")]),
+    ("KD14 BM§2 (4): iptalle kapanan (S15) kart devirde taşınmaz", [("        for kid, ki in sorted(ga.kart_iptal.items()):", "        for kid, ki in []:")]),
+    ("KD15 S-1: aktarım kapanan yılın alt hesabına (570.<K yılı>)",
+     [('L(f"570.{Y}" if h == "590" else f"580.{Y}", v)', 'L(f"570.{yk}" if h == "590" else f"580.{yk}", v)')]),
+    ("KD16 S-2: yalnız K öncesi tarihli bekleyen aday devri durdurur",
+     [('bekleyen = sorted(i for i, a in canli.gecis().kg16.items() if a["onay"] is None)',
+       'bekleyen = sorted(i for i, a in canli.gecis().kg16.items() if a["onay"] is None and a["tarih"] <= K)')]),
+    ("KD17 BM§2 (5): devir tabanı değişmezi dişsiz", [('        out["devir_tabani"] = [m.id for m in d.maddeler() if m.tarih <= d.taban]', '        out["devir_tabani"] = []')]),
+    ("KD18 S-1: kapanıştan sonra 590 = yalnız K yılı denetimi yok",
+     [("            if -(bk.get((\"590\", None), 0) + bk.get((\"591\", None), 0)) != n7:", "            if False:")]),
 ]
 
 
@@ -709,7 +752,7 @@ def kos(src):
     tm = yukle(src)
     yukleyici = unittest.defaultTestLoader
     suite = unittest.TestSuite()
-    for sinif in (tm.Yardimci, tm.OlayMaddeleri, tm.Bakim12, tm.Bakim13, tm.Bakim14, tm.ElleSenaryolar, tm.Rastgele, tm.DegismezDenetcileri):  # SenaryoHijyeni, Dosyalar hariç (Bakim12 / Bakim13 / Bakim14: bakım 12 / 13 / 14)
+    for sinif in (tm.Yardimci, tm.OlayMaddeleri, tm.Bakim12, tm.Bakim13, tm.Bakim14, tm.BakimKD, tm.ElleSenaryolar, tm.Rastgele, tm.DegismezDenetcileri):  # SenaryoHijyeni, Dosyalar hariç (Bakim12 / Bakim13 / Bakim14 / BakimKD: bakım 12 / 13 / 14 / K-D)
         suite.addTests(yukleyici.loadTestsFromTestCase(sinif))
     with contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
         r = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(suite)

@@ -52,8 +52,10 @@
     "TAMAMLANMAMIS_ACILIS"
    ],
    "bil/pasif/V.K": 25000,
-   "bil_yeni/pasif/V.D": 25000,
-   "bil_yeni/pasif/V.F": 92500,
+   "bil_yeni/detay/V.D/570.2025": 25000,
+   "bil_yeni/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)": 92500,
+   "bil_yeni/pasif/V.D": 117500,
+   "bil_yeni/pasif/V.F": 0,
    "devir/kapanis/N01/2026": 137500,
    "devir/kapanis/onceki_yil/2025/R": 25000,
    "devir/kapanis/onceki_yil/2025/SMM": 60000,

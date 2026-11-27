@@ -1,0 +1,192 @@
+{
+ "aciklama": "K-D S-1: ikinci yıl devri — önceki yılın 590'ı yeni yıl Bilanço'sunda Geçmiş Yıllar'da; sonraki devirde önce 570.<yıl>'a aktarılır.",
+ "ad": "s134-kd-ikinci-yil-devri-kar",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil27/aktif/I.C": 18000000,
+   "bil27/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)": 10000000,
+   "bil27/donem_net_kari": 8000000,
+   "bil27/onceki_yil_dagitilmamis/2026": 10000000,
+   "bil27/pasif/V.D": 10000000,
+   "bil27/pasif/V.F": 8000000,
+   "bil27/pasif_toplam": 18000000,
+   "bil28/detay/V.D/570.2026": 10000000,
+   "bil28/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2027)": 8000000,
+   "bil28/onceki_yil_dagitilmamis/2027": 8000000,
+   "bil28/pasif/V.D": 18000000,
+   "bil28/pasif/V.F": 0,
+   "bil_arsiv26/pasif/V.F": 10000000,
+   "bil_arsiv27/detay/V.D/570.2026": 10000000,
+   "bil_arsiv27/pasif/V.D": 10000000,
+   "bil_arsiv27/pasif/V.F": 8000000,
+   "devir26/kapanis/sonuc": 10000000,
+   "devir26/yeni_acilis/590": -10000000,
+   "devir27/arsiv_kapanis/570.2026": -10000000,
+   "devir27/arsiv_kapanis/590": -8000000,
+   "devir27/kapanis/aktarim/2026": 10000000,
+   "devir27/kapanis/sonuc": 8000000,
+   "devir27/yeni_acilis/570.2026": -10000000,
+   "devir27/yeni_acilis/590": -8000000,
+   "mz28/satirlar/570.2026/bakiye": -10000000,
+   "mz28/satirlar/590/bakiye": -8000000,
+   "redler": [],
+   "yevK/0/satirlar/0/b": 10000000,
+   "yevK/0/satirlar/0/h": "590",
+   "yevK/0/satirlar/1/a": 10000000,
+   "yevK/0/satirlar/1/h": "570.2026",
+   "yevK/0/sinif": 4,
+   "yevK/0/tur": "onceki_yil_sonucu",
+   "yevK/1/tur": "kapanis"
+  }
+ },
+ "kapsam": [
+  "S-1",
+  "§3 (13)",
+  "EK-1 M4",
+  "EK-2 26",
+  "N-07",
+  "N-13",
+  "§11.1"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 10000000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-06-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir26",
+   "tur": "devir"
+  },
+  {
+   "K": 0,
+   "M": 8000000,
+   "cari": "C1",
+   "id": "F2",
+   "tarih": "2027-06-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "ad": "bil27",
+   "rapor": "bilanco",
+   "tarih": "2027-06-30",
+   "tur": "rapor"
+  },
+  {
+   "K": "2027-12-31",
+   "ad": "devir27",
+   "tur": "devir"
+  },
+  {
+   "ad": "bil_arsiv26",
+   "dosya": "arsiv:0",
+   "rapor": "bilanco",
+   "tarih": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil_arsiv27",
+   "dosya": "arsiv",
+   "rapor": "bilanco",
+   "tarih": "2027-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "yevK",
+   "bas": "2027-12-31",
+   "dosya": "arsiv",
+   "rapor": "yevmiye",
+   "son": "2027-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil28",
+   "rapor": "bilanco",
+   "tarih": "2028-01-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz28",
+   "bas": "2028-01-01",
+   "rapor": "mizan",
+   "son": "2028-01-01",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

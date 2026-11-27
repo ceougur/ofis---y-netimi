@@ -52,12 +52,14 @@
    "bil0630/bilgi": [
     "KDV_MAHSUBU_YAPILMAMIS:2026-05"
    ],
+   "bil_yeni/detay/V.E/Önceki Yıl Zararı (2026)": -1180000,
    "bil_yeni/donem_net_kari": 0,
    "bil_yeni/kesin_degil": [
     "ONCEKI_YIL_KDV_MAHSUBU_YAPILMAMIS:2026-05",
     "TAMAMLANMAMIS_ACILIS"
    ],
-   "bil_yeni/pasif/V.F": -1180000,
+   "bil_yeni/pasif/V.E": -1180000,
+   "bil_yeni/pasif/V.F": 0,
    "devir/kapanis/sonuc": -1180000,
    "devir/yeni_acilis/100": 4970000,
    "devir/yeni_acilis/191": 80000,

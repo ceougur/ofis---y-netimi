@@ -42,8 +42,8 @@
   "A": {
    "bil/kesin_degil": [],
    "bil/pasif/V.A": 60000,
-   "bil/pasif/V.D": 10000,
-   "bil/pasif/V.F": 10000,
+   "bil/pasif/V.D": 20000,
+   "bil/pasif/V.F": 0,
    "devir/acilis/N13/500": -60000,
    "devir/acilis/N13/519": 80000,
    "devir/yeni_acilis/500": -60000,
