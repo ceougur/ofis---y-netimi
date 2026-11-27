@@ -2176,10 +2176,15 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
             ...(() => {
               const list = (view?.offsets || []).filter(item => item.status === "active" && (!range.from || item.date >= range.from) && (!range.to || item.month <= range.to.slice(0, 7)));
               if (!list.length) return [];
-              const stale = list.filter(item => item.stale);
+              // S-M1K-1 = A (karma ay — İ azaldı ve 391 değişti): güncel değil notu sayıların nereden geldiğini de söyler; ay öbür iki notta yinelenmez.
+              const mixed = (vat?.positions || []).filter(item => item.offsetState === "mixed");
+              const stale = list.filter(item => item.stale && !mixed.some(other => other.month === item.month));
               const reduced = (vat?.positions || []).filter(item => item.offsetState === "reduced");
               const parts = [
                 ...(stale.length ? [`${stale.map(item => item.label).join(", ")} (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)`] : []),
+                ...(mixed.length
+                  ? [`${mixed.map(item => monthLabel(item.month)).join(", ")} (mahsup fişi güncel değil — Hesaplanan KDV bugünkü kayıtlardan, İndirilecek KDV kesilmiş mahsup fişinden alındı, azalma sonraki mahsupta düşülür; mahsubu geri alıp yeniden mahsup edin)`]
+                  : []),
                 ...(reduced.length ? [`${reduced.map(item => monthLabel(item.month)).join(", ")} (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)`] : []),
               ];
               return [["KDV Mahsup Fişi", list.map(item => item.label).join(", ")], ...(parts.length ? [["Mahsuptan Sonra Değişen Ay", parts.join("; ")]] : [])];

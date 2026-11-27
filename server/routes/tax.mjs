@@ -342,7 +342,13 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
    * ayın sonucu KESİLMİŞ FİŞTEN (azalma S4 kuralıyla sonraki mahsupta düşülür — bugünkü kayıtlardan hesaplanırsa aynı azalma iki kez sayılırdı). Fiş zincirde sayılmak için
    * devredeninden başka S4 emilimi de zincirinkine eşit olmalı (aynı azalmayı araya giren mahsupsuz ay zincirde zaten düşmüşse fiş kopuktur — dar kontrol L). S-M1-3 = C:
    * fişten sonra ARTIRAN değişiklik (391 değişti ya da İ arttı — programın "Güncel Değil"i) olan ayda sayılar bugünkü kayıtlardan kalır (BİLİNEN SINIR; rapor notu söyler).
-   * offsetState: "kept" (fiş = bugünkü hesap), "reduced" (ayın kendi İ'si fişten sonra azaldı; sonuç fişten), "stale" (güncel değil; sonuç bugünkü kayıtlardan).
+   * offsetState: "kept" (fiş = bugünkü hesap), "reduced" (ayın kendi İ'si fişten sonra azaldı; sonuç fişten), "stale" (güncel değil; sonuç bugünkü kayıtlardan),
+   * "mixed" (aşağıda).
+   *
+   * 2.5.1 M1 küçük tur 2 — S-M1K-1 = A (kullanıcı 27.11 16:16 "önerilerini uygula açık sorulara"): fişten sonra aynı ayda hem İndirilecek KDV AZALMIŞ hem satış KDV'si (391)
+   * DEĞİŞMİŞSE ("mixed"): İndirilecek KDV FİŞTEN (azalma S4 kuralıyla sonraki mahsupta), 391 BUGÜNKÜ kayıtlardan, devreden fişin (zincirdeki fişte = zincirin) devredeni; her
+   * değişiklik bir kez sayılır — bu yüzden sonraki aya bu hesabın devredeni taşınır (fişin eski devredeni taşınsaydı 391 değişimi aralık toplamında kaybolurdu; sonraki ayın
+   * fişi eski devredenle kesildiyse o fiş zincirle uyuşmaz, not söyler). Yalnız 391 değişti (İ aynı) ya da İ arttı → S-M1-3 = C ("stale") AYNEN.
    */
   function vatView() {
     const entries = ledger()?.build ? ledger().build() : [];
@@ -359,7 +365,14 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
      * küçükse (saklı İ = o anki İ + S4 taşıması ≤ o anki İ; bu yüzden kesin): önceki ayların azalması bu ayın kaydı değişmiş gibi yazılmaz.
      */
     const settle = (month, step, offset) => {
-      if (step.out !== Number(offset.outMinor) || step.input > Number(offset.inMinor)) return { ...shape(month, step), offsetState: "stale" };
+      const storedIn = Number(offset.inMinor);
+      if (step.input > storedIn || (step.out !== Number(offset.outMinor) && step.input === storedIn)) return { ...shape(month, step), offsetState: "stale" };
+      if (step.out !== Number(offset.outMinor)) {
+        // S-M1K-1 = A: İ fişten (azalan kısım sonraki mahsupta), 391 bugünkü kayıtlardan, devreden fişin (zincirdeki fişte = zincirin) devredeni.
+        const carryIn = Number(offset.carryInMinor);
+        const position = step.out - storedIn - carryIn;
+        return { month, label: monthLabel(month), outMinor: step.out, inMinor: storedIn, carryInMinor: carryIn, carriedInMinor: step.carried, payableMinor: Math.max(0, position), carryOutMinor: Math.max(0, -position), offsetState: "mixed" };
+      }
       return {
         month,
         label: monthLabel(month),
@@ -385,8 +398,10 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
         const offset = fis.get(month);
         // Fiş zincirde: devredeni zincirinkine eşit VE S4 emilimi (fişin kesildiği defter sırasıyla = etkin fişlere göre) zincirinkine eşit.
         const kept = Boolean(offset) && Number(offset.carryInMinor) === carry && Math.min(0, carriedBefore(table, active, month)) === step.carried;
-        const next = kept ? Number(offset.carryOutMinor) : step.carryOut;
-        steps.set(month, { ...(kept ? settle(month, step, offset) : shape(month, step)), carryAfterMinor: next });
+        const settled = kept ? settle(month, step, offset) : shape(month, step);
+        // Zincirdeki fişin devredeni taşınır; karma ayda (S-M1K-1 = A) bu ayın hesabının devredeni (her değişiklik bir kez). "Güncel Değil" ayında fişinki (S-M1-3 = C, AYNEN).
+        const next = !kept ? step.carryOut : settled.offsetState === "mixed" ? settled.carryOutMinor : Number(offset.carryOutMinor);
+        steps.set(month, { ...settled, carryAfterMinor: next });
         if (offset && !kept) {
           mismatches.push({ month, label: monthLabel(month), usedMinor: Number(offset.carryInMinor), chainMinor: carry, offsetPayableMinor: Number(offset.payableMinor), offsetCarryOutMinor: Number(offset.carryOutMinor), payableMinor: step.payable, carryOutMinor: step.carryOut });
         }
