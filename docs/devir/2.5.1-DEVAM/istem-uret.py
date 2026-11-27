@@ -177,8 +177,42 @@ A. `npm run test:kahin-defter` tabanda ve sonda (iki TZ) — AYNI (defter deği�
 {rapor()}
 """
 
+# ---------------------------------------------------------------- D3 (27.11; P-D tasarımından sonra)
+D3 = f"""Sen DestekOfis projesinde 2.5.1'in D3 KOD ajanısın (devir: SAF HESAP + DEVİR RAPORU + ÖN DENETİM; PARA ÇEKİRDEĞİ; eforun high). D3 HİÇBİR ŞEY YAZMAZ: şirketin verisinden devrin bütün sonucunu bir DEVİR PLANI nesnesi olarak hesaplar; ön izleme sayıları, Devir Raporu ve (sonraki paket D4'ün) yazımı AYNI nesneden gelir. Tasarım hazır: `docs/devir/D3-D4-TASARIM.md` §3 — onu UYGULARSIN; tasarımdan sapman gerekirse KODLAMA, raporda 'BAŞ MİMAR KARARI GEREKİYOR'.
+
+{hazirlik()}
+3. ÖNEMLİ: tasarım notu taban etiketinde YOK — ana ağaçtan OKU: `{ANA}/docs/devir/D3-D4-TASARIM.md` (§1.2 çekirdeğin planı eskittiği yerler, §2 tablo sınıflaması, §3 TAMAMI, §4.4 devirli dosyanın kuralları — yalnız D3 planının türlerini etkilediği kadar, §6.1 D3 satırı) ve `{ANA}/docs/devir/2.5.1-DEVAM/pd-rapor.md` (§5 sorular ve yanıtlanmış kararlar). Sonra `docs/devir/DEVIR-PLANI.md` (G bölümü geçerli; G14), `docs/devir/D2-ALTYAPI-TASARIM.md` §12, kural kitabının devir / kapanış bölümleri (`docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md` + ekleri — kural adları N-01 … N-14, M1 … M13 oradan). Bu iki belgeyi kendi ağacına KOPYALAMA / commit ETME (ana oturum birleştirdi).
+
+## Kararlar
+KULLANICI 21.11 21:32 UTC (AYNEN: "haftalık limit devir için kalan adımlara yetmeyecek. D3 den D6 ya kadar olan kısmı 2.5.1 sürümüne bırakalım.") + 27.11 (AYNEN: "tüm işler bu sürümde yapılsın").
+YANITLANMIŞ KARARLAR: pd-rapor.md §5.1 ve §5.2'deki tablo / liste (kaynaklarıyla) — hepsi GEÇERLİ, kodlanır.
+ÜÇ AÇIK SORU (kullanıcıya soruldu; ÖNERİ uygulanıyor, kullanıcı DEĞİŞTİREBİLİR → kodda TEK yerden değişecek biçimde yaz, raporda yerini göster): S-1 = A (590 / 591 yeni yıla AYNEN açılır — D3 planında bugünkü karar; gösterim ve sonraki yılın kapanışı D3'ün işi DEĞİL); S-2 = A ("Açılış Olabilir" listesinde onay bekleyen kayıt varken ön denetim devri DURDURUR); S-3 = A (düzeltilmemiş "Kural Değişikliği Farkı" varken ön denetim devri DURDURUR).
+BAŞ MİMAR KARARLARI 27.11 (P-D raporu üzerine; kullanıcıya gösterildi): (1) tasarım notu §3 D3'ün tasarımıdır. (2) Türetilmiş kurallar KABUL: devrin Borç Toplamı / Alacak Toplamı satırları tek borç sırasına girmeden ÖNCE birbiriyle netleşir (iki seçenekte gecikmiş, kalan, bakiye AYNI); vadesiz açık kalemin vadesi asıl belge günü; Ödeme Sözü taşınır; kapalı kart da tek açılış alır; G2 ↔ G3 çelişkisinde G2 geçerli. Değişmez: DEVİRLİ = DEVİRSİZ (devir şirketin durumunu değiştirmez — bakiye, gecikmiş, kalan). (3) B-9 hız: ÖNCE ÖLÇ (bileşen bileşen), sonra öner — kapanış için tam Bilanço yerine hesap bazında mizan kullanmak ancak ölçüm 10 sn bütçesini aşıyorsa ve dönem sonucu / değerleme yine mali tablo hesabının işlevlerinden geliyorsa; kararı raporda sayıyla iste, kendiliğinden İKİNCİ bir kâr hesabı yazma (tek kaynak). (4) B-2: tasarım notu §2'deki sınıflama (adı planda geçmeyen beş defter tablosu dahil) plana girer. (5) Sürücü (`test/bagimsiz/**`) bu turda YOK — kâhin ↔ plan karşılaştırmasını ayrı ajan kurar; sen planın ÇIKTI BİÇİMİNİ raporda tam yaz (alan alan), kâhin dosyalarını OKUMA.
+{KURALLAR_KULLANICI}
+
+## İş (tasarım notu §3'ün sırasıyla; her adım bitince commit)
+0. NASIL BOZULUR (rapor taslağının başına, koddan ÖNCE, commit): plan §8 (1–16) + G10 (17–28) + tasarım notu §3.11 (29–42) — hangisini hangi testle karşıladığını tabloya yaz; karşılayamadığın 'DENENMEYEN'e.
+1. OKUYUCU + PLAN (tasarım §3.1–§3.3, §3.5–§3.8): tek okuma işleminde toplu SQL (cari / öğe başına ağır okuma YOK — ders 47); plan belirlenimli (aynı veri → bayt bayt aynı plan); tutarlar kuruş tamsayı. Tek borç sırası, mali tablo hesabı, stok değerlemesi, defter türetmesi OKUNUR, DEĞİŞTİRİLMEZ — bir işlevi dışa açman gerekiyorsa davranış AYNEN kalır ve raporda ayrıca yazarsın; daha fazlası gerekiyorsa DUR.
+2. ÖN DENETİM (plan §5 + G4 + S-2 / S-3): saf; DURDURUR / UYARIR listesi, her madde kullanıcının anlayacağı Türkçe cümle + gidilecek yer.
+3. DEVİR RAPORU (tasarım §3.4): satırlar + PDF / Excel üretici (ekran = PDF = Excel; alt TOPLAM satırları; yazım düzeni).
+4. ARKA PLAN İŞİ + UÇLAR (tasarım §3.9; yalnız ön izleme — yazan uç YOK): yetki system.manage; aynı şirkette aynı anda tek ön izleme.
+5. TESTLER (tasarım §3.12; `test/devir-d3-*`): (a) ELLE HESAPLANMIŞ küçük senaryolar (beklenen sayılar testte ELLE yazılı, kural kitabının örneklerinden: açık kalem, net satır, kapanış sırası 690 → 691 → 692 → 590 / 591, stok değerleme, eksi stok, şüpheli, KDV dönem boyutu, kart); (b) DEVİRSİZ EŞDEĞER — aynı veride planın açılışlarıyla hesaplanan gecikmiş / kalan / bakiye = devirsiz programın K'deki sayıları (iki seçenek × gecikmiş kalem; vadesiz kalem; Ödeme Sözü); (c) GERÇEK VERİ (ders 17): `v2.5.0` etiketinin GERÇEK koduyla (`git worktree add --detach /dev/shm/d3-<kısa>/v250 v2.5.0`) API'den üretilmiş çok aylı veri (001 + 002) üzerinde plan + değişmezler; (d) değişmezler: ön izleme sayıları = planın yazım kümesi, arşiv ≤K + yeni yıl >K = devir öncesi satır sayısı, her bilanço hesabı kapanış = açılış, 6 / 7 sınıfı kapanış sonrası 0; (e) ön denetimin her maddesi; (f) iş parçacığı öldürülünce veri aynı; iki TZ, sahte saat 31.12 23:59 / 01.01 00:00, Şubat'ta devir, 29 Şubat'lı yıl (ders 13, 22); (g) iki şirket; 001'de budama sayıları ortak katmanı saymaz.
+6. HACİM (tasarım §3.10; ders 47, 52, 53): temiz 100 bin `{SP}/ana-kabul/temiz-100k` (OKUNUR; KENDİ kopyanda /dev/shm) — bileşen bileşen (okuma, yevmiye, tek borç sırası, değerleme, plan, rapor) + toplam + olay döngüsü en çok; ÖZEL kilit `flock -x -w 1800 {SP}/olcum.lock` tek seferlik (alamazsan 'ÖLÇÜLEMEDİ'); /proc/loadavg yazılır, yük > 2 ise 'GEÇERSİZ'. Bütçe: 100 bin satırda ≤ 10 sn (iş parçacığında), olay döngüsü en çok ≤ 50 ms. 1 M ÖLÇME (ana oturum ölçecek) — betiğini bırak.
+
+## Kabul koşulları
+A. `npm run test:kahin-defter` ve `npm run test:kahin-cari` tabanda ve sonda (iki TZ) AYNI (var olan hiçbir yolun yanıtı değişmedi). B. KOMŞULAR (ders 10): devir (D2), tek borç sırası, mali tablo hesabı, değerleme, dondurma testleri `git grep` ile, iki TZ. C. MUTANTLAR DEĞERLE (tasarım §3.12 listesi: açık kalem vadesi, net satır formülü ve netleşmesi, şüpheli payı, dönem sonu stok tutarı, 691 → 692, kapanış sırası, KDV dönem etiketi, kartın tükettiği kalemin dışlanması, bakiyesi 0 cariye satır yazılmaması + ön denetimin iki DURDURUR maddesi) — her biri en az bir testte kırmızı. D. Yeni modülde 'eski kodda modül yok' kırmızısı kanıt SAYILMAZ; dişi (b) devirsiz eşdeğer + (a) elle sayılar + mutasyon taşır — raporda böyle yaz.
+
+## Dosya sınırı
+YENİ: `server/lib/devir/plan.mjs`, `plan-reader.mjs`, `preflight.mjs`, `report.mjs`, `plan-worker.mjs`; `server/routes/devir.mjs` (yalnız EK ön izleme uçları); `test/devir-d3-*` + `test/fixtures/**`. OKUR (DEĞİŞTİRMEZ; yalnız davranışı aynen dışa açma serbest, raporda yazılır): tek borç sırası, mali tablo hesabı, stok değerlemesi, defter türetmesi, D2 modülleri. YASAK: istemci (ekran D5'te), göçler, `server/app.mjs`'te bağlama satırı DIŞINDA değişiklik, KDV mahsup hesabı ve Rapor Merkezi (başka ajanda), Cari ekranı (başka ajanda), `test/bagimsiz/**`.
+
+{kurallar('d3')}
+
+{rapor()}
+Ek olarak raporda: DEVİR PLANI nesnesinin TAM biçimi (alan alan; sürücü ajanı buradan okuyacak); hacim tablosu (bileşen bileşen); B-9 için ÖLÇÜLMÜŞ öneri; D4a'nın D3'ten beklediği türler; S-1 / S-2 / S-3 yanıtı değişirse dokunulacak TEK yer.
+"""
+
 out = os.path.dirname(os.path.abspath(__file__))
-for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1)):
+for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3)):
     yol = os.path.join(out, f"{ad}-istem.txt")
     open(yol, "w", encoding="utf-8").write(metin)
     print(ad, len(metin.encode()), yol)
