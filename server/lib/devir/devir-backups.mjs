@@ -7,11 +7,18 @@
 // İçerik: veri tabanının tutarlı kopyası (createBackup: VACUUM INTO + şirket kimliği + kullanım defteri), arsiv/ (bütün arşivler), belgeler/, mesaj-arsivi/,
 // secret.key (şifreli ayarların anahtarı — yedekten dönünce entegratör / WhatsApp gizlileri açılabilsin) ve devir-yedegi.json (her dosyanın boyu + SHA-256).
 // Önce <ad>.yaziliyor klasörüne yazılır, bitince asıl adına alınır: yarım kalan yedek listede "tamam" görünmez.
+// 2.5.1 D4-ÖN (CI Windows Node 22, 26.11: son ada alırken EPERM): Windows'ta antivirüs / dizinleyici yeni yazılan dosyayı kısa süre tutar; klasörün içinde açık tutamak
+// varken klasör taşınamaz. Taşıma programın öbür taşıma yollarının yardımcısıyla (lib/app-layout.mjs renameWithRetry: EPERM / EBUSY / EACCES / ENOTEMPTY, 12 deneme)
+// yeniden denenir. BEKLEME OLAY DÖNGÜSÜNÜ TUTAR: yalnız geçici hatada, denemeler arası 50, 100, … 550 ms — en kötü durumda toplam ~3,3 sn (ilk denemede başarırsa 0);
+// yedek bakım kipinde alınır (D4), kısa tutma kabul. Taşıma son denemede de olmazsa (ya da yeniden denenmeyen bir hatada) yazılmış klasör SİLİNMEZ: listede "yarım"
+// kalır (içerik tamdır), anlaşılır Türkçe hata (503 devir-backup-move) döner. Yazma sırasındaki hatada yarım klasör silinir; silme de düşerse (Windows'ta tutulan dosya)
+// asıl hata ezilmez (ders 21), kalan klasör listede "yarım".
 // Geri yükleme (Devri Geri Al) D4'ün işi; burada oluşturma, listeleme ve doğrulama.
 import { createHash } from "node:crypto";
-import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { cp } from "node:fs/promises";
 import path from "node:path";
+import { renameWithRetry } from "../app-layout.mjs";
 import { createBackup } from "../backup.mjs";
 import { HttpError } from "../http.mjs";
 import { ARCHIVE_ROOT, isArchiveTransient } from "./archives.mjs";
@@ -69,6 +76,7 @@ export async function createDevirBackup({ db, company, companyDataDir, backupDir
   const partial = `${final}.yaziliyor`;
   rmSync(partial, { recursive: true, force: true });
   mkdirSync(partial, { recursive: true });
+  let written = null;
   try {
     // keep: bu alt klasörde tek veri tabanı dosyası durur; budama ona dokunmaz (createBackup'ın kendi budaması yalnız bu klasörü görür).
     const database = createBackup(db, partial, { label, keep: 1000, company, stamp, usageRows });
@@ -98,12 +106,28 @@ export async function createDevirBackup({ db, company, companyDataDir, backupDir
       size: files.reduce((sum, file) => sum + file.size, 0),
     };
     writeFileSync(path.join(partial, DEVIR_BACKUP_MANIFEST), JSON.stringify(manifest, null, 2));
-    renameSync(partial, final);
-    return { name, path: final, size: manifest.size, files: files.length, manifest };
+    written = { size: manifest.size, files: files.length, manifest };
   } catch (error) {
-    rmSync(partial, { recursive: true, force: true });
+    try {
+      rmSync(partial, { recursive: true, force: true });
+    } catch {
+      // temizlik hatası asıl hatayı ezmez (ders 21); kalan klasör listede "yarım"
+    }
     throw error;
   }
+  try {
+    renameWithRetry(partial, final);
+  } catch (error) {
+    throw new HttpError(503, `Devir yedeği yazıldı ama son adına alınamadı (${moveFailureReason(error)}). Yedek Devir Yedekleri listesinde “Yarım Kaldı” görünür; birkaç dakika sonra yeniden deneyin.`, { code: "devir-backup-move", cause: String(error?.code || error?.message || error), partial: path.basename(partial), retryAfter: 30 });
+  }
+  return { name, path: final, ...written };
+}
+// Taşıma hatasının kullanıcıya giden nedeni (dosya sistemi kodu; bilinmeyende kod aynen).
+function moveFailureReason(error) {
+  const code = String(error?.code || "");
+  if (code === "EPERM" || code === "EBUSY" || code === "EACCES") return "klasördeki bir dosya başka bir programca (ör. virüs tarayıcısı) kullanılıyor";
+  if (code === "ENOTEMPTY" || code === "EEXIST") return "aynı adla klasör var";
+  return code ? `dosya sistemi hatası ${code}` : `beklenmeyen hata: ${error?.message || error}`;
 }
 
 const readManifest = dir => {
