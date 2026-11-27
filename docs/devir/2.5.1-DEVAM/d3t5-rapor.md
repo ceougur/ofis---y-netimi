@@ -153,9 +153,9 @@ kümesi (D2 arşiv / yedek / bakım + yazım / taşınabilirlik / lisans / kanı
 **Beklentisi değişen test:** yok (devir-d3-ikinci'nin y-1 beklentisi desenden tam metne DARALDI — gün sahte saatten; eski kodda da aynı sayılar, yeni kodda iki TZ yeşil).
 
 ## 5. Kabul koşullarının sayıları
-- **A** `test:kahin-defter` UTC **187/187** + İstanbul **187/187**; `test:kahin-cari` ⏳ — tur 4 ile (187 / 25.298) karşılaştırma; kâhin dosyalarına dokunulmadı.
+- **A** `test:kahin-defter` UTC **187/187** + İstanbul **187/187**; `test:kahin-cari` UTC **25.298/25.298** + İstanbul **25.298/25.298** — tur 4 ile (187 / 25.298) AYNI; kâhin dosyalarına dokunulmadı.
 - **B** yeni testler eski kodda beklenen nedenle kırmızı (§4 E-1: 2 davranış testi + 3 yapısal; iki TZ aynı) ve sabitleme listesi gerekçesiyle (E-2); yeni kodda iki TZ **164/164**.
-- **C** mutantlar ⏳.
+- **C** mutantlar **64/64 YAKALANDI** UTC (`d3t5-mutasyon-utc`) + **64/64** İstanbul (`d3t5-mutasyon-ist`); taban **164/164** (D3'ün 26 dosyası) iki TZ. Tur 1–4'ün 56'sı AYNEN (M52 çapası taşındı) + bu turun 8'i; her mutantta beklenen neden çıktıda görüldü.
 - **D** gerçek veri (v2.5.0 GERÇEK kodu → yeni kod) 3 tohum × 2 TZ ⏳ (t11 iki TZ **22/22**, sınıf dışı fark 0, S-T4-1 sınıfı 12 karşılaştırma — §7).
 - **E** katalog 56 neden (durdurur 46, uyarı 10), 176 ileti; iç kod / İngilizce / alan adı / tablo adı **0**; koşu sırasından bağımsız (§8).
 - **F** komşular iki TZ **103/103** + D3'ün tamamı **164/164** (§3b).
@@ -165,14 +165,14 @@ Tur 1–4'ün 56'sı AYNEN (M52'nin çapa metni bu turun listesine taşındı �
 Taban artık D3'ün 26 test dosyasının TAMAMI (tur 1'den eksik `devir-d3-uc` ve `devir-d3-zaman` dahil); `test/` altında tabanda olmayan bir `devir-d3-*.test.mjs` varsa tarama DURUR (yeni test unutulamaz).
 | # | Mutant (bu turun 8'i) | Kırmızı test |
 |---|---|---|
-| 57 | S-T2-1: Borç Yaz karşısı ayrılmaz (yalnız Alacak Yaz satırı belge sayılır) | ⏳ |
-| 58 | S-T4-1: kilitli bağsız kapanış kayar (K sonrası bağlı tahsilat K kuyruğuna girer — programın bugünkü sınırını taklit) | ⏳ |
-| 59 | sıfır paylı belgeye ≤K bağ yanlış yönlenir (payın tamamı ayrılan belge K'de küçülmez; bağ belgeyi kapatır) | ⏳ |
-| 60 | veri damgası: iz türü listesinden para yazıcısı düşer (taksit kartı `plan.%`) | ⏳ |
-| 61 | veri damgası: bu turun eklediği para yazıcısı (kayıt tahsilatı) düşer | ⏳ |
-| 62 | veri damgası: görüntüleme izi (fatura PDF'i) yine damgaya girer (tur 4 hâli) | ⏳ |
-| 63 | mahsup geriye dönük (K'de) uygulanmış sayılır — ayrılan pay yeni yıla taşınmaz | ⏳ |
-| 64 | bakiyesi 0 caride açık kalem varken de satır yazılmaz (iki yönlü kalem yutulur) | ⏳ |
+| 57 | S-T2-1: Borç Yaz karşısı ayrılmaz (yalnız Alacak Yaz satırı belge sayılır) | mahsup-borc: açık kalemler, ayırım, bağ, 002 (4 kırmızı) |
+| 58 | S-T4-1: kilitli bağsız kapanış kayar (K sonrası bağlı tahsilat K kuyruğuna girer — programın bugünkü sınırını taklit) | kilit-bag: K1 plan, K1 devirli görünüm, K2 / K4 (3) |
+| 59 | sıfır paylı belgeye ≤K bağ yanlış yönlenir (payın tamamı ayrılan belge K'de küçülmez; bağ belgeyi kapatır) | sifir-pay: plan (elle), devirsiz eşdeğer (2) |
+| 60 | veri damgası: iz türü listesinden para yazıcısı düşer (taksit kartı `plan.%`) | damga-kaynak ×2 + damga v-2 (3) |
+| 61 | veri damgası: bu turun eklediği para yazıcısı (kayıt tahsilatı) düşer | damga-kaynak ×2 + damga v-2 (3) |
+| 62 | veri damgası: görüntüleme izi (fatura PDF'i) yine damgaya girer (tur 4 hâli) | damga v-1 KULLANICI (1) |
+| 63 | mahsup geriye dönük (K'de) uygulanmış sayılır — ayrılan pay yeni yıla taşınmaz | mahsup-borc + tarih (8) |
+| 64 | bakiyesi 0 caride açık kalem varken de satır yazılmaz (iki yönlü kalem yutulur) | tarih (b) plan (1) |
 
 ## 7. GERÇEK VERİ (ders 17) — v2.5.0'ın GERÇEK kodu (`git worktree add --detach /dev/shm/d3t5-k5/v250 v2.5.0`), üç tohum × iki TZ
 Üreteç tur 4'ünkü AYNEN; değişen yalnız devirsiz eşdeğerin farkı SINIFLAMASI: imzası (`kilitBagImzasi`: K sonrası bağ ARŞİV BAŞVURUSU + devirsiz kuyrukta o bağ aynı faturayı "Bağlı" kapatıyor
@@ -182,8 +182,8 @@ sayacına, öbür her fark denetimi KIRMIZI yapar (ders 53 (b)). İmzanın başk
 |---|---|---|---|---|---|
 | utc t11 | **22/22** | 3684 / **0** | 1 cari, 12 karşılaştırma (2 seçenek × 6 gün), kayan 128,00 — devirsiz 408,00 / 1.117,40, devirli 280,00 / 1.245,40 (tur 4'ün "Müşteri 108"i AYNEN) | 8 (6 / 2) | 896 sn |
 | ist t11 | **22/22** | 3684 / **0** | aynı (1 cari, 12; 128,00) | 8 (6 / 2) | 897 sn |
-| utc t7 | ⏳ | | | | |
-| ist t7 | ⏳ | | | | |
+| utc t7 | **22/22** | 3684 / **0** | 0 | 8 (6 / 2) | 822 sn |
+| ist t7 | **22/22** | 3684 / **0** | 0 | 8 (6 / 2) | 827 sn |
 | utc t23 | ⏳ | | | | |
 | ist t23 | ⏳ | | | | |
 Tur 4'te t11 "21/22 — KIRMIZI 1 (fark 12)" idi; şimdi aynı 12 karşılaştırma S-T4-1 sayacında, denetim yeşil. Kilit paketi girince bu sayaç 0'a inmeli (kabul ölçütü — iş listesi D 18:16 kararı (3)).
@@ -240,3 +240,33 @@ taramada 13 `NOT LIKE` koşulu daha — öğe başına okuma YOK (ders 47). Öl�
 - Gerçek veride (v2.5.0 GERÇEK kodu) Borç Yaz karşısı ve sıfır paylı belge olayı üretilmedi (üreteç tur 4'ünkü AYNEN); sınıflar kalıcı testlerde (elle kurulmuş, programın API'siyle).
 - Arka plan yazıcılarından e-Belge durum turu, gelen kutusu çekmesi ve POS valör kuyruğu ayrı senaryoyla koşulmadı (sahte EDM / POS kurulumu gerekir): üçü de veri ad alanında (`invoice.%`,
   `bank.%`) → damgayı değiştirir (güvenli taraf); kaynak taraması onları sınıflandırılmış buluyor.
+
+## 14. DENENMEYEN
+- Ekran (D5) ve ana oturumun ekran yürüyüşü (cümlelerin okunması) — katalog hazır; bu turda yeni ileti yok.
+- D4 yolları (bayat ön izlemenin kullanımı — `onIzlemedenSonraDegisti`'nin çağrılacağı yer; takas öncesi denetimler); devirden sonra yeni yılda Mahsup Et (§13).
+- Windows: `devir-d3-ikinci` arşiv klasörünü siler (kendi geçici klasöründe, tam yolla); Linux'ta silmeden önce açık tutamaç her ölçümde **0** (iki TZ × 6 silme; ölçümün dişi: bilerek açılan
+  bağlantı görünüyor). Windows'ta gerçek koşu CI'de ana oturumca okunur (ders 18 / 48 — iki yeşil).
+- Hız ölçümü (§11 — yük yüzünden geçersiz olurdu; komut hazır). Tam `npm test` (ana oturum).
+- Kayıt tahsilatı düzeltmesinin damgası gerçek kurulum koşuluyla (`legacyCasePayments` kapalı) — yol 410 ile kapalı olduğundan o koşulda olay yok (ders 14).
+
+## 15. CI listesine eklenecek
+- Yeni 6 `test/devir-d3-*.test.mjs` npm test deseniyle kendiliğinden girer; ci.yml değişmez. Yeni ekran senaryosu YOK.
+- CI DIŞI (aynen): `node test/devir-d3-gercek-veri.mjs --eski <v2.5.0> --tohum N`, `node test/devir-d3-mutasyon.mjs --kopya <kopya>` (taban artık D3'ün bütün testleri; eksik dosya taramayı
+  durdurur), `D3T3_KATALOG_DIR=<k> node --test …; node test/devir-d3-ileti-katalog.mjs <k> <md>`.
+
+## 16. Kılavuz metni önerisi (D5'te; kılavuza DOKUNULMADI)
+"**Ön izlemeden sonra fatura PDF'ini açmak, ekstre ya da liste indirmek veya şirket değiştirmek devri durdurmaz;** yalnız kayıt girmek ya da bir kaydı düzeltmek durdurur — o zaman Ön İzleme'yi yeniden başlatın."
+"**Ocak'ta eski yıla ait bir Borç Yaz kaydıyla mahsup** yaptıysanız devir bu mahsubu korur: kayıt yeni yıla açık kalemiyle (vade tarihiyle) geçer, mahsup ona bağlı kalır."
+
+## 17. Ana oturumun yeniden koşacağı komutlar
+```
+cd <bu dal>; export HUKUK_LICENSE_URL=http://127.0.0.1:9
+T=$(ls test/devir-d3-*.test.mjs)        # 26 dosya
+for tz in UTC Europe/Istanbul; do TZ=$tz node tools/kanit.mjs kos d3t5-$tz -- node --test --test-concurrency=1 $T; done      # 164/164
+# eski kod kırmızısı: git worktree add --detach <yer>/eski t251-d3-tur4; yalnız 6 yeni test + test/fixtures/devir-d3-esdeger.mjs → 27/32, 5 kırmızı (§4)
+# komşular: node --test --test-concurrency=1 test/devir-arsiv-wal-250.test.mjs test/devir-d2-arsiv-250.test.mjs test/devir-d2-arsiv-goc-kesinti-250.test.mjs test/devir-d2-yedek-250.test.mjs test/devir-d2-bakim-250.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/kanit-araci.test.mjs   # 103/103
+# mutasyon: git archive HEAD server test package.json | tar -x -C <kopya>; ln -s <node_modules> <kopya>/node_modules; node test/devir-d3-mutasyon.mjs --kopya <kopya>   # 64/64 (~5 dk)
+# gerçek veri: git worktree add --detach <yer>/v250 v2.5.0; node test/devir-d3-gercek-veri.mjs --eski <yer>/v250 --tohum 11   # 22/22, "BEKLENEN FARK (S-T4-1)": 1 cari, 12 karşılaştırma
+# katalog: D3T3_KATALOG_DIR=<k> node --test $T; node test/devir-d3-ileti-katalog.mjs <k> docs/devir/2.5.1-DEVAM/d3t5-iletiler.md   # bayt bayt aynı (UTC)
+npm run test:kahin-defter; npm run test:kahin-cari    # 187 / 25.298
+```
