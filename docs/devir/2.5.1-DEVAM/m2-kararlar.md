@@ -15,7 +15,7 @@ alt durumları BİRLİKTE çıkar; ana oturum hepsini tek iletide sorar).
 - **S270 = A (26.11.2026):** S269 / S268'in ilk uygulaması FAZLA YAZIMA yol açtığı için geri alındı; "doğru sınır formülü (sonradan gelen bağsız tahsilat ve sonraki Değersiz
   satırlarıyla) kâhinle birlikte 2.5.1'de". Değişmez: **hiçbir sırada bir şüpheli kaydın Değersiz toplamı, o kayda şüpheliye alınan tutardan kayda düşmüş tahsilatlar
   çıkınca kalanı aşamaz; Değersiz yazımı cariyi alacaklıya (eksi bakiyeye) düşürmez.**
-- **S-M2-1 = B (27.11.2026; SORULDU, öneri uygulanıyor — kullanıcı değiştirebilir):** şüpheliye alma gününde, şüpheliye almadan ÖNCE yazılmış faturaya bağlı tahsilat
+- **S-M2-1 = B (KULLANICI KARARI 27.11.2026, AYNEN: "önerini uygula"):** şüpheliye alma gününde, şüpheliye almadan ÖNCE yazılmış faturaya bağlı tahsilat
   aynı günün sırası gereği şüpheli kayıttan düşer (aynı gün sırası kuralı DEĞİŞMEZ — S263 = C ile aynı çizgi). Değersiz **o günün tarihiyle** yazılırsa o günün bağlı payından
   önce değerlendirilir (S264); **sonraki bir tarihle** yazılırsa önceki günlerin bağlı payı düşülmüş kalan kadar yazılabilir. Ekran her tarih için gerçek sınırı gösterir.
   (Reddedilen A: 2.4.9'daki gibi — şüpheliye almadan önce yazılmış aynı günlü bağlı tahsilat kaydı hiç azaltmaz. Reddedilen C: hiçbir şey değişmez.)
