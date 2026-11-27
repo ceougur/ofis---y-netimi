@@ -92,7 +92,10 @@ describe("D3 tur 4 — stok ürün ürün değişmezi (eksi, silinmiş, sıfır,
     const check = preflightModule.devirPreflight(facts.preflight, plan, { today: "2027-02-10", names: new Map() });
     const stop = check.durdurur.find(row => row.kod === "degismez-stok-urun");
     assert.ok(stop, check.durdurur.map(row => row.kod).join(", "));
-    assert.match(stop.neOldu, /^2 üründe kesim günü miktarı ya da değeri yeni yılın açılışıyla tutmuyor \(Ürün P1: arşivde 6 Adet \/ .*, açılışta 7 Adet \/ 350,00 TL ve Ürün P5: arşivde 6 Adet \/ .*, açılışta 5 Adet \/ 50,00 TL\)\.$/);
+    // Ürün sırası kimlik sırasıyla (kimlik rastgele) — iki parça ayrı ayrı.
+    assert.match(stop.neOldu, /^2 üründe kesim günü miktarı ya da değeri yeni yılın açılışıyla tutmuyor \(.*\)\.$/);
+    assert.match(stop.neOldu, /Ürün P1: arşivde 6 Adet \/ 350,00 TL, açılışta 7 Adet \/ 350,00 TL/);
+    assert.match(stop.neOldu, /Ürün P5: arşivde 6 Adet \/ 50,00 TL, açılışta 5 Adet \/ 50,00 TL/);
     assert.equal(stop.nereye.ekran, "Stok");
     assert.deepEqual(iletiModule.iletiDenetimi(stop), []);
     katalogaYaz("devir-d3-stok", "API verisi + olgu bozulması: iki ürünün K miktarı yer değiştirdi (toplam aynı)", stop, "olgu (program tutarlı veride üretmez)");

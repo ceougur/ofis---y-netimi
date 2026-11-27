@@ -140,7 +140,8 @@ describe("D3 tur 4 — uzmanın ilk kabul testi (saf hesap): açılış 6.000, O
     const ileti = iletiModule.onIzlemeBayatIletisi({ onIzlemeAni: "2027-01-05T10:15:00.000Z" });
     assert.deepEqual(iletiModule.iletiDenetimi(ileti), []);
     assert.equal(ileti.seviye, "durdurur");
-    assert.match(ileti.neOldu, /ön izlemeden \(05\.01\.2027 10:15\) sonra/);
+    // An yerel saatle (sunucunun saat dilimi): UTC 10:15, İstanbul 13:15.
+    assert.match(ileti.neOldu, process.env.TZ === "Europe/Istanbul" ? /ön izlemeden \(05\.01\.2027 saat 13:15\) sonra/ : /ön izlemeden \(05\.01\.2027 saat \d{2}:15\) sonra/);
     assert.match(ileti.neden, /devir durdu/);
     assert.deepEqual(ileti.neYapmali, ["Yıl Sonu Devri'nde Ön İzleme'yi yeniden başlatın.", "Yeni ön izlemenin sayılarını ve Devir Raporu'nu inceleyin.", "Sayılar doğruysa devri yeniden onaylayın."]);
     katalogaYaz("devir-d3-uzman", "işlev + ileti (kullanımı devri uygulayan pakette): ön izlemeden sonra tahsilat girildi", ileti, "olgu (D4 kullanır)");
