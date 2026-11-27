@@ -2,7 +2,7 @@
 
 Taban `t251-m1k3` (36b77d4b, küçük tur 3'ün dal ucu) → dal ucu: bu raporun son commit'i (dal `worktree-agent-a7d99fd88f55969de`). PUSH YOK. KDV Mahsup Fişi, ön izlemesi ve
 defter DEĞİŞMEDİ (kabul B: taban = yeni BİREBİR) — yalnız Rapor Merkezi'nin KDV Özeti görünümü.
-Ortam (son okuma): __ORTAM__
+Ortam (son okuma): yük 3,84 / 4 çekirdek (koşular sırasında öbür ajanlarla 4–6,7; her koşudan önce okundu, yük > 4'te yeni koşu bir kez bekletildi), bellek boş 4 GB (kullanılabilir 13 GB), disk boş 12 GB. Arka plan işim YOK (hepsi bitti).
 
 ## A. DEĞİŞEN GÖZLENEBİLİR DAVRANIŞ (önce = taban t251-m1k3 → sonra; Raporlar → Tüm Raporlar → KDV Özeti (Beyanname Hazırlığı); ekran = PDF = Excel)
 1. **Sorunun (a) örneği AYNEN** (Mart satış KDV 800 + 200, alış 500 → Mart fişi ödenecek 500; sonra Mart'ın 800'lük satışı İptal Et → Mart bugün sonraki döneme devreden 300; Nisan
@@ -72,18 +72,71 @@ neden. "Ödenecek kalır (DEĞİŞMEZ)" sınaması tabanda da yeşil — beklene
 - **B** ön izleme / fiş (`m1k4-betik/onizleme-esit.sh` ve `fis-esit-391.sh` = tur 3'ünkiler AYNEN, yalnız yollar; dar kontrol senaryoları A, B, C, E, F, J, L, L2 değiştirilmeden): UTC ve
   İstanbul ön izleme / fiş / geri al / iptal / kilit satırları taban 26 = yeni 26 **BİREBİR EVET**, rapor satırlarında fark **0**; karma yoklaması fiş satırları 3 = 3 **BİREBİR**; kararın
   (S-M1K2-1) örneğinde fiş satırları 2 = 2 **BİREBİR** (iki TZ). Ayrıca her yeni sınamada Nisan / Mayıs ön izlemesi = fiş (DEĞİŞMEDİ) iddiası yeşil.
-- **C** komşular (`m1k4-betik/komsu.sh`: tur 3'ün 51 dosyası — yeni dosya yok): UTC **644/644**, İstanbul __CIST__; 0 başarısız / iptal / atlanan (638 → 644: +6 yeni sınama).
-  `npm run test:kahin-defter` (dokunmadan): UTC **187/187**, İstanbul __KIST__.
+- **C** komşular (`m1k4-betik/komsu.sh`: tur 3'ün 51 dosyası — yeni dosya yok): UTC **644/644**, İstanbul **644/644**; 0 başarısız / iptal / atlanan (638 → 644: +6 yeni sınama).
+  `npm run test:kahin-defter` (dokunmadan): UTC **187/187**, İstanbul **187/187**.
 - **D** ekran senaryoları (yeni kod, `m1k4-betik/e2e.sh`): senaryo-kdv-mahsup-sonrasi-251 **35/35**, senaryo-kdv-zincir-251 12/12, senaryo-kdv-devreden-251 14/14, senaryo-kdv-donemi-250
   23/23, senaryo-defter-243 33/33, senaryo-c7b-kabul-250 39/39, senaryo-mobil-247 77/77, senaryo-banka-210 429/429. Beklentisi değişen eski adım YOK (mahsup-sonrasi'ye yalnız E eklendi).
   Görüntüler (baktım): `m1k4-ekran/m1k4-kdv-ozeti-guncel-degil-nisan.png` — özet Hesaplanan 200, İndirilecek 0, Önceki 300, Ödenecek 0, Sonraki 100; "Zincirle Uyuşmayan Mahsup Fişi"
   kartı yukarıdaki metinle tam genişlikte; tablo altı Önceki 300 / Ödenecek 0 / Sonraki 100. `m1k4-kdv-ozeti-guncel-degil-mart-nisan.png` — 391 400, 191 500, 0 / 0 / 100; "Mahsuptan
   Sonra Değişen Ay: Mart 2026 (…)" ve Nisan uyuşmazlık kartı; tabloda "Mart 2026 Sonraki Döneme Devreden KDV ₺300,00".
-- **E** mutantlar — §5: __MUT__
+- **E** mutantlar — §5: 40 mutant; **38 ÖLDÜ** iki TZ (istenen üçü Y3b 4 / Y4b 5 / Y6 2 başarısız); D7 ve M4 EŞDEĞER (kanıtlı — §5).
 - **F** hız: yeni sorgu / döngü YOK (bir koşulun genişlemesi) — **ÖLÇÜLMEDİ** (ders 47 gereği gerekmez; ana oturum isterse `ana-kabul/betik/kabul.sh`).
 
 ## 5. MUTANT TABLOSU
-__MUTTABLO__
+Ayrı kopya `/dev/shm/m1k4-kdv/mut` (archive 19446c49: server, test, client, tools, package.json); testler mutant betiğinin 8 dosyası (yalniz391 + karma + mahsup-sonrasi + zincir +
+devreden + defter-243-ux24-toplam + c7b-kdv-ozeti-donem-250 + c7b-kdv-s4-250; tek `node --test`, **67 sınama**); `m1k4-ham/mutant-utc.json`, `mutant-ist.json`. Tur 3'ün 39 mutantı AYNEN, YALNIZ Y3 / Y4
+çıkarıldı (artık doğru davranış) ve yerine Y3b / Y4b / Y6 geldi (40). NEXT satırına dokunan Z2, Z7, K4, Y1, Y2 yalnız metin olarak yeni satıra (`recount`) uyarlandı — anlamları aynı (betikte yazılı).
+"Başarısız" = node --test üst düzey `# fail`.
+
+| Mutant | Başarısız UTC / İst | Sonuç |
+|---|---|---|
+| D1 devredeni sıfır al (rapor görünümü) | 29 / 29 (iptal 0 / 0) | ÖLDÜ |
+| D2 devredeni iki kez düş | 29 / 29 (iptal 0 / 0) | ÖLDÜ |
+| D3 çok aylı aralıkta ilk ay yerine son ayın devredeni 'önceki dönem' | 26 / 26 (iptal 0 / 0) | ÖLDÜ |
+| D4 mahsup formülü yerine eski dönem farkı (391 − 191) | 33 / 33 (iptal 0 / 0) | ÖLDÜ |
+| D5 ödenecek ile devredeni ters yaz | 55 / 55 (iptal 0 / 0) | ÖLDÜ |
+| D6 ödenecek yalnız son hareketli ay (toplam yerine) | 28 / 28 (iptal 0 / 0) | ÖLDÜ |
+| D7 sonraki döneme devreden = aralığın son ayının görünümü (hareketli ay yerine) | 0 / 0 (iptal 0 / 0) | **EŞDEĞER** (aşağıda) |
+| D8 'Mahsup Edilmemiş Ay' notu hiç yazılmaz | 10 / 10 (iptal 0 / 0) | ÖLDÜ |
+| D9 ay satırlarında kullanılan devreden satırı yok | 12 / 12 (iptal 0 / 0) | ÖLDÜ |
+| D10 S4 taşıması zincirde unutulur (carried yok) | 19 / 19 (iptal 0 / 0) | ÖLDÜ |
+| Z1 mahsupsuz ayı zincirden atla (devredeni değiştirmez) | 12 / 12 (iptal 0 / 0) | ÖLDÜ |
+| Z2 ödenecek aydan sonra devredeni taşı | 4 / 4 (iptal 0 / 0) | ÖLDÜ |
+| Z3 zinciri aralığın ilk ayından başlat (öncesini unut) | 32 / 32 (iptal 0 / 0) | ÖLDÜ |
+| Z4 kopuk zincir notunu yazma | 21 / 21 (iptal 0 / 0) | ÖLDÜ |
+| Z5 A ↔ B anahtarını ters çevir | 33 / 33 (iptal 0 / 0) | ÖLDÜ |
+| Z6 fişin devredeni zincirle karşılaştırılmaz (her fiş geçerli) | 22 / 22 (iptal 0 / 0) | ÖLDÜ |
+| Z7 geçerli fişte fişin devredeni yerine hesaplanan taşınır | 5 / 5 (iptal 0 / 0) | ÖLDÜ |
+| M3 zincirde S4 emilimi yok (mahsupsuz ayın saklı İ'si = bugünkü İ) | 3 / 3 (iptal 0 / 0) | ÖLDÜ |
+| M4 aralığın sonraki devredeni = fişin devredeni (carryAfter) | 0 / 0 (iptal 0 / 0) | **EŞDEĞER** (aşağıda) |
+| M7 Mahsup Edilmemiş Ay 6 sınırı 5 | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| N1 fiş zincirde sayılırken S4 emilimi karşılaştırılmaz (yalnız devreden) | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| N2 S-DKM1-1 yok: zincirdeki fişin ayı bugünkü kayıtlardan | 32 / 32 (iptal 0 / 0) | ÖLDÜ |
+| N3 S-M1-3 yok: güncel olmayan fişte de sonuç fişten | 26 / 26 (iptal 0 / 0) | ÖLDÜ |
+| N4 'reduced' notu ayın kendi İ'si yerine düzeltilmiş İ'den (önceki ayın azalması bu aya yazılır) | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| N5 azalan ay notu yazılmaz | 9 / 9 (iptal 0 / 0) | ÖLDÜ |
+| N6 yön farkı notta yazılmaz (S-M1-2) | 4 / 4 (iptal 0 / 0) | ÖLDÜ |
+| N7 devredeni aynı uyuşmazlıkta da devreden cümlesi | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| K1 karma ayda İndirilecek KDV bugünkü kayıtlardan | 9 / 9 (iptal 0 / 0) | ÖLDÜ |
+| K2 karma ayda 391 fişten | 9 / 9 (iptal 0 / 0) | ÖLDÜ |
+| K3 karma ayda not çıkmaz | 8 / 8 (iptal 0 / 0) | ÖLDÜ |
+| K4 karma ayda sonraki aya fişin eski devredeni taşınır | 3 / 3 (iptal 0 / 0) | ÖLDÜ |
+| K5 yalnız 391 değişiminde de karma kuralı (S-M1-3 = C bozulur) | 11 / 11 (iptal 0 / 0) | ÖLDÜ |
+| K6 karma ay 'güncel değil' notunda ikinci kez yazılır | 8 / 8 (iptal 0 / 0) | ÖLDÜ |
+| Y1 devreden yönde yalnız 391 ayında sonraki aya fişin eski devredeni taşınır | 15 / 15 (iptal 0 / 0) | ÖLDÜ |
+| Y2 yalnız 391 (küçük tur 4: her 'güncel değil') ayından sonraki fişin uyuşmazlık notu çıkmaz | 13 / 13 (iptal 0 / 0) | ÖLDÜ |
+| **Y3b güncel değil ödenecek fişli ayda fişin devredeni taşınır (tur 3 sınırı)** | 4 / 4 (iptal 0 / 0) | ÖLDÜ |
+| **Y4b İ artan güncel değil ayında fişin devredeni taşınır (İ artışı taşınmaz; tur 3 sınırı)** | 5 / 5 (iptal 0 / 0) | ÖLDÜ |
+| **Y6 güncel (kept / reduced) ayda da bugünkü hesabın devredeni taşınır** | 2 / 2 (iptal 0 / 0) | ÖLDÜ |
+| Y5 S4 karma: 'İ azaldı' ölçüsü ayın kendi İ'si (S4 taşıması sayılmaz) | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| N8 güncel değil notunun eski metni | 16 / 16 (iptal 0 / 0) | ÖLDÜ |
+
+**D7 ve M4 — EŞDEĞER (öldürülemez; eksik test DEĞİL).** S-M1K3-1 = A ile zincirin üç dalının üçünde taşınan devreden ayın gösterilen sonraki devredenine eşit oldu: zincir dışı ay
+`step.carryOut` = `shape(step).carryOutMinor`; karma / güncel değil `settled.carryOutMinor`; kept / reduced'da `settle` fişin devredenini döndürür = `Number(offset.carryOutMinor)`. Yani
+`carryAfterMinor ≡ carryOutMinor` (hareketsiz ayda ikisi de `carryAt`). D7 (aralığın son ayının görünümü) ve M4 (carryAfter) bu yüzden aynı sayıyı verir (tur 3'te İ artan / ödenecek
+'güncel değil' ayında ayrışıyorlardı — orada öldüler). Kanıt (iddia değil): `m1k4-betik/esdegerlik.py` ayrı kopyada `vatView`'a "carryAfterMinor ≠ carryOutMinor ise hata" denetimi
+ekler ve aynı 67 sınamayı koşar → **UTC 67/67, İstanbul 67/67, bozulma 0**; dişi: aynı kopyaya Y1 uygulanınca 15 başarısız, raporlar **500** (denetim fırlattı; 14 yanıt) —
+`m1k4-ham/esdegerlik.txt`. Sonuç: bu turda öldürülebilir 38 mutantın **38'i ÖLDÜ** (iki TZ), 2 eşdeğer. `carryAfterMinor` alanının artık gereksiz olması (sadeleştirme) → SONRAKİ SÜRÜME.
 
 ## 7. KULLANICIYA SORULMALI
 YOK. Kararın (S-M1K3-1 = A: "her 'güncel değil' ayında sonraki aya BU AYIN (bugünkü) devredeni") söylemediği yeni bir durumda 391 − 191'den sapma görülmedi: bu turun bütün örneklerinde
@@ -98,6 +151,7 @@ YOK. Kararın (S-M1K3-1 = A: "her 'güncel değil' ayında sonraki aya BU AYIN (
 
 ## 9. SONRAKİ SÜRÜME
 - §8.1 görünüm notu.
+- `carryAfterMinor` artık her durumda `carryOutMinor`'a eşit (§5) — alanın kaldırılması (kod sadeleştirmesi; davranış değişmez).
 - Test yardımcılarının (`program`, `balanced`, `repair`) ortak dosyaya alınması (20.11 kuralı; tur 3'ten süren).
 
 ## 10. DOĞRULANMADI
@@ -119,7 +173,12 @@ YOK. Kararın (S-M1K3-1 = A: "her 'güncel değil' ayında sonraki aya BU AYIN (
   ayın mahsup fişi eski devredenle kesildiyse 'Zincirle Uyuşmayan Mahsup Fişi' satırı bunu söyler; o ayın ve sonraki ayların mahsubunu geri alıp ayları sırayla yeniden mahsup edin."
 
 ## 15. COMMIT LİSTESİ (t251-m1k3..dal ucu)
-__COMMITS__
+- 54d387c4 rapor taslağı: nasıl bozulur listesi (koddan önce)
+- 19446c49 KDV Özeti kodu (S-M1K3-1 = A) + testler (yalniz391 tablosu A'ya, yeni bölümler; zincir testinde Temmuz beklentisi)
+- 40ede14e ekran senaryosuna E adımı + küçük tur 4 betikleri
+- f70bbeed rapor taslağı
+- 343b989c Kanıt: ham çıktılar, ekran görüntüleri (taban / yeni), eşdeğerlik betiği
+- (son) rapor son hâli (bu belge)
 
 ## 16. ANA OTURUMUN YENİDEN KOŞACAĞI KOMUTLAR
 ```
@@ -131,6 +190,8 @@ bash docs/kanit/2026-11-27/m1k4-betik/komsu.sh utc <kök> <kanıt klasörü>    
 npm run test:kahin-defter                                                                  # 187/187 (iki TZ)
 bash docs/kanit/2026-11-27/m1k4-betik/onizleme-esit.sh <çıktı>; bash docs/kanit/2026-11-27/m1k4-betik/fis-esit-391.sh <çıktı>   # BİREBİR EVET
 PLAYWRIGHT_BROWSERS_PATH=<pw-1194> HUKUK_LICENSE_URL=http://127.0.0.1:9 node test/e2e/senaryo-kdv-mahsup-sonrasi-251.mjs   # 35/35
-python3 -I docs/kanit/2026-11-27/m1k4-betik/mutant.py <ayrı kopya> <çıktı.json> UTC      # (ve Europe/Istanbul) 40/40
+python3 -I docs/kanit/2026-11-27/m1k4-betik/mutant.py <ayrı kopya> <çıktı.json> UTC      # (ve Europe/Istanbul) 38/40 öldü, D7 / M4 eşdeğer
 ```
-Not: `/dev/shm/m1k4-kdv/eski` (worktree — `git worktree remove` ile) ve `/dev/shm/m1k4-kdv/mut` (archive kopyası) __TEMIZLIK__
+Not: `/dev/shm/m1k4-kdv/mut` ve `/dev/shm/m1k4-kdv/esd` (archive kopyaları) kaldırıldı. `/dev/shm/m1k4-kdv/eski` (worktree --detach t251-m1k3; içine üç değişen test dosyası kopyalandı +
+node_modules bağı) DURUYOR — ana oturum taban kırmızısını yinelemek için kullanabilir; işi bitince bağı tam yolla silip kopyalanan üç dosyayı geri alarak `git worktree remove` ile kaldırır.
+Eşdeğerlik yoklaması: `python3 -I docs/kanit/2026-11-27/m1k4-betik/esdegerlik.py <ayrı kopya> UTC` (kopyaya denetim satırı ekler — ana ağaçta KOŞMAYIN).
