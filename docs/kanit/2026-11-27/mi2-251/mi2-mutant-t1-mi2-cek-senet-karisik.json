@@ -1,0 +1,43 @@
+{
+  "ad": "mi2-mutant-t1-mi2-cek-senet-karisik",
+  "komut": "node --test test/mi2-grup-ozeti-251.test.mjs",
+  "commit": "51109662dc569e5d0c4ce955fe69fea2596cc4f4",
+  "dal": "worktree-agent-ad6b71f2b91ca7ee7",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T14:22:41.808Z",
+  "sure_sn": 5.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 11,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (b) ELLE: Bugün — her yol ayrı; tedarikçi ödemesi, silinen tahsilat, dünkü tahsilat sayılmaz; açılış ayrı",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:104:3",
+      "hata": "Ayla: çek 400 + senet 500 · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (d) karşılıksız çıkan çek: raporun kuralıyla aynı (alınan çek tahsilattan düşmez; karşılıksız ayrı borç satırı) — eşdeğerlik korunur",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:232:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi2-t2/kanit/2026-11-27/mi2-mutant-t1-mi2-cek-senet-karisik.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7",
+  "ham_cikti_sha256": "1027406da9722bfe03b063372d3458196d045afbd6b69f3b197ef4c0a61e1f0c",
+  "ham_cikti_bayt": 7339
+}

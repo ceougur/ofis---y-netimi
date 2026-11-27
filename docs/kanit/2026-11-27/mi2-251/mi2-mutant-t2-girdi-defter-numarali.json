@@ -1,0 +1,38 @@
+{
+  "ad": "mi2-mutant-t2-girdi-defter-numarali",
+  "komut": "node --test test/obligation-input-250.test.mjs test/mi2-kuyruk-girdisi-251.test.mjs",
+  "commit": "51109662dc569e5d0c4ce955fe69fea2596cc4f4",
+  "dal": "worktree-agent-ad6b71f2b91ca7ee7",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T14:19:45.723Z",
+  "sure_sn": 8.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 5,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ tur 2 — görünen taksit numarası kuyruğun girdisine girmez (taksiti silinmiş / vadesi öne alınmış kart) › carinin defter okuması (detail withRemaining: false — fatura kapaması / kuyruk) ve toplu defter (allLedgers): satır metni SAKLANAN sırayla, numara alanı yok",
+      "konum": "test/mi2-kuyruk-girdisi-251.test.mjs:74:3",
+      "hata": "girdi: saklanan sıra (kart 1'in 3.'sü, kart 2'nin 3.'sü) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi2-t2/kanit/2026-11-27/mi2-mutant-t2-girdi-defter-numarali.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7",
+  "ham_cikti_sha256": "2bfb4385ba4af667e3d376b68aba96a6123496bbba2345912f8d0119d3777fd8",
+  "ham_cikti_bayt": 5898
+}

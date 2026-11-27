@@ -1,0 +1,15 @@
+#!/bin/bash
+# Mİ tur 2 kabul A (kâhin cari + defter, iki TZ) ve yeni ekran senaryoları (kanıt kaydıyla).
+cd /home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7 || exit 1
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/mi2-t2/kanit PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+for tz in UTC Europe/Istanbul; do
+  k=$(echo $tz | tr '/' '-' | tr 'A-Z' 'a-z')
+  cat /proc/loadavg
+  TZ=$tz node tools/kanit.mjs kos mi2-kahin-cari-$k -- npm run test:kahin-cari; echo "kahin-cari $k çıkış $?"
+  TZ=$tz node tools/kanit.mjs kos mi2-kahin-defter-$k -- npm run test:kahin-defter; echo "kahin-defter $k çıkış $?"
+done
+for sc in mi1 mi2; do
+  EKRAN_DIR=$S/mi2-t2/ekran-yeni-$sc node tools/kanit.mjs kos mi2-e2e-yeni-$sc -- node test/e2e/senaryo-$sc-251.mjs; echo "e2e $sc çıkış $?"
+done
+cat /proc/loadavg

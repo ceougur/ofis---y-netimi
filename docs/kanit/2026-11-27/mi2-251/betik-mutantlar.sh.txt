@@ -1,0 +1,43 @@
+#!/bin/bash
+# Mİ tur 2 mutantları (kabul D): her biri en az bir testte KIRMIZI olmalı ("YAKALANDI"). Dosya her durumda geri yazılır (mutant.py).
+cd /home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7 || exit 1
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+M=$S/mi2-t2/mutant.py
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/mi2-t2/kanit PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194 TZ=UTC
+T_NO="node --test test/mi1-taksit-no-251.test.mjs test/mi2-tek-numara-251.test.mjs"
+T_GIRDI="node --test test/obligation-input-250.test.mjs test/mi2-kuyruk-girdisi-251.test.mjs"
+T_MI2="node --test test/mi2-grup-ozeti-251.test.mjs"
+T_E2E="node test/e2e/senaryo-mi2-251.mjs"
+N=server/lib/plan-item-no.mjs
+P=server/routes/plans.mjs
+A=server/routes/accounts.mjs
+L=server/lib/account-collections.mjs
+run() { python3 -I $M "$@" || echo "MUTANT ÇALIŞMADI: $1"; }
+cat /proc/loadavg
+# --- tur 2'nin istenen mutantları ---
+run t2-saklanan-sira-makbuz server/lib/plan-report.mjs 'itemText(item.no)' 'itemText(item.seq)' -- $T_NO
+run t2-girdiye-sizdir $P "const shaped = shape(plan, user);
+      const seqOf" "const shaped = numberedView(shape(plan, user));
+      const seqOf" -- $T_GIRDI
+run t2-girdi-defter-numarali $A "ledger: withRemaining ? numberedLines(ledger.lines, numbersOfPlans(planList)) : ledger.lines," "ledger: numberedLines(ledger.lines, numbersOfPlans(planList))," -- $T_GIRDI
+run t2-ayni-vade-ters server/lib/plans.mjs "export const compareItems = (a, b) => (a.dueDate === b.dueDate ? a.seq - b.seq" "export const compareItems = (a, b) => (a.dueDate === b.dueDate ? b.seq - a.seq" -- $T_NO
+run t2-etiket-donemde-gizli client/assets/hof-accounts.js '<span class="hof-acc-period-label" data-period-label>Tahsilat Dönemi:</span>' '${view.period ? "" : `<span class="hof-acc-period-label" data-period-label>Tahsilat Dönemi:</span>`}' -- $T_E2E
+# --- tek numaranın öbür çıktı yolları ---
+run t2-ekstre-numarasiz $A "ledger: withRemaining ? numberedLines(ledger.lines, numbersOfPlans(planList)) : ledger.lines," "ledger: ledger.lines," -- $T_NO
+run t2-zil-saklanan-sira $P "label: item.key ? item.label : itemText(numbers.get(item.id))," "label: item.key ? item.label : \`\${item.seq}. taksit\`," -- $T_NO
+run t2-whatsapp-numarasiz $A "ledger: numberedLines(ledger.lines, numbersOfPlans(planList)), totals: tyk" "ledger: ledger.lines, totals: tyk" -- $T_NO
+run t2-fatura-kapatanlar server/routes/invoices.mjs "closers: numberedClosers(shaped.closers)," "closers: shaped.closers," -- $T_NO
+# --- tur 1'in mutantları (Mİ-1 numara; Mİ-2 tahsilat) ---
+run t1-mi1-saklanan-sira $N "return new Map(rows.map((item, index) => [item.id, index + 1]));" "return new Map(rows.map(item => [item.id, item.seq]));" -- $T_NO
+run t1-mi2-tedarikci-odemesi $L "WHERE e.kind = 'in' AND e.date >= ? AND e.date <= ? GROUP BY e.account_id, e.method, odd" "WHERE e.kind IN ('in', 'out') AND e.date >= ? AND e.date <= ? GROUP BY e.account_id, e.method, odd" -- $T_MI2
+run t1-mi2-acilis-toplama $L "  out.total = roundMoney(COLLECTION_WAYS.reduce((sum, way) => sum + (minor[way] || 0), 0) / 100);" "  out.total = roundMoney((COLLECTION_WAYS.reduce((sum, way) => sum + (minor[way] || 0), 0) + (minor.opening || 0)) / 100);" -- $T_MI2
+run t1-mi2-grupsuz-dusur $A "    if (none.count) groups.push({ ...none, subgroups: [] });" "    if (none.count && false) groups.push({ ...none, subgroups: [] });" -- $T_MI2
+run t1-mi2-alt-grup-katma $A "      const row = rows.get(item.groupId);
+      addToGroupRow(row, item);" "      const row = rows.get(item.groupId);
+      if (!item.subgroupName) addToGroupRow(row, item);" -- $T_MI2
+run t1-mi2-donem-bir-gun $L "WHERE e.kind = 'in' AND e.date >= ? AND e.date <= ? GROUP BY e.account_id, e.method, odd" "WHERE e.kind = 'in' AND e.date >= ? AND e.date < ? GROUP BY e.account_id, e.method, odd" -- $T_MI2
+run t1-mi2-silinmis-kart $L "JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL AND p.account_id <> ''" "JOIN plans p ON p.id = e.plan_id AND p.account_id <> ''" -- $T_MI2
+run t1-mi2-silinmis-cari $L '  const live = "JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL";' '  const live = "JOIN accounts a ON a.id = e.account_id";' -- $T_MI2
+run t1-mi2-cek-senet-karisik $L 'const instrumentWay = instrument => (instrument === "cheque" ? "cheque" : instrument === "note" ? "note" : "other");' 'const instrumentWay = instrument => (instrument === "cheque" ? "note" : instrument === "note" ? "cheque" : "other");' -- $T_MI2
+run t1-mi2-paid-acilis $A "      if (collections && paid && !(collected.total > 0.005)) continue;" "      if (collections && paid && !(collected.total + collected.opening > 0.005)) continue;" -- $T_MI2
+cat /proc/loadavg

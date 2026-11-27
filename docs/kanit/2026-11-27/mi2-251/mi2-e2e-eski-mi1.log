@@ -1,0 +1,28 @@
+(node:29593) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ Kurulum: yönetici girer, başlangıç tablosu yüklenir
+
+■ Veri (programın kendi uçları): üç cari, üç taksit kartı
+  ✓ veri tabanı: Burak'ın kartında saklanan sıra [2,3] (beklenen [2,3] — boşluk ön koşulu)
+  ✓ veri tabanı: tahsilat saklanan sırası 3 olan taksite bağlı (3)
+
+■ 1. Cari Listesi (yan menüden gerçek tıklama): Taksit sütunu
+  ✓ Ayşe: "₺2.000,001 kart · 2 geciken13.10.2026 · 45 gün gecikti (2. taksit)" (beklenen "… gün gecikti (2. taksit)")
+  ✓ Burak: "₺2.600,001 kart · 2 geciken13.10.2026 · 45 gün gecikti (1. taksit)" (beklenen "… gün gecikti (1. taksit)" — silinen taksitten sonra boşluk yok)
+  ✓ Cem: "₺3.000,001 kart02.12.2026 · sıradaki taksit" (beklenen "… · sıradaki taksit", parantez yok)
+
+■ 2. Burak'ın cari kartı (satıra odaklan + Enter) → taksit kartı penceresi
+  ✓ kart penceresinde numaralar ["1.","2."] (beklenen ["1.","2."]; eski kod ["2.","3."])
+  ✓ ilk satırın sil düğmesi "1. taksiti sil" (beklenen "1. taksiti sil")
+  ✓ kart penceresinin hareket satırı "Tahsilat · 2. taksit Makbuz 2" (beklenen "Tahsilat · 2. taksit")
+  ✗ makbuz PDF'i (dosyadan okundu): "3. taksit (vade 13.11.2026)" (beklenen "2. taksit (vade …)")
+
+■ 3. Burak'ın cari kartı (Cari Listesi → satır → Enter): ekstre satırı
+  ✗ cari kartının ekstresinde "Taksit Tahsilatı · 2. taksit" (Taksit Tahsilatı · 3. taksit Makbuz )
+
+■ 4. Taksitler listesi (yan menüden): Burak'ın sıradaki taksiti '1. taksit'
+  ✗ Taksitler listesinde Burak: "2 Burak Mİ Deneme Grupsuz · kayıt 30.07.2026 ₺3.000,00 ₺400,00 ₺2.600,00 13.10.2026 2. taksit · 45 gün gecikti Gecikti 2 taksit · ₺2.600,00" (beklenen sıradaki "1. taksit"; eski kod "2. taksit")
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo Mİ-1 (geciken taksitin numarası): 9 geçti, 3 kaldı. Ekranlar: ../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi2-t2/ekran-eski-mi1
