@@ -185,15 +185,20 @@ describe("M2 — S270 değişmezi: geri alınan uygulamanın bozuk durumu (Değe
   let ids;
   before(async () => {
     ctx = await bootM2();
-    ids = (await runM2Classes(ctx.client, [{ ad: "Z", adimlar: [...m2Base("Z"), { op: "tahsilat", cari: "Z", ad: "Z-N", tutar: "1000", tarih: "2026-10-01" }, m2Deg("zd1", "Z-S", "2000", "2026-09-17")] }])).ids;
+    // Meşru sıra: Değersiz 2.000 @17.09 (S264), SONRA 01.10 bağsız 1.000 — bakiye 423,55.
+    ids = (await runM2Classes(ctx.client, [{ ad: "Z", adimlar: [...m2Base("Z"), m2Deg("zd1", "Z-S", "2000", "2026-09-17"), { op: "tahsilat", cari: "Z", ad: "Z-N", tutar: "1000", tarih: "2026-10-01" }] }])).ids;
   });
   after(() => ctx.server.close());
 
-  it("sınırla yazılan 2.000 temiz; SQL ile 3.000'e çıkarılınca (bakiye −576,45) iki koşul da kırmızı, kapı sonraki yazımı reddeder", async () => {
+  it("meşru sıra temiz; bağsız tahsilat Değersiz'den ÖNCE yazılmış ve Değersiz 3.000 yapılınca (geri alınan uygulamanın durumu, bakiye −576,45) iki koşul da kırmızı, kapı sonraki yazımı reddeder", async () => {
     const party = ids.cari.Z;
     assert.equal((await integrityOf(ctx.api)).ok, true);
     assert.deepEqual(doubtfulProblems(ctx.store, { parties: [party] }), []);
-    const entry = ctx.db.prepare("SELECT id FROM account_entries WHERE account_id = ? AND source = 'doubtful'").get(party);
+    const entry = ctx.db.prepare("SELECT id, created_at AS at FROM account_entries WHERE account_id = ? AND source = 'doubtful'").get(party);
+    const free = ctx.db.prepare("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'in' AND date = '2026-10-01'").get(party);
+    assert.ok(entry && free, "kurulum: Değersiz 2.000 ve bağsız 1.000 yazıldı");
+    // Geri alınan uygulamanın sırası: bağsız tahsilat Değersiz'den ÖNCE yazılmış (yazım anı bir dakika önce), Değersiz 3.000 (başlığıyla birlikte).
+    ctx.db.prepare("UPDATE account_entries SET created_at = ? WHERE id = ?").run(new Date(Date.parse(entry.at) - 60_000).toISOString(), free.id);
     ctx.db.prepare("UPDATE account_entries SET amount = 3000 WHERE id = ?").run(entry.id);
     ctx.db.prepare("UPDATE fin_events SET amount_minor = 300000, try_minor = 300000 WHERE type = 'doubtful_writeoff' AND src_id = ?").run(entry.id);
     const balance = (await must("kart", ctx.api.get(`/api/workspace/accounts/${party}`))).totals.balance;
@@ -207,7 +212,7 @@ describe("M2 — S270 değişmezi: geri alınan uygulamanın bozuk durumu (Değe
     assert.match(failure.sample.join(" | "), /yazıldığı andaki sınırı \(2\.000,00 TL\) aşıyor/);
     assert.match(failure.sample.join(" | "), /eksi bakiyeye \(-576,45 TL\)/);
     const next = await ctx.api.post(`/api/workspace/accounts/${party}/entries`, { kind: "debt", amount: "1", date: M2_TODAY, note: "Sonraki yazım" });
-    assert.equal(next.status, 409, "kapı (bozuk durumu büyüten / süren sapma) yazımı reddeder");
+    assert.equal(next.status, 409, "kapı (süren / büyüyen sapma) yazımı reddeder");
     assert.equal(next.code, "ledger-integrity");
   });
 });

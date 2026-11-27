@@ -547,7 +547,8 @@ function ledgerBalanceMinor(store, party) {
 function activityAfter(store, party, line) {
   const has = name => hasTable(store, name);
   const q = (sql, ...args) => Boolean(store.get(sql, ...args));
-  if (q("SELECT 1 AS found FROM account_entries WHERE account_id = ? AND id <> ? AND (rowid > ? OR COALESCE(updated_at, '') >= ?) LIMIT 1", party, line.id, line.seq, line.at)) return true;
+  // Yazım sırası (i) ile aynı ölçü: created_at → rowid (ders 31); sonradan değişen satır updated_at.
+  if (q("SELECT 1 AS found FROM account_entries WHERE account_id = ?1 AND id <> ?2 AND (COALESCE(created_at, '') > ?3 OR (COALESCE(created_at, '') = ?3 AND rowid > ?4) OR COALESCE(updated_at, '') >= ?3) LIMIT 1", party, line.id, line.at, line.seq)) return true;
   if (has("invoices") && q("SELECT 1 AS found FROM invoices WHERE account_id = ?2 AND (COALESCE(created_at, '') >= ?1 OR COALESCE(updated_at, '') >= ?1 OR COALESCE(issued_at, '') >= ?1 OR COALESCE(cancelled_at, '') >= ?1) LIMIT 1", line.at, party)) return true;
   if (has("plans") && q("SELECT 1 AS found FROM plans p WHERE p.account_id = ?2 AND (COALESCE(p.created_at, '') >= ?1 OR COALESCE(p.updated_at, '') >= ?1 OR COALESCE(p.deleted_at, '') >= ?1 OR EXISTS (SELECT 1 FROM plan_entries pe WHERE pe.plan_id = p.id AND (COALESCE(pe.created_at, '') >= ?1 OR COALESCE(pe.updated_at, '') >= ?1))) LIMIT 1", line.at, party)) return true;
   if (has("cheques") && q("SELECT 1 AS found FROM cheques c WHERE (c.account_id = ?2 OR c.endorse_account_id = ?2) AND (COALESCE(c.created_at, '') >= ?1 OR COALESCE(c.updated_at, '') >= ?1 OR COALESCE(c.deleted_at, '') >= ?1) LIMIT 1", line.at, party)) return true;
