@@ -388,11 +388,14 @@ export function buildDevirPlan(facts, { option = "borc-alacak" } = {}) {
   for (const row of closingBalances) if (row.hesap === "100") cover(row.hesap, row.alt, row.cari, row.minor);
   // Banka / POS / kart / kredi (M-04 … M-06, N-11): alt hesap boyutunda; hesabı atanmamış 102.00 / 108.00 dahil (değişmez 2).
   const bankBySub = new Map((facts.bankAccounts || []).map(item => [item.sub, item]));
+  // D3 tur 2: 108.NN'nin sahibi POS tanımı (pos_terminals.gl_sub); `posTerminali` alanı D4a'nın POS açılışı (N-11) için.
+  const posBySub = new Map((facts.posTerminals || []).map(item => [item.sub, item]));
   const bank = [];
   for (const row of closingBalances) {
     if (!["102", "108", "300", "309"].includes(row.hesap)) continue;
     const owner = bankBySub.get(row.alt);
-    bank.push({ kimlik: `devir-${year}-banka-${row.alt || row.hesap}`, hesap: row.hesap, alt: row.alt, ad: owner?.name || UNASSIGNED_SUBS[row.alt] || PLAN_SUBS[row.alt] || accountName(row.hesap), bankaHesabi: owner?.id || "", tur: owner?.kind || "", tarih: nextDay, minor: row.minor, atanmamis: !owner });
+    const pos = row.hesap === "108" && !owner ? posBySub.get(row.alt) : null;
+    bank.push({ kimlik: `devir-${year}-banka-${row.alt || row.hesap}`, hesap: row.hesap, alt: row.alt, ad: owner?.name || pos?.name || UNASSIGNED_SUBS[row.alt] || PLAN_SUBS[row.alt] || accountName(row.hesap), bankaHesabi: owner?.id || "", posTerminali: pos?.id || "", tur: owner?.kind || (pos ? "pos" : ""), tarih: nextDay, minor: row.minor, atanmamis: !owner && !pos });
     cover(row.hesap, row.alt, row.cari, row.minor);
   }
   // Carisiz cari kontrol hücreleri (ör. 336.90 kayıt / dosya tahsilatları — KG-3 A; cari boyutu yok): alt defterleri kayıt tahsilatlarıdır (payments, ≤K budanır); açılışın alt defter

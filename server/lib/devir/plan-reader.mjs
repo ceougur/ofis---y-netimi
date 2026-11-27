@@ -258,6 +258,8 @@ export function readDevirFacts({ store, ledger, K, today, company = null, accoun
     vatOffsetMonths.set(`vat-offset-reverse:${row.id}`, row.month);
   }
   const bankAccounts = has(store, "bank_accounts") ? store.all("SELECT id, name, kind, gl, gl_sub AS sub FROM bank_accounts ORDER BY id").map(row => ({ id: row.id, name: row.name || "", kind: row.kind || "", gl: row.gl || "", sub: row.sub || "" })) : [];
+  // D3 tur 2: POS'un alt hesabı (108.NN) banka hesabında değil POS tanımında (pos_terminals.gl_sub) — yoksa tanımlı POS'un bekleyen alacağı "hesabı atanmamış" sayılıyordu.
+  const posTerminals = has(store, "pos_terminals") ? store.all("SELECT id, name, gl_sub AS sub FROM pos_terminals ORDER BY id").map(row => ({ id: row.id, name: row.name || "", sub: row.sub || "" })) : [];
   const cards = cardsAt(store, K);
   const cheques = chequesAt(store, K);
   const repeats = has(store, "invoice_repeats")
@@ -323,6 +325,7 @@ export function readDevirFacts({ store, ledger, K, today, company = null, accoun
     cards,
     cheques,
     bankAccounts,
+    posTerminals,
     doubtful: doubtful.list,
     vatPeriods,
     vatOffsetMonths,
