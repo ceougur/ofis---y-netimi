@@ -1,0 +1,32 @@
+{
+  "ad": "mi1-komsu-ist",
+  "komut": "node --test test/mi1-taksit-no-251.test.mjs test/banka-210-islem-no.test.mjs test/birlesik-tur1-yaris-250.test.mjs test/birlesik-tur2-yaris-250.test.mjs test/birlesik-tur3-yaris-250.test.mjs test/birlesik-tur4-degisiklik-yok-250.test.mjs test/plans.test.mjs test/tyk-250.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/whatsapp-elle-alici-249.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/accounts-stock.test.mjs test/banka-230-k8-taksit.test.mjs test/cari-bilgi-222.test.mjs test/kalan-metin-246.test.mjs test/form-izolasyon.test.mjs test/istek-kimligi-222.test.mjs test/odeme-yolu-222.test.mjs test/yazim-duzeni.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-t2-6-248.test.mjs test/c7bfix-kart-kapat-kuyruk-250.test.mjs test/supheli-230-ayni-gun-degersiz.test.mjs test/raporlar-209.test.mjs test/rapor-220.test.mjs",
+  "commit": "81c3ddf38295e24af230b47db31f6bd77d55e5b9",
+  "dal": "worktree-agent-a6937363537df626a",
+  "kirli": 5,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T06:32:32.377Z",
+  "sure_sn": 34.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 317,
+    "gecen": 317,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/kanit/2026-11-27/mi1-komsu-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6937363537df626a",
+  "ham_cikti_sha256": "68863701450e8bb09ca5bcafa5f48f8d78609b1437c33e72390a313a7ff006f9",
+  "ham_cikti_bayt": 119604
+}

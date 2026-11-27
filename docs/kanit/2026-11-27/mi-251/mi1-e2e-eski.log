@@ -1,0 +1,19 @@
+(node:24862) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ Kurulum: yönetici girer, başlangıç tablosu yüklenir
+
+■ Veri (programın kendi uçları): üç cari, üç taksit kartı
+  ✓ veri tabanı: Burak'ın kartında saklanan sıra [2,3] (beklenen [2,3] — boşluk ön koşulu)
+
+■ 1. Cari Listesi (yan menüden gerçek tıklama): Taksit sütunu
+  ✗ Ayşe: "₺2.000,001 kart · 2 geciken13.10.2026 · 45 gün gecikti" (beklenen "… gün gecikti (2. taksit)")
+  ✗ Burak: "₺3.000,001 kart · 2 geciken13.10.2026 · 45 gün gecikti" (beklenen "… gün gecikti (1. taksit)" — silinen taksitten sonra boşluk yok)
+  ✓ Cem: "₺3.000,001 kart02.12.2026 · sıradaki taksit" (beklenen "… · sıradaki taksit", parantez yok)
+
+■ 2. Burak'ın cari kartı (satıra odaklan + Enter) → taksit kartı penceresi
+  ✗ kart penceresinde numaralar ["2.","3."] (beklenen ["1.","2."]; eski kod ["2.","3."])
+  ✗ ilk satırın sil düğmesi "2. taksiti sil" (beklenen "1. taksiti sil")
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo Mİ-1 (geciken taksitin numarası): 3 geçti, 4 kaldı. Ekranlar: ../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/ekran-mi1-eski
