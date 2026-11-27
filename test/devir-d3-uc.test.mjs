@@ -104,10 +104,13 @@ describe("D3 devir ön izleme uçları", () => {
 
   it("belirlenimli + iş parçacığı = iş parçacığısız: aynı veride iki ön izleme bayt bayt aynı plan; şirket örneğinin kendi hizmetleriyle (runPreview) de aynı", async () => {
     need();
-    const a = (await preview(api, { company: "sirket-001", cutoff: K })).data.result;
+    const first = (await preview(api, { company: "sirket-001", cutoff: K })).data;
+    const a = first.result;
     const b = (await preview(api, { company: "sirket-001", cutoff: K })).data.result;
     assert.equal(JSON.stringify(a.plan), JSON.stringify(b.plan));
-    const inline = worker.runPreview({ store: ctx.app.store, ledger: ctx.app.context.ledger, job: { K, today: "2027-01-20", option: "borc-alacak", company: a.plan.meta.sirket, isRoot: true } });
+    // D3 tur 4 (uzman görüşü (6)): raporun Özet'i ön izlemeyi hazırlayanı ve anını taşır — iş parçacığısız yola AYNI iş bilgisi verilir (fark yalnız bunlardan doğmasın).
+    const preparer = a.rapor.rows.find(row => row[0] === "Özet" && row[1] === "Ön İzlemeyi Hazırlayan")[2];
+    const inline = worker.runPreview({ store: ctx.app.store, ledger: ctx.app.context.ledger, job: { K, today: "2027-01-20", option: "borc-alacak", company: a.plan.meta.sirket, isRoot: true, hazirlayan: preparer, hazirlanma: first.startedAt } });
     assert.equal(JSON.stringify(inline.plan), JSON.stringify(a.plan));
     assert.deepEqual(inline.rapor.rows, a.rapor.rows);
   });
@@ -159,7 +162,8 @@ describe("D3 devir ön izleme uçları", () => {
     const totals = rapor.rows.filter(row => row[1] === "TOPLAM").map(row => row[2]);
     assert.ok(totals.includes("Borç Bakiyeli Hesaplar") && totals.includes("Alacak Bakiyeli Hesaplar"), totals.join(" | "));
     // D3 tur 3 (DEVİR NEDEN DURDU): ön denetimin iki ayrı başlığı en başta ("Devri Durduran Nedenler", "Uyarılar").
-    assert.deepEqual([...new Set(rapor.rows.map(row => row[0]))], ["Devri Durduran Nedenler", "Uyarılar", "Hesaplar", "Kapanış", "Modüller", "Hareketler", "Listeler"]);
+    // D3 tur 4 (uzman görüşü (6)): en başta "Özet" (hazırlayan, kalem sayıları, uyarılar / istisnalar) — beklentisi değişen.
+    assert.deepEqual([...new Set(rapor.rows.map(row => row[0]))], ["Özet", "Devri Durduran Nedenler", "Uyarılar", "Hesaplar", "Kapanış", "Modüller", "Hareketler", "Listeler"]);
     const pdf = await api.raw("GET", `/api/admin/devir/preview/${job.data.id}/report.pdf`);
     assert.equal(pdf.status, 200);
     const text = pdfText(pdf.buffer);
