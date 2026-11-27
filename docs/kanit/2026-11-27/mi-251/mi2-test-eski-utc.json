@@ -1,0 +1,88 @@
+{
+  "ad": "mi2-test-eski-utc",
+  "komut": "node --test test/mi2-grup-ozeti-251.test.mjs",
+  "commit": "643964786dac426963eecaf2b7556f29849e8cb3",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T07:22:45.692Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 2,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (b) ELLE: Bugün — her yol ayrı; tedarikçi ödemesi, silinen tahsilat, dünkü tahsilat sayılmaz; açılış ayrı",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:104:3",
+      "hata": "Cannot read properties of undefined (reading 'from')"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (b) ELLE: Dün, Bu Hafta, Bu Ay, Tarih Aralığı; Tümü durumunda pasif dahil",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:120:3",
+      "hata": "Cannot read properties of undefined (reading 'total')"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (b) 'Bu Dönemde Ödeme Yapanlar' grup / tür / bakiye / gecikme süzgeçleriyle BİRLİKTE; kartlar süzgeçten SONRA",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:134:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (c) Grup Özeti: her grup bir satır (boş grup dahil), alt grup kırılımı, Grupsuz; satırlar = TOPLAM = süzgeçsiz Liste kartları — HER süzgeç seçeneğiyle",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:154:3",
+      "hata": "grup özeti period=today: 404 {\"ok\":false,\"error\":\"Cari bulunamadı. Silinmiş olabilir.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (a) EŞDEĞERLİK: cari başına Tahsilat + Önceden Ödenen = 'Cari Bazında Tahsilat' raporunun Toplam'ı; açılış = raporun açılış sütunu (Bugün, Bu Ay, tüm yıl)",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:208:3",
+      "hata": "Cannot read properties of undefined (reading 'total')"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (d) karşılıksız çıkan çek: raporun kuralıyla aynı (alınan çek tahsilattan düşmez; karşılıksız ayrı borç satırı) — eşdeğerlik korunur",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:232:3",
+      "hata": "Cannot read properties of undefined (reading 'total')"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (d) dönem sınırları sahte saatle: gece yarısı, ay başı, yıl başı (pazartesi başlangıçlı hafta)",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:243:3",
+      "hata": "Cannot find module '/dev/shm/mi-a69/eski/server/lib/account-collections.mjs' imported from /dev/shm/mi-a69/eski/test/mi2-grup-ozeti-251.test.mjs"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (d) dönem sınırı: bitiş günü DAHİL, ertesi gün HARİÇ; başlangıçtan önceki gün HARİÇ — yardımcı, bellek içi küçük veri tabanıyla (program ileri tarihli hareketi zaten reddeder)",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:257:3",
+      "hata": "Cannot find module '/dev/shm/mi-a69/eski/server/lib/account-collections.mjs' imported from /dev/shm/mi-a69/eski/test/mi2-grup-ozeti-251.test.mjs"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (d) Grup Özeti PDF ve Excel ekranla aynı: satırlar, sütunlar, TOPLAM",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:276:3",
+      "hata": "grup özeti period=today: 404 {\"ok\":false,\"error\":\"Cari bulunamadı. Silinmiş olabilir.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (d) Liste PDF / Excel: dönem seçiliyse Tahsilat sütunu; Excel'in 'Gecikmiş Borç' sütunu dolu (önceden 'Geciken' başlığı hep boştu)",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:298:3",
+      "hata": "`liste PDF'inde \"Tahsilat\"` (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (e) yetki: Cari'yi görmeyen özel rol 403; personel (Carileri Görme) görür — cari kartının defterinde de her tahsilatı görüyor",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:318:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 200 (beklenen 200, gelen 404)"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/kanit/2026-11-27/mi2-test-eski-utc.log",
+  "klasor": "/dev/shm/mi-a69/eski",
+  "ham_cikti_sha256": "77d22164adb8c046c3082465ce021be38e5a068456577ceba8f29d0922bb9333",
+  "ham_cikti_bayt": 13972
+}

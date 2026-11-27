@@ -1,0 +1,68 @@
+{
+  "ad": "mutant-mi2-acilis-toplama",
+  "komut": "node --test test/mi2-grup-ozeti-251.test.mjs",
+  "commit": "58ce94584a705fe2f2da827d65a381d9206fb171",
+  "dal": "worktree-agent-a6937363537df626a",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T07:21:54.422Z",
+  "sure_sn": 2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 6,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (b) ELLE: Bugün — her yol ayrı; tedarikçi ödemesi, silinen tahsilat, dünkü tahsilat sayılmaz; açılış ayrı",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:105:3",
+      "hata": "önceden ödenen 300 ayrı, Tahsilat'a karışmaz · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (b) ELLE: Dün, Bu Hafta, Bu Ay, Tarih Aralığı; Tümü durumunda pasif dahil",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:121:3",
+      "hata": "Expected values to be strictly equal: · 1980 !== 1680 (beklenen 1680, gelen 1980)"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (b) 'Bu Dönemde Ödeme Yapanlar' grup / tür / bakiye / gecikme süzgeçleriyle BİRLİKTE; kartlar süzgeçten SONRA",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:135:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (c) Grup Özeti: her grup bir satır (boş grup dahil), alt grup kırılımı, Grupsuz; satırlar = TOPLAM = süzgeçsiz Liste kartları — HER süzgeç seçeneğiyle",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:155:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (a) EŞDEĞERLİK: cari başına Tahsilat + Önceden Ödenen = 'Cari Bazında Tahsilat' raporunun Toplam'ı; açılış = raporun açılış sütunu (Bugün, Bu Ay, tüm yıl)",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:209:3",
+      "hata": "period=today: Excel Velisi Tahsilat + Önceden Ödenen = rapor Toplam · 600 !== 300 (beklenen 300, gelen 600)"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (d) Liste PDF / Excel: dönem seçiliyse Tahsilat sütunu; Excel'in 'Gecikmiş Borç' sütunu dolu (önceden 'Geciken' başlığı hep boştu)",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:295:3",
+      "hata": "Expected values to be strictly equal: · 1930 !== 1630 (beklenen 1630, gelen 1930)"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (e) yetki: Cari'yi görmeyen özel rol 403; personel (Carileri Görme) görür — cari kartının defterinde de her tahsilatı görüyor",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:315:3",
+      "hata": "Expected values to be strictly equal: · 1930 !== 1630 (beklenen 1630, gelen 1930)"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/kanit/2026-11-27/mutant-mi2-acilis-toplama.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6937363537df626a",
+  "ham_cikti_sha256": "e9d75c77352ba24cdeda90082f99a425e0061cb57199416004062476f574ec74",
+  "ham_cikti_bayt": 11721
+}

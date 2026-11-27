@@ -1,0 +1,22 @@
+(node:17479) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ Kurulum: yönetici girer, başlangıç tablosu yüklenir
+
+■ 1. Grup aç + cari (ekrandan, + Yeni Cari formunda '+ Yeni Grup Yaz…')
+  ✓ Elif: grup "A Grubu" › "1. Sınıf" (veri tabanı)
+  ✓ Can: grup "B Grubu"
+  ✓ Deniz: grupsuz
+
+■ 2. Taksit (programın kendi ucu) + her yoldan tahsilat (Elif: ekrandan Nakit / POS / Havale; Can: çek + senet)
+  ✓ veri tabanı Elif bugün: nakit 100 (taksite 100), POS 200, havale 300 (beklenen 100 taksite / 200 / 300)
+  ✓ veri tabanı Can bugün: çek 400, senet 500 (beklenen 400 / 500)
+
+■ 3. Grup Özeti (gerçek tıklama): dönem kendiliğinden Bugün; satırlar ve TOPLAM
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible [data-accounts] [data-display="groups"]') to be visible[22m
+
+    at /home/user/ofis---y-netimi/.claude/worktrees/agent-a6937363537df626a/test/e2e/senaryo-mi2-251.mjs:225:14
+
+Senaryo Mİ-2 (cari grubuna göre görünümler): 5 geçti, 1 kaldı. Ekranlar: ../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/ekran-mi2-eski

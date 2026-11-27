@@ -1,0 +1,18 @@
+#!/bin/bash
+# Mİ-2 mutantları (kabul C): her biri test/mi2-grup-ozeti-251.test.mjs'te kırmızı olmalı. Dosya her durumda geri yazılır (mutant.py).
+M=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/betik/mutant.py
+T="node --test test/mi2-grup-ozeti-251.test.mjs"
+L=server/lib/account-collections.mjs
+R=server/routes/accounts.mjs
+run() { python3 -I $M "$@" -- $T || echo "MUTANT ÇALIŞMADI: $1"; }
+run mi2-tedarikci-odemesi $L "WHERE e.kind = 'in' AND e.date >= ? AND e.date <= ? GROUP BY e.account_id, e.method, odd" "WHERE e.kind IN ('in', 'out') AND e.date >= ? AND e.date <= ? GROUP BY e.account_id, e.method, odd"
+run mi2-acilis-toplama $L "  out.total = roundMoney(COLLECTION_WAYS.reduce((sum, way) => sum + (minor[way] || 0), 0) / 100);" "  out.total = roundMoney((COLLECTION_WAYS.reduce((sum, way) => sum + (minor[way] || 0), 0) + (minor.opening || 0)) / 100);"
+run mi2-grupsuz-dusur $R "    if (none.count) groups.push({ ...none, subgroups: [] });" "    if (none.count && false) groups.push({ ...none, subgroups: [] });"
+run mi2-alt-grup-katma $R "      const row = rows.get(item.groupId);
+      addToGroupRow(row, item);" "      const row = rows.get(item.groupId);
+      if (!item.subgroupName) addToGroupRow(row, item);"
+run mi2-donem-bir-gun $L "WHERE e.kind = 'in' AND e.date >= ? AND e.date <= ? GROUP BY e.account_id, e.method, odd" "WHERE e.kind = 'in' AND e.date >= ? AND e.date < ? GROUP BY e.account_id, e.method, odd"
+run mi2-silinmis-kart $L "JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL AND p.account_id <> ''" "JOIN plans p ON p.id = e.plan_id AND p.account_id <> ''"
+run mi2-silinmis-cari $L "  const live = \"JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL\";" "  const live = \"JOIN accounts a ON a.id = e.account_id\";"
+run mi2-cek-senet-karisik $L "const instrumentWay = instrument => (instrument === \"cheque\" ? \"cheque\" : instrument === \"note\" ? \"note\" : \"other\");" "const instrumentWay = instrument => (instrument === \"cheque\" ? \"note\" : instrument === \"note\" ? \"cheque\" : \"other\");"
+run mi2-paid-acilis $R "      if (collections && paid && !(collected.total > 0.005)) continue;" "      if (collections && paid && !(collected.total + collected.opening > 0.005)) continue;"

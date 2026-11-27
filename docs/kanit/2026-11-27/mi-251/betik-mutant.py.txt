@@ -1,0 +1,13 @@
+# Kullanım: python3 -I mutant.py <ad> <dosya> <eski> <yeni> -- <komut…>
+# Dosyada <eski> tam bir kez geçmeli; yerine <yeni> yazılır, komut kanit.mjs kos ile koşulur, dosya HER durumda geri yazılır.
+import os, subprocess, sys
+ad, dosya, eski, yeni = sys.argv[1:5]
+komut = sys.argv[sys.argv.index("--") + 1:]
+asil = open(dosya, encoding="utf-8").read()
+assert asil.count(eski) == 1, f"{ad}: eski metin {asil.count(eski)} kez"
+try:
+    open(dosya, "w", encoding="utf-8").write(asil.replace(eski, yeni))
+    r = subprocess.run(["node", "tools/kanit.mjs", "kos", f"mutant-{ad}", "--", *komut], env=dict(os.environ), capture_output=True, text=True)
+    print((r.stdout + r.stderr).strip().splitlines()[-1])
+finally:
+    open(dosya, "w", encoding="utf-8").write(asil)

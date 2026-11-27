@@ -1,0 +1,23 @@
+HIZ (yol yol, art arda) · başta 0.28 1.12 1.60 3/144 6242 · 07:06:50 · nproc 4
+=== TABAN (t251-taban)
+kod /dev/shm/mi-a69/eski (taban) · veri /dev/shm/mi-a69/olcum/taban · yük (başta) 0.28 1.12 1.60
+veri: 1484 cari (1272 gruplu), 102295 cari satırı, 8162 taksit hareketi, 11448 kart
+  Liste dönemsiz (Aktif, 300): durum 200 · orta 790.5 ms · en çok 891.3 ms · en az 738.3 ms · olay döngüsü en çok 825.8 ms · 7 tekrar
+  Liste dönemsiz (Tümü, 300): durum 200 · orta 769.8 ms · en çok 961.5 ms · en az 722.9 ms · olay döngüsü en çok 762.3 ms · 7 tekrar
+yük (sonda) 0.85 1.15 1.59
+çıkış 0
+=== YENİ (56c656de) · başta 0.85 1.15 1.59 1/143 6405
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a6937363537df626a (yeni) · veri /dev/shm/mi-a69/olcum/yeni · yük (başta) 0.85 1.15 1.59
+veri: 1484 cari (1272 gruplu), 102295 cari satırı, 8162 taksit hareketi, 11448 kart
+  Liste dönemsiz (Aktif, 300): durum 200 · orta 907.8 ms · en çok 1008.9 ms · en az 803.2 ms · olay döngüsü en çok 968.4 ms · 7 tekrar
+  Liste dönemsiz (Tümü, 300): durum 200 · orta 892.6 ms · en çok 992.2 ms · en az 813.6 ms · olay döngüsü en çok 988.3 ms · 7 tekrar
+  Liste dönemli (Bugün): durum 200 · orta 809.2 ms · en çok 920.9 ms · en az 759.1 ms · olay döngüsü en çok 916.5 ms · 7 tekrar
+  Liste dönemli (Bu Ay): durum 200 · orta 887.9 ms · en çok 1326 ms · en az 833.1 ms · olay döngüsü en çok 1319.1 ms · 7 tekrar
+  Liste dönemli (Bu Yıl aralığı + Ödeme Yapanlar): durum 200 · orta 916.4 ms · en çok 984.2 ms · en az 763.6 ms · olay döngüsü en çok 980.9 ms · 7 tekrar
+  Grup Özeti (Bugün): durum 200 · orta 1049.1 ms · en çok 1169.1 ms · en az 906.7 ms · olay döngüsü en çok 1168.1 ms · 7 tekrar
+  Grup Özeti (Bu Ay): durum 200 · orta 925.7 ms · en çok 1011.6 ms · en az 823.1 ms · olay döngüsü en çok 0 ms · 7 tekrar
+  Grup Özeti (Bu Yıl aralığı, Tümü): durum 200 · orta 925.2 ms · en çok 1199.3 ms · en az 782.8 ms · olay döngüsü en çok 0 ms · 7 tekrar
+  Grup Özeti Excel (Bu Ay): durum 200 · orta 1848.9 ms · en çok 2154.3 ms · en az 1685.7 ms · olay döngüsü en çok 2151.7 ms · 7 tekrar
+yük (sonda) 1.39 1.24 1.57
+çıkış 0
+bitti 07:09:20 · sonda 1.39 1.24 1.57 1/151 6835

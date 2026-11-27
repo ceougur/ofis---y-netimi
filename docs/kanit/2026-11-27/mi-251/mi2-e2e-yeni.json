@@ -1,0 +1,32 @@
+{
+  "ad": "mi2-e2e-yeni",
+  "komut": "node test/e2e/senaryo-mi2-251.mjs",
+  "commit": "2ab4d7f20aa8592407c2bdf0e4bf6de26a902b2a",
+  "dal": "worktree-agent-a6937363537df626a",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T07:23:37.408Z",
+  "sure_sn": 83.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/kanit/2026-11-27/mi2-e2e-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6937363537df626a",
+  "ham_cikti_sha256": "2a01ec190ce9dc67e678ddc8c12836b4d7b2cbb83d10718689186cdba7a727ab",
+  "ham_cikti_bayt": 3368
+}

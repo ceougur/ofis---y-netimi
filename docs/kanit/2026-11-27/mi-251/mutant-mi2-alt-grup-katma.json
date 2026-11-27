@@ -1,0 +1,43 @@
+{
+  "ad": "mutant-mi2-alt-grup-katma",
+  "komut": "node --test test/mi2-grup-ozeti-251.test.mjs",
+  "commit": "58ce94584a705fe2f2da827d65a381d9206fb171",
+  "dal": "worktree-agent-a6937363537df626a",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T07:21:59.267Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 11,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (c) Grup Özeti: her grup bir satır (boş grup dahil), alt grup kırılımı, Grupsuz; satırlar = TOPLAM = süzgeçsiz Liste kartları — HER süzgeç seçeneğiyle",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:155:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (d) Grup Özeti PDF ve Excel ekranla aynı: satırlar, sütunlar, TOPLAM",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:273:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 1500 (beklenen 1500, gelen 0)"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/kanit/2026-11-27/mutant-mi2-alt-grup-katma.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6937363537df626a",
+  "ham_cikti_sha256": "aa71251c5119a1db461f141534a8994b229f4950cca8ce9f3859a37ad2be4496",
+  "ham_cikti_bayt": 6961
+}

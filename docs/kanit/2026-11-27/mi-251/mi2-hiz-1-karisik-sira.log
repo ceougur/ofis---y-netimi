@@ -1,0 +1,23 @@
+HIZ · başta 1.60 1.77 1.94 2/135 3473 · 06:58:31 · nproc 4
+=== TABAN (t251-taban)
+kod /dev/shm/mi-a69/eski (taban) · veri /dev/shm/mi-a69/olcum/taban · yük (başta) 1.60 1.77 1.94
+veri: 1484 cari (1272 gruplu), 102295 cari satırı, 8162 taksit hareketi, 11448 kart
+  Liste dönemsiz (Aktif, 300): durum 200 · orta 788.8 ms · en çok 858.2 ms · en az 697.9 ms · olay döngüsü en çok 854.1 ms · 5 tekrar
+  Liste dönemsiz (Tümü, 300): durum 200 · orta 735.3 ms · en çok 769.6 ms · en az 730 ms · olay döngüsü en çok 745.5 ms · 5 tekrar
+yük (sonda) 1.52 1.73 1.92
+çıkış 0
+=== YENİ (56c656de) · başta 1.52 1.73 1.92 1/138 3754
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a6937363537df626a (yeni) · veri /dev/shm/mi-a69/olcum/yeni · yük (başta) 1.52 1.73 1.92
+veri: 1484 cari (1272 gruplu), 102295 cari satırı, 8162 taksit hareketi, 11448 kart
+  Liste dönemsiz (Aktif, 300): durum 200 · orta 1658.6 ms · en çok 1829.5 ms · en az 1607 ms · olay döngüsü en çok 1600.1 ms · 5 tekrar
+  Liste dönemsiz (Tümü, 300): durum 200 · orta 766.4 ms · en çok 945.9 ms · en az 724.3 ms · olay döngüsü en çok 762.3 ms · 5 tekrar
+  Liste dönemli (Bugün): durum 200 · orta 834.6 ms · en çok 850.8 ms · en az 757.1 ms · olay döngüsü en çok 745.5 ms · 5 tekrar
+  Liste dönemli (Bu Ay): durum 200 · orta 815.3 ms · en çok 959.6 ms · en az 740 ms · olay döngüsü en çok 875 ms · 5 tekrar
+  Liste dönemli (Bu Yıl aralığı + Ödeme Yapanlar): durum 200 · orta 812.6 ms · en çok 955.8 ms · en az 777 ms · olay döngüsü en çok 950.5 ms · 5 tekrar
+  Grup Özeti (Bugün): durum 200 · orta 832.9 ms · en çok 874.7 ms · en az 795.5 ms · olay döngüsü en çok 853 ms · 5 tekrar
+  Grup Özeti (Bu Ay): durum 200 · orta 869.4 ms · en çok 880.3 ms · en az 814.1 ms · olay döngüsü en çok 867.2 ms · 5 tekrar
+  Grup Özeti (Bu Yıl aralığı, Tümü): durum 200 · orta 886 ms · en çok 1027.8 ms · en az 767.2 ms · olay döngüsü en çok 1023.4 ms · 5 tekrar
+  Grup Özeti Excel (Bu Ay): durum 200 · orta 853.4 ms · en çok 941.6 ms · en az 790.9 ms · olay döngüsü en çok 775.4 ms · 5 tekrar
+yük (sonda) 1.21 1.59 1.86
+çıkış 0
+bitti 07:00:28 · sonda 1.21 1.59 1.86 1/138 3891

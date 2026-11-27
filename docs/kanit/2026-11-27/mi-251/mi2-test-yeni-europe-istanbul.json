@@ -1,0 +1,32 @@
+{
+  "ad": "mi2-test-yeni-europe-istanbul",
+  "komut": "node --test test/mi2-grup-ozeti-251.test.mjs test/mi1-taksit-no-251.test.mjs",
+  "commit": "58ce94584a705fe2f2da827d65a381d9206fb171",
+  "dal": "worktree-agent-a6937363537df626a",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T07:22:58.591Z",
+  "sure_sn": 3.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/kanit/2026-11-27/mi2-test-yeni-europe-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6937363537df626a",
+  "ham_cikti_sha256": "ba9a73fcffdf045fc924b48424c13fad7213650646760a799f3d04ac8eb08dd3",
+  "ham_cikti_bayt": 7761
+}
