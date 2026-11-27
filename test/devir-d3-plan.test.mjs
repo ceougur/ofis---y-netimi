@@ -183,6 +183,10 @@ describe("D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 
       assert.equal(a.netMinor, b.netMinor, id);
     }
     assert.deepEqual(one.newYear.cariler.find(r => r.cari === "C1").satirlar.map(r => r.tur), ["acik-kalem"], "net 0 → Devir Bakiyesi satırı yazılmaz");
+    // Net = K bakiyesi − açık borç kalemleri + açık alacak kalemleri: S1 −600 − 0 + 600 = 0 → Devir Bakiyesi yok; satırlar = K bakiyesi (sorun yok).
+    assert.deepEqual(["C1", "C2", "S1"].map(id => one.newYear.cariler.find(r => r.cari === id).netMinor), [0, 0, 0]);
+    assert.deepEqual(one.newYear.cariler.find(r => r.cari === "S1").satirlar.map(r => [r.tur, r.yon, r.tutarMinor]), [["acik-kalem", "credit", 60000]]);
+    assert.deepEqual(one.sorunlar, []);
     assert.throws(() => planModule.buildDevirPlan(FACTS_A(), { option: "yok" }), error => error.code === "DEVIR_SECENEK");
   });
 
