@@ -20,6 +20,9 @@ alt durumları BİRLİKTE çıkar; ana oturum hepsini tek iletide sorar).
   önce değerlendirilir (S264); **sonraki bir tarihle** yazılırsa önceki günlerin bağlı payı düşülmüş kalan kadar yazılabilir. Ekran her tarih için gerçek sınırı gösterir.
   (Reddedilen A: 2.4.9'daki gibi — şüpheliye almadan önce yazılmış aynı günlü bağlı tahsilat kaydı hiç azaltmaz. Reddedilen C: hiçbir şey değişmez.)
 
+- **SK-55 = C (KULLANICI KARARI 27.11.2026, AYNEN: "önerilerini uygula"; cari kâhini bakımı 30'un sorusu):** aynı gün "faturaya bağlı tahsilat → bağsız tahsilat → Şüpheliye Al" yazım sırasında
+  şüpheli payın ölçüm anı BİLİNEN SINIR — kâhin bu sayıyı denetlemez (SUS), programın bugünkü davranışı kalır.
+
 ## 2. BAŞ MİMAR OKUMASI (kullanıcıya gösterildi; DEĞERLENDİR — karar metinlerine uyuyor mu; uymuyorsa ya da iki okuma çıkıyorsa SORULMALI)
 
 Bir şüpheli kayıt için, D tarihiyle yazılacak Değersiz'in üst sınırı:

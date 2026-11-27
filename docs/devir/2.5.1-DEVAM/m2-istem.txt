@@ -11,7 +11,7 @@ Sen DestekOfis projesinde 2.5.1'in DEĞERSİZ ALACAK SINIRI KOD ajanısın (M2; 
 - S268 = A: formun ipucu ve önerilen tutarı gerçek sınırı gösterir.
 - S270 = A: hiçbir sırada bir kaydın Değersiz toplamı, şüpheliye alınan tutardan kayda düşmüş tahsilatlar çıkınca kalanı aşamaz; Değersiz yazımı cariyi eksi bakiyeye düşürmez.
 - S-M2-1 = B (kullanıcı 27.11): aynı günün işlem sırası kuralı DEĞİŞMEZ; Değersiz kayıt gününün tarihiyle yazılırsa o günün bağlı payından önce, SONRAKİ tarihle yazılırsa önceki günlerin bağlı payı düşülmüş kalan kadar.
-- SK-55 = C (öneri uygulanıyor): aynı gün 'bağlı tahsilat → bağsız tahsilat → Şüpheliye Al' sırasında payın ölçüm anı BİLİNEN SINIR — bugünkü davranışı DEĞİŞTİRME, raporda bugünkü sayıyı yaz.
+- SK-55 = C (kullanıcı 27.11): aynı gün 'bağlı tahsilat → bağsız tahsilat → Şüpheliye Al' sırasında payın ölçüm anı BİLİNEN SINIR — bugünkü davranışı DEĞİŞTİRME, raporda bugünkü sayıyı yaz.
 - BAŞ MİMAR (kâhin Y30-6): ekranın önerdiği tutar HER ZAMAN kabul edilir → önerilen tutar = Değersiz sınırı ile bakiye kuralının (S155: kayıttan sonra carinin borcu açık şüphelinin altına düşemez) izin verdiğinin KÜÇÜĞÜ.
 - EKRAN (karar girdisi §2 madde 5): form tarihi kendiliğinden geriye KURMAZ; ipucu seçili tarihin sınırını ve (farklıysa) kayıt gününün tarihiyle yazılabilecek tutarı birlikte söyler; tarih değişince ipucu ve önerilen tutar sunucudan yeniden okunur. Düğme, izinli (kilitli olmayan) tarihlerden herhangi birinde sınır > 0 ise görünür.
 - KAPSAM DIŞI: aynı günün sıra kuralı (borç sırası ayırıcısı), Şüpheliden Çıkar, Karşılık Ayır (aynı sınıf ayrı karar bekliyor), defter kuralları.
