@@ -6,6 +6,7 @@
 //   Mart mahsubu 400. Ocak–Mart: Önceki 0 · Ödenecek 1.600 · Sonraki 0; ay satırları Ocak 500 / Şubat 700 / Mart 400 (taban: Ocak 1.000, toplam 2.100); "Mahsuptan Sonra
 //   Değişen Ay: Ocak 2026 (bu ayın kayıtları fişten sonra değişti; …)".
 //   C adımı (küçük tur 2): karma ay (S-M1K-1 = A). D adımı (küçük tur 3): devreden yönde yalnız satış KDV'si (S-M1K2-1 = A) — ikinci kurulumda (saat 15.05.2026).
+//   E adımı (küçük tur 4): ödenecek yönde kesilmiş fişte yalnız satış KDV'si azalır (S-M1K3-1 = A) — üçüncü kurulumda (saat 15.05.2026).
 // Çıkış: "N geçti, M kaldı". Ekran görüntüleri EKRAN_DIR'e.
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -273,6 +274,72 @@ try {
   r = results(summary, t.foot);
   ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "300,00", "0,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `yalnız 391: Bu Yıl 0 / 300 / 0 (${JSON.stringify(r)})`);
   await shot("m1k3-kdv-ozeti-yalniz391-bu-yil");
+
+  // 2.5.1 M1 küçük tur 4 — S-M1K3-1 = A (27.11 20:59 UTC; kullanıcının 20:26 yetkisiyle öneri uygulandı): HER 'güncel değil' ayında sonraki aya BU AYIN bugünkü devredeni
+  // taşınır. ÜÇÜNCÜ KURULUM (saat 15.05.2026; D'nin kurulumunda Mart–Nisan mahsupludur), veri API'den, rapor ekrandan. KÂHİN (sorunun (a) örneği AYNEN): Mart satış KDV 800 +
+  // 200, alış KDV 500 → Mart fişi ödenecek 500; sonra Mart'ın 800'lük satışı İptal Et (Mart bugün sonraki döneme devreden 300); Nisan satış KDV 200 → Nisan fişi (defterin
+  // 0'ıyla) 200. Nisan: Önceki 300 · Ödenecek 0 · Sonraki 100 + 'Zincirle Uyuşmayan Mahsup Fişi' (yön cümlesiyle); Mart–Nisan 0 / 0 / 100 (= 391 400 − 191 500) (taban: Nisan
+  // 0 / 200 / 0, Mart–Nisan 0 / 200 / 0, uyuşmazlık notu yok).
+  console.log("E) Ödenecek yönde kesilmiş fiş, yalnız satış KDV'si azalır (üçüncü kurulum, 15.05.2026): Mart fişi 500 → Mart satışı İptal Et → Nisan fişi 200 → Nisan / Mart–Nisan");
+  const root3 = mkdtempSync(path.join(tmpdir(), "destekofis-kdv-guncel-degil-"));
+  extra.push(root3);
+  const app3 = createApp({ dataDir: path.join(root3, "data"), backupDir: path.join(root3, "backups"), logLevel: "warn", scheduleBackups: false, now: "2026-05-15T10:00:00+03:00", env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f55" } });
+  extra.push(app3);
+  const BASE3 = `http://127.0.0.1:${(await app3.listen(0, "127.0.0.1")).port}`;
+  const api3 = createClient(BASE3);
+  await api3.login("admin", PASS);
+  await must("kurulum geç (3)", api3.post("/api/workspace/bank/setup/dismiss", {}));
+  const T3 = (await must("tedarikçi (3)", api3.post("/api/workspace/accounts", { name: "Toptancı Kırtasiye", type: "supplier", registeredOn: "2026-01-01" }))).id;
+  const M3 = (await must("müşteri (3)", api3.post("/api/workspace/accounts", { name: "Ayşe Kaya", type: "customer", registeredOn: "2026-01-01" }))).id;
+  const sale3 = (date, net) => must(`satış (3) ${date}`, api3.post("/api/workspace/invoices", { scenario: "service_sale", accountId: M3, issueDate: date, lines: [{ name: "Danışmanlık", qty: 1, unitPrice: net, vatRate: 20 }], payment: { rest: "open" } }));
+  const s800 = (await sale3("2026-03-05", 4000)).id;
+  await sale3("2026-03-06", 1000);
+  await must("Mart alış (3)", api3.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: T3, issueDate: "2026-03-10", number: "TK-31", lines: [{ name: "Kırtasiye", qty: 1, unitPrice: 2500, vatRate: 20, expenseCode: "office" }], payment: { rest: "open" } }));
+  const marFis3 = (await must("Mart mahsubu (3)", api3.post("/api/workspace/tax/vat-offset", { month: "2026-03" }))).offset;
+  ok(marFis3.payableMinor === 50000 && marFis3.carryOutMinor === 0, `Mart fişi ödenecek 500 (${JSON.stringify([marFis3.carryInMinor, marFis3.payableMinor, marFis3.carryOutMinor])})`);
+  await must("Mart satışı İptal Et (3)", api3.post(`/api/workspace/invoices/${s800}/cancel`, { reason: "Hatalı fatura", force: true }));
+  await sale3("2026-04-10", 1000);
+  const aprFis3 = (await must("Nisan mahsubu (3)", api3.post("/api/workspace/tax/vat-offset", { month: "2026-04" }))).offset;
+  ok(aprFis3.carryInMinor === 0 && aprFis3.payableMinor === 20000, `Nisan fişi 0 devredenle 200 (defter DEĞİŞMEDİ) (${JSON.stringify([aprFis3.carryInMinor, aprFis3.payableMinor, aprFis3.carryOutMinor])})`);
+  const context3 = await browser.newContext({ viewport: { width: 1366, height: 900 }, deviceScaleFactor: 1, locale: "tr-TR" });
+  await context3.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
+  page = await context3.newPage();
+  page.setDefaultTimeout(15000);
+  page.on("pageerror", error => errors.push(error.message));
+  await installPageClock(page, app3.config.now);
+  await page.goto(`${BASE3}/`);
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", PASS);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+  await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+  await page.click('#hof-sidecard [data-action="analytics"]');
+  await page.waitForSelector(`${MODAL} .hof-rep-tab[data-tab="all"]`);
+  await page.click(`${MODAL} .hof-rep-tab[data-tab="all"]`);
+  await page.waitForSelector(`${MODAL} [data-rc-list] [data-report="kdv-ozeti"]`);
+  await page.click(`${MODAL} [data-rc-list] [data-report="kdv-ozeti"]`);
+  await ready();
+  await range("2026-04-01", "2026-04-30");
+  summary = await summaryOf();
+  t = await table();
+  r = results(summary, t.foot);
+  ok(JSON.stringify(r.summary) === JSON.stringify(["300,00", "0,00", "100,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `güncel değil (a): Nisan 300 / 0 / 100 (taban 0 / 200 / 0), tablo altı = özet (${JSON.stringify(r)})`);
+  const MISMATCH_A = "Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)";
+  ok(String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === MISMATCH_A, `güncel değil (a): Nisan notu (ekranda): ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`);
+  await shot("m1k4-kdv-ozeti-guncel-degil-nisan");
+  await range("2026-03-01", "2026-04-30");
+  summary = await summaryOf();
+  t = await table();
+  r = results(summary, t.foot);
+  ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "0,00", "100,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `güncel değil (a): Mart–Nisan 0 / 0 / 100 (taban 0 / 200 / 0), tablo altı = özet (${JSON.stringify(r)})`);
+  ok(digits(summary["Hesaplanan KDV (391) (İadeler Düşülmüş)"]) === "400,00" && digits(summary["İndirilecek KDV (191) (İadeler Düşülmüş)"]) === "500,00", `güncel değil (a): Sonraki 100 = 191 500 − 391 400 (${JSON.stringify(summary)})`);
+  const aLines = t.body.filter(item => RESULTS.includes(item[1])).map(item => [item[0], item[1], digits(item[5])]);
+  ok(
+    JSON.stringify(aLines) === JSON.stringify([["Mart 2026", "Sonraki Döneme Devreden KDV", "300,00"], ["Nisan 2026", "Önceki Dönemden Devreden KDV", "300,00"], ["Nisan 2026", "Sonraki Döneme Devreden KDV", "100,00"]]),
+    `güncel değil (a): ay satırları Mart devreden 300 / Nisan 300 devredenle sonraki 100 (taban Nisan ödenecek 200) (${JSON.stringify(aLines)})`,
+  );
+  ok(summary["Mahsuptan Sonra Değişen Ay"] === "Mart 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)", `güncel değil (a): Mart 'güncel değil' notu kalır: ${summary["Mahsuptan Sonra Değişen Ay"]}`);
+  ok(String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === MISMATCH_A, `güncel değil (a): Mart–Nisan'da da Nisan notu: ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`);
+  await shot("m1k4-kdv-ozeti-guncel-degil-mart-nisan");
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);
