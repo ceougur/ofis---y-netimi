@@ -10,6 +10,9 @@
 //     · Temmuz alış 10.000 + KDV 2.000 → mahsup (devreden 2.000) · Ağustos hareketsiz (mahsup YOK) · Eylül satış 3.300 + KDV 660, alış 3.100 + KDV 620 → Eylül ödenecek 0,
 //     sonraki aya devreden 1.960 · Yıl 2026 (Ocak–Aralık): önceki 0, ödenecek 60, sonraki 1.960 = defterdeki 190.
 //   Nasıl bozulur (docs/devir/2.5.1-DEVAM/m1-rapor.md §0) maddeleri ayrı it'lerde; beklenenler yine elle yazılı.
+// 2.5.1 M1 tur 2 (S-M1-1 = B — kullanıcıya soruldu 27.11, öneri B uygulanıyor): mahsup fişi kesilmemiş ayda rapor ZİNCİRLİ (önceki ay sırayla mahsup edilmiş gibi), ön izleme
+//   defterdeki 190'dan — o it'ler chainAndPreview ile iki sayıyı ayrı ayrı (elle) denetler. Tur 1 kodunda (A) kırmızı: Kasım "önceki 1.960" (B 1.560), 002 Haziran 2.000 (B 800),
+//   002 Nisan 800 (B 1.000). Hiç mahsupsuz zincir, kopuk zincir ve A = B değişmezi: test/kdv-ozeti-zincir-251.test.mjs.
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { createUser } from "./helpers.mjs";
@@ -129,6 +132,20 @@ describe("2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup form
     else assert.equal((r.data.footers || []).length, 0, `${month}: boş tabloda TOPLAM yok`);
     return r;
   }
+  /**
+   * 2.5.1 M1 tur 2 (S-M1-1 = B, karar (6)): önceki bir ay mahsup edilmemişse rapor ZİNCİRİ (sırayla mahsup sayıları), ön izleme defterdeki 190'ı gösterir — ikisi ayrı ayrı
+   * ELLE yazılı beklenenle; tablo altı = özet.
+   */
+  async function chainAndPreview(month, q, chainWant, previewWant) {
+    const [year, m] = month.split("-").map(Number);
+    const end = new Date(Date.UTC(year, m, 0)).toISOString().slice(0, 10);
+    const r = await report({ from: `${month}-01`, to: end }, q, `rapor ${month}`);
+    assert.deepEqual([r.value("Önceki Dönemden Devreden KDV"), r.value("Ödenecek KDV"), r.value("Sonraki Döneme Devreden KDV")], chainWant, `${month}: rapor (zincir) ${JSON.stringify(r.data.summary)}`);
+    if (r.data.rows.length) assert.deepEqual([r.foot["Önceki Dönemden Devreden KDV"], r.foot["Ödenecek KDV"], r.foot["Sonraki Döneme Devreden KDV"]], chainWant, `${month}: tablo altı = özet`);
+    const p = await preview(month, q);
+    assert.deepEqual([p.carryInMinor, p.payableMinor, p.carryOutMinor], previewWant, `${month}: ön izleme (defterdeki 190; DEĞİŞMEDİ)`);
+    return r;
+  }
 
   it("S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel", async () => {
     const feb = await report({ from: "2026-02-01", to: "2026-02-28" }, q2, "002 Şubat");
@@ -203,9 +220,11 @@ describe("2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup form
   });
 
   it("boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen", async () => {
-    const empty002 = await report({ from: "2026-06-01", to: "2026-06-30" }, q2, "002 Haziran");
-    assert.deepEqual([empty002.value("Önceki Dönemden Devreden KDV"), empty002.value("Ödenecek KDV"), empty002.value("Sonraki Döneme Devreden KDV")], [200000, 0, 200000], "002: 190 = Ocak mahsubunun 2.000'i (Şubat mahsup edilmedi; 001'in mahsupları karışmaz)");
+    // 2.5.1 M1 tur 2 (S-M1-1 = B): Şubat mahsup edilmedi → zincir Şubat'ı sırayla mahsup edilmiş sayar (2.000 − 1.200 = 800); ön izleme defterdeki 190'ı (Ocak mahsubunun
+    // 2.000'i) gösterir. 001'in mahsupları karışmaz.
+    const empty002 = await chainAndPreview("2026-06", q2, [80000, 0, 80000], [200000, 0, 200000]);
     assert.equal(empty002.data.rows.length, 0);
+    assert.match(empty002.summary["Mahsup Edilmemiş Ay"] || "", /^Şubat 2026 \(devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı/, "002 Haziran notu: Şubat");
     const future = await report({ from: "2027-03-01", to: "2027-03-31" }, "", "001 gelecek Mart 2027");
     assert.deepEqual([future.value("Önceki Dönemden Devreden KDV"), future.value("Ödenecek KDV"), future.value("Sonraki Döneme Devreden KDV")], [196000, 0, 196000], "gelecek dönem: bugünkü 190");
     const before = await report({ from: "2025-01-01", to: "2025-12-31" }, "", "001 2025");
@@ -214,15 +233,17 @@ describe("2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup form
     assert.equal((before.data.footers || []).length, 0, "boş dönemde TOPLAM satırı yok");
   });
 
-  it("mahsup fişi kesilmemiş ay: rapor ön izlemeyle aynı sayı + 'Mahsup Edilmemiş Ay' notu; mahsup kesilince / geri alınınca / yeniden kesilince rapor uyar", async () => {
+  it("mahsup fişi kesilmemiş ay (S-M1-1 = B): rapor ZİNCİRLİ + 'Mahsup Edilmemiş Ay' notu, ön izleme defterden; mahsup kesilince / geri alınınca / yeniden kesilince rapor sayısı aynı", async () => {
     await sell("001", "2026-10-05", 2000); // Ekim KDV 400
     await sell("001", "2026-11-05", 5000); // Kasım KDV 1.000
-    // Ekim mahsup edilmedi: Kasım ön izlemesi devredeni defterdeki 190'dan (1.960) alır → 1.000 − 1.960 → sonraki 960.
-    let nov = await sameAsPreview("2026-11");
-    assert.deepEqual([nov.value("Önceki Dönemden Devreden KDV"), nov.value("Ödenecek KDV"), nov.value("Sonraki Döneme Devreden KDV")], [196000, 0, 96000], "Kasım (Ekim mahsupsuz)");
-    assert.match(nov.summary["Mahsup Edilmemiş Ay"] || "", /^Ekim 2026 /, `not: ${JSON.stringify(nov.data.summary)}`);
+    // S-M1-1 örneği (karar metninden, ELLE): Eylül sonu devreden 1.960, Ekim satış KDV 400 MAHSUP EDİLMEDİ, Kasım satış KDV 1.000 → Kasım önceki 1.560 / ödenecek 0 / sonraki 560
+    // (A'da 1.960 / 0 / 960 — ön izleme hâlâ bunu gösterir: defterdeki 190).
+    let nov = await chainAndPreview("2026-11", "", [156000, 0, 56000], [196000, 0, 96000]);
+    assert.match(nov.summary["Mahsup Edilmemiş Ay"] || "", /^Ekim 2026 \(devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin\)$/, `not: ${JSON.stringify(nov.data.summary)}`);
     const both = await report({ from: "2026-10-01", to: "2026-11-30" }, "", "Ekim–Kasım");
-    assert.deepEqual([both.value("Önceki Dönemden Devreden KDV"), both.value("Ödenecek KDV"), both.value("Sonraki Döneme Devreden KDV")], [196000, 0, 96000], "Ekim–Kasım (ay ay ön izleme)");
+    assert.deepEqual([both.value("Önceki Dönemden Devreden KDV"), both.value("Ödenecek KDV"), both.value("Sonraki Döneme Devreden KDV")], [196000, 0, 56000], "Ekim–Kasım (zincir: Ekim 1.960 − 400 = 1.560, Kasım 1.560 − 1.000 = 560)");
+    const bothLines = both.data.rows.filter(row => !DOC_KINDS.includes(row[both.g])).map(row => [row[0], row[both.g], minor(row[both.k])]);
+    assert.deepEqual(bothLines, [["Ekim 2026", "Önceki Dönemden Devreden KDV", 196000], ["Ekim 2026", "Sonraki Döneme Devreden KDV", 156000], ["Kasım 2026", "Önceki Dönemden Devreden KDV", 156000], ["Kasım 2026", "Sonraki Döneme Devreden KDV", 56000]], "Ekim–Kasım ay satırları (zincir)");
     assert.match(both.summary["Mahsup Edilmemiş Ay"] || "", /^Ekim 2026 /);
     const oct = await offset("2026-10");
     assert.deepEqual([oct.carryInMinor, oct.carryOutMinor, oct.payableMinor], [196000, 156000, 0], "Ekim mahsubu 1.960 − 400 = 1.560 devreden");
@@ -230,8 +251,8 @@ describe("2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup form
     assert.deepEqual([nov.value("Önceki Dönemden Devreden KDV"), nov.value("Ödenecek KDV"), nov.value("Sonraki Döneme Devreden KDV")], [156000, 0, 56000], "Kasım (Ekim mahsuplu): 1.000 − 1.560");
     assert.ok(!("Mahsup Edilmemiş Ay" in nov.summary), "mahsuptan sonra not kalkar");
     await must("Ekim geri al", api.post(`${TAX}/vat-offset/${oct.id}/reverse`, {}));
-    nov = await sameAsPreview("2026-11");
-    assert.deepEqual([nov.value("Önceki Dönemden Devreden KDV"), nov.value("Sonraki Döneme Devreden KDV")], [196000, 96000], "geri alınınca eski hâl");
+    // Geri alınınca: rapor (zincir) aynı sayı, ön izleme yine defterden 1.960 / 960; not geri gelir.
+    nov = await chainAndPreview("2026-11", "", [156000, 0, 56000], [196000, 0, 96000]);
     assert.match(nov.summary["Mahsup Edilmemiş Ay"] || "", /^Ekim 2026 /);
     await offset("2026-10");
     nov = await sameAsPreview("2026-11");
@@ -270,9 +291,10 @@ describe("2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup form
     const mar = await sameAsPreview("2026-03", q2);
     assert.deepEqual([mar.value("Hesaplanan KDV (391) (İadeler Düşülmüş)"), mar.value("İndirilecek KDV (191) (İadeler Düşülmüş)"), mar.value("Alıcı Olarak Kesilen Tevkifat (2 No.lu)")], [20000, 40000, 36000], "Mart 391 / 191 / tevkifat");
     assert.deepEqual([mar.value("Önceki Dönemden Devreden KDV"), mar.value("Ödenecek KDV"), mar.value("Sonraki Döneme Devreden KDV")], [80000, 0, 100000], "Mart");
-    // Nisan (Mart mahsupsuz): ön izleme 190'dan 800 → 0 − 200 − 800 → sonraki 1.000; not Mart.
-    let apr = await sameAsPreview("2026-04", q2);
-    assert.deepEqual([apr.value("İndirilecek KDV (191) (İadeler Düşülmüş)"), apr.value("Önceki Dönemden Devreden KDV"), apr.value("Sonraki Döneme Devreden KDV")], [20000, 80000, 100000], "Nisan (Mart mahsupsuz)");
+    // Nisan (Mart mahsupsuz; S-M1-1 = B): zincir Mart'ı sırayla mahsup edilmiş sayar → önceki 1.000, 0 − 200 − 1.000 → sonraki 1.200; ön izleme defterdeki 190'dan 800 → sonraki
+    // 1.000 (DEĞİŞMEDİ); not Mart.
+    let apr = await chainAndPreview("2026-04", q2, [100000, 0, 120000], [80000, 0, 100000]);
+    assert.equal(apr.value("İndirilecek KDV (191) (İadeler Düşülmüş)"), 20000, "Nisan 191 (dönemi Nisan'a alınan alış)");
     assert.match(apr.summary["Mahsup Edilmemiş Ay"] || "", /^Mart 2026 /);
     await offset("2026-03", q2);
     apr = await sameAsPreview("2026-04", q2);
