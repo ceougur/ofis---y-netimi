@@ -73,6 +73,8 @@ yapmadı — doğru davranış). Metinler 2.5.0 sürecinden AYNEN (S184 bağlam 
 KAPSAM DIŞI (bu bakımda YOK): Ödeme Hatırlatma çıktısının devirli = devirsiz olması (ayrı bakım); WhatsApp kâhini; devri uygularken çıkan hatalar (yarıda kesilme,
 kilitli dosya, yer yok) ve Devri Geri Al / Devri Yenile redleri — programın uygulama paketine aittir, kâhin bunları bu bakımda modellemez.
 
+6. BAŞ MİMAR KARARI (27.11 15:00 UTC; kullanıcının "devir yarıda kalırsa veya tekrar çalıştırılırsa çift kayıt oluşmasın" sorusu üzerine; ders 40 — kullanıcıya gösterildi, değiştirebilir): AYNI YIL İKİNCİ KEZ DEVREDİLEMEZ — o yılın devri yapılmışsa yeni bir devir REDDEDİLİR (neden: "bu yıl zaten devredildi"; değişiklik yolu Devri Yenile ya da Devri Geri Al); devredilmiş yıldan ÖNCEKİ bir yılın devri de REDDEDİLİR (neden: "sonraki yıl devredilmiş"). Devir → Devri Geri Al → yeniden devir: ikinci devrin sonucu (açılışlar, açık kalemler, kapanış) ilk devirle AYNI — yinelenen açılış / çift açık kalem YOK. Bu iki ret nedeni ret KÜMESİNE (madde 4) öbür nedenlerle birlikte girer.
+
 ## 4. Kullanıcı kuralları (AYNEN)
 - (14.11) "bana sorun varsa önerilerini uygula" — soru öneriyle yazılır.
 - (06.11) "bana soru sorduğunda eğer çok uç durumsa konu; seçeneklere uç durum böyle kalmasında sorun yok maddesi de ekle".
