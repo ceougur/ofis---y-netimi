@@ -1,0 +1,216 @@
+{
+ "K1": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": 900,
+  "bugun": {
+   "tutar": 600,
+   "vade3": "2026-09-05"
+  },
+  "kartGecikmis": 600,
+  "tyk": {
+   "tutar": 600,
+   "vade3": "2026-09-05",
+   "adet": 2
+  },
+  "supheliKayit": 0,
+  "soz": ""
+ },
+ "K2": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": 900,
+  "bugun": null,
+  "kartGecikmis": 900,
+  "tyk": {
+   "tutar": 900,
+   "vade3": "2026-09-20",
+   "adet": 1
+  },
+  "supheliKayit": 0,
+  "soz": ""
+ },
+ "K3": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": 500,
+  "bugun": null,
+  "kartGecikmis": 500,
+  "tyk": {
+   "tutar": 500,
+   "vade3": "2026-09-15",
+   "adet": 1
+  },
+  "supheliKayit": 0,
+  "soz": ""
+ },
+ "K4": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": 900,
+  "bugun": null,
+  "kartGecikmis": 600,
+  "tyk": {
+   "tutar": 600,
+   "vade3": "2026-09-05",
+   "adet": 2
+  },
+  "supheliKayit": 0,
+  "soz": ""
+ },
+ "K5": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": 0,
+  "bugun": {
+   "tutar": 600,
+   "vade3": "2026-09-05"
+  },
+  "kartGecikmis": 0,
+  "tyk": {
+   "tutar": 0,
+   "vade3": "",
+   "adet": 0
+  },
+  "supheliKayit": 0,
+  "soz": ""
+ },
+ "K6": {
+  "tur": "supplier",
+  "telefon": true,
+  "bakiye": 1000,
+  "bugun": null,
+  "kartGecikmis": 1000,
+  "tyk": {
+   "tutar": 1000,
+   "vade3": "2026-09-01",
+   "adet": 1
+  },
+  "supheliKayit": 0,
+  "soz": ""
+ },
+ "K7": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": 900,
+  "bugun": {
+   "tutar": 600,
+   "vade3": "2026-09-05"
+  },
+  "kartGecikmis": 300,
+  "tyk": {
+   "tutar": 300,
+   "vade3": "2026-10-05",
+   "adet": 1
+  },
+  "supheliKayit": 300,
+  "soz": ""
+ },
+ "K8": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": 1300,
+  "bugun": {
+   "tutar": 600,
+   "vade3": "2026-09-05"
+  },
+  "kartGecikmis": 1000,
+  "tyk": {
+   "tutar": 1000,
+   "vade3": "2026-09-05",
+   "adet": 3
+  },
+  "supheliKayit": 0,
+  "soz": "2026-10-20"
+ },
+ "K9": {
+  "tur": "other",
+  "telefon": true,
+  "bakiye": 300,
+  "bugun": null,
+  "kartGecikmis": 300,
+  "tyk": {
+   "tutar": 300,
+   "vade3": "2026-09-15",
+   "adet": 1
+  },
+  "supheliKayit": 0,
+  "soz": ""
+ },
+ "K10": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": 750,
+  "bugun": null,
+  "kartGecikmis": 750,
+  "tyk": {
+   "tutar": 750,
+   "vade3": "2026-10-07",
+   "adet": 1
+  },
+  "supheliKayit": 0,
+  "soz": ""
+ },
+ "K11": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": -100,
+  "bugun": {
+   "tutar": 600,
+   "vade3": "2026-09-05"
+  },
+  "kartGecikmis": 0,
+  "tyk": {
+   "tutar": 0,
+   "vade3": "",
+   "adet": 0
+  },
+  "supheliKayit": 0,
+  "soz": ""
+ },
+ "K12": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": 1400,
+  "bugun": {
+   "tutar": 600,
+   "vade3": "2026-09-05"
+  },
+  "kartGecikmis": 1100,
+  "tyk": {
+   "tutar": 1100,
+   "vade3": "2026-08-30",
+   "adet": 3
+  },
+  "supheliKayit": 0,
+  "soz": ""
+ },
+ "K13": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": 400,
+  "bugun": null,
+  "kartGecikmis": 400,
+  "tyk": {
+   "tutar": 400,
+   "vade3": "2026-09-15",
+   "adet": 1
+  },
+  "supheliKayit": 0,
+  "soz": "2026-10-08"
+ },
+ "K14": {
+  "tur": "customer",
+  "telefon": true,
+  "bakiye": 600,
+  "bugun": null,
+  "kartGecikmis": 0,
+  "tyk": {
+   "tutar": 0,
+   "vade3": "",
+   "adet": 0
+  },
+  "supheliKayit": 0,
+  "soz": ""
+ }
+}
