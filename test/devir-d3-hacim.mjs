@@ -21,7 +21,8 @@ const loads = [loadOne()];
 const mod = file => import(pathToFileURL(path.join(root, file)).href);
 const { createApp } = await mod("server/app.mjs");
 const { createClient } = await mod("test/helpers.mjs");
-const PASS = "Devir-Olcum-2026!";
+// Ölçüm verisinin (temiz-100k) yönetici parolası — veri ana oturumun ölçüm düzeneğiyle bu parolayla kurulmuştur; başka kopyada D3_ADMIN_PASSWORD verilir.
+const PASS = process.env.D3_ADMIN_PASSWORD || "Kapi-Olcum-2026!";
 let t0 = performance.now();
 const app = createApp({
   dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
@@ -53,7 +54,7 @@ for (let i = 0; i < repeat; i += 1) {
   if (job.state !== "done") throw new Error(`ön izleme başarısız: ${JSON.stringify(job.error)}`);
   const z = job.result.zamanlama;
   const s = job.result.plan.sayilar;
-  console.log(`tur ${i + 1}: ön izleme (uç, iş parçacığı) ${r(ms)} ms · olay döngüsü en çok ${r(h.max / 1e6)} ms · yük ${load()}`);
+  console.log(`tur ${i + 1}: ön izleme (uç, iş parçacığı) ${r(ms)} ms · olay döngüsü en çok ${r(h.max / 1e6)} ms · sonuç ${r(JSON.stringify(job.result).length / 1e6)} MB · yük ${load()}`);
   console.log(`  bileşenler (iş parçacığı, ms): okuma ${z.okuma} · yevmiye ${z.yevmiye} · tek borç sırası ${z.tekBorcSirasi} · değerleme ${z.degerleme} · ön denetim ${z.onDenetim} · plan ${z.plan} · rapor ${z.rapor} · toplam ${z.toplam}`);
   console.log(`  plan: sorun ${job.result.plan.sorunlar.length} · bozuk değişmez ${job.result.plan.degismezler.filter(row => !row.ok).length} · cari açılış ${s.cariAcilis} · açık fatura ${s.acikFatura.satis + s.acikFatura.alis} · açık kalem ${s.acikKalem.borc + s.acikKalem.alacak} · rapor satırı ${job.result.rapor.rows.length} · kapanış fişi ${job.result.plan.archive.kapanisFisleri.length}`);
   if (i === 0) console.log(`  sorunlar: ${JSON.stringify(job.result.plan.sorunlar).slice(0, 500)} · durdurur: ${job.result.onDenetim.durdurur.map(row => row.kod).join(", ")}`);

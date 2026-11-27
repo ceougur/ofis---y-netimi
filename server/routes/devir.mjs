@@ -50,7 +50,7 @@ export function runPreviewWorker(data, { onProgress = () => {}, timeoutMs = PREV
     timer.unref?.();
     worker.on("message", message => {
       if (message?.type === "progress") return onProgress(message.asama);
-      if (message?.ok) return finish(null, { json: message.json, rapor: message.rapor });
+      if (message?.ok) return finish(null, { json: message.json, raporJson: message.raporJson });
       if (message && message.status && message.status < 500) return finish(new HttpError(message.status, message.message, { code: message.code }));
       return finish(Object.assign(new Error(message?.message || "devir ön izlemesi başarısız"), { stack: message?.stack || "" }));
     });
@@ -158,7 +158,7 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
     if (existing && previews.get(existing)?.state === "running") return ok(res, { ...publicJob(previews.get(existing)), joined: true });
     const label = createReportHeader({ store: target.store, company: () => company }).companyLabel() || `${company.code} · ${company.name}`;
     const job = { K: cutoff, today, option, company: { id: company.id, code: company.code, name: company.name, label }, isRoot: company.id === ROOT_COMPANY_ID };
-    const entry = { id: `onizleme-${randomUUID()}`, companyId: company.id, job, state: "running", asama: "basladi", startedAt: clockNow().toISOString(), finishedAt: "", resultJson: "", rapor: null, error: null, stale: false, label };
+    const entry = { id: `onizleme-${randomUUID()}`, companyId: company.id, job, state: "running", asama: "basladi", startedAt: clockNow().toISOString(), finishedAt: "", resultJson: "", raporJson: "", error: null, stale: false, label };
     previews.set(entry.id, entry);
     running.set(company.id, entry.id);
     const dbPath = target.config?.dbPath || "";
@@ -170,7 +170,8 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
       } else {
         entry.state = "done";
         entry.resultJson = result.json;
-        entry.rapor = result.rapor;
+        // Rapor satırları ayrı metin: PDF / Excel istenince çözülür (ana iş parçacığına iletide yalnız metin gelir — nesne ağacı kopyalanmaz).
+        entry.raporJson = result.raporJson;
       }
       if (maintenance?.has?.(company.id)) entry.stale = true;
       if (running.get(company.id) === entry.id) running.delete(company.id);
@@ -184,7 +185,7 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
       // İş parçacığısız yol (bellekteki veri tabanı): aynı işlev, şirket örneğinin kendi hizmetleriyle.
       try {
         const data = runPreview({ store: target.store, ledger: target.context.ledger, job, progress: asama => (entry.asama = asama) });
-        finish(null, { json: JSON.stringify(data), rapor: data.rapor });
+        finish(null, { json: JSON.stringify(data), raporJson: JSON.stringify(data.rapor) });
       } catch (error) {
         finish(error);
       }
@@ -202,8 +203,8 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
   });
   const reportFile = (admin, id) => {
     const entry = previewOf(admin, id);
-    if (entry.state !== "done" || !entry.rapor) throw new HttpError(409, "Ön izleme henüz bitmedi.", { code: "devir-preview-running" });
-    return { entry, data: entry.rapor, ctx: { now: clockNow(), companyLabel: entry.label, userName: admin.display_name || admin.username || "" } };
+    if (entry.state !== "done" || !entry.raporJson) throw new HttpError(409, "Ön izleme henüz bitmedi.", { code: "devir-preview-running" });
+    return { entry, data: JSON.parse(entry.raporJson), ctx: { now: clockNow(), companyLabel: entry.label, userName: admin.display_name || admin.username || "" } };
   };
   router.get("/api/admin/devir/preview/:id/report.pdf", async ({ req, res, params, url }) => {
     const admin = auth.requirePermission(req, "system.manage");
