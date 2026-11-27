@@ -10,7 +10,6 @@
 //     ay / yıl başı — sahte saatle; ders 13), dönemde tahsilat yok. (e) yetkisiz rol. Göreli tarih: sabit sahte saat (config.now).
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
-import { collectionsByAccount, periodOf } from "../server/lib/account-collections.mjs";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
 
 const TODAY = "2026-10-20"; // salı
@@ -239,7 +238,10 @@ describe("Mİ-2 — dönemlik tahsilat ve Grup Özeti", () => {
     assert.deepEqual([row.collected.cheque, row.collected.note], [400, 500]);
   });
 
-  it("(d) dönem sınırları sahte saatle: gece yarısı, ay başı, yıl başı (pazartesi başlangıçlı hafta)", () => {
+  // Yardımcı içe aktarımı testin İÇİNDE: eski kodda (yardımcı yok) yalnız bu iki test kırmızı olur, öbürleri kendi nedeniyle (ders 38).
+  const helper = () => import("../server/lib/account-collections.mjs");
+  it("(d) dönem sınırları sahte saatle: gece yarısı, ay başı, yıl başı (pazartesi başlangıçlı hafta)", async () => {
+    const { periodOf } = await helper();
     assert.deepEqual(periodOf("today", "2026-11-01"), { key: "today", from: "2026-11-01", to: "2026-11-01" });
     assert.deepEqual(periodOf("yesterday", "2026-11-01"), { key: "yesterday", from: "2026-10-31", to: "2026-10-31" }, "ay başında dün önceki ayın son günü");
     assert.deepEqual(periodOf("yesterday", "2027-01-01"), { key: "yesterday", from: "2026-12-31", to: "2026-12-31" }, "yıl başında dün önceki yıl");
@@ -253,6 +255,7 @@ describe("Mİ-2 — dönemlik tahsilat ve Grup Özeti", () => {
   });
 
   it("(d) dönem sınırı: bitiş günü DAHİL, ertesi gün HARİÇ; başlangıçtan önceki gün HARİÇ — yardımcı, bellek içi küçük veri tabanıyla (program ileri tarihli hareketi zaten reddeder)", async () => {
+    const { collectionsByAccount } = await helper();
     const { DatabaseSync } = await import("node:sqlite");
     const db = new DatabaseSync(":memory:");
     db.exec(`CREATE TABLE accounts (id TEXT, deleted_at TEXT); CREATE TABLE account_entries (id TEXT, account_id TEXT, kind TEXT, amount REAL, date TEXT, method TEXT, source TEXT DEFAULT '', source_id TEXT DEFAULT '', fin_ref TEXT DEFAULT '');
