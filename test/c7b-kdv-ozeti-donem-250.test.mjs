@@ -29,6 +29,7 @@ const minor = text => {
 };
 const count = text => (/^\d+$/.test(String(text ?? "").trim()) ? Number(text) : null);
 const qs = query => new URLSearchParams(query).toString();
+const RESULTS = ["Önceki Dönemden Devreden KDV", "Ödenecek KDV", "Sonraki Döneme Devreden KDV"];
 const GROUPS = { "TOPLAM Satış": ["Satış", "Serbest Meslek Makbuzu"], "TOPLAM Satıştan İade": ["Satıştan İade"], "TOPLAM Alış": ["Alış"], "TOPLAM Alıştan İade": ["Alıştan İade"] };
 
 describe("Ç7b B-11 — KDV Özeti (Beyanname Hazırlığı) alış KDV'si KDV İndirim Dönemi'nin ayında", () => {
@@ -72,7 +73,9 @@ describe("Ç7b B-11 — KDV Özeti (Beyanname Hazırlığı) alış KDV'si KDV �
     const sums = {};
     // Tek yön kalınca (2.4.3 UX24) tek TOPLAM satırı: satırların tek yönüne bağlanır.
     const present = Object.keys(GROUPS).filter(label => data.rows.some(row => GROUPS[label].includes(row[g])));
-    const labelOf = line => (GROUPS[line[g]] ? line[g] : lines.length === 1 && present.length === 1 && line.some(cell => String(cell).startsWith("TOPLAM")) ? present[0] : "");
+    // 2.5.1 M1: altta üç sonuç satırı (Önceki Dönemden Devreden / Ödenecek / Sonraki Döneme Devreden KDV) belge TOPLAM'ı değildir.
+    const docLines = lines.filter(line => !RESULTS.includes(line[g]));
+    const labelOf = line => (GROUPS[line[g]] ? line[g] : docLines.length === 1 && present.length === 1 && line.some(cell => String(cell).startsWith("TOPLAM")) ? present[0] : "");
     for (const line of lines) {
       const members = GROUPS[labelOf(line)];
       if (!members) continue;
@@ -84,8 +87,8 @@ describe("Ç7b B-11 — KDV Özeti (Beyanname Hazırlığı) alış KDV'si KDV �
     }
     for (const [label, members] of Object.entries(GROUPS)) if (data.rows.some(row => members.includes(row[g]))) assert.ok(label in sums, `${tag}: ${label} satırı var`);
     const summary = Object.fromEntries(data.summary);
-    assert.equal(minor(summary["İndirilecek KDV (191)"]), (sums["TOPLAM Alış"] || 0) - (sums["TOPLAM Alıştan İade"] || 0), `${tag}: özetin 191'i = TOPLAM Alış − TOPLAM Alıştan İade`);
-    assert.equal(minor(summary["Hesaplanan KDV (391)"]), (sums["TOPLAM Satış"] || 0) - (sums["TOPLAM Satıştan İade"] || 0), `${tag}: özetin 391'i = TOPLAM Satış − TOPLAM Satıştan İade`);
+    assert.equal(minor(summary["İndirilecek KDV (191) (İadeler Düşülmüş)"]), (sums["TOPLAM Alış"] || 0) - (sums["TOPLAM Alıştan İade"] || 0), `${tag}: özetin 191'i = TOPLAM Alış − TOPLAM Alıştan İade`);
+    assert.equal(minor(summary["Hesaplanan KDV (391) (İadeler Düşülmüş)"]), (sums["TOPLAM Satış"] || 0) - (sums["TOPLAM Satıştan İade"] || 0), `${tag}: özetin 391'i = TOPLAM Satış − TOPLAM Satıştan İade`);
     // PDF: bütün satır ve TOPLAM hücreleri metinde.
     const pdf = await api.raw("GET", `${RC}/kdv-ozeti/pdf?${qs(query)}`);
     assert.equal(pdf.status, 200, `${tag} PDF`);
@@ -106,9 +109,9 @@ describe("Ç7b B-11 — KDV Özeti (Beyanname Hazırlığı) alış KDV'si KDV �
         else if (String(cell).trim()) assert.equal(String(got[c]).trim(), String(cell).trim(), `${tag} Excel satır ${k + 1} ${data.headers[c]}`);
       });
     });
-    // Ay → tür → tutarlar (kâhinle karşılaştırma için).
+    // Ay → tür → tutarlar (kâhinle karşılaştırma için; 2.5.1 M1: çok aylı aralıktaki ayın sonuç satırları belge değildir).
     const by = {};
-    for (const row of data.rows) {
+    for (const row of data.rows.filter(item => !RESULTS.includes(item[g]))) {
       const month = row[col("Ay")];
       const kind = row[g];
       const item = ((by[month] ||= {})[kind] ||= { belge: 0, matrah: 0, kdv: 0 });
@@ -125,7 +128,7 @@ describe("Ç7b B-11 — KDV Özeti (Beyanname Hazırlığı) alış KDV'si KDV �
     assert.equal(minor(dec.summary["Ödenecek KDV"]), 180000, "Aralık Ödenecek 1.800");
     const jan = await report({ preset: "lastMonth" }, "Geçen Ay (Ocak)");
     assert.deepEqual(jan.by, { "Ocak 2027": { Alış: { belge: 2, matrah: 250000, kdv: 50000 }, "Alıştan İade": { belge: 1, matrah: 50000, kdv: 10000 }, Satış: { belge: 1, matrah: 100000, kdv: 20000 } } }, "Ocak (kâhin)");
-    assert.equal(minor(jan.summary["Devreden KDV"]), 20000, "Ocak Devreden 200");
+    assert.equal(minor(jan.summary["Sonraki Döneme Devreden KDV"]), 20000, "Ocak Devreden 200");
     const janCustom = await report({ from: "2027-01-01", to: "2027-01-31" }, "Ocak (elle)");
     assert.deepEqual(janCustom.by, jan.by, "elle Ocak = Geçen Ay");
     const feb = await report({ preset: "thisMonth" }, "Bu Ay (Şubat)");

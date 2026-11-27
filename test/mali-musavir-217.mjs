@@ -335,9 +335,9 @@ try {
   const stokRep = await report("stok-durumu", "");
   check("Stok Durumu raporu toplam değer", stockValue(), summaryOf(stokRep, "Toplam Değer") ?? summaryOf(stokRep, "Stok Değeri"));
   const kdv = await report("kdv-ozeti", "preset=thisMonth");
-  check("KDV Özeti hesaplanan (391)", R(M.kdvOut), summaryOf(kdv, "Hesaplanan KDV (391)"));
-  check("KDV Özeti indirilecek (191)", R(M.kdvIn), summaryOf(kdv, "İndirilecek KDV (191)"));
-  check("KDV Özeti sonuç (devreden)", R(Math.abs(M.kdvOut - M.kdvIn)), summaryOf(kdv, M.kdvOut - M.kdvIn >= 0 ? "Ödenecek KDV" : "Devreden KDV"));
+  check("KDV Özeti hesaplanan (391)", R(M.kdvOut), summaryOf(kdv, "Hesaplanan KDV (391) (İadeler Düşülmüş)"));
+  check("KDV Özeti indirilecek (191)", R(M.kdvIn), summaryOf(kdv, "İndirilecek KDV (191) (İadeler Düşülmüş)"));
+  check("KDV Özeti sonuç (devreden)", R(Math.abs(M.kdvOut - M.kdvIn)), summaryOf(kdv, M.kdvOut - M.kdvIn >= 0 ? "Ödenecek KDV" : "Sonraki Döneme Devreden KDV"));
   const ledger = (await api.get(`/api/workspace/ledger?from=${MONTH_START}&to=${TODAY}`)).data;
   check("Hesap mizanı Borç = Alacak", true, ledger.trial.balanced, String);
   check("Ana Defter ↔ alt defterler mutabakatı", true, ledger.reconciliation.ok, String);

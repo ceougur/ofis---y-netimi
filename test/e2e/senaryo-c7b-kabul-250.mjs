@@ -165,19 +165,26 @@ const table = async () => {
   const hint = body.length === 1 && body[0].length === 1;
   return { body: hint ? [] : body, foot: await cells(`${MODAL} [data-rc-main] .hof-rc-table tfoot tr`), empty: hint || Boolean(await page.$(`${MODAL} [data-rc-main] .hof-empty`)) };
 };
-/** KDV Özeti: belge yönü başına TOPLAM satırı (UX24) — "TOPLAM Satış" KDV = o türdeki satırların KDV'si; Net KDV = satış − satıştan iade − alış + alıştan iade. */
-function kdvFooterMatch(t) {
-  const sumOf = kinds => t.body.filter(row => kinds.includes(row[1])).reduce((sum, row) => sum + tl(row[5]), 0);
+/** KDV Özeti: belge yönü başına TOPLAM satırı (UX24) — "TOPLAM Satış" KDV = o türdeki satırların KDV'si. 2.5.1 M1: altta Önceki Dönemden Devreden / Ödenecek / Sonraki Döneme
+ * Devreden KDV (senaryoda KDV mahsup fişi yok → devreden 0; her ayın sonucu ayın net KDV'si: satış − satıştan iade − alış + alıştan iade); tek ayda Ödenecek − Sonraki = net. */
+const KDV_RESULTS = ["Önceki Dönemden Devreden KDV", "Ödenecek KDV", "Sonraki Döneme Devreden KDV"];
+function kdvFooterMatch(t, single = false) {
+  const sumOf = (kinds, rows = t.body) => rows.filter(row => kinds.includes(row[1])).reduce((sum, row) => sum + tl(row[5]), 0);
   const kinds = { "TOPLAM Satış": ["Satış", "Serbest Meslek Makbuzu"], "TOPLAM Satıştan İade": ["Satıştan İade"], "TOPLAM Alış": ["Alış"], "TOPLAM Alıştan İade": ["Alıştan İade"] };
   const checks = [];
   for (const row of t.foot) {
     const label = row.find(cell => /^TOPLAM |^Net KDV/.test(cell)) || "";
     if (kinds[label]) checks.push([label, Math.abs(sumOf(kinds[label]) - tl(row[5])) < 0.005, `${label} ${tl(row[5])} ↔ satırlar ${sumOf(kinds[label])}`]);
-    else if (/^Net KDV/.test(label)) {
-      const net = sumOf(kinds["TOPLAM Satış"]) - sumOf(kinds["TOPLAM Satıştan İade"]) - sumOf(kinds["TOPLAM Alış"]) + sumOf(kinds["TOPLAM Alıştan İade"]);
-      const shown = row.map(tl).find(value => value) || 0;
-      checks.push([label, Math.abs(Math.abs(net) - shown) < 0.005, `${label} ${shown} ↔ satırlardan ${net}`]);
-    }
+  }
+  const netOf = rows => sumOf(kinds["TOPLAM Satış"], rows) - sumOf(kinds["TOPLAM Satıştan İade"], rows) - sumOf(kinds["TOPLAM Alış"], rows) + sumOf(kinds["TOPLAM Alıştan İade"], rows);
+  const result = Object.fromEntries(t.foot.filter(row => KDV_RESULTS.includes(row[1])).map(row => [row[1], tl(row[5])]));
+  checks.push(["sonuç satırları", KDV_RESULTS.every(label => label in result) && result["Önceki Dönemden Devreden KDV"] === 0, `sonuç ${JSON.stringify(result)} (mahsup yok → önceki 0)`]);
+  if (single) checks.push(["tek ay", Math.abs(result["Ödenecek KDV"] - result["Sonraki Döneme Devreden KDV"] - netOf(t.body)) < 0.005, `Ödenecek − Sonraki ${result["Ödenecek KDV"] - result["Sonraki Döneme Devreden KDV"]} ↔ satırlardan ${netOf(t.body)}`]);
+  // Ayın sonuç satırı (çok aylı aralıkta, tam aylarda) = ayın net KDV'si (devreden 0).
+  for (const row of t.body.filter(item => KDV_RESULTS.includes(item[1]))) {
+    const net = netOf(t.body.filter(item => item[0] === row[0]));
+    const want = row[1] === "Ödenecek KDV" ? Math.max(0, net) : row[1] === "Sonraki Döneme Devreden KDV" ? Math.max(0, -net) : 0;
+    checks.push([`${row[0]} ${row[1]}`, Math.abs(tl(row[5]) - want) < 0.005, `${row[0]} ${row[1]} ${tl(row[5])} ↔ ayın net KDV'si ${net}`]);
   }
   return { ok: checks.length >= 2 && checks.every(item => item[1]), text: checks.map(item => item[2]).join(" · ") || JSON.stringify(t.foot) };
 }
@@ -269,9 +276,9 @@ try {
     await openReport("kdv-ozeti");
     const expectKdv = { thisMonth: 0, lastMonth: 500, last30: 0, thisYear: 3500, all: 3500 };
     await eachPreset(async (id, label, t) => {
-      const kdv = t.body.reduce((sum, row) => sum + tl(row[5]), 0);
+      const kdv = t.body.filter(row => !KDV_RESULTS.includes(row[1])).reduce((sum, row) => sum + tl(row[5]), 0);
       if (!expectKdv[id]) return ok(t.empty && t.body.length === 0, `${label}: boş dönem (ipucu)`);
-      const foot = kdvFooterMatch(t);
+      const foot = kdvFooterMatch(t, id === "thisMonth" || id === "lastMonth");
       ok(foot.ok && Math.abs(kdv - expectKdv[id]) < 0.005, `${label}: ${t.body.length} satır, KDV Σ ${kdv} (elle ${expectKdv[id]}); ${foot.text}`);
     });
     await shot("kdv-ozeti-tum");

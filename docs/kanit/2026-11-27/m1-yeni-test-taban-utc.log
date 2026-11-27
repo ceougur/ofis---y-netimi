@@ -1,0 +1,354 @@
+TAP version 13
+# (node:992) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden
+    # Subtest: S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel
+    not ok 1 - S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel
+      ---
+      duration_ms: 15.231731
+      type: 'test'
+      location: '/dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:133:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Şubat Ödenecek KDV (taban: 1.200,00 — devreden görülmüyordu) [["Hesaplanan KDV (391)","1.200,00 TL"],["İndirilecek KDV (191)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Ödenecek KDV","1.200,00 TL"]]
+        + actual - expected
+        
+        + '1.200,00 TL'
+        - '0,00 TL'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '0,00 TL'
+      actual: '1.200,00 TL'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:135:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: MA (001): Mayıs ödenecek 60 (1.200 − 1.140); Mart / Nisan devreden 1.140 taşınır; Eylül ödenecek 0, sonraki 1.960 (kâhin: mali müşavir)
+    not ok 2 - MA (001): Mayıs ödenecek 60 (1.200 − 1.140); Mart / Nisan devreden 1.140 taşınır; Eylül ödenecek 0, sonraki 1.960 (kâhin: mali müşavir)
+      ---
+      duration_ms: 20.097113
+      type: 'test'
+      location: '/dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        2026-05: rapor = mahsup ön izlemesi
+        + actual - expected
+        
+          [
+        +   null,
+        +   120000,
+        +   null
+        -   114000,
+        -   6000,
+        -   0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 114000
+        1: 6000
+        2: 0
+      actual:
+        0: ~
+        1: 120000
+        2: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        sameAsPreview (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:126:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:150:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: MA (001) yıllık 2026: Önceki 0, Ödenecek 60, Sonraki 1.960 = defterdeki 190; ay ay satırlar kendi devreden / ödenecek değeriyle; ekran = PDF = Excel
+    not ok 3 - MA (001) yıllık 2026: Önceki 0, Ödenecek 60, Sonraki 1.960 = defterdeki 190; ay ay satırlar kendi devreden / ödenecek değeriyle; ekran = PDF = Excel
+      ---
+      duration_ms: 13.199113
+      type: 'test'
+      location: '/dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:166:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yıl (taban: Devreden KDV 1.900) [["Hesaplanan KDV (391)","1.860,00 TL"],["İndirilecek KDV (191)","3.760,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Devreden KDV","1.900,00 TL"],["KDV Mahsup Fişi","Şubat 2026, Mart 2026, Nisan 2026, Mayıs 2026, Temmuz 2026, Eylül 2026"]]
+        + actual - expected
+        
+          [
+        +   null,
+        +   null,
+        +   null
+        -   0,
+        -   6000,
+        -   196000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 6000
+        2: 196000
+      actual:
+        0: ~
+        1: ~
+        2: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:168:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen
+    not ok 4 - boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen
+      ---
+      duration_ms: 9.321599
+      type: 'test'
+      location: '/dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:205:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002: 190 = Ocak mahsubunun 2.000'i (Şubat mahsup edilmedi; 001'in mahsupları karışmaz)
+        + actual - expected
+        
+          [
+        +   null,
+        -   200000,
+            0,
+        +   null
+        -   200000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 200000
+        1: 0
+        2: 200000
+      actual:
+        0: ~
+        1: 0
+        2: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:207:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: mahsup fişi kesilmemiş ay: rapor ön izlemeyle aynı sayı + 'Mahsup Edilmemiş Ay' notu; mahsup kesilince / geri alınınca / yeniden kesilince rapor uyar
+    not ok 5 - mahsup fişi kesilmemiş ay: rapor ön izlemeyle aynı sayı + 'Mahsup Edilmemiş Ay' notu; mahsup kesilince / geri alınınca / yeniden kesilince rapor uyar
+      ---
+      duration_ms: 70.821627
+      type: 'test'
+      location: '/dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:217:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        2026-11: rapor = mahsup ön izlemesi
+        + actual - expected
+        
+          [
+        +   null,
+        +   100000,
+        +   null
+        -   196000,
+        -   0,
+        -   96000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 196000
+        1: 0
+        2: 96000
+      actual:
+        0: ~
+        1: 100000
+        2: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        sameAsPreview (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:126:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:221:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)
+    not ok 6 - ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)
+      ---
+      duration_ms: 34.975052
+      type: 'test'
+      location: '/dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:242:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        2026-12: rapor = mahsup ön izlemesi
+        + actual - expected
+        
+          [
+        +   null,
+        +   200000,
+        +   null
+        -   96000,
+        -   104000,
+        -   0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 96000
+        1: 104000
+        2: 0
+      actual:
+        0: ~
+        1: 200000
+        2: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        sameAsPreview (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:126:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:245:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş
+    not ok 7 - iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş
+      ---
+      duration_ms: 88.553909
+      type: 'test'
+      location: '/dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:262:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        2026-03: rapor = mahsup ön izlemesi
+        + actual - expected
+        
+          [
+        +   null,
+        +   null,
+        +   null
+        -   80000,
+        -   0,
+        -   100000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 80000
+        1: 0
+        2: 100000
+      actual:
+        0: ~
+        1: ~
+        2: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        sameAsPreview (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:126:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:270:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800
+    not ok 8 - S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800
+      ---
+      duration_ms: 34.792377
+      type: 'test'
+      location: '/dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:284:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        2026-04: rapor = mahsup ön izlemesi
+        + actual - expected
+        
+          [
+        +   null,
+        +   null,
+        +   null
+        -   80000,
+        -   0,
+        -   100000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 80000
+        1: 0
+        2: 100000
+      actual:
+        0: ~
+        1: ~
+        2: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        sameAsPreview (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:126:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:291:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:992) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not
+    not ok 9 - kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not
+      ---
+      duration_ms: 306.212726
+      type: 'test'
+      location: '/dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:300:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        devreden / ödenecek ayın tamamından
+        + actual - expected
+        
+          [
+        +   null,
+        +   0
+        -   114000,
+        -   6000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 114000
+        1: 6000
+      actual:
+        0: ~
+        1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:312:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetki: finans raporu yetkisi olmayan 403; muhasebe aynı sayıları görür
+    ok 10 - yetki: finans raporu yetkisi olmayan 403; muhasebe aynı sayıları görür
+      ---
+      duration_ms: 208.20334
+      type: 'test'
+      ...
+    1..10
+not ok 1 - 2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden
+  ---
+  duration_ms: 1883.751186
+  type: 'suite'
+  location: '/dev/shm/m1-kdv/eski/test/kdv-ozeti-devreden-251.test.mjs:33:1'
+  failureType: 'subtestsFailed'
+  error: '9 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 10
+# suites 1
+# pass 1
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2341.598375

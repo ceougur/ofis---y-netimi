@@ -1,0 +1,73 @@
+{
+  "ad": "m1-e2e-taban-senaryo-kdv-devreden-251",
+  "komut": "node test/e2e/senaryo-kdv-devreden-251.mjs",
+  "commit": "643964786dac426963eecaf2b7556f29849e8cb3",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T06:50:57.691Z",
+  "sure_sn": 8.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 14,
+    "gecen": 7,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "özet kartları Önceki / Ödenecek / Sonraki = 2.000 / 0 / 800 ({\"Hesaplanan KDV (391)\":\"₺1.200,00\",\"İndirilecek KDV (191)\":\"₺0,00\",\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\":\"₺0,00\",\"Ödenecek KDV\":\"₺1.200,00\"})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "tablo altı = özet ([[\"TOPLAM\",\"\",\"\",\"1\",\"₺6.000,00\",\"₺1.200,00\",\"₺0,00\"]])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "391 / 191 adlarında '(İadeler Düşülmüş)'",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mahsuptan sonra rapor aynı ({\"summary\":[\"\",\"1200,00\",\"\"],\"foot\":[\"\",\"\",\"\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ocak–Şubat: Önceki 0 / Ödenecek 0 / Sonraki 800 ({\"summary\":[\"\",\"\",\"\"],\"foot\":[\"\",\"\",\"\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ay satırları ([[\"Ocak 2026\",\"Alış\",\"%20\",\"1\",\"₺10.000,00\",\"₺2.000,00\",\"₺0,00\"],[\"Şubat 2026\",\"Satış\",\"%20\",\"1\",\"₺6.000,00\",\"₺1.200,00\",\"₺0,00\"]])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Bu Yıl: Sonraki 800, Ödenecek 0 ({\"Hesaplanan KDV (391)\":\"₺1.200,00\",\"İndirilecek KDV (191)\":\"₺2.000,00\",\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\":\"₺0,00\",\"Devreden KDV\":\"₺800,00\",\"KDV Mahsup Fişi\":\"Ocak 2026, Şubat 2026\"})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-kdv-devreden-251: 7 geçti, 7 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1-ajan/kanit/2026-11-27/m1-e2e-taban-senaryo-kdv-devreden-251.log",
+  "klasor": "/dev/shm/m1-kdv/eski",
+  "ham_cikti_sha256": "028b0e3ec59c81c3d3bcd5498c022c5cfe27b77f03af568b4d815a790ce85e6d",
+  "ham_cikti_bayt": 1971
+}

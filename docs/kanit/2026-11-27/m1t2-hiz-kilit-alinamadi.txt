@@ -1,0 +1,4 @@
+bekleme sonu 1.94 3.29 4.32 2/177 4738 07:56:52
+çıkış 1
+
+[exited with code 0]

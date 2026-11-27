@@ -164,11 +164,12 @@ try {
     const digits = text => String(text || "").replace(/[^\d,]/g, "");
     await openReports("kdv-ozeti");
     const kdv = await footOf();
-    // Kâhin (Eylül verisi, elle): Satış 1 belge 10.000 / KDV 2.000; Alış 3 belge 16.000 / KDV 1.200 / tevkifat 360; Net KDV 2.000 − 1.200 = 800.
-    ok(JSON.stringify(kdv.map(row => row[1])) === JSON.stringify(["TOPLAM Satış", "TOPLAM Alış", "Net KDV (Ödenecek)"]), `KDV Özeti TOPLAM satırları ${JSON.stringify(kdv.map(row => row[1]))}`);
+    // Kâhin (Eylül verisi, elle): Satış 1 belge 10.000 / KDV 2.000; Alış 3 belge 16.000 / KDV 1.200 / tevkifat 360; 2.000 − 1.200 = 800.
+    // 2.5.1 M1: altta Net KDV yerine mahsup hesabıyla Önceki Dönemden Devreden KDV (0 — Eylül'den önce mahsup yok), Ödenecek KDV 800, Sonraki Döneme Devreden KDV 0.
+    ok(JSON.stringify(kdv.map(row => row[1])) === JSON.stringify(["TOPLAM Satış", "TOPLAM Alış", "Önceki Dönemden Devreden KDV", "Ödenecek KDV", "Sonraki Döneme Devreden KDV"]), `KDV Özeti TOPLAM satırları ${JSON.stringify(kdv.map(row => row[1]))}`);
     ok(kdv[0]?.[3] === "1" && digits(kdv[0]?.[4]) === "10000,00" && digits(kdv[0]?.[5]) === "2000,00", `TOPLAM Satış ${JSON.stringify(kdv[0])}`);
     ok(kdv[1]?.[3] === "3" && digits(kdv[1]?.[4]) === "16000,00" && digits(kdv[1]?.[5]) === "1200,00" && digits(kdv[1]?.[6]) === "360,00", `TOPLAM Alış ${JSON.stringify(kdv[1])}`);
-    ok(digits(kdv[2]?.[5]) === "800,00", `Net KDV ${JSON.stringify(kdv[2])} (kâhin 800)`);
+    ok(digits(kdv[2]?.[5]) === "0,00" && digits(kdv[3]?.[5]) === "800,00" && digits(kdv[4]?.[5]) === "0,00", `Önceki / Ödenecek / Sonraki ${JSON.stringify(kdv.slice(2))} (kâhin 0 / 800 / 0)`);
     await shot("ux24-kdv-ozeti-toplam");
     await openReports("acik-faturalar");
     const open = await footOf();

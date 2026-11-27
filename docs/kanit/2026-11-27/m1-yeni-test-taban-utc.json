@@ -1,0 +1,78 @@
+{
+  "ad": "m1-yeni-test-taban-utc",
+  "komut": "node --test test/kdv-ozeti-devreden-251.test.mjs",
+  "commit": "643964786dac426963eecaf2b7556f29849e8cb3",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T06:50:33.952Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 1,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:133:3",
+      "hata": "Şubat Ödenecek KDV (taban: 1.200,00 — devreden görülmüyordu) [[\"Hesaplanan KDV (391)\",\"1.200,00 TL\"],[\"İndirilecek KDV (191)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Ödenecek KDV\",\"1.200,00 TL\"]] · + actual - expected · + '1.200,00 TL' (beklenen 0,00 TL, gelen 1.200,00 TL)"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › MA (001): Mayıs ödenecek 60 (1.200 − 1.140); Mart / Nisan devreden 1.140 taşınır; Eylül ödenecek 0, sonraki 1.960 (kâhin: mali müşavir)",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:149:3",
+      "hata": "2026-05: rapor = mahsup ön izlemesi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › MA (001) yıllık 2026: Önceki 0, Ödenecek 60, Sonraki 1.960 = defterdeki 190; ay ay satırlar kendi devreden / ödenecek değeriyle; ekran = PDF = Excel",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:166:3",
+      "hata": "yıl (taban: Devreden KDV 1.900) [[\"Hesaplanan KDV (391)\",\"1.860,00 TL\"],[\"İndirilecek KDV (191)\",\"3.760,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Devreden KDV\",\"1.900,00 TL\"],[\"KDV Mahsup Fişi\",\"Şubat 2026, Mart 2026, Nisan 2026, Mayıs 2026, Temmuz 2026, Eylül 2026\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:205:3",
+      "hata": "002: 190 = Ocak mahsubunun 2.000'i (Şubat mahsup edilmedi; 001'in mahsupları karışmaz) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › mahsup fişi kesilmemiş ay: rapor ön izlemeyle aynı sayı + 'Mahsup Edilmemiş Ay' notu; mahsup kesilince / geri alınınca / yeniden kesilince rapor uyar",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:217:3",
+      "hata": "2026-11: rapor = mahsup ön izlemesi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:242:3",
+      "hata": "2026-12: rapor = mahsup ön izlemesi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:262:3",
+      "hata": "2026-03: rapor = mahsup ön izlemesi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:284:3",
+      "hata": "2026-04: rapor = mahsup ön izlemesi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:300:3",
+      "hata": "devreden / ödenecek ayın tamamından · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1-ajan/kanit/2026-11-27/m1-yeni-test-taban-utc.log",
+  "klasor": "/dev/shm/m1-kdv/eski",
+  "ham_cikti_sha256": "d9a351fb4edcabebaec5438e4ef1ff282fcad02cd6ee52139d51e01456e721c8",
+  "ham_cikti_bayt": 13781
+}

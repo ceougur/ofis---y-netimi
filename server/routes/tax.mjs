@@ -37,6 +37,12 @@ const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slic
 const tlText = minor => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(minor / 100).replace("-", "−")} TL`;
 const TYPE_OF_LABEL = new Map(Object.entries(TAX_TYPES).map(([key, label]) => [label, key]));
 const bad = (status, message, code, extra = {}) => new HttpError(status, message, { code, ...extra });
+/**
+ * 2.5.1 M1 tur 2 — S-M1-1 (kullanıcıya soruldu 27.11.2026; ÖNERİ B uygulanıyor, kullanıcı değiştirebilir): KDV Özeti'nde mahsup fişi kesilmemiş ayların "Önceki Dönemden
+ * Devreden KDV"si. A ↔ B YALNIZ bu satırla değişir: "chain" = B (zincirli: her ay bir önceki ayın sonraki döneme devredenini alır; mahsupsuz ay sırayla mahsup edilmiş gibi),
+ * "ledger" = A (tur 1: ay başına kadar defterdeki 190 — KDV Mahsup Fişi ön izlemesiyle aynı; mahsupsuz ayda zincir kopar). Ön izleme ve fiş her iki kipte AYNEN.
+ */
+const VAT_CARRY_MODE = "chain";
 
 export function registerTaxRoutes(router, { store, auth, audit, events, bank, period, ledger = () => null, cash = () => null, bankAccounts = () => null, now: clock = systemClock }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
@@ -187,6 +193,8 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
       }
     }
     return {
+      // 2.5.1 M1: 391 / 191 satırı olan aylar (mahsup fişleri hariç; "KDV İndirim Dönemi" ayıyla) — KDV Özeti'nin hareketli ayları.
+      months: () => [...months.keys()],
       of(month) {
         const from = `${month}-01`;
         const row = months.get(month) || { out: 0, input: 0 };
@@ -204,6 +212,21 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
   function carriedBefore(table, active, month) {
     return active.filter(item => item.month < month).reduce((sum, item) => sum + (table.of(item.month).input - Number(item.inMinor)), 0);
   }
+  /**
+   * Bir ayın mahsup hesabı — KDV Mahsup Fişi ön izlemesi ve KDV Özeti (2.5.1 M1) AYNI işlevi kullanır (ikinci formül yok): kullanılan devreden (190, ay başına kadar
+   * defterden), S4 taşıması, fark o − i − p; artıysa ödenecek (360), eksiyse sonraki aya devreden (190).
+   */
+  // 2.5.1 M1 tur 2: carryIn verilirse kullanılan devreden odur (KDV Özeti'nin zinciri); verilmezse ay başına kadar defterdeki 190 (ön izleme — davranış AYNEN).
+  function monthPosition(table, active, month, carryIn = null) {
+    const own = table.of(month);
+    // S4 (Ç7b): önceki ayların mahsubundan sonra girilen, indirilecek KDV'yi AZALTAN kayıtlar bu ayın İ'sinden düşer (carried ≤ 0).
+    const carried = Math.min(0, carriedBefore(table, active, month));
+    const { out } = own;
+    const carry = carryIn === null ? own.carry : carryIn;
+    const input = own.input + carried;
+    const position = out - input - carry;
+    return { out, input, carry, carried, position, payable: Math.max(0, position), carryOut: Math.max(0, -position) };
+  }
   function monthFigures(entries, month) {
     return figureTable(entries).of(month);
   }
@@ -213,8 +236,9 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
   }
   function offsetList() {
     const entries = ledger()?.build ? ledger().build() : [];
-    const table = figureTable(entries);
-    const rows = offsetRows();
+    return listOf(figureTable(entries), offsetRows());
+  }
+  function listOf(table, rows) {
     const active = rows.filter(item => item.status === "active");
     return rows.map(row => {
       const now = table.of(row.month);
@@ -232,13 +256,8 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
     const table = figureTable(entries);
     const offsets = offsetRows();
     const active = offsets.filter(item => item.status === "active");
-    const own = table.of(month);
-    // S4 (Ç7b): önceki ayların mahsubundan sonra girilen, indirilecek KDV'yi AZALTAN kayıtlar bu ayın İ'sinden düşer (carried ≤ 0).
-    const carried = Math.min(0, carriedBefore(table, active, month));
-    const { out, carry } = own;
-    const input = own.input + carried;
-    const position = out - input - carry;
-    const row = { month, date, outMinor: out, inMinor: input, carryInMinor: carry, carryOutMinor: Math.max(0, -position), payableMinor: Math.max(0, position) };
+    const { out, input, carry, carried, position, payable, carryOut } = monthPosition(table, active, month);
+    const row = { month, date, outMinor: out, inMinor: input, carryInMinor: carry, carryOutMinor: carryOut, payableMinor: payable };
     const blocks = [];
     const warnings = [];
     const lock = period?.lockedUntil?.() || "";
@@ -306,5 +325,84 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
     ok(res, { id: done.id, offsets: offsetList() });
   });
 
-  return { balances, offsetList, monthLabel };
+  /**
+   * 2.5.1 M1 (S261; kullanıcı 22.11 "orta bulguyu 2.5.1 de düzeltelim"): KDV Özeti'nin okuduğu görünüm — Ana Defter TEK kez kurulur (eski offsetList çağrısı da bir kez
+   * kuruyordu; ders 47). position(ay) ön izlemenin AYNI formülüdür (monthPosition); months = 391 / 191 satırı olan aylar; mahsup = etkin mahsup fişi olan aylar; offsets =
+   * offsetList() ile aynı liste. Yazım yok, yetki denetimi rapordadır.
+   *
+   * 2.5.1 M1 tur 2 (S-M1-1 = B; VAT_CARRY_MODE; BAŞ MİMAR KARARLARI 27.11 (1)–(3)): KDV'li aylar (391 / 191 satırı ya da etkin mahsup fişi olan) takvim sırasıyla işlenir; ilk
+   * KDV ayından önceki devreden = defterdeki 190'ın o andaki bakiyesi (190'a yalnız KDV Mahsup Fişi yazar — fiş defteri alt defter hesabını reddeder — yani bugün 0). Her ayın
+   * farkı monthPosition ile (TEK formül), kullanılan devreden zincirin getirdiği. Mahsupsuz ay, o an sırayla mahsup edilseydi yazılacak sayıdır: devreden yöndeki sonuç sonraki
+   * aya taşınır, ödenecek yöndeki taşınmaz; S4 için bu ay mahsup edilmiş sayılır (saklı İ = hesaplanan İ — ön izlemenin yazacağı). Mahsup fişi olan ay: fişin kullandığı
+   * devreden zincirinkine EŞİTSE fiş zincirdedir — sonraki aya FİŞİN devredeni taşınır, S4 fişin saklı İ'siyle (bütün aylar sırayla mahsupluysa zincir = defter = ön izleme,
+   * S4 / "Güncel Değil" aylarında da); FARKLIYSA (önceki bir ay atlanıp bu ay mahsup edilmiş) ay zincirle hesaplanır, mismatches'e girer (fişin kullandığı / zincire göre).
+   * Hareketsiz ay devredeni aynen taşır (adımı yok).
+   */
+  function vatView() {
+    const entries = ledger()?.build ? ledger().build() : [];
+    const table = figureTable(entries);
+    const rows = offsetRows();
+    const active = rows.filter(item => item.status === "active");
+    const months = table.months().sort();
+    const mahsup = new Set(active.map(item => item.month));
+    const busy = [...new Set([...months, ...mahsup])].sort();
+    const shape = (month, { out, input, carry, carried, payable, carryOut }) => ({ month, label: monthLabel(month), outMinor: out, inMinor: input, carryInMinor: carry, carriedInMinor: carried, payableMinor: payable, carryOutMinor: carryOut });
+    const chain = VAT_CARRY_MODE === "chain";
+    const steps = new Map();
+    const mismatches = [];
+    const openingMinor = chain && busy.length ? table.of(busy[0]).carry : 0;
+    if (chain) {
+      const fis = new Map(active.map(item => [item.month, item]));
+      const done = [];
+      let carry = openingMinor;
+      for (const month of busy) {
+        const step = monthPosition(table, done, month, carry);
+        const offset = fis.get(month);
+        const kept = Boolean(offset) && Number(offset.carryInMinor) === carry;
+        const next = kept ? Number(offset.carryOutMinor) : step.carryOut;
+        steps.set(month, { ...shape(month, step), carryAfterMinor: next });
+        if (offset && !kept) {
+          mismatches.push({ month, label: monthLabel(month), usedMinor: Number(offset.carryInMinor), chainMinor: carry, offsetPayableMinor: Number(offset.payableMinor), offsetCarryOutMinor: Number(offset.carryOutMinor), payableMinor: step.payable, carryOutMinor: step.carryOut });
+        }
+        done.push({ month, inMinor: kept ? Number(offset.inMinor) : step.input });
+        carry = next;
+      }
+    }
+    /** Zincirde ayın başındaki devreden (hareketsiz ay / aralık başı): önceki KDV'li ayın taşıdığı; ilk KDV ayından önce defterdeki 190. */
+    const carryAt = month => {
+      const before = busy.filter(item => item < month);
+      return before.length ? steps.get(before[before.length - 1]).carryAfterMinor : table.of(month).carry;
+    };
+    return {
+      mode: chain ? "chain" : "ledger",
+      position(month) {
+        if (!chain) return shape(month, monthPosition(table, active, month));
+        if (steps.has(month)) return steps.get(month);
+        const carry = carryAt(month);
+        return { month, label: monthLabel(month), outMinor: 0, inMinor: 0, carryInMinor: carry, carriedInMinor: 0, payableMinor: 0, carryOutMinor: carry, carryAfterMinor: carry };
+      },
+      /** Başı olmayan aralığın (Tüm Zamanlar) Önceki Dönemden Devreden'i: B'de ilk KDV ayından önceki 190 (açılış devredeni), A'da 0 (tur 1). */
+      openingMinor,
+      /**
+       * Mahsup Edilmemiş Ay (aralık [first, last], YYYY-AA; boş = sınırsız). A (tur 1): aralıktan önceki ay (KDV'li ve mahsupsuzsa — ön izlemenin uyarısıyla aynı) + aralıkta son
+       * KDV'li aydan önceki mahsupsuz aylar. B: aralığın sayılarını etkileyen BÜTÜN mahsupsuz KDV'li aylar — aralıktaki son KDV'li aydan (aralıkta yoksa aralığın başından) önce.
+       */
+      pending(first, last) {
+        const inRange = busy.filter(month => (!first || month >= first) && (!last || month <= last));
+        if (!chain) {
+          const before = first ? previousMonth(first) : "";
+          return [...(before && months.includes(before) && !mahsup.has(before) ? [before] : []), ...inRange.slice(0, -1).filter(month => !mahsup.has(month))];
+        }
+        const cutoff = inRange.length ? inRange[inRange.length - 1] : first;
+        return cutoff ? busy.filter(month => month < cutoff && !mahsup.has(month)) : [];
+      },
+      /** B: zincirle uyuşmayan mahsup fişleri, aralığın sonuna kadar (aralığın sayılarını etkileyenler). A'da boş. */
+      mismatchesUntil: last => mismatches.filter(item => !last || item.month <= last),
+      months,
+      mahsup,
+      offsets: listOf(table, rows),
+    };
+  }
+
+  return { balances, offsetList, vatView, monthLabel };
 }

@@ -64,6 +64,11 @@ const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 // Ay anahtarı (YYYY-AA) → "Eylül 2026"; aralıktaki aylar (v2.0.9 aylık raporlar).
 const MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 const monthLabel = key => `${MONTHS[Number(key.slice(5, 7)) - 1]} ${key.slice(0, 4)}`;
+// 2.5.1 M1 (KDV Özeti): ayın son günü (YYYY-AA-GG). (Önceki ay yardımcısı tur 2'de routes/tax.mjs vatView.pending'e geçti.)
+const monthEndOf = day => {
+  const [year, month] = day.split("-").map(Number);
+  return new Date(Date.UTC(year, month, 0)).toISOString().slice(0, 10);
+};
 function monthsBetween(first, last, max = 600) {
   const out = [];
   let [year, month] = first.split("-").map(Number);
@@ -2065,14 +2070,60 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
            FROM invoices i WHERE i.status = 'issued' AND (? = '' OR ${vatDay} >= ?) AND (? = '' OR ${vatDay} <= ?)`,
           range.from, range.from, range.to, range.to,
         );
-        const result = roundMoney(heads.output - heads.input);
-        return {
-          subtitle: rangeText(range),
-          headers: ["Ay", "Belge Türü", "KDV %", "Belge", "Matrah", "KDV", "Tevkifat"],
-          types: ["", "", "number", "number", "money", "money", "money"],
-          rows: list.map(row => [monthLabel(row.month), KIND[row.kind] || row.kind, `%${row.rate}`, String(row.count), money(roundMoney(row.net)), money(roundMoney(row.vat)), money(roundMoney(row.withheld))]),
-          // 2.4.3 UX24: hesaplanan (satış) ve indirilecek (alış) KDV tek TOPLAM'da toplanmaz; her belge yönü kendi TOPLAM satırında, altta Net KDV
-          // (satış KDV'si − alıcının kestiği tevkifat − satıştan iade; eksi alış KDV'si, artı alıştan iade) = özetteki Ödenecek / Devreden KDV.
+        // 2.5.1 M1 (S261 — mali müşavir ara kabulü ORTA-1; kullanıcı 22.11 19:47 "orta bulguyu 2.5.1 de düzeltelim"): ödenecek / devreden KDV, KDV Mahsup Fişi ön izlemesinin
+        // AYNI hesabıyla (routes/tax.mjs vatView → monthPosition; rapora ikinci formül yazılmaz). Ay ay: kullanılan devreden = ay başına kadar defterdeki 190 (mahsup fişlerinden),
+        // fark = 391 − 191 − devreden; artıysa Ödenecek KDV, eksiyse Sonraki Döneme Devreden KDV. Aralıkta (BAŞ MİMAR KARARI 3): Önceki Dönemden Devreden = aralığın İLK ayından önce
+        // devreden; Ödenecek = hareketli ayların ödeneceklerinin toplamı; Sonraki Döneme Devreden = aralığın son hareketli ayının devredeni (hareketli ay yoksa önceki devreden aynen
+        // taşınır). Hareketli ay = 391 / 191 satırı ya da etkin mahsup fişi olan ay (boş ayların ön izlemesi rapora girmez). Çok aylı aralıkta her ayın kendi satırları tabloda.
+        // 2.5.1 M1 tur 2 (S-M1-1 = B; kip tax.mjs VAT_CARRY_MODE'da): ayların devredeni ZİNCİRLİ — her ay bir önceki ayın sonraki döneme devredenini alır; mahsup fişi kesilmemiş
+        // ay sırayla mahsup edilmiş gibi (vatView). Mahsupsuz ayda rapor ön izlemeden (defterdeki 190) ayrılabilir; "Mahsup Edilmemiş Ay" notu bunu söyler.
+        const view = tax()?.vatView ? tax().vatView() : null;
+        const firstMonth = range.from ? range.from.slice(0, 7) : "";
+        const lastMonth = range.to ? range.to.slice(0, 7) : "";
+        const inMonths = month => (!firstMonth || month >= firstMonth) && (!lastMonth || month <= lastMonth);
+        const vat = view
+          ? (() => {
+              const busy = [...new Set([...view.months, ...view.mahsup])].filter(inMonths).sort();
+              const positions = busy.map(month => view.position(month));
+              const startMinor = firstMonth ? view.position(firstMonth).carryInMinor : view.openingMinor;
+              const payableMinor = positions.reduce((sum, item) => sum + item.payableMinor, 0);
+              const carryOutMinor = positions.length ? positions[positions.length - 1].carryOutMinor : startMinor;
+              // Mahsubu kesilmemiş ay (vatView.pending): A'da sonraki ayın devredeni defterdeki 190'dan gelir; B'de bu aylar sırayla mahsup edilmiş gibi hesaplanır.
+              const pending = view.pending(firstMonth, lastMonth);
+              // B (karar (3)): zincirle uyuşmayan mahsup fişi — fiş önceki bir ay atlanarak kesilmiş; rapor zinciri gösterir, iki sayı notta.
+              const mismatches = view.mismatchesUntil ? view.mismatchesUntil(lastMonth) : [];
+              return { positions, startMinor, payableMinor, carryOutMinor, pending, mismatches, chain: view.mode === "chain" };
+            })()
+          : null;
+        const docRows = list.map(row => [monthLabel(row.month), KIND[row.kind] || row.kind, `%${row.rate}`, String(row.count), money(roundMoney(row.net)), money(roundMoney(row.vat)), money(roundMoney(row.withheld))]);
+        const lira = minor => money(roundMoney(minor / 100));
+        const vatLine = (month, label, minor) => [month, label, "", "", "", lira(minor), ""];
+        // Çok aylı aralıkta ayın sonuç satırları (ayın belgelerinin hemen altında): kullanılan devreden (varsa) ve Ödenecek KDV ya da Sonraki Döneme Devreden KDV. Yalnız aralığın
+        // TAMAMEN içindeki aylar (ay ortasında başlayan / biten aralıkta o ayın sonucu yalnız özette ve tablo altında — belgelerin bir kısmı dışarıda kalır).
+        const several = !firstMonth || !lastMonth || firstMonth !== lastMonth;
+        const whole = month => (!range.from || range.from <= `${month}-01`) && (!range.to || range.to >= monthEndOf(`${month}-01`));
+        const rows = [];
+        if (vat && several) {
+          const byMonth = new Map(vat.positions.filter(item => whole(item.month)).map(item => [item.month, item]));
+          const order = [...new Set([...list.map(row => row.month), ...byMonth.keys()])].sort();
+          for (const month of order) {
+            list.forEach((row, index) => {
+              if (row.month === month) rows.push(docRows[index]);
+            });
+            const item = byMonth.get(month);
+            if (!item) continue;
+            if (item.carryInMinor > 0) rows.push(vatLine(monthLabel(month), "Önceki Dönemden Devreden KDV", item.carryInMinor));
+            rows.push(item.payableMinor > 0 || item.carryOutMinor <= 0 ? vatLine(monthLabel(month), "Ödenecek KDV", item.payableMinor) : vatLine(monthLabel(month), "Sonraki Döneme Devreden KDV", item.carryOutMinor));
+          }
+        } else rows.push(...docRows);
+        const headers = ["Ay", "Belge Türü", "KDV %", "Belge", "Matrah", "KDV", "Tevkifat"];
+        const types = ["", "", "number", "number", "money", "money", "money"];
+        // 2.4.3 UX24: hesaplanan (satış) ve indirilecek (alış) KDV tek TOPLAM'da toplanmaz; her belge yönü kendi TOPLAM satırında (belge satırlarından). 2.5.1 M1: altta eski
+        // "Net KDV (Ödenecek / Devreden)" yerine mahsup hesabıyla Önceki Dönemden Devreden KDV, Ödenecek KDV ve Sonraki Döneme Devreden KDV (özetle aynı sayılar).
+        const groups = footerRows({
+          headers,
+          types,
+          rows: docRows,
           footerGroups: {
             column: "Belge Türü",
             groups: [
@@ -2081,31 +2132,64 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
               { label: "TOPLAM Alış", values: [KIND.purchase] },
               { label: "TOPLAM Alıştan İade", values: [KIND.purchase_return] },
             ],
-            net: (() => {
-              const net = roundMoney(list.reduce((sum, row) => {
-                const vat = roundMoney(row.vat);
-                const withheld = roundMoney(row.withheld);
-                if (row.kind === "sale" || row.kind === "smm") return sum + vat - withheld;
-                if (row.kind === "sale_return") return sum - (vat - withheld);
-                if (row.kind === "purchase") return sum - vat;
-                if (row.kind === "purchase_return") return sum + vat;
-                return sum;
-              }, 0));
-              return { label: net >= 0 ? "Net KDV (Ödenecek)" : "Net KDV (Devreden)", cells: { KDV: money(Math.abs(net)) } };
-            })(),
           },
+        });
+        const results = vat ? [["Önceki Dönemden Devreden KDV", vat.startMinor], ["Ödenecek KDV", vat.payableMinor], ["Sonraki Döneme Devreden KDV", vat.carryOutMinor]] : [];
+        // Ay ortasında başlayan / biten aralık: belge satırları aralıktaki günlerden, devreden / ödenecek ayın tamamından (KDV aylık) — dışarıda kalan belge varsa söylenir.
+        const partial =
+          view && ((range.from && range.from.slice(8) !== "01") || (range.to && range.to !== monthEndOf(range.to)))
+            ? store.get(
+                `SELECT COUNT(*) AS n FROM invoices i WHERE i.status = 'issued' AND substr(${vatDay}, 1, 7) IN (?, ?) AND ((? <> '' AND ${vatDay} < ?) OR (? <> '' AND ${vatDay} > ?))`,
+                firstMonth,
+                lastMonth,
+                range.from,
+                range.from,
+                range.to,
+                range.to,
+              ).n > 0
+            : false;
+        return {
+          subtitle: rangeText(range),
+          headers,
+          types,
+          rows,
+          footers: [...groups, ...results.map(([label, minor]) => headers.map(name => (name === "Belge Türü" ? label : name === "KDV" ? lira(minor) : "")))],
           summary: [
-            ["Hesaplanan KDV (391)", money(roundMoney(heads.output))],
-            ["İndirilecek KDV (191)", money(roundMoney(heads.input))],
+            ["Hesaplanan KDV (391) (İadeler Düşülmüş)", money(roundMoney(heads.output))],
+            ["İndirilecek KDV (191) (İadeler Düşülmüş)", money(roundMoney(heads.input))],
             ["Alıcı Olarak Kesilen Tevkifat (2 No.lu)", money(roundMoney(heads.withheld2))],
-            [result >= 0 ? "Ödenecek KDV" : "Devreden KDV", money(Math.abs(result))],
+            ...results.map(([label, minor]) => [label, lira(minor)]),
             // 2.4.3 MM3: aralıktaki aylardan mahsup edilenler ve mahsuptan sonra KDV'li kaydı değişen aylar (geri alıp yeniden yapılır).
             ...(() => {
-              const list = (tax()?.offsetList ? tax().offsetList() : []).filter(item => item.status === "active" && (!range.from || item.date >= range.from) && (!range.to || item.month <= range.to.slice(0, 7)));
+              const list = (view?.offsets || []).filter(item => item.status === "active" && (!range.from || item.date >= range.from) && (!range.to || item.month <= range.to.slice(0, 7)));
               if (!list.length) return [];
               const stale = list.filter(item => item.stale);
               return [["KDV Mahsup Fişi", list.map(item => item.label).join(", ")], ...(stale.length ? [["Mahsuptan Sonra Değişen Ay", `${stale.map(item => item.label).join(", ")} (mahsubu geri alıp yeniden yapın)`]] : [])];
             })(),
+            ...(vat?.pending.length
+              ? [
+                  [
+                    "Mahsup Edilmemiş Ay",
+                    `${vat.pending.slice(0, 6).map(monthLabel).join(", ")}${vat.pending.length > 6 ? ` ve ${vat.pending.length - 6} ay daha` : ""} (${
+                      vat.chain
+                        ? "devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin"
+                        : "devreden KDV mahsup fişinden gelir; sonraki ayların devredeni ve ödeneceği aylar sırayla mahsup edilince kesinleşir"
+                    })`,
+                  ],
+                ]
+              : []),
+            ...(vat?.mismatches.length
+              ? [
+                  [
+                    "Zincirle Uyuşmayan Mahsup Fişi",
+                    `${vat.mismatches
+                      .slice(0, 6)
+                      .map(item => `${item.label} fişi ${lira(item.usedMinor)} devredenle kesilmiş, sırayla mahsupta ${lira(item.chainMinor)} olmalıydı`)
+                      .join("; ")}${vat.mismatches.length > 6 ? ` ve ${vat.mismatches.length - 6} ay daha` : ""} (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)`,
+                  ],
+                ]
+              : []),
+            ...(partial ? [["Not", "Devreden ve ödenecek KDV ayın tamamından hesaplanır; aralık ay ortasında başladığı ya da bittiği için tablodaki belgeler ayın bir kısmıdır."]] : []),
           ],
         };
       },

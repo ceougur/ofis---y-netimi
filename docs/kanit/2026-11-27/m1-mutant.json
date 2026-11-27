@@ -1,0 +1,262 @@
+[
+ {
+  "mutant": "D1 devredeni sıfır al (rapor görünümü)",
+  "testler": {
+   "test/kdv-ozeti-devreden-251.test.mjs": {
+    "cikis": 1,
+    "fail": "# fail 8",
+    "ilk_hata": "error: |-"
+   },
+   "test/defter-243-ux24-toplam.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-ozeti-donem-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-s4-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   }
+  },
+  "oldu": true
+ },
+ {
+  "mutant": "D2 devredeni iki kez düş",
+  "testler": {
+   "test/kdv-ozeti-devreden-251.test.mjs": {
+    "cikis": 1,
+    "fail": "# fail 7",
+    "ilk_hata": "error: |-"
+   },
+   "test/defter-243-ux24-toplam.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-ozeti-donem-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-s4-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   }
+  },
+  "oldu": true
+ },
+ {
+  "mutant": "D3 çok aylı aralıkta ilk ay yerine son ayın devredeni 'önceki dönem'",
+  "testler": {
+   "test/kdv-ozeti-devreden-251.test.mjs": {
+    "cikis": 1,
+    "fail": "# fail 2",
+    "ilk_hata": "error: |-"
+   },
+   "test/defter-243-ux24-toplam.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-ozeti-donem-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-s4-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   }
+  },
+  "oldu": true
+ },
+ {
+  "mutant": "D4 mahsup formülü yerine eski dönem farkı (391 − 191)",
+  "testler": {
+   "test/kdv-ozeti-devreden-251.test.mjs": {
+    "cikis": 1,
+    "fail": "# fail 8",
+    "ilk_hata": "error: |-"
+   },
+   "test/defter-243-ux24-toplam.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-ozeti-donem-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-s4-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   }
+  },
+  "oldu": true
+ },
+ {
+  "mutant": "D5 ödenecek ile devredeni ters yaz",
+  "testler": {
+   "test/kdv-ozeti-devreden-251.test.mjs": {
+    "cikis": 1,
+    "fail": "# fail 8",
+    "ilk_hata": "error: |-"
+   },
+   "test/defter-243-ux24-toplam.test.mjs": {
+    "cikis": 1,
+    "fail": "# fail 1",
+    "ilk_hata": "error: |-"
+   },
+   "test/c7b-kdv-ozeti-donem-250.test.mjs": {
+    "cikis": 1,
+    "fail": "# fail 1",
+    "ilk_hata": "error: |-"
+   },
+   "test/c7b-kdv-s4-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   }
+  },
+  "oldu": true
+ },
+ {
+  "mutant": "D6 ödenecek yalnız son hareketli ay (toplam yerine)",
+  "testler": {
+   "test/kdv-ozeti-devreden-251.test.mjs": {
+    "cikis": 1,
+    "fail": "# fail 2",
+    "ilk_hata": "error: |-"
+   },
+   "test/defter-243-ux24-toplam.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-ozeti-donem-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-s4-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   }
+  },
+  "oldu": true
+ },
+ {
+  "mutant": "D7 sonraki döneme devreden = aralığın son ayının ön izlemesi (hareketli ay yerine)",
+  "testler": {
+   "test/kdv-ozeti-devreden-251.test.mjs": {
+    "cikis": 1,
+    "fail": "# fail 1",
+    "ilk_hata": "error: |-"
+   },
+   "test/defter-243-ux24-toplam.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-ozeti-donem-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-s4-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   }
+  },
+  "oldu": true
+ },
+ {
+  "mutant": "D8 'Mahsup Edilmemiş Ay' notu hiç yazılmaz",
+  "testler": {
+   "test/kdv-ozeti-devreden-251.test.mjs": {
+    "cikis": 1,
+    "fail": "# fail 3",
+    "ilk_hata": "error: 'not: [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.000,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden D"
+   },
+   "test/defter-243-ux24-toplam.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-ozeti-donem-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-s4-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   }
+  },
+  "oldu": true
+ },
+ {
+  "mutant": "D9 ay satırlarında kullanılan devreden satırı yok",
+  "testler": {
+   "test/kdv-ozeti-devreden-251.test.mjs": {
+    "cikis": 1,
+    "fail": "# fail 1",
+    "ilk_hata": "error: |-"
+   },
+   "test/defter-243-ux24-toplam.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-ozeti-donem-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-s4-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   }
+  },
+  "oldu": true
+ },
+ {
+  "mutant": "D10 S4 taşıması rapor görünümünde unutulur (carried yok)",
+  "testler": {
+   "test/kdv-ozeti-devreden-251.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/defter-243-ux24-toplam.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-ozeti-donem-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   },
+   "test/c7b-kdv-s4-250.test.mjs": {
+    "cikis": 0,
+    "fail": "# fail 0",
+    "ilk_hata": ""
+   }
+  },
+  "oldu": false
+ }
+]
