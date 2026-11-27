@@ -1,0 +1,4649 @@
+{
+ "ad": "rastgele-7",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "arsiv:0": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tyk": []
+    },
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "devir_tabani": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [
+    {
+     "K": "2026-12-31",
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m27_net_satir": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "soz_hatirlatma_ayni": [],
+      "tek_acilis_fisi": [],
+      "yeni_gt_sifir": []
+     },
+     "id": "devir-2026-1"
+    }
+   ],
+   "raporlar": {
+    "bil_arsiv": {
+     "aktif": {
+      "I.A": 21282390,
+      "I.C": 10856359,
+      "I.E": 6025086,
+      "I.H": 4036,
+      "II.D": 933700
+     },
+     "aktif_toplam": 39101571,
+     "bilgi": [],
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 674455,
+       "102.B1": 14324596,
+       "102.B2": 6212655,
+       "103": -153520,
+       "108.POS1": 224204
+      },
+      "I.C": {
+       "120|C1": 992126,
+       "120|C2": 1200700,
+       "120|C3": 3748719,
+       "120|C4": 1176069,
+       "120|C5": 3738745
+      },
+      "I.E": {
+       "153": 1350707,
+       "320|T1": 4674379
+      },
+      "I.H": {
+       "191": 3636,
+       "193": 400
+      },
+      "II.D": {
+       "255": 933700
+      },
+      "III.A": {
+       "300.KR1": 549600,
+       "309.KK1": 601248
+      },
+      "III.F": {
+       "360": 3375945
+      },
+      "V.F": {
+       "590": 29243278
+      },
+      "V.G": {
+       "519": 5331500
+      }
+     },
+     "donem_net_kari": 0,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
+     "kesin_degil": [
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "III.A": 1150848,
+      "III.F": 3375945,
+      "V.F": 29243278,
+      "V.G": 5331500
+     },
+     "pasif_toplam": 39101571,
+     "tarih": "2026-12-31"
+    },
+    "bil_canli_K": {
+     "aktif": {
+      "I.A": 21282390,
+      "I.C": 10856359,
+      "I.E": 6025086,
+      "I.H": 4036,
+      "II.D": 933700
+     },
+     "aktif_toplam": 39101571,
+     "bilgi": [],
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 674455,
+       "102.B1": 14324596,
+       "102.B2": 6212655,
+       "103": -153520,
+       "108.POS1": 224204
+      },
+      "I.C": {
+       "120|C1": 992126,
+       "120|C2": 1200700,
+       "120|C3": 3748719,
+       "120|C4": 1176069,
+       "120|C5": 3738745
+      },
+      "I.E": {
+       "153 (Tahmini Değerleme)": 1350707,
+       "320|T1": 4674379
+      },
+      "I.H": {
+       "191": 3636,
+       "193": 400
+      },
+      "II.D": {
+       "255": 933700
+      },
+      "III.A": {
+       "300.KR1": 549600,
+       "309.KK1": 601248
+      },
+      "III.F": {
+       "360": 3375945
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 29243278
+      },
+      "V.G": {
+       "519": 5331500
+      }
+     },
+     "donem_net_kari": 29243278,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI",
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "III.A": 1150848,
+      "III.F": 3375945,
+      "V.F": 29243278,
+      "V.G": 5331500
+     },
+     "pasif_toplam": 39101571,
+     "tarih": "2026-12-31"
+    },
+    "bil_yeni": {
+     "aktif": {
+      "I.A": 22343004,
+      "I.C": 13416170,
+      "I.E": 6152033,
+      "I.H": 2000,
+      "II.D": 933700
+     },
+     "aktif_toplam": 42846907,
+     "bilgi": [],
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 1194451,
+       "101.02": 31400,
+       "102.B1": 14606578,
+       "102.B2": 6510575
+      },
+      "I.C": {
+       "120|C1": 1881085,
+       "120|C2": 2008980,
+       "120|C3": 3653219,
+       "120|C4": 1417419,
+       "120|C5": 3952167,
+       "121.01": 503300
+      },
+      "I.E": {
+       "153 (Tahmini Değerleme)": 1567930,
+       "320|T1": 4584103
+      },
+      "I.H": {
+       "191": 1600,
+       "193": 400
+      },
+      "II.D": {
+       "255": 933700
+      },
+      "III.A": {
+       "300.KR1": 549600,
+       "309.KK1": 628098
+      },
+      "III.B": {
+       "320|T2": 57400,
+       "320|T3": 56050
+      },
+      "III.F": {
+       "360": 3715434
+      },
+      "III.I": {
+       "391": 32880
+      },
+      "V.D": {
+       "Önceki Yıl Kârı — Dağıtılmamış (2026)": 29228278
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 3247667
+      },
+      "V.G": {
+       "519": 5331500
+      }
+     },
+     "donem_net_kari": 3247667,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
+     "kesin_degil": [
+      "ONCEKI_YIL_KDV_MAHSUBU_YAPILMAMIS:2026-12",
+      "SATISLARIN_MALIYETI_TAHMINI",
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "onceki_yil_dagitilmamis": {
+      "2026": 29228278
+     },
+     "pasif": {
+      "III.A": 1177698,
+      "III.B": 113450,
+      "III.F": 3715434,
+      "III.I": 32880,
+      "V.D": 29228278,
+      "V.F": 3247667,
+      "V.G": 5331500
+     },
+     "pasif_toplam": 42846907,
+     "tarih": "2027-02-28"
+    },
+    "devir": {
+     "K": "2026-12-31",
+     "acilis": {
+      "N13": {
+       "191@2027-01": 3636,
+       "193": 400,
+       "255": 933700,
+       "360": -3375945,
+       "519": 31681487,
+       "590": -29243278
+      },
+      "acik_kalemler": [
+       {
+        "belge_tarihi": "2026-07-23",
+        "cari": "C1",
+        "k": "fatura:F212",
+        "kalan": 69062,
+        "tur": "fatura",
+        "vade": "2026-09-21"
+       },
+       {
+        "belge_tarihi": "2026-09-21",
+        "cari": "C1",
+        "k": "fatura:F287",
+        "kalan": 442800,
+        "tur": "fatura",
+        "vade": "2026-09-21"
+       },
+       {
+        "belge_tarihi": "2026-10-30",
+        "cari": "C1",
+        "k": "fatura:F331",
+        "kalan": 355924,
+        "tur": "fatura",
+        "vade": "2026-10-30"
+       },
+       {
+        "belge_tarihi": "2026-09-13",
+        "cari": "C1",
+        "k": "fatura:F279",
+        "kalan": 38720,
+        "tur": "fatura",
+        "vade": "2026-11-12"
+       },
+       {
+        "belge_tarihi": "2026-11-14",
+        "cari": "C1",
+        "k": "fatura:F355",
+        "kalan": 49086,
+        "tur": "fatura",
+        "vade": "2026-11-14"
+       },
+       {
+        "belge_tarihi": "2026-10-06",
+        "cari": "C2",
+        "k": "fatura:F307",
+        "kalan": 1425,
+        "tur": "fatura",
+        "vade": "2026-10-06"
+       },
+       {
+        "belge_tarihi": "2026-08-08",
+        "cari": "C2",
+        "k": "fatura:F241",
+        "kalan": 173875,
+        "tur": "fatura",
+        "vade": "2026-10-07"
+       },
+       {
+        "belge_tarihi": "2026-11-02",
+        "cari": "C2",
+        "k": "fatura:F334",
+        "kalan": 269760,
+        "tur": "fatura",
+        "vade": "2027-01-01"
+       },
+       {
+        "belge_tarihi": "2026-12-16",
+        "cari": "C2",
+        "k": "fatura:F383",
+        "kalan": 361320,
+        "tur": "fatura",
+        "vade": "2027-02-14"
+       },
+       {
+        "belge_tarihi": "2026-12-28",
+        "cari": "C2",
+        "k": "fatura:F395",
+        "kalan": 394320,
+        "tur": "fatura",
+        "vade": "2027-02-26"
+       },
+       {
+        "belge_tarihi": "2026-04-15",
+        "cari": "C3",
+        "k": "fatura:F115",
+        "kalan": 422615,
+        "tur": "fatura",
+        "vade": "2026-04-15"
+       },
+       {
+        "belge_tarihi": "2026-04-30",
+        "cari": "C3",
+        "k": "fatura:F132",
+        "kalan": 415580,
+        "tur": "fatura",
+        "vade": "2026-05-30"
+       },
+       {
+        "belge_tarihi": "2026-06-14",
+        "cari": "C3",
+        "k": "fatura:F179",
+        "kalan": 321200,
+        "tur": "fatura",
+        "vade": "2026-06-14"
+       },
+       {
+        "belge_tarihi": "2026-07-03",
+        "cari": "C3",
+        "k": "borc:k335",
+        "kalan": 22200,
+        "tur": "borc_yaz",
+        "vade": "2026-07-03"
+       },
+       {
+        "belge_tarihi": "2026-07-09",
+        "cari": "C3",
+        "k": "borc:k344",
+        "kalan": 13500,
+        "tur": "borc_yaz",
+        "vade": "2026-07-09"
+       },
+       {
+        "belge_tarihi": "2026-09-14",
+        "cari": "C3",
+        "k": "fatura:F280",
+        "kalan": 80160,
+        "tur": "fatura",
+        "vade": "2026-09-14"
+       },
+       {
+        "belge_tarihi": "2026-09-22",
+        "cari": "C3",
+        "k": "fatura:F288",
+        "kalan": 329780,
+        "tur": "fatura",
+        "vade": "2026-09-22"
+       },
+       {
+        "belge_tarihi": "2026-10-05",
+        "cari": "C3",
+        "k": "borc:k526",
+        "kalan": 8700,
+        "tur": "borc_yaz",
+        "vade": "2026-10-05"
+       },
+       {
+        "belge_tarihi": "2026-10-02",
+        "cari": "C3",
+        "k": "fatura:F306",
+        "kalan": 120700,
+        "tur": "fatura",
+        "vade": "2026-10-17"
+       },
+       {
+        "belge_tarihi": "2026-08-27",
+        "cari": "C3",
+        "k": "fatura:F260",
+        "kalan": 188500,
+        "tur": "fatura",
+        "vade": "2026-10-26"
+       },
+       {
+        "belge_tarihi": "2026-11-10",
+        "cari": "C3",
+        "k": "fatura:F345",
+        "kalan": 66000,
+        "tur": "fatura",
+        "vade": "2026-11-10"
+       },
+       {
+        "belge_tarihi": "2026-11-11",
+        "cari": "C3",
+        "k": "fatura:F348",
+        "kalan": 322594,
+        "tur": "fatura",
+        "vade": "2026-11-11"
+       },
+       {
+        "belge_tarihi": "2026-10-24",
+        "cari": "C3",
+        "k": "fatura:F324",
+        "kalan": 34320,
+        "tur": "fatura",
+        "vade": "2026-11-23"
+       },
+       {
+        "belge_tarihi": "2026-11-20",
+        "cari": "C3",
+        "k": "fatura:F357",
+        "kalan": 21120,
+        "tur": "fatura",
+        "vade": "2026-12-05"
+       },
+       {
+        "belge_tarihi": "2026-11-25",
+        "cari": "C3",
+        "k": "fatura:F362",
+        "kalan": 359810,
+        "tur": "fatura",
+        "vade": "2026-12-10"
+       },
+       {
+        "belge_tarihi": "2026-12-21",
+        "cari": "C3",
+        "k": "fatura:F387",
+        "kalan": 211100,
+        "tur": "fatura",
+        "vade": "2026-12-21"
+       },
+       {
+        "belge_tarihi": "2026-10-23",
+        "cari": "C3",
+        "k": "fatura:F318",
+        "kalan": 123240,
+        "tur": "fatura",
+        "vade": "2026-12-22"
+       },
+       {
+        "belge_tarihi": "2026-12-17",
+        "cari": "C3",
+        "k": "fatura:F384",
+        "kalan": 284300,
+        "tur": "fatura",
+        "vade": "2027-01-01"
+       },
+       {
+        "belge_tarihi": "2026-11-12",
+        "cari": "C3",
+        "k": "fatura:F351",
+        "kalan": 336300,
+        "tur": "fatura",
+        "vade": "2027-01-11"
+       },
+       {
+        "belge_tarihi": "2026-07-09",
+        "cari": "C4",
+        "k": "fatura:F201",
+        "kalan": 50466,
+        "tur": "fatura",
+        "vade": "2026-09-07"
+       },
+       {
+        "belge_tarihi": "2026-08-02",
+        "cari": "C4",
+        "k": "kart_kalani:TK229",
+        "kalan": 36166,
+        "tur": "kart_kalani",
+        "vade": "2026-10-01"
+       },
+       {
+        "belge_tarihi": "2026-08-02",
+        "cari": "C4",
+        "k": "kart_kalani:TK229",
+        "kalan": 36168,
+        "tur": "kart_kalani",
+        "vade": "2026-10-31"
+       },
+       {
+        "belge_tarihi": "2026-11-01",
+        "cari": "C4",
+        "k": "fatura:F332",
+        "kalan": 131280,
+        "tur": "fatura",
+        "vade": "2026-11-01"
+       },
+       {
+        "belge_tarihi": "2026-12-05",
+        "cari": "C4",
+        "k": "odeme:k632",
+        "kalan": 1000,
+        "tur": "odeme",
+        "vade": "2026-12-05"
+       },
+       {
+        "belge_tarihi": "2026-12-01",
+        "cari": "C4",
+        "k": "fatura:F369",
+        "kalan": 421080,
+        "tur": "fatura",
+        "vade": "2026-12-31"
+       },
+       {
+        "belge_tarihi": "2026-12-31",
+        "cari": "C4",
+        "k": "fatura:F399",
+        "kalan": 60099,
+        "tur": "fatura",
+        "vade": "2026-12-31"
+       },
+       {
+        "belge_tarihi": "2026-11-23",
+        "cari": "C4",
+        "k": "fatura:F360",
+        "kalan": 359810,
+        "tur": "fatura",
+        "vade": "2027-01-22"
+       },
+       {
+        "belge_tarihi": "2026-05-05",
+        "cari": "C5",
+        "k": "fatura:F137",
+        "kalan": 45545,
+        "tur": "fatura",
+        "vade": "2026-06-04"
+       },
+       {
+        "belge_tarihi": "2026-07-27",
+        "cari": "C5",
+        "k": "fatura:F219",
+        "kalan": 244900,
+        "tur": "fatura",
+        "vade": "2026-07-27"
+       },
+       {
+        "belge_tarihi": "2026-08-04",
+        "cari": "C5",
+        "k": "fatura:F232",
+        "kalan": 252000,
+        "tur": "fatura",
+        "vade": "2026-08-04"
+       },
+       {
+        "belge_tarihi": "2026-08-07",
+        "cari": "C5",
+        "k": "fatura:F238",
+        "kalan": 358550,
+        "tur": "fatura",
+        "vade": "2026-08-07"
+       },
+       {
+        "belge_tarihi": "2026-07-25",
+        "cari": "C5",
+        "k": "fatura:F215",
+        "kalan": 194280,
+        "tur": "fatura",
+        "vade": "2026-08-09"
+       },
+       {
+        "belge_tarihi": "2026-06-23",
+        "cari": "C5",
+        "k": "fatura:F187",
+        "kalan": 375500,
+        "tur": "fatura",
+        "vade": "2026-08-22"
+       },
+       {
+        "belge_tarihi": "2026-08-17",
+        "cari": "C5",
+        "k": "fatura:F253",
+        "kalan": 305600,
+        "tur": "fatura",
+        "vade": "2026-09-01"
+       },
+       {
+        "belge_tarihi": "2026-09-04",
+        "cari": "C5",
+        "k": "fatura:F265",
+        "kalan": 426360,
+        "tur": "fatura",
+        "vade": "2026-09-04"
+       },
+       {
+        "belge_tarihi": "2026-09-24",
+        "cari": "C5",
+        "k": "fatura:F292",
+        "kalan": 173640,
+        "tur": "fatura",
+        "vade": "2026-09-24"
+       },
+       {
+        "belge_tarihi": "2026-10-22",
+        "cari": "C5",
+        "k": "borc:k546",
+        "kalan": 19600,
+        "tur": "borc_yaz",
+        "vade": "2026-10-22"
+       },
+       {
+        "belge_tarihi": "2026-09-13",
+        "cari": "C5",
+        "k": "fatura:F277",
+        "kalan": 149700,
+        "tur": "fatura",
+        "vade": "2026-11-12"
+       },
+       {
+        "belge_tarihi": "2026-11-04",
+        "cari": "C5",
+        "k": "fatura:F336",
+        "kalan": 359310,
+        "tur": "fatura",
+        "vade": "2026-11-19"
+       },
+       {
+        "belge_tarihi": "2026-11-25",
+        "cari": "C5",
+        "k": "fatura:F361",
+        "kalan": 356510,
+        "tur": "fatura",
+        "vade": "2026-11-25"
+       },
+       {
+        "belge_tarihi": "2026-12-21",
+        "cari": "C5",
+        "k": "fatura:F386",
+        "kalan": 34500,
+        "tur": "fatura",
+        "vade": "2027-01-05"
+       },
+       {
+        "belge_tarihi": "2026-11-14",
+        "cari": "C5",
+        "k": "fatura:F356",
+        "kalan": 26640,
+        "tur": "fatura",
+        "vade": "2027-01-13"
+       },
+       {
+        "belge_tarihi": "2026-12-05",
+        "cari": "C5",
+        "k": "fatura:F375",
+        "kalan": 168720,
+        "tur": "fatura",
+        "vade": "2027-02-03"
+       },
+       {
+        "belge_tarihi": "2026-12-23",
+        "cari": "C5",
+        "k": "fatura:F389",
+        "kalan": 247390,
+        "tur": "fatura",
+        "vade": "2027-02-21"
+       },
+       {
+        "belge_tarihi": "2026-05-07",
+        "cari": "T1",
+        "k": "fatura:F141",
+        "kalan": 43732,
+        "tur": "fatura",
+        "vade": "2026-05-07"
+       },
+       {
+        "belge_tarihi": "2026-06-05",
+        "cari": "T1",
+        "k": "fatura:F172",
+        "kalan": 314820,
+        "tur": "fatura",
+        "vade": "2026-06-05"
+       },
+       {
+        "belge_tarihi": "2026-05-24",
+        "cari": "T1",
+        "k": "fatura:F160",
+        "kalan": 425150,
+        "tur": "fatura",
+        "vade": "2026-06-08"
+       },
+       {
+        "belge_tarihi": "2026-04-27",
+        "cari": "T1",
+        "k": "fatura:F129",
+        "kalan": 295350,
+        "tur": "fatura",
+        "vade": "2026-06-26"
+       },
+       {
+        "belge_tarihi": "2026-07-05",
+        "cari": "T1",
+        "k": "fatura:F196",
+        "kalan": 13800,
+        "tur": "fatura",
+        "vade": "2026-07-20"
+       },
+       {
+        "belge_tarihi": "2026-07-22",
+        "cari": "T1",
+        "k": "fatura:F210",
+        "kalan": 13635,
+        "tur": "fatura",
+        "vade": "2026-07-22"
+       },
+       {
+        "belge_tarihi": "2026-07-22",
+        "cari": "T1",
+        "k": "fatura:F211",
+        "kalan": 285230,
+        "tur": "fatura",
+        "vade": "2026-07-22"
+       },
+       {
+        "belge_tarihi": "2026-07-08",
+        "cari": "T1",
+        "k": "fatura:F199",
+        "kalan": 353760,
+        "tur": "fatura",
+        "vade": "2026-07-23"
+       },
+       {
+        "belge_tarihi": "2026-07-27",
+        "cari": "T1",
+        "k": "fatura:F218",
+        "kalan": 459120,
+        "tur": "fatura",
+        "vade": "2026-07-27"
+       },
+       {
+        "belge_tarihi": "2026-07-25",
+        "cari": "T1",
+        "k": "fatura:F214",
+        "kalan": 186240,
+        "tur": "fatura",
+        "vade": "2026-08-24"
+       },
+       {
+        "belge_tarihi": "2026-08-17",
+        "cari": "T1",
+        "k": "fatura:F254",
+        "kalan": 25200,
+        "tur": "fatura",
+        "vade": "2026-09-01"
+       },
+       {
+        "belge_tarihi": "2026-09-11",
+        "cari": "T1",
+        "k": "fatura:F274",
+        "kalan": 198600,
+        "tur": "fatura",
+        "vade": "2026-09-11"
+       },
+       {
+        "belge_tarihi": "2026-09-02",
+        "cari": "T1",
+        "k": "fatura:F262",
+        "kalan": 379610,
+        "tur": "fatura",
+        "vade": "2026-10-02"
+       },
+       {
+        "belge_tarihi": "2026-08-24",
+        "cari": "T1",
+        "k": "fatura:F258",
+        "kalan": 189072,
+        "tur": "fatura",
+        "vade": "2026-10-23"
+       },
+       {
+        "belge_tarihi": "2026-10-01",
+        "cari": "T1",
+        "k": "fatura:F300",
+        "kalan": 455040,
+        "tur": "fatura",
+        "vade": "2026-10-31"
+       },
+       {
+        "belge_tarihi": "2026-11-04",
+        "cari": "T1",
+        "k": "fatura:F338",
+        "kalan": 55900,
+        "tur": "fatura",
+        "vade": "2026-11-04"
+       },
+       {
+        "belge_tarihi": "2026-09-10",
+        "cari": "T1",
+        "k": "fatura:F273",
+        "kalan": 129600,
+        "tur": "fatura",
+        "vade": "2026-11-09"
+       },
+       {
+        "belge_tarihi": "2026-10-24",
+        "cari": "T1",
+        "k": "fatura:F325",
+        "kalan": 207000,
+        "tur": "fatura",
+        "vade": "2026-11-23"
+       },
+       {
+        "belge_tarihi": "2026-11-08",
+        "cari": "T1",
+        "k": "fatura:F343",
+        "kalan": 59600,
+        "tur": "fatura",
+        "vade": "2026-11-23"
+       },
+       {
+        "belge_tarihi": "2026-10-23",
+        "cari": "T1",
+        "k": "fatura:F322",
+        "kalan": 241080,
+        "tur": "fatura",
+        "vade": "2026-12-22"
+       },
+       {
+        "belge_tarihi": "2026-12-29",
+        "cari": "T1",
+        "k": "fatura:F396",
+        "kalan": 92040,
+        "tur": "fatura",
+        "vade": "2026-12-29"
+       },
+       {
+        "belge_tarihi": "2026-12-05",
+        "cari": "T1",
+        "k": "fatura:F376",
+        "kalan": 250800,
+        "tur": "fatura",
+        "vade": "2027-02-03"
+       }
+      ],
+      "cariler": {
+       "C1": {
+        "acilis": 0,
+        "bakiye": 992126
+       },
+       "C2": {
+        "acilis": 0,
+        "bakiye": 1200700
+       },
+       "C3": {
+        "acilis": 0,
+        "bakiye": 3748719
+       },
+       "C4": {
+        "acilis": 0,
+        "bakiye": 1176069
+       },
+       "C5": {
+        "acilis": 0,
+        "bakiye": 3738745
+       },
+       "T1": {
+        "acilis": 0,
+        "bakiye": 4674379
+       }
+      },
+      "eksi_stok": [],
+      "ekstre": {
+       "C1": {
+        "Alacak Toplamı": 4076966,
+        "Borç Toplamı": 4113500,
+        "acik_kalemler": 5,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 4113500,
+          "borc": 4113500,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 4076966,
+          "bakiye": 36534,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F212 (2026-07-23)",
+          "alacak": 0,
+          "bakiye": 105596,
+          "borc": 69062,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-21"
+         },
+         {
+          "aciklama": "Devir: F287 (2026-09-21)",
+          "alacak": 0,
+          "bakiye": 548396,
+          "borc": 442800,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-21"
+         },
+         {
+          "aciklama": "Devir: F331 (2026-10-30)",
+          "alacak": 0,
+          "bakiye": 904320,
+          "borc": 355924,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-30"
+         },
+         {
+          "aciklama": "Devir: F279 (2026-09-13)",
+          "alacak": 0,
+          "bakiye": 943040,
+          "borc": 38720,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-12"
+         },
+         {
+          "aciklama": "Devir: F355 (2026-11-14)",
+          "alacak": 0,
+          "bakiye": 992126,
+          "borc": 49086,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-14"
+         }
+        ]
+       },
+       "C2": {
+        "Alacak Toplamı": 3740999,
+        "Borç Toplamı": 3740999,
+        "acik_kalemler": 5,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 3740999,
+          "borc": 3740999,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 3740999,
+          "bakiye": 0,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F307 (2026-10-06)",
+          "alacak": 0,
+          "bakiye": 1425,
+          "borc": 1425,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-06"
+         },
+         {
+          "aciklama": "Devir: F241 (2026-08-08)",
+          "alacak": 0,
+          "bakiye": 175300,
+          "borc": 173875,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-07"
+         },
+         {
+          "aciklama": "Devir: F334 (2026-11-02)",
+          "alacak": 0,
+          "bakiye": 445060,
+          "borc": 269760,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-01"
+         },
+         {
+          "aciklama": "Devir: F383 (2026-12-16)",
+          "alacak": 0,
+          "bakiye": 806380,
+          "borc": 361320,
+          "tarih": "2027-01-01",
+          "vade": "2027-02-14"
+         },
+         {
+          "aciklama": "Devir: F395 (2026-12-28)",
+          "alacak": 0,
+          "bakiye": 1200700,
+          "borc": 394320,
+          "tarih": "2027-01-01",
+          "vade": "2027-02-26"
+         }
+        ]
+       },
+       "C3": {
+        "Alacak Toplamı": 2592480,
+        "Borç Toplamı": 2659480,
+        "acik_kalemler": 19,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 2659480,
+          "borc": 2659480,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 2592480,
+          "bakiye": 67000,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F115 (2026-04-15)",
+          "alacak": 0,
+          "bakiye": 489615,
+          "borc": 422615,
+          "tarih": "2027-01-01",
+          "vade": "2026-04-15"
+         },
+         {
+          "aciklama": "Devir: F132 (2026-04-30)",
+          "alacak": 0,
+          "bakiye": 905195,
+          "borc": 415580,
+          "tarih": "2027-01-01",
+          "vade": "2026-05-30"
+         },
+         {
+          "aciklama": "Devir: F179 (2026-06-14)",
+          "alacak": 0,
+          "bakiye": 1226395,
+          "borc": 321200,
+          "tarih": "2027-01-01",
+          "vade": "2026-06-14"
+         },
+         {
+          "aciklama": "Devir: k335 (2026-07-03)",
+          "alacak": 0,
+          "bakiye": 1248595,
+          "borc": 22200,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-03"
+         },
+         {
+          "aciklama": "Devir: k344 (2026-07-09)",
+          "alacak": 0,
+          "bakiye": 1262095,
+          "borc": 13500,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-09"
+         },
+         {
+          "aciklama": "Devir: F280 (2026-09-14)",
+          "alacak": 0,
+          "bakiye": 1342255,
+          "borc": 80160,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-14"
+         },
+         {
+          "aciklama": "Devir: F288 (2026-09-22)",
+          "alacak": 0,
+          "bakiye": 1672035,
+          "borc": 329780,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-22"
+         },
+         {
+          "aciklama": "Devir: k526 (2026-10-05)",
+          "alacak": 0,
+          "bakiye": 1680735,
+          "borc": 8700,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-05"
+         },
+         {
+          "aciklama": "Devir: F306 (2026-10-02)",
+          "alacak": 0,
+          "bakiye": 1801435,
+          "borc": 120700,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-17"
+         },
+         {
+          "aciklama": "Devir: F260 (2026-08-27)",
+          "alacak": 0,
+          "bakiye": 1989935,
+          "borc": 188500,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-26"
+         },
+         {
+          "aciklama": "Devir: F345 (2026-11-10)",
+          "alacak": 0,
+          "bakiye": 2055935,
+          "borc": 66000,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-10"
+         },
+         {
+          "aciklama": "Devir: F348 (2026-11-11)",
+          "alacak": 0,
+          "bakiye": 2378529,
+          "borc": 322594,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-11"
+         },
+         {
+          "aciklama": "Devir: F324 (2026-10-24)",
+          "alacak": 0,
+          "bakiye": 2412849,
+          "borc": 34320,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-23"
+         },
+         {
+          "aciklama": "Devir: F357 (2026-11-20)",
+          "alacak": 0,
+          "bakiye": 2433969,
+          "borc": 21120,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-05"
+         },
+         {
+          "aciklama": "Devir: F362 (2026-11-25)",
+          "alacak": 0,
+          "bakiye": 2793779,
+          "borc": 359810,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-10"
+         },
+         {
+          "aciklama": "Devir: F387 (2026-12-21)",
+          "alacak": 0,
+          "bakiye": 3004879,
+          "borc": 211100,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-21"
+         },
+         {
+          "aciklama": "Devir: F318 (2026-10-23)",
+          "alacak": 0,
+          "bakiye": 3128119,
+          "borc": 123240,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-22"
+         },
+         {
+          "aciklama": "Devir: F384 (2026-12-17)",
+          "alacak": 0,
+          "bakiye": 3412419,
+          "borc": 284300,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-01"
+         },
+         {
+          "aciklama": "Devir: F351 (2026-11-12)",
+          "alacak": 0,
+          "bakiye": 3748719,
+          "borc": 336300,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-11"
+         }
+        ]
+       },
+       "C4": {
+        "Alacak Toplamı": 5219916,
+        "Borç Toplamı": 5299916,
+        "acik_kalemler": 8,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 5299916,
+          "borc": 5299916,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 5219916,
+          "bakiye": 80000,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F201 (2026-07-09)",
+          "alacak": 0,
+          "bakiye": 130466,
+          "borc": 50466,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-07"
+         },
+         {
+          "aciklama": "Devir: TK229 (2026-08-02)",
+          "alacak": 0,
+          "bakiye": 166632,
+          "borc": 36166,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-01"
+         },
+         {
+          "aciklama": "Devir: TK229 (2026-08-02)",
+          "alacak": 0,
+          "bakiye": 202800,
+          "borc": 36168,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-31"
+         },
+         {
+          "aciklama": "Devir: F332 (2026-11-01)",
+          "alacak": 0,
+          "bakiye": 334080,
+          "borc": 131280,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-01"
+         },
+         {
+          "aciklama": "Devir: k632 (2026-12-05)",
+          "alacak": 0,
+          "bakiye": 335080,
+          "borc": 1000,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-05"
+         },
+         {
+          "aciklama": "Devir: F369 (2026-12-01)",
+          "alacak": 0,
+          "bakiye": 756160,
+          "borc": 421080,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-31"
+         },
+         {
+          "aciklama": "Devir: F399 (2026-12-31)",
+          "alacak": 0,
+          "bakiye": 816259,
+          "borc": 60099,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-31"
+         },
+         {
+          "aciklama": "Devir: F360 (2026-11-23)",
+          "alacak": 0,
+          "bakiye": 1176069,
+          "borc": 359810,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-22"
+         }
+        ]
+       },
+       "C5": {
+        "Alacak Toplamı": 4425068,
+        "Borç Toplamı": 4425068,
+        "acik_kalemler": 17,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 4425068,
+          "borc": 4425068,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 4425068,
+          "bakiye": 0,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F137 (2026-05-05)",
+          "alacak": 0,
+          "bakiye": 45545,
+          "borc": 45545,
+          "tarih": "2027-01-01",
+          "vade": "2026-06-04"
+         },
+         {
+          "aciklama": "Devir: F219 (2026-07-27)",
+          "alacak": 0,
+          "bakiye": 290445,
+          "borc": 244900,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-27"
+         },
+         {
+          "aciklama": "Devir: F232 (2026-08-04)",
+          "alacak": 0,
+          "bakiye": 542445,
+          "borc": 252000,
+          "tarih": "2027-01-01",
+          "vade": "2026-08-04"
+         },
+         {
+          "aciklama": "Devir: F238 (2026-08-07)",
+          "alacak": 0,
+          "bakiye": 900995,
+          "borc": 358550,
+          "tarih": "2027-01-01",
+          "vade": "2026-08-07"
+         },
+         {
+          "aciklama": "Devir: F215 (2026-07-25)",
+          "alacak": 0,
+          "bakiye": 1095275,
+          "borc": 194280,
+          "tarih": "2027-01-01",
+          "vade": "2026-08-09"
+         },
+         {
+          "aciklama": "Devir: F187 (2026-06-23)",
+          "alacak": 0,
+          "bakiye": 1470775,
+          "borc": 375500,
+          "tarih": "2027-01-01",
+          "vade": "2026-08-22"
+         },
+         {
+          "aciklama": "Devir: F253 (2026-08-17)",
+          "alacak": 0,
+          "bakiye": 1776375,
+          "borc": 305600,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-01"
+         },
+         {
+          "aciklama": "Devir: F265 (2026-09-04)",
+          "alacak": 0,
+          "bakiye": 2202735,
+          "borc": 426360,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-04"
+         },
+         {
+          "aciklama": "Devir: F292 (2026-09-24)",
+          "alacak": 0,
+          "bakiye": 2376375,
+          "borc": 173640,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-24"
+         },
+         {
+          "aciklama": "Devir: k546 (2026-10-22)",
+          "alacak": 0,
+          "bakiye": 2395975,
+          "borc": 19600,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-22"
+         },
+         {
+          "aciklama": "Devir: F277 (2026-09-13)",
+          "alacak": 0,
+          "bakiye": 2545675,
+          "borc": 149700,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-12"
+         },
+         {
+          "aciklama": "Devir: F336 (2026-11-04)",
+          "alacak": 0,
+          "bakiye": 2904985,
+          "borc": 359310,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-19"
+         },
+         {
+          "aciklama": "Devir: F361 (2026-11-25)",
+          "alacak": 0,
+          "bakiye": 3261495,
+          "borc": 356510,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-25"
+         },
+         {
+          "aciklama": "Devir: F386 (2026-12-21)",
+          "alacak": 0,
+          "bakiye": 3295995,
+          "borc": 34500,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-05"
+         },
+         {
+          "aciklama": "Devir: F356 (2026-11-14)",
+          "alacak": 0,
+          "bakiye": 3322635,
+          "borc": 26640,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-13"
+         },
+         {
+          "aciklama": "Devir: F375 (2026-12-05)",
+          "alacak": 0,
+          "bakiye": 3491355,
+          "borc": 168720,
+          "tarih": "2027-01-01",
+          "vade": "2027-02-03"
+         },
+         {
+          "aciklama": "Devir: F389 (2026-12-23)",
+          "alacak": 0,
+          "bakiye": 3738745,
+          "borc": 247390,
+          "tarih": "2027-01-01",
+          "vade": "2027-02-21"
+         }
+        ]
+       },
+       "T1": {
+        "Alacak Toplamı": 2118864,
+        "Borç Toplamı": 2118864,
+        "acik_kalemler": 22,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 2118864,
+          "borc": 2118864,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 2118864,
+          "bakiye": 0,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F141 (2026-05-07)",
+          "alacak": 0,
+          "bakiye": 43732,
+          "borc": 43732,
+          "tarih": "2027-01-01",
+          "vade": "2026-05-07"
+         },
+         {
+          "aciklama": "Devir: F172 (2026-06-05)",
+          "alacak": 0,
+          "bakiye": 358552,
+          "borc": 314820,
+          "tarih": "2027-01-01",
+          "vade": "2026-06-05"
+         },
+         {
+          "aciklama": "Devir: F160 (2026-05-24)",
+          "alacak": 0,
+          "bakiye": 783702,
+          "borc": 425150,
+          "tarih": "2027-01-01",
+          "vade": "2026-06-08"
+         },
+         {
+          "aciklama": "Devir: F129 (2026-04-27)",
+          "alacak": 0,
+          "bakiye": 1079052,
+          "borc": 295350,
+          "tarih": "2027-01-01",
+          "vade": "2026-06-26"
+         },
+         {
+          "aciklama": "Devir: F196 (2026-07-05)",
+          "alacak": 0,
+          "bakiye": 1092852,
+          "borc": 13800,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-20"
+         },
+         {
+          "aciklama": "Devir: F210 (2026-07-22)",
+          "alacak": 0,
+          "bakiye": 1106487,
+          "borc": 13635,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-22"
+         },
+         {
+          "aciklama": "Devir: F211 (2026-07-22)",
+          "alacak": 0,
+          "bakiye": 1391717,
+          "borc": 285230,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-22"
+         },
+         {
+          "aciklama": "Devir: F199 (2026-07-08)",
+          "alacak": 0,
+          "bakiye": 1745477,
+          "borc": 353760,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-23"
+         },
+         {
+          "aciklama": "Devir: F218 (2026-07-27)",
+          "alacak": 0,
+          "bakiye": 2204597,
+          "borc": 459120,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-27"
+         },
+         {
+          "aciklama": "Devir: F214 (2026-07-25)",
+          "alacak": 0,
+          "bakiye": 2390837,
+          "borc": 186240,
+          "tarih": "2027-01-01",
+          "vade": "2026-08-24"
+         },
+         {
+          "aciklama": "Devir: F254 (2026-08-17)",
+          "alacak": 0,
+          "bakiye": 2416037,
+          "borc": 25200,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-01"
+         },
+         {
+          "aciklama": "Devir: F274 (2026-09-11)",
+          "alacak": 0,
+          "bakiye": 2614637,
+          "borc": 198600,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-11"
+         },
+         {
+          "aciklama": "Devir: F262 (2026-09-02)",
+          "alacak": 0,
+          "bakiye": 2994247,
+          "borc": 379610,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-02"
+         },
+         {
+          "aciklama": "Devir: F258 (2026-08-24)",
+          "alacak": 0,
+          "bakiye": 3183319,
+          "borc": 189072,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-23"
+         },
+         {
+          "aciklama": "Devir: F300 (2026-10-01)",
+          "alacak": 0,
+          "bakiye": 3638359,
+          "borc": 455040,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-31"
+         },
+         {
+          "aciklama": "Devir: F338 (2026-11-04)",
+          "alacak": 0,
+          "bakiye": 3694259,
+          "borc": 55900,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-04"
+         },
+         {
+          "aciklama": "Devir: F273 (2026-09-10)",
+          "alacak": 0,
+          "bakiye": 3823859,
+          "borc": 129600,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-09"
+         },
+         {
+          "aciklama": "Devir: F325 (2026-10-24)",
+          "alacak": 0,
+          "bakiye": 4030859,
+          "borc": 207000,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-23"
+         },
+         {
+          "aciklama": "Devir: F343 (2026-11-08)",
+          "alacak": 0,
+          "bakiye": 4090459,
+          "borc": 59600,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-23"
+         },
+         {
+          "aciklama": "Devir: F322 (2026-10-23)",
+          "alacak": 0,
+          "bakiye": 4331539,
+          "borc": 241080,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-22"
+         },
+         {
+          "aciklama": "Devir: F396 (2026-12-29)",
+          "alacak": 0,
+          "bakiye": 4423579,
+          "borc": 92040,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-29"
+         },
+         {
+          "aciklama": "Devir: F376 (2026-12-05)",
+          "alacak": 0,
+          "bakiye": 4674379,
+          "borc": 250800,
+          "tarih": "2027-01-01",
+          "vade": "2027-02-03"
+         }
+        ]
+       }
+      },
+      "ekstre_cariler": [
+       "C1",
+       "C2",
+       "C3",
+       "C4",
+       "C5",
+       "T1"
+      ],
+      "kartlar": {
+       "EXD1": {
+        "acik_taksitler": [
+         {
+          "kalan": 20000,
+          "vade": "2026-12-15"
+         },
+         {
+          "kalan": 30000,
+          "vade": "2027-01-15"
+         },
+         {
+          "kalan": 30000,
+          "vade": "2027-02-15"
+         }
+        ],
+        "cari": "C4"
+       },
+       "TK229": {
+        "acik_taksitler": [],
+        "cari": "C4"
+       },
+       "TK239": {
+        "acik_taksitler": [
+         {
+          "kalan": 18266,
+          "vade": "2026-10-06"
+         },
+         {
+          "kalan": 18268,
+          "vade": "2026-11-05"
+         }
+        ],
+        "cari": "C1"
+       },
+       "TK296": {
+        "acik_taksitler": [
+         {
+          "kalan": 22333,
+          "vade": "2026-10-29"
+         },
+         {
+          "kalan": 22333,
+          "vade": "2026-11-28"
+         },
+         {
+          "kalan": 22334,
+          "vade": "2026-12-28"
+         }
+        ],
+        "cari": "C3"
+       }
+      },
+      "stok": {
+       "U1": {
+        "deger": 261967,
+        "miktar": "136"
+       },
+       "U2": {
+        "deger": 523276,
+        "miktar": "293"
+       },
+       "U3": {
+        "deger": 565464,
+        "miktar": "297"
+       }
+      },
+      "supheli": {}
+     },
+     "arsiv_kapanis": {
+      "100": 674455,
+      "102.B1": 14324596,
+      "102.B2": 6212655,
+      "103": -153520,
+      "108.POS1": 224204,
+      "120|C1": 992126,
+      "120|C2": 1200700,
+      "120|C3": 3748719,
+      "120|C4": 1176069,
+      "120|C5": 3738745,
+      "153": 1350707,
+      "191": 3636,
+      "193": 400,
+      "255": 933700,
+      "300.KR1": -549600,
+      "309.KK1": -601248,
+      "320|T1": 4674379,
+      "360": -3375945,
+      "519": -5331500,
+      "590": -29243278
+     },
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m27_net_satir": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "soz_hatirlatma_ayni": [],
+      "tek_acilis_fisi": [],
+      "yeni_gt_sifir": []
+     },
+     "kapanis": {
+      "DSS": 1350707,
+      "N01": {
+       "2026": 898663
+      },
+      "R": {
+       "2026": 29243278
+      },
+      "onceki_yil": {},
+      "sonuc": 29243278
+     },
+     "s19_devir": [
+      "I402",
+      "k700",
+      "k712",
+      "k716"
+     ],
+     "secenek": "borc_alacak",
+     "yeni_acilis": {
+      "100": 674455,
+      "102.B1": 14324596,
+      "102.B2": 6212655,
+      "103": -153520,
+      "108.POS1": 224204,
+      "120|C1": 992126,
+      "120|C2": 1200700,
+      "120|C3": 3748719,
+      "120|C4": 1176069,
+      "120|C5": 3738745,
+      "153": 1350707,
+      "191": 3636,
+      "193": 400,
+      "255": 933700,
+      "300.KR1": -549600,
+      "309.KK1": -601248,
+      "320|T1": 4674379,
+      "360": -3375945,
+      "519": -5331500,
+      "590": -29243278
+     }
+    },
+    "gec_ocak": {
+     "C1": 1032565,
+     "C2": 634560,
+     "C3": 3653219,
+     "C4": 1219739,
+     "C5": 3601597,
+     "D1": 0,
+     "D2": 0,
+     "T1": 4357279,
+     "T2": 0,
+     "T3": 0
+    },
+    "gec_son": {
+     "C1": 1843685,
+     "C2": 2008980,
+     "C3": 3653219,
+     "C4": 1417419,
+     "C5": 3952167,
+     "D1": 0,
+     "D2": 0,
+     "T1": 4584103,
+     "T2": 0,
+     "T3": 0
+    },
+    "gt_arsiv": {
+     "bas": "2026-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "600": 30765100,
+      "600.90": 386710,
+      "601": 1589000,
+      "602.90": 111500,
+      "610": 321875,
+      "610.90": 16000,
+      "621": 898663,
+      "642": 45100,
+      "644": 814081,
+      "649": 7000,
+      "649.90": 592900,
+      "653": 34444,
+      "654": 814081,
+      "659": 8000,
+      "760": 606000,
+      "770": 1248650,
+      "770.90": 872200,
+      "780": 248200
+     },
+     "kalemler": {
+      "A": 32852310,
+      "B": 337875,
+      "BSK": 31615772,
+      "C": 32514435,
+      "D": 898663,
+      "DK": 29243278,
+      "DNK": 29243278,
+      "E": 2726850,
+      "F": 1459081,
+      "FK": 28888922,
+      "G": 856525,
+      "H": 248200,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": 29243278
+     },
+     "kesin_degil": [],
+     "son": "2026-12-31",
+     "tahmini": false
+    },
+    "gt_canli": {
+     "bas": "2026-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "600": 30765100,
+      "600.90": 386710,
+      "601": 1589000,
+      "602.90": 111500,
+      "610": 321875,
+      "610.90": 16000,
+      "621 (Tahmini)": 898663,
+      "642": 45100,
+      "644": 814081,
+      "649": 7000,
+      "649.90": 592900,
+      "653": 34444,
+      "654": 814081,
+      "659": 8000,
+      "760": 606000,
+      "770": 1248650,
+      "770.90": 872200,
+      "780": 248200
+     },
+     "kalemler": {
+      "A": 32852310,
+      "B": 337875,
+      "BSK": 31615772,
+      "C": 32514435,
+      "D": 898663,
+      "DK": 29243278,
+      "DNK": 29243278,
+      "E": 2726850,
+      "F": 1459081,
+      "FK": 28888922,
+      "G": 856525,
+      "H": 248200,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": 29243278
+     },
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI"
+     ],
+     "son": "2026-12-31",
+     "tahmini": true
+    },
+    "gt_yeni": {
+     "bas": "2027-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "600": 3250600,
+      "600.90": 66400,
+      "601": 390500,
+      "602.90": 14200,
+      "610": 88750,
+      "610.90": 2000,
+      "621 (Tahmini)": 78377,
+      "649.90": 40600,
+      "653": 7506,
+      "760": 181100,
+      "770": 60200,
+      "770.90": 96500,
+      "780": 200
+     },
+     "kalemler": {
+      "A": 3721700,
+      "B": 90750,
+      "BSK": 3552573,
+      "C": 3630950,
+      "D": 78377,
+      "DK": 3247667,
+      "DNK": 3247667,
+      "E": 337800,
+      "F": 40600,
+      "FK": 3214773,
+      "G": 7506,
+      "H": 200,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": 3247667
+     },
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI"
+     ],
+     "son": "2027-02-28",
+     "tahmini": true
+    },
+    "mz_arsiv": {
+     "ana": {
+      "100": {
+       "alacak": 11159630,
+       "bakiye": 674455,
+       "borc": 11834085,
+       "devir": 0
+      },
+      "101": {
+       "alacak": 3879221,
+       "bakiye": 0,
+       "borc": 3879221,
+       "devir": 0
+      },
+      "102": {
+       "alacak": 4693610,
+       "bakiye": 20537251,
+       "borc": 25230861,
+       "devir": 0
+      },
+      "103": {
+       "alacak": 384616,
+       "bakiye": -153520,
+       "borc": 231096,
+       "devir": 0
+      },
+      "108": {
+       "alacak": 1498036,
+       "bakiye": 224204,
+       "borc": 1722240,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 20055429,
+       "bakiye": 10856359,
+       "borc": 30911788,
+       "devir": 0
+      },
+      "121": {
+       "alacak": 3061952,
+       "bakiye": 0,
+       "borc": 3061952,
+       "devir": 0
+      },
+      "128": {
+       "alacak": 1628163,
+       "bakiye": 0,
+       "borc": 1628163,
+       "devir": 0
+      },
+      "129": {
+       "alacak": 814081,
+       "bakiye": 0,
+       "borc": 814081,
+       "devir": 0
+      },
+      "153": {
+       "alacak": 898663,
+       "bakiye": 1350707,
+       "borc": 2249370,
+       "devir": 0
+      },
+      "190": {
+       "alacak": 41352,
+       "bakiye": 0,
+       "borc": 41352,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 591994,
+       "bakiye": 3636,
+       "borc": 595630,
+       "devir": 0
+      },
+      "193": {
+       "alacak": 0,
+       "bakiye": 400,
+       "borc": 400,
+       "devir": 0
+      },
+      "255": {
+       "alacak": 0,
+       "bakiye": 933700,
+       "borc": 933700,
+       "devir": 0
+      },
+      "300": {
+       "alacak": 658200,
+       "bakiye": -549600,
+       "borc": 108600,
+       "devir": 0
+      },
+      "309": {
+       "alacak": 716248,
+       "bakiye": -601248,
+       "borc": 115000,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 5151198,
+       "bakiye": 4674379,
+       "borc": 9825577,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 3375945,
+       "bakiye": -3375945,
+       "borc": 0,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 3718811,
+       "bakiye": 0,
+       "borc": 3718811,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 6162200,
+       "bakiye": -5331500,
+       "borc": 830700,
+       "devir": 0
+      },
+      "590": {
+       "alacak": 29243278,
+       "bakiye": -29243278,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 31151810,
+       "bakiye": 0,
+       "borc": 31151810,
+       "devir": 0
+      },
+      "601": {
+       "alacak": 1589000,
+       "bakiye": 0,
+       "borc": 1589000,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 111500,
+       "bakiye": 0,
+       "borc": 111500,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 337875,
+       "bakiye": 0,
+       "borc": 337875,
+       "devir": 0
+      },
+      "621": {
+       "alacak": 898663,
+       "bakiye": 0,
+       "borc": 898663,
+       "devir": 0
+      },
+      "631": {
+       "alacak": 606000,
+       "bakiye": 0,
+       "borc": 606000,
+       "devir": 0
+      },
+      "632": {
+       "alacak": 2120850,
+       "bakiye": 0,
+       "borc": 2120850,
+       "devir": 0
+      },
+      "642": {
+       "alacak": 45100,
+       "bakiye": 0,
+       "borc": 45100,
+       "devir": 0
+      },
+      "644": {
+       "alacak": 814081,
+       "bakiye": 0,
+       "borc": 814081,
+       "devir": 0
+      },
+      "649": {
+       "alacak": 599900,
+       "bakiye": 0,
+       "borc": 599900,
+       "devir": 0
+      },
+      "653": {
+       "alacak": 34444,
+       "bakiye": 0,
+       "borc": 34444,
+       "devir": 0
+      },
+      "654": {
+       "alacak": 814081,
+       "bakiye": 0,
+       "borc": 814081,
+       "devir": 0
+      },
+      "659": {
+       "alacak": 8000,
+       "bakiye": 0,
+       "borc": 8000,
+       "devir": 0
+      },
+      "660": {
+       "alacak": 248200,
+       "bakiye": 0,
+       "borc": 248200,
+       "devir": 0
+      },
+      "690": {
+       "alacak": 29243278,
+       "bakiye": 0,
+       "borc": 29243278,
+       "devir": 0
+      },
+      "692": {
+       "alacak": 29243278,
+       "bakiye": 0,
+       "borc": 29243278,
+       "devir": 0
+      },
+      "760": {
+       "alacak": 606000,
+       "bakiye": 0,
+       "borc": 606000,
+       "devir": 0
+      },
+      "761": {
+       "alacak": 606000,
+       "bakiye": 0,
+       "borc": 606000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 2120850,
+       "bakiye": 0,
+       "borc": 2120850,
+       "devir": 0
+      },
+      "771": {
+       "alacak": 2120850,
+       "bakiye": 0,
+       "borc": 2120850,
+       "devir": 0
+      },
+      "780": {
+       "alacak": 248200,
+       "bakiye": 0,
+       "borc": 248200,
+       "devir": 0
+      },
+      "781": {
+       "alacak": 248200,
+       "bakiye": 0,
+       "borc": 248200,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 11159630,
+       "bakiye": 674455,
+       "borc": 11834085,
+       "devir": 0
+      },
+      "101.01": {
+       "alacak": 2816143,
+       "bakiye": 0,
+       "borc": 2816143,
+       "devir": 0
+      },
+      "101.02": {
+       "alacak": 1063078,
+       "bakiye": 0,
+       "borc": 1063078,
+       "devir": 0
+      },
+      "102.B1": {
+       "alacak": 2466708,
+       "bakiye": 14324596,
+       "borc": 16791304,
+       "devir": 0
+      },
+      "102.B2": {
+       "alacak": 2226902,
+       "bakiye": 6212655,
+       "borc": 8439557,
+       "devir": 0
+      },
+      "103": {
+       "alacak": 384616,
+       "bakiye": -153520,
+       "borc": 231096,
+       "devir": 0
+      },
+      "108.POS1": {
+       "alacak": 1498036,
+       "bakiye": 224204,
+       "borc": 1722240,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 4076966,
+       "bakiye": 992126,
+       "borc": 5069092,
+       "devir": 0
+      },
+      "120|C2": {
+       "alacak": 3740999,
+       "bakiye": 1200700,
+       "borc": 4941699,
+       "devir": 0
+      },
+      "120|C3": {
+       "alacak": 2592480,
+       "bakiye": 3748719,
+       "borc": 6341199,
+       "devir": 0
+      },
+      "120|C4": {
+       "alacak": 5219916,
+       "bakiye": 1176069,
+       "borc": 6395985,
+       "devir": 0
+      },
+      "120|C5": {
+       "alacak": 4425068,
+       "bakiye": 3738745,
+       "borc": 8163813,
+       "devir": 0
+      },
+      "121.01": {
+       "alacak": 1970492,
+       "bakiye": 0,
+       "borc": 1970492,
+       "devir": 0
+      },
+      "121.02": {
+       "alacak": 1091460,
+       "bakiye": 0,
+       "borc": 1091460,
+       "devir": 0
+      },
+      "128|C5": {
+       "alacak": 1628163,
+       "bakiye": 0,
+       "borc": 1628163,
+       "devir": 0
+      },
+      "129|C5": {
+       "alacak": 814081,
+       "bakiye": 0,
+       "borc": 814081,
+       "devir": 0
+      },
+      "153": {
+       "alacak": 898663,
+       "bakiye": 1350707,
+       "borc": 2249370,
+       "devir": 0
+      },
+      "190": {
+       "alacak": 41352,
+       "bakiye": 0,
+       "borc": 41352,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 591994,
+       "bakiye": 3636,
+       "borc": 595630,
+       "devir": 0
+      },
+      "193": {
+       "alacak": 0,
+       "bakiye": 400,
+       "borc": 400,
+       "devir": 0
+      },
+      "255": {
+       "alacak": 0,
+       "bakiye": 933700,
+       "borc": 933700,
+       "devir": 0
+      },
+      "300.KR1": {
+       "alacak": 658200,
+       "bakiye": -549600,
+       "borc": 108600,
+       "devir": 0
+      },
+      "309.KK1": {
+       "alacak": 716248,
+       "bakiye": -601248,
+       "borc": 115000,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 2118864,
+       "bakiye": 4674379,
+       "borc": 6793243,
+       "devir": 0
+      },
+      "320|T2": {
+       "alacak": 1595734,
+       "bakiye": 0,
+       "borc": 1595734,
+       "devir": 0
+      },
+      "320|T3": {
+       "alacak": 1436600,
+       "bakiye": 0,
+       "borc": 1436600,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 3375945,
+       "bakiye": -3375945,
+       "borc": 0,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 3718811,
+       "bakiye": 0,
+       "borc": 3718811,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 6162200,
+       "bakiye": -5331500,
+       "borc": 830700,
+       "devir": 0
+      },
+      "590": {
+       "alacak": 29243278,
+       "bakiye": -29243278,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 30765100,
+       "bakiye": 0,
+       "borc": 30765100,
+       "devir": 0
+      },
+      "600.90": {
+       "alacak": 386710,
+       "bakiye": 0,
+       "borc": 386710,
+       "devir": 0
+      },
+      "601": {
+       "alacak": 1589000,
+       "bakiye": 0,
+       "borc": 1589000,
+       "devir": 0
+      },
+      "602.90": {
+       "alacak": 111500,
+       "bakiye": 0,
+       "borc": 111500,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 321875,
+       "bakiye": 0,
+       "borc": 321875,
+       "devir": 0
+      },
+      "610.90": {
+       "alacak": 16000,
+       "bakiye": 0,
+       "borc": 16000,
+       "devir": 0
+      },
+      "621": {
+       "alacak": 898663,
+       "bakiye": 0,
+       "borc": 898663,
+       "devir": 0
+      },
+      "631": {
+       "alacak": 606000,
+       "bakiye": 0,
+       "borc": 606000,
+       "devir": 0
+      },
+      "632": {
+       "alacak": 2120850,
+       "bakiye": 0,
+       "borc": 2120850,
+       "devir": 0
+      },
+      "642": {
+       "alacak": 45100,
+       "bakiye": 0,
+       "borc": 45100,
+       "devir": 0
+      },
+      "644": {
+       "alacak": 814081,
+       "bakiye": 0,
+       "borc": 814081,
+       "devir": 0
+      },
+      "649": {
+       "alacak": 7000,
+       "bakiye": 0,
+       "borc": 7000,
+       "devir": 0
+      },
+      "649.90": {
+       "alacak": 592900,
+       "bakiye": 0,
+       "borc": 592900,
+       "devir": 0
+      },
+      "653": {
+       "alacak": 34444,
+       "bakiye": 0,
+       "borc": 34444,
+       "devir": 0
+      },
+      "654": {
+       "alacak": 814081,
+       "bakiye": 0,
+       "borc": 814081,
+       "devir": 0
+      },
+      "659": {
+       "alacak": 8000,
+       "bakiye": 0,
+       "borc": 8000,
+       "devir": 0
+      },
+      "660": {
+       "alacak": 248200,
+       "bakiye": 0,
+       "borc": 248200,
+       "devir": 0
+      },
+      "690": {
+       "alacak": 29243278,
+       "bakiye": 0,
+       "borc": 29243278,
+       "devir": 0
+      },
+      "692": {
+       "alacak": 29243278,
+       "bakiye": 0,
+       "borc": 29243278,
+       "devir": 0
+      },
+      "760": {
+       "alacak": 606000,
+       "bakiye": 0,
+       "borc": 606000,
+       "devir": 0
+      },
+      "761": {
+       "alacak": 606000,
+       "bakiye": 0,
+       "borc": 606000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 1248650,
+       "bakiye": 0,
+       "borc": 1248650,
+       "devir": 0
+      },
+      "770.90": {
+       "alacak": 872200,
+       "bakiye": 0,
+       "borc": 872200,
+       "devir": 0
+      },
+      "771": {
+       "alacak": 2120850,
+       "bakiye": 0,
+       "borc": 2120850,
+       "devir": 0
+      },
+      "780": {
+       "alacak": 248200,
+       "bakiye": 0,
+       "borc": 248200,
+       "devir": 0
+      },
+      "781": {
+       "alacak": 248200,
+       "bakiye": 0,
+       "borc": 248200,
+       "devir": 0
+      }
+     },
+     "son": "2026-12-31",
+     "toplam": {
+      "alacak": 201548787,
+      "bakiye": 0,
+      "borc": 201548787,
+      "devir": 0
+     }
+    },
+    "mz_yeni": {
+     "ana": {
+      "100": {
+       "alacak": 259804,
+       "bakiye": 1194451,
+       "borc": 1454255,
+       "devir": 0
+      },
+      "101": {
+       "alacak": 567400,
+       "bakiye": 31400,
+       "borc": 598800,
+       "devir": 0
+      },
+      "102": {
+       "alacak": 476896,
+       "bakiye": 21117153,
+       "borc": 21594049,
+       "devir": 0
+      },
+      "103": {
+       "alacak": 153520,
+       "bakiye": 0,
+       "borc": 153520,
+       "devir": 0
+      },
+      "108": {
+       "alacak": 599504,
+       "bakiye": 0,
+       "borc": 599504,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 2063138,
+       "bakiye": 12912870,
+       "borc": 14976008,
+       "devir": 0
+      },
+      "121": {
+       "alacak": 36900,
+       "bakiye": 503300,
+       "borc": 540200,
+       "devir": 0
+      },
+      "153": {
+       "alacak": 0,
+       "bakiye": 1646307,
+       "borc": 1646307,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 29920,
+       "bakiye": 1600,
+       "borc": 31520,
+       "devir": 0
+      },
+      "193": {
+       "alacak": 0,
+       "bakiye": 400,
+       "borc": 400,
+       "devir": 0
+      },
+      "255": {
+       "alacak": 0,
+       "bakiye": 933700,
+       "borc": 933700,
+       "devir": 0
+      },
+      "300": {
+       "alacak": 549600,
+       "bakiye": -549600,
+       "borc": 0,
+       "devir": 0
+      },
+      "309": {
+       "alacak": 640598,
+       "bakiye": -628098,
+       "borc": 12500,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 488416,
+       "bakiye": 4470653,
+       "borc": 4959069,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 4054843,
+       "bakiye": -3715434,
+       "borc": 339409,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 733618,
+       "bakiye": -32880,
+       "borc": 700738,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 38347355,
+       "bakiye": -5331500,
+       "borc": 33015855,
+       "devir": 0
+      },
+      "590": {
+       "alacak": 29228278,
+       "bakiye": -29228278,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 3317000,
+       "bakiye": -3317000,
+       "borc": 0,
+       "devir": 0
+      },
+      "601": {
+       "alacak": 390500,
+       "bakiye": -390500,
+       "borc": 0,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 14200,
+       "bakiye": -14200,
+       "borc": 0,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 0,
+       "bakiye": 90750,
+       "borc": 90750,
+       "devir": 0
+      },
+      "649": {
+       "alacak": 40600,
+       "bakiye": -40600,
+       "borc": 0,
+       "devir": 0
+      },
+      "653": {
+       "alacak": 0,
+       "bakiye": 7506,
+       "borc": 7506,
+       "devir": 0
+      },
+      "760": {
+       "alacak": 0,
+       "bakiye": 181100,
+       "borc": 181100,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 156700,
+       "borc": 156700,
+       "devir": 0
+      },
+      "780": {
+       "alacak": 0,
+       "bakiye": 200,
+       "borc": 200,
+       "devir": 0
+      }
+     },
+     "bas": "2027-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 259804,
+       "bakiye": 1194451,
+       "borc": 1454255,
+       "devir": 0
+      },
+      "101.01": {
+       "alacak": 299400,
+       "bakiye": 0,
+       "borc": 299400,
+       "devir": 0
+      },
+      "101.02": {
+       "alacak": 268000,
+       "bakiye": 31400,
+       "borc": 299400,
+       "devir": 0
+      },
+      "102.B1": {
+       "alacak": 411316,
+       "bakiye": 14606578,
+       "borc": 15017894,
+       "devir": 0
+      },
+      "102.B2": {
+       "alacak": 65580,
+       "bakiye": 6510575,
+       "borc": 6576155,
+       "devir": 0
+      },
+      "103": {
+       "alacak": 153520,
+       "bakiye": 0,
+       "borc": 153520,
+       "devir": 0
+      },
+      "108.POS1": {
+       "alacak": 599504,
+       "bakiye": 0,
+       "borc": 599504,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 517600,
+       "bakiye": 1881085,
+       "borc": 2398685,
+       "devir": 0
+      },
+      "120|C2": {
+       "alacak": 246600,
+       "bakiye": 2008980,
+       "borc": 2255580,
+       "devir": 0
+      },
+      "120|C3": {
+       "alacak": 95500,
+       "bakiye": 3653219,
+       "borc": 3748719,
+       "devir": 0
+      },
+      "120|C4": {
+       "alacak": 806300,
+       "bakiye": 1417419,
+       "borc": 2223719,
+       "devir": 0
+      },
+      "120|C5": {
+       "alacak": 397138,
+       "bakiye": 3952167,
+       "borc": 4349305,
+       "devir": 0
+      },
+      "121.01": {
+       "alacak": 36900,
+       "bakiye": 503300,
+       "borc": 540200,
+       "devir": 0
+      },
+      "153": {
+       "alacak": 0,
+       "bakiye": 1646307,
+       "borc": 1646307,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 29920,
+       "bakiye": 1600,
+       "borc": 31520,
+       "devir": 0
+      },
+      "193": {
+       "alacak": 0,
+       "bakiye": 400,
+       "borc": 400,
+       "devir": 0
+      },
+      "255": {
+       "alacak": 0,
+       "bakiye": 933700,
+       "borc": 933700,
+       "devir": 0
+      },
+      "300.KR1": {
+       "alacak": 549600,
+       "bakiye": -549600,
+       "borc": 0,
+       "devir": 0
+      },
+      "309.KK1": {
+       "alacak": 640598,
+       "bakiye": -628098,
+       "borc": 12500,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 90276,
+       "bakiye": 4584103,
+       "borc": 4674379,
+       "devir": 0
+      },
+      "320|T2": {
+       "alacak": 160990,
+       "bakiye": -57400,
+       "borc": 103590,
+       "devir": 0
+      },
+      "320|T3": {
+       "alacak": 237150,
+       "bakiye": -56050,
+       "borc": 181100,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 4054843,
+       "bakiye": -3715434,
+       "borc": 339409,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 733618,
+       "bakiye": -32880,
+       "borc": 700738,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 38347355,
+       "bakiye": -5331500,
+       "borc": 33015855,
+       "devir": 0
+      },
+      "590": {
+       "alacak": 29228278,
+       "bakiye": -29228278,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 3250600,
+       "bakiye": -3250600,
+       "borc": 0,
+       "devir": 0
+      },
+      "600.90": {
+       "alacak": 66400,
+       "bakiye": -66400,
+       "borc": 0,
+       "devir": 0
+      },
+      "601": {
+       "alacak": 390500,
+       "bakiye": -390500,
+       "borc": 0,
+       "devir": 0
+      },
+      "602.90": {
+       "alacak": 14200,
+       "bakiye": -14200,
+       "borc": 0,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 0,
+       "bakiye": 88750,
+       "borc": 88750,
+       "devir": 0
+      },
+      "610.90": {
+       "alacak": 0,
+       "bakiye": 2000,
+       "borc": 2000,
+       "devir": 0
+      },
+      "649.90": {
+       "alacak": 40600,
+       "bakiye": -40600,
+       "borc": 0,
+       "devir": 0
+      },
+      "653": {
+       "alacak": 0,
+       "bakiye": 7506,
+       "borc": 7506,
+       "devir": 0
+      },
+      "760": {
+       "alacak": 0,
+       "bakiye": 181100,
+       "borc": 181100,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 60200,
+       "borc": 60200,
+       "devir": 0
+      },
+      "770.90": {
+       "alacak": 0,
+       "bakiye": 96500,
+       "borc": 96500,
+       "devir": 0
+      },
+      "780": {
+       "alacak": 0,
+       "bakiye": 200,
+       "borc": 200,
+       "devir": 0
+      }
+     },
+     "son": "2027-02-28",
+     "toplam": {
+      "alacak": 81992090,
+      "bakiye": 0,
+      "borc": 81992090,
+      "devir": 0
+     }
+    },
+    "yenile": {
+     "K": "2026-12-31",
+     "acilis": {
+      "N13": {
+       "191@2027-01": 11636,
+       "193": 400,
+       "255": 933700,
+       "360": -3375945,
+       "391@2026-12": -5000,
+       "519": 31663487,
+       "590": -29228278
+      },
+      "acik_kalemler": [
+       {
+        "belge_tarihi": "2026-07-23",
+        "cari": "C1",
+        "k": "fatura:F212",
+        "kalan": 69062,
+        "tur": "fatura",
+        "vade": "2026-09-21"
+       },
+       {
+        "belge_tarihi": "2026-09-21",
+        "cari": "C1",
+        "k": "fatura:F287",
+        "kalan": 442800,
+        "tur": "fatura",
+        "vade": "2026-09-21"
+       },
+       {
+        "belge_tarihi": "2026-10-30",
+        "cari": "C1",
+        "k": "fatura:F331",
+        "kalan": 355924,
+        "tur": "fatura",
+        "vade": "2026-10-30"
+       },
+       {
+        "belge_tarihi": "2026-09-13",
+        "cari": "C1",
+        "k": "fatura:F279",
+        "kalan": 38720,
+        "tur": "fatura",
+        "vade": "2026-11-12"
+       },
+       {
+        "belge_tarihi": "2026-11-14",
+        "cari": "C1",
+        "k": "fatura:F355",
+        "kalan": 49086,
+        "tur": "fatura",
+        "vade": "2026-11-14"
+       },
+       {
+        "belge_tarihi": "2026-10-06",
+        "cari": "C2",
+        "k": "fatura:F307",
+        "kalan": 1425,
+        "tur": "fatura",
+        "vade": "2026-10-06"
+       },
+       {
+        "belge_tarihi": "2026-08-08",
+        "cari": "C2",
+        "k": "fatura:F241",
+        "kalan": 173875,
+        "tur": "fatura",
+        "vade": "2026-10-07"
+       },
+       {
+        "belge_tarihi": "2026-11-02",
+        "cari": "C2",
+        "k": "fatura:F334",
+        "kalan": 269760,
+        "tur": "fatura",
+        "vade": "2027-01-01"
+       },
+       {
+        "belge_tarihi": "2026-12-16",
+        "cari": "C2",
+        "k": "fatura:F383",
+        "kalan": 361320,
+        "tur": "fatura",
+        "vade": "2027-02-14"
+       },
+       {
+        "belge_tarihi": "2026-12-28",
+        "cari": "C2",
+        "k": "fatura:F395",
+        "kalan": 394320,
+        "tur": "fatura",
+        "vade": "2027-02-26"
+       },
+       {
+        "belge_tarihi": "2026-04-15",
+        "cari": "C3",
+        "k": "fatura:F115",
+        "kalan": 422615,
+        "tur": "fatura",
+        "vade": "2026-04-15"
+       },
+       {
+        "belge_tarihi": "2026-04-30",
+        "cari": "C3",
+        "k": "fatura:F132",
+        "kalan": 415580,
+        "tur": "fatura",
+        "vade": "2026-05-30"
+       },
+       {
+        "belge_tarihi": "2026-06-14",
+        "cari": "C3",
+        "k": "fatura:F179",
+        "kalan": 321200,
+        "tur": "fatura",
+        "vade": "2026-06-14"
+       },
+       {
+        "belge_tarihi": "2026-07-03",
+        "cari": "C3",
+        "k": "borc:k335",
+        "kalan": 22200,
+        "tur": "borc_yaz",
+        "vade": "2026-07-03"
+       },
+       {
+        "belge_tarihi": "2026-07-09",
+        "cari": "C3",
+        "k": "borc:k344",
+        "kalan": 13500,
+        "tur": "borc_yaz",
+        "vade": "2026-07-09"
+       },
+       {
+        "belge_tarihi": "2026-09-14",
+        "cari": "C3",
+        "k": "fatura:F280",
+        "kalan": 80160,
+        "tur": "fatura",
+        "vade": "2026-09-14"
+       },
+       {
+        "belge_tarihi": "2026-09-22",
+        "cari": "C3",
+        "k": "fatura:F288",
+        "kalan": 329780,
+        "tur": "fatura",
+        "vade": "2026-09-22"
+       },
+       {
+        "belge_tarihi": "2026-10-05",
+        "cari": "C3",
+        "k": "borc:k526",
+        "kalan": 8700,
+        "tur": "borc_yaz",
+        "vade": "2026-10-05"
+       },
+       {
+        "belge_tarihi": "2026-10-02",
+        "cari": "C3",
+        "k": "fatura:F306",
+        "kalan": 120700,
+        "tur": "fatura",
+        "vade": "2026-10-17"
+       },
+       {
+        "belge_tarihi": "2026-08-27",
+        "cari": "C3",
+        "k": "fatura:F260",
+        "kalan": 188500,
+        "tur": "fatura",
+        "vade": "2026-10-26"
+       },
+       {
+        "belge_tarihi": "2026-11-10",
+        "cari": "C3",
+        "k": "fatura:F345",
+        "kalan": 66000,
+        "tur": "fatura",
+        "vade": "2026-11-10"
+       },
+       {
+        "belge_tarihi": "2026-11-11",
+        "cari": "C3",
+        "k": "fatura:F348",
+        "kalan": 322594,
+        "tur": "fatura",
+        "vade": "2026-11-11"
+       },
+       {
+        "belge_tarihi": "2026-10-24",
+        "cari": "C3",
+        "k": "fatura:F324",
+        "kalan": 34320,
+        "tur": "fatura",
+        "vade": "2026-11-23"
+       },
+       {
+        "belge_tarihi": "2026-11-20",
+        "cari": "C3",
+        "k": "fatura:F357",
+        "kalan": 21120,
+        "tur": "fatura",
+        "vade": "2026-12-05"
+       },
+       {
+        "belge_tarihi": "2026-11-25",
+        "cari": "C3",
+        "k": "fatura:F362",
+        "kalan": 359810,
+        "tur": "fatura",
+        "vade": "2026-12-10"
+       },
+       {
+        "belge_tarihi": "2026-12-21",
+        "cari": "C3",
+        "k": "fatura:F387",
+        "kalan": 211100,
+        "tur": "fatura",
+        "vade": "2026-12-21"
+       },
+       {
+        "belge_tarihi": "2026-10-23",
+        "cari": "C3",
+        "k": "fatura:F318",
+        "kalan": 123240,
+        "tur": "fatura",
+        "vade": "2026-12-22"
+       },
+       {
+        "belge_tarihi": "2026-12-17",
+        "cari": "C3",
+        "k": "fatura:F384",
+        "kalan": 284300,
+        "tur": "fatura",
+        "vade": "2027-01-01"
+       },
+       {
+        "belge_tarihi": "2026-11-12",
+        "cari": "C3",
+        "k": "fatura:F351",
+        "kalan": 336300,
+        "tur": "fatura",
+        "vade": "2027-01-11"
+       },
+       {
+        "belge_tarihi": "2026-07-09",
+        "cari": "C4",
+        "k": "fatura:F201",
+        "kalan": 50466,
+        "tur": "fatura",
+        "vade": "2026-09-07"
+       },
+       {
+        "belge_tarihi": "2026-08-02",
+        "cari": "C4",
+        "k": "kart_kalani:TK229",
+        "kalan": 36166,
+        "tur": "kart_kalani",
+        "vade": "2026-10-01"
+       },
+       {
+        "belge_tarihi": "2026-08-02",
+        "cari": "C4",
+        "k": "kart_kalani:TK229",
+        "kalan": 36168,
+        "tur": "kart_kalani",
+        "vade": "2026-10-31"
+       },
+       {
+        "belge_tarihi": "2026-11-01",
+        "cari": "C4",
+        "k": "fatura:F332",
+        "kalan": 131280,
+        "tur": "fatura",
+        "vade": "2026-11-01"
+       },
+       {
+        "belge_tarihi": "2026-12-05",
+        "cari": "C4",
+        "k": "odeme:k632",
+        "kalan": 1000,
+        "tur": "odeme",
+        "vade": "2026-12-05"
+       },
+       {
+        "belge_tarihi": "2026-12-01",
+        "cari": "C4",
+        "k": "fatura:F369",
+        "kalan": 421080,
+        "tur": "fatura",
+        "vade": "2026-12-31"
+       },
+       {
+        "belge_tarihi": "2026-12-31",
+        "cari": "C4",
+        "k": "fatura:F399",
+        "kalan": 60099,
+        "tur": "fatura",
+        "vade": "2026-12-31"
+       },
+       {
+        "belge_tarihi": "2026-11-23",
+        "cari": "C4",
+        "k": "fatura:F360",
+        "kalan": 359810,
+        "tur": "fatura",
+        "vade": "2027-01-22"
+       },
+       {
+        "belge_tarihi": "2026-05-05",
+        "cari": "C5",
+        "k": "fatura:F137",
+        "kalan": 45545,
+        "tur": "fatura",
+        "vade": "2026-06-04"
+       },
+       {
+        "belge_tarihi": "2026-07-27",
+        "cari": "C5",
+        "k": "fatura:F219",
+        "kalan": 244900,
+        "tur": "fatura",
+        "vade": "2026-07-27"
+       },
+       {
+        "belge_tarihi": "2026-08-04",
+        "cari": "C5",
+        "k": "fatura:F232",
+        "kalan": 252000,
+        "tur": "fatura",
+        "vade": "2026-08-04"
+       },
+       {
+        "belge_tarihi": "2026-08-07",
+        "cari": "C5",
+        "k": "fatura:F238",
+        "kalan": 358550,
+        "tur": "fatura",
+        "vade": "2026-08-07"
+       },
+       {
+        "belge_tarihi": "2026-07-25",
+        "cari": "C5",
+        "k": "fatura:F215",
+        "kalan": 194280,
+        "tur": "fatura",
+        "vade": "2026-08-09"
+       },
+       {
+        "belge_tarihi": "2026-06-23",
+        "cari": "C5",
+        "k": "fatura:F187",
+        "kalan": 375500,
+        "tur": "fatura",
+        "vade": "2026-08-22"
+       },
+       {
+        "belge_tarihi": "2026-08-17",
+        "cari": "C5",
+        "k": "fatura:F253",
+        "kalan": 305600,
+        "tur": "fatura",
+        "vade": "2026-09-01"
+       },
+       {
+        "belge_tarihi": "2026-09-04",
+        "cari": "C5",
+        "k": "fatura:F265",
+        "kalan": 426360,
+        "tur": "fatura",
+        "vade": "2026-09-04"
+       },
+       {
+        "belge_tarihi": "2026-09-24",
+        "cari": "C5",
+        "k": "fatura:F292",
+        "kalan": 173640,
+        "tur": "fatura",
+        "vade": "2026-09-24"
+       },
+       {
+        "belge_tarihi": "2026-10-22",
+        "cari": "C5",
+        "k": "borc:k546",
+        "kalan": 19600,
+        "tur": "borc_yaz",
+        "vade": "2026-10-22"
+       },
+       {
+        "belge_tarihi": "2026-09-13",
+        "cari": "C5",
+        "k": "fatura:F277",
+        "kalan": 149700,
+        "tur": "fatura",
+        "vade": "2026-11-12"
+       },
+       {
+        "belge_tarihi": "2026-11-04",
+        "cari": "C5",
+        "k": "fatura:F336",
+        "kalan": 359310,
+        "tur": "fatura",
+        "vade": "2026-11-19"
+       },
+       {
+        "belge_tarihi": "2026-11-25",
+        "cari": "C5",
+        "k": "fatura:F361",
+        "kalan": 356510,
+        "tur": "fatura",
+        "vade": "2026-11-25"
+       },
+       {
+        "belge_tarihi": "2026-12-31",
+        "cari": "C5",
+        "k": "fatura:GEC2",
+        "kalan": 30000,
+        "tur": "fatura",
+        "vade": "2026-12-31"
+       },
+       {
+        "belge_tarihi": "2026-12-21",
+        "cari": "C5",
+        "k": "fatura:F386",
+        "kalan": 34500,
+        "tur": "fatura",
+        "vade": "2027-01-05"
+       },
+       {
+        "belge_tarihi": "2026-11-14",
+        "cari": "C5",
+        "k": "fatura:F356",
+        "kalan": 26640,
+        "tur": "fatura",
+        "vade": "2027-01-13"
+       },
+       {
+        "belge_tarihi": "2026-12-05",
+        "cari": "C5",
+        "k": "fatura:F375",
+        "kalan": 168720,
+        "tur": "fatura",
+        "vade": "2027-02-03"
+       },
+       {
+        "belge_tarihi": "2026-12-23",
+        "cari": "C5",
+        "k": "fatura:F389",
+        "kalan": 247390,
+        "tur": "fatura",
+        "vade": "2027-02-21"
+       },
+       {
+        "belge_tarihi": "2026-05-07",
+        "cari": "T1",
+        "k": "fatura:F141",
+        "kalan": 43732,
+        "tur": "fatura",
+        "vade": "2026-05-07"
+       },
+       {
+        "belge_tarihi": "2026-06-05",
+        "cari": "T1",
+        "k": "fatura:F172",
+        "kalan": 314820,
+        "tur": "fatura",
+        "vade": "2026-06-05"
+       },
+       {
+        "belge_tarihi": "2026-05-24",
+        "cari": "T1",
+        "k": "fatura:F160",
+        "kalan": 425150,
+        "tur": "fatura",
+        "vade": "2026-06-08"
+       },
+       {
+        "belge_tarihi": "2026-04-27",
+        "cari": "T1",
+        "k": "fatura:F129",
+        "kalan": 295350,
+        "tur": "fatura",
+        "vade": "2026-06-26"
+       },
+       {
+        "belge_tarihi": "2026-07-05",
+        "cari": "T1",
+        "k": "fatura:F196",
+        "kalan": 13800,
+        "tur": "fatura",
+        "vade": "2026-07-20"
+       },
+       {
+        "belge_tarihi": "2026-07-22",
+        "cari": "T1",
+        "k": "fatura:F210",
+        "kalan": 13635,
+        "tur": "fatura",
+        "vade": "2026-07-22"
+       },
+       {
+        "belge_tarihi": "2026-07-22",
+        "cari": "T1",
+        "k": "fatura:F211",
+        "kalan": 285230,
+        "tur": "fatura",
+        "vade": "2026-07-22"
+       },
+       {
+        "belge_tarihi": "2026-07-08",
+        "cari": "T1",
+        "k": "fatura:F199",
+        "kalan": 353760,
+        "tur": "fatura",
+        "vade": "2026-07-23"
+       },
+       {
+        "belge_tarihi": "2026-07-27",
+        "cari": "T1",
+        "k": "fatura:F218",
+        "kalan": 459120,
+        "tur": "fatura",
+        "vade": "2026-07-27"
+       },
+       {
+        "belge_tarihi": "2026-07-25",
+        "cari": "T1",
+        "k": "fatura:F214",
+        "kalan": 186240,
+        "tur": "fatura",
+        "vade": "2026-08-24"
+       },
+       {
+        "belge_tarihi": "2026-08-17",
+        "cari": "T1",
+        "k": "fatura:F254",
+        "kalan": 25200,
+        "tur": "fatura",
+        "vade": "2026-09-01"
+       },
+       {
+        "belge_tarihi": "2026-09-11",
+        "cari": "T1",
+        "k": "fatura:F274",
+        "kalan": 198600,
+        "tur": "fatura",
+        "vade": "2026-09-11"
+       },
+       {
+        "belge_tarihi": "2026-09-02",
+        "cari": "T1",
+        "k": "fatura:F262",
+        "kalan": 379610,
+        "tur": "fatura",
+        "vade": "2026-10-02"
+       },
+       {
+        "belge_tarihi": "2026-08-24",
+        "cari": "T1",
+        "k": "fatura:F258",
+        "kalan": 189072,
+        "tur": "fatura",
+        "vade": "2026-10-23"
+       },
+       {
+        "belge_tarihi": "2026-10-01",
+        "cari": "T1",
+        "k": "fatura:F300",
+        "kalan": 455040,
+        "tur": "fatura",
+        "vade": "2026-10-31"
+       },
+       {
+        "belge_tarihi": "2026-11-04",
+        "cari": "T1",
+        "k": "fatura:F338",
+        "kalan": 55900,
+        "tur": "fatura",
+        "vade": "2026-11-04"
+       },
+       {
+        "belge_tarihi": "2026-09-10",
+        "cari": "T1",
+        "k": "fatura:F273",
+        "kalan": 129600,
+        "tur": "fatura",
+        "vade": "2026-11-09"
+       },
+       {
+        "belge_tarihi": "2026-10-24",
+        "cari": "T1",
+        "k": "fatura:F325",
+        "kalan": 207000,
+        "tur": "fatura",
+        "vade": "2026-11-23"
+       },
+       {
+        "belge_tarihi": "2026-11-08",
+        "cari": "T1",
+        "k": "fatura:F343",
+        "kalan": 59600,
+        "tur": "fatura",
+        "vade": "2026-11-23"
+       },
+       {
+        "belge_tarihi": "2026-10-23",
+        "cari": "T1",
+        "k": "fatura:F322",
+        "kalan": 241080,
+        "tur": "fatura",
+        "vade": "2026-12-22"
+       },
+       {
+        "belge_tarihi": "2026-12-29",
+        "cari": "T1",
+        "k": "fatura:F396",
+        "kalan": 92040,
+        "tur": "fatura",
+        "vade": "2026-12-29"
+       },
+       {
+        "belge_tarihi": "2026-12-05",
+        "cari": "T1",
+        "k": "fatura:F376",
+        "kalan": 250800,
+        "tur": "fatura",
+        "vade": "2027-02-03"
+       },
+       {
+        "belge_tarihi": "2026-12-29",
+        "cari": "T3",
+        "k": "fatura:GEC1",
+        "kalan": -48000,
+        "tur": "fatura",
+        "vade": "2026-12-29"
+       }
+      ],
+      "cariler": {
+       "C1": {
+        "acilis": 0,
+        "bakiye": 992126
+       },
+       "C2": {
+        "acilis": 0,
+        "bakiye": 1200700
+       },
+       "C3": {
+        "acilis": 0,
+        "bakiye": 3748719
+       },
+       "C4": {
+        "acilis": 0,
+        "bakiye": 1176069
+       },
+       "C5": {
+        "acilis": 0,
+        "bakiye": 3768745
+       },
+       "T1": {
+        "acilis": 0,
+        "bakiye": 4674379
+       },
+       "T3": {
+        "acilis": 0,
+        "bakiye": -48000
+       }
+      },
+      "eksi_stok": [],
+      "ekstre": {
+       "C1": {
+        "Alacak Toplamı": 4076966,
+        "Borç Toplamı": 4113500,
+        "acik_kalemler": 5,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 4113500,
+          "borc": 4113500,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 4076966,
+          "bakiye": 36534,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F212 (2026-07-23)",
+          "alacak": 0,
+          "bakiye": 105596,
+          "borc": 69062,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-21"
+         },
+         {
+          "aciklama": "Devir: F287 (2026-09-21)",
+          "alacak": 0,
+          "bakiye": 548396,
+          "borc": 442800,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-21"
+         },
+         {
+          "aciklama": "Devir: F331 (2026-10-30)",
+          "alacak": 0,
+          "bakiye": 904320,
+          "borc": 355924,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-30"
+         },
+         {
+          "aciklama": "Devir: F279 (2026-09-13)",
+          "alacak": 0,
+          "bakiye": 943040,
+          "borc": 38720,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-12"
+         },
+         {
+          "aciklama": "Devir: F355 (2026-11-14)",
+          "alacak": 0,
+          "bakiye": 992126,
+          "borc": 49086,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-14"
+         }
+        ]
+       },
+       "C2": {
+        "Alacak Toplamı": 3740999,
+        "Borç Toplamı": 3740999,
+        "acik_kalemler": 5,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 3740999,
+          "borc": 3740999,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 3740999,
+          "bakiye": 0,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F307 (2026-10-06)",
+          "alacak": 0,
+          "bakiye": 1425,
+          "borc": 1425,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-06"
+         },
+         {
+          "aciklama": "Devir: F241 (2026-08-08)",
+          "alacak": 0,
+          "bakiye": 175300,
+          "borc": 173875,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-07"
+         },
+         {
+          "aciklama": "Devir: F334 (2026-11-02)",
+          "alacak": 0,
+          "bakiye": 445060,
+          "borc": 269760,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-01"
+         },
+         {
+          "aciklama": "Devir: F383 (2026-12-16)",
+          "alacak": 0,
+          "bakiye": 806380,
+          "borc": 361320,
+          "tarih": "2027-01-01",
+          "vade": "2027-02-14"
+         },
+         {
+          "aciklama": "Devir: F395 (2026-12-28)",
+          "alacak": 0,
+          "bakiye": 1200700,
+          "borc": 394320,
+          "tarih": "2027-01-01",
+          "vade": "2027-02-26"
+         }
+        ]
+       },
+       "C3": {
+        "Alacak Toplamı": 2592480,
+        "Borç Toplamı": 2659480,
+        "acik_kalemler": 19,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 2659480,
+          "borc": 2659480,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 2592480,
+          "bakiye": 67000,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F115 (2026-04-15)",
+          "alacak": 0,
+          "bakiye": 489615,
+          "borc": 422615,
+          "tarih": "2027-01-01",
+          "vade": "2026-04-15"
+         },
+         {
+          "aciklama": "Devir: F132 (2026-04-30)",
+          "alacak": 0,
+          "bakiye": 905195,
+          "borc": 415580,
+          "tarih": "2027-01-01",
+          "vade": "2026-05-30"
+         },
+         {
+          "aciklama": "Devir: F179 (2026-06-14)",
+          "alacak": 0,
+          "bakiye": 1226395,
+          "borc": 321200,
+          "tarih": "2027-01-01",
+          "vade": "2026-06-14"
+         },
+         {
+          "aciklama": "Devir: k335 (2026-07-03)",
+          "alacak": 0,
+          "bakiye": 1248595,
+          "borc": 22200,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-03"
+         },
+         {
+          "aciklama": "Devir: k344 (2026-07-09)",
+          "alacak": 0,
+          "bakiye": 1262095,
+          "borc": 13500,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-09"
+         },
+         {
+          "aciklama": "Devir: F280 (2026-09-14)",
+          "alacak": 0,
+          "bakiye": 1342255,
+          "borc": 80160,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-14"
+         },
+         {
+          "aciklama": "Devir: F288 (2026-09-22)",
+          "alacak": 0,
+          "bakiye": 1672035,
+          "borc": 329780,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-22"
+         },
+         {
+          "aciklama": "Devir: k526 (2026-10-05)",
+          "alacak": 0,
+          "bakiye": 1680735,
+          "borc": 8700,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-05"
+         },
+         {
+          "aciklama": "Devir: F306 (2026-10-02)",
+          "alacak": 0,
+          "bakiye": 1801435,
+          "borc": 120700,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-17"
+         },
+         {
+          "aciklama": "Devir: F260 (2026-08-27)",
+          "alacak": 0,
+          "bakiye": 1989935,
+          "borc": 188500,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-26"
+         },
+         {
+          "aciklama": "Devir: F345 (2026-11-10)",
+          "alacak": 0,
+          "bakiye": 2055935,
+          "borc": 66000,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-10"
+         },
+         {
+          "aciklama": "Devir: F348 (2026-11-11)",
+          "alacak": 0,
+          "bakiye": 2378529,
+          "borc": 322594,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-11"
+         },
+         {
+          "aciklama": "Devir: F324 (2026-10-24)",
+          "alacak": 0,
+          "bakiye": 2412849,
+          "borc": 34320,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-23"
+         },
+         {
+          "aciklama": "Devir: F357 (2026-11-20)",
+          "alacak": 0,
+          "bakiye": 2433969,
+          "borc": 21120,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-05"
+         },
+         {
+          "aciklama": "Devir: F362 (2026-11-25)",
+          "alacak": 0,
+          "bakiye": 2793779,
+          "borc": 359810,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-10"
+         },
+         {
+          "aciklama": "Devir: F387 (2026-12-21)",
+          "alacak": 0,
+          "bakiye": 3004879,
+          "borc": 211100,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-21"
+         },
+         {
+          "aciklama": "Devir: F318 (2026-10-23)",
+          "alacak": 0,
+          "bakiye": 3128119,
+          "borc": 123240,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-22"
+         },
+         {
+          "aciklama": "Devir: F384 (2026-12-17)",
+          "alacak": 0,
+          "bakiye": 3412419,
+          "borc": 284300,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-01"
+         },
+         {
+          "aciklama": "Devir: F351 (2026-11-12)",
+          "alacak": 0,
+          "bakiye": 3748719,
+          "borc": 336300,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-11"
+         }
+        ]
+       },
+       "C4": {
+        "Alacak Toplamı": 5219916,
+        "Borç Toplamı": 5299916,
+        "acik_kalemler": 8,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 5299916,
+          "borc": 5299916,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 5219916,
+          "bakiye": 80000,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F201 (2026-07-09)",
+          "alacak": 0,
+          "bakiye": 130466,
+          "borc": 50466,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-07"
+         },
+         {
+          "aciklama": "Devir: TK229 (2026-08-02)",
+          "alacak": 0,
+          "bakiye": 166632,
+          "borc": 36166,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-01"
+         },
+         {
+          "aciklama": "Devir: TK229 (2026-08-02)",
+          "alacak": 0,
+          "bakiye": 202800,
+          "borc": 36168,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-31"
+         },
+         {
+          "aciklama": "Devir: F332 (2026-11-01)",
+          "alacak": 0,
+          "bakiye": 334080,
+          "borc": 131280,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-01"
+         },
+         {
+          "aciklama": "Devir: k632 (2026-12-05)",
+          "alacak": 0,
+          "bakiye": 335080,
+          "borc": 1000,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-05"
+         },
+         {
+          "aciklama": "Devir: F369 (2026-12-01)",
+          "alacak": 0,
+          "bakiye": 756160,
+          "borc": 421080,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-31"
+         },
+         {
+          "aciklama": "Devir: F399 (2026-12-31)",
+          "alacak": 0,
+          "bakiye": 816259,
+          "borc": 60099,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-31"
+         },
+         {
+          "aciklama": "Devir: F360 (2026-11-23)",
+          "alacak": 0,
+          "bakiye": 1176069,
+          "borc": 359810,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-22"
+         }
+        ]
+       },
+       "C5": {
+        "Alacak Toplamı": 4425068,
+        "Borç Toplamı": 4425068,
+        "acik_kalemler": 18,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 4425068,
+          "borc": 4425068,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 4425068,
+          "bakiye": 0,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F137 (2026-05-05)",
+          "alacak": 0,
+          "bakiye": 45545,
+          "borc": 45545,
+          "tarih": "2027-01-01",
+          "vade": "2026-06-04"
+         },
+         {
+          "aciklama": "Devir: F219 (2026-07-27)",
+          "alacak": 0,
+          "bakiye": 290445,
+          "borc": 244900,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-27"
+         },
+         {
+          "aciklama": "Devir: F232 (2026-08-04)",
+          "alacak": 0,
+          "bakiye": 542445,
+          "borc": 252000,
+          "tarih": "2027-01-01",
+          "vade": "2026-08-04"
+         },
+         {
+          "aciklama": "Devir: F238 (2026-08-07)",
+          "alacak": 0,
+          "bakiye": 900995,
+          "borc": 358550,
+          "tarih": "2027-01-01",
+          "vade": "2026-08-07"
+         },
+         {
+          "aciklama": "Devir: F215 (2026-07-25)",
+          "alacak": 0,
+          "bakiye": 1095275,
+          "borc": 194280,
+          "tarih": "2027-01-01",
+          "vade": "2026-08-09"
+         },
+         {
+          "aciklama": "Devir: F187 (2026-06-23)",
+          "alacak": 0,
+          "bakiye": 1470775,
+          "borc": 375500,
+          "tarih": "2027-01-01",
+          "vade": "2026-08-22"
+         },
+         {
+          "aciklama": "Devir: F253 (2026-08-17)",
+          "alacak": 0,
+          "bakiye": 1776375,
+          "borc": 305600,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-01"
+         },
+         {
+          "aciklama": "Devir: F265 (2026-09-04)",
+          "alacak": 0,
+          "bakiye": 2202735,
+          "borc": 426360,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-04"
+         },
+         {
+          "aciklama": "Devir: F292 (2026-09-24)",
+          "alacak": 0,
+          "bakiye": 2376375,
+          "borc": 173640,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-24"
+         },
+         {
+          "aciklama": "Devir: k546 (2026-10-22)",
+          "alacak": 0,
+          "bakiye": 2395975,
+          "borc": 19600,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-22"
+         },
+         {
+          "aciklama": "Devir: F277 (2026-09-13)",
+          "alacak": 0,
+          "bakiye": 2545675,
+          "borc": 149700,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-12"
+         },
+         {
+          "aciklama": "Devir: F336 (2026-11-04)",
+          "alacak": 0,
+          "bakiye": 2904985,
+          "borc": 359310,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-19"
+         },
+         {
+          "aciklama": "Devir: F361 (2026-11-25)",
+          "alacak": 0,
+          "bakiye": 3261495,
+          "borc": 356510,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-25"
+         },
+         {
+          "aciklama": "Devir: GEC2 (2026-12-31)",
+          "alacak": 0,
+          "bakiye": 3291495,
+          "borc": 30000,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-31"
+         },
+         {
+          "aciklama": "Devir: F386 (2026-12-21)",
+          "alacak": 0,
+          "bakiye": 3325995,
+          "borc": 34500,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-05"
+         },
+         {
+          "aciklama": "Devir: F356 (2026-11-14)",
+          "alacak": 0,
+          "bakiye": 3352635,
+          "borc": 26640,
+          "tarih": "2027-01-01",
+          "vade": "2027-01-13"
+         },
+         {
+          "aciklama": "Devir: F375 (2026-12-05)",
+          "alacak": 0,
+          "bakiye": 3521355,
+          "borc": 168720,
+          "tarih": "2027-01-01",
+          "vade": "2027-02-03"
+         },
+         {
+          "aciklama": "Devir: F389 (2026-12-23)",
+          "alacak": 0,
+          "bakiye": 3768745,
+          "borc": 247390,
+          "tarih": "2027-01-01",
+          "vade": "2027-02-21"
+         }
+        ]
+       },
+       "T1": {
+        "Alacak Toplamı": 2118864,
+        "Borç Toplamı": 2118864,
+        "acik_kalemler": 22,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 2118864,
+          "borc": 2118864,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 2118864,
+          "bakiye": 0,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F141 (2026-05-07)",
+          "alacak": 0,
+          "bakiye": 43732,
+          "borc": 43732,
+          "tarih": "2027-01-01",
+          "vade": "2026-05-07"
+         },
+         {
+          "aciklama": "Devir: F172 (2026-06-05)",
+          "alacak": 0,
+          "bakiye": 358552,
+          "borc": 314820,
+          "tarih": "2027-01-01",
+          "vade": "2026-06-05"
+         },
+         {
+          "aciklama": "Devir: F160 (2026-05-24)",
+          "alacak": 0,
+          "bakiye": 783702,
+          "borc": 425150,
+          "tarih": "2027-01-01",
+          "vade": "2026-06-08"
+         },
+         {
+          "aciklama": "Devir: F129 (2026-04-27)",
+          "alacak": 0,
+          "bakiye": 1079052,
+          "borc": 295350,
+          "tarih": "2027-01-01",
+          "vade": "2026-06-26"
+         },
+         {
+          "aciklama": "Devir: F196 (2026-07-05)",
+          "alacak": 0,
+          "bakiye": 1092852,
+          "borc": 13800,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-20"
+         },
+         {
+          "aciklama": "Devir: F210 (2026-07-22)",
+          "alacak": 0,
+          "bakiye": 1106487,
+          "borc": 13635,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-22"
+         },
+         {
+          "aciklama": "Devir: F211 (2026-07-22)",
+          "alacak": 0,
+          "bakiye": 1391717,
+          "borc": 285230,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-22"
+         },
+         {
+          "aciklama": "Devir: F199 (2026-07-08)",
+          "alacak": 0,
+          "bakiye": 1745477,
+          "borc": 353760,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-23"
+         },
+         {
+          "aciklama": "Devir: F218 (2026-07-27)",
+          "alacak": 0,
+          "bakiye": 2204597,
+          "borc": 459120,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-27"
+         },
+         {
+          "aciklama": "Devir: F214 (2026-07-25)",
+          "alacak": 0,
+          "bakiye": 2390837,
+          "borc": 186240,
+          "tarih": "2027-01-01",
+          "vade": "2026-08-24"
+         },
+         {
+          "aciklama": "Devir: F254 (2026-08-17)",
+          "alacak": 0,
+          "bakiye": 2416037,
+          "borc": 25200,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-01"
+         },
+         {
+          "aciklama": "Devir: F274 (2026-09-11)",
+          "alacak": 0,
+          "bakiye": 2614637,
+          "borc": 198600,
+          "tarih": "2027-01-01",
+          "vade": "2026-09-11"
+         },
+         {
+          "aciklama": "Devir: F262 (2026-09-02)",
+          "alacak": 0,
+          "bakiye": 2994247,
+          "borc": 379610,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-02"
+         },
+         {
+          "aciklama": "Devir: F258 (2026-08-24)",
+          "alacak": 0,
+          "bakiye": 3183319,
+          "borc": 189072,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-23"
+         },
+         {
+          "aciklama": "Devir: F300 (2026-10-01)",
+          "alacak": 0,
+          "bakiye": 3638359,
+          "borc": 455040,
+          "tarih": "2027-01-01",
+          "vade": "2026-10-31"
+         },
+         {
+          "aciklama": "Devir: F338 (2026-11-04)",
+          "alacak": 0,
+          "bakiye": 3694259,
+          "borc": 55900,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-04"
+         },
+         {
+          "aciklama": "Devir: F273 (2026-09-10)",
+          "alacak": 0,
+          "bakiye": 3823859,
+          "borc": 129600,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-09"
+         },
+         {
+          "aciklama": "Devir: F325 (2026-10-24)",
+          "alacak": 0,
+          "bakiye": 4030859,
+          "borc": 207000,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-23"
+         },
+         {
+          "aciklama": "Devir: F343 (2026-11-08)",
+          "alacak": 0,
+          "bakiye": 4090459,
+          "borc": 59600,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-23"
+         },
+         {
+          "aciklama": "Devir: F322 (2026-10-23)",
+          "alacak": 0,
+          "bakiye": 4331539,
+          "borc": 241080,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-22"
+         },
+         {
+          "aciklama": "Devir: F396 (2026-12-29)",
+          "alacak": 0,
+          "bakiye": 4423579,
+          "borc": 92040,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-29"
+         },
+         {
+          "aciklama": "Devir: F376 (2026-12-05)",
+          "alacak": 0,
+          "bakiye": 4674379,
+          "borc": 250800,
+          "tarih": "2027-01-01",
+          "vade": "2027-02-03"
+         }
+        ]
+       },
+       "T3": {
+        "Alacak Toplamı": 1436600,
+        "Borç Toplamı": 1436600,
+        "acik_kalemler": 1,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 1436600,
+          "borc": 1436600,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 1436600,
+          "bakiye": 0,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: GEC1 (2026-12-29)",
+          "alacak": 48000,
+          "bakiye": -48000,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": "2026-12-29"
+         }
+        ]
+       }
+      },
+      "ekstre_cariler": [
+       "C1",
+       "C2",
+       "C3",
+       "C4",
+       "C5",
+       "T1",
+       "T3"
+      ],
+      "kartlar": {
+       "EXD1": {
+        "acik_taksitler": [
+         {
+          "kalan": 20000,
+          "vade": "2026-12-15"
+         },
+         {
+          "kalan": 30000,
+          "vade": "2027-01-15"
+         },
+         {
+          "kalan": 30000,
+          "vade": "2027-02-15"
+         }
+        ],
+        "cari": "C4"
+       },
+       "TK229": {
+        "acik_taksitler": [],
+        "cari": "C4"
+       },
+       "TK239": {
+        "acik_taksitler": [
+         {
+          "kalan": 18266,
+          "vade": "2026-10-06"
+         },
+         {
+          "kalan": 18268,
+          "vade": "2026-11-05"
+         }
+        ],
+        "cari": "C1"
+       },
+       "TK296": {
+        "acik_taksitler": [
+         {
+          "kalan": 22333,
+          "vade": "2026-10-29"
+         },
+         {
+          "kalan": 22333,
+          "vade": "2026-11-28"
+         },
+         {
+          "kalan": 22334,
+          "vade": "2026-12-28"
+         }
+        ],
+        "cari": "C3"
+       }
+      },
+      "stok": {
+       "U1": {
+        "deger": 261967,
+        "miktar": "136"
+       },
+       "U2": {
+        "deger": 523276,
+        "miktar": "293"
+       },
+       "U3": {
+        "deger": 565464,
+        "miktar": "297"
+       }
+      },
+      "supheli": {}
+     },
+     "arsiv_kapanis": {
+      "100": 674455,
+      "102.B1": 14324596,
+      "102.B2": 6212655,
+      "103": -153520,
+      "108.POS1": 224204,
+      "120|C1": 992126,
+      "120|C2": 1200700,
+      "120|C3": 3748719,
+      "120|C4": 1176069,
+      "120|C5": 3768745,
+      "153": 1350707,
+      "191": 11636,
+      "193": 400,
+      "255": 933700,
+      "300.KR1": -549600,
+      "309.KK1": -601248,
+      "320|T1": 4674379,
+      "320|T3": -48000,
+      "360": -3375945,
+      "391": -5000,
+      "519": -5331500,
+      "590": -29228278
+     },
+     "bag_degisen": {},
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m27_net_satir": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "soz_hatirlatma_ayni": [],
+      "tek_acilis_fisi": [],
+      "yeni_gt_sifir": []
+     },
+     "fark": {
+      "120|C5": 30000,
+      "191": 8000,
+      "320|T3": -48000,
+      "391": -5000,
+      "590": 15000
+     },
+     "gecikmis_degisen": {
+      "C5": {
+       "once": 3585017,
+       "sonra": 3615017
+      }
+     },
+     "kapanis": {
+      "DSS": 1350707,
+      "N01": {
+       "2026": 898663
+      },
+      "R": {
+       "2026": 29228278
+      },
+      "onceki_yil": {},
+      "sonuc": 29228278
+     },
+     "s19_devir": [
+      "I402",
+      "k700",
+      "k712",
+      "k716"
+     ],
+     "secenek": "borc_alacak",
+     "uyarilar": [],
+     "yeni_acilis": {
+      "100": 674455,
+      "102.B1": 14324596,
+      "102.B2": 6212655,
+      "103": -153520,
+      "108.POS1": 224204,
+      "120|C1": 992126,
+      "120|C2": 1200700,
+      "120|C3": 3748719,
+      "120|C4": 1176069,
+      "120|C5": 3768745,
+      "153": 1350707,
+      "191": 11636,
+      "193": 400,
+      "255": 933700,
+      "300.KR1": -549600,
+      "309.KK1": -601248,
+      "320|T1": 4674379,
+      "320|T3": -48000,
+      "360": -3375945,
+      "391": -5000,
+      "519": -5331500,
+      "590": -29228278
+     }
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

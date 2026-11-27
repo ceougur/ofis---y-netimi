@@ -23,7 +23,11 @@ sys.path.insert(0, BURASI)
 import model as M  # noqa: E402
 from senaryolar_elle import TANIM  # noqa: E402
 
-TOHUMLAR = (1, 2, 3)
+TOHUMLAR = (1, 2, 3, 7)
+# Kâhin bakımı K-D (README KD1–KD26): tohum 7 (Borç ve Alacakları Aktar) rastgele sayı TÜKETMEYEN devir ekleriyle (Ödeme Sözü, Excel kartı, Kartı Kapat); tohum 1–3
+# aynen. İki seçenek karşılaştırması BakimKD'de (tohum 1, yoğunluk 1). Tohum 4 (ekli koşusu yeşildi) mutasyon süresi için listeden çıkarıldı; tohum 5 eklerden
+# BAĞIMSIZ olarak 'S14 planı yakınsamadı' (taban kâhinde de — README K-D SONRAYA 1).
+EKLI_TOHUMLAR = (4, 7)
 
 # Kâhin bakımı 4 (S21 A, README Y19–Y23): resmî tatil takvimi model.py'de (2429; tatil_turu). Sabit tam gün tatile düşen valör artık SERBEST (model sonraki
 # iş gününe kaydırır; bakım 3'ün kaçınması kalktı). BELİRSİZ günlerden (doğrulanmamış dinî bayram penceresi, arife dahil) kaçınma sürer: kâhin orada kural
@@ -428,6 +432,25 @@ class Uretici:
                 return e
         return None
 
+    def devir_ekleri(self, yil):
+        """Kâhin bakımı K-D: K öncesi verilen, yeni yıla uzanan Ödeme Sözü (BM§2 (3)); yeni yıla taksitleri uzanan Excel kartı (KG-5 A, §3 (5)); Kartı Kapat'lı
+        kart (BM§2 (4), §3 (6)). Rastgele sayı tüketmez; şüpheli kaydı açılmış cariye dokunmaz (S155 / K3 alanı ayrı bakımların)."""
+        ad = [c for c in MUSTERI if c not in self.supheli]
+        if not ad:
+            return
+        c = ad[0]
+        self.ekle("odeme_sozu", f"{yil}-12-20", cari=c, soz_tarihi=f"{yil + 1}-01-25")
+        c2 = ad[-1]
+        self.ekle("taksit_excel", f"{yil}-11-15", id="EXD1", cari=c2, toplam=90000, odenen=10000,
+                  taksitler=[{"vade": f"{yil}-12-15", "tutar": 30000}, {"vade": f"{yil + 1}-01-15", "tutar": 30000},
+                             {"vade": f"{yil + 1}-02-15", "tutar": 30000}])
+        self.cari[c2] += 80000
+        self.kartlar["EXD1"] = c2
+        kap = [k for k in sorted(self.kartlar) if k != "EXD1" and self.kartlar[k] not in self.supheli]
+        if kap:
+            self.ekle("taksit_kapat", f"{yil}-12-22", kart=kap[0])
+            del self.kartlar[kap[0]]
+
     def gunler(self, bas, son):
         g = datetime.date.fromisoformat(bas)
         bit = datetime.date.fromisoformat(son)
@@ -450,6 +473,8 @@ def uret(tohum, yil=2026, yogunluk=3):
     u.gunler(f"{yil}-01-02", f"{yil}-06-30")
     u.supheli_akisi(f"{yil}-07-01", f"{yil}-08-15", f"{yil}-11-20")
     u.gunler(f"{yil}-07-01", K)
+    if tohum in EKLI_TOHUMLAR:
+        u.devir_ekleri(yil)                                     # kâhin bakımı K-D
     u.gunler(f"{yil + 1}-01-01", f"{yil + 1}-01-20")           # K sonrası, devirden önce girilen Ocak kayıtları
     u.s11_karsiliksiz(K, f"{yil + 1}-01-20")                    # kâhin bakımı 3: kilitli dönemin evrakı kilitten sonra karşılıksız (S11)
     rap = [

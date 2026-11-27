@@ -1404,6 +1404,139 @@ class Bakim14(unittest.TestCase):
 
 
 # ------------------------------------------------------------------------------------------------ elle senaryolar
+
+# ------------------------------------------------------------------------------------------------ kâhin bakımı K-D (2.5.1; README "Kâhin bakımı K-D")
+class BakimKD(unittest.TestCase):
+    """Kâhin bakımı K-D (README KD1–KD26): devir kararları S-1 / S-2 / S-3 = A ve BAŞ MİMAR §2 (1)–(7) — beklenenler kararların sözünden ELLE."""
+
+    @staticmethod
+    def model(olaylar, **ek):
+        m = M.Model(senaryo(olaylar, **ek))
+        r = m.kos()
+        return m, r
+
+    def test_KD2_aktarim_M4_kapanmamis_yildan_once_eskiden_yeniye(self):
+        # 2026 kârı 100000 (devir K = 2026) → 2027 kârı 50000 (2027 devredilmedi) → 2028 kârı 20000, devir K = 2028:
+        # K günü sıra: Önceki Yıl Sonucu Fişi (2026) [aktarım 590 → 570.2026] → Önceki Yıl Sonucu Fişi (2027) [M4: sonuç hesapları → 570.2027] → kapanış
+        m, r = self.model([o("satis_faturasi", "2026-03-01", id="F1", cari="C1", M=100000, K=0), o("devir", K="2026-12-31", ad="d26"),
+                           o("satis_faturasi", "2027-03-01", id="F2", cari="C1", M=50000, K=0),
+                           o("satis_faturasi", "2028-03-01", id="F3", cari="C1", M=20000, K=0),
+                           E.BIL("b28", "2028-06-30"), o("devir", K="2028-12-31", ad="d28"), E.BIL("b29", "2029-01-01")])
+        self.assertEqual(r["redler"], [])
+        b28 = r["raporlar"]["b28"]
+        self.assertEqual((b28["onceki_yil_dagitilmamis"], b28["gecmis_yillar_kapanmamis"], b28["donem_net_kari"]), ({"2026": 100000}, 50000, 20000))
+        a = m.arsivler[-1]
+        oy = [f for f in sorted(a.fisler, key=lambda f: f.seq) if f.tur == "onceki_yil_sonucu"]
+        self.assertEqual([(f.ek["yil"], bool(f.ek.get("aktarim"))) for f in oy], [(2026, True), (2027, False)])
+        self.assertEqual(sorted((s["h"], s["b"] - s["a"]) for s in oy[0].satirlar), [("570.2026", -100000), ("590", 100000)])
+        d28 = r["raporlar"]["d28"]
+        self.assertEqual((d28["kapanis"]["aktarim"], d28["kapanis"]["onceki_yil"]["2027"]["R"], d28["kapanis"]["sonuc"]), ({"2026": 100000}, 50000, 20000))
+        self.assertEqual({k: d28["yeni_acilis"].get(k) for k in ("570.2026", "570.2027", "590")}, {"570.2026": -100000, "570.2027": -50000, "590": -20000})
+        self.assertTrue(M.tumu_tuttu(r["devirler"][-1]["degismezler"]), r["devirler"][-1]["degismezler"])
+        b29 = r["raporlar"]["b29"]
+        self.assertEqual((b29["pasif"]["V.D"], b29["pasif"].get("V.F", 0)), (170000, 0))
+
+    def test_KD3_S2_bekleyen_aday_tarihinden_bagimsiz_durdurur(self):
+        # kararın sözü: "listede onay bekleyen kayıt varken" — adayın tarihi K'den sonra da olsa (göçte gelen yeni yıl kaydı) devir durur
+        m, r = self.model([o("borc_yaz", "2027-01-05", id="BY9", cari="C1", tutar=1000, aciklama="Açılış bakiyesi", yedekten=True),
+                           o("satis_faturasi", "2026-05-01", cari="C3", M=5000, K=0), o("devir", K="2026-12-31", ad="d")])
+        self.assertEqual([x["kod"] for x in r["redler"]], ["DEVIR_ACILIS_OLABILIR"])
+        self.assertEqual((m.devirler, m.arsivler), ([], []))
+
+    def test_KD4_S3_alt_defter_farki_ve_yeni_yila_dusen_fis_susar(self):
+        # (a) yalnız alt defter farkı (120 ↔ 128; B14: fişle düzeltilmez) → devirde kâhin SUSAR (KULLANICIYA SORULMALI 1) — test_B14 düzeni (donmuş deftere elle)
+        temel = [o("satis_faturasi", "2026-02-01", id="F1", cari="C1", M=10000, K=0), o("supheliye_al", "2026-03-01", id="SA1", cari="C1", tutar=10000),
+                 o("tahsilat", "2026-03-10", id="P1", cari="C1", yol="cek", evrak="CK1", tutar=4000, fatura="F1")]
+        m, _ = self.model(temel)
+        d = m.canli
+        d.donmus = [M.Madde(x.id, x.tarih, x.sinif, x.seq, x.kaynak, x.tur,
+                            [dict(sat, h="120") if sat["h"] == "128" else sat for sat in x.satirlar] if x.kaynak == "P1" else x.satirlar, x.ek)
+                    for x in d.gecis().maddeler if x.tarih <= "2026-03-31"]
+        d.donmus_sinir, d.donmus_kural, d.kilit = "2026-03-31", "2.4.9", "2026-03-31"
+        d.degisti()
+        with self.assertRaises(AssertionError) as c:
+            m.devir({"K": "2026-12-31"})
+        self.assertIn("S-3", str(c.exception))
+        # (b) kilit K'ye dayanmış: fiş ilk açık güne (K+1) düşer → kararın "kapanan yılın İÇİNDE"si sağlanamıyor → SUSAR (KULLANICIYA SORULMALI 2)
+        ols = [o("evrak_acilis", "2026-01-01", evrak="CK1", evrak_turu="cek", yon="alinan", durum="portfoy", tutar=3000, cari="C1"),
+               o("donem_kilitle", tarih="2026-12-31", kural="2.4.9"), o("devir", K="2026-12-31", ad="d0")]
+        m, r = self.model(ols)
+        self.assertEqual([x["kod"] for x in r["redler"]], ["DEVIR_KURAL_FARKI"])
+        with self.assertRaises(AssertionError) as c:
+            self.model(ols + [o("kural_farki_duzelt"), o("devir", K="2026-12-31", ad="d")])
+        self.assertIn("S-3", str(c.exception))
+
+    def test_KD9_excel_yukleme_K_sonrasi_susar(self):
+        # B5: Kayıt Tarihi 20.12.2026, yükleme 03.01.2027 (madde yükleme günü) — devirde kart arşive, madde yeni yıla düşerdi → SUSAR (KULLANICIYA SORULMALI 3)
+        ols = [o("taksit_excel", "2026-12-20", id="EX1", cari="C1", toplam=9000, odenen=0, yukleme_ani="2027-01-03T10:00:00+03:00",
+                 taksitler=[{"vade": "2027-02-01", "tutar": 9000}]), o("devir", K="2026-12-31")]
+        with self.assertRaises(AssertionError) as c:
+            self.model(ols)
+        self.assertIn("B5", str(c.exception))
+
+    def test_KD13_yeni_yilda_hesapsiz_hareket_susar(self):
+        # yeni yılda banka hesabının açılışı devir açılışı (K+1) → yeni yılın hesapsız hareketi sınırdan önce olamaz → Hesabı Atanmamış → kâhin SUSAR
+        with self.assertRaises(AssertionError) as c:
+            self.model([o("banka_acilis", "2026-01-01", banka="B1", tutar=1000), o("devir", K="2026-12-31"),
+                        o("hesapsiz_hareket", "2027-02-01", cari="C1", yon="tahsilat", tutar=100)])
+        self.assertIn("S179", str(c.exception))
+
+    def test_KD23_geri_al_yeniden_devir_raporu_ayni(self):
+        ols = [o("kasa_acilis", "2026-01-01", tutar=5000), o("satis_faturasi", "2026-06-01", id="F1", cari="C1", M=3000, K=0, vade="2027-01-31"),
+               o("borc_yaz", "2026-12-01", id="BY1", cari="C3", tutar=700, aciklama="Fark"), o("odeme_sozu", "2026-12-15", cari="C3", soz_tarihi="2027-01-10"),
+               o("satis_faturasi", "2027-01-05", id="F2", cari="C1", M=1000, K=0)]
+        _, r = self.model(ols + [o("devir", K="2026-12-31", ad="d1"), o("devri_geri_al", ad="g"), o("devir", K="2026-12-31", ad="d2")])
+        self.assertEqual(r["raporlar"]["g"]["kaybolan_hareketler"], [])
+        self.assertEqual(r["raporlar"]["d1"], r["raporlar"]["d2"])
+        _, r1 = self.model(ols + [o("devir", K="2026-12-31", ad="d2"), E.R("h", "hatirlatma", tarih="2027-01-05")])
+        _, r2 = self.model(ols + [o("devir", K="2026-12-31", ad="d1"), o("devri_geri_al", ad="g"), o("devir", K="2026-12-31", ad="d2"),
+                                  E.R("h", "hatirlatma", tarih="2027-01-05")])
+        self.assertEqual(r1["raporlar"]["h"], r2["raporlar"]["h"])
+        self.assertEqual(r2["raporlar"]["h"]["odeme_sozu_var"], {"C3": 700})
+
+    def test_KD5_KD6_iki_secenek_ayni_sayilar(self):
+        # BM§2 (1): "Borç ve Alacakları Aktar" ile "Sadece Bakiyeyi Aktar" arasında gecikmiş, kalan ve bakiye AYNI (fark yalnız ekstre satırlarında)
+        s = U.uret(1, yogunluk=1)                      # mutasyon süresi için düşük yoğunluk (README K-D)
+        x = copy.deepcopy(s)
+        for ol in x["olaylar"]:
+            if ol["tur"] == "devir":
+                self.assertEqual(ol["secenek"], "borc_alacak")
+                ol["secenek"] = "sadece_bakiye"
+        r1, r2 = M.kos(s), M.kos(x)
+        for ad in ("gec_ocak", "gec_son", "bil_yeni", "mz_yeni", "gt_yeni"):
+            self.assertEqual(r1["raporlar"][ad], r2["raporlar"][ad], ad)
+        a1, a2 = r1["raporlar"]["devir"]["acilis"], r2["raporlar"]["devir"]["acilis"]
+        self.assertEqual((a1["acik_kalemler"], a1["cariler"], a1["kartlar"]), (a2["acik_kalemler"], a2["cariler"], a2["kartlar"]))
+        self.assertNotEqual(a1["ekstre"], a2["ekstre"])
+
+    def test_KD7_soz_tasinmazsa_degismez_yakalar(self):
+        m, r = self.model([o("satis_faturasi", "2026-10-01", cari="C1", M=5000, K=0, vade="2026-11-01"),
+                           o("odeme_sozu", "2026-12-15", cari="C1", soz_tarihi="2027-01-20"), o("devir", K="2026-12-31")])
+        self.assertEqual(r["devirler"][0]["degismezler"]["soz_hatirlatma_ayni"], [])
+        kayit, yeni, arsiv = m.devirler[0], m.canli, m.arsivler[0]
+        yeni.sozler = []
+        yeni.degisti()
+        d = M.devir_degismezleri(arsiv, yeni, kayit["K"], None, kayit["id"], devirsiz=M.kilitli_kopya(kayit["yedek"], yeni.kilit))
+        self.assertTrue(d["soz_hatirlatma_ayni"])
+
+    def test_KD18_590_yalniz_K_yili_degismezinin_disi(self):
+        # EK-1 §4 (6) "590 / 591 = yalnız K yılı" (README KD2): ikinci devrin arşivine K tarihli fazladan 590 satırı konunca (aktarım fişleri aynı kalır) m4 yakalar
+        m, r = self.model([o("satis_faturasi", "2026-06-01", cari="C1", M=1000, K=0), o("devir", K="2026-12-31"),
+                           o("satis_faturasi", "2027-06-01", cari="C1", M=800, K=0), o("devir", K="2027-12-31")])
+        kayit, arsiv, yeni = m.devirler[-1], m.arsivler[-1], m.canli
+        self.assertEqual(r["devirler"][-1]["degismezler"]["m4_m6_kapanis"], [])
+        arsiv.fis_ekle("2027-12-31", 3, "elle", [M.Bo("519", 10), M.Al("590", 10)])
+        d = M.devir_degismezleri(arsiv, yeni, kayit["K"], None, kayit["id"], devirsiz=M.kilitli_kopya(kayit["yedek"], yeni.kilit),
+                                 kapanis=kayit["kapanis"], acilis=kayit["acilis"])
+        self.assertTrue(any("yalnız K yılı" in x for x in d["m4_m6_kapanis"]), d["m4_m6_kapanis"])
+
+    def test_KD9_devir_tabani_degismezi_disi(self):
+        m, r = self.model([o("satis_faturasi", "2026-05-01", cari="C1", M=1000, K=0), o("devir", K="2026-12-31")])
+        self.assertEqual(r["degismezler"]["canli"]["devir_tabani"], [])
+        m.canli.fis_ekle("2026-12-31", 1, "elle", [M.Bo("100", 10), M.Al("649", 10)])
+        self.assertTrue(M.degismezler(m.canli, "2027-01-01")["devir_tabani"])
+
+
 class ElleSenaryolar(unittest.TestCase):
     pass
 

@@ -1,0 +1,152 @@
+{
+ "aciklama": "K-D S-2: onay bekleyen 'Açılış Olabilir' adayı devri durdurur; red sonrası devir geçer.",
+ "ad": "s124b-kd-acilis-olabilir-ret-devir",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "acilis_olabilir": [],
+   "bil/aktif/I.C": 600000,
+   "bil/kesin_degil": [],
+   "bil/pasif/V.D": 600000,
+   "bil/pasif/V.F": 0,
+   "bil/pasif/V.G": 0,
+   "devir/yeni_acilis/120|C1": 500000,
+   "devir/yeni_acilis/120|C3": 100000,
+   "devir/yeni_acilis/519": 0,
+   "devir/yeni_acilis/590": -600000,
+   "gt_arsiv/kalemler/A": 600000,
+   "gt_arsiv/kalemler/DNK": 600000,
+   "redler": [
+    "DEVIR_ACILIS_OLABILIR"
+   ]
+  }
+ },
+ "kapsam": [
+  "S-2",
+  "§3 (3)",
+  "KG-16",
+  "S47",
+  "W1",
+  "W2",
+  "N-13"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "aciklama": "Açılış bakiyesi",
+   "cari": "C1",
+   "id": "BY1",
+   "tarih": "2026-01-02",
+   "tur": "borc_yaz",
+   "tutar": 500000,
+   "yedekten": true
+  },
+  {
+   "K": 0,
+   "M": 100000,
+   "cari": "C3",
+   "id": "F1",
+   "tarih": "2026-05-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir_red",
+   "tur": "devir"
+  },
+  {
+   "karar": "red",
+   "kaynak": "BY1",
+   "tur": "acilis_onayla"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "tur": "devir"
+  },
+  {
+   "ad": "gt_arsiv",
+   "bas": "2026-01-01",
+   "dosya": "arsiv",
+   "rapor": "gelir_tablosu",
+   "son": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2027-01-01",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

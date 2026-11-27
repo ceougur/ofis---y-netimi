@@ -19,6 +19,7 @@
     "canli": {
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
+     "devir_tabani": [],
      "gt_bilanco_kar": [],
      "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
@@ -72,8 +73,10 @@
       "III.B": {
        "320|T1": 86000
       },
+      "V.D": {
+       "Önceki Yıl Kârı — Dağıtılmamış (2026)": 50000
+      },
       "V.F": {
-       "590": 50000,
        "Dönem Net Kârı (Hesaplanmış)": -36000
       }
      },
@@ -85,9 +88,13 @@
      "kesin_degil": [
       "SATISLARIN_MALIYETI_TAHMINI"
      ],
+     "onceki_yil_dagitilmamis": {
+      "2026": 50000
+     },
      "pasif": {
       "III.B": 86000,
-      "V.F": 14000
+      "V.D": 50000,
+      "V.F": -36000
      },
      "pasif_toplam": 100000,
      "tarih": "2027-01-31"
@@ -106,8 +113,8 @@
       "III.B": {
        "320|T1": 50000
       },
-      "V.F": {
-       "590": 50000
+      "V.D": {
+       "Önceki Yıl Kârı — Dağıtılmamış (2026)": 50000
       }
      },
      "donem_net_kari": 0,
@@ -118,9 +125,12 @@
      "kesin_degil": [
       "EKSI_STOK"
      ],
+     "onceki_yil_dagitilmamis": {
+      "2026": 50000
+     },
      "pasif": {
       "III.B": 50000,
-      "V.F": 50000
+      "V.D": 50000
      },
      "pasif_toplam": 100000,
      "tarih": "2027-01-01"

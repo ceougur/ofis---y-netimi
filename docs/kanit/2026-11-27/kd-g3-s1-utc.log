@@ -1,0 +1,22 @@
+TAMAM  rastgele-1 A bil_yeni 2027-02-28 5 yaprak; {'V.D': (0, 27939966), 'V.E': (0, 0), 'V.F': (29824064, 1884098)}
+TAMAM  rastgele-2 A bil_yeni 2027-02-28 5 yaprak; {'V.D': (0, 24092554), 'V.E': (0, 0), 'V.F': (27469443, 3376889)}
+TAMAM  rastgele-3 A bil_yeni 2027-02-28 5 yaprak; {'V.D': (0, 23798390), 'V.E': (0, 0), 'V.F': (26329246, 2530856)}
+TAMAM  s04-gider-yansitma-stopaj-devir A bil_yeni 2027-01-01 5 yaprak; {'V.D': (0, 0), 'V.E': (0, -1180000), 'V.F': (-1180000, 0)}
+TAMAM  s21-devir-ayni-adli-iki-cari A bil 2027-01-01 5 yaprak; {'V.D': (0, 150000), 'V.E': (0, 0), 'V.F': (150000, 0)}
+TAMAM  s22-devir-temel A bil 2027-01-31 5 yaprak; {'V.D': (0, 124000), 'V.E': (0, 0), 'V.F': (154000, 30000)}
+TAMAM  s23-devir-pos-valor-kg6 A bil 2027-01-31 5 yaprak; {'V.D': (0, 97000), 'V.E': (0, 0), 'V.F': (97000, 0)}
+TAMAM  s23-devir-pos-valor-kg6 KG6=B bil 2027-01-31 5 yaprak; {'V.D': (0, 100000), 'V.E': (0, 0), 'V.F': (97000, -3000)}
+TAMAM  s25-devir-onceki-yil-kg12 A bil_yeni 2027-01-01 5 yaprak; {'V.D': (25000, 117500), 'V.E': (0, 0), 'V.F': (92500, 0)}
+TAMAM  s25-devir-onceki-yil-kg12 KG12=B bil_yeni 2027-01-01 5 yaprak; {'V.D': (0, 117500), 'V.E': (0, 0), 'V.F': (117500, 0)}
+TAMAM  s27-devir-yoldaki-supheli-evrak-taksit A bil 2027-02-28 5 yaprak; {'V.D': (0, 170000), 'V.E': (0, 0), 'V.F': (180000, 10000)}
+TAMAM  s28-devri-yenile-kg7 A bil 2027-01-31 5 yaprak; {'V.D': (0, 50000), 'V.E': (0, 0), 'V.F': (50000, 0)}
+TAMAM  s31-eslestirme-sonra-devir A bil 2027-01-01 5 yaprak; {'V.D': (10000, 20000), 'V.E': (0, 0), 'V.F': (10000, 0)}
+TAMAM  s32-yil-donumu-29-subat A bil_yeni 2028-03-01 5 yaprak; {'V.D': (0, 100000), 'V.E': (0, 0), 'V.F': (130000, 30000)}
+TAMAM  s34-ocakta-aralik-iadesi A bil 2027-01-31 5 yaprak; {'V.D': (0, 100000), 'V.E': (0, 0), 'V.F': (80000, -20000)}
+TAMAM  s48-m5-eksi-stok-devri A bil 2027-01-31 5 yaprak; {'V.D': (0, 50000), 'V.E': (0, 0), 'V.F': (14000, -36000)}
+TAMAM  s48-m5-eksi-stok-devri A bil0101 2027-01-01 5 yaprak; {'V.D': (0, 50000), 'V.E': (0, 0), 'V.F': (50000, 0)}
+TAMAM  s50-m13-supheli-devir A bil 2027-02-28 5 yaprak; {'V.D': (0, 100000), 'V.E': (0, 0), 'V.F': (100000, 0)}
+rapor 18, sorun 0
+# tests 18
+# pass 18
+# fail 0

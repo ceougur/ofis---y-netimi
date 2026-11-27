@@ -41,9 +41,11 @@
  "elle": {
   "A": {
    "bil/aktif/I.C": 100000,
+   "bil/detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (2026)": 150000,
    "bil/kesin_degil": [],
    "bil/pasif/III.D": 30000,
-   "bil/pasif/V.F": 150000,
+   "bil/pasif/V.D": 150000,
+   "bil/pasif/V.F": 0,
    "devir/acilis/cariler/C1/acilis": 0,
    "devir/acilis/cariler/C2/acilis": -30000,
    "devir/yeni_acilis/100": 80000,

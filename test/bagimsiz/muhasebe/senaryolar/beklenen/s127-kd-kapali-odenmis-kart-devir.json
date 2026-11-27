@@ -1,0 +1,265 @@
+{
+ "ad": "s127-kd-kapali-odenmis-kart-devir",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "arsiv:0": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tyk": []
+    },
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "devir_tabani": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [
+    {
+     "K": "2026-12-31",
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m27_net_satir": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "tek_acilis_fisi": [],
+      "yeni_gt_sifir": []
+     },
+     "id": "devir-2026-1"
+    }
+   ],
+   "raporlar": {
+    "devir": {
+     "K": "2026-12-31",
+     "acilis": {
+      "N13": {
+       "519": 150000,
+       "590": -150000
+      },
+      "acik_kalemler": [
+       {
+        "belge_tarihi": "2026-05-01",
+        "cari": "C3",
+        "k": "kart_kalani:TK2",
+        "kalan": 30000,
+        "tur": "kart_kalani",
+        "vade": "2026-07-01"
+       },
+       {
+        "belge_tarihi": "2026-11-01",
+        "cari": "C3",
+        "k": "kart_kalani:TK2",
+        "kalan": 30000,
+        "tur": "kart_kalani",
+        "vade": "2026-11-01"
+       }
+      ],
+      "cariler": {
+       "C2": {
+        "acilis": -20000,
+        "bakiye": -20000
+       },
+       "C3": {
+        "acilis": 0,
+        "bakiye": 60000
+       }
+      },
+      "eksi_stok": [],
+      "ekstre": {
+       "C2": {
+        "Alacak Toplamı": 20000,
+        "Borç Toplamı": 0,
+        "acik_kalemler": 0,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 20000,
+          "bakiye": -20000,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         }
+        ]
+       },
+       "C3": {
+        "Alacak Toplamı": 30000,
+        "Borç Toplamı": 30000,
+        "acik_kalemler": 2,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 30000,
+          "borc": 30000,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 30000,
+          "bakiye": 0,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: TK2 (2026-05-01)",
+          "alacak": 0,
+          "bakiye": 30000,
+          "borc": 30000,
+          "tarih": "2027-01-01",
+          "vade": "2026-07-01"
+         },
+         {
+          "aciklama": "Devir: TK2 (2026-11-01)",
+          "alacak": 0,
+          "bakiye": 60000,
+          "borc": 30000,
+          "tarih": "2027-01-01",
+          "vade": "2026-11-01"
+         }
+        ]
+       }
+      },
+      "ekstre_cariler": [
+       "C2",
+       "C3"
+      ],
+      "kartlar": {
+       "TK1": {
+        "acik_taksitler": [],
+        "cari": "C1"
+       },
+       "TK2": {
+        "acik_taksitler": [],
+        "cari": "C3"
+       },
+       "TK3": {
+        "acik_taksitler": [],
+        "cari": "C2"
+       }
+      },
+      "stok": {},
+      "supheli": {}
+     },
+     "arsiv_kapanis": {
+      "100": 110000,
+      "120|C2": -20000,
+      "120|C3": 60000,
+      "590": -150000
+     },
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m27_net_satir": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "tek_acilis_fisi": [],
+      "yeni_gt_sifir": []
+     },
+     "kapanis": {
+      "DSS": 0,
+      "N01": {
+       "2026": 0
+      },
+      "R": {
+       "2026": 150000
+      },
+      "onceki_yil": {},
+      "sonuc": 150000
+     },
+     "s19_devir": [],
+     "secenek": "borc_alacak",
+     "yeni_acilis": {
+      "100": 110000,
+      "120|C2": -20000,
+      "120|C3": 60000,
+      "590": -150000
+     }
+    },
+    "gec3": {
+     "cari": "C3",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "kart_kalani:TK2",
+       "vade": "2026-07-01"
+      },
+      {
+       "kalan": 30000,
+       "kalem": "kart_kalani:TK2",
+       "vade": "2026-11-01"
+      }
+     ],
+     "gecikmis": 60000,
+     "supheli": 0,
+     "tarih": "2027-01-02"
+    },
+    "kt1": {
+     "TK1": {
+      "kapali": false,
+      "taksitler": []
+     }
+    },
+    "kt2": {
+     "TK3": {
+      "kapali": true,
+      "taksitler": []
+     }
+    },
+    "kt3": {
+     "TK2": {
+      "kapali": true,
+      "taksitler": []
+     }
+    },
+    "mod": {
+     "cari|C2": -20000,
+     "cari|C3": 60000,
+     "kasa": 110000,
+     "taksit_odenen|TK1": 60000,
+     "taksit_odenen|TK2": 30000,
+     "taksit_odenen|TK3": 20000
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

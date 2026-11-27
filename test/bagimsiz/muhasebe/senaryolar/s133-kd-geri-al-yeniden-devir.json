@@ -1,0 +1,152 @@
+{
+ "aciklama": "K-D §3 (12): Devri Geri Al → yeniden devir ilk devirle aynı.",
+ "ad": "s133-kd-geri-al-yeniden-devir",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 50000,
+   "bil/aktif/I.C": 40000,
+   "bil/pasif/V.D": 30000,
+   "bil/pasif/V.F": 10000,
+   "bil/pasif/V.G": 50000,
+   "devir1/acilis/acik_kalemler/0/k": "fatura:F1",
+   "devir1/acilis/acik_kalemler/0/vade": "2027-01-31",
+   "devir1/kapanis/sonuc": 30000,
+   "devir1/yeni_acilis/100": 50000,
+   "devir1/yeni_acilis/120|C1": 30000,
+   "devir1/yeni_acilis/519": -50000,
+   "devir1/yeni_acilis/590": -30000,
+   "devir2/acilis/acik_kalemler/0/k": "fatura:F1",
+   "devir2/acilis/acik_kalemler/0/vade": "2027-01-31",
+   "devir2/kapanis/sonuc": 30000,
+   "devir2/yeni_acilis/100": 50000,
+   "devir2/yeni_acilis/120|C1": 30000,
+   "devir2/yeni_acilis/519": -50000,
+   "devir2/yeni_acilis/590": -30000,
+   "geri/geri_alindi": "devir-2026-1",
+   "geri/kaybolan_hareketler": [],
+   "redler": []
+  }
+ },
+ "kapsam": [
+  "§3 (12)",
+  "N-15",
+  "G7",
+  "§8.11"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "tarih": "2026-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 50000
+  },
+  {
+   "K": 0,
+   "M": 30000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-06-01",
+   "tur": "satis_faturasi",
+   "vade": "2027-01-31"
+  },
+  {
+   "K": 0,
+   "M": 10000,
+   "cari": "C1",
+   "id": "F2",
+   "tarih": "2027-01-05",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir1",
+   "tur": "devir"
+  },
+  {
+   "ad": "geri",
+   "tur": "devri_geri_al"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir2",
+   "tur": "devir"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2027-01-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

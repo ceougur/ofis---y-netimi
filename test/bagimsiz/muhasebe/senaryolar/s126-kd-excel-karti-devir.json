@@ -1,0 +1,185 @@
+{
+ "aciklama": "K-D §3 (5): açık Excel taksit kartı (KG-5 A) devirde açık taksitleriyle; yeni yılda K öncesi madde yok; taksit tahsilatı yeni yılda.",
+ "ad": "s126-kd-excel-karti-devir",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "devir/acilis/cariler/C1/acilis": 0,
+   "devir/acilis/kartlar/EX1/acik_taksitler/0/kalan": 40000,
+   "devir/acilis/kartlar/EX1/acik_taksitler/0/vade": "2027-01-15",
+   "devir/acilis/kartlar/EX1/acik_taksitler/1/kalan": 40000,
+   "devir/acilis/kartlar/EX1/acik_taksitler/1/vade": "2027-03-15",
+   "devir/kapanis/sonuc": 0,
+   "devir/yeni_acilis/100": 20000,
+   "devir/yeni_acilis/120|C1": 80000,
+   "devir/yeni_acilis/519": -100000,
+   "g1/gecikmis": 40000,
+   "g2/gecikmis": 0,
+   "kt/EX1/kapali": false,
+   "kt/EX1/taksitler/0/kalan": 0,
+   "kt/EX1/taksitler/0/vade": "2027-01-15",
+   "kt/EX1/taksitler/1/kalan": 40000,
+   "kt/EX1/taksitler/1/vade": "2027-03-15",
+   "mod/taksit_odenen|EX1": 80000,
+   "yev": []
+  }
+ },
+ "kapsam": [
+  "§3 (5)",
+  "KG-5",
+  "H-06",
+  "M-10",
+  "G3",
+  "BM§2 (5)"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "cari": "C1",
+   "id": "EX1",
+   "odenen": 20000,
+   "taksitler": [
+    {
+     "tutar": 40000,
+     "vade": "2026-10-01"
+    },
+    {
+     "tutar": 40000,
+     "vade": "2027-01-15"
+    },
+    {
+     "tutar": 40000,
+     "vade": "2027-03-15"
+    }
+   ],
+   "tarih": "2026-06-01",
+   "toplam": 120000,
+   "tur": "taksit_excel"
+  },
+  {
+   "cari": "C1",
+   "taksit_karti": "EX1",
+   "tarih": "2026-10-05",
+   "tur": "tahsilat",
+   "tutar": 20000,
+   "yol": "nakit"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "tur": "devir"
+  },
+  {
+   "ad": "g1",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2027-01-16",
+   "tur": "rapor"
+  },
+  {
+   "cari": "C1",
+   "taksit_karti": "EX1",
+   "tarih": "2027-01-20",
+   "tur": "tahsilat",
+   "tutar": 40000,
+   "yol": "nakit"
+  },
+  {
+   "ad": "g2",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2027-02-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "kt",
+   "cari": "C1",
+   "rapor": "kartlar",
+   "tarih": "2027-02-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mod",
+   "rapor": "moduller",
+   "tarih": "2027-02-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "yev",
+   "bas": "2026-01-01",
+   "rapor": "yevmiye",
+   "son": "2026-12-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

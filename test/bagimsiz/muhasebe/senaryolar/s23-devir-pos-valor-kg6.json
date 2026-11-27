@@ -43,7 +43,8 @@
  "elle": {
   "A": {
    "bil/detay/I.A/102.B1": 97000,
-   "bil/pasif/V.F": 97000,
+   "bil/pasif/V.D": 97000,
+   "bil/pasif/V.F": 0,
    "devir/yeni_acilis/108.POS1": 97000,
    "devir/yeni_acilis/590": -97000,
    "gt/kalemler/DNK": 0,
@@ -52,7 +53,8 @@
   },
   "KG6=B": {
    "bil/detay/I.A/102.B1": 97000,
-   "bil/pasif/V.F": 97000,
+   "bil/pasif/V.D": 100000,
+   "bil/pasif/V.F": -3000,
    "devir/yeni_acilis/108.POS1": 100000,
    "devir/yeni_acilis/590": -100000,
    "gt/kalemler/DNK": -3000,

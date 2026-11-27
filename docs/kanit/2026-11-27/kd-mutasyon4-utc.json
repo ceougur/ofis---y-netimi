@@ -1,0 +1,32 @@
+{
+  "ad": "kd-mutasyon4-utc",
+  "komut": "python3 -I test/bagimsiz/muhasebe/mutasyon.py",
+  "commit": "12029bfa731cc0e79f3a5445396c3fc6a56fefae",
+  "dal": "worktree-agent-ad49f9163f813598d",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T10:12:27.901Z",
+  "sure_sn": 1056.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kd-devir/2026-11-27/kd-mutasyon4-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad49f9163f813598d",
+  "ham_cikti_sha256": "a16cbf1590564870cc232b4231f553e8bdbf8dc95e044b118e8d03cf365c6d78",
+  "ham_cikti_bayt": 11125
+}

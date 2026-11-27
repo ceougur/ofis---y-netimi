@@ -43,6 +43,9 @@ BAKIM 10 (06.11.2026, on birinci tur): ürün sahibinin 06.11 15:01 S80 (fatura 
 BAKIM 11 (06.11.2026, on ikinci tur): ürün sahibinin 06.11 16:18 S83 (alış faturası formundaki peşin ödemenin carisi düzeltilemez — FATURA_DUZENLENMELI), S84
 (formdaki peşinin carisi aynı kalıp bağı değiştirilemez — FATURA_DUZENLENMELI) ve S85 (Normal Cari kaydın yalnız tutar / tarih düzeltmesi ya da geri yüklenmiş
 kayıtta yalnız cari düzeltmesi 120 bakiyesini aşarsa SUPHELI_NORMAL_ASIM, S56 ölçüsü) kararları (A). README Ö1–Ö10.
+BAKIM K-D (27.11.2026, 2.5.1 devir bakımı): kullanıcı kararı 27.11 S-1 (önceki yılın 590 / 591'i yeni yıl Bilanço'sunda Geçmiş Yıllar'da; sonraki devirde önce
+570.<yıl> / 580.<yıl>'a), S-2 (bekleyen "Açılış Olabilir" adayı devri durdurur), S-3 (düzeltilmemiş Kural Değişikliği Farkı devri durdurur) — A; BAŞ MİMAR
+KARARLARI 27.11 §2 (1)–(7) (devirli = devirsiz). Yorumlar README KD1–KD26.
 Saf Python, yalnız standart kütüphane. Para kuruş tamsayı; miktar Fraction.
 
 Yapı:
@@ -1887,6 +1890,7 @@ class Dosya:
         self.arsiv = False
         self.kdv_ihlal = []                   # EK-1 §4 (10): mahsuptan hemen sonra dönemi o ay olan 191 / 391 ≠ 0
         self.sozler = []                      # S52 A (README W12): Ödeme Sözü kayıtları {cari, tarih, soz_tarihi} — defter olayı DEĞİL (G-5)
+        self.taban = None                     # K-D BM§2 (5)–(6) (README KD9, KD10): devirle doğan yeni yıl dosyasının devir tabanı K (≤ K madde / yazım yok)
         self._g = None
         self._m = None
         self._kq = {}
@@ -2256,12 +2260,32 @@ class Dosya:
                     hesaplanmadi = True
         return R, smm_toplam, tahmini, hesaplanmadi, c
 
+    def onceki_yil_sonuc(self, t):
+        """K-D S-1 = A (README KD1, KD2): t'nin yılından ÖNCEKİ bir yılın devirle gelen (aynen açılan) 590 / 591 bakiyesi — {(590 | 591, Y): borç − alacak}.
+        Kaynak: devir açılış fişinin (N-13, K+1 tarihli; Y = yil(K)) 590 / 591 satırları ve sonraki devrin kapanışındaki aktarım fişleri (Önceki Yıl Sonucu
+        Fişi (Y), ek "aktarim"). M-11 açılış eşleştirmesinin 590 / 591 satırı yılsızdır (bu tanıma girmez)."""
+        out = defaultdict(int)
+        for m in self.maddeler():
+            if m.tarih > t:
+                break
+            Y = yil(m.tarih) - 1 if m.ek.get("adim") == "N-13" else (m.ek.get("yil") if m.ek.get("aktarim") else None)
+            if Y is None or Y >= yil(t):
+                continue
+            for s in m.satirlar:
+                if ana(s["h"]) in ("590", "591"):
+                    out[(ana(s["h"]), Y)] += s["b"] - s["a"]
+        return {k: v for k, v in out.items() if v}
+
     def bilanco(self, t):
         bal = self.bakiyeler(t)
         aktif, pasif = defaultdict(int), defaultdict(int)
         kd = []
         detay = defaultdict(dict)
         R, smm, tahmini, hesaplanmadi, c = self._kapanmamis_sonuc(t)
+        oy = self.onceki_yil_sonuc(t)                 # K-D S-1 = A (README KD1): önceki yılın 590 / 591'i Dönem Net Kârı'nda GÖSTERİLMEZ
+        bal = dict(bal)
+        for (h, Y), v in oy.items():
+            bal[(h, None)] = bal.get((h, None), 0) - v
 
         def ekle(taraf, kalem, key, v):
             (aktif if taraf == "aktif" else pasif)[kalem] += v
@@ -2296,6 +2320,14 @@ class Dosya:
                     ekle("pasif", kalem, key, p)
                     if ters and tr == "KD":
                         kd.append(f"TERS_BAKIYE:{m}")
+        for (h, Y), v in sorted(oy.items(), key=lambda x: (x[0][1], x[0][0])):   # K-D S-1 = A: Geçmiş Yıllar Kârları (Zararları) kaleminde ayrı satır
+            if h == "590":
+                ekle("pasif", "V.D", f"Önceki Yıl Kârı — Dağıtılmamış ({Y})", -v)
+            else:
+                ekle("pasif", "V.E", f"Önceki Yıl Zararı ({Y})", -v)
+        dagitilmamis = defaultdict(int)
+        for (h, Y), v in oy.items():
+            dagitilmamis[str(Y)] -= v
         if tahmini:
             ekle("aktif", "I.E", "153 (Tahmini Değerleme)", self.deger(t))
         y = yil(t)
@@ -2351,7 +2383,8 @@ class Dosya:
                 "aktif_toplam": at, "pasif_toplam": pt, "fark": at - pt, "donem_net_kari": dnk, "gecmis_yillar_kapanmamis": gecmis,
                 "gecmis_yillar_kar": gecmis_kar, "gecmis_yillar_zarar": gecmis_zarar,
                 "kesin_degil": sorted(set(kd)), "bilgi": sorted(set(bilgi)), "bilgi_amacli": self.defter_turu != "bilanco",
-                "detay": {k: dict(sorted(v.items())) for k, v in sorted(detay.items())}}
+                "detay": {k: dict(sorted(v.items())) for k, v in sorted(detay.items())},
+                **({"onceki_yil_dagitilmamis": {y: v for y, v in sorted(dagitilmamis.items()) if v}} if any(dagitilmamis.values()) else {})}
 
     def mizan(self, a, b):
         satir = defaultdict(lambda: {"devir": 0, "borc": 0, "alacak": 0})
@@ -2563,6 +2596,11 @@ class Dosya:
                     if o["k"] in q.bekleyen:           # S55 A: bu kalem bekleyen bağların hedefi — bağsız dağılımdan ÖNCE
                         q.bekleyen_bagla(o["k"])
                     q.net()
+        for kid, kt in sorted(g.kart.items()):        # K-D BM§2 (4) (README KD8 (i)): carinin devir satırı yoksa (M12, bakiye 0) devir kartı yine yeni yılda kayıtlı
+            if kt["cari"] == c and kt["kaynak"] == "devir" and kid not in q.kartlar:
+                if kt.get("acik_taksitler"):
+                    raise AssertionError(f"kâhin hatası: devir kartı {kid} açık taksitli ama carinin devir satırı yok")
+                q.devir_karti(kid, kt)
         for link, xs in sorted(q.bekleyen.items()):  # S55 kâhin susar (README U4 a): hedef t'de henüz doğmadı — aradaki dönem
             for o in xs:
                 q.susulan_ek.append({"kaynak": o["kaynak"], "neden": "S55_BEKLEYEN_BAG", "tutar": o["kalan"]})
@@ -2947,6 +2985,9 @@ class Model:
     def _hedef(self, o, d):
         k = d.kaynaklar.get(o["kaynak"])
         if k is None:
+            a = next((x.kaynaklar[o["kaynak"]] for x in self.arsivler if o["kaynak"] in x.kaynaklar), None) if d is self.canli else None
+            if a is not None:                       # K-D BM§2 (6) (README KD10): K ve öncesi kayıt arşivde — yeni yıldan düzenle / iptal / sil / geri yükle yok
+                raise Red("DEVIR_TABANI", f"{a.id} ({a.tarih}) devir tabanından önce (arşivde)")
             raise Red("YOK", o["kaynak"])
         d.kilit_denetimi(k.tarih)
         return k
@@ -3266,11 +3307,18 @@ class Model:
 
     def _o_cari_tur_degistir(self, o, d):            # G-2
         c = o["cari"]
-        if d.kilit and any(k.v.get("cari") == c and k.tarih <= d.kilit for k in d.kaynaklar.values()):
+        arsiv = [k for x in (self.arsivler if d is self.canli else []) for k in x.kaynaklar.values()]   # K-D (README KD21): arşivdeki hareket de kilitli dönemde
+        if d.kilit and any(k.v.get("cari") == c and k.tarih <= d.kilit for k in list(d.kaynaklar.values()) + arsiv):
             raise Red("KILITLI_DONEM", "kilitli dönemde hareketi olan carinin türü değişmez")
         self.tanim["cariler"][c] = dict(self.tanim["cariler"][c], tur=o["yeni_tur"])
         for x in [self.canli] + self.arsivler:
             x.degisti()
+
+    def _o_defter_turu_degistir(self, o, d):         # K-D §3 (9) (README KD20): Defter Türü yalnız bu dosyada değişir; arşiv kendi türünü korur
+        if o.get("defter_turu") not in ("bilanco", "serbest_meslek", "isletme"):
+            raise AssertionError(f"senaryo hatası: Defter Türü {o.get('defter_turu')}")
+        d.defter_turu = o["defter_turu"]
+        d.degisti()
 
     # -- saklanan fişler
     def _o_kdv_mahsup(self, o, d):                   # V-01
@@ -3456,6 +3504,7 @@ class Model:
         secenek = o.get("secenek", "borc_alacak")
         did = f"devir-{yil(K)}-{len(self.devirler) + 1}"
         canli = self.canli
+        self._devir_on_denetim(canli, K)
         yedek = canli.kopya()
         arsiv = Dosya(self.tanim, self.k, self.sayac, f"arsiv-{yil(K)}", canli.defter_turu)
         arsiv.arsiv = True
@@ -3467,6 +3516,7 @@ class Model:
             arsiv.kural_farki_fisi = canli.kural_farki_fisi
         arsiv.kdv_ihlal = [x for x in canli.kdv_ihlal if x["tarih"] <= K]
         arsiv.gecis_gunu, arsiv.guncelleme_bekliyor = canli.gecis_gunu, canli.guncelleme_bekliyor   # bakım 13 (A2)
+        arsiv.sozler = [dict(x) for x in canli.sozler if x["tarih"] <= K]   # K-D BM§2 (3) (README KD7)
         arsiv.degisti()
         kapanis = self._kapanis(arsiv, K, did)
         arsiv.kilit = K
@@ -3476,6 +3526,8 @@ class Model:
         yeni.kdv_ihlal = [x for x in canli.kdv_ihlal if x["tarih"] > K]
         yeni.gecis_gunu, yeni.guncelleme_bekliyor = canli.gecis_gunu, canli.guncelleme_bekliyor     # bakım 13 (A2)
         yeni.kilit = K
+        yeni.taban = K                              # K-D BM§2 (5)–(6) (README KD9, KD10)
+        yeni.sozler = [dict(x) for x in canli.sozler]   # K-D BM§2 (3) (README KD7): söz yeni yıla taşınır — K öncesi verilen söz de (etkinliği t'ye göre)
         s19 = s19_devir_kayitlari(yeni, K)
         kilide_cek(yeni, K)
         acilis = self._acilislar(arsiv, yeni, K, secenek, did)
@@ -3486,6 +3538,28 @@ class Model:
         kayit["degismezler"] = devir_degismezleri(arsiv, yeni, K, yedek, did, devirsiz=kilitli_kopya(yedek, yeni.kilit), kapanis=kapanis,
                                                   acilis=acilis)
         self.raporlar[o.get("ad", did)] = self._devir_raporu(kayit, arsiv, yeni)
+
+    @staticmethod
+    def _devir_on_denetim(canli, K):
+        """K-D ön denetimi (README KD3, KD4, KD9): S-2 = A, S-3 = A ve kâhinin sustuğu iki alan."""
+        bekleyen = sorted(i for i, a in canli.gecis().kg16.items() if a["onay"] is None)
+        if bekleyen:                                 # S-2 = A: listede onay bekleyen aday (tarihi ne olursa olsun) → devir durur
+            raise Red("DEVIR_ACILIS_OLABILIR", "Açılış Olabilir Kayıtları Onaylayın: " + ",".join(bekleyen))
+        fark = canli.kural_farki_yillik()
+        duz = {k: v for k, v in fark.items() if not alt_defter_mi(k[0])}
+        if duz:                                      # S-3 = A: düzeltilmemiş (fişle düzeltilebilen) Kural Değişikliği Farkı → devir durur
+            raise Red("DEVIR_KURAL_FARKI", "Önce Kural Farkı Düzeltme Fişi'ni yazın")
+        if fark:
+            raise AssertionError("senaryo hatası: S-3 — devirde yalnız alt defter Kural Değişikliği Farkı var (B14: fişle düzeltilmez, Kilidi Aç → Yeniden Kilitle); "
+                                 "kararın 'düzeltme fişinden sonra geçer'i bu durumda iki okumalı — kâhin susar (README KD4, KULLANICIYA SORULMALI 1)")
+        kf = canli.aktif_kf()
+        if kf is not None and next(f for f in canli.fisler if f.id == kf).tarih > K:
+            raise AssertionError("senaryo hatası: S-3 — Kural Farkı Düzeltme Fişi K'den sonra (kilit K'ye dayanmış, fiş ilk açık güne düştü); kararın 'kapanan yılın İÇİNDE'si "
+                                 "sağlanamıyor — kâhin susar (README KD4, KULLANICIYA SORULMALI 2)")
+        for k in canli.kaynaklar.values():
+            if k.tur == "taksit_excel" and k.durum == "aktif" and k.tarih <= K and k.v.get("yukleme_ani") and yerel_gun(k.v["yukleme_ani"]) > K:
+                raise AssertionError(f"senaryo hatası: B5 — Excel kartı {k.id} Kayıt Tarihi ≤ K, yükleme günü > K (kart arşive, madde yeni yıla düşer); kâhin susar "
+                                     "(README KD9, KULLANICIYA SORULMALI 3)")
 
     @staticmethod
     def _s24_harfiyen(arsiv, yeni, s19):
@@ -3516,6 +3590,14 @@ class Model:
         → (N-05 yok, KG-13 A) → N-06 → N-07 (yalnız K yılı)."""
         out = {"N01": {}, "onceki_yil": {}, "R": {}}
         yk = yil(K)
+        # K-D S-1 = A (README KD2): ÖNCE devirle gelen önceki yıl 590 / 591'i yıl yıl (eskiden yeniye) 570.Y / 580.Y'ye — "Önceki Yıl Sonucu Fişi (Y)", K tarihli, sınıf 4
+        aktarim = defaultdict(int)
+        for (h, Y), v in sorted(arsiv.onceki_yil_sonuc(K).items(), key=lambda x: (x[0][1], x[0][0])):
+            arsiv.fis_ekle(tarih=K, sinif=4, tur="onceki_yil_sonucu", satirlar=[L(h, -v), L(f"570.{Y}" if h == "590" else f"580.{Y}", v)],
+                           ek={"adim": "N-08", "yil": Y, "aktarim": h}, kaynak=did)
+            aktarim[str(Y)] -= v
+        if aktarim:
+            out["aktarim"] = dict(aktarim)
         ilk = min([m.tarih for m in arsiv.maddeler()] + [K])
         if self.k.KG12 == "A":                       # KG-12 A + M4: önceki yıllara HİÇBİR fiş o yılların tarihine yazılmaz
             for y in range(yil(ilk), yk):
@@ -3689,9 +3771,15 @@ class Model:
                                        "kayitlar": [dict(r) for r in rs if r["kalan"] or r["karsilik"]]})
         for kid, kt in sorted(ga.kart.items()):
             kayit = {a: b for a, b in kt.items() if a != "kapama"}
-            kayit.update(kaynak="devir", ilk_kaynak=kt["kaynak"], acik_taksitler=kart_acik.get(kid, []))
+            # K-D (README KD2 ek): zincirleme devirde kartın İLK kaynağı korunur (M1e / K3 kart kapısı)
+            kayit.update(kaynak="devir", ilk_kaynak=kt.get("ilk_kaynak", kt["kaynak"]), acik_taksitler=kart_acik.get(kid, []))
             ekle("devir_taksit", {"kart": kid, "kart_kaydi": kayit, "odenen": mod.get(("taksit_odenen", kid), 0)})
             out["kartlar"][kid] = {"cari": kt["cari"], "acik_taksitler": [{"vade": x["vade"], "kalan": x["kalan"]} for x in kart_acik.get(kid, [])]}
+        for kid, ki in sorted(ga.kart_iptal.items()):    # K-D BM§2 (4) (README KD8 (ii)): faturası iptal edilip KAPANAN kart (S15 / S210) yeni yılda kapalı, taksitsiz
+            kayit = {"cari": ki["cari"], "toplam": 0, "taksitler": [], "kaynak": "devir", "ilk_kaynak": "iptal", "fatura": None, "kapali": True,
+                     "tarih": ki["tarih"], "seq": ki["seq"], "sinif": 1, "odenen": 0, "acik_taksitler": []}
+            ekle("devir_taksit", {"kart": kid, "kart_kaydi": kayit, "odenen": mod.get(("taksit_odenen", kid), 0)})
+            out["kartlar"][kid] = {"cari": ki["cari"], "acik_taksitler": []}
         # N-13 tamamlayıcı: her bilanço hesabı (G hariç) için arşiv K bakiyesi − N-09…N-12'nin karşıladığı; 191 / 391 DÖNEM etiketiyle (M8-3)
         kars = defaultdict(int)
         for m in yeni.gecis().maddeler:
@@ -3847,6 +3935,7 @@ def devirsiz_dosya(arsiv, yeni, did):
     d.kural_farki_fisi = arsiv.kural_farki_fisi
     d.gecis_gunu, d.guncelleme_bekliyor = arsiv.gecis_gunu, arsiv.guncelleme_bekliyor           # bakım 13 (A2)
     d.kilit = yeni.kilit                              # EK-2B §5.3 / karar (3): devirsiz eş AYNI kilitle (L = K)
+    d.sozler = [dict(x) for x in yeni.sozler]         # K-D BM§2 (3): sözler iki dosyada aynı
     d.degisti()
     return d
 
@@ -3938,6 +4027,8 @@ def degismezler(d, t):
                  for s in f.satirlar if ana(s["h"]) in ("590", "591"))
         out["gt_bilanco_kar"] = [] if gt["kalemler"]["DNK"] == n7 else [gt["kalemler"]["DNK"], n7]
     out["modul_defter"] = modul_defter_farki(d, t)
+    if d.taban is not None:                                   # K-D BM§2 (5) (README KD9): yeni yıl dosyasında K ve öncesi tarihli madde YOK
+        out["devir_tabani"] = [m.id for m in d.maddeler() if m.tarih <= d.taban]
     # S127 = A (KULLANICI KARARI 11.11 13:29; README bakım 12 Ş12): bir olay tek kez yazılır — Excel kartının maddeleri ya hep donmuş defterden ya hep güncel türetmeden
     s127 = []
     if d.donmus is not None:
@@ -4110,7 +4201,7 @@ def devir_degismezleri(arsiv, yeni, K, yedek, did, devirsiz=None, kapanis=None, 
             continue
         if ma.get(a, 0) != my.get(a, 0):
             fark.append(f"{a}: {ma.get(a, 0)} ≠ {my.get(a, 0)}")
-    for kid in arsiv.gecis().kart:
+    for kid in list(arsiv.gecis().kart) + list(arsiv.gecis().kart_iptal):   # K-D (README KD8): iptalle kapanan kartın tek açılışı da
         if ma.get(("taksit_odenen", kid), 0) != my.get(("taksit_odenen", kid), 0):
             fark.append(f"taksit {kid}")
     if arsiv.deger(K) != acl.get(("153", None), 0):
@@ -4188,7 +4279,7 @@ def devir_degismezleri(arsiv, yeni, K, yedek, did, devirsiz=None, kapanis=None, 
             if n7 != b["donem_net_kari"]:
                 m4.append(f"590/591 {n7} ≠ hesaplanmış Dönem Net Kârı {b['donem_net_kari']}")
             if arsiv.k.KG12 == "A":
-                oy = [f for f in arsiv.fisler if f.kaynak == did and f.tur == "onceki_yil_sonucu"]
+                oy = [f for f in arsiv.fisler if f.kaynak == did and f.tur == "onceki_yil_sonucu" and not f.ek.get("aktarim")]
                 kar = sum(s["a"] - s["b"] for f in oy for s in f.satirlar if ana(s["h"]) == "570")
                 zarar = sum(s["b"] - s["a"] for f in oy for s in f.satirlar if ana(s["h"]) == "580")
                 if (kar, zarar) != (b["gecmis_yillar_kar"], b["gecmis_yillar_zarar"]):
@@ -4215,7 +4306,26 @@ def devir_degismezleri(arsiv, yeni, K, yedek, did, devirsiz=None, kapanis=None, 
                     tah = devirsiz.gelir_tablosu(f"{yil(K)}-01-01", K)["kalemler"]["D"]
                     if tah != kapanis["N01"].get(str(yil(K)), 0):
                         m4.append(f"tahmini SMM {tah} ≠ N-01 {kapanis['N01'].get(str(yil(K)), 0)}")
+            # K-D S-1 = A (README KD2) + EK-1 §4 (6) "590 / 591 = yalnız K yılı": aktarım = devir öncesi önceki yıl 590 / 591'i; kapanıştan sonra 590 − 591 = N-07
+            ak = defaultdict(int)
+            for f in arsiv.fisler:
+                if f.kaynak == did and f.ek.get("aktarim"):
+                    ak[str(f.ek["yil"])] += sum(s["a"] - s["b"] for s in f.satirlar if ana(s["h"]) == "570") - sum(s["b"] - s["a"] for s in f.satirlar if ana(s["h"]) == "580")
+            if {y: v for y, v in ak.items() if v} != b.get("onceki_yil_dagitilmamis", {}):
+                m4.append(f"aktarım {dict(ak)} ≠ devir öncesi önceki yıl 590 / 591 {b.get('onceki_yil_dagitilmamis', {})}")
+            bk = arsiv.bakiyeler(K)
+            if -(bk.get(("590", None), 0) + bk.get(("591", None), 0)) != n7:
+                m4.append(f"kapanıştan sonra 590 / 591 {-(bk.get(('590', None), 0) + bk.get(('591', None), 0))} ≠ yalnız K yılı (N-07) {n7}")
             out["m4_m6_kapanis"] = m4
+        # K-D BM§2 (3) (README KD7): otomatik hatırlatma ve "Ödeme Sözü Var" listesi devirli = devirsiz (K+1, her sözün söz günü ve ertesi, son gün)
+        if yeni.sozler or devirsiz.sozler:
+            sz = []
+            for tt in sorted({t, son} | {g for x in devirsiz.sozler if x["soz_tarihi"] > K for g in (x["soz_tarihi"], ertesi(x["soz_tarihi"]))})[:12]:
+                h1, h2 = yeni.hatirlatma(tt), devirsiz.hatirlatma(tt)
+                for a in ("otomatik", "odeme_sozu_var"):
+                    if h1.get(a, {}) != h2.get(a, {}):
+                        sz.append(f"{tt} {a}: devirli {h1.get(a, {})} ≠ devirsiz {h2.get(a, {})}")
+            out["soz_hatirlatma_ayni"] = sz
     # EK-2 27 / §4 (4): devir net satırının tarih / vade / sıra seçimi açık borç kalemlerini ve gecikmişi değiştirmez
     m27 = []
     netli = sorted(k.v["cari"] for k in yeni.kaynaklar.values() if k.tur == "devir_cari" and k.devir == did

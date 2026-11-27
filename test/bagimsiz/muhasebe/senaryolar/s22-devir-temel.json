@@ -47,7 +47,8 @@
    "bil/aktif_toplam": 1610000,
    "bil/donem_net_kari": 30000,
    "bil/pasif/III.B": 240000,
-   "bil/pasif/V.F": 154000,
+   "bil/pasif/V.D": 124000,
+   "bil/pasif/V.F": 30000,
    "bil_arsiv/donem_net_kari": 0,
    "bil_arsiv/kesin_degil": [
     "TAMAMLANMAMIS_ACILIS"

@@ -44,7 +44,8 @@
    "bil/aktif/I.C": 80000,
    "bil/detay/I.A/102.B1": 440000,
    "bil/detay/I.A/102.B2": 100000,
-   "bil/pasif/V.F": 180000,
+   "bil/pasif/V.D": 170000,
+   "bil/pasif/V.F": 10000,
    "devir/acilis/N13": {
     "519": 170000,
     "590": -170000

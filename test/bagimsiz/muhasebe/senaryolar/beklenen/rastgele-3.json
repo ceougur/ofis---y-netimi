@@ -19,6 +19,7 @@
     "canli": {
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
+     "devir_tabani": [],
      "gt_bilanco_kar": [],
      "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
@@ -254,8 +255,10 @@
       "III.I": {
        "391": 27460
       },
+      "V.D": {
+       "Önceki Yıl Kârı — Dağıtılmamış (2026)": 23798390
+      },
       "V.F": {
-       "590": 23798390,
        "Dönem Net Kârı (Hesaplanmış)": 2530856
       },
       "V.G": {
@@ -272,12 +275,16 @@
       "SATISLARIN_MALIYETI_TAHMINI",
       "TAMAMLANMAMIS_ACILIS"
      ],
+     "onceki_yil_dagitilmamis": {
+      "2026": 23798390
+     },
      "pasif": {
       "III.A": 2624952,
       "III.B": 49026,
       "III.F": 2317610,
       "III.I": 27460,
-      "V.F": 26329246,
+      "V.D": 23798390,
+      "V.F": 2530856,
       "V.G": 8063100
      },
      "pasif_toplam": 39411394,

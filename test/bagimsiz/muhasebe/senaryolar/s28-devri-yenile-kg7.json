@@ -44,7 +44,8 @@
    "af": [
     "devir_acilis:devir-2026-1"
    ],
-   "bil/pasif/V.F": 50000,
+   "bil/pasif/V.D": 50000,
+   "bil/pasif/V.F": 0,
    "bil_arsiv/pasif/V.F": 50000,
    "mz/satirlar/120|C1/bakiye": 60000,
    "mz/satirlar/190/bakiye": 10000,
