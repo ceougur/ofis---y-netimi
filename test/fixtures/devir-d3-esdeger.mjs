@@ -60,7 +60,9 @@ export function createEquivalence(store) {
       const own = redirect && row.kalemSinifi === "fatura" ? invoiceLines.get(row.belge?.faturaId) : null;
       if (own) {
         const amount = toTl(row.tutarMinor);
-        synthetic.push({ ...own, id: `${own.id}#devir`, date: row.tarih, debit: own.debit ? amount : 0, credit: own.debit ? 0 : amount });
+        // Kayıt anı öbür devir satırlarıyla AYNI (D4a hepsini tek seferde, planın sırasıyla yazar — S2'de vade eşitse belge tarihi yerine yazım sırası = planın (vade, belge tarihi) sırası).
+        // Asıl satırın kayıt anı taşınırsa eşit vadeli kalemlerde sıra ayrışır (tur 2 gerçek veri, UTC tohum 7 — benzetim hatası, plan değil).
+        synthetic.push({ ...own, id: `${own.id}#devir`, date: row.tarih, at: "", debit: own.debit ? amount : 0, credit: own.debit ? 0 : amount });
         redirected.set(own.sourceId, { vade: row.vade, amount });
         continue;
       }
