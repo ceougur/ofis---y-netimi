@@ -1,0 +1,13 @@
+#!/bin/bash
+# Mİ dönemsiz liste — UZUN tekrar (40 çift) + veri kopyaları YER DEĞİŞTİRİLEREK ikinci koşu. flock -x altında.
+SP=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+H=$SP/ana-hiz; OUT=$H/hiz2.out
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+cd /home/user/ofis---y-netimi || exit 1
+for i in $(seq 1 24); do l=$(cut -d' ' -f1 /proc/loadavg); awk -v l=$l 'BEGIN{exit !(l<1.5)}' && break; sleep 20; done
+echo "HIZ 2 · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S)" > $OUT
+echo "=== koşu 1: taban+veri-mi-a ↔ yeni+veri-mi-b" >> $OUT
+timeout 900 node --disable-warning=ExperimentalWarning $H/olc-mi-ab2.mjs $H/taban $H/veri-mi-a $H/mi-yeni $H/veri-mi-b 40 >> $OUT 2>&1; echo "çıkış $?" >> $OUT
+echo "=== koşu 2 (veri yer değiştirdi): taban+veri-mi-b ↔ yeni+veri-mi-a" >> $OUT
+timeout 900 node --disable-warning=ExperimentalWarning $H/olc-mi-ab2.mjs $H/taban $H/veri-mi-b $H/mi-yeni $H/veri-mi-a 40 >> $OUT 2>&1; echo "çıkış $?" >> $OUT
+echo "bitti $(date -u +%H:%M:%S) · $(cat /proc/loadavg)" >> $OUT
