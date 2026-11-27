@@ -207,9 +207,13 @@ try {
   const body = await cells(`${MODAL} [data-rc-main] .hof-rc-table tbody tr`);
   const foot = await cells(`${MODAL} [data-rc-main] .hof-rc-table tfoot tr`);
   const digits = text => String(text || "").replace(/[^\d,]/g, "");
-  ok(body.length === 1 && body[0][0] === "Şubat 2027" && body[0][1] === "Alış" && digits(body[0][4]) === "2000,00" && digits(body[0][5]) === "400,00", `KDV Özeti satırı Şubat 2027 · Alış · 2.000 / 400 (${JSON.stringify(body)})`);
+  // 2.5.1 M1: çok aylı aralıkta ayın sonuç satırı belgenin altında; tablo altında TOPLAM + Önceki Dönemden Devreden / Ödenecek / Sonraki Döneme Devreden KDV.
+  const RESULTS = ["Önceki Dönemden Devreden KDV", "Ödenecek KDV", "Sonraki Döneme Devreden KDV"];
+  const docs = body.filter(row => !RESULTS.includes(row[1]));
+  ok(docs.length === 1 && docs[0][0] === "Şubat 2027" && docs[0][1] === "Alış" && digits(docs[0][4]) === "2000,00" && digits(docs[0][5]) === "400,00", `KDV Özeti satırı Şubat 2027 · Alış · 2.000 / 400 (${JSON.stringify(body)})`);
+  ok(JSON.stringify(body.filter(row => RESULTS.includes(row[1])).map(row => [row[0], row[1], digits(row[5])])) === JSON.stringify([["Şubat 2027", "Sonraki Döneme Devreden KDV", "400,00"]]), `ayın sonuç satırı (${JSON.stringify(body)})`);
   ok(!body.some(row => row[0] === "Aralık 2026"), "Aralık 2026 satırı yok (belge ayı değil, dönem ayı)");
-  ok(foot.length === 1 && digits(foot[0][5]) === "400,00", `TOPLAM satırı = satırlar (${JSON.stringify(foot)})`);
+  ok(foot.length === 4 && digits(foot[0][5]) === "400,00" && JSON.stringify(foot.slice(1).map(row => [row[1], digits(row[5])])) === JSON.stringify([["Önceki Dönemden Devreden KDV", "0,00"], ["Ödenecek KDV", "0,00"], ["Sonraki Döneme Devreden KDV", "400,00"]]), `TOPLAM satırı = satırlar; altında devreden / ödenecek (${JSON.stringify(foot)})`);
   await page.screenshot({ path: path.join(process.env.EKRAN_DIR || root, "kdv-ozeti-donem.png") }).catch(() => null);
   await closeAll();
 } catch (error) {

@@ -281,6 +281,22 @@ describe("2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup form
     await integrityOk(api, "iade / tevkifat / dönem");
   });
 
+  it("S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800", async () => {
+    const id = ctx.store.get("SELECT id FROM invoices WHERE number = 'KD-TEV-1'")?.id ?? null;
+    const viaApi = id ? null : (await must("fatura listesi", api.get(amp(`${INV}?q=KD-TEV-1`, q2)))).invoices?.find(item => item.number === "KD-TEV-1")?.id;
+    const target = id || viaApi;
+    assert.ok(target, "tevkifatlı alış bulundu");
+    await must("İptal Et", api.post(amp(`${INV}/${target}/cancel`, q2), { reason: "Hatalı fatura", payments: "drop", refund: "none" }));
+    // Elle: Nisan 191 = 200 (dönemi Nisan'a alınan alış) − 400 (Mart mahsubundan sonra azalan) = −200; devreden 1.000 (Mart mahsubu) → 0 − (−200) − 1.000 = −800.
+    const apr = await sameAsPreview("2026-04", q2);
+    assert.deepEqual([apr.value("Önceki Dönemden Devreden KDV"), apr.value("Ödenecek KDV"), apr.value("Sonraki Döneme Devreden KDV")], [100000, 0, 80000], "Nisan (S4 taşıması)");
+    const p = await preview("2026-04", q2);
+    assert.equal(p.carriedInMinor, -40000, "ön izleme: azaltan fark −400 Nisan'a taşındı");
+    const year = await report({ from: "2026-01-01", to: "2026-12-31" }, q2, "002 yıl (S4)");
+    assert.deepEqual([year.value("Önceki Dönemden Devreden KDV"), year.value("Ödenecek KDV"), year.value("Sonraki Döneme Devreden KDV")], [0, 0, 80000], "002 yıl: sonraki 800 (Nisan)");
+    await integrityOk(api, "S4");
+  });
+
   it("kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not", async () => {
     const before = (await report({ from: "2026-05-01", to: "2026-05-31" }, "", "Mayıs kilitsiz")).data;
     await lockPeriod(api, "2026-06-30");
