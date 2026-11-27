@@ -1,7 +1,7 @@
 // 2.5.0 Ç5-A tur 1 — açılış düzeni (docs/erp/C5-ACILIS-TASARIM.md §2.4, §2.8, §3.5, §11): KG-16 "Açılış Olabilir" listesi, "Açılış Karşılığı" ikinci yükleyicisi (519 / 500,
 // modüllerin kendi tablolarından; journal()'dan bağımsız SQL) ve kilitsiz geçmiş yıl bilgisi (S53). Açılış Eşleştirme Fişi ve Kural Farkı Düzeltme Fişi TUR 2'de bu dosyaya eklenir
 // (eşleştirme denetimi aynı `openingCounterpart` toplamını okur).
-import { ACCOUNT_PLAN, LEDGER_RULE_ALIASES, localDayOf } from "./general-ledger.mjs";
+import { ACCOUNT_PLAN, LEDGER_RULE_ALIASES } from "./general-ledger.mjs";
 import { leanAll } from "./lean-rows.mjs";
 import { parseAmount, roundMoney } from "./money.mjs";
 import { isOpeningCandidateNote } from "./migrations.mjs";
@@ -163,9 +163,10 @@ export function oldRulePinnedPlans(store, { ids = null } = {}) {
     openings.get(row.planId).push(row);
   }
   for (const card of cards) {
-    // Eski kuralın maddeleri: kart (Kayıt Tarihi) + her açılış satırı (kendi günü). Yeni kuralın tek maddesi: yüklemenin yerel günü (journal() ile aynı kural).
+    // Eski kuralın maddeleri: kart (Kayıt Tarihi) + her açılış satırı (kendi günü). Yeni kuralın tek maddesi: kartın Kayıt Tarihi (journal() ile aynı kural — 2.5.1 D3 tur 3 S-KD-3 = B;
+    // önceden yüklemenin yerel günü).
     const legacy = [{ id: `plan:${card.id}`, date: String(card.date) }, ...(openings.get(card.id) || []).map(row => ({ id: `plan-entry:${row.id}`, date: String(row.date) }))];
-    const fresh = localDayOf(card.importedAt) || String(card.date);
+    const fresh = String(card.date);
     const inside = legacy.filter(item => regionOf(item.date));
     const freshInside = Boolean(regionOf(fresh));
     if (freshInside ? inside.length === legacy.length : inside.length === 0) continue;
