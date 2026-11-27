@@ -1,0 +1,32 @@
+{
+  "ad": "platform-250paket",
+  "komut": "node --test test/platform-tasinabilirlik.test.mjs",
+  "commit": "b135438ee21053cb754551091446e239a5bafaf1",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 1,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T04:47:03.870Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-27/platform-250paket.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "bce3414109f20e778f4fbaa3eddb6b8c8ace879b3963c1617aeda203036f724c",
+  "ham_cikti_bayt": 1939
+}
