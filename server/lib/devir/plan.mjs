@@ -529,13 +529,14 @@ export function buildDevirPlan(facts, { option = "borc-alacak" } = {}) {
   }
   if (n13Counter) n13.push(voucherLine(OPENING_GL, "", n13Counter));
   const openingVoucher = n13.length >= 2 ? { id: `devir-${year}-fis-N-13`, kod: "N-13", type: "opening", journalClass: "opening", date: nextDay, description: "Devir Açılış Fişi", lines: n13 } : null;
-  // Alt defter hesaplarında modül açılışının karşılamadığı fark → devir DURUR (fiş alt defter hesabına yazamaz — K6; tasarım §3.7).
-  for (const row of closingBalances) {
+  // Alt defter hesaplarında modül açılışının karşılamadığı fark → devir DURUR (fiş alt defter hesabına yazamaz — K6; tasarım §3.7). K yılı kapanmamışsa (yıl zaten kapanmış — sorun
+  // yukarıda) karşılaştırma anlamsızdır (153 değerlenmedi).
+  for (const row of closing.result === null ? [] : closingBalances) {
     if (!MODULE_ACCOUNTS[row.hesap] || MODULE_ACCOUNTS[row.hesap] === "vergi") continue;
     const got = covered.get(keyOf(row.hesap, row.alt, row.cari)) || 0;
     if (got !== row.minor) problems.push({ kod: "modul-farki", hesap: row.hesap, alt: row.alt, cari: row.cari, beklenenMinor: row.minor, bulunanMinor: got });
   }
-  for (const [key, minor] of sortedEntries(covered)) {
+  for (const [key, minor] of closing.result === null ? [] : sortedEntries(covered)) {
     const { account, sub, party } = splitKey(key);
     if (MODULE_ACCOUNTS[account] === "vergi" || !minor) continue;
     if (!closingBalances.some(row => row.hesap === account && row.alt === sub && row.cari === party)) problems.push({ kod: "modul-farki", hesap: account, alt: sub, cari: party, beklenenMinor: 0, bulunanMinor: minor });
