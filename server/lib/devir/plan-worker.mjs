@@ -44,7 +44,7 @@ export function runPreview({ store, ledger, accountList = null, job, progress = 
   const plan = buildDevirPlan(facts, { option: job.option || "borc-alacak" });
   const planMs = Math.round((performance.now() - start) * 10) / 10;
   progress("on-denetim");
-  const onDenetim = devirPreflight(facts.preflight, plan, { isRoot: Boolean(job.isRoot), today: job.today });
+  const onDenetim = devirPreflight(facts.preflight, plan, { isRoot: Boolean(job.isRoot), today: job.today, names: new Map((facts.parties || []).map(row => [row.id, row.name])) });
   progress("rapor");
   start = performance.now();
   const rapor = devirReport(plan, onDenetim, { companyLabel: job.company?.label || "" });

@@ -367,7 +367,8 @@ describe("D3 ön denetim (DEVIR-PLANI §5 + G4 + S-2 / S-3)", () => {
       [{ defterMutabakati: { ok: false, dengeli: true, farklar: [{ hesap: "100", fark: 12.5 }] } }, "defter-mutabakati", "Raporlar › Ana Defter › Defter Mutabakatı"],
       [{ acilisOlabilir: { adet: 4 } }, "acilis-olabilir", "Yönetim › Sistem › Açılış Olabilir Kayıtlar"],
       [{ kuralFarki: { satir: 2, altDefter: 0, tutarMinor: 300000 } }, "kural-farki", "Yönetim › Sistem › Kural Farkı Düzeltme Fişi"],
-      [{ kuralFarki: { satir: 0, altDefter: 1, tutarMinor: 0 } }, "kural-farki", "Yönetim › Sistem › Kural Farkı Düzeltme Fişi"],
+      // D3 tur 3 (S-KD-1 = A): fişin düzeltemediği alt defter farkı AYRI madde — çare "Kilidi Aç → Yeniden Kilitle", gidilecek yer Dönem Kilidi (tur 1-2'de "kural-farki" / Kural Farkı Düzeltme Fişi).
+      [{ kuralFarki: { satir: 0, altDefter: 1, tutarMinor: 0 } }, "kural-farki-alt-defter", "Yönetim › Sistem › Dönem Kilidi"],
       [{ kuralFarki: { satir: 0, altDefter: 0, tutarMinor: 0, dondurmaSuruyor: true } }, "dondurma-suruyor", "Yönetim › Sistem › Dönem Kilidi"],
     ];
     for (const [facts, kod, ekran] of cases) {

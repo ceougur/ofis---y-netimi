@@ -71,6 +71,24 @@ export function devirReport(plan, preflight = null, { companyLabel = "", measure
     current.satirSayisi += 1;
   };
   const total = (ad, arsiv, yeni, money3 = true) => row("TOPLAM", ad, arsiv, yeni, arsiv - yeni, money3);
+  const textRow = (kod, ad) => {
+    rows.push([current.ad, kod, ad, "", "", ""]);
+    current.satirSayisi += 1;
+  };
+  // 0. D3 tur 3 (DEVİR NEDEN DURDU — kullanıcı 27.11 11:39): "Devri Durduran Nedenler" ve "Uyarılar" İKİ AYRI başlık, ön denetimin AYNI cümleleriyle (iletiler.mjs — dört alan
+  // ayrı satırlarda: Ne Oldu, Neden, Ne Yapmalı, Nereye). Ekran = PDF = Excel (aynı satırlar). Neden yoksa "Yok" satırı (okuyan boş sanmasın).
+  const reasons = (kod, ad, list, none) => {
+    open(kod, ad);
+    if (!list.length) return textRow("Yok", none);
+    for (const item of list) {
+      textRow(item.baslik, `Ne Oldu: ${item.neOldu}`);
+      textRow(item.baslik, `${item.seviye === "uyarir" ? "Neden Önemli" : "Neden Duruyor"}: ${item.neden}${item.guvence ? ` ${item.guvence}` : ""}`);
+      textRow(item.baslik, `Ne Yapmalı: ${(item.neYapmali || []).map((step, index) => `(${index + 1}) ${step}`).join(" ")}`);
+      textRow(item.baslik, `Nereye: ${item.nereye?.ekran || "Yıl Sonu Devri"}`);
+    }
+  };
+  reasons("durduranlar", "Devri Durduran Nedenler", preflight?.durdurur || [], "Devri durduran neden yok.");
+  reasons("uyarilar", "Uyarılar", preflight?.uyarir || [], "Uyarı yok.");
   const opening = measured || plannedOpenings(plan);
   // 1. Hesap hesap (kuruşu kuruşuna): arşiv K kapanışı ↔ yeni yıl K+1 açılışı; fark ≠ 0 → devir durur (değişmez kitap §6.2).
   open("hesaplar", "Hesaplar");
@@ -134,14 +152,8 @@ export function devirReport(plan, preflight = null, { companyLabel = "", measure
     gt += item.kSonrasi;
   }
   row("TOPLAM", "Kesim Günü ve Öncesi / Sonrası", le, gt, 0, false);
-  // 5. Listeler: UYARIR maddeleri, arşiv başvurusuna çevrilen bağlar, taşınan şablonlar, eksi stoklu ürünler.
+  // 5. Listeler: arşiv başvurusuna çevrilen bağlar, taşınan şablonlar, eksi stoklu ürünler (ön denetimin maddeleri D3 tur 3'ten beri en başta, kendi iki başlığında).
   open("listeler", "Listeler");
-  const textRow = (kod, ad) => {
-    rows.push([current.ad, kod, ad, "", "", ""]);
-    current.satirSayisi += 1;
-  };
-  for (const item of preflight?.uyarir || []) textRow(item.baslik, item.metin);
-  for (const item of preflight?.durdurur || []) textRow(`Durdurur · ${item.baslik}`, item.metin);
   for (const link of plan.newYear.baglar) textRow(link.tur === "arsiv-basvurusu" ? "Bağı Arşiv Başvurusuna Çevrilen Ödeme" : "Bağı Açık Kaleme Yönelen Ödeme", `${link.tablo} ${link.satir} (${dayText(link.tarih)}) → ${link.tur === "arsiv-basvurusu" ? `${link.arsiv.yil} Arşivi ${link.arsiv.no} (${dayText(link.arsiv.tarih)})` : link.yeniHedef}`);
   for (const item of plan.newYear.sablonlar) textRow("Taşınan Tekrarlayan Fatura Şablonu", `${item.sablonNo || item.sablon} — sonraki ${dayText(item.sonrakiTarih)}`);
   for (const item of plan.newYear.stok.filter(stock => stock.eksi)) textRow("Eksi Stokla Devreden Ürün", `${item.ad}: ${String(item.miktar).replace(".", ",")} ${item.birim} (değer 0)`);
@@ -160,7 +172,8 @@ export function devirReport(plan, preflight = null, { companyLabel = "", measure
     ["Dönem Net Kârı (Zararı)", tl(result)],
     ["Not", "590 / 591 vergi öncesi dönem sonucudur."],
   ];
-  return { title, subtitle, headers: [...REPORT_HEADERS], types: [...REPORT_TYPES], rows, footers: null, summary, sections };
+  // pdfCellLines (D3 tur 3): devri durduran nedenlerin cümleleri PDF'te kesilmez (varsayılan 4 satırdan sonra "…" olurdu) — ekran = PDF = Excel aynı cümle.
+  return { title, subtitle, headers: [...REPORT_HEADERS], types: [...REPORT_TYPES], rows, footers: null, summary, sections, pdfCellLines: 40 };
 }
 
 /** PDF ve Excel (ekran = PDF = Excel: aynı satırlar). ctx: lib/report-files.mjs reportPdf / reportXlsx bağlamı ({ now, companyLabel, userName, header }). */

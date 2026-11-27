@@ -158,7 +158,8 @@ describe("D3 devir ön izleme uçları", () => {
     assert.deepEqual(body.map(row => [row[0], String(row[1]), row[2]]), rapor.rows.map(row => [row[0], row[1], row[2]]));
     const totals = rapor.rows.filter(row => row[1] === "TOPLAM").map(row => row[2]);
     assert.ok(totals.includes("Borç Bakiyeli Hesaplar") && totals.includes("Alacak Bakiyeli Hesaplar"), totals.join(" | "));
-    assert.deepEqual([...new Set(rapor.rows.map(row => row[0]))], ["Hesaplar", "Kapanış", "Modüller", "Hareketler", "Listeler"]);
+    // D3 tur 3 (DEVİR NEDEN DURDU): ön denetimin iki ayrı başlığı en başta ("Devri Durduran Nedenler", "Uyarılar").
+    assert.deepEqual([...new Set(rapor.rows.map(row => row[0]))], ["Devri Durduran Nedenler", "Uyarılar", "Hesaplar", "Kapanış", "Modüller", "Hareketler", "Listeler"]);
     const pdf = await api.raw("GET", `/api/admin/devir/preview/${job.data.id}/report.pdf`);
     assert.equal(pdf.status, 200);
     const text = pdfText(pdf.buffer);

@@ -16,6 +16,7 @@ import { LEDGER_RULE_VERSION, reconcile, trialBalance } from "../general-ledger.
 import { CLOSE_RULE_WAIVE } from "../accounts.mjs";
 import { postedRuleDiffCorrections, ruleDiffCorrectionPlan, ruleDiffCorrectionYear } from "../ledger-opening.mjs";
 import { INVOICE_KINDS } from "../invoice-math.mjs";
+import { voucherNoText } from "../ledger-vouchers.mjs";
 import { dayAfter } from "./plan.mjs";
 
 /**
@@ -188,12 +189,12 @@ function linksAfter(store, K) {
 }
 
 /** Ön denetimin olguları (preflight.mjs; plan §5 + G4 + S-2 / S-3) — yalnız sayım ve küçük örnek listeleri. */
-function preflightFacts({ store, ledger, live, K, today, accountList }) {
+function preflightFacts({ store, ledger, live, K, today, accountList, names = new Map() }) {
   const facts = {};
   const sample = (sql, ...args) => store.all(`${sql} LIMIT 20`, ...args);
   if (has(store, "invoices")) {
     const cols = columns(store, "invoices");
-    const one = (where, ...args) => ({ adet: Number(store.get(`SELECT COUNT(*) AS n FROM invoices WHERE ${where}`, ...args).n) || 0, ornek: sample(`SELECT id, number, kind, issue_date AS date FROM invoices WHERE ${where} ORDER BY issue_date, rowid`, ...args) });
+    const one = (where, ...args) => ({ adet: Number(store.get(`SELECT COUNT(*) AS n FROM invoices WHERE ${where}`, ...args).n) || 0, ornek: sample(`SELECT id, number, kind, issue_date AS date, COALESCE((SELECT a.name FROM accounts a WHERE a.id = invoices.account_id), '') AS cari, CAST(ROUND(try_payable * 100) AS INTEGER) AS tutarMinor FROM invoices WHERE ${where} ORDER BY issue_date, rowid`, ...args) });
     if (cols.has("e_status")) {
       // D3 tur 2 (gerçek veri tabanından; tur 1 yalnız e_status 'waiting' / 'processing' sayıyordu): Gönderilecekler'in tanımı programınkiyle AYNI (routes/invoices.mjs unsentSql:
       // 'waiting' YA DA numara almış, gönderilebilir türde, kâğıt olmayan ve gönderilmemiş / hata almış belge); "Sonucu Belirsiz" programınki gibi (uncertainSend: e_status 'none' iken
@@ -229,8 +230,43 @@ function preflightFacts({ store, ledger, live, K, today, accountList }) {
     const diff = snapshots.ruleDiff({ live, detail: true });
     const lock = store.get("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")?.value || "";
     const posted = postedRuleDiffCorrections(store);
-    const plan = ruleDiffCorrectionPlan({ diff, subledger: new Set(Object.keys(ledger.expected([], [], { every: true }))), year: ruleDiffCorrectionYear({ lock, cover, today }), postedByYear: posted.byYear });
-    facts.kuralFarki = { satir: plan.lines.length, altDefter: plan.excluded.length, tutarMinor: plan.lines.reduce((sum, line) => sum + line.debit, 0), dondurmaSuruyor: false };
+    const subledger = new Set(Object.keys(ledger.expected([], [], { every: true })));
+    const plan = ruleDiffCorrectionPlan({ diff, subledger, year: ruleDiffCorrectionYear({ lock, cover, today }), postedByYear: posted.byYear });
+    // D3 tur 3 — S-KD-1 (kullanıcı 27.11 = A): alt defter farkı TOPLAMDAN değil cari / alt hesap başına (ruleDiffCorrectionPlan excluded: hesap|alt hesap|cari, sıfır olmayan); satırları
+    // iletiye (cari adı, hesap, yönlü tutar). S-KD-2 (= A): fiş tarihi (kilit + 1) K'den sonraysa ve düzeltilecek fark K ve öncesindeki maddelerdeyse fiş eski yılda yazılmalı — eski
+    // yılın fişi (kilit K'den önceki güne alınınca: K'den önceki maddeler, yıl = K yılı, yeni yıldaki fişler ters kaydedilecek sayılır) ve dönem sonucuna etkisi; yeni yılda yazılmış fişler.
+    const fisTarihi = dayAfter(lock || cover);
+    const kOncesiFark = plan.sources.some(source => !source.excluded && source.date <= K);
+    const newYearVouchers = kOncesiFark ? posted.active.filter(voucher => voucher.date > K) : [];
+    let eskiYil = null;
+    if (kOncesiFark && (fisTarihi > K || newYearVouchers.length)) {
+      const year = Number(K.slice(0, 4));
+      const kept = new Map([...posted.byYear].filter(([postYear]) => Number(postYear) <= year));
+      const before = ruleDiffCorrectionPlan({ diff: { ...diff, entries: (diff.entries || []).filter(entry => entry.date < K) }, subledger, year, postedByYear: kept });
+      eskiYil = {
+        fisTarihi: K,
+        tutarMinor: before.lines.reduce((sum, line) => sum + line.debit, 0),
+        // Dönem sonucuna etkisi: fişin 6 / 7 sınıfı satırları (gider borcu kârı azaltır) — artı: kâr artar.
+        karEtkisiMinor: -before.lines.filter(line => line.account[0] === "6" || line.account[0] === "7").reduce((sum, line) => sum + line.debit - line.credit, 0),
+        satirlar: before.lines.map(line => ({ hesap: line.account, alt: line.sub || "", borc: line.debit, alacak: line.credit })),
+      };
+    }
+    const voucherTotal = id => Number(store.get("SELECT COALESCE(SUM(debit_minor), 0) AS n FROM ledger_voucher_lines WHERE voucher_id = ?", id)?.n) || 0;
+    facts.kuralFarki = {
+      satir: plan.lines.length,
+      altDefter: plan.excluded.length,
+      tutarMinor: plan.lines.reduce((sum, line) => sum + line.debit, 0),
+      dondurmaSuruyor: false,
+      kilit: lock,
+      kapsam: cover,
+      fisTarihi,
+      kaynakSayisi: plan.sources.length,
+      kOncesiFark,
+      fisSatirlari: plan.lines.map(line => ({ hesap: line.account, alt: line.sub || "", borc: line.debit, alacak: line.credit })),
+      altDefterSatirlari: plan.excluded.map(row => ({ hesap: row.account, alt: row.sub || "", cari: row.party || "", cariAd: row.party ? names.get(row.party) || "" : "", minor: row.minor })),
+      eskiYil,
+      yeniYilFisleri: newYearVouchers.map(voucher => ({ kimlik: voucher.id, no: voucherNoText(voucher.year, voucher.no), tarih: voucher.date, tutarMinor: voucherTotal(voucher.id) })),
+    };
   } else facts.kuralFarki = { satir: 0, altDefter: 0, tutarMinor: 0, dondurmaSuruyor: Boolean(pending) };
   // Aralık KDV mahsubu (G4 UYARIR; tasarım §3.8 / B-11).
   const month = `${K.slice(0, 4)}-12`;
@@ -244,6 +280,18 @@ function preflightFacts({ store, ledger, live, K, today, accountList }) {
     since.setUTCDate(since.getUTCDate() - 8);
     facts.iptalSuresi = { adet: Number(store.get("SELECT COUNT(*) AS n FROM invoices WHERE status = 'issued' AND issue_date <= ? AND e_status IN ('sent', 'accepted') AND profile IN ('EARSIVFATURA', 'ESMM') AND e_at >= ?", K, since.toISOString().slice(0, 10)).n) || 0 };
   } else facts.iptalSuresi = { adet: 0 };
+  // D3 tur 3 — S-C5C-9 = A (kullanıcı 27.11 12:01; ilke taslağı §8.1) + BAŞ MİMAR EKİ: devir başlarken durdurulacak toplu WhatsApp işleri (D4 yapar; burada YALNIZ sayım — kuyruk
+  // tabloları okunur, değiştirilmez). İş: Sürüyor / Duraklatıldı toplu iş; kişi: lib/whatsapp/queue.mjs stopBatch'in durdurduğu durumlardaki iş (Bekliyor, Hazırlanıyor, Sınır Nedeniyle
+  // Bekliyor, Duraklatıldı, Meta Bekletti). Şirket dosyası ayrı → öbür şirketin işi bu dosyada yok.
+  if (has(store, "wa_batches") && has(store, "wa_jobs")) {
+    const row = store.get(
+      `SELECT COUNT(*) AS isler, COALESCE(SUM(CASE WHEN b.state = 'running' THEN 1 ELSE 0 END), 0) AS suren, COALESCE(SUM(CASE WHEN b.state = 'paused' THEN 1 ELSE 0 END), 0) AS duraklatilmis,
+              COALESCE(SUM((SELECT COUNT(*) FROM wa_jobs j WHERE j.batch_id = b.id AND j.state IN ('pending', 'limited', 'preparing', 'paused', 'held'))), 0) AS kisi,
+              COALESCE(SUM((SELECT COUNT(*) FROM wa_jobs j WHERE j.batch_id = b.id AND j.state = 'limited')), 0) AS sinirda
+       FROM wa_batches b WHERE b.state IN ('running', 'paused')`,
+    );
+    facts.whatsapp = { isSayisi: Number(row.isler) || 0, suren: Number(row.suren) || 0, duraklatilmis: Number(row.duraklatilmis) || 0, kisiSayisi: Number(row.kisi) || 0, sinirda: Number(row.sinirda) || 0 };
+  } else facts.whatsapp = { isSayisi: 0, suren: 0, duraklatilmis: 0, kisiSayisi: 0, sinirda: 0 };
   return facts;
 }
 
@@ -316,7 +364,7 @@ export function readDevirFacts({ store, ledger, K, today, company = null, accoun
   timings.degerleme = ms(start);
   // ---- ön denetimin olguları (Defter Mutabakatı canlı türetmeyle) ----
   start = performance.now();
-  const preflight = preflightFacts({ store, ledger, live, K, today, accountList });
+  const preflight = preflightFacts({ store, ledger, live, K, today, accountList, names: new Map(parties.map(row => [row.id, row.name])) });
   timings.onDenetim = ms(start);
   return {
     K,

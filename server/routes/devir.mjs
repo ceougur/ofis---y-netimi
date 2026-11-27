@@ -21,6 +21,7 @@ import { ROOT_COMPANY_ID } from "../lib/companies.mjs";
 import { checkCutoff, DEVIR_OPTIONS } from "../lib/devir/plan.mjs";
 import { devirReportPdf, devirReportXlsx } from "../lib/devir/report.mjs";
 import { runPreview } from "../lib/devir/plan-worker.mjs";
+import { beklenmeyenHataIletisi, devirIletisi, DEVIR_TARGETS, onIzlemeReddiIletisi } from "../lib/devir/iletiler.mjs";
 import { archiveFileOf, archiveKey, readArchiveFacts, validYear } from "../lib/devir/archives.mjs";
 import { commitPendingMigration, verifyArchive } from "../lib/devir/archive-open.mjs";
 import { devirBackupRoot, verifyDevirBackup } from "../lib/devir/devir-backups.mjs";
@@ -60,7 +61,7 @@ export function runPreviewWorker(data, { onProgress = () => {}, timeoutMs = PREV
   return { promise, terminate: () => worker?.terminate().catch(() => {}) };
 }
 
-export function registerDevirRoutes(router, { auth, companies, backups, maintenance, archiveView, archiveCache, appFor = null, now = null }) {
+export function registerDevirRoutes(router, { auth, companies, backups, maintenance, archiveView, archiveCache, appFor = null, now = null, log = null }) {
   const companyFor = (admin, id) => {
     const company = companies.get(text(id));
     if (!company || !companies.canAccess(admin, company.id)) throw new HttpError(404, "Şirket bulunamadı ya da bu şirketi görme yetkiniz yok.");
@@ -113,6 +114,9 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
   });
 
   // ---------- 2.5.1 D3: ön izleme işleri (bellekte; şirket başına en çok bir süren iş) ----------
+  // D3 tur 3 (DEVİR NEDEN DURDU): ön izlemenin her reddi dört alanlı Türkçe ileti (iletiler.mjs); kod makine alanında (`code`), kullanıcıya giden metin `error` = ileti.metin. Bu
+  // bölümde HttpError YALNIZ buradan kurulur (kaynak tarayan denetim: test/devir-d3-ileti.test.mjs).
+  const refuse = (status, ileti) => new HttpError(status, ileti.metin, { code: ileti.kod, ileti });
   const previews = new Map(); // id → iş
   const running = new Map(); // şirket → süren işin kimliği
   const clockNow = () => (typeof now === "function" ? now() : new Date());
@@ -144,15 +148,15 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
     const company = companyFor(admin, body.company);
     const cutoff = text(body.cutoff);
     const option = text(body.option) || "borc-alacak";
-    if (!DEVIR_OPTIONS[option]) throw new HttpError(400, "Cari bakiye tipi geçerli değil.", { code: "DEVIR_SECENEK" });
-    if (typeof appFor !== "function") throw new HttpError(503, "Ön izleme bu kurulumda kullanılamıyor.");
+    if (!DEVIR_OPTIONS[option]) throw refuse(400, onIzlemeReddiIletisi("DEVIR_SECENEK"));
+    if (typeof appFor !== "function") throw refuse(503, devirIletisi({ kod: "devir-on-izleme-yok", baslik: "Ön İzleme Kullanılamıyor", neOldu: "Bu kurulumda devir ön izlemesi açılamadı", neden: "Ön izleme olmadan devrin sonucu gösterilemez", neYapmali: ["Programı yeniden başlatıp yeniden deneyin", "Sorun sürerse destek ekibine haber verin"], nereye: DEVIR_TARGETS.yilSonuDevri, guvence: "Verileriniz değişmedi" }));
     // Şirket ÖNCE açılır (bekleyen göçü koşar; meşgulse 503 — geri yükleme / ayırma sürüyor).
     const target = appFor(company);
     const today = target.context?.period?.today?.() || clockNow().toISOString().slice(0, 10);
     try {
       checkCutoff(cutoff, today);
     } catch (error) {
-      throw new HttpError(error.status || 400, error.message, { code: error.code });
+      throw refuse(error.status || 400, onIzlemeReddiIletisi(error.code, { cutoff, today }));
     }
     const existing = running.get(company.id);
     if (existing && previews.get(existing)?.state === "running") return ok(res, { ...publicJob(previews.get(existing)), joined: true });
@@ -166,7 +170,11 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
       entry.finishedAt = clockNow().toISOString();
       if (error) {
         entry.state = "failed";
-        entry.error = { status: error.status || 500, code: error.code || "", message: error.status ? error.message : "Devir ön izlemesi hesaplanamadı." };
+        // D3 tur 3: beklenmeyen hata Türkçe cümle + "Verileriniz değişmedi." (ön izleme yazmaz); ham ileti / yığın izi yanıt gövdesine girmez, sunucu günlüğüne yazılır.
+        const code = error.code || error.extra?.code || "";
+        const ileti = error.status && error.status < 500 ? error.extra?.ileti || onIzlemeReddiIletisi(code, { cutoff, today }) : beklenmeyenHataIletisi();
+        if (!error.status || error.status >= 500) log?.warn?.(`Devir ön izlemesi hesaplanamadı (${company.code}): ${error.stack || error.message || error}`);
+        entry.error = { status: error.status || 500, code: ileti.kod, message: ileti.metin, ileti };
       } else {
         entry.state = "done";
         entry.resultJson = result.json;
@@ -194,7 +202,9 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
   });
   const previewOf = (admin, id) => {
     const entry = previews.get(text(id));
-    if (!entry || !companies.canAccess(admin, entry.companyId)) throw new HttpError(404, "Ön izleme bulunamadı.", { code: "devir-preview-not-found" });
+    if (!entry || !companies.canAccess(admin, entry.companyId)) {
+      throw refuse(404, devirIletisi({ kod: "devir-preview-not-found", baslik: "Ön İzleme Bulunamadı", neOldu: "İstenen devir ön izlemesi bulunamadı (süresi dolmuş ya da program yeniden başlatılmış olabilir)", neden: "Ön izlemeler yalnız program açıkken ve son birkaç tanesi saklanır", neYapmali: ["Ön İzleme'yi yeniden başlatın"], nereye: DEVIR_TARGETS.yilSonuDevri, guvence: "Verileriniz değişmedi" }));
+    }
     return entry;
   };
   router.get("/api/admin/devir/preview/:id", async ({ req, res, params }) => {
@@ -203,7 +213,9 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
   });
   const reportFile = (admin, id) => {
     const entry = previewOf(admin, id);
-    if (entry.state !== "done" || !entry.raporJson) throw new HttpError(409, "Ön izleme henüz bitmedi.", { code: "devir-preview-running" });
+    if (entry.state !== "done" || !entry.raporJson) {
+      throw refuse(409, devirIletisi({ kod: "devir-preview-running", baslik: "Ön İzleme Henüz Bitmedi", neOldu: entry.state === "failed" ? "Ön izleme tamamlanamadığı için Devir Raporu üretilemedi" : "Ön izleme hâlâ hesaplanıyor", neden: "Devir Raporu ön izlemenin sonucundan üretilir", neYapmali: [entry.state === "failed" ? "Ön İzleme'yi yeniden başlatın" : "Ön izleme bitince Devir Raporu'nu yeniden isteyin"], nereye: DEVIR_TARGETS.yilSonuDevri, guvence: "Verileriniz değişmedi" }));
+    }
     return { entry, data: JSON.parse(entry.raporJson), ctx: { now: clockNow(), companyLabel: entry.label, userName: admin.display_name || admin.username || "" } };
   };
   router.get("/api/admin/devir/preview/:id/report.pdf", async ({ req, res, params, url }) => {

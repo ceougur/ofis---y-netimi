@@ -210,6 +210,7 @@ describe("D3 tur 2 — kilitli dönemde KURAL DEĞİŞİKLİĞİ: plan donmuş d
     assert.deepEqual(n04.lines.filter(line => line.account === "600").map(line => line.debit), [100000]);
     assert.equal(out.plan.archive.kapanisBakiyeleri.filter(row => row.hesap === "120").reduce((sum, row) => sum + row.minor, 0), 100000);
     assert.equal(out.plan.archive.donemSonucuMinor, 100000);
-    assert.ok(out.onDenetim.durdurur.some(row => row.kod === "kural-farki"), out.onDenetim.durdurur.map(row => row.kod).join(", "));
+    // D3 tur 3 (S-KD-1 = A): farkın satırı 120'de (alt defter hesabı) → fişin düzeltemediği fark, madde "kural-farki-alt-defter" (çare Kilidi Aç → Yeniden Kilitle; tur 2'de "kural-farki").
+    assert.ok(out.onDenetim.durdurur.some(row => row.kod === "kural-farki-alt-defter"), out.onDenetim.durdurur.map(row => row.kod).join(", "));
   });
 });
