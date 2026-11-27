@@ -354,6 +354,10 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
    * satış KDV'si (391) değişmişse ("stale", İ fişinkine eşit): ayın sayıları S-M1-3 = C gibi bugünkü kayıtlardan, sonraki aya da BU AYIN (bugünkü) devredeni taşınır (her değişiklik
    * bir kez; yön ödenecek yöne dönmüşse 0); sonraki ayın fişi eski devredenle kesildiyse zincirle uyuşmaz, not söyler. Ödenecek yönde kesilmiş fişte (devredeni 0) taşınan
    * devreden fişinki AYNEN (baş mimar okuması: ödenecek yönde davranış DEĞİŞMEZ); İ artan "güncel değil" ayında da fişinki AYNEN (karar yalnız satış KDV'si).
+   *
+   * 2.5.1 M1 küçük tur 4 — S-M1K3-1 = A (27.11 20:59 UTC; kullanıcının 20:26 yetkisiyle öneri uygulandı): yukarıdaki iki sınır KALKTI — HER "güncel değil" ayında (ödenecek
+   * yönde kesilmiş fişte de, İndirilecek KDV'si artan ayda da) sonraki aya BU AYIN bugünkü devredeni taşınır; aralık toplamı her durumda 391 − 191. Ödenecek yönde kalan ayda
+   * bugünkü devreden 0 = fişinki (sayılar değişmez). İ artışı S4 taşımasına girmez (min(0, …)) — artış bir kez, devredenle sayılır.
    */
   function vatView() {
     const entries = ledger()?.build ? ledger().build() : [];
@@ -404,10 +408,10 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
         // Fiş zincirde: devredeni zincirinkine eşit VE S4 emilimi (fişin kesildiği defter sırasıyla = etkin fişlere göre) zincirinkine eşit.
         const kept = Boolean(offset) && Number(offset.carryInMinor) === carry && Math.min(0, carriedBefore(table, active, month)) === step.carried;
         const settled = kept ? settle(month, step, offset) : shape(month, step);
-        // Zincirdeki fişin devredeni taşınır; karma ayda (S-M1K-1 = A) bu ayın hesabının devredeni (her değişiklik bir kez). "Güncel Değil" ayında fişinki (S-M1-3 = C, AYNEN) —
-        // yalnız devreden yönde kesilmiş fişte yalnız 391 değiştiyse bu ayın bugünkü devredeni (S-M1K2-1 = A).
-        const only391 = kept && settled.offsetState === "stale" && step.input === Number(offset.inMinor) && Number(offset.carryOutMinor) > 0;
-        const next = !kept ? step.carryOut : settled.offsetState === "mixed" || only391 ? settled.carryOutMinor : Number(offset.carryOutMinor);
+        // Zincirdeki fişin devredeni taşınır ("kept" / "reduced" — S-DKM1-1 = A); karma ayda (S-M1K-1 = A) ve HER "güncel değil" ayında (S-M1K2-1 = A, S-M1K3-1 = A) bu ayın
+        // hesabının (bugünkü) devredeni — her değişiklik bir kez.
+        const recount = kept && (settled.offsetState === "mixed" || settled.offsetState === "stale");
+        const next = !kept ? step.carryOut : recount ? settled.carryOutMinor : Number(offset.carryOutMinor);
         steps.set(month, { ...settled, carryAfterMinor: next });
         if (offset && !kept) {
           mismatches.push({ month, label: monthLabel(month), usedMinor: Number(offset.carryInMinor), chainMinor: carry, offsetPayableMinor: Number(offset.payableMinor), offsetCarryOutMinor: Number(offset.carryOutMinor), payableMinor: step.payable, carryOutMinor: step.carryOut });
