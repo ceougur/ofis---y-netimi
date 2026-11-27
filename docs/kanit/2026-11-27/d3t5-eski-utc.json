@@ -1,0 +1,58 @@
+{
+  "ad": "d3t5-eski-utc",
+  "komut": "node --test --test-concurrency=1 test/devir-d3-mahsup-borc.test.mjs test/devir-d3-kilit-bag.test.mjs test/devir-d3-sifir-pay.test.mjs test/devir-d3-damga.test.mjs test/devir-d3-damga-kaynak.test.mjs test/devir-d3-tarih.test.mjs",
+  "commit": "8d9c87c0f0014c7b1b1c43ac9d6ae3fda963514e",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T19:20:47.053Z",
+  "sure_sn": 18.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 32,
+    "gecen": 27,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D3 tur 5 — veri damgasının iz türü listesi (kaynak taraması) › her iz türü sınıflandırılmış: ya veri damgasında ya gerekçeli VERİ DIŞI listede (yeni para yazıcısı listeye girmeden eklenemez)",
+      "konum": "test/devir-d3-damga-kaynak.test.mjs:94:3",
+      "hata": "Cannot read properties of undefined (reading 'some')"
+    },
+    {
+      "ad": "D3 tur 5 — veri damgasının iz türü listesi (kaynak taraması) › çakışma yok: veri damgasındaki bir tür VERİ DIŞI listede değil; dışlananlar (görüntüleme / dışa aktarma) veri ad alanında ve gerçekten var",
+      "konum": "test/devir-d3-damga-kaynak.test.mjs:99:3",
+      "hata": "Cannot read properties of undefined (reading 'some')"
+    },
+    {
+      "ad": "D3 tur 5 — veri damgasının iz türü listesi (kaynak taraması) › v-5: devirde budanan / kalan (B / A) her tablo ya damganın saydığı tablolarda ya yazımı iz türüyle / gerekçeyle karşılanmış",
+      "konum": "test/devir-d3-damga-kaynak.test.mjs:113:3",
+      "hata": "B / A tablosu damgada sayılmıyor ve gerekçesi yok · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 5 — veri damgası: veriyi değiştirmeyen yazım damgayı değiştirmez, para tablosuna yazan değiştirir › v-1 KULLANICI (veriyi değiştirmeyen): ikinci giriş + çıkış, şirket seçimi (002 ↔ 001), ekran durumu, fatura PDF'i, cari ekstresi, Devir Raporu PDF'i → damga AYNI",
+      "konum": "test/devir-d3-damga.test.mjs:73:3",
+      "hata": "şirket seçimi (company.selected izi bu dosyada) · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "D3 tur 5 — veri damgası: veriyi değiştirmeyen yazım damgayı değiştirmez, para tablosuna yazan değiştirir › v-2 PARA TABLOSUNA YAZAN: cari kartı düzeltmesi, taksit tahsilatı tutar düzeltmesi, kayıt tahsilatı tutar düzeltmesi, tekrarlayan faturanın taslağı → damga DEĞİŞİR (her biri ayrı)",
+      "konum": "test/devir-d3-damga.test.mjs:94:3",
+      "hata": "kayıt tahsilatı düzeltmesi (250 → 240): damga değişmeli (satır sayıları 1/1/1/1 → 1/1/1/1) · false !== true (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t5/kanit/2026-11-27/d3t5-eski-utc.log",
+  "klasor": "/dev/shm/d3t5-k5/eski",
+  "ham_cikti_sha256": "f419a100fcf2cad9789291fd99e4941bc21f3a1efcd7072948a4a6567d301f3c",
+  "ham_cikti_bayt": 22936
+}
