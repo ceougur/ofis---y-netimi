@@ -572,8 +572,8 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     },
     "kdv-ozeti"(data, c, range) {
       const list = live().filter(r => within(r.d, range));
-      assert.equal(summaryOf(data, "Hesaplanan KDV (391)"), r2(sum(list.filter(r => ["sale", "smm"].includes(r.kind)), r => r.vat) - sum(list.filter(r => r.kind === "sale_return"), r => r.vat)));
-      assert.equal(summaryOf(data, "İndirilecek KDV (191)"), sum(list.filter(r => r.kind === "purchase"), r => r.vat), "191 (KDV'li banka masrafı dahil)");
+      assert.equal(summaryOf(data, "Hesaplanan KDV (391) (İadeler Düşülmüş)"), r2(sum(list.filter(r => ["sale", "smm"].includes(r.kind)), r => r.vat) - sum(list.filter(r => r.kind === "sale_return"), r => r.vat)));
+      assert.equal(summaryOf(data, "İndirilecek KDV (191) (İadeler Düşülmüş)"), sum(list.filter(r => r.kind === "purchase"), r => r.vat), "191 (KDV'li banka masrafı dahil)");
     },
     "ba-bs"(data, c, range) {
       // Bağımsız: ay × form × cari, KDV hariç toplam ≥ 5.000.
@@ -787,7 +787,7 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     const summary = await must("banka özeti", api.get("/api/workspace/bank/summary"));
     assert.equal(summary.realBank.minor / 100, bankTotal, "Gerçek Banka = iki hesap toplamı");
     const kdv = await must("kdv", get("kdv-ozeti", all));
-    assert.deepEqual([summaryOf(kdv, "Hesaplanan KDV (391)"), summaryOf(kdv, "İndirilecek KDV (191)")], [980 + 200, 1600 + 20], "391: 1.020 − 40 + SMM 200 + S6 200 − iade 200; 191: 1.100 + 400 + 100 + masraf 20");
+    assert.deepEqual([summaryOf(kdv, "Hesaplanan KDV (391) (İadeler Düşülmüş)"), summaryOf(kdv, "İndirilecek KDV (191) (İadeler Düşülmüş)")], [980 + 200, 1600 + 20], "391: 1.020 − 40 + SMM 200 + S6 200 − iade 200; 191: 1.100 + 400 + 100 + masraf 20");
     const list = await must("cari", get("cari-listesi"));
     const bal = name => list.rows.find(r => r[col(list, "Cari")] === name);
     assert.deepEqual([bal("Ayşe Yılmaz")[col(list, "Bakiye")], bal("Bora Ticaret")[col(list, "Bakiye")], bal("Cem Kaya")[col(list, "Bakiye")], bal("Tedarik AŞ")[col(list, "Bakiye")], bal("Deniz Danışmanlık")[col(list, "Bakiye")], bal("Ziraat Bankası A.Ş.")[col(list, "Bakiye")]], ["160,00 TL", "500,00 TL", "120,00 TL", "4.700,00 TL", "0,00 TL", "0,00 TL"]);

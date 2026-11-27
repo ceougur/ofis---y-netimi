@@ -116,7 +116,7 @@ describe("Aşama 4 — Banka Fişi: çalışıyor mu (masraf, faiz, diğer, kart
     model.post([["320", "", "D", 12_000], ["102", g.glSub, "C", 12_000]]);
 
     const kdv = await must("KDV özeti", ctx.api.get("/api/workspace/report-center/kdv-ozeti?preset=all"));
-    const input = kdv.summary.find(([label]) => label === "İndirilecek KDV (191)");
+    const input = kdv.summary.find(([label]) => label === "İndirilecek KDV (191) (İadeler Düşülmüş)");
     assert.equal(input?.[1], "40,00 TL", "KDV raporu 191 = 20 + 20");
     await model.assertMatches(ctx.api, "KDV'li masraf");
     await integrityOk(ctx.api, "KDV'li masraf");

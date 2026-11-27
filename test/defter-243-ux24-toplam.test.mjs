@@ -92,16 +92,18 @@ describe("2.4.3 UX24 — yönü karışık raporlarda ayrı TOPLAM satırları",
   it("KDV Özeti: TOPLAM Satış / Satıştan İade / Alış ve Net KDV = özetteki Ödenecek KDV (kâhin)", async () => {
     const { data, lines, g } = await report("kdv-ozeti", { preset: "thisYear" }, "Belge Türü", KDV_GROUPS, "kdv-ozeti Bu Yıl");
     const by = Object.fromEntries(lines.map(line => [line[g], line]));
-    assert.deepEqual(lines.map(line => line[g]), ["TOPLAM Satış", "TOPLAM Satıştan İade", "TOPLAM Alış", "Net KDV (Ödenecek)"], "TOPLAM satırlarının sırası");
+    assert.deepEqual(lines.map(line => line[g]), ["TOPLAM Satış", "TOPLAM Satıştan İade", "TOPLAM Alış", "Önceki Dönemden Devreden KDV", "Ödenecek KDV", "Sonraki Döneme Devreden KDV"], "TOPLAM satırlarının sırası (2.5.1 M1: Net KDV yerine mahsup hesabıyla üç satır)");
     const col = name => data.headers.indexOf(name);
     assert.deepEqual([count(by["TOPLAM Satış"][col("Belge")]), minor(by["TOPLAM Satış"][col("Matrah")]), minor(by["TOPLAM Satış"][col("KDV")])], [2, 150000, 25000], "TOPLAM Satış (kâhin)");
     assert.deepEqual([count(by["TOPLAM Satıştan İade"][col("Belge")]), minor(by["TOPLAM Satıştan İade"][col("Matrah")]), minor(by["TOPLAM Satıştan İade"][col("KDV")])], [1, 50000, 10000], "TOPLAM Satıştan İade (kâhin)");
     assert.deepEqual([count(by["TOPLAM Alış"][col("Belge")]), minor(by["TOPLAM Alış"][col("Matrah")]), minor(by["TOPLAM Alış"][col("KDV")])], [1, 40000, 8000], "TOPLAM Alış (kâhin)");
-    assert.equal(minor(by["Net KDV (Ödenecek)"][col("KDV")]), 7000, "Net KDV (kâhin 250 − 100 − 80)");
+    assert.equal(minor(by["Ödenecek KDV"][col("KDV")]), 7000, "Ödenecek KDV (kâhin 250 − 100 − 80; mahsup yok, devreden 0)");
+    assert.equal(minor(by["Önceki Dönemden Devreden KDV"][col("KDV")]), 0, "devreden yok");
+    assert.equal(minor(by["Sonraki Döneme Devreden KDV"][col("KDV")]), 0);
     const payable = data.summary.find(([label]) => label === "Ödenecek KDV");
     assert.ok(payable, "özette Ödenecek KDV");
     assert.equal(minor(payable[1]), 7000, "özet = Net satırı");
-    assert.equal(by["Net KDV (Ödenecek)"][col("Matrah")], "", "Net satırında matrah toplanmaz");
+    assert.equal(by["Ödenecek KDV"][col("Matrah")], "", "sonuç satırında matrah toplanmaz");
   });
 
   it("KDV Özeti süzgeçleri: Geçen Ay (boş) TOPLAM yok; Tüm Zamanlar = Bu Yıl", async () => {
@@ -109,7 +111,7 @@ describe("2.4.3 UX24 — yönü karışık raporlarda ayrı TOPLAM satırları",
     assert.equal(empty.data.rows.length, 0);
     assert.equal(empty.lines.length, 0, "boş dönemde TOPLAM satırı yok");
     const all = await report("kdv-ozeti", { preset: "all" }, "Belge Türü", KDV_GROUPS, "kdv-ozeti Tüm Zamanlar");
-    assert.equal(all.lines.length, 4);
+    assert.equal(all.lines.length, 6, "3 yön TOPLAM'ı + 3 sonuç satırı");
   });
 
   it("Açık Faturalar: TOPLAM Alacak / TOPLAM Borç = özetteki Açık Alacak / Açık Borç; Net = fark", async () => {

@@ -559,8 +559,8 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     },
     "kdv-ozeti"(data, c, range) {
       const list = live().filter(r => within(r.d, range));
-      assert.equal(summaryOf(data, "Hesaplanan KDV (391)"), r2(sum(list.filter(r => r.kind === "sale"), r => r.vat) - sum(list.filter(r => r.kind === "sale_return"), r => r.vat)));
-      assert.equal(summaryOf(data, "İndirilecek KDV (191)"), sum(list.filter(r => r.kind === "purchase"), r => r.vat));
+      assert.equal(summaryOf(data, "Hesaplanan KDV (391) (İadeler Düşülmüş)"), r2(sum(list.filter(r => r.kind === "sale"), r => r.vat) - sum(list.filter(r => r.kind === "sale_return"), r => r.vat)));
+      assert.equal(summaryOf(data, "İndirilecek KDV (191) (İadeler Düşülmüş)"), sum(list.filter(r => r.kind === "purchase"), r => r.vat));
     },
     "urun-satis-karlilik"(data, c, range) {
       const list = live().filter(r => within(r.d, range));
@@ -750,7 +750,7 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     const sales = await must("satış", get("fatura-satis", all));
     assert.deepEqual([summaryOf(sales, "Matrah"), summaryOf(sales, "KDV"), summaryOf(sales, "Ödenecek")], [7400, 1020, 8420]);
     const kdv = await must("kdv", get("kdv-ozeti", all));
-    assert.deepEqual([summaryOf(kdv, "Hesaplanan KDV (391)"), summaryOf(kdv, "İndirilecek KDV (191)")], [980, 1600]);
+    assert.deepEqual([summaryOf(kdv, "Hesaplanan KDV (391) (İadeler Düşülmüş)"), summaryOf(kdv, "İndirilecek KDV (191) (İadeler Düşülmüş)")], [980, 1600]);
     const list = await must("cari", get("cari-listesi"));
     const bal = name => list.rows.find(r => r[1] === name);
     assert.deepEqual([bal("Ayşe Yılmaz")[7], bal("Bora Ticaret")[7], bal("Cem Kaya")[7], bal("Tedarik AŞ")[7], bal("Tedarik AŞ")[8]], ["160,00 TL", "500,00 TL", "120,00 TL", "5.100,00 TL", "Alacaklı"]);

@@ -187,6 +187,8 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
       }
     }
     return {
+      // 2.5.1 M1: 391 / 191 satırı olan aylar (mahsup fişleri hariç; "KDV İndirim Dönemi" ayıyla) — KDV Özeti'nin hareketli ayları.
+      months: () => [...months.keys()],
       of(month) {
         const from = `${month}-01`;
         const row = months.get(month) || { out: 0, input: 0 };
@@ -204,6 +206,19 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
   function carriedBefore(table, active, month) {
     return active.filter(item => item.month < month).reduce((sum, item) => sum + (table.of(item.month).input - Number(item.inMinor)), 0);
   }
+  /**
+   * Bir ayın mahsup hesabı — KDV Mahsup Fişi ön izlemesi ve KDV Özeti (2.5.1 M1) AYNI işlevi kullanır (ikinci formül yok): kullanılan devreden (190, ay başına kadar
+   * defterden), S4 taşıması, fark o − i − p; artıysa ödenecek (360), eksiyse sonraki aya devreden (190).
+   */
+  function monthPosition(table, active, month) {
+    const own = table.of(month);
+    // S4 (Ç7b): önceki ayların mahsubundan sonra girilen, indirilecek KDV'yi AZALTAN kayıtlar bu ayın İ'sinden düşer (carried ≤ 0).
+    const carried = Math.min(0, carriedBefore(table, active, month));
+    const { out, carry } = own;
+    const input = own.input + carried;
+    const position = out - input - carry;
+    return { out, input, carry, carried, position, payable: Math.max(0, position), carryOut: Math.max(0, -position) };
+  }
   function monthFigures(entries, month) {
     return figureTable(entries).of(month);
   }
@@ -213,8 +228,9 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
   }
   function offsetList() {
     const entries = ledger()?.build ? ledger().build() : [];
-    const table = figureTable(entries);
-    const rows = offsetRows();
+    return listOf(figureTable(entries), offsetRows());
+  }
+  function listOf(table, rows) {
     const active = rows.filter(item => item.status === "active");
     return rows.map(row => {
       const now = table.of(row.month);
@@ -232,13 +248,8 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
     const table = figureTable(entries);
     const offsets = offsetRows();
     const active = offsets.filter(item => item.status === "active");
-    const own = table.of(month);
-    // S4 (Ç7b): önceki ayların mahsubundan sonra girilen, indirilecek KDV'yi AZALTAN kayıtlar bu ayın İ'sinden düşer (carried ≤ 0).
-    const carried = Math.min(0, carriedBefore(table, active, month));
-    const { out, carry } = own;
-    const input = own.input + carried;
-    const position = out - input - carry;
-    const row = { month, date, outMinor: out, inMinor: input, carryInMinor: carry, carryOutMinor: Math.max(0, -position), payableMinor: Math.max(0, position) };
+    const { out, input, carry, carried, position, payable, carryOut } = monthPosition(table, active, month);
+    const row = { month, date, outMinor: out, inMinor: input, carryInMinor: carry, carryOutMinor: carryOut, payableMinor: payable };
     const blocks = [];
     const warnings = [];
     const lock = period?.lockedUntil?.() || "";
@@ -306,5 +317,26 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
     ok(res, { id: done.id, offsets: offsetList() });
   });
 
-  return { balances, offsetList, monthLabel };
+  /**
+   * 2.5.1 M1 (S261; kullanıcı 22.11 "orta bulguyu 2.5.1 de düzeltelim"): KDV Özeti'nin okuduğu görünüm — Ana Defter TEK kez kurulur (eski offsetList çağrısı da bir kez
+   * kuruyordu; ders 47). position(ay) ön izlemenin AYNI hesabıdır (monthPosition); months = 391 / 191 satırı olan aylar; mahsup = etkin mahsup fişi olan aylar; offsets =
+   * offsetList() ile aynı liste. Yazım yok, yetki denetimi rapordadır.
+   */
+  function vatView() {
+    const entries = ledger()?.build ? ledger().build() : [];
+    const table = figureTable(entries);
+    const rows = offsetRows();
+    const active = rows.filter(item => item.status === "active");
+    return {
+      position(month) {
+        const { out, input, carry, carried, payable, carryOut } = monthPosition(table, active, month);
+        return { month, label: monthLabel(month), outMinor: out, inMinor: input, carryInMinor: carry, carriedInMinor: carried, payableMinor: payable, carryOutMinor: carryOut };
+      },
+      months: table.months().sort(),
+      mahsup: new Set(active.map(item => item.month)),
+      offsets: listOf(table, rows),
+    };
+  }
+
+  return { balances, offsetList, vatView, monthLabel };
 }
