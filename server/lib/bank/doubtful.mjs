@@ -18,7 +18,7 @@ import { newEventId, nextEventNo } from "./event-no.mjs";
 // iki yön de değerleri YALNIZ işlev içinde okur (modül düzeyinde okuma yok), hangisi önce yüklenirse yüklensin çalışır (test/supheli-kuyruk-defter-250.test.mjs ayrı süreçte sınar).
 import { createObligationInput } from "../obligation-input.mjs";
 import { createAccountLines } from "../account-lines.mjs";
-import { waivesSql } from "../accounts.mjs";
+import { accountLedger, waivesSql } from "../accounts.mjs";
 import { doubtfulBefore } from "../obligation-queue.mjs";
 
 export const DOUBTFUL_TABLES = Object.freeze(["doubtful_receivables", "doubtful_provisions"]);
@@ -188,10 +188,31 @@ export function linkedShares(store, parties) {
     bases.set(party, entry);
     return entry;
   };
-  return (credit, view) => {
+  // 2.5.1 M2 (S270 güvenlik denetimi — tasarım m2-rapor.md §0b madde 3): varsayımsal Değersiz Alacak satırı (extra = { party, entry }) kuyruk kesitine de eklenir — yazımdan sonraki hâlin
+  // birebiri (ayırıcının aynı gün kuralı `done` satırı görür). Kurulum (bases) paylaşılır; türetilmiş girdi ve kesit belleği ayrı (bellek girdisine yazılmaz).
+  const derived = new Map();
+  const extraOf = (party, extra) => {
+    const plain = baseOf(party);
+    if (!extra || extra.party !== party) return plain;
+    const key = `${extra.entry.id}|${extra.entry.date}|${extra.entry.amount}|${extra.entry.createdAt}`;
+    if (derived.has(key)) return derived.get(key);
+    const line = accountLedger([extra.entry]).lines[0];
+    const base = { ...plain.base, lines: [...(plain.base.lines || []), line] };
+    const sameDay = new Map();
+    const dayOf = new Map();
+    for (const item of base.lines) {
+      if (!sameDay.has(item.date)) sameDay.set(item.date, []);
+      sameDay.get(item.date).push(item);
+      if (!dayOf.has(item.id)) dayOf.set(item.id, item.date);
+    }
+    const out = { base, dayOf, sameDay, cuts: new Map() };
+    derived.set(key, out);
+    return out;
+  };
+  const make = extra => (credit, view) => {
     const ref = String(credit.ref ?? credit.key ?? "");
     if (!ref.startsWith("account:") || !candidates.has(credit.party)) return null;
-    const entry = baseOf(credit.party);
+    const entry = extraOf(credit.party, extra);
     const { base } = entry;
     const lineId = ref.slice("account:".length);
     const invoiceId = base.links.get(lineId);
@@ -211,6 +232,10 @@ export function linkedShares(store, parties) {
     entry.cuts.set(cutKey, out);
     return out;
   };
+  const linked = make(null);
+  // withExtra: aynı kurulumla, varsayımsal satırı kuyruğa da ekleyen geri çağrı (yalnız Değersiz sınırı — writeOffLimitOf).
+  Object.defineProperty(linked, "withExtra", { value: extra => make(extra) });
+  return linked;
 }
 
 // TEK ADAY HIZ (t3hiz; ders 47 — docs/erp/C5-ACILIS-TASARIM.md §19.9): linkedShares'in cari başına kurulumu bir veri tabanı İŞLEMİNİN DIŞINDA, aynı veri durumunda çağrılar arasında paylaşılır.
@@ -239,6 +264,108 @@ export function doubtfulState(store, { parties = null } = {}) {
   const credits = doubtfulCredits(store, new Set(records.map(record => record.party)));
   const { state, allocations } = allocateDoubtful({ records, provisions, credits, linked: rows.linked || null });
   return { records, provisions, state, allocations };
+}
+
+// ---------- 2.5.1 M2 — Değersiz Alacak sınırı (TEK işlev; tasarım docs/devir/2.5.1-DEVAM/m2-rapor.md §0b) ----------
+// KARARLAR (karar girdisi docs/devir/2.5.1-DEVAM/m2-kararlar.md §1 AYNEN): S264 = A "Değersiz sınırı aynı günün sırasına uysun — Değersiz o günün bağlı payından önce, tam tutar kabul";
+// S269 = A "S264 sınırı 'kayıt kapalı' denetiminden ÖNCE de uygulanır (Değersiz Yaz ve Silinenler'den geri yükleme); bu kayıtlarda düğme görünür; ipucu ve önerilen tutar sınırı gösterir";
+// S268 = A "… üst sınır ipucu / önerilen tutar S264 sınırını göstersin"; S270 = A değişmez "hiçbir sırada bir şüpheli kaydın Değersiz toplamı, o kayda şüpheliye alınan tutardan kayda düşmüş
+// tahsilatlar çıkınca kalanı aşamaz; Değersiz yazımı cariyi alacaklıya (eksi bakiyeye) düşürmez"; S-M2-1 = B "Değersiz o günün tarihiyle yazılırsa o günün bağlı payından önce değerlendirilir
+// (S264); sonraki bir tarihle yazılırsa önceki günlerin bağlı payı düşülmüş kalan kadar yazılabilir"; SK-55 = C (aynı gün bağlı → bağsız → Şüpheliye Al sırasında payın ölçüm anı BİLİNEN
+// SINIR — bugünkü davranış). BAŞ MİMAR (kâhin Y30-6): ekranın önerdiği tutar her zaman kabul edilir → öneri = sınır ile S155'in izin verdiğinin küçüğü.
+// Liste ('yazılabilir' alanı), Değersiz Yaz, Silinenler'den geri yükleme ve formun uç noktası BU işlevleri okur. Ayırıcı (lib/doubtful-gl.mjs allocateDoubtful) ve kuyruk kesiti DEĞİŞMEDİ.
+const WRITE_OFF_HYP = "m2-varsayimsal-degersiz";
+const WRITE_OFF_LAST_AT = "9999-12-31T23:59:59.999Z";
+/** Carinin Değersiz sınırı bağlamı: okuma (SQL) BİR kez; tam ayırma; bağlı satır kümesi (`linked` dizi döndürdü); dışarı taşan Değersiz tutarları (taban). */
+export function writeOffContextOf(store, party) {
+  const rows = doubtfulRows(store, { parties: [party] });
+  const credits = rows.records.length ? doubtfulCredits(store, new Set([party])) : [];
+  const bound = new Set();
+  const linked = rows.linked
+    ? (credit, view) => {
+        const out = rows.linked(credit, view);
+        if (out) bound.add(credit.key);
+        return out;
+      }
+    : null;
+  const full = allocateDoubtful({ records: rows.records, provisions: rows.provisions, credits, linked });
+  const outside = new Map();
+  for (const [key, hit] of full.allocations) if ((hit.outsideMinor || 0) > 0) outside.set(key, hit.outsideMinor);
+  return { party, rows, credits, bound, full, outside };
+}
+/** F(S, D): D gününe ve sonrasına ait bağlı satırlar yokken kaydın sondaki kalanı (S264 + S-M2-1 = B + S270 "sonradan gelen bağsız" ve "sonraki Değersiz satırları"). */
+function writeOffRoomBefore(ctx, recordId, date) {
+  const credits = ctx.credits.filter(credit => !(ctx.bound.has(credit.key) && credit.date >= date));
+  if (credits.length === ctx.credits.length) return ctx.full.state.get(recordId)?.remaining ?? 0;
+  const { state } = allocateDoubtful({ records: ctx.rows.records, provisions: ctx.rows.provisions, credits, linked: ctx.rows.linked || null });
+  return state.get(recordId)?.remaining ?? 0;
+}
+/** Varsayımsal Değersiz (kayıt, gün, tutar, yazım anı) eklenmiş ayırma: satır sığıyor mu, öbür Değersiz satırları taşıyor mu, açık şüphelinin yeni toplamı. */
+function writeOffTrial(ctx, record, date, minor, at) {
+  const key = `account:${WRITE_OFF_HYP}`;
+  // Kuyruk satırının tutarı denemeye göre değişir → türetilmiş girdi tutar başına (linkedShares içinde kimlik · gün · tutar · anla anahtarlı; kurulum paylaşılır).
+  const linked = ctx.rows.linked?.withExtra ? ctx.rows.linked.withExtra({ party: ctx.party, entry: { id: WRITE_OFF_HYP, kind: "credit", amount: fromMinor(minor), date, source: "doubtful", sourceId: record.id, createdAt: at } }) : null;
+  const credits = [...ctx.credits, { key, ref: key, party: ctx.party, date, minor, target: record.id, openedOn: "", at, seq: Infinity }];
+  const out = allocateDoubtful({ records: ctx.rows.records, provisions: ctx.rows.provisions, credits, linked });
+  const hit = out.allocations.get(key);
+  let grows = false;
+  for (const [other, item] of out.allocations) if (other !== key && (item.outsideMinor || 0) > (ctx.outside.get(other) || 0)) grows = true;
+  let openMinor = 0;
+  for (const s of out.state.values()) openMinor += Math.max(0, s.remaining);
+  return { fits: Boolean(hit) && !((hit.outsideMinor || 0) > 0) && !grows, openMinor };
+}
+/** En büyük X ∈ [0, hi] (test(X) X büyüdükçe yalnız bozulur): önce üst uç, sonra kuruş kuruş ikili arama. */
+function largestPassing(hi, test) {
+  if (hi <= 0) return 0;
+  if (test(hi)) return hi;
+  let lo = 0;
+  let top = hi;
+  while (top - lo > 1) {
+    const mid = Math.floor((lo + top) / 2);
+    if (test(mid)) lo = mid;
+    else top = mid;
+  }
+  return lo;
+}
+/**
+ * Sınır(S, D) ve önerilen tutar (kuruş): sınır = F(S, D), bakiye ve S270 güvenlik denetimini (satır sığar, öbür Değersiz satırları taşmaz) sağlayan en büyük tutar; öneri = sınır ile S155'in
+ * (kayıttan sonra carinin borcu açık şüphelinin altına düşemez — kapının doubtful:balance kuralı) izin verdiğinin küçüğü. why: sınırı ne belirledi (iletiler). at: yazım anı (geri yüklemede
+ * satırın kendi anı; yoksa en son).
+ */
+export function writeOffLimitOf(ctx, record, date, { balanceMinor, at = WRITE_OFF_LAST_AT } = {}) {
+  const state = ctx.full.state.get(record.id);
+  if (record.status !== "open" || !state) return { date, limitMinor: 0, offerMinor: 0, why: "closed", remainingMinor: 0, roomMinor: 0 };
+  const room = Math.max(0, writeOffRoomBefore(ctx, record.id, date));
+  const balance = Number(balanceMinor) || 0;
+  const cap = Math.max(0, Math.min(room, balance));
+  const trials = new Map();
+  const trial = minor => {
+    if (!trials.has(minor)) trials.set(minor, writeOffTrial(ctx, record, date, minor, at));
+    return trials.get(minor);
+  };
+  const limitMinor = largestPassing(cap, minor => trial(minor).fits);
+  const offerMinor = largestPassing(limitMinor, minor => {
+    const { openMinor } = trial(minor);
+    return openMinor <= 0 || balance - minor - openMinor >= 0;
+  });
+  const why = limitMinor < cap ? "later" : cap < room ? "balance" : room > state.remaining ? "sameDay" : "remaining";
+  return { date, limitMinor, offerMinor, why, s155: offerMinor < limitMinor, remainingMinor: state.remaining, roomMinor: room };
+}
+const nextDay = iso => new Date(Date.parse(`${iso}T00:00:00Z`) + 86_400_000).toISOString().slice(0, 10);
+/**
+ * Formun ve listenin aday günleri: ilk açık gün (kayıt günü; kilitliyse kilidin ertesi), bugün ve aradaki bağlı satır günleri (sınır yalnız bu günlerde değişebilir — bağlı satır yoksa F günden
+ * bağımsızdır). Dönüş: { today, first, best } (best = en çok önerilen; eşitlikte en erken gün) — kilitli / ileri gün aday değildir.
+ */
+export function writeOffDays(ctx, record, { today, lockedUntil = "", balanceMinor }) {
+  const first = lockedUntil && lockedUntil >= record.date ? nextDay(lockedUntil) : record.date;
+  if (record.status !== "open" || first > today) return { today: null, first: null, best: null };
+  const days = new Set([first, today]);
+  for (const credit of ctx.credits) if (ctx.bound.has(credit.key) && credit.date > first && credit.date < today) days.add(credit.date);
+  const sorted = [...days].sort();
+  const quotes = sorted.map(day => writeOffLimitOf(ctx, record, day, { balanceMinor }));
+  let best = quotes[0];
+  for (const quote of quotes) if (quote.offerMinor > best.offerMinor || (quote.offerMinor === best.offerMinor && quote.limitMinor > best.limitMinor)) best = quote;
+  return { today: quotes[quotes.length - 1].date === today ? quotes[quotes.length - 1] : null, first: quotes[0], best, anyMinor: Math.max(...quotes.map(quote => quote.limitMinor)) };
 }
 
 /** Ana Defter'in beklenenleri (routes/ledger.mjs expected): 128 = Σ kalan; 129 = −Σ karşılık; kontrol hesabı (120/320/336) başına düşülecek kalan. */
@@ -429,9 +556,19 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     };
   }
   /** Carinin kayıtları (iptal edilenler hariç) ve özeti. */
+  // 2.5.1 M2 — S268 / S269 = A: açık durumlu kaydın 'yazılabilir' alanı (writeOff): bugünün ve en çok yazdıran izinli günün sınırı / önerisi; düğme herhangi bir aday günde sınır > 0 ise görünür.
+  // Kayıtların ayırması aynı bağlamın tam koşusundan (ikinci doubtfulState koşusu yok).
   function listFor(accountId) {
-    const { records, state, allocations } = doubtfulState(store, { parties: [accountId] });
-    return { records: records.map(record => view(record, state.get(record.id), allocations)), summary: doubtfulSummary(store, accountId) };
+    const ctx = writeOffContextOf(store, accountId);
+    const { records } = ctx.rows;
+    const { state, allocations } = ctx.full;
+    const balanceMinor = records.some(record => record.status === "open") ? headroom(accountId).balanceMinor : 0;
+    const writable = record => {
+      if (record.status !== "open" || !state.get(record.id)) return null;
+      const days = writeOffDaysOf(ctx, record, balanceMinor);
+      return { anyMinor: days.anyMinor || 0, today: quoteOut(days.today), best: quoteOut(days.best) };
+    };
+    return { records: records.map(record => ({ ...view(record, state.get(record.id), allocations), writeOff: writable(record) })), summary: doubtfulSummary(store, accountId) };
   }
   /** Rapor verisi: bütün (silinmemiş) carilerin kayıtları; status open | closed | all; from/to kayıt tarihine. "Açık" durumu TARİH İTİBARIYLA
    *  listedir (eleştirmen E1, 15.10.2026): dönem başlangıcı süzmez — geçen yıl açılmış, hâlâ açık kayıt "Bu Yıl"da görünür, TOPLAM Kalan = 128. */
@@ -575,61 +712,98 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     const after = stateOf(record);
     return { record: view(record, after.state, after.allocations), event, provisionId: id, minor, date, note };
   }
-  // 2.5.0 UD turu 3 — S264 = A (kullanıcı kararı; 'ÖNERİYİ UYGULA' kuralıyla öneri uygulandı; AYNEN: "'Değersiz' sınır denetimi aynı günün sırasına uyar — Değersiz, o günün
-  // bağlı payından ÖNCE değerlendirilir, tam tutar kabul edilir (kâhin ve v2.4.9 böyle)"): sınır = kaydın kalanı + Değersiz satırının GÜNÜNDEKİ bağlı alacakların (Kapatılacak Fatura /
-  // faturaya bağlı evrak — ayırıcının `linked` payı, S25 (c)) bu kayda düşen payı. Önceden yalnız kalan okunuyordu: aynı gün şüpheliye almadan önce yazılmış bağlı tahsilatın payı sınırdan
-  // düşüyor, tam tutar reddediliyordu. Bağsız alacaklar (tahsilat, Alacak Yaz …) sınırı eskisi gibi küçültür (kâhin ve v2.4.9 böyle; bu karar onları kapsamaz).
-  // Yazımdan sonra (bank.post işlemi içinde) ayırıcı satırın yerinde kalanı aşan kısım (outsideMinor) bırakıyorsa ya da carinin başka bir Değersiz satırını kalanın dışına taşırıyorsa hata
-  // atılır, yazım geri alınır (güvenlik denetimi; doğru sınırla oluşmaz). Geri yükleme (restore 'writeoff') aynı denetimi kullanır.
-  const boundSameDayShare = (record, date) => {
-    const rows = doubtfulRows(store, { parties: [record.party] });
-    if (!rows.linked || !rows.records.length) return 0;
-    const bound = new Set();
-    const linked = (credit, view) => {
-      const out = rows.linked(credit, view);
-      if (out) bound.add(credit.key);
-      return out;
-    };
-    const credits = doubtfulCredits(store, new Set(rows.records.map(item => item.party)));
-    const { allocations } = allocateDoubtful({ records: rows.records, provisions: rows.provisions, credits, linked });
-    let sum = 0;
-    for (const credit of credits) {
-      if (credit.date !== date || !bound.has(credit.key)) continue;
-      for (const item of allocations.get(credit.key)?.records || []) if (item.recordId === record.id) sum += item.minor;
-    }
-    return sum;
+  // 2.5.1 M2 — Değersiz Alacak sınırı (S264 / S269 / S268 / S270 / S-M2-1 = B; kararların AYNEN metni yukarıda writeOffLimitOf'un notunda). Sınır TEK işlevden (writeOffLimitOf):
+  // liste ('writeOff' alanı), Değersiz Yaz, Silinenler'den geri yükleme ve formun uç noktası (writeOffQuote). Önceki uygulama (2.5.0 UD turu 3: kalan + o günün bağlı payı; 'kayıt kapalı'
+  // denetimi sınırdan önce) S269'u karşılamıyordu; UD turu 4'ün geri alınan uygulaması (7141a308) sonradan gelen bağsız tahsilatta fazla yazıma izin veriyordu (bakiye −576,45).
+  const WHY_TEXT = {
+    remaining: "kayıtta kalan şüpheli tutar",
+    sameDay: "kayıtta kalan şüpheli tutar ile o günün faturaya bağlı tahsilatından bu kayda düşen pay (Değersiz o tahsilattan önce sayılır)",
+    later: "daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı",
+    balance: "carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez",
+    closed: "kayıt kapalı",
   };
+  const S155_TEXT = "kayıttan sonra carinin borcu açık şüpheli tutarın altına düşemez";
+  const quoteOut = quote => (quote ? { date: quote.date, limitMinor: quote.limitMinor, offerMinor: quote.offerMinor, why: quote.why, whyText: WHY_TEXT[quote.why] || "", s155: Boolean(quote.s155), s155Text: quote.s155 ? S155_TEXT : "" } : null);
+  const lockOf = () => period.lockedUntil?.() || "";
+  /** Kaydın aday günlerinin sınırları (liste ve iletiler): { today, first, best, anyMinor }. */
+  function writeOffDaysOf(ctx, record, balanceMinor) {
+    return writeOffDays(ctx, record, { today: period.today(), lockedUntil: lockOf(), balanceMinor });
+  }
+  const altText = (days, date) => (days?.best && days.best.offerMinor > 0 && days.best.date !== date ? ` ${dayText(days.best.date)} tarihiyle en çok ${tl(days.best.offerMinor)} yazılabilir.` : "");
+  const closedWhy = (record, state) => (record.status === "released" ? "şüpheliden çıkarılmış" : state?.writtenOff > 0 ? "değersiz yazılarak kapanmış" : "tamamı tahsil edilmiş");
+  /**
+   * Değersiz sınırı denetimi (Değersiz Yaz ve geri yükleme): çıkarılmış / iptal kayıt 409 doubtful-closed (eskisi gibi); sınır ≤ 0 → 409 doubtful-closed; tutar > sınır → 400 (Değersiz Yaz) /
+   * 409 (geri yükleme) doubtful-writeoff-exceeds. İleti gerçek sınırı, nedenini ve (farklıysa) başka tarihle yazılabilecek tutarı söyler.
+   */
+  function assertWriteOffLimit(record, date, minor, { at, restoring = false } = {}) {
+    const ctx = writeOffContextOf(store, record.party);
+    const state = ctx.full.state.get(record.id);
+    if (record.status !== "open" || !state) throw new HttpError(409, `Bu şüpheli alacak kaydı ${closedWhy(record, state)}; kalan tutar yok.`, { code: "doubtful-closed", recordId: record.id });
+    const balanceMinor = headroom(record.party).balanceMinor;
+    const quote = writeOffLimitOf(ctx, record, date, { balanceMinor, ...(at ? { at } : {}) });
+    const head = restoring ? "Değersiz Alacak satırı geri yüklenemez: " : "";
+    if (quote.limitMinor <= 0) {
+      const days = writeOffDaysOf(ctx, record, balanceMinor);
+      const why = state.remaining > 0 ? WHY_TEXT[quote.why] : closedWhy(record, state);
+      throw new HttpError(409, `${head}Bu şüpheli alacak kaydına ${dayText(date)} tarihiyle değersiz alacak yazılamaz; yazılabilecek tutar kalmadı (${why}).${altText(days, date)}`, { code: "doubtful-closed", recordId: record.id, limitMinor: 0, date });
+    }
+    if (minor > quote.limitMinor) {
+      const days = writeOffDaysOf(ctx, record, balanceMinor);
+      throw new HttpError(restoring ? 409 : 400, `${head}Değersiz yazılacak tutar (${tl(minor)}) bu kayda ${dayText(date)} tarihiyle yazılabilecek en çok tutarı (${tl(quote.limitMinor)}) aşıyor; sınır: ${WHY_TEXT[quote.why]}.${altText(days, date)}`, { code: "doubtful-writeoff-exceeds", field: restoring ? undefined : "amount", remainingMinor: quote.limitMinor, limitMinor: quote.limitMinor, date });
+    }
+    return quote;
+  }
   const writeOffOutside = record => {
     const out = new Map();
     for (const [key, hit] of stateOf(record).allocations) if (hit.outsideMinor > 0) out.set(key, hit.outsideMinor);
     return out;
   };
-  const assertWriteOffFits = (record, entryId, minor, before, errors) => {
+  // Yazımdan sonra (bank.post işlemi içinde) güvenlik denetimi: satır kaydın kalanına sığmıyorsa ya da carinin başka bir Değersiz satırını kalanın dışına taşırıyorsa yazım geri alınır
+  // (doğru sınırla oluşmaz — sınır aynı ayırıcıyı yazımdan sonraki hâliyle koşar).
+  const assertWriteOffFits = (record, entryId, minor, before, refused) => {
     const { allocations } = stateOf(record);
     const key = `account:${entryId}`;
     const fit = (allocations.get(key)?.records || []).reduce((sum, item) => sum + item.minor, 0);
-    if (fit < minor) throw errors.exceeds(fit);
-    for (const [other, hit] of allocations) if (other !== key && hit.outsideMinor > (before.get(other) || 0)) throw errors.breaks();
+    if (fit < minor) throw refused(`satır kaydın kalanına sığmıyor (sığan ${tl(fit)})`);
+    for (const [other, hit] of allocations) if (other !== key && hit.outsideMinor > (before.get(other) || 0)) throw refused("carinin başka bir Değersiz Alacak satırı kalanın dışına taşardı");
   };
+  /** Formun ve listenin sınırı: kaydın seçilen gündeki sınırı / önerisi + aday günlerin en çok önerdiği (Değersiz Alacak Yaz formu tarih değişince bunu okur). */
+  function writeOffQuote(accountId, did, date = "") {
+    const record = recordRow(did, { accountId });
+    const ctx = writeOffContextOf(store, record.party);
+    const balanceMinor = headroom(record.party).balanceMinor;
+    const days = writeOffDaysOf(ctx, record, balanceMinor);
+    const today = period.today();
+    const day = date || today;
+    const lock = lockOf();
+    let blocked = "";
+    if (record.status !== "open" || !ctx.full.state.get(record.id)) blocked = "closed";
+    else if (day > today) blocked = "future";
+    else if (lock && day <= lock) blocked = "locked";
+    else if (day < record.date) blocked = "before";
+    const quote = blocked ? { date: day, limitMinor: 0, offerMinor: 0, why: "closed", s155: false } : writeOffLimitOf(ctx, record, day, { balanceMinor });
+    const blockedText = { closed: "kayıt kapalı", future: "ileri tarihli hareket girilemez", locked: `${dayText(lock)} ve öncesi kilitli dönem`, before: `tarih şüpheli kaydın tarihinden (${dayText(record.date)}) önce` }[blocked] || "";
+    return { recordId: record.id, ...quoteOut(quote), blocked, blockedText, today: quoteOut(days.today), best: quoteOut(days.best), anyMinor: days.anyMinor || 0, balanceMinor };
+  }
   /** Değersiz Alacak Yaz (§3.11b/3): cari kartına alacak satırı (source 'doubtful') + başlık; yevmiye B 129/659 / A 128 türetir. */
   function writeOff(ctx, { user, accountId, did, body = {} }) {
-    const { record, state } = openRecord(accountId, did);
+    const record = recordRow(did, { accountId });
+    if (record.status !== "open") throw new HttpError(409, `Bu şüpheli alacak kaydı ${closedWhy(record, null)}; kalan tutar yok.`, { code: "doubtful-closed", recordId: record.id });
     const date = period.movementDate(body, { label: "Tarih" });
     dateAfterRecord(date, record, "Değersiz yazma tarihi");
     const minor = amountOf(body.amount, "Değersiz alacak tutarı");
-    // S264 = A: sınır kalan + o günün bağlı payı (yukarıdaki not).
-    const room = state.remaining + boundSameDayShare(record, date);
-    const exceeds = fit => new HttpError(400, `Değersiz yazılacak tutar (${tl(minor)}) kalan şüpheli tutarı (${tl(fit)}) aşıyor.`, { code: "doubtful-writeoff-exceeds", field: "amount", remainingMinor: fit });
-    if (minor > room) throw exceeds(room);
+    assertWriteOffLimit(record, date, minor);
     const note = limited(body.note ?? "", 300, "Açıklama");
     const writer = accounts()?.doubtfulEntry;
     if (!writer) throw new HttpError(503, "Cari servisi hazır değil.");
     const before = writeOffOutside(record);
     const entry = writer.add(user, record.party, { amount: fromMinor(minor), date, note: note ? `Değersiz alacak · ${note}` : "Değersiz alacak", recordId: record.id });
-    assertWriteOffFits(record, entry.id, minor, before, { exceeds, breaks: () => exceeds(room) });
+    assertWriteOffFits(record, entry.id, minor, before, why => new HttpError(400, `Değersiz alacak yazılamadı: ${why}. Hiçbir şey kaydedilmedi.`, { code: "doubtful-writeoff-exceeds", field: "amount" }));
     const event = openEvent(ctx, { type: "doubtful_writeoff", date, srcTable: "account_entries", srcId: entry.id, partyId: record.party, minor, chequeId: record.chequeId, description: describe(record, `Değersiz alacak yazıldı${note ? ` · ${note}` : ""}`), user });
     const after = stateOf(record);
-    return { record: view(record, after.state, after.allocations), event, entryId: entry.id, minor, date, note };
+    // Bildirim (S268 / plan M2): bu yazımın tutarı, yazımdan sonraki gerçek kalan ve aynı tarihle daha yazılabilecek tutar (yazım işleminin içinde; aynı sınır işlevi).
+    const next = writeOffLimitOf(writeOffContextOf(store, record.party), record, date, { balanceMinor: headroom(record.party).balanceMinor });
+    return { record: view(record, after.state, after.allocations), event, entryId: entry.id, minor, date, note, writeOffAfter: quoteOut(next) };
   }
   const assertOpenDates = (dates, what) => {
     for (const date of dates.filter(Boolean)) period.assertOpen(date, what);
@@ -753,14 +927,12 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     if (kind === "writeoff") {
       if (store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", payload.id)) throw new HttpError(404, "Bu Değersiz Alacak satırı zaten geri yüklenmiş.");
       period.restoreDate(payload.date, "Bu Değersiz Alacak satırı");
-      const { record, state } = openRecord(payload.accountId, payload.recordId);
-      // S264 = A: sınır kalan + satırın günündeki bağlı pay (writeOff ile aynı denetim; yukarıdaki not).
-      const room = state.remaining + boundSameDayShare(record, payload.date);
-      const refused = () => new HttpError(409, `Değersiz Alacak satırı geri yüklenemez: kalan şüpheli tutar (${tl(room)}) tutarı (${tl(payload.amountMinor)}) artık karşılamıyor.`, { code: "doubtful-writeoff-exceeds" });
-      if (Number(payload.amountMinor) > room) throw refused();
+      // 2.5.1 M2 — S269 = A: 'kayıt kapalı' denetimi sınırdan SONRA; sınır Değersiz Yaz'ınkiyle AYNI işlev (writeOffLimitOf), satırın kendi yazım anıyla (geri yüklenen satır o anla sıralanır).
+      const record = recordRow(payload.recordId, { accountId: payload.accountId });
+      assertWriteOffLimit(record, payload.date, Number(payload.amountMinor), { at: payload.entry?.created_at || undefined, restoring: true });
       const before = writeOffOutside(record);
       accounts().doubtfulEntry.reinsert(user, payload.entry);
-      assertWriteOffFits(record, payload.id, Number(payload.amountMinor), before, { exceeds: refused, breaks: refused });
+      assertWriteOffFits(record, payload.id, Number(payload.amountMinor), before, why => new HttpError(409, `Değersiz Alacak satırı geri yüklenemez: ${why}.`, { code: "doubtful-writeoff-exceeds" }));
       setEventStatus(ctx, payload.eventId, "active", user);
       return { id: payload.id, accountId: record.party, message: `“${record.accountName}” değersiz alacak satırı (${tl(payload.amountMinor)}) geri geldi.` };
     }
@@ -774,5 +946,5 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
   }
   /** Cari satırının (account_entries) ayırma kuralıyla şüpheli kayıtlara düşen kuruşu (kontrol turu 2 K3; routes/accounts.mjs assertNormalRoom). */
   const allocatedMinor = (accountId, entryId) => (doubtfulState(store, { parties: [accountId] }).allocations.get(`account:${entryId}`)?.records || []).reduce((sum, item) => sum + item.minor, 0);
-  return { recordRow, listFor, report, summary: accountId => doubtfulSummary(store, accountId), openByAccount: (options = {}) => doubtfulOpenByAccount(store, options), headroom, allocatedMinor, take, release, provision, writeOff, remove, removeProvision, removeWriteOff, restore, assertNone, statusOf: doubtfulStatusOf };
+  return { recordRow, listFor, writeOffQuote, report, summary: accountId => doubtfulSummary(store, accountId), openByAccount: (options = {}) => doubtfulOpenByAccount(store, options), headroom, allocatedMinor, take, release, provision, writeOff, remove, removeProvision, removeWriteOff, restore, assertNone, statusOf: doubtfulStatusOf };
 }

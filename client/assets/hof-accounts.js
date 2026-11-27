@@ -1207,9 +1207,12 @@
           ...record.provisions.map(item => `<small class="hof-acc-doubtful-sub">Karşılık ${esc(HOF.formatDate(item.date))} · ${esc(minorMoney(item.amountMinor))}${item.eventNo ? ` · ${esc(item.eventNo)}` : ""}${item.note ? ` · ${esc(item.note)}` : ""}${can ? ` <button type="button" class="hof-mini hof-mini-danger" data-dbt-prov-del="${esc(item.id)}" data-dbt-id="${esc(record.id)}" title="Karşılığı sil" aria-label="Karşılığı sil">×</button>` : ""}</small>`),
           ...record.writeOffs.map(item => `<small class="hof-acc-doubtful-sub">Değersiz ${esc(HOF.formatDate(item.date))} · ${esc(minorMoney(item.amountMinor))}${item.eventNo ? ` · ${esc(item.eventNo)}` : ""}${item.note ? ` · ${esc(item.note)}` : ""}${can ? ` <button type="button" class="hof-mini hof-mini-danger" data-dbt-wo-del="${esc(item.entryId)}" data-dbt-id="${esc(record.id)}" title="Değersiz alacak satırını sil" aria-label="Değersiz alacak satırını sil">×</button>` : ""}</small>`),
         ].join("");
+      // 2.5.1 M2 — S269 = A: Değersiz Alacak Yaz düğmesi kaydın kalanına değil sunucunun 'yazılabilir' alanına bakar (izinli günlerden herhangi birinde sınır > 0) — kalanı o günün
+      // faturaya bağlı payıyla 0'a inmiş kayıtta da görünür; sınırı olmayan açık kayıtta görünmez.
+      const writable = record => (record.writeOff ? Number(record.writeOff.anyMinor) > 0 : record.stateKey === "open");
       const actions = record =>
         can
-          ? `${record.stateKey === "open" ? `<button type="button" class="hof-mini hof-mini-text" data-dbt-act="provision" data-dbt-id="${esc(record.id)}" title="VUK 323: B 654 / A 129; en çok kalan şüpheli tutar">Karşılık Ayır</button><button type="button" class="hof-mini hof-mini-text" data-dbt-act="writeoff" data-dbt-id="${esc(record.id)}" title="Kesinleşmiş kayıp: cari bakiyesi o tutar kadar kapanır">Değersiz Alacak Yaz</button><button type="button" class="hof-mini hof-mini-text" data-dbt-act="release" data-dbt-id="${esc(record.id)}" title="Kalanı 120'ye geri alır (B 120 / A 128); karşılık 644'e çözülür">Şüpheliden Çıkar</button>` : ""}<button type="button" class="hof-mini hof-mini-danger" data-dbt-act="delete" data-dbt-id="${esc(record.id)}" title="Kaydı sil (Silinenler'e)" aria-label="Kaydı sil">×</button>`
+          ? `${record.stateKey === "open" ? `<button type="button" class="hof-mini hof-mini-text" data-dbt-act="provision" data-dbt-id="${esc(record.id)}" title="VUK 323: B 654 / A 129; en çok kalan şüpheli tutar">Karşılık Ayır</button>` : ""}${writable(record) ? `<button type="button" class="hof-mini hof-mini-text" data-dbt-act="writeoff" data-dbt-id="${esc(record.id)}" title="Kesinleşmiş kayıp: cari bakiyesi o tutar kadar kapanır">Değersiz Alacak Yaz</button>` : ""}${record.stateKey === "open" ? `<button type="button" class="hof-mini hof-mini-text" data-dbt-act="release" data-dbt-id="${esc(record.id)}" title="Kalanı 120'ye geri alır (B 120 / A 128); karşılık 644'e çözülür">Şüpheliden Çıkar</button>` : ""}<button type="button" class="hof-mini hof-mini-danger" data-dbt-act="delete" data-dbt-id="${esc(record.id)}" title="Kaydı sil (Silinenler'e)" aria-label="Kaydı sil">×</button>`
           : "";
       slot.outerHTML = data.records.length
         ? `<table class="hof-table hof-cash-table hof-acc-doubtful-table" data-doubtful-list><thead><tr><th>Tarih</th><th>Neden</th><th class="num">Tutar</th><th class="num">Karşılık</th><th class="num">Tahsil Edilen</th><th class="num">Değersiz</th><th class="num">Kalan</th><th>Durum</th><th></th></tr></thead><tbody>${data.records
@@ -1268,17 +1271,62 @@
       },
     });
   }
+  // 2.5.1 M2 — S268 = A (ipucu ve önerilen tutar gerçek sınırı gösterir) + karar girdisi §2 madde 5: tarih BUGÜN gelir (kendiliğinden geriye kurulmaz); ipucu seçili tarihin sınırını ve
+  // (farklıysa) en çok yazdıran izinli günü birlikte söyler; tarih değişince sınır sunucudan (…/write-off?date=) yeniden okunur, tutara dokunulmadıysa önerilen tutar yenilenir. Önerilen tutar
+  // sunucunun önerisidir (sınır ile S155 bakiye kuralının küçüğü) — ekranın önerdiği tutar ve tarih her zaman kabul edilir.
+  const writeOffHint = (quote, best) => {
+    if (!quote) return "";
+    const day = HOF.formatDate(quote.date);
+    const why = quote.s155 ? quote.s155Text : quote.whyText;
+    const head = quote.blocked
+      ? `${day} tarihiyle değersiz alacak yazılamaz (${quote.blockedText}).`
+      : quote.offerMinor > 0
+        ? `${day} tarihiyle en çok ${minorMoney(quote.offerMinor)} yazılabilir (${why}).`
+        : `${day} tarihiyle yazılabilecek tutar yok (${why}).`;
+    const alt = best && best.date !== quote.date && best.offerMinor > (quote.blocked ? 0 : quote.offerMinor) ? ` ${HOF.formatDate(best.date)} tarihiyle en çok ${minorMoney(best.offerMinor)} yazılabilir.` : "";
+    return `${head}${alt}`;
+  };
   function doubtfulWriteOffForm(account, record) {
     const requestId = HOF.requestId();
+    const amountText = minor => office().amountText?.(minor / 100) || String(minor / 100);
+    const today = office().todayIso?.() || "";
+    const first = record.writeOff?.today || null;
+    const best = record.writeOff?.best || null;
+    let suggested = first ? (first.offerMinor > 0 ? amountText(first.offerMinor) : "") : amountText(record.remainingMinor);
+    let ticket = 0;
     HOF.formModal({
       title: "Değersiz Alacak Yaz",
       eyebrow: `${account.name} · ${record.reasonLabel} · ${minorMoney(record.amountMinor)}`,
-      intro: `Kesinleşmiş kayıp: karşılık varsa önce 129'dan, kalanı 659 Diğer Olağandışı Gider'den düşer; A 128. Cari kartına "Değersiz Alacak" alacak satırı yazılır, bakiye o tutar kadar kapanır. En çok ${minorMoney(record.remainingMinor)} (kalan şüpheli).`,
+      intro: `Kesinleşmiş kayıp: karşılık varsa önce 129'dan, kalanı 659 Diğer Olağandışı Gider'den düşer; A 128. Cari kartına "Değersiz Alacak" alacak satırı yazılır, bakiye o tutar kadar kapanır.`,
       fields: [
-        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: office().amountText?.(record.remainingMinor / 100) || String(record.remainingMinor / 100), autofocus: true },
-        { name: "date", label: "Tarih", type: "date", max: "today", required: true, value: office().todayIso?.() || "" },
+        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: suggested, autofocus: true },
+        { name: "date", label: "Tarih", type: "date", max: "today", required: true, value: today },
         { name: "note", label: "Açıklama", maxlength: 300, placeholder: "Ör. mahkeme kararı, aciz vesikası" },
       ],
+      extraHtml: `<p class="hof-modal-text" data-dbt-wo-hint aria-live="polite">${esc(first ? writeOffHint(first, best) : `En çok ${minorMoney(record.remainingMinor)} (kalan şüpheli).`)}</p>`,
+      onOpen: dialog => {
+        const dateInput = dialog.querySelector('input[name="date"]');
+        const amountInput = dialog.querySelector('input[name="amount"]');
+        const hint = dialog.querySelector("[data-dbt-wo-hint]");
+        dateInput?.addEventListener("change", async () => {
+          const date = String(dateInput.value || "").trim();
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+          const mine = ++ticket;
+          hint?.setAttribute("aria-busy", "true");
+          try {
+            const quote = await HOF.api(doubtfulUrl(account.id, `/${encodeURIComponent(record.id)}/write-off?date=${encodeURIComponent(date)}`));
+            if (mine !== ticket || !hint?.isConnected) return;
+            hint.textContent = writeOffHint(quote, quote.best);
+            const next = quote.offerMinor > 0 ? amountText(quote.offerMinor) : "";
+            if (amountInput && String(amountInput.value || "").trim() === String(suggested).trim()) amountInput.value = next;
+            suggested = next;
+          } catch (error) {
+            if (mine === ticket && hint?.isConnected) hint.textContent = `Sınır okunamadı: ${error.message}`;
+          } finally {
+            if (mine === ticket) hint?.setAttribute("aria-busy", "false");
+          }
+        });
+      },
       submitLabel: "Değersiz Alacak Yaz",
       onSubmit: async (data, dialog) => {
         const go = await HOF.confirm({ title: "Değersiz Alacak Yaz", message: `${String(data.amount).trim()} ₺ değersiz alacak yazılacak: ${account.name} carisinin bakiyesi o tutar kadar kapanır, tutar gider olarak defterde kalır. Kayıt sonra silinirse ${HOF.trashHint()} Devam edilsin mi?`, confirmLabel: "Değersiz Alacak Yaz", danger: true });
@@ -1289,7 +1337,10 @@
         }
         const result = await HOF.api(doubtfulUrl(account.id, `/${encodeURIComponent(record.id)}/write-off`), { method: "POST", body: data, requestId });
         await doubtfulRefresh(account.id);
-        HOF.toast(result.replayed ? "Bu işlem zaten kaydedildi; ikinci kez yazılmadı." : `Değersiz alacak yazıldı: ${minorMoney(result.record?.writtenOffMinor)} · şüphelide kalan ${minorMoney(result.record?.remainingMinor)}.`, { type: result.replayed ? "info" : "success" });
+        // Bildirim: BU yazımın tutarı (toplam değil), yazımdan sonraki gerçek kalan ve aynı tarihle daha yazılabilecek tutar (sunucunun sınır işlevinden).
+        const after = result.writeOffAfter;
+        const written = result.writtenMinor ?? result.record?.writtenOffMinor;
+        HOF.toast(result.replayed ? "Bu işlem zaten kaydedildi; ikinci kez yazılmadı." : `Değersiz alacak yazıldı: ${minorMoney(written)} · şüphelide kalan ${minorMoney(result.record?.remainingMinor)}${after && after.offerMinor > 0 ? ` · ${HOF.formatDate(after.date)} tarihiyle en çok ${minorMoney(after.offerMinor)} daha yazılabilir` : ""}.`, { type: result.replayed ? "info" : "success" });
       },
     });
   }
