@@ -15,7 +15,7 @@
 // asıl hata ezilmez (ders 21), kalan klasör listede "yarım".
 // Geri yükleme (Devri Geri Al) D4'ün işi; burada oluşturma, listeleme ve doğrulama.
 import { createHash } from "node:crypto";
-import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, rmdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { cp } from "node:fs/promises";
 import path from "node:path";
 import { renameWithRetry } from "../app-layout.mjs";
@@ -25,6 +25,8 @@ import { ARCHIVE_ROOT, isArchiveTransient } from "./archives.mjs";
 
 export const DEVIR_BACKUP_DIR = "devir-yedekleri";
 export const DEVIR_BACKUP_MANIFEST = "devir-yedegi.json";
+// 2.5.1 D4-ÖN tur 2: veri tabanı kopyasının yazıldığı KISA çalışma klasörü (devir-yedekleri\.vt\; Windows 260 karakter sınırı) — yedek listesinde görünmez.
+export const DEVIR_BACKUP_WORK = ".vt";
 // Etiket sınıfı: devirden, Devri Yenile'den ve Devri Geri Al'dan önce (G5: üçü de aynı sınıf).
 export const DEVIR_BACKUP_LABEL = /^(?:devir-oncesi|devri-yenile-oncesi|devri-geri-al-oncesi)-\d{4}$/;
 const NAME = /^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z-[a-z0-9-]+$/;
@@ -35,13 +37,19 @@ export const devirBackupRoot = companyBackupDir => path.join(companyBackupDir, D
 const stampNow = () => new Date().toISOString().replace(/[:.]/g, "-");
 const posix = value => value.split(path.sep).join("/");
 
+// 2.5.1 D4-ÖN tur 2 (H4, docs/devir/2.5.1-DEVAM/d4ont2-rapor.md): özet, akışın tutamağı KAPANINCA ("close") döner — "end"de dönünce son dosyanın tutamağı
+// klasör son adına alınırken hâlâ kapanıyor olabiliyordu (Windows'ta açık tutamaklı klasör taşınamaz; yeniden deneme örtüyordu, kendi tutamağımız yarışa girmez).
 function hashFile(file) {
   return new Promise((resolve, reject) => {
     const hash = createHash("sha256");
+    let digest = null;
     createReadStream(file, { highWaterMark: 1 << 20 })
       .on("data", chunk => hash.update(chunk))
       .on("error", reject)
-      .on("end", () => resolve(hash.digest("hex")));
+      .on("end", () => {
+        digest = hash.digest("hex");
+      })
+      .on("close", () => (digest === null ? reject(new Error(`okuma yarıda kaldı: ${file}`)) : resolve(digest)));
   });
 }
 function walk(dir, base = dir, out = []) {
@@ -76,10 +84,20 @@ export async function createDevirBackup({ db, company, companyDataDir, backupDir
   const partial = `${final}.yaziliyor`;
   rmSync(partial, { recursive: true, force: true });
   mkdirSync(partial, { recursive: true });
+  const work = path.join(root, DEVIR_BACKUP_WORK);
   let written = null;
+  let staged = null;
   try {
-    // keep: bu alt klasörde tek veri tabanı dosyası durur; budama ona dokunmaz (createBackup'ın kendi budaması yalnız bu klasörü görür).
-    const database = createBackup(db, partial, { label, keep: 1000, company, stamp, usageRows });
+    // 2.5.1 D4-ÖN tur 2 (CI #1115 Windows: "unable to open database file"; docs/devir/2.5.1-DEVAM/d4ont2-rapor.md §1): veri tabanı kopyası yarım klasöre DOĞRUDAN
+    // yazılınca yolda zaman + etiket iki kez geçiyordu (<zaman>-<etiket>.yaziliyor\destekofis-<kod>-<zaman>-<etiket>.sqlite.yaziliyor-journal); SQLite Windows'ta
+    // 260 karakteri aşan yolu açamaz → uzun etiketli (Devri Yenile / Devri Geri Al) ya da uzun adlı şirkette devir yedeği HİÇ alınamıyordu. Kopya kısa çalışma
+    // klasöründe (devir-yedekleri\.vt\) yazılır, sonra yarım klasöre taşınır (node:fs uzun yolu taşır). keep: çalışma klasöründe tek dosya durur; budama yalnız onu görür.
+    removeStaleWork(work);
+    const database = createBackup(db, work, { label, keep: 1000, company, stamp, usageRows, moveRetry: true });
+    staged = database.path;
+    renameWithRetry(staged, path.join(partial, database.name));
+    staged = null;
+    removeWorkDir(work);
     const included = [];
     for (const item of DEVIR_BACKUP_ITEMS) {
       const source = path.join(companyDataDir, item);
@@ -109,25 +127,72 @@ export async function createDevirBackup({ db, company, companyDataDir, backupDir
     written = { size: manifest.size, files: files.length, manifest };
   } catch (error) {
     try {
+      if (staged) rmSync(staged, { force: true });
       rmSync(partial, { recursive: true, force: true });
     } catch {
       // temizlik hatası asıl hatayı ezmez (ders 21); kalan klasör listede "yarım"
     }
-    throw error;
+    removeWorkDir(work);
+    throw writeFailure(error, label);
   }
   try {
     renameWithRetry(partial, final);
   } catch (error) {
-    throw new HttpError(503, `Devir yedeği yazıldı ama son adına alınamadı (${moveFailureReason(error)}). Yedek Devir Yedekleri listesinde “Yarım Kaldı” görünür; birkaç dakika sonra yeniden deneyin.`, { code: "devir-backup-move", cause: String(error?.code || error?.message || error), partial: path.basename(partial), retryAfter: 30 });
+    throw new HttpError(503, `Devir yedeği yazıldı ama tamamlanamadı: yedek klasörü son adına alınamadı (${moveFailureReason(error)}). ${operationOf(label)} bu yedek tamamlanmadan yapılmaz; verilerinizde değişiklik olmadı. Birkaç dakika bekleyip yeniden deneyin. Yazılan yedek silinmedi: Yönetim → Yedekler → Devir Yedekleri'nde “Yarım Kaldı” olarak görünür.`, { code: "devir-backup-move", cause: String(error?.code || error?.message || error), partial: path.basename(partial), retryAfter: 30 });
   }
   return { name, path: final, ...written };
 }
-// Taşıma hatasının kullanıcıya giden nedeni (dosya sistemi kodu; bilinmeyende kod aynen).
+// Kısa çalışma klasörünün (DEVIR_BACKUP_WORK) yarıda kesilmiş eski yazımı (1 saatten eski) silinir; klasör boşalınca kaldırılır.
+function removeStaleWork(work) {
+  let entries = [];
+  try {
+    entries = readdirSync(work);
+  } catch {
+    return;
+  }
+  for (const entry of entries) {
+    try {
+      if (Date.now() - statSync(path.join(work, entry)).mtimeMs > 3_600_000) rmSync(path.join(work, entry), { recursive: true, force: true });
+    } catch {
+      // başka bir yedek yazıyor olabilir
+    }
+  }
+}
+function removeWorkDir(work) {
+  try {
+    rmdirSync(work);
+  } catch {
+    // boş değil (eşzamanlı yazım) ya da yok
+  }
+}
+// İletide geçen iş adı (etiket sınıfından).
+const operationOf = label => (String(label).startsWith("devri-yenile-oncesi") ? "Devri Yenile" : String(label).startsWith("devri-geri-al-oncesi") ? "Devri Geri Al" : "Devir");
+// DEVİR NEDEN DURDU (kullanıcı kararı 27.11.2026): yazma hatası kullanıcıya açık Türkçe — ne oldu, neden, ne yapmalı, nereye; iç kod / İngilizce ileti yalnız makine alanında (cause).
+function writeFailure(error, label) {
+  if (error instanceof HttpError) return error;
+  const code = String(error?.code || "");
+  const sqlite = code === "ERR_SQLITE_ERROR" ? Number(error?.errcode) & 0xff : 0;
+  let why = "dosyalar yedek klasörüne yazılamadı";
+  let todo = "Birkaç dakika sonra yeniden deneyin; sorun sürerse bu iletiyi destek ekibine iletin.";
+  if (sqlite === 13 || code === "ENOSPC") {
+    why = "diskte yer kalmadı";
+    todo = "Yedeklerin bulunduğu diskte yer açıp yeniden deneyin.";
+  } else if (sqlite === 14 || code === "ENAMETOOLONG") {
+    why = "veri tabanının kopyası yedek klasöründe açılamadı (klasörün yolu çok uzun ya da klasöre yazma izni yok)";
+    todo = "Şirket adı çok uzunsa Yönetim → Şirketler'den kısaltıp ya da programı daha kısa bir klasöre kurup yeniden deneyin.";
+  } else if (code === "EPERM" || code === "EBUSY" || code === "EACCES" || sqlite === 5 || sqlite === 6) {
+    why = "yedek klasöründeki bir dosya başka bir programca (ör. virüs tarayıcısı) kullanılıyor ya da klasöre yazma izni yok";
+    todo = "Birkaç dakika bekleyip yeniden deneyin.";
+  }
+  const cause = String(sqlite ? `${code} ${error?.errcode} ${error?.message || ""}` : code || error?.message || error).trim();
+  return new HttpError(503, `Devir yedeği alınamadı: ${why}. ${operationOf(label)} bu yedek olmadan yapılmaz; verilerinizde değişiklik olmadı. ${todo}`, { code: "devir-backup-write", cause, retryAfter: 30 });
+}
+// Taşıma hatasının kullanıcıya giden nedeni (iç kod iletiye girmez; makine alanında cause).
 function moveFailureReason(error) {
   const code = String(error?.code || "");
   if (code === "EPERM" || code === "EBUSY" || code === "EACCES") return "klasördeki bir dosya başka bir programca (ör. virüs tarayıcısı) kullanılıyor";
   if (code === "ENOTEMPTY" || code === "EEXIST") return "aynı adla klasör var";
-  return code ? `dosya sistemi hatası ${code}` : `beklenmeyen hata: ${error?.message || error}`;
+  return "dosya sistemi taşımaya izin vermedi";
 }
 
 const readManifest = dir => {
@@ -144,7 +209,7 @@ export function listDevirBackups(companyBackupDir) {
   const root = devirBackupRoot(companyBackupDir);
   let entries = [];
   try {
-    entries = readdirSync(root, { withFileTypes: true }).filter(entry => entry.isDirectory());
+    entries = readdirSync(root, { withFileTypes: true }).filter(entry => entry.isDirectory() && entry.name !== DEVIR_BACKUP_WORK);
   } catch {
     return [];
   }
