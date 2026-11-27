@@ -23,9 +23,10 @@ sys.path.insert(0, BURASI)
 import model as M  # noqa: E402
 from senaryolar_elle import TANIM  # noqa: E402
 
-TOHUMLAR = (1, 2, 3, 4, 7)
-# Kâhin bakımı K-D (README KD1–KD26): tohum 4 (Sadece Bakiyeyi Aktar) ve 7 (Borç ve Alacakları Aktar) rastgele sayı TÜKETMEYEN devir ekleriyle (Ödeme Sözü,
-# Excel kartı, Kartı Kapat); tohum 1–3 aynen. Tohum 5 kullanılmadı: eklerden BAĞIMSIZ olarak 'S14 planı yakınsamadı' (kâhin susar; README K-D SONRAYA).
+TOHUMLAR = (1, 2, 3, 7)
+# Kâhin bakımı K-D (README KD1–KD26): tohum 7 (Borç ve Alacakları Aktar) rastgele sayı TÜKETMEYEN devir ekleriyle (Ödeme Sözü, Excel kartı, Kartı Kapat); tohum 1–3
+# aynen. İki seçenek karşılaştırması BakimKD'de (tohum 1, yoğunluk 1). Tohum 4 (ekli koşusu yeşildi) mutasyon süresi için listeden çıkarıldı; tohum 5 eklerden
+# BAĞIMSIZ olarak 'S14 planı yakınsamadı' (taban kâhinde de — README K-D SONRAYA 1).
 EKLI_TOHUMLAR = (4, 7)
 
 # Kâhin bakımı 4 (S21 A, README Y19–Y23): resmî tatil takvimi model.py'de (2429; tatil_turu). Sabit tam gün tatile düşen valör artık SERBEST (model sonraki

@@ -1496,7 +1496,7 @@ class BakimKD(unittest.TestCase):
 
     def test_KD5_KD6_iki_secenek_ayni_sayilar(self):
         # BM§2 (1): "Borç ve Alacakları Aktar" ile "Sadece Bakiyeyi Aktar" arasında gecikmiş, kalan ve bakiye AYNI (fark yalnız ekstre satırlarında)
-        s = U.uret(1)
+        s = U.uret(1, yogunluk=1)                      # mutasyon süresi için düşük yoğunluk (README K-D)
         x = copy.deepcopy(s)
         for ol in x["olaylar"]:
             if ol["tur"] == "devir":
