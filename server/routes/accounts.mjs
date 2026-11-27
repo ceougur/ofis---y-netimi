@@ -12,6 +12,7 @@ import { posMetaOf } from "../lib/bank/pos.mjs";
 import { doubtfulState } from "../lib/bank/doubtful.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, closeDaySql, isAccountType, mapAccountHeaders, waivedOf, waivesSql } from "../lib/accounts.mjs";
 import { createAccountLines } from "../lib/account-lines.mjs";
+import { COLLECTION_LABELS, COLLECTION_WAYS, PERIOD_LABELS, addCollected, collectionsByAccount, emptyCollected, periodOf } from "../lib/account-collections.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -276,6 +277,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     sort: SORTS.has(text(params.get("sort"))) ? text(params.get("sort")) : "no",
     // Taksit durumu (v2.0.11, Taksitler › Cari Seç): "none" açık taksit kartı olmayanlar, "has" olanlar.
     plan: ["none", "has"].includes(text(params.get("plan"))) ? text(params.get("plan")) : "",
+    // 2.5.1 Mİ-2: dönemlik tahsilat (Bugün / Dün / Bu Hafta / Bu Ay / Tarih Aralığı) ve "Bu Dönemde Ödeme Yapanlar". Dönem yoksa liste BUGÜNKÜ gibi.
+    period: Object.hasOwn(PERIOD_LABELS, text(params.get("period"))) ? text(params.get("period")) : "",
+    from: text(params.get("from")).slice(0, 10),
+    to: text(params.get("to")).slice(0, 10),
+    paid: text(params.get("paid")) === "1",
   });
   const refCompare = (a, b) => {
     const x = String(a.refNo || "");
@@ -289,6 +295,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   };
   // Arama ve kart süzgeci (listede ve seçici aramasında AYNI kural): durum, tür, grup, alt grup ve arama metni (ad, not, adres, grup, ek
   // alanlar; telefon ve VKN/TCKN rakamla; Cari No tam). Bakiyeye bakmaz.
+  const NO_GROUP = "__none";
   const searchOf = q => {
     const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
     return { needle, numbers: needle.replace(/\D/g, "") };
@@ -296,8 +303,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   function rowMatches(row, { status, type, group, subgroup }, { needle, numbers }) {
     if (status !== "all" && row.status !== status) return false;
     if (type && row.type !== type) return false;
-    if (group && row.groupId !== group) return false;
-    if (subgroup && row.subgroupId !== subgroup) return false;
+    // 2.5.1 Mİ-2: "Grupsuz" / "Alt Grupsuz" (Grup Özeti satırından): görünen grubu olmayan cari (grubu silinmişse de — listede "Grupsuz" yazar).
+    if (group === NO_GROUP ? Boolean(row.groupName) : group && row.groupId !== group) return false;
+    if (subgroup === NO_GROUP ? Boolean(row.subgroupName) : subgroup && row.subgroupId !== subgroup) return false;
     if (needle) {
       // Ek alanlar ham JSON metninde aranır (200 bin caride her satırı ayrıştırmadan); ad, not, adres, grup ayrıca.
       const hay = `${row.name} ${row.note} ${row.address} ${row.city} ${row.district} ${row.taxOffice} ${row.email} ${row.groupName} ${row.subgroupName} ${row.caseTitle} ${row.fieldsJson}`.toLocaleLowerCase("tr-TR");
@@ -313,8 +321,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // 2.5.0 Ç5-B: mutabakat kapısının ve Mutabakat Testi'nin list() çağrıları (ids ile ya da iç kimlikle — routes/ledger.mjs expected "ledger", lib/integrity.mjs
   // "integrity") TYK HESAPLAMAZ (tasarım §3 madde 12; her para yazımının kapısı yavaşlamasın). Gecikmiş alanları orada eski (taksit) değeriyle kalır, kullanılmaz.
   const GATE_USERS = new Set(["ledger", "integrity"]);
-  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "", ids = null, withOverdue = null } = {}) {
+  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "", ids = null, withOverdue = null, period = "", from = "", to = "", paid = false } = {}) {
     const only = ids ? JSON.stringify([...ids]) : null;
+    // 2.5.1 Mİ-2: dönem verilmişse carilerin o dönemdeki tahsilatı (lib/account-collections.mjs — 'Cari Bazında Tahsilat' raporunun tanımı, toplu SQL). Dönem yoksa
+    // hiçbir şey okunmaz, yanıta alan eklenmez (liste bugünkü gibi).
+    const range = period ? periodOf(period, today(), { from, to }) : null;
+    if (range?.error) throw new HttpError(400, range.error, { code: "period-invalid", field: "period" });
+    const collections = range ? collectionsByAccount(store, range) : null;
     // config.legacyClosing (yalnız testler; eski sürümle birebir karşılaştırmalar — K1 öncesi kapama) eski gecikmiş tanımını (taksit) korur.
     // Kullanıcı isteği (ekran, mobil, WhatsApp alıcı seçimi) TYK'yı okur; iç çağıranlar (kimliksiz: Rapor Merkezi Cari Listesi / Cari Mizanı süzgeci, yaşlandırma ve projeksiyonun
     // bakiye okuması) yalnız withOverdue: true verirse (Anlık Durum) — Rapor Merkezi'nin "Geciken" / "Geciken Taksiti Olan" adları report-center.mjs'te (Ç3 dosyası; C5-ACILIS §0
@@ -335,7 +348,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // TEK ADAY HIZ (t3hiz): ids'li çağrıda (kartın bakiye / sınır okuması, yazım yanıtı) yalnız o carilerin şüphelisi — önceden her çağrıda bütün şirketin ayırıcısı koşuyordu.
     const doubtfulMap = doubtful()?.openByAccount ? doubtful().openByAccount(only ? { parties: [...ids] } : {}).byAccount : new Map();
     const search = searchOf(q);
-    const totals = { count: 0, debtor: 0, creditor: 0, debtorCount: 0, creditorCount: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0, doubtful: 0, doubtfulCount: 0 };
+    const totals = { count: 0, debtor: 0, creditor: 0, debtorCount: 0, creditorCount: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0, doubtful: 0, doubtfulCount: 0, ...(range ? { collected: emptyCollected(), collectedCount: 0 } : {}) };
     const labels = new Set();
     const out = [];
     for (const row of rows) {
@@ -395,7 +408,14 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const activePlans = accountPlans.filter(item => item.status !== "closed").length;
       if (plan === "none" && activePlans) continue;
       if (plan === "has" && !activePlans) continue;
+      const collected = collections ? collections.get(row.id) || emptyCollected() : null;
+      // "Bu Dönemde Ödeme Yapanlar": dönemde tahsilatı olan (beş yol + Diğer; Excel'den gelen önceden ödenen tek başına ödeme sayılmaz).
+      if (collections && paid && !(collected.total > 0.005)) continue;
       totals.count += 1;
+      if (collected) {
+        addCollected(totals.collected, collected);
+        if (collected.total > 0.005) totals.collectedCount += 1;
+      }
       totals.balance = roundMoney(totals.balance + bal);
       if (side === "debtor") {
         totals.debtor = roundMoney(totals.debtor + bal);
@@ -459,6 +479,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         next,
         // Açık şüpheli alacak (TL; 0 = yok). Kart bakiyesi şüpheliyi de kapsar (120 + 128 = kart).
         doubtfulOpen,
+        ...(collected ? { collected } : {}),
         fieldsJson: row.fieldsJson,
       });
     }
@@ -479,7 +500,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     }
     // ids (kapı): grup ağacı istenmez (bütün kartları sayar; 100.000 satırda ~5 ms/yazım).
     const tree = (!only && plans()?.groupTree ? plans().groupTree() : []).map(item => ({ ...item, count: counts.get(item.id) || 0, subgroups: item.subgroups.map(sub => ({ ...sub, count: counts.get(sub.id) || 0 })) }));
-    return { accounts: out, totals, sort, groups: tree, fieldLabels: [...labels].slice(0, 200), canManage: canUser(user, "accounts.manage"), canCollect: canUser(user, "accounts.collect"), canPlan: canUser(user, "plans.manage"), today: today() };
+    return { accounts: out, totals, sort, groups: tree, fieldLabels: [...labels].slice(0, 200), canManage: canUser(user, "accounts.manage"), canCollect: canUser(user, "accounts.collect"), canPlan: canUser(user, "plans.manage"), today: today(), ...(range ? { period: { key: range.key, from: range.from, to: range.to, label: PERIOD_LABELS[range.key] } } : {}) };
   }
 
   // Liste sayfa sayfa gelir (200 bin caride tek yanıt 80 MB olurdu): limit/offset; toplamlar ve sayı tüm süzgeç için.
@@ -492,6 +513,77 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const user = auth.requirePermission(req, "accounts.view");
     ok(res, pageOf(list(user, listQuery(url.searchParams)), "accounts", url.searchParams));
   });
+
+  // 2.5.1 Mİ-2 — GRUP ÖZETİ (KULLANICI 27.11, AYNEN: "… A grubu carisi, B grubu carisi, yada firma hangi isimlerle kaç tane cari grubu açtıysa, grup bazında çeşitli
+  // senaryoları görüntüleme seçenekleri ekle"): firmanın açtığı HER grup bir satır, alt grupları kırılım, görünen grubu olmayanlar "Grupsuz". Liste'nin list()'i BİR kez,
+  // aynı süzgeçlerle (grup / alt grup hariç) koşar; satırlar carilerin Liste'deki sayılarından toplanır → grup satırlarının toplamı = TOPLAM = süzgeçsiz Liste kartları
+  // (yapı gereği; ikinci hesap yok). Sütunlar: Cari, Bakiye (borçlu +, alacaklı −), Taksitlerden Kalan, Gecikmiş Borç (Liste kartıyla aynı), Geciken Taksit (satırlardaki
+  // "N geciken"), dönemin Tahsilat'ı ve kırılımı (Nakit, POS, Havale / EFT, Çek, Senet, Diğer) + Önceden Ödenen (Açılış) ayrı. Carinin eski tahsilatı BUGÜNKÜ grubunda.
+  const GROUP_SUM_KEYS = ["count", "balance", "planRemaining", "overdue", "overdueCount", "lateInstallments"];
+  const blankGroupRow = (id, name, kind) => ({ id, name, kind, count: 0, balance: 0, planRemaining: 0, overdue: 0, overdueCount: 0, lateInstallments: 0, collected: emptyCollected() });
+  const addToGroupRow = (target, item) => {
+    target.count += 1;
+    target.balance = roundMoney(target.balance + item.balance);
+    target.planRemaining = roundMoney(target.planRemaining + item.planRemaining);
+    target.overdue = roundMoney(target.overdue + item.overdue);
+    target.overdueCount += item.overdueCount || 0;
+    target.lateInstallments += item.planOverdueCount ?? item.overdueInstallmentCount ?? 0;
+    addCollected(target.collected, item.collected);
+  };
+  function groupSummary(user, query) {
+    const range = periodOf(query.period || "today", today(), { from: query.from, to: query.to });
+    if (range?.error) throw new HttpError(400, range.error, { code: "period-invalid", field: "period" });
+    const data = list(user, { ...query, group: "", subgroup: "", period: range.key, from: range.from, to: range.to });
+    const rows = new Map();
+    for (const group of data.groups) {
+      const row = blankGroupRow(group.id, group.name, "group");
+      row.subgroups = new Map(group.subgroups.map(sub => [sub.id, blankGroupRow(sub.id, sub.name, "subgroup")]));
+      rows.set(group.id, row);
+    }
+    const none = blankGroupRow(NO_GROUP, "Grupsuz", "none");
+    const lateInstallments = { value: 0 };
+    for (const item of data.accounts) {
+      lateInstallments.value += item.planOverdueCount ?? item.overdueInstallmentCount ?? 0;
+      if (!item.groupName) {
+        addToGroupRow(none, item);
+        continue;
+      }
+      if (!rows.has(item.groupId)) rows.set(item.groupId, { ...blankGroupRow(item.groupId, item.groupName, "group"), subgroups: new Map() });
+      const row = rows.get(item.groupId);
+      addToGroupRow(row, item);
+      const subKey = item.subgroupName ? item.subgroupId : NO_GROUP;
+      if (!row.subgroups.has(subKey)) row.subgroups.set(subKey, blankGroupRow(subKey, item.subgroupName || "Alt Grupsuz", subKey === NO_GROUP ? "none" : "subgroup"));
+      addToGroupRow(row.subgroups.get(subKey), item);
+    }
+    const groups = [...rows.values()].map(row => {
+      // Alt grubu hiç olmayan grupta kırılım yok; alt grubu olan grupta alt gruba bağlı olmayan cariler "Alt Grupsuz" satırında (kırılımın toplamı = grup).
+      const subs = [...row.subgroups.values()];
+      const real = subs.filter(sub => sub.kind === "subgroup");
+      const rest = subs.find(sub => sub.kind === "none");
+      return { ...row, subgroups: real.length ? [...real, ...(rest ? [rest] : [])] : [] };
+    });
+    if (none.count) groups.push({ ...none, subgroups: [] });
+    const totals = { count: data.totals.count, balance: data.totals.balance, planRemaining: data.totals.planRemaining, overdue: data.totals.overdue, overdueCount: data.totals.overdueCount, lateInstallments: lateInstallments.value, collected: data.totals.collected, collectedCount: data.totals.collectedCount };
+    return { groups, totals, period: data.period, canManage: data.canManage, today: data.today };
+  }
+  // Grup Özeti'nin sütunları (ekran = PDF = Excel): Diğer ve Önceden Ödenen yalnız değer varsa.
+  function groupSummaryColumns(summary) {
+    const ways = COLLECTION_WAYS.filter(way => way !== "other" || summary.totals.collected.other > 0.005);
+    return [
+      ["name", "Grup", "text"],
+      ["count", "Cari", "number"],
+      ["balance", "Bakiye", "money"],
+      ["planRemaining", "Taksitlerden Kalan", "money"],
+      ["overdue", "Gecikmiş Borç", "money"],
+      ["lateInstallments", "Geciken Taksit", "number"],
+      ["total", "Tahsilat", "money"],
+      ...ways.map(way => [way, COLLECTION_LABELS[way], "money"]),
+      ...(summary.totals.collected.opening > 0.005 ? [["opening", COLLECTION_LABELS.opening, "money"]] : []),
+    ];
+  }
+  const groupCell = (row, key) => (key === "name" ? row.name : key === "total" || COLLECTION_WAYS.includes(key) || key === "opening" ? row.collected[key] : row[key]);
+  const flatGroupRows = summary => summary.groups.flatMap(row => [row, ...row.subgroups.map(sub => ({ ...sub, name: `   › ${sub.name}`, sub: true }))]);
+  const periodText = period => (period ? `${period.label}: ${period.from === period.to ? dayText(period.from) : `${dayText(period.from)} – ${dayText(period.to)}`}` : "");
   // Seçici araması (11.10.2026 hız düzeltmesi; plan §3.11 madde 5 "arama < 1 sn"): eşleşen cariler listedeki kuralla (rowMatches) ve listedeki
   // sırayla (Cari No, ad) bulunur; bakiye ve taksit özeti YALNIZ gösterilecek ilk `limit` cari için hesaplanır (list'in ids kipi — kapının
   // da kullandığı, cari başına aynı hesap). Önceden her harfte bütün carilerin hareket toplamları ve taksit özetleri kuruluyordu (100.000 para
@@ -1358,6 +1450,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     sendBuffer(res, pdf, { type: "application/pdf", name: `Makbuz ${entry.receiptNo ? `No ${entry.receiptNo} ` : ""}${account.name} ${dayText(entry.date)}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
   const STATUS_TEXT = { active: "Aktif", passive: "Pasif", all: "Tümü" };
+  const BALANCE_TEXT = { debtor: "Borçlular", creditor: "Alacaklılar", nonzero: "Sadece Bakiyesi Olanlar", zero: "Bakiyesi Sıfır", overdue: "Gecikmiş Borcu Olanlar" };
+  // 2.5.1 Mİ-2: Liste PDF'inin özetinde dönemin tahsilatı ve kırılımı (Diğer / Önceden Ödenen yalnız değer varsa).
+  const collectedSummary = totals => [
+    ["Tahsilat", `${tl(totals.collected.total)} · ${totals.collectedCount} cari`],
+    ...COLLECTION_WAYS.filter(way => way !== "other" || totals.collected.other > 0.005).map(way => [COLLECTION_LABELS[way], tl(totals.collected[way])]),
+    ...(totals.collected.opening > 0.005 ? [[COLLECTION_LABELS.opening, tl(totals.collected.opening)]] : []),
+  ];
   // PDF'te en çok bu kadar satır basılır (kâğıt için anlamlı sınır; 200 bin satır 22 MB olurdu). Tamamı Excel'de.
   const PDF_ROWS = 20_000;
   router.get("/api/workspace/accounts/liste.pdf", async ({ req, res, url }) => {
@@ -1370,11 +1469,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const pdf = tablePdf({
       now: clock(),
       title: `${title} Listesi`,
-      subtitle: [STATUS_TEXT[query.status], query.type ? ACCOUNT_TYPES[query.type] : "", query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
-      headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", "Bilgi Notu"],
-      types: ["text", "text", "text", "text", "text", "text", "money", "money", "money", "money", "text"],
-      rows: data.accounts.map(item => [item.refNo, item.name, ACCOUNT_TYPES[item.type] || "", [item.groupName, item.subgroupName].filter(Boolean).join(" › "), item.phone, dayText(item.registeredOn), tl(item.debit), tl(item.credit), `${tl(Math.abs(item.balance))} ${sideText(item.balance)}`.trim(), item.planRemaining ? tl(item.planRemaining) : "", item.note || ""]),
-      summary: [["Cari", String(data.totals.count)], ["Borçlular", tl(data.totals.debtor)], ["Alacaklılar", tl(data.totals.creditor)], ["Gecikmiş Borç", `${tl(data.totals.overdue)} · ${data.totals.overdueCount} kalem`]],
+      // 2.5.1 Mİ-2: dönem seçiliyse dönem, "Bu Dönemde Ödeme Yapanlar" ve Tahsilat sütunu (ekrandaki sütunla aynı) + özet satırında kırılım.
+      subtitle: [STATUS_TEXT[query.status], query.type ? ACCOUNT_TYPES[query.type] : "", query.q ? `“${query.q}”` : "", periodText(data.period), query.paid && data.period ? "Bu Dönemde Ödeme Yapanlar" : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
+      headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", ...(data.period ? ["Tahsilat"] : []), "Bilgi Notu"],
+      types: ["text", "text", "text", "text", "text", "text", "money", "money", "money", "money", ...(data.period ? ["money"] : []), "text"],
+      rows: data.accounts.map(item => [item.refNo, item.name, ACCOUNT_TYPES[item.type] || "", [item.groupName, item.subgroupName].filter(Boolean).join(" › "), item.phone, dayText(item.registeredOn), tl(item.debit), tl(item.credit), `${tl(Math.abs(item.balance))} ${sideText(item.balance)}`.trim(), item.planRemaining ? tl(item.planRemaining) : "", ...(data.period ? [item.collected.total ? tl(item.collected.total) : ""] : []), item.note || ""]),
+      summary: [["Cari", String(data.totals.count)], ["Borçlular", tl(data.totals.debtor)], ["Alacaklılar", tl(data.totals.creditor)], ["Gecikmiş Borç", `${tl(data.totals.overdue)} · ${data.totals.overdueCount} kalem`], ...(data.period ? collectedSummary(data.totals) : [])],
       userName: user.display_name || user.username || "",
       ...header.pdf({ brand: office() }),
     });
@@ -1387,7 +1487,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const query = listQuery(url.searchParams);
     const data = list(user, query);
     const fieldsById = new Map(store.all("SELECT id, fields_json AS fieldsJson FROM accounts WHERE deleted_at IS NULL").map(row => [row.id, parseFields(row.fieldsJson)]));
-    const base = ["Cari No", "Ad / Unvan", "Tür", "Grup", "Alt Grup", "Telefon", "E-Posta", "Adres", "Kayıt Tarihi", "Durum", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", "Geciken", "Bilgi Notu"];
+    // 2.5.1 Mİ-2: dönem seçiliyse Tahsilat ve yol kırılımı sütunları. "Geciken" sütunu satırların "Gecikmiş Borç" anahtarıyla eşleşmediğinden Excel'de hep BOŞ kalıyordu —
+    // sütunun adı ekrandaki kartın adı "Gecikmiş Borç" oldu (değer aynı alandan).
+    const collectedColumns = data.period ? ["Tahsilat", ...COLLECTION_WAYS.map(way => COLLECTION_LABELS[way]), COLLECTION_LABELS.opening] : [];
+    const base = ["Cari No", "Ad / Unvan", "Tür", "Grup", "Alt Grup", "Telefon", "E-Posta", "Adres", "Kayıt Tarihi", "Durum", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", "Gecikmiş Borç", ...collectedColumns, "Bilgi Notu"];
     const extras = [...new Set(data.accounts.flatMap(item => (fieldsById.get(item.id) || []).map(field => field.label)))].filter(label => !base.includes(label));
     const money = value => MONEY_FORMAT.format(value || 0);
     const rows = data.accounts.map(item => {
@@ -1407,15 +1510,60 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         Bakiye: money(item.balance),
         "Taksitten Kalan": money(item.planRemaining),
         "Gecikmiş Borç": money(item.overdue),
+        ...(data.period ? { Tahsilat: money(item.collected.total), ...Object.fromEntries([...COLLECTION_WAYS, "opening"].map(way => [COLLECTION_LABELS[way], money(item.collected[way])])) } : {}),
         "Bilgi Notu": item.note,
       };
       for (const field of fieldsById.get(item.id) || []) if (!base.includes(field.label)) row[field.label] = field.value;
       return row;
     });
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Cari";
-    const buffer = buildXlsx([{ name: title.slice(0, 31), columns: [...base, ...extras], rows }], { now: clock(), title: `${title} Listesi` });
+    const footer = data.period ? { "Ad / Unvan": "TOPLAM", Tahsilat: money(data.totals.collected.total), ...Object.fromEntries([...COLLECTION_WAYS, "opening"].map(way => [COLLECTION_LABELS[way], money(data.totals.collected[way])])) } : null;
+    const preamble = data.period ? [{ text: `${title} Listesi`, bold: true }, [periodText(data.period), query.paid ? "Bu Dönemde Ödeme Yapanlar" : ""].filter(Boolean).join(" · ")] : undefined;
+    const buffer = buildXlsx([{ name: title.slice(0, 31), columns: [...base, ...extras], rows, ...(footer ? { footer } : {}), ...(preamble ? { preamble } : {}) }], { now: clock(), title: `${title} Listesi` });
     audit(user, "account.list.exported", "xlsx", { ...query, count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${title}-listesi ${dayText(today())}.xlsx` });
+  });
+
+  // 2.5.1 Mİ-2: Grup Özeti (ekran), PDF ve Excel — aynı hesap, aynı satırlar ve sütunlar, alt TOPLAM satırı.
+  router.get("/api/workspace/accounts/group-summary", async ({ req, res, url }) => {
+    const user = auth.requirePermission(req, "accounts.view");
+    ok(res, groupSummary(user, listQuery(url.searchParams)));
+  });
+  const groupSubtitle = (query, summary) => [periodText(summary.period), STATUS_TEXT[query.status], query.type ? ACCOUNT_TYPES[query.type] : "", query.q ? `“${query.q}”` : "", query.balance !== "all" ? BALANCE_TEXT[query.balance] || "" : "", query.paid ? "Bu Dönemde Ödeme Yapanlar" : ""].filter(Boolean).join(" · ");
+  router.get("/api/workspace/accounts/group-summary.pdf", async ({ req, res, url }) => {
+    const user = auth.requirePermission(req, "accounts.view");
+    const query = listQuery(url.searchParams);
+    const summary = groupSummary(user, query);
+    const columns = groupSummaryColumns(summary);
+    const format = (type, value) => (type === "money" ? tl(value || 0) : type === "number" ? String(value || 0) : String(value ?? ""));
+    const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Cari";
+    const pdf = tablePdf({
+      now: clock(),
+      title: `${title} Grup Özeti`,
+      subtitle: groupSubtitle(query, summary),
+      headers: columns.map(([, label]) => label),
+      types: columns.map(([, , type]) => (type === "text" ? "" : type)),
+      rows: flatGroupRows(summary).map(row => columns.map(([key, , type]) => format(type, groupCell(row, key)))),
+      footer: columns.map(([key, , type]) => (key === "name" ? "TOPLAM" : format(type, groupCell(summary.totals, key)))),
+      userName: user.display_name || user.username || "",
+      ...header.pdf({ brand: office() }),
+    });
+    audit(user, "account.groups.exported", "pdf", { ...query, period: summary.period });
+    sendBuffer(res, pdf, { type: "application/pdf", name: `${title}-grup-ozeti ${dayText(today())}.pdf`, inline: url.searchParams.get("download") !== "1" });
+  });
+  router.get("/api/workspace/accounts/group-summary.xlsx", async ({ req, res, url }) => {
+    const user = auth.requirePermission(req, "accounts.view");
+    const query = listQuery(url.searchParams);
+    const summary = groupSummary(user, query);
+    const columns = groupSummaryColumns(summary);
+    const money = value => MONEY_FORMAT.format(value || 0);
+    const cellOf = (type, value) => (type === "money" ? money(value) : type === "number" ? Number(value || 0) : String(value ?? ""));
+    const rows = flatGroupRows(summary).map(row => Object.fromEntries(columns.map(([key, label, type]) => [label, cellOf(type, groupCell(row, key))])));
+    const footer = Object.fromEntries(columns.map(([key, label, type]) => [label, key === "name" ? "TOPLAM" : cellOf(type, groupCell(summary.totals, key))]));
+    const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Cari";
+    const buffer = buildXlsx([{ name: "Grup Özeti", columns: columns.map(([, label]) => label), rows, footer, preamble: [{ text: `${title} Grup Özeti`, bold: true }, groupSubtitle(query, summary)] }], { now: clock(), title: `${title} Grup Özeti` });
+    audit(user, "account.groups.exported", "xlsx", { ...query, period: summary.period });
+    sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${title}-grup-ozeti ${dayText(today())}.xlsx` });
   });
 
   // Tek cari (statik adreslerden sonra kayıtlı: "liste.pdf", "export.xlsx" kimlik sanılmasın).

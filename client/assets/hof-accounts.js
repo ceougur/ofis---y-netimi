@@ -33,6 +33,26 @@
     ["overdue", "Sırala: Gecikmiş Borç"],
     ["registered", "Sırala: Kayıt Tarihi (yeni önce)"],
   ];
+  // 2.5.1 Mİ-2 (KULLANICI 27.11: "gruba göre bugün ne kadar kasaya giriş olmuş … kasaya giriş derken tüm tahsilat yollarını kastettim"): tahsilat dönemi ve
+  // yol kırılımı (sunucu: lib/account-collections.mjs — 'Cari Bazında Tahsilat' raporuyla aynı tanım). Dönem seçilmezse Liste bugünkü gibi.
+  const PERIODS = [
+    ["", "Tahsilat Dönemi: Yok"],
+    ["today", "Bugün"],
+    ["yesterday", "Dün"],
+    ["week", "Bu Hafta"],
+    ["month", "Bu Ay"],
+    ["range", "Tarih Aralığı"],
+  ];
+  const WAYS = [
+    ["cash", "Nakit"],
+    ["card", "POS"],
+    ["bank", "Havale / EFT"],
+    ["cheque", "Çek"],
+    ["note", "Senet"],
+    ["other", "Diğer"],
+  ];
+  const OPENING_LABEL = "Önceden Ödenen (Açılış)";
+  const NO_GROUP = "__none";
   const ENTRY_LABEL = { debt: "Borç Yaz", credit: "Alacak Yaz", in: "Tahsilat", out: "Ödeme" };
   // 2.4.5 (gezinti bulgusu B2, yazım düzeni): düzeltme penceresinin başlığı her sözcüğü büyük ("Tahsilatı Düzelt" kalıbı, hof-workspace.js).
   const ENTRY_EDIT_LABEL = { debt: "Borç Kaydını Düzelt", credit: "Alacak Kaydını Düzelt", in: "Tahsilatı Düzelt", out: "Ödemeyi Düzelt" };
@@ -114,16 +134,26 @@
   };
 
   let modal = null;
-  const view = { mode: "list", id: "", q: "", type: "", group: "", subgroup: "", status: "active", balance: "all", sort: stored(SORT_KEY, "no"), ledgerFilter: "all", list: null, account: null, selected: new Set(), selectAll: false, excluded: new Set(), limit: 300 };
+  // display (2.5.1 Mİ-2): "list" Liste, "groups" Grup Özeti. period / from / to / paid: tahsilat dönemi ve "Bu Dönemde Ödeme Yapanlar".
+  const view = { mode: "list", display: "list", id: "", q: "", type: "", group: "", subgroup: "", status: "active", balance: "all", sort: stored(SORT_KEY, "no"), period: "", from: "", to: "", paid: false, ledgerFilter: "all", list: null, groups: null, groupsError: "", openGroups: new Set(), account: null, selected: new Set(), selectAll: false, excluded: new Set(), limit: 300 };
   // Binlerce caride ekran hızlı kalsın: sunucu 300'er satır gönderir ("Daha fazla göster" sonrakini ekler); arama, süzgeç
   // ve toplamlar sunucuda tümü üzerinde çalışır. "Hepsini seç" süzgeçteki bütün carileri (yüklenmemişler dahil) seçer.
   const PAGE = 300;
   const lists = HOF.listGate();
   const body = () => modal?.dialog.querySelector("[data-accounts]");
-  const query = () => new URLSearchParams({ q: view.q, type: view.type, group: view.group, subgroup: view.subgroup, status: view.status, balance: view.balance, sort: view.sort });
+  // Dönem yalnız tam seçilmişse gider (Tarih Aralığı'nda iki gün de seçili ve başlangıç ≤ bitiş); yoksa istek bugünkü gibi.
+  const periodReady = () => Boolean(view.period) && (view.period !== "range" || (Boolean(view.from) && Boolean(view.to) && view.from <= view.to));
+  const periodParams = () => (periodReady() ? { period: view.period, ...(view.period === "range" ? { from: view.from, to: view.to } : {}), ...(view.paid ? { paid: "1" } : {}) } : {});
+  const query = () => new URLSearchParams({ q: view.q, type: view.type, group: view.group, subgroup: view.subgroup, status: view.status, balance: view.balance, sort: view.sort, ...periodParams() });
+  const groupsQuery = () => new URLSearchParams({ q: view.q, type: view.type, status: view.status, balance: view.balance, ...periodParams() });
+  // "Bu Dönemde Ödeme Yapanlar" açıkken toplu seçim yalnız TEK TEK işaretlenenlerle: WhatsApp toplu gönderiminin "süzgeçteki hepsi" çözümü bu süzgeci bilmez,
+  // ekranda görünmeyen carilere gitmesin.
+  const explicitOnly = () => Boolean(view.paid) && periodReady();
   const filterBody = () => ({ q: view.q, type: view.type, group: view.group, subgroup: view.subgroup, status: view.status, balance: view.balance });
   const listPdfUrl = () => `/api/workspace/accounts/liste.pdf?${query()}&title=${encodeURIComponent(moduleName())}`;
   const listXlsxUrl = () => `/api/workspace/accounts/export.xlsx?${query()}&title=${encodeURIComponent(moduleName())}`;
+  const groupPdfUrl = () => `/api/workspace/accounts/group-summary.pdf?${groupsQuery()}&title=${encodeURIComponent(moduleName())}`;
+  const groupXlsxUrl = () => `/api/workspace/accounts/group-summary.xlsx?${groupsQuery()}&title=${encodeURIComponent(moduleName())}`;
   const cardPdfUrl = account => `/api/workspace/accounts/${encodeURIComponent(account.id)}/ekstre.pdf`;
 
   // ---------- Veri ----------
@@ -180,6 +210,26 @@
       load.done();
     }
   }
+  // 2.5.1 Mİ-2: Grup Özeti — sonraki istek öncekinin yanıtını geçersiz sayar (geç gelen eski süzgeç yanıtı yeni süzgecin üstüne yazılmaz).
+  let groupsRequest = 0;
+  async function loadGroups({ keep = false } = {}) {
+    const ticket = ++groupsRequest;
+    if (!keep) view.groupsError = "";
+    try {
+      const data = await HOF.api(`/api/workspace/accounts/group-summary?${groupsQuery()}`, keep ? { background: true } : {});
+      if (ticket !== groupsRequest) return;
+      view.groups = data;
+      view.groupsError = "";
+    } catch (error) {
+      if (ticket !== groupsRequest || keep) return;
+      view.groups = null;
+      view.groupsError = error.message;
+    }
+    if (view.mode === "list" && view.display === "groups") renderGroups();
+  }
+  const render = () => (view.display === "groups" ? renderGroups() : renderList());
+  const reload = () => (view.display === "groups" ? loadGroups() : loadList());
+
   let cardRequest = 0;
   async function loadAccount(id, { quiet = false } = {}) {
     // Arka plan yenilemesi sıra numarasını artırmaz: kullanıcının o sırada açtığı cari geçersiz sayılmaz.
@@ -240,11 +290,14 @@
     modal.dialog.addEventListener("keydown", event => {
       const row = event.target.closest?.("tr[data-account]");
       if (row && event.key === "Enter" && view.mode === "list") loadAccount(row.dataset.account);
+      // 2.5.1 Mİ-2: Grup Özeti satırında Enter → Liste o gruba süzülür.
+      const groupRowEl = event.target.closest?.("tr[data-group-row]");
+      if (groupRowEl && event.key === "Enter" && view.mode === "list" && view.display === "groups") openGroupInList(groupRowEl.dataset.groupRow, groupRowEl.dataset.subgroupRow || "");
     });
     if (accountId) loadAccount(accountId);
     else {
-      renderList();
-      loadList();
+      render();
+      reload();
     }
   }
 
@@ -253,8 +306,9 @@
     const groups = view.list?.groups || [];
     const group = groups.find(item => item.id === view.group);
     const subs = group ? group.subgroups : [];
-    return `<select data-filter="group" aria-label="Grup"><option value="">Tüm Gruplar</option>${groups.map(item => `<option value="${esc(item.id)}" ${item.id === view.group ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}</select>
-      <select data-filter="subgroup" aria-label="Alt grup" ${subs.length ? "" : "disabled"}><option value="">${subs.length ? "Tüm Alt Gruplar" : "Alt Grup"}</option>${subs.map(item => `<option value="${esc(item.id)}" ${item.id === view.subgroup ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}</select>`;
+    // 2.5.1 Mİ-2: "Grupsuz" (görünen grubu olmayan cariler) ve alt gruplu grupta "Alt Grupsuz" — Grup Özeti'nin satırları Liste'de bu seçeneklerle açılır.
+    return `<select data-filter="group" aria-label="Grup"><option value="">Tüm Gruplar</option>${groups.map(item => `<option value="${esc(item.id)}" ${item.id === view.group ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}<option value="${NO_GROUP}" ${view.group === NO_GROUP ? "selected" : ""}>Grupsuz</option></select>
+      <select data-filter="subgroup" aria-label="Alt grup" ${subs.length ? "" : "disabled"}><option value="">${subs.length ? "Tüm Alt Gruplar" : "Alt Grup"}</option>${subs.map(item => `<option value="${esc(item.id)}" ${item.id === view.subgroup ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}${subs.length ? `<option value="${NO_GROUP}" ${view.subgroup === NO_GROUP ? "selected" : ""}>Alt Grupsuz</option>` : ""}</select>`;
   };
   // Seçim: tek tek işaretlenenler (selected) ya da "süzgeçteki hepsi" (selectAll) eksi işareti kaldırılanlar (excluded).
   const selectedCount = () => (view.selectAll ? Math.max(0, (view.list?.total || 0) - view.excluded.size) : view.selected.size);
@@ -271,11 +325,15 @@
     const wa = HOF.whatsapp
       ? count
         ? '<button type="button" class="hof-button hof-button-small hof-whatsapp" data-act="waStatement" title="Seçilen carilere kişiye özel ekstreyi WhatsApp ile gönder">WhatsApp Ekstre</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="waMessage" title="Seçilen carilere toplu WhatsApp mesajı yaz">WhatsApp Mesaj</button>'
-        : total
+        : total && !explicitOnly()
           ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="waStatement" title="Süzgeçteki ${total} cariye ekstre">Tümüne WhatsApp Ekstre</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="waMessage" title="Süzgeçteki ${total} cariye mesaj">Tümüne WhatsApp Mesaj</button>`
           : ""
       : "";
-    const hint = canPlan() ? "Toplu taksit ya da WhatsApp için soldaki kutulardan carileri seçin; başlıktaki kutu süzgeçteki carilerin hepsini seçer (ör. önce grup ya da okul seçin)." : "WhatsApp ile toplu gönderim için soldaki kutulardan carileri seçin ya da süzgeçteki hepsine gönderin.";
+    const hint = explicitOnly()
+      ? "Bu dönemde ödeme yapanlar süzgecinde toplu işlem yalnız işaretlediğiniz carilere yapılır; başlıktaki kutu ekrandaki carileri seçer."
+      : canPlan()
+        ? "Toplu taksit ya da WhatsApp için soldaki kutulardan carileri seçin; başlıktaki kutu süzgeçteki carilerin hepsini seçer (ör. önce grup ya da okul seçin)."
+        : "WhatsApp ile toplu gönderim için soldaki kutulardan carileri seçin ya da süzgeçteki hepsine gönderin.";
     return `<div class="hof-acc-selbar${count ? " is-active" : ""}" data-selbar><span>${count ? `<b>${count.toLocaleString("tr-TR")}</b> cari seçildi${view.selectAll ? (view.excluded.size ? ` (süzgeçteki hepsi, ${view.excluded.size.toLocaleString("tr-TR")} hariç)` : " (süzgeçteki hepsi)") : ""}` : hint}</span>${count && canPlan() ? '<button type="button" class="hof-button hof-button-small" data-act="bulkPlan">Seçilenlere Taksit Planı</button>' : ""}${wa}${count ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clearSel">Seçimi Temizle</button>' : ""}</div>`;
   };
   // WhatsApp toplu gönderim: seçim varsa seçilenler, yoksa süzgeçteki carilerin hepsi.
@@ -300,30 +358,106 @@
     const data = view.list;
     const manage = canManage();
     const planning = true; // seçim kutuları: toplu taksit (yetkiyle) ve WhatsApp gönderimi
-    const filtered = Boolean(view.q || view.type || view.group || view.subgroup || view.balance !== "all");
+    const filtered = Boolean(view.q || view.type || view.group || view.subgroup || view.balance !== "all" || explicitOnly());
     const row = item => {
       const next = item.next ? `<small class="${item.next.days < 0 ? "is-warn" : ""}">${esc(HOF.formatDate(item.next.dueDate))} · ${item.next.days < 0 ? `${Math.abs(item.next.days)} gün gecikti${item.next.no ? ` (${item.next.no}. taksit)` : ""}` : "sıradaki taksit"}</small>` : "";
       const plansCell = item.activePlans ? `<b>${esc(money(item.planRemaining))}</b><small>${item.activePlans} kart${(item.planOverdueCount ?? item.overdueInstallmentCount) ? ` · <span class="is-warn">${item.planOverdueCount ?? item.overdueInstallmentCount} geciken</span>` : ""}</small>${next}` : '<small class="hof-muted">—</small>';
       const extra = item.extra?.length ? `<small class="hof-acc-extra">${item.extra.map(field => `${esc(field.label)}: ${esc(field.value)}`).join(" · ")}</small>` : "";
-      return `<tr data-account="${esc(item.id)}" class="${item.status === "passive" ? "is-passive" : ""}" tabindex="0">${planning ? `<td class="hof-acc-check"><input type="checkbox" data-select="${esc(item.id)}" aria-label="${esc(item.name)} seç" ${isSelected(item.id) ? "checked" : ""}></td>` : ""}<td class="hof-plan-no">${esc(item.refNo)}</td><td><b>${esc(item.name)}</b> ${item.type !== "customer" ? typeBadge(item.type) : ""}${item.status === "passive" ? badgeMuted("Pasif") : ""}${item.doubtfulOpen > 0.005 ? ` <span class="hof-plan-badge is-late" data-doubtful-badge title="Şüpheli alacakta: ${esc(money(item.doubtfulOpen))}">Şüpheli</span>` : ""}<small>${esc(whereText(item) || "Grupsuz")}${item.phone ? ` · ${esc(item.phone)}` : ""}${item.caseKey ? " · tabloda kayıtlı" : ""}</small>${extra}</td><td class="num">${amountCell(item.debit)}</td><td class="num">${amountCell(item.credit, "hof-cash-in")}</td><td class="num">${balanceHtml(item.balance)}${item.overdue > 0.005 ? `<small class="is-warn" data-acc-row-overdue title="Vadesi geçmiş açık borç">Gecikmiş ${esc(money(item.overdue))}${item.promiseUntil ? ` · Ödeme Sözü Var` : ""}</small>` : ""}</td><td>${plansCell}</td></tr>`;
+      const collectedCell = data.period ? `<td class="num" data-collected>${collectedHtml(item.collected)}</td>` : "";
+      return `<tr data-account="${esc(item.id)}" class="${item.status === "passive" ? "is-passive" : ""}" tabindex="0">${planning ? `<td class="hof-acc-check"><input type="checkbox" data-select="${esc(item.id)}" aria-label="${esc(item.name)} seç" ${isSelected(item.id) ? "checked" : ""}></td>` : ""}<td class="hof-plan-no">${esc(item.refNo)}</td><td><b>${esc(item.name)}</b> ${item.type !== "customer" ? typeBadge(item.type) : ""}${item.status === "passive" ? badgeMuted("Pasif") : ""}${item.doubtfulOpen > 0.005 ? ` <span class="hof-plan-badge is-late" data-doubtful-badge title="Şüpheli alacakta: ${esc(money(item.doubtfulOpen))}">Şüpheli</span>` : ""}<small>${esc(whereText(item) || "Grupsuz")}${item.phone ? ` · ${esc(item.phone)}` : ""}${item.caseKey ? " · tabloda kayıtlı" : ""}</small>${extra}</td><td class="num">${amountCell(item.debit)}</td><td class="num">${amountCell(item.credit, "hof-cash-in")}</td><td class="num">${balanceHtml(item.balance)}${item.overdue > 0.005 ? `<small class="is-warn" data-acc-row-overdue title="Vadesi geçmiş açık borç">Gecikmiş ${esc(money(item.overdue))}${item.promiseUntil ? ` · Ödeme Sözü Var` : ""}</small>` : ""}</td>${collectedCell}<td>${plansCell}</td></tr>`;
     };
     const allChecked = (view.selectAll && !view.excluded.size) || (!view.selectAll && data && data.accounts.length && data.accounts.every(item => view.selected.has(item.id)));
     const total = data?.total ?? data?.accounts.length ?? 0;
-    HOF.swap(root, `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATUS_TABS.map(item => `<button type="button" data-status="${item.id}" aria-pressed="${String(item.id === view.status)}">${item.label}</button>`).join("")}</div>
+    HOF.swap(root, `<div class="hof-cash-bar">${statusTabs()}${displayTabs()}
       <div class="hof-cash-add">${manage ? `<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Cari</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten carileri tek seferde aç (taksit sorulmaz)">Excel / Sheets’ten Yükle</button>` : ""}</div></div>
       <div class="hof-plans-filters hof-acc-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ad, telefon, cari no, adres, ek alan ara…" aria-label="Ara"><select data-filter="type" aria-label="Tür"><option value="">Tüm Türler</option>${Object.entries(TYPES).map(([id, label]) => `<option value="${id}" ${id === view.type ? "selected" : ""}>${label}</option>`).join("")}</select>${groupOptions()}<select data-filter="balance" aria-label="Bakiye">${BALANCES.map(([id, label]) => `<option value="${id}" ${id === view.balance ? "selected" : ""}>${label}</option>`).join("")}</select><select data-filter="sort" aria-label="Sıralama">${SORTS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${outputs(listPdfUrl(), HOF.outputButton({ kind: "xlsx", href: listXlsxUrl(), what: "Cari Listesi", tip: "Ekrandaki listeyi (ek alanlarıyla) Excel olarak indir", attrs: "data-xlsx" }))}</div>
-      <div class="hof-kpis hof-plans-kpis">${data ? `<div class="hof-cash-balance"><strong>${esc(money(data.totals.debtor))}</strong><span>Borçlular · ${(data.totals.debtorCount ?? 0).toLocaleString("tr-TR")} cari</span></div><div><strong>${esc(money(data.totals.creditor))}</strong><span>Alacaklılar · ${(data.totals.creditorCount ?? 0).toLocaleString("tr-TR")} cari</span></div><div title="Taksit kartlarının kalanı carilerin bakiyesinin içindedir; Borçlular'a ayrıca eklenmez."><strong>${esc(money(data.totals.planRemaining))}</strong><span>Taksitlerden Kalan (bakiyeye dahil)</span></div><div class="${data.totals.overdueCount ? "is-late" : ""}" title="Vadesi geçmiş açık borç kalemleri (fatura, taksit, borç kaydı); şüpheli alacağa alınan kısım hariç."><strong>${esc(money(data.totals.overdue))}</strong><span>Gecikmiş Borç · ${data.totals.overdueCount} kalem</span></div>` : ""}</div>
+      ${periodBar()}
+      <div class="hof-kpis hof-plans-kpis">${data ? `<div class="hof-cash-balance"><strong>${esc(money(data.totals.debtor))}</strong><span>Borçlular · ${(data.totals.debtorCount ?? 0).toLocaleString("tr-TR")} cari</span></div><div><strong>${esc(money(data.totals.creditor))}</strong><span>Alacaklılar · ${(data.totals.creditorCount ?? 0).toLocaleString("tr-TR")} cari</span></div><div title="Taksit kartlarının kalanı carilerin bakiyesinin içindedir; Borçlular'a ayrıca eklenmez."><strong>${esc(money(data.totals.planRemaining))}</strong><span>Taksitlerden Kalan (bakiyeye dahil)</span></div><div class="${data.totals.overdueCount ? "is-late" : ""}" title="Vadesi geçmiş açık borç kalemleri (fatura, taksit, borç kaydı); şüpheli alacağa alınan kısım hariç."><strong>${esc(money(data.totals.overdue))}</strong><span>Gecikmiş Borç · ${data.totals.overdueCount} kalem</span></div>${data.totals.collected ? collectedKpi(data) : ""}` : ""}</div>
       ${selectBar()}
       <div class="hof-cash-list hof-plans-list">${
         !data
           ? HOF.listPending(view.listError)
           : data.accounts.length
-            ? `<table class="hof-table hof-cash-table hof-plans-table hof-acc-table"><thead><tr>${planning ? `<th class="hof-acc-check"><input type="checkbox" data-select-all aria-label="Süzgeçteki ${total} carinin hepsini seç" title="Süzgeçteki ${total} carinin hepsini seç" ${allChecked ? "checked" : ""}></th>` : ""}<th class="hof-plan-no">No</th><th>Cari</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th><th>Taksit</th></tr></thead><tbody>${data.accounts.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha Fazla Göster · ${total - data.accounts.length} cari daha</button></div>` : ""}`
+            ? `<table class="hof-table hof-cash-table hof-plans-table hof-acc-table"><thead><tr>${planning ? `<th class="hof-acc-check"><input type="checkbox" data-select-all aria-label="${explicitOnly() ? "Ekrandaki carileri seç" : `Süzgeçteki ${total} carinin hepsini seç`}" title="${explicitOnly() ? "Ekrandaki carileri seç" : `Süzgeçteki ${total} carinin hepsini seç`}" ${allChecked ? "checked" : ""}></th>` : ""}<th class="hof-plan-no">No</th><th>Cari</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th>${data.period ? '<th class="num">Tahsilat</th>' : ""}<th>Taksit</th></tr></thead><tbody>${data.accounts.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha Fazla Göster · ${total - data.accounts.length} cari daha</button></div>` : ""}`
             : `<p class="hof-empty">${filtered || view.status !== "all" ? "Bu süzgeçte cari yok." : "Henüz cari yok."}${manage && !filtered ? " <b>+ Yeni Cari</b> ile tek kart açın ya da <b>Excel / Sheets’ten Yükle</b> ile listenizi bir kerede aktarın." : ""}</p>`
       }</div>
       <p class="hof-edit-meta">Bakiye = borç − alacak. <b class="hof-acc-balance is-debtor">Borçlu</b> (yeşil): bakiye borç tarafında; <b class="hof-acc-balance is-creditor">Alacaklı</b> (kırmızı): bakiye alacak tarafında. Taksit planları carinin borcuna, taksit tahsilatları alacağına yazılır. Tahsilat ve ödemeler Kasa’ya düşer.</p>
       <div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`);
   }
+  // ---------- 2.5.1 Mİ-2: dönem, tahsilat, Grup Özeti ----------
+  const statusTabs = () => `<div class="hof-tabs" role="group" aria-label="Durum">${STATUS_TABS.map(item => `<button type="button" data-status="${item.id}" aria-pressed="${String(item.id === view.status)}">${item.label}</button>`).join("")}</div>`;
+  const displayTabs = () => `<div class="hof-tabs hof-acc-display" role="group" aria-label="Görünüm"><button type="button" data-display="list" aria-pressed="${String(view.display === "list")}">Liste</button><button type="button" data-display="groups" aria-pressed="${String(view.display === "groups")}">Grup Özeti</button></div>`;
+  const periodBar = () => {
+    const range = view.period === "range" ? `<input type="date" data-period-from value="${esc(view.from)}" aria-label="Başlangıç tarihi" max="${esc(view.to || "")}"><span class="hof-muted">–</span><input type="date" data-period-to value="${esc(view.to)}" aria-label="Bitiş tarihi" min="${esc(view.from || "")}">` : "";
+    const paid = view.period ? `<label class="hof-acc-paid"><input type="checkbox" data-paid ${view.paid ? "checked" : ""}> Bu Dönemde Ödeme Yapanlar</label>` : "";
+    const hint = view.period === "range" && !periodReady() ? '<small class="hof-muted">Başlangıç ve bitiş günlerini seçin.</small>' : "";
+    return `<div class="hof-acc-period" role="group" aria-label="Tahsilat dönemi"><select data-period aria-label="Tahsilat dönemi">${PERIODS.filter(([id]) => id || view.display === "list").map(([id, label]) => `<option value="${id}" ${id === view.period ? "selected" : ""}>${label}</option>`).join("")}</select>${range}${paid}${hint}</div>`;
+  };
+  const periodText = period => (period ? `${period.label}${period.from === period.to ? ` · ${HOF.formatDate(period.from)}` : ` · ${HOF.formatDate(period.from)} – ${HOF.formatDate(period.to)}`}` : "");
+  // Tahsilat hücresi: toplam + sıfır olmayan yollar (ekran = PDF / Excel'deki sütunlar); önceden ödenen ayrı satırda, toplama karışmaz.
+  const collectedHtml = collected => {
+    if (!collected) return "";
+    const parts = WAYS.filter(([way]) => collected[way] > 0.005).map(([way, label]) => `${label} ${money(collected[way])}`);
+    const opening = collected.opening > 0.005 ? `<small class="hof-muted" data-collected-opening>${esc(OPENING_LABEL)} ${esc(money(collected.opening))}</small>` : "";
+    return `${collected.total > 0.005 ? `<b class="hof-cash-in">${esc(money(collected.total))}</b>` : `<span class="hof-muted">${esc(money(0))}</span>`}${parts.length ? `<small>${esc(parts.join(" · "))}</small>` : ""}${opening}`;
+  };
+  const collectedKpi = data => {
+    const c = data.totals.collected;
+    const tip = [...WAYS.filter(([way]) => way !== "other" || c.other > 0.005).map(([way, label]) => `${label} ${money(c[way])}`), ...(c.opening > 0.005 ? [`${OPENING_LABEL} ${money(c.opening)} (tahsilata dahil değil)`] : [])].join(" · ");
+    return `<div class="hof-acc-collected" data-collected-kpi title="${esc(tip)}"><strong>${esc(money(c.total))}</strong><span>Tahsilat · ${esc(periodText(data.period))} · ${(data.totals.collectedCount ?? 0).toLocaleString("tr-TR")} cari</span></div>`;
+  };
+  // Grup Özeti'nin sütunları (sunucunun PDF / Excel'iyle aynı kural: Diğer ve Önceden Ödenen yalnız değer varsa).
+  const groupColumns = data => [
+    ["count", "Cari", "number"],
+    ["balance", "Bakiye", "balance"],
+    ["planRemaining", "Taksitlerden Kalan", "money"],
+    ["overdue", "Gecikmiş Borç", "money"],
+    ["lateInstallments", "Geciken Taksit", "number"],
+    ["total", "Tahsilat", "money"],
+    ...WAYS.filter(([way]) => way !== "other" || data.totals.collected.other > 0.005).map(([way, label]) => [way, label, "money"]),
+    ...(data.totals.collected.opening > 0.005 ? [["opening", OPENING_LABEL, "money"]] : []),
+  ];
+  const groupValue = (row, key) => (key === "total" || key === "opening" || WAYS.some(([way]) => way === key) ? row.collected[key] : row[key]);
+  const groupCellHtml = (type, value) => (type === "number" ? esc(Number(value || 0).toLocaleString("tr-TR")) : type === "balance" ? balanceHtml(value || 0) : amountCell(value || 0));
+  function renderGroups() {
+    const root = body();
+    if (!root) return;
+    const data = view.groups;
+    const manage = canManage();
+    const columns = data ? groupColumns(data) : [];
+    const cells = row => columns.map(([key, , type]) => `<td class="num${key === "total" ? " hof-acc-total-col" : ""}">${groupCellHtml(type, groupValue(row, key))}</td>`).join("");
+    const groupRow = row => {
+      const open = view.openGroups.has(row.id);
+      const toggle = row.subgroups.length ? `<button type="button" class="hof-mini hof-acc-toggle" data-group-toggle="${esc(row.id)}" aria-expanded="${String(open)}" aria-label="${esc(row.name)} alt gruplarını ${open ? "gizle" : "göster"}">${open ? "▾" : "▸"}</button>` : "";
+      const subs = row.subgroups.map(sub => `<tr class="hof-acc-subrow" data-group-row="${esc(row.id)}" data-subgroup-row="${esc(sub.id)}" tabindex="0" ${open ? "" : "hidden"}><td><span class="hof-acc-sub">› ${esc(sub.name)}</span></td>${cells(sub)}</tr>`).join("");
+      return `<tr class="hof-acc-grouprow${row.kind === "none" ? " is-none" : ""}" data-group-row="${esc(row.id)}" tabindex="0"><td>${toggle}<b>${esc(row.name)}</b></td>${cells(row)}</tr>${subs}`;
+    };
+    const table = data
+      ? data.groups.length
+        ? `<div class="hof-acc-groups-wrap"><table class="hof-table hof-cash-table hof-acc-groups" data-groups><thead><tr><th>Grup</th>${columns.map(([key, label]) => `<th class="num" data-col="${esc(key)}">${esc(label)}</th>`).join("")}</tr></thead><tbody>${data.groups.map(groupRow).join("")}</tbody><tfoot><tr class="hof-acc-total" data-groups-total><th>TOPLAM</th>${cells(data.totals)}</tr></tfoot></table></div>`
+        : `<p class="hof-empty">Bu süzgeçte cari yok.</p>`
+      : HOF.listPending(view.groupsError);
+    const empty = data && data.totals.collected.total <= 0.005 && data.groups.length ? `<p class="hof-inline-note" data-groups-empty-period>${esc(periodText(data.period))} döneminde tahsilat yok; başka bir dönem seçin.</p>` : "";
+    HOF.swap(root, `<div class="hof-cash-bar">${statusTabs()}${displayTabs()}
+      <div class="hof-cash-add">${manage ? `<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Cari</button>` : ""}</div></div>
+      <div class="hof-plans-filters hof-acc-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ad, telefon, cari no, adres, ek alan ara…" aria-label="Ara"><select data-filter="type" aria-label="Tür"><option value="">Tüm Türler</option>${Object.entries(TYPES).map(([id, label]) => `<option value="${id}" ${id === view.type ? "selected" : ""}>${label}</option>`).join("")}</select><select data-filter="balance" aria-label="Bakiye">${BALANCES.map(([id, label]) => `<option value="${id}" ${id === view.balance ? "selected" : ""}>${label}</option>`).join("")}</select>${office().outputButtons ? office().outputButtons(groupPdfUrl(), "groups", "", "Cari Grup Özeti").replace(/<\/span>$/, `${HOF.outputButton({ kind: "xlsx", href: groupXlsxUrl(), what: "Cari Grup Özeti", tip: "Grup Özeti'ni Excel olarak indir", attrs: "data-xlsx" })}</span>`) : ""}</div>
+      ${periodBar()}
+      ${data ? `<div class="hof-kpis hof-plans-kpis">${collectedKpi(data)}<div><strong>${esc((data.totals.count ?? 0).toLocaleString("tr-TR"))}</strong><span>Cari · ${data.groups.filter(row => row.kind === "group").length} grup</span></div></div>` : ""}
+      ${empty}
+      <div class="hof-cash-list">${table}</div>
+      <p class="hof-edit-meta">Satıra tıklayın (ya da Enter): Liste o gruba süzülmüş açılır. ▸ alt grupları gösterir. Tahsilat seçilen dönemde carilerden alınan paradır (nakit, POS, havale / EFT, çek, senet); Excel'den gelen önceden ödenen ayrı sütunda, tahsilata dahil değil. Carinin eski tahsilatı bugünkü grubunda sayılır.</p>
+      <div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`);
+  }
+  // Grup Özeti satırından Liste'ye: o grup (ve alt grup) süzgeciyle; durum, tür, arama, bakiye, dönem ve "ödeme yapanlar" korunur.
+  function openGroupInList(groupId, subgroupId = "") {
+    view.display = "list";
+    view.group = groupId;
+    view.subgroup = subgroupId;
+    clearSelection();
+    renderList();
+    loadList();
+  }
+
   // PDF · Yazdır · Excel tek düğme grubunda.
   const outputs = (pdfUrl, extra = "") => (office().outputButtons ? office().outputButtons(pdfUrl, "list", "", "Cari Listesi").replace(/<\/span>$/, `${extra}</span>`) : extra);
   const amountCell = (value, tone = "") => (Math.abs(value) > 0.005 ? `<span class="${tone}">${esc(money(value))}</span>` : `<span class="hof-muted">${esc(money(0))}</span>`);
@@ -1648,7 +1782,7 @@
     const check = event.target.closest("input[data-select], input[data-select-all]");
     if (check) {
       if (check.dataset.selectAll !== undefined) {
-        view.selectAll = check.checked && Boolean(view.list?.hasMore);
+        view.selectAll = !explicitOnly() && check.checked && Boolean(view.list?.hasMore);
         view.excluded.clear();
         for (const item of view.list?.accounts || []) check.checked ? view.selected.add(item.id) : view.selected.delete(item.id);
         return renderList();
@@ -1669,7 +1803,15 @@
       }
       return;
     }
-    if (event.target.closest(".hof-acc-check")) return;
+    if (event.target.closest(".hof-acc-check, .hof-acc-paid, .hof-acc-period")) return;
+    const toggle = event.target.closest("[data-group-toggle]");
+    if (toggle) {
+      const id = toggle.dataset.groupToggle;
+      view.openGroups.has(id) ? view.openGroups.delete(id) : view.openGroups.add(id);
+      return renderGroups();
+    }
+    const groupRowEl = event.target.closest("tr[data-group-row]");
+    if (groupRowEl && view.mode === "list" && view.display === "groups") return openGroupInList(groupRowEl.dataset.groupRow, groupRowEl.dataset.subgroupRow || "");
     const invoiceLink = event.target.closest("[data-open-invoice]");
     if (invoiceLink) {
       event.preventDefault();
@@ -1693,10 +1835,18 @@
     const account = view.account;
     if (button.dataset.status) {
       view.status = button.dataset.status;
-      renderList();
-      return loadList();
+      render();
+      return reload();
     }
-    if (button.dataset.print) return office().printPdf?.(button.dataset.print === "list" ? listPdfUrl() : cardPdfUrl(account));
+    if (button.dataset.display) {
+      if (button.dataset.display === view.display) return;
+      view.display = button.dataset.display;
+      // Grup Özeti tahsilatı dönemsiz gösterilmez: dönem yoksa "Bugün" (müşterinin ilk sorusu: "bugün ne kadar").
+      if (view.display === "groups" && !view.period) view.period = "today";
+      render();
+      return reload();
+    }
+    if (button.dataset.print) return office().printPdf?.(button.dataset.print === "list" ? listPdfUrl() : button.dataset.print === "groups" ? groupPdfUrl() : cardPdfUrl(account));
     if (button.dataset.ledgerFilter) {
       view.ledgerFilter = button.dataset.ledgerFilter;
       return renderCard();
@@ -1707,8 +1857,8 @@
     if (act === "back") {
       view.mode = "list";
       view.id = "";
-      renderList();
-      return loadList();
+      render();
+      return reload();
     }
     if (act === "new") return editAccount(null);
     if (act === "import") return importFromExcel();
@@ -1759,6 +1909,20 @@
     if (button.dataset.deleteEntry) return deleteEntry(account, entryOf(button.dataset.deleteEntry));
   }
   function onChange(event) {
+    // 2.5.1 Mİ-2: dönem seçici, tarih aralığı ve "Bu Dönemde Ödeme Yapanlar".
+    const period = event.target.closest("select[data-period], input[data-period-from], input[data-period-to], input[data-paid]");
+    if (period) {
+      if (period.matches("select[data-period]")) {
+        view.period = period.value;
+        if (!view.period) view.paid = false;
+      } else if (period.matches("input[data-period-from]")) view.from = period.value;
+      else if (period.matches("input[data-period-to]")) view.to = period.value;
+      else view.paid = period.checked;
+      clearSelection();
+      render();
+      if (view.period !== "range" || periodReady() || !view.period) reload();
+      return;
+    }
     const select = event.target.closest("select[data-filter]");
     if (!select) return;
     view[select.dataset.filter] = select.value;
@@ -1770,8 +1934,8 @@
         // saklanamazsa sıralama yalnız bu pencerede geçerli
       }
     }
-    renderList();
-    loadList();
+    render();
+    reload();
   }
   const onInput = (() => {
     let timer = 0;
@@ -1780,7 +1944,7 @@
       if (!input) return;
       view.q = input.value;
       clearTimeout(timer);
-      timer = setTimeout(loadList, 250);
+      timer = setTimeout(reload, 250);
     };
   })();
 
@@ -1791,7 +1955,7 @@
     const refreshOpen = HOF.refresher(() => {
       if (!modal) return null;
       if (view.mode === "card" && view.id) return loadAccount(view.id, { quiet: true });
-      if (view.mode === "list") return loadList({ keep: true });
+      if (view.mode === "list") return view.display === "groups" ? loadGroups({ keep: true }) : loadList({ keep: true });
       return null;
     });
     HOF.on("live:workspace.changed", change => {
