@@ -1,0 +1,42 @@
+Sen DestekOfis projesinde 2.5.1'in D4 ÖN KOŞULLARI TUR 2 KOD ajanısın (eforun high). Tur 1 başka bir ajanla bitti ve ana dalda (birleşim b0895406); sen temiz bağlamla YALNIZ aşağıdaki Windows kırmızısını çözersin (ders 46). Kapsam DARALTILMIŞTIR: yeni özellik yok.
+
+## Hazırlık
+1. Kendi ağacında (kendi commit'in YOKKEN) `git reset --hard t251-d4on-t2-taban`; `git log --oneline -1` ile doğrula (etiket t251-d4on-t2-taban = çalışma dalının ucu (devir ön koşulları ana dalda)); değilse DUR ve bildir. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK). Tarayıcı gerekiyorsa `PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194` (`playwright install` YOK).
+2. ÖNCE oku: `CLAUDE.md` (anayasa, test kuralı, dersler 1–55, yazım düzeni, kalıcı ürün kararları), `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`, `docs/devir/2.5.1-PLAN-TASLAK.md` (yalnız kendi işinin bölümü). Kâhin MODEL dosyaları OKUNMAZ, `test/bagimsiz/**` YAZILMAZ.
+3. Sonra oku: tur 1'in testi `test/devir-d4on-yedek-tasima-251.test.mjs` ve değiştirdiği ürün kodu (`git show b0895406 --stat`; `git diff 64396478 fce0e31f -- server`), `docs/devir/D2-ALTYAPI-TASARIM.md` §12.
+
+## Olay (GitHub CI #1115, commit 1c903a36, iş 'Test (windows-latest, Node 24)'; ana oturum iş günlüğünün son satırlarından AYNEN okudu)
+```
+✖ kalıcı geçici hata (EBUSY hiç bitmez) → sınırlı deneme (12), 503 devir-backup-move + Türkçe neden; yazılmış klasör silinmez, listede Yarım [test/devir-d4on-yedek-tasima-251.test.mjs:90:3] — AssertionError [ERR_ASSERTION]: undefined unable to open database file · undefined !== 503
+✖ yeniden denenmeyen hata (EXDEV) → hemen 503 (tek deneme, bekleme yok); klasör listede Yarım [test/devir-d4on-yedek-tasima-251.test.mjs:121:3] — AssertionError [ERR_ASSERTION]: undefined unable to open database file · undefined !== 503
+npm-test-windows-latest-node24: 6159/6161 geçti, 2 başarısız
+```
+Linux'ta ve Windows Node 22'de (o koşuda sürüyordu) aynı testler yeşil / bilinmiyor. Bağımsız dar kontrol (tur 1'in farkı) Linux'ta YÜKSEK / ORTA bulmadı; DOĞRULANMADI başlığında şunu yazdı: "Windows'ta klasörün içindeki dosya açıkken taşıma gerçekten EPERM veriyor mu?"; "yedek içindeki düz dosya taşıması (`.sqlite.yaziliyor` → ad) düz `renameSync` — Windows'ta antivirüs orada da tutarsa devir yedeği düşer"; "son dosyanın özeti `end` olayında bitince akışın tutamağı biraz sonra kapanıyor".
+
+## İş
+0. NASIL BOZULUR + KÖK NEDEN HİPOTEZLERİ (koddan ÖNCE, commit): 'unable to open database file' iletisini hangi çağrı üretebilir (ürün yolu mu, testin sahte rename'i mi — ör. sahte, iç dosya taşımasını da yakalıyor ve Windows yol ayırıcısıyla eşleşme farklı; ya da taşınamayan klasördeki veri tabanı Windows'ta açık tutamak yüzünden açılamıyor); her hipotez için Linux'ta zorla üretme yolu (ders 20: önce kırmızı üret — Windows yol biçimi `path.win32` ile, açık tutamak `openSync` ile, tutamak kapanış gecikmesi ile).
+1. Kırmızıyı Linux'ta ZORLA üret (ders 20); üretemezsen hangi hipotezlerin Linux'ta üretilemeyeceğini kanıtla. Kök nedeni yaz (ders 6). Tahminle düzeltme yapma.
+2. DÜZELT: ürün yolunda hata ise ürün kodunu (dosya sınırı aşağıda); testte ise testi (ders 34: test ürün davranışını gizlemez — taşıma hatasında kullanıcı 503 + Türkçe ileti almalı; 'unable to open database file' kullanıcıya gidiyorsa bu ÜRÜN hatasıdır). Taşıma hatası iletisinde iç kod / İngilizce metin GÖSTERİLMEZ (kullanıcı kararı 27.11 11:39 AYNEN: "devir yapılırken bir sebeple duruyorya, nedenini kullanıcıya açıkça türkçe yazsın program, önerilerine ek olarak bunuda uygula." — bu yolda iletinin ne oldu / neden / ne yapmalı / nereye düzeni; iç kod yalnız makine alanında); ilgili test beklentisi buna göre.
+3. Yeni / değişen test: eski kodda (taban; AYRI kopya) BEKLENEN NEDENLE kırmızı (ders 7, 38, 51), yenide yeşil, iki TZ; tur 1'in mutasyon betiği AYNEN 11/11 + en az bir yeni mutant.
+4. Windows: bu ortamda Windows YOK. Raporda ana oturuma 'CI'de Windows Node 22 ve 24, İKİ koşu (ders 18, 48)' yaz; testin Windows'ta neyi denetlediğini açıkça yaz.
+
+## Dosya sınırı
+`server/lib/devir/devir-backups.mjs`, `server/lib/backup.mjs` (YALNIZ devir yedeğinin iç dosya taşıması — başka yedek yolu DEĞİŞMEZ; değişirse komşuları: yedek / geri yükleme testlerinin hepsi, ders 10), `test/devir-d4on-*`, `test/fixtures/**`. YASAK: başka her şey; istemci, göçler, `.github/**`, `package.json`.
+
+## Ortak kurallar
+- Yanıtın ve raporun TÜRKÇE. PUSH YOK (ana oturum birleştirir). Her bitmiş adımı (kod + testi + kanıtı) HEMEN commit et; commit'e yalnız kendi yolların (`git add <yol>`; `-A` / `-u` / `commit -a` YOK — ders 44). Zamanlanmış görev KURMA. Kendi arka plan işin sürerken rapor vermeden BİTİRME; bekleme için boş döngü kurma.
+- GIT_DIR / GIT_WORK_TREE VERME (ders 54). `pkill` / `killall` / joker `rm` YOK; yalnız kendi oluşturduğun TAM yol silinir (ders 36). Disk 5 GB'ın altına düşmez (`df -h /`).
+- Para / kapama / defter kuralı ayrışması ya da kararların söylemediği durum çıkarsa KODLAMA — raporda 'KULLANICIYA SORULMALI' (iki seçenek + öneri + her okumada hangi sayı ne olur; uç durumsa üçüncü seçenek). Mimari seçimse 'BAŞ MİMAR KARARI GEREKİYOR'.
+- Rapor taslağını adım adım `docs/devir/2.5.1-DEVAM/d4ont2-rapor.md`'ye yaz ve commit et; SON İLETİN bu raporun kendisidir.
+- Commit iletisi sonunda TAM olarak şu iki satır (model adı HİÇBİR yerde yazılmaz — kod, yorum, commit, belge):
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+- Her yeni test: eski kodda (taban; AYRI kopya — `git worktree add --detach /dev/shm/d4ont2-<kısa>/eski t251-d4on-t2-taban`; ders 23, 25, 51) BEKLENEN NEDENLE kırmızı (iletisi okunur — ders 7, 38), yeni kodda yeşil; iki saat diliminde (TZ=UTC ve TZ=Europe/Istanbul); göreli tarih + sahte saat (ders 13). Sayılar VERİ TABANINDAN / yanıt gövdesinden okunur (ders 3, 12). Eski kopyaya yalnız YENİ test dosyaları girer.
+- Koşular `HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos d4ont2-<ad> -- <komut>`; BÜTÜN test koşuların `flock -s -w 3600 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` altında (tek seferlik bekleme); her arka plan koşusu `timeout -k 5 <sn>` (en çok 2 saat; toplam sürenin 1,5 katından kısa olmasın — ders 55); önce `cat /proc/loadavg`, 4'ün üstündeyse tek seferlik bekle. Tam `npm test` YOK (ana oturum koşar); yalnız değişen alanın testleri + KOMŞULAR (`git grep` taramasıyla — ders 10).
+- Kanıt (ham çıktılar) `docs/kanit/<bugünün tarihi>/d4ont2-*` altında, ayrı 'Kanıt:' commit'iyle. Dosya adında Windows'ta açılmayan karakter olmaz (ders 33). Kaynak tarayan test `/\r?\n/` ile böler (ders 27).
+- Dosyaya dokunan (silen / taşıyan / kilitleyen) her yeni test Windows'ta da geçecek biçimde yazılır (ders 48); Windows koşusu ana oturumda CI ile okunur.
+- Kılavuza DOKUNMA (son adayda toplu güncellenir); kılavuz için önerdiğin kısa 'nasıl yapılır' metnini rapora yaz. `.github/**`, `package.json`, `tools/**`, göç dosyaları (migrations) YASAK — gerekiyorsa DUR, raporda 'BAŞ MİMAR KARARI GEREKİYOR'. Yeni ekran senaryosu açabilirsin; ci.yml'ye EKLEME — raporda 'CI listesine eklenecek'.
+- Kullanıcıya görünen adlar YAZIM DÜZENİ'ne uyar (pencere / düğme / sütun / seçenek adlarında her sözcüğün ilk harfi büyük; cümleler cümle düzeninde); ekran = PDF = Excel; raporda alt TOPLAM satırı.
+
+## Rapor (son iletin; Türkçe)
+EN BAŞTA değişen her gözlenebilir davranış (önce → sonra; ekran adıyla, örnek sayılarla); değişen dosyalar; TARAMA tablosu; yeni / değişen testlerin kırmızı nedeni + yeşili (iki TZ); kabul koşullarının sayıları; mutant tablosu; hız tablosu (varsa); KULLANICIYA SORULMALI; BAŞ MİMAR KARARI GEREKİYOR; SONRAKİ SÜRÜME; DOĞRULANMADI; DENENMEYEN; 'CI listesine eklenecek'; kılavuz metni önerisi; commit listesi; dal ucu; ana oturumun yeniden koşacağı komutlar.

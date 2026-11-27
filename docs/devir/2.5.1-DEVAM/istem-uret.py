@@ -400,6 +400,35 @@ EK İZİN (YALNIZ S-KD-3 (ii) çıkarsa): defter türetmesinde Excel'den / tablo
 Ek olarak raporda: İLETİ KATALOĞU'nun yolu ve neden sayısı; durdurma / hata yolları tarama tablosu (yol → yardımcıdan geçiyor mu); S-KD-3 ölçümünün sonucu ((i) mi (ii) mi; v2.5.0 gerçek koduyla); tur 2'nin açık listesinin madde madde SON durumu; plan biçiminde tur 2'ye göre DEĞİŞEN alanlar (sürücü ajanı ve D4a için); D4 / D5'in bu yardımcıyı nasıl kullanacağı (kısa).
 """
 
+# ---------------------------------------------------------------- D4-ÖN TUR 2 (27.11; Windows kırmızısı)
+D4ONT2 = f"""Sen DestekOfis projesinde 2.5.1'in D4 ÖN KOŞULLARI TUR 2 KOD ajanısın (eforun high). Tur 1 başka bir ajanla bitti ve ana dalda (birleşim b0895406); sen temiz bağlamla YALNIZ aşağıdaki Windows kırmızısını çözersin (ders 46). Kapsam DARALTILMIŞTIR: yeni özellik yok.
+
+{hazirlik(taban="t251-d4on-t2-taban", taban_ne="çalışma dalının ucu (devir ön koşulları ana dalda)")}
+3. Sonra oku: tur 1'in testi `test/devir-d4on-yedek-tasima-251.test.mjs` ve değiştirdiği ürün kodu (`git show b0895406 --stat`; `git diff 64396478 fce0e31f -- server`), `docs/devir/D2-ALTYAPI-TASARIM.md` §12.
+
+## Olay (GitHub CI #1115, commit 1c903a36, iş 'Test (windows-latest, Node 24)'; ana oturum iş günlüğünün son satırlarından AYNEN okudu)
+```
+✖ kalıcı geçici hata (EBUSY hiç bitmez) → sınırlı deneme (12), 503 devir-backup-move + Türkçe neden; yazılmış klasör silinmez, listede Yarım [test/devir-d4on-yedek-tasima-251.test.mjs:90:3] — AssertionError [ERR_ASSERTION]: undefined unable to open database file · undefined !== 503
+✖ yeniden denenmeyen hata (EXDEV) → hemen 503 (tek deneme, bekleme yok); klasör listede Yarım [test/devir-d4on-yedek-tasima-251.test.mjs:121:3] — AssertionError [ERR_ASSERTION]: undefined unable to open database file · undefined !== 503
+npm-test-windows-latest-node24: 6159/6161 geçti, 2 başarısız
+```
+Linux'ta ve Windows Node 22'de (o koşuda sürüyordu) aynı testler yeşil / bilinmiyor. Bağımsız dar kontrol (tur 1'in farkı) Linux'ta YÜKSEK / ORTA bulmadı; DOĞRULANMADI başlığında şunu yazdı: "Windows'ta klasörün içindeki dosya açıkken taşıma gerçekten EPERM veriyor mu?"; "yedek içindeki düz dosya taşıması (`.sqlite.yaziliyor` → ad) düz `renameSync` — Windows'ta antivirüs orada da tutarsa devir yedeği düşer"; "son dosyanın özeti `end` olayında bitince akışın tutamağı biraz sonra kapanıyor".
+
+## İş
+0. NASIL BOZULUR + KÖK NEDEN HİPOTEZLERİ (koddan ÖNCE, commit): 'unable to open database file' iletisini hangi çağrı üretebilir (ürün yolu mu, testin sahte rename'i mi — ör. sahte, iç dosya taşımasını da yakalıyor ve Windows yol ayırıcısıyla eşleşme farklı; ya da taşınamayan klasördeki veri tabanı Windows'ta açık tutamak yüzünden açılamıyor); her hipotez için Linux'ta zorla üretme yolu (ders 20: önce kırmızı üret — Windows yol biçimi `path.win32` ile, açık tutamak `openSync` ile, tutamak kapanış gecikmesi ile).
+1. Kırmızıyı Linux'ta ZORLA üret (ders 20); üretemezsen hangi hipotezlerin Linux'ta üretilemeyeceğini kanıtla. Kök nedeni yaz (ders 6). Tahminle düzeltme yapma.
+2. DÜZELT: ürün yolunda hata ise ürün kodunu (dosya sınırı aşağıda); testte ise testi (ders 34: test ürün davranışını gizlemez — taşıma hatasında kullanıcı 503 + Türkçe ileti almalı; 'unable to open database file' kullanıcıya gidiyorsa bu ÜRÜN hatasıdır). Taşıma hatası iletisinde iç kod / İngilizce metin GÖSTERİLMEZ (kullanıcı kararı 27.11 11:39 AYNEN: "devir yapılırken bir sebeple duruyorya, nedenini kullanıcıya açıkça türkçe yazsın program, önerilerine ek olarak bunuda uygula." — bu yolda iletinin ne oldu / neden / ne yapmalı / nereye düzeni; iç kod yalnız makine alanında); ilgili test beklentisi buna göre.
+3. Yeni / değişen test: eski kodda (taban; AYRI kopya) BEKLENEN NEDENLE kırmızı (ders 7, 38, 51), yenide yeşil, iki TZ; tur 1'in mutasyon betiği AYNEN 11/11 + en az bir yeni mutant.
+4. Windows: bu ortamda Windows YOK. Raporda ana oturuma 'CI'de Windows Node 22 ve 24, İKİ koşu (ders 18, 48)' yaz; testin Windows'ta neyi denetlediğini açıkça yaz.
+
+## Dosya sınırı
+`server/lib/devir/devir-backups.mjs`, `server/lib/backup.mjs` (YALNIZ devir yedeğinin iç dosya taşıması — başka yedek yolu DEĞİŞMEZ; değişirse komşuları: yedek / geri yükleme testlerinin hepsi, ders 10), `test/devir-d4on-*`, `test/fixtures/**`. YASAK: başka her şey; istemci, göçler, `.github/**`, `package.json`.
+
+{kurallar('d4ont2', taban="t251-d4on-t2-taban")}
+
+{rapor()}
+"""
+
 # ---------------------------------------------------------------- DAR KONTROLLER (27.11; prensip §9 iskeleti — düzeltmenin raporu / görev metni VERİLMEZ)
 def dar(ad, n, aralik, isler, kararlar, yorumlar, ne_ara, yasak):
     return f"""Sen DestekOfis projesinde bağımsız DAR KONTROL {n} incelemecisisin (2.5.1; eforun high); yalnız HATA ararsın, düzeltme / commit / push YAPMAZSIN, çalışma ağacının izlenen dosyalarına dokunmazsın. Yanıtın Türkçe. Kendi arka plan işin sürerken rapor vermeden BİTİRME.
@@ -517,7 +546,7 @@ Tur 1'in dosyaları + taksit numarasını GÖSTEREN / YAZAN çıktı yolları (m
 Ek olarak raporda: 'anlık üretilen ↔ saklı metin' tablosu (karar 3); teslim notu için tek cümle (kullanıcı dilinde: numara değişikliği ve eski kâğıtlarla fark); komşu listesinin çıkarılış komutları.
 """
 
-for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C), ("m2", M2), ("d3t2", D3T2), ("d3t3", D3T3), ("sur", SUR), ("mi2", MI2), ("dk-d4on", DK_D4ON), ("dk-m1", DK_M1)):
+for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C), ("m2", M2), ("d3t2", D3T2), ("d3t3", D3T3), ("sur", SUR), ("mi2", MI2), ("dk-d4on", DK_D4ON), ("dk-m1", DK_M1), ("d4ont2", D4ONT2)):
     yol = os.path.join(out, f"{ad}-istem.txt")
     open(yol, "w", encoding="utf-8").write(metin)
     print(ad, len(metin.encode()), yol)
