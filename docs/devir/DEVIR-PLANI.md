@@ -3,6 +3,15 @@
 Durum: **2.5.0'DA UYGULANIYOR** — 05.11.2026 D0 güncellemesi aşağıdaki "G" bölümünde ve ÇELİŞKİDE GEÇERLİDİR (mali müşavir P incelemesinden geçer). Eski durum: **PLAN — 2.4.4'ten SONRA uygulanacak** (kullanıcı, 20.10.2026: "2.4.4'ten sonrası için planlayalım, devir dosyası olarak tüm
 detayları ile yazalım; yeni bir sohbet penceresinden de yazsam oradan bulup yapabil"). Kod henüz değişmedi.
 
+**2.5.1 OKUMA NOTU (27.11.2026, ana oturum — devir tasarım notu P-D'nin "planın eskiyen yerleri" tablosundan; BAŞ MİMAR KARARI 27.11 06:50 (16), kullanıcıya gösterildi; KURAL DEĞİŞMEDİ, yalnız okuma):**
+- SÜRÜM: devir işlemi (D3–D6) **2.5.1'de** (kullanıcı 21.11.2026 21:32 UTC, AYNEN: "haftalık limit devir için kalan adımlara yetmeyecek. D3 den D6 ya kadar olan kısmı 2.5.1 sürümüne bırakalım."); başlıktaki "2.5.0'DA UYGULANIYOR" ve §10 "Sürüm: 2.5.0" bu kararla okunur. 2.5.0'da yalnız altyapı (D0–D2) var.
+- YÖNTEM: §2'deki "yerinde budama / çalışan dosyada tek işlem" yerine G1 geçerli (kopyada üret → doğrula → takas).
+- G2 ↔ G3 İÇ ÇELİŞKİSİ: G2 geçerli — AÇIK fatura da yeni yıl dosyasında fatura olarak YOK, AYRI AÇIK KALEM olur (G3'teki "açık olan kalır: invoices / invoice_lines" başlığı yanıltıcı; parantezi G2'yi söylüyor).
+- G3'teki "açık kalır; ≤K olay bağı çözülür" (şüpheli kayıt, taksit kartı, evrak): kayıt yeni yılda kalır, ama ≤K tarihli kaynaklardan yeni yılda ≤K tarihli muhasebe maddesi ÜRETİLMEZ; etkileri yalnız devir açılış satırlarından (K+1) gelir (P-D türetilmiş kuralı "Aralık ve öncesi kaynaklı türetme yeni yılda kapalı" — KABUL).
+- G13'ün dört açık sorusu G14'te yanıtlı (yeniden sorulmaz).
+- KOD YERLERİ: bu belgedeki dosya adı / satır numarası / göç numarası / sütun adı bilgileri 20.10 ve 05.11 tarihli ESKİ okumalardır; programla çalışan ajanlar güncel eşlemeyi `docs/devir/D3-D4-TASARIM.md` §1.3 ve §4.3'ten alır. Kodu görmeyen kâhin ajanları bu kod bilgilerini KURAL KAYNAĞI saymaz (ders 5) ve tasarım notunu okumaz.
+- Bu sürümün kararları (S-1 / S-2 / S-3, S-KD-1/2/3, S-T2-1, S-UZ-1, S-T4-1, S-T5-1 …) `docs/2.5.1-IS-LISTESI.md` D'de ve kâhinlere verilen karar girdilerinde AYNEN; çelişkide onlar geçer.
+
 Bu dosya tek başına yeterli olacak biçimde yazıldı: yeni bir oturum bunu okuyup işe başlayabilir. Arka plan ve kararların kaynağı
 `docs/devir/DEVIR-MODULU.md` (§1–§10). Kod olguları 20.10.2026'da koddan çıkarıldı (dosya:satır); uygulamaya başlamadan önce **yeniden
 doğrulanır** (2.4.4 kodu değiştirmiş olabilir).
