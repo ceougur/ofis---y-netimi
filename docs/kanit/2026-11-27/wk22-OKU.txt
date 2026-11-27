@@ -1,0 +1,15 @@
+WK 22 — WhatsApp kâhini güncellemesi 22 (2.5.1 Ç5-C; S-W21-1 / 2 / 3 = A) — KANIT DİZİNİ (27.11.2026)
+
+Taban: t251-wk21 = c774eeea (kâhin klasörü değişiklikten önce not defterine kopyalandı: kahin.py sha256 3e252a37…, senaryolar.json 8d73121c…).
+Kod commit'leri: 23c78927 (README §27.1–27.3 yorum, kodlamadan önce) → model + 5 SW21 senaryosu + 9 mutant → kendi testi (I18, I19) → README §27.4–27.11 (c1ecda30).
+Koşular `KANIT_DIR=<not defteri> node tools/kanit.mjs kos …`, her biri `flock -s -w 3600 scratchpad/olcum.lock timeout -k 5 <sn> …` altında; araçlar `wk22-araclar/` (not defterinden kopya).
+
+wk22-senaryolar(.log/.json)                   TZ=UTC              419/419 elle = model; senaryolar.json sha256 982f3a01… (commit'lenenle aynı, ağaç temiz)
+wk22-senaryolar-tz-istanbul                   TZ=Europe/Istanbul  419/419; senaryolar.json sha256 982f3a01… (aynı)
+wk22-yeni-mutantlar / -tz-istanbul            iki TZ              M317–M325: 9/9 DEĞERLE ve kendi SW21 senaryosunda yakalanıyor
+wk22-g3-eski-414-tam-sonuc-fark / -tz-…       iki TZ              414 eski senaryo: 412 bayt bayt aynı + 2 açıklanmış (S23-04, S29-03 — S-W21-3 = A), beklenmeyen 0
+wk22-eski-kahinle-yeni-senaryolar / -tz-…     iki TZ              eski kâhinle 7 yeni / değişen senaryo: 7/7 KIRMIZI, beklenen nedenle (S-W21-1 / S-W21-2 / S-W21-2 (b) ValueError; secenek ↔ tek değer)
+wk22-kahin                                    TZ=UTC              454/454 (F TAM mutasyon 324/324; I18, I19 geçti) — commit c1ecda30, 28,6 sn
+wk22-kahin-tz-istanbul                        TZ=Europe/Istanbul  454/454 (F 324/324) — commit c1ecda30, 28,8 sn (AYRI arka plan işi)
+I19: tohum 2511 → 240 koşu (elenen 1469, Atlandı 42, devirli 98); tohum 2512 → 240 koşu (elenen 1591, Atlandı 42, devirli 80); ihlal 0
+wk22-i19-dis-2511.txt / -2512.txt             bilgi               I19 kümesinde yeni sınıfların sıklığı + mutantlarla ihlalli senaryo sayısı (README §27.6)

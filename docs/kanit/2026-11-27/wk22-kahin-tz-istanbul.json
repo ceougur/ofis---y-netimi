@@ -1,0 +1,32 @@
+{
+  "ad": "wk22-kahin-tz-istanbul",
+  "komut": "python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py",
+  "commit": "c1ecda30a944f4e2e7b28de65de489ff9a2ee39b",
+  "dal": "worktree-agent-a0b46459973ffa457",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T20:03:16.084Z",
+  "sure_sn": 28.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 454,
+    "gecen": 454,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk22-c5c2/kanit/2026-11-27/wk22-kahin-tz-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a0b46459973ffa457",
+  "ham_cikti_sha256": "af26b0b32448e6d56ba8fd841979504a069c630d961fe12bed48faf510efedd4",
+  "ham_cikti_bayt": 134904
+}
