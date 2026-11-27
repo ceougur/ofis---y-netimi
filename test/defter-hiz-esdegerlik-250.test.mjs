@@ -115,12 +115,10 @@ describe("H2 — yüklenen kartın alanları (ayrı sorgu) ↔ veri tabanı", ()
           for (const row of openings) assert.ok(byId.has(`plan-entry:${row.id}`), `bağlı kartın açılış satırı ${row.id} ayrı madde`);
         } else {
           if (T - P > 0) assert.equal(credit519, T - P, `kart ${card.id}: tek madde T − P`);
-          // KG-5 B5: maddenin günü yüklemenin (plan_imports.created_at) YEREL günü — veri tabanından, sürecin saat dilimiyle.
-          const stamp = app.store.get("SELECT x.created_at AS at FROM plans p JOIN plan_imports x ON x.id = p.import_id WHERE p.id = ?", card.id)?.at;
-          if (T - P > 0 && stamp) {
-            const day = new Date(stamp);
-            assert.equal(entry.date, `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`, `kart ${card.id}: madde yükleme gününde`);
-          }
+          // 2.5.1 D3 tur 3 — BEKLENTİ BİLEREK DEĞİŞTİ (KULLANICI KARARI S-KD-3 = B, 27.11.2026): maddenin günü kartın KAYIT TARİHİ (boşsa oluşturma günü) — önceden yüklemenin
+          // (plan_imports.created_at) yerel günüydü (KG-5 B5). Veri tabanından.
+          const registered = app.store.get("SELECT COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS day FROM plans WHERE id = ?", card.id)?.day;
+          if (T - P > 0 && registered) assert.equal(entry.date, registered, `kart ${card.id}: madde Kayıt Tarihi'nde`);
           for (const row of openings) assert.ok(!byId.has(`plan-entry:${row.id}`), `kart ${card.id}: açılış satırı ${row.id} maddesiz`);
         }
         assertSubset(`kart ${card.id}`, app.ledger.build({ plans: [card.id] }), byId);
