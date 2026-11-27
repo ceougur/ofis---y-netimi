@@ -429,6 +429,40 @@ Linux'ta ve Windows Node 22'de (o koşuda sürüyordu) aynı testler yeşil / bi
 {rapor()}
 """
 
+# ---------------------------------------------------------------- KDV ÖZETİ KÜÇÜK TURU (27.11; M1 dar kontrolünden sonra)
+M1K = f"""Sen DestekOfis projesinde 2.5.1'in KDV ÖZETİ KÜÇÜK TURU KOD ajanısın (eforun high). KDV Özeti'nin devreden KDV paketi (tur 1 + tur 2) ana dalda (birleşim c57e2710); bağımsız dar kontrolü bitti. Sen temiz bağlamla YALNIZ aşağıdaki işleri yaparsın (ders 46). Mahsup fişi, mahsup ön izlemesi ve defter DEĞİŞMEZ — yalnız rapor.
+
+{hazirlik(taban="t251-m1k-taban", taban_ne="çalışma dalının ucu (KDV Özeti paketi ana dalda)")}
+3. Sonra oku: paketin farkı `git diff 64396478 f2b3b668 -- server client test`, KDV Özeti'nin iki yeni testi ve iki ekran senaryosu (`test/kdv-ozeti-*-251.test.mjs`, `test/e2e/senaryo-kdv-*-251.mjs`), dar kontrolün yeniden üretim betiği `{SP}/dk-m1/senaryo.mjs` (senaryolar L, L2 — OKU, kendi not defterine kopyala; değiştirme).
+
+## Kararlar (AYNEN)
+- S261 (KULLANICI 22.11 19:47 UTC AYNEN: "orta bulguyu 2.5.1 de düzeltelim") ve S-M1-1 = B (KULLANICI 27.11 07:07 UTC AYNEN: "önerini uygula" — zincirli devreden; atlanan ay sırayla mahsup edilmiş gibi; özette "Mahsup Edilmemiş Ay" notu) — paketin kararları, DEĞİŞMEZ.
+- S-DKM1-1 = A (KULLANICI 27.11 14:18 UTC AYNEN: "önerilerini uygula açık sorulara"). Soru: mahsup fişi kesilmiş ayın kayıtları sonradan İndirilecek KDV'yi azaltırsa (ör. alış faturası İptal Et) KDV Özeti o ayın sonucunu nereden alsın? Örnek: Ocak satış KDV 1.000, alış KDV 500 → Ocak mahsubu ödenecek 500; sonra Ocak alışı iptal; Şubat satış KDV 200 → Şubat fişi 700 (azalan 500 Şubat'a taşındı — S4); Mart 400 → fiş 400; fişler 1.600 = 391. Bugün rapor Ocak 1.000 / Şubat 700 / Mart 400, Ocak–Mart Ödenecek 2.100 (azalma iki kez sayılıyor; eski kod 1.600). A (SEÇİLEN): o ayın sonucu kesilmiş fişten — Ocak 500 / Şubat 700 / Mart 400, toplam 1.600 = fişler = 391; Ocak satırında 'bu ayın kayıtları fişten sonra değişti' notu. (Reddedilen B: ay satırları güncel kayıtlardan, Şubat azalmayı taşımaz; C: böyle kalsın.)
+- S-M1-3 = C (KULLANICI 27.11 09:29 UTC AYNEN: "önerilerini uygula, sıkıştırma hazırlığı yap"): mahsup fişi kesildikten SONRA o aya kayıt girilmiş / değişmiş ayda (ARTIRAN yön — S-DKM1-1'in kapsamadığı) sayılar BİLİNEN SINIR olarak kalır + o aya kısa not: "mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin".
+- S-M1-2 (BAŞ MİMAR = B, kullanıcıya gösterildi): kopuk zincirde fişin YÖNÜ zincirle tersse (fiş 'devreden 1.000', zincir 'ödenecek 800') sayılar aynı, not metni yön farkını da yazar.
+- BAŞ MİMAR (ana oturumun ekran yürüyüşü): tablo penceresi dar gelince tablo ALTINDAKİ çok satırlı toplam bölümünde satırlar üst üste biniyor (Mart'ta 'Ödenecek KDV ₺0,00', Bu Yıl'da TOPLAM ve 'Önceki Dönemden Devreden' görünmüyor; kaydırınca görünür) → bütün satırlar görünür olmalı; not kartlarındaki uzun cümle büyük kalın yazıyla — normal ağırlıkta, okunur boyda.
+{KURALLAR_KULLANICI}
+
+## İş (her adım bitince commit)
+0. NASIL BOZULUR (koddan ÖNCE, commit): S-DKM1-1'in sınırı — azaltan ↔ artıran fark, fiş zincirde / kopuk, aralığın ortasında / başında / sonunda biten ay, yıl dönümü, mahsubu geri alınmış ay; ekran = PDF = Excel.
+1. S-DKM1-1 = A: dar kontrolün L2 senaryosu → Ocak 500 / Şubat 700 / Mart 400, Ocak–Mart Ödenecek 1.600, Ocak'ta not. Kalıcı test (beklenen sayılar ELLE). Dar kontrolün L senaryosundaki 'Zincirle Uyuşmayan Mahsup Fişi' notunun çıkmaması (DÜŞÜK-1; aynı koşul) bu düzeltmeyle kendiliğinden kapanıyorsa göster; kapanmıyorsa DOKUNMA, raporda yaz.
+2. S-M1-3 notu, S-M1-2 yön notu, tablo altı satırları, not yazı biçimi (YAZIM DÜZENİ: not cümle düzeninde).
+3. Eksik testler (dar kontrolün yaşayan iki mutantı): mahsupsuz ayın S4 emilimi (zincirde) ve 'Mahsup Edilmemiş Ay' notunun 6 ay sınırı — her biri o mutantta kırmızı.
+4. Kaynak yorumu: Rapor Merkezi'nde KDV Özeti yardımcısının nereye geçtiğini söyleyen eski yorum (yardımcı artık vergi yolunda) düzeltilir.
+5. CI dışı Excel denetim betiği `test/excel-denetim/ekran-hafta.mjs` KDV Özeti kartlarının ESKİ adlarını ('Hesaplanan KDV (391)', 'İndirilecek KDV (191)', 'Devreden KDV') bekliyor — yeni adlara ve yeni anlamlara (üç sonuç kartı: Önceki Dönemden Devreden / Ödenecek / Sonraki Döneme Devreden) göre güncelle; betik koşuluyorsa koş, koşulamıyorsa nedenini yaz.
+6. EKRAN: KDV Özeti'ne dokunan BÜTÜN ekran senaryoları (ders 37 — tahminle seçilmez): senaryo-banka-210, senaryo-c7b-kabul-250, senaryo-defter-243, senaryo-kdv-devreden-251, senaryo-kdv-donemi-250, senaryo-kdv-zincir-251, senaryo-mobil-247 — hepsi koşulur, yeşil (beklentisi değişen her senaryo koşulup yeşili görülür — ders 28). Dar pencere + not kartı için ekran görüntüsü (deviceScaleFactor 1) kanıta.
+
+## Kabul koşulları
+A. Yeni testler taban kodunda (t251-m1k-taban; AYRI kopya) BEKLENEN NEDENLE kırmızı, yenide yeşil, iki TZ. B. KDV Özeti'nin bütün testleri + komşular (`git grep` — vergi / rapor merkezi / mahsup testleri) iki TZ. C. `npm run test:kahin-defter` iki TZ — tabanla AYNI. D. Mahsup ön izlemesi ve fiş eski kodla birebir (dar kontrolün A, B, C, E, F, J, L senaryolarında). E. Yukarıdaki yedi ekran senaryosu yeşil. F. Mutantlar (yeni + paketin mutantları) iki TZ.
+
+## Dosya sınırı
+`server/routes/tax.mjs` (YALNIZ KDV Özeti'nin rapor görünümü — mahsup fişi / ön izleme yazımı DEĞİŞMEZ), `server/routes/report-center.mjs` (YALNIZ KDV Özeti bölümü), istemcide YALNIZ Rapor Merkezi'nin KDV Özeti görünümü ve onun stili, `test/kdv-ozeti-*`, `test/e2e/senaryo-kdv-*`, beklentisi değişen ekran senaryoları (yalnız KDV Özeti satırları), `test/excel-denetim/ekran-hafta.mjs`, `test/fixtures/**`. YASAK: defter türetmesi, mahsup fişi / ön izleme yazımı, göçler, `.github/**`, `package.json`, `test/bagimsiz/**`, kılavuz.
+
+{kurallar('m1k', taban="t251-m1k-taban")}
+
+{rapor()}
+"""
+
 # ---------------------------------------------------------------- DAR KONTROLLER (27.11; prensip §9 iskeleti — düzeltmenin raporu / görev metni VERİLMEZ)
 def dar(ad, n, aralik, isler, kararlar, yorumlar, ne_ara, yasak):
     return f"""Sen DestekOfis projesinde bağımsız DAR KONTROL {n} incelemecisisin (2.5.1; eforun high); yalnız HATA ararsın, düzeltme / commit / push YAPMAZSIN, çalışma ağacının izlenen dosyalarına dokunmazsın. Yanıtın Türkçe. Kendi arka plan işin sürerken rapor vermeden BİTİRME.
@@ -546,7 +580,7 @@ Tur 1'in dosyaları + taksit numarasını GÖSTEREN / YAZAN çıktı yolları (m
 Ek olarak raporda: 'anlık üretilen ↔ saklı metin' tablosu (karar 3); teslim notu için tek cümle (kullanıcı dilinde: numara değişikliği ve eski kâğıtlarla fark); komşu listesinin çıkarılış komutları.
 """
 
-for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C), ("m2", M2), ("d3t2", D3T2), ("d3t3", D3T3), ("sur", SUR), ("mi2", MI2), ("dk-d4on", DK_D4ON), ("dk-m1", DK_M1), ("d4ont2", D4ONT2)):
+for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C), ("m2", M2), ("d3t2", D3T2), ("d3t3", D3T3), ("sur", SUR), ("mi2", MI2), ("dk-d4on", DK_D4ON), ("dk-m1", DK_M1), ("d4ont2", D4ONT2), ("m1k", M1K)):
     yol = os.path.join(out, f"{ad}-istem.txt")
     open(yol, "w", encoding="utf-8").write(metin)
     print(ad, len(metin.encode()), yol)

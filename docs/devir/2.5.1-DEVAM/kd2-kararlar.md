@@ -26,6 +26,12 @@ yükleme 03.01.2027, kart 9.000; sonra 31.12.2026 kesimli devir)?
   alınır, yükleme anı değil).
 - C: uç durum böyle kalsın (BİLİNEN SINIR).
 
+**S-T2-1 = B** (KULLANICI 27.11 14:18 UTC, AYNEN: "önerilerini uygula açık sorulara"). Soru: K'den sonra yapılan "Mahsup Et"in karşı belgesi K'den önceki bir alış faturasıysa? Örnek: Aralık'ta satış 400 ve
+alış 150; Ocak'ta yeni satış 300; 17.01'de Ocak satışı Aralık alışıyla 150 mahsup ediliyor. Devirsiz: Aralık satışı 400 açık, Ocak satışı 150 açık (bakiye 550; 01.01–29.01 gecikmiş 400).
+- A: böyle kalsın (mahsup yeni yılda etkisiz; Aralık satışı 250 açık, Ocak satışı 300 açık, gecikmiş 250).
+- **B (SEÇİLEN):** devir, K sonrası mahsubun K öncesi karşı belgesini o mahsuba ayırır — DEVİRLİ = DEVİRSİZ (örnekte Aralık satışı 400 açık, Ocak satışı 150 açık, gecikmiş 400).
+- C: uç durum böyle kalsın (BİLİNEN SINIR).
+
 **DEVİR NEDEN DURDU** — aynı iletinin ikinci kısmı. BAŞ MİMAR OKUMASI (kullanıcıya gösterildi; DEĞERLENDİR): devri durduran HER neden kullanıcıya açık Türkçe cümleyle
 yazılır; birden çok neden varsa HEPSİ birlikte listelenir (kullanıcı tek tek düzeltip yeniden denemek zorunda kalmasın); uyarılar (durdurmayan) ayrı başlıkta.
 KÂHİNE DÜŞEN KISIM (cümle metni kâhinin işi DEĞİL): bir devir reddinde kâhin, o anda geçerli olan BÜTÜN ret nedenlerini birlikte (küme olarak) verir — ilk nedende
@@ -52,6 +58,8 @@ yapmadı — doğru davranış). Metinler 2.5.0 sürecinden AYNEN (S184 bağlam 
   atanmamış 102.00 / 108.00 + Devir Kapanışı × devir) bu metinle yeniden denetlenir; senaryolar bu okumaya uymuyorsa farkı ve hangi karardan çıktığını yaz.
 
 ## 3. Bu bakımda kâhine eklenecek / denetlenecek SINIFLAR (elle senaryo; beklenenler ELLE, model koşulmadan)
+
+0. S-T2-1 = B: K sonrası Mahsup Et × K öncesi karşı belge (alış ve satış yönü; kısmi mahsup; mahsubun silinmesi) — devirli = devirsiz.
 
 1. S-KD-1: alt defter farkı (toplam 0; cari alt hesapları arasında +/−) kalmış düzeltilmemiş kural farkı → devir REDDİ (neden: kural farkı); "Kilidi Aç → Yeniden
    Kilitle" (dönem kilidinin kaldırılıp yeniden konması — README'deki kilit olaylarıyla) sonrasında fark yoksa devir GEÇER. Fark hiç yokken ret YOK.
