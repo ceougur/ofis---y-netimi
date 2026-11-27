@@ -11,15 +11,17 @@ KULLANICI KURALI — SORU DÜZENİ (06.11, AYNEN: "bana soru sorduğunda eğer �
 KULLANICI KURALI — DÖNGÜYE GİRME (20.11, AYNEN: "yapılan işlerde döngüye girmeyelim detaylara boğulup, programı yada kullanıcıyı etkileyemem hususları 2.5.1 sürümüne bırakalım"): programın davranışını, sayılarını, hızını ya da kullanıcının gördüğünü DEĞİŞTİRMEYEN her husus (test düzeni, araç, ölçüm nüansı, doğrulanmamış kuşku, sayıları doğru görünüm ayrıntısı) KOVALANMAZ; raporun 'SONRAKİ SÜRÜME' başlığına yazılır. Kalite kapıları AYNEN.
 KULLANICI KURALI — REFERANS PROGRAMLAR (12.11): yaygın muhasebe programları referans alınabilir; bir programın davranışı ancak belgesi / ekranı okunmuşsa dayanak yazılır, hafızadan 'şu program böyle yapar' denmez."""
 
-def hazirlik(kod=True):
+def hazirlik(kod=True, taban=None, taban_ne="2.5.1 başlangıç commit'i"):
+    taban = taban or TABAN
     s = f"""## Hazırlık
-1. Kendi ağacında (kendi commit'in YOKKEN) `git reset --hard {TABAN}`; `git log --oneline -1` ile doğrula (etiket {TABAN} = 2.5.1 başlangıç commit'i); değilse DUR ve bildir. `ln -s {ANA}/node_modules node_modules` (`npm ci` YOK). Tarayıcı gerekiyorsa `PLAYWRIGHT_BROWSERS_PATH={SP}/pw-1194` (`playwright install` YOK).
+1. Kendi ağacında (kendi commit'in YOKKEN) `git reset --hard {taban}`; `git log --oneline -1` ile doğrula (etiket {taban} = {taban_ne}); değilse DUR ve bildir. `ln -s {ANA}/node_modules node_modules` (`npm ci` YOK). Tarayıcı gerekiyorsa `PLAYWRIGHT_BROWSERS_PATH={SP}/pw-1194` (`playwright install` YOK).
 2. ÖNCE oku: `CLAUDE.md` (anayasa, test kuralı, dersler 1–55, yazım düzeni, kalıcı ürün kararları), `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`, `docs/devir/2.5.1-PLAN-TASLAK.md` (yalnız kendi işinin bölümü)."""
     if kod:
         s += " Kâhin MODEL dosyaları OKUNMAZ, `test/bagimsiz/**` YAZILMAZ."
     return s
 
-def kurallar(ad, kod=True):
+def kurallar(ad, kod=True, taban=None):
+    TABAN = taban or globals()["TABAN"]
     s = f"""## Ortak kurallar
 - Yanıtın ve raporun TÜRKÇE. PUSH YOK (ana oturum birleştirir). Her bitmiş adımı (kod + testi + kanıtı) HEMEN commit et; commit'e yalnız kendi yolların (`git add <yol>`; `-A` / `-u` / `commit -a` YOK — ders 44). Zamanlanmış görev KURMA. Kendi arka plan işin sürerken rapor vermeden BİTİRME; bekleme için boş döngü kurma.
 - GIT_DIR / GIT_WORK_TREE VERME (ders 54). `pkill` / `killall` / joker `rm` YOK; yalnız kendi oluşturduğun TAM yol silinir (ders 36). Disk 5 GB'ın altına düşmez (`df -h /`).
@@ -211,8 +213,43 @@ YENİ: `server/lib/devir/plan.mjs`, `plan-reader.mjs`, `preflight.mjs`, `report.
 Ek olarak raporda: DEVİR PLANI nesnesinin TAM biçimi (alan alan; sürücü ajanı buradan okuyacak); hacim tablosu (bileşen bileşen); B-9 için ÖLÇÜLMÜŞ öneri; D4a'nın D3'ten beklediği türler; S-1 / S-2 / S-3 yanıtı değişirse dokunulacak TEK yer.
 """
 
+# ---------------------------------------------------------------- M1 TUR 2 (27.11; S-M1-1 = B önerisi)
+M1T2 = f"""Sen DestekOfis projesinde 2.5.1'in M1 TUR 2 KOD ajanısın (KDV Özeti — devreden KDV'nin ZİNCİRLİ hesabı; eforun high). Tur 1 başka bir ajanla bitti (dal ucu etiketi t251-m1-tur1); sen temiz bağlamla YALNIZ aşağıdaki değişikliği yaparsın (ders 46). Defter, KDV Mahsup Fişi ve onun ön izlemesi DEĞİŞMEZ — yalnız RAPOR.
+
+{hazirlik(taban="t251-m1-tur1", taban_ne="M1 tur 1'in dal ucu (60f1a0a7)")}
+3. Sonra oku: `docs/devir/2.5.1-DEVAM/m1-rapor.md` (tur 1'in raporu — özellikle §1 tarama, §7 S-M1-1, §8 kararlar), tur 1'in görev metni `{ANA}/docs/devir/2.5.1-DEVAM/m1-istem.txt` (kararlar AYNEN geçerli; yalnız aşağıda DEĞİŞENLER geçersiz kılar), tur 1'in kodu (`git diff t251-taban..t251-m1-tur1 -- server test`) ve betikleri `docs/kanit/2026-11-27/m1-betik/`.
+
+## Kararlar
+KULLANICI 22.11 19:47 UTC (AYNEN): "orta bulguyu 2.5.1 de düzeltelim" (S261 — tur 1 görev metninde tam metni).
+S-M1-1 (tur 1 raporu §7; kullanıcıya SORULDU 27.11 — ÖNERİ B uygulanıyor, kullanıcı DEĞİŞTİREBİLİR → A ↔ B kodda TEK yerden değişecek biçimde yaz, raporda yerini göster): mahsup fişi kesilmemiş aylarda "Önceki Dönemden Devreden KDV" nereden gelsin? A (tur 1'de kodlanan): defterdeki 190 bakiyesinden (ön izlemeyle aynı; mahsupsuz ayda zincir kopar). **B (ÖNERİ — bu turda kodlanır): ZİNCİRLİ** — her ayın önceki dönemden devredeni, bir önceki ayın sonraki döneme devredenidir; mahsup fişi kesilmemiş ayın sonucu, o ay SIRAYLA mahsup edilmiş olsaydı çıkacak sayıdır (aynı mahsup formülüyle). Tur 1'in örneği: Eylül sonu devreden 1.960, Ekim satış KDV 400 MAHSUP EDİLMEDİ, Kasım satış KDV 1.000 → Kasım: önceki 1.560 / ödenecek 0 / sonraki 560 (A'da 1.960 / 0 / 960). Gerekçe: rapor beyanname hazırlığıdır; beyannamedeki devreden programın iç mahsup fişinin kesilip kesilmediğine bağlı değildir; mahsup fişini hiç kullanmayan şirkette A yıllık devredeni yalnız son ayın farkına indiriyor (100 bin verisinde 7.978,23 ↔ birikmiş ~3,3 milyon).
+BAŞ MİMAR KARARLARI 27.11 (kullanıcıya gösterilecek; değiştirebilir):
+ (1) ZİNCİRİN TANIMI: aylar takvim sırasıyla işlenir; ayın farkı tur 1'deki mahsup hesabıyla (TEK formül — ikinci formül yazılmaz). Devreden yöndeki sonuç sonraki aya taşınır; ödenecek yöndeki sonuç taşınmaz (ödenir). Hareketsiz ay devredeni aynen taşır.
+ (2) ZİNCİRİN BAŞLANGICI: şirketin KDV hareketi olan ilk ayından önceki devreden = defterdeki 190'ın o andaki bakiyesi (açılıştan gelen devreden varsa o; yoksa 0). Koddan oku; 190'a açılış yazan bir yol varsa adıyla raporla.
+ (3) MAHSUP EDİLMİŞ AYLAR: bütün aylar sırayla mahsup edilmişse zincir = defter = ön izleme (A = B) — DEĞİŞMEZ, testle. Bir ay mahsup edilmiş ama zincirin o aya getirdiği devreden defterdeki fişin kullandığından FARKLIYSA (önceki bir ay atlanıp sonraki mahsup edilmiş) rapor ZİNCİRİ gösterir ve özette not yazar: hangi ayın fişi hangi devredenle kesilmiş, zincire göre ne olmalıydı (iki sayı). Bu durumda ödenecek / devreden yönü değişiyorsa (defterde ödenecek yazılmış, zincire göre devreden ya da tersi) KODLAMA — 'KULLANICIYA SORULMALI'.
+ (4) "Mahsup Edilmemiş Ay" notu KALIR; metni zincirli hesabı söyler (ör. "… için sayılar mahsup fişi sırayla kesilmiş gibi hesaplandı; ayları sırayla mahsup edin."). Cümle düzeninde.
+ (5) Tur 1 raporu §8'in altı kararı KABUL: aralığın "Sonraki Döneme Devreden"i aralığın son ayının zincir sonucu; aralığın "Ödenecek KDV"si ayların ödeneceklerinin toplamı; ay satırları yalnız çok aylı aralıkta ve tam aylarda; üç sonuç satırı her zaman görünür; belgesiz tek ayda tablo boş, sayılar özette; not kalır.
+ (6) KDV Mahsup Fişi ön izlemesi ve fişi bu turda da DEĞİŞMEZ (mahsupsuz ayda rapor ile ön izleme AYRIŞIR — not bunu söyler; ön izlemenin zincire uyması ayrı karar, raporda öner).
+{KURALLAR_KULLANICI}
+
+## İş
+0. NASIL BOZULUR (rapor taslağının başına, koddan ÖNCE, commit): hiç mahsup fişi yok; ortada bir ay atlanmış; atlanan aydan SONRAKİ ay mahsup edilmiş (kopuk zincir — karar (3)); ödenecek aydan sonra yeniden devreden; mahsup fişi silinmiş / yeniden kesilmiş; yıl başını aşan aralık; verinin ilk ayından önce başlayan aralık; hareketsiz aylar; 190 açılışı; KDV İndirim Dönemi başka aya atılmış alış; iadeler, tevkifat; kilitli dönem; iki şirket; gelecek / boş dönem.
+1. KOD: karar (1)–(6). A ↔ B tek yerde.
+2. TESTLER (tur 1'in test dosyasına ek ya da yanına): S-M1-1 örneği (B sayıları 1.560 / 0 / 560; ELLE yazılı); hiç mahsup yok (üç dört aylık elle hesaplanmış zincir, arada ödenecek ay); kopuk zincir notu; karar (3) değişmezi (hepsi sırayla mahsup → rapor = ön izleme = 190, ay ay); mali müşavirin tur 1'deki beklentileri (Şubat 2.000 / 0 / 800; Mayıs 1.140 / 60 / 0; Eylül 2.000 / 0 / 1.960) AYNEN yeşil; ekran = PDF = Excel; tur 1 kodunda (taban t251-m1-tur1; AYRI kopya) yeni sınamalar BEKLENEN NEDENLE kırmızı (ör. Kasım 'önceki 1.960').
+3. HIZ: KDV Özeti yıllık ve tek ay açılışı temiz 100 bin kopyasında tur 1 ↔ tur 2 (tur 1'in `olc-kdv.sh` betiği; ÖZEL kilit, yük > 2 ise GEÇERSİZ); tur 1'e göre %10'dan kötü değil. 100 bin verisinde (hiç mahsup yok) yıllık "Sonraki Döneme Devreden" sayısını raporda yaz ve elle bir ara ayla sağla.
+
+## Kabul koşulları
+A. `npm run test:kahin-defter` iki TZ — tur 1 ile AYNI. B. Tur 1'in bütün testleri + komşu listesi (`komsu.sh`) iki TZ yeşil; beklentisi değişen her test / ekran senaryosu KOŞULUR (ders 28). C. MUTANTLAR DEĞERLE (tur 1'in 10 mutantı + en az: mahsupsuz ayı zincirden atla; ödenecek aydan sonra devredeni taşı; zinciri aralığın ilk ayından başlat (öncesini unut); kopuk zincir notunu yazma; A ↔ B anahtarını ters çevir) — her biri en az bir testte kırmızı; mutantlar İKİ TZ'de.
+
+## Dosya sınırı
+Tur 1 ile aynı: `server/routes/report-center.mjs` (YALNIZ KDV Özeti raporu ve yardımcıları), `server/routes/tax.mjs` (yalnız rapora hesap veren işlevler; ön izlemenin / fişin davranışı AYNEN), testler + `test/fixtures/**`. Başka her dosya YASAK.
+
+{kurallar('m1t2', taban="t251-m1-tur1")}
+
+{rapor()}
+"""
+
 out = os.path.dirname(os.path.abspath(__file__))
-for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3)):
+for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2)):
     yol = os.path.join(out, f"{ad}-istem.txt")
     open(yol, "w", encoding="utf-8").write(metin)
     print(ad, len(metin.encode()), yol)
