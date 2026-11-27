@@ -179,12 +179,97 @@ function linksAfter(store, K) {
     for (const row of store.all(`SELECT id, date, invoice_id AS inv FROM invoice_offsets WHERE date > ?1 AND invoice_id IN (${before})`, K)) add("invoice_offsets", row.id, "invoice_id", row.date, row.inv);
     // D3 tur 2 (gerçek bağ, tek borç sırası 0. adım — Mahsup Et iki belgeyi birlikte kapatır): mahsubun KARŞI faturası da ≤K olabilir (belge >K, karşı belge ≤K; ya da iki belge ≤K).
     for (const row of store.all(`SELECT id, date, counter_id AS inv FROM invoice_offsets WHERE date > ?1 AND counter_type = 'invoice' AND counter_id IN (${before})`, K)) add("invoice_offsets", row.id, "counter_id", row.date, row.inv);
+    // D3 tur 4 (S-T2-1 = B): mahsubun karşı belgesi ≤K Alacak Yaz / Borç Yaz SATIRI da olabilir (counter_type 'entry') — bağ o satırın devir kalemine yönelir.
+    if (has(store, "account_entries")) for (const row of store.all("SELECT id, date, counter_id AS entry FROM invoice_offsets WHERE date > ?1 AND counter_type = 'entry' AND counter_id IN (SELECT id FROM account_entries WHERE date <= ?1)", K)) out.push({ table: "invoice_offsets", rowId: row.id, field: "counter_id", date: row.date, invoiceId: "", entryId: row.entry });
   }
   // D3 tur 2 (tasarım §3.5 madde 7 "iade bağı", G14 (1); tek borç sırası karar (2) "iade → asıl fatura"): K'den SONRA kesilmiş iade faturasının ≤K asıl faturası.
   if (columns(store, "invoices").has("original_id")) for (const row of store.all(`SELECT id, issue_date AS date, original_id AS inv FROM invoices WHERE issue_date > ?1 AND original_id <> '' AND original_id IN (${before})`, K)) add("invoices", row.id, "original_id", row.date, row.inv);
   if (has(store, "cheque_events") && columns(store, "cheque_events").has("invoice_id")) for (const row of store.all(`SELECT id, date, invoice_id AS inv FROM cheque_events WHERE date > ?1 AND invoice_id <> '' AND invoice_id IN (${before})`, K)) add("cheque_events", row.id, "invoice_id", row.date, row.inv);
   if (has(store, "fin_events")) for (const row of store.all(`SELECT id, date, invoice_id AS inv FROM fin_events WHERE date > ?1 AND invoice_id <> '' AND invoice_id IN (${before})`, K)) add("fin_events", row.id, "invoice_id", row.date, row.inv);
   if (has(store, "plans") && columns(store, "plans").has("invoice_id")) for (const row of store.all(`SELECT id, COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS date, invoice_id AS inv FROM plans WHERE deleted_at IS NULL AND invoice_id <> '' AND invoice_id IN (${before})`, K)) add("plans", row.id, "invoice_id", row.date, row.inv);
+  return out;
+}
+
+// ---------- D3 tur 4 — S-T2-1 = B: K'den SONRA yapılan Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba AYRILIR ----------
+// KULLANICI 27.11.2026 14:18 UTC (AYNEN: "önerilerini uygula açık sorulara") — S-T2-1 = B: "devirde, yeni yılda (K'den sonra) yapılan 'Mahsup Et'in karşı belgesi eski yıldaki (K ve öncesi)
+// bir alış faturasıysa devir planı o eski belgeyi K kuyruğunda o mahsuba AYIRIR — DEVİRLİ = DEVİRSİZ"; satış yönü, kısmi mahsup ve mahsubun sonradan silinmesi aynı kural.
+// Bugünkü program Mahsup Et'i tarihten bağımsız, tek borç sırasının 0. adımında (her şeyden önce) uygular (lib/obligation-queue.mjs "0: Mahsup Et"). Devirsiz eşi bu yüzden:
+//   (1) ayrılan tutar = devirsiz tek borç sırasının (carinin BÜTÜN satırları — programın bugünkü kuyruğu, aynı işlev) o mahsuba verdiği pay (ana faturanın kapatanlarından; kilitli dönem
+//       sınırı ve sıra kuyruğun kendisinden — elle formül YOK);
+//   (2) K kuyruğunda ≤K belge 0. adımdaki gibi bu pay kadar ÖNCEDEN azaltılır (başka kalemi netleyemez);
+//   (3) mahsubun öbür belgesi K'den sonraysa pay yeni yıla o ≤K belgenin AÇIK KALEMİ olarak devreder ("yeni-yila-ayrildi"; yeni yılda mahsup o devir kalemine yönelir — D4a şartı);
+//       iki belge de ≤K ise mahsup K'de uygulanmış sayılır ("k-de-kapandi"; yeni yılda yeniden uygulanmaz — D4a şartı).
+// Ağır okuma yok (ders 47): devirsiz kuyruk YALNIZ böyle mahsubu olan carilerde kurulur. Silinmiş mahsup tabloda yoktur → hiçbir şey ayrılmaz.
+const docKeyOf = line => (line.origin === "invoice" && line.kind !== "in" && line.kind !== "out" ? `inv:${line.sourceId}` : line.origin === "account" && (line.kind === "debt" || line.kind === "credit") ? `line:${line.id}` : "");
+const counterKeyOf = offset => (offset.counterType === "invoice" ? `inv:${offset.counterId}` : `line:${offset.counterId}`);
+const lineMinor = line => Math.round(((Number(line.debit) || 0) || (Number(line.credit) || 0)) * 100);
+
+/** Bir carinin K sonrası mahsuplarının ≤K belgelere ayırımı. Dönüş: { lines (K kuyruğunun girdisi — ≤K satırlar, ayrılan pay düşülmüş), reserved: Map(kalem anahtarı → kuruş), docs, rows }. */
+export function offsetReservations({ party, lines, own, tables, extras, input, K, today, queue = buildObligations }) {
+  const docs = new Map();
+  for (const line of own) {
+    const key = docKeyOf(line);
+    if (key) docs.set(key, line);
+  }
+  const later = (tables.offsetsOf?.get(party) || []).filter(offset => offset.date > K && (docs.has(`inv:${offset.invoiceId}`) || docs.has(counterKeyOf(offset))));
+  if (!later.length) return { lines: own, reserved: new Map(), docs, rows: [] };
+  const full = queue(input.withExtras(input.batchSettleInput(party, lines, tables, today), extras, party));
+  const cut = new Map();
+  const reserved = new Map();
+  const rows = [];
+  for (const offset of later) {
+    const take = (full.invoices.get(offset.invoiceId)?.closers || []).filter(closer => closer.mode === "offset" && closer.id === `offset:${offset.id}`).reduce((sum, closer) => sum + Math.round(Number(closer.amount) * 100), 0);
+    if (!(take > 0)) continue;
+    const sides = [`inv:${offset.invoiceId}`, counterKeyOf(offset)];
+    const old = sides.filter(key => docs.has(key));
+    for (const key of old) cut.set(key, (cut.get(key) || 0) + take);
+    const kind = old.length === 2 ? "k-de-kapandi" : "yeni-yila-ayrildi";
+    if (kind === "yeni-yila-ayrildi") reserved.set(old[0], (reserved.get(old[0]) || 0) + take);
+    rows.push({ mahsup: offset.id, tarih: offset.date, belgeler: old, karsi: sides.find(key => !docs.has(key)) || "", tutarMinor: take, tur: kind });
+  }
+  if (!cut.size) return { lines: own, reserved, docs, rows };
+  const shrunk = own.map(line => {
+    const less = cut.get(docKeyOf(line));
+    if (!less) return line;
+    const left = Math.max(0, lineMinor(line) - less) / 100;
+    return Number(line.debit) > 0 ? { ...line, debit: left } : { ...line, credit: left };
+  });
+  return { lines: shrunk, reserved, docs, rows };
+}
+
+/** Ayrılan payı K kuyruğunun kalemlerine geri ekler (belgenin açık kalemi; yoksa belgenin kendi verisinden kurulur — vade: faturanın vadesi / satırın Vade Tarihi, yoksa belge günü). */
+export function withReserved(items, { reserved, docs, lines }, queued) {
+  if (!reserved.size) return items;
+  const out = items.map(item => (reserved.has(item.key) ? { ...item, remaining: Math.round(item.remaining * 100 + reserved.get(item.key)) / 100 } : item));
+  const present = new Set(items.map(item => item.key));
+  const order = [...lines].sort((a, b) => (a.date === b.date ? String(a.at || "").localeCompare(String(b.at || "")) : a.date < b.date ? -1 : 1)).map(line => line.id);
+  for (const [key, minorValue] of reserved) {
+    if (present.has(key)) continue;
+    const line = docs.get(key);
+    const invoice = key.startsWith("inv:") ? (queued.invoices || []).find(row => row.id === line.sourceId) : null;
+    out.push({
+      key,
+      kind: invoice ? "invoice" : "entry",
+      side: Number(line.debit) > 0 ? "receivable" : "payable",
+      lineId: line.id,
+      invoiceId: invoice ? line.sourceId : "",
+      planId: "",
+      itemId: "",
+      seq: 0,
+      origin: line.origin,
+      lineKind: line.kind,
+      date: line.date,
+      vade: (invoice ? invoice.dueDate : queued.dueDates?.get(line.id)) || line.date,
+      at: line.at || "",
+      rank: Math.max(0, order.indexOf(line.id)),
+      sub: 0,
+      amount: lineMinor(line) / 100,
+      remaining: minorValue / 100,
+      promise: queued.promises?.get(line.id) || "",
+      due: true,
+      doubtful: 0,
+    });
+  }
   return out;
 }
 
@@ -340,15 +425,19 @@ export function readDevirFacts({ store, ledger, K, today, company = null, accoun
   const extras = input.obligationExtras(null, doubtful.byParty);
   const obligations = new Map();
   const installments = new Map();
+  const offsetRows = [];
   for (const [id, lines] of ledgers) {
     const own = lines.filter(line => line.date <= K);
     if (!own.length) continue;
-    const queued = input.withExtras(input.batchSettleInput(id, own, tables, nextDay), extras, id);
+    // S-T2-1 = B (yukarıda offsetReservations): K sonrası mahsubun ≤K belgeden aldığı pay K kuyruğuna girmeden ayrılır.
+    const reservation = offsetReservations({ party: id, lines, own, tables, extras, input, K, today });
+    for (const row of reservation.rows) offsetRows.push({ cari: id, ...row });
+    const queued = input.withExtras(input.batchSettleInput(id, reservation.lines, tables, nextDay), extras, id);
     const invoiceIds = new Set(own.filter(line => line.origin === "invoice").map(line => line.sourceId));
     queued.invoices = queued.invoices.filter(invoice => invoiceIds.has(invoice.id));
     queued.offsets = queued.offsets.filter(offset => offset.date <= K);
     const result = buildObligations(queued);
-    obligations.set(id, result.items);
+    obligations.set(id, withReserved(result.items, reservation, queued));
     for (const [planId, map] of result.installments) {
       const list = [];
       for (const [itemId, row] of map) if (itemId !== "rest" && itemId !== "back") list.push({ itemId, seq: row.seq || 0, vade: row.vade || "", remainingMinor: minor(row.remaining) });
@@ -388,6 +477,7 @@ export function readDevirFacts({ store, ledger, K, today, company = null, accoun
     vatOffsetMonths,
     repeats,
     links,
+    offsetReservations: offsetRows,
     counts,
     readProblems: problems,
     preflight,

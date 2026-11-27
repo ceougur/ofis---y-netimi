@@ -585,16 +585,25 @@ export function buildDevirPlan(facts, { option = "borc-alacak" } = {}) {
   const balanceTotal = closingBalances.reduce((sum, row) => sum + row.minor, 0);
   check("denge", "Arşiv Kapanış Bilançosu Dengede (Σ Borç − Σ Alacak)", 0, balanceTotal);
   // ---------- Bağlar, şablonlar, budama (tasarım §2, §3.5 madde 7) ----------
-  const openInvoices = new Set();
-  for (const row of accounts) for (const line of row.satirlar) if (line.kalemSinifi === "fatura" && line.belge?.faturaId) openInvoices.add(line.belge.faturaId);
+  // Açık kalemi olan belgeler (kalem anahtarı: inv:<fatura> / line:<satır>) — K sonrası bağ bunlara yönelir.
+  const openKeys = new Set();
+  for (const row of accounts) for (const line of row.satirlar) if (line.tur === "acik-kalem" && line.kaynakKimlik) openKeys.add(line.kaynakKimlik);
+  // D3 tur 4 (S-T2-1 = B): K sonrası mahsupların ≤K belgelere ayırımı (okuyucu — plan-reader.mjs offsetReservations). "yeni-yila-ayrildi": pay ≤K belgenin açık kaleminde, yeni yılda mahsup o
+  // devir kalemine yönelir; "k-de-kapandi": iki belge de ≤K, mahsup K'de uygulanmış sayılır — yeni yılda YENİDEN uygulanmaz (D4a şartı).
+  const reservations = [...(facts.offsetReservations || [])].sort((a, b) => cmp(a.mahsup, b.mahsup));
+  const offsetKind = new Map(reservations.map(row => [row.mahsup, row.tur]));
   const links = [...(facts.links || [])]
     .sort((a, b) => cmp(a.table, b.table) || cmp(a.rowId, b.rowId) || cmp(a.field, b.field))
     .map(link => {
+      const key = link.entryId ? `line:${link.entryId}` : `inv:${link.invoiceId}`;
+      const target = link.entryId || link.invoiceId;
       const doc = docs.get(link.invoiceId);
-      return openInvoices.has(link.invoiceId)
-        ? { tablo: link.table, satir: link.rowId, alan: link.field, tarih: link.date, eskiHedef: link.invoiceId, yeniHedef: `devir-${year}-kalem-inv:${link.invoiceId}`, tur: "acik-kalem" }
-        : { tablo: link.table, satir: link.rowId, alan: link.field, tarih: link.date, eskiHedef: link.invoiceId, yeniHedef: "", tur: "arsiv-basvurusu", arsiv: { yil: year, no: doc?.number || "", tarih: doc?.date || "" } };
+      const offset = link.table === "invoice_offsets" && offsetKind.has(link.rowId) ? { mahsup: offsetKind.get(link.rowId) } : {};
+      return openKeys.has(key)
+        ? { tablo: link.table, satir: link.rowId, alan: link.field, tarih: link.date, eskiHedef: target, yeniHedef: `devir-${year}-kalem-${key}`, tur: "acik-kalem", ...offset }
+        : { tablo: link.table, satir: link.rowId, alan: link.field, tarih: link.date, eskiHedef: target, yeniHedef: "", tur: "arsiv-basvurusu", arsiv: { yil: year, no: doc?.number || "", tarih: doc?.date || link.docDate || "" }, ...offset };
     });
+  const offsetPlan = reservations.map(row => ({ kimlik: `devir-${year}-mahsup-${row.mahsup}`, mahsup: row.mahsup, cari: row.cari, tarih: row.tarih, belgeler: [...row.belgeler].sort(cmp), karsi: row.karsi, tutarMinor: row.tutarMinor, tur: row.tur }));
   const repeats = [...(facts.repeats || [])].sort((a, b) => cmp(a.id, b.id)).map(row => ({ tekrar: row.id, sablon: row.templateId, sablonNo: row.templateNumber || "", sonrakiTarih: row.nextDate || "", taslakKimlik: `devir-${year}-sablon-${row.templateId}` }));
   const prune = [...(facts.counts || [])].sort((a, b) => cmp(a.table, b.table));
   // ---------- Ön izleme sayıları (tasarım §3.3) — hepsi yukarıdaki listelerden SAYILIR ----------
@@ -642,7 +651,7 @@ export function buildDevirPlan(facts, { option = "borc-alacak" } = {}) {
       donemSonucuMinor: closing.result,
       oncekiYillar: closing.priorResults,
     },
-    newYear: { kasa: cash, banka: bank, cariler: accounts, digerAltDefter: other, kartlar: cards, evraklar: cheques, stok: stock, supheli: doubtful, vergi: vat, acilisFisi: openingVoucher, baglar: links, sablonlar: repeats, budama: prune },
+    newYear: { kasa: cash, banka: bank, cariler: accounts, digerAltDefter: other, kartlar: cards, evraklar: cheques, stok: stock, supheli: doubtful, vergi: vat, acilisFisi: openingVoucher, baglar: links, mahsupAyirmalari: offsetPlan, sablonlar: repeats, budama: prune },
     degismezler: invariants,
     sorunlar: problems,
     sayilar: counts,
