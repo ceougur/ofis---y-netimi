@@ -1,0 +1,81 @@
+TAP version 13
+# (node:1339) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden
+    # Subtest: S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel
+    ok 1 - S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel
+      ---
+      duration_ms: 94.353836
+      type: 'test'
+      ...
+    # Subtest: MA (001): Mayıs ödenecek 60 (1.200 − 1.140); Mart / Nisan devreden 1.140 taşınır; Eylül ödenecek 0, sonraki 1.960 (kâhin: mali müşavir)
+    ok 2 - MA (001): Mayıs ödenecek 60 (1.200 − 1.140); Mart / Nisan devreden 1.140 taşınır; Eylül ödenecek 0, sonraki 1.960 (kâhin: mali müşavir)
+      ---
+      duration_ms: 75.18756
+      type: 'test'
+      ...
+    # Subtest: MA (001) yıllık 2026: Önceki 0, Ödenecek 60, Sonraki 1.960 = defterdeki 190; ay ay satırlar kendi devreden / ödenecek değeriyle; ekran = PDF = Excel
+    ok 3 - MA (001) yıllık 2026: Önceki 0, Ödenecek 60, Sonraki 1.960 = defterdeki 190; ay ay satırlar kendi devreden / ödenecek değeriyle; ekran = PDF = Excel
+      ---
+      duration_ms: 39.46652
+      type: 'test'
+      ...
+    # Subtest: boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen
+    ok 4 - boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen
+      ---
+      duration_ms: 12.297232
+      type: 'test'
+      ...
+    # Subtest: mahsup fişi kesilmemiş ay: rapor ön izlemeyle aynı sayı + 'Mahsup Edilmemiş Ay' notu; mahsup kesilince / geri alınınca / yeniden kesilince rapor uyar
+    ok 5 - mahsup fişi kesilmemiş ay: rapor ön izlemeyle aynı sayı + 'Mahsup Edilmemiş Ay' notu; mahsup kesilince / geri alınınca / yeniden kesilince rapor uyar
+      ---
+      duration_ms: 115.068401
+      type: 'test'
+      ...
+    # Subtest: ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)
+    ok 6 - ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)
+      ---
+      duration_ms: 92.900902
+      type: 'test'
+      ...
+    # Subtest: iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş
+    ok 7 - iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş
+      ---
+      duration_ms: 151.12665
+      type: 'test'
+      ...
+    # Subtest: S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800
+    ok 8 - S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800
+      ---
+      duration_ms: 56.076746
+      type: 'test'
+      ...
+# (node:1339) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not
+    ok 9 - kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not
+      ---
+      duration_ms: 305.073299
+      type: 'test'
+      ...
+    # Subtest: yetki: finans raporu yetkisi olmayan 403; muhasebe aynı sayıları görür
+    ok 10 - yetki: finans raporu yetkisi olmayan 403; muhasebe aynı sayıları görür
+      ---
+      duration_ms: 207.216721
+      type: 'test'
+      ...
+    1..10
+ok 1 - 2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden
+  ---
+  duration_ms: 2451.118831
+  type: 'suite'
+  ...
+1..1
+# tests 10
+# suites 1
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2906.849241

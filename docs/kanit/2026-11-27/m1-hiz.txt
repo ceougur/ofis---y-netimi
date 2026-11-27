@@ -1,0 +1,26 @@
+M1 HIZ · nproc 4 · başta 0.73 1.97 2.04 1/137 2757 · 06:55:13
+=== taban (/dev/shm/m1-kdv/eski, 64396478) · başta 0.77 1.94 2.03 1/144 2783 
+kod /dev/shm/m1-kdv/eski · veri /dev/shm/m1-kdv/veri · yük (başta) 0.77 1.94 2.03
+veri: 34026 fatura, 61162 kalem, 102295 cari satırı
+  KDV Özeti yıllık (01.01–31.12.2026): 200 · ilk 2423.7 ms · ılık ortanca 2542.4 ms (en az 2270.4, en çok 2945.9) · olay döngüsü en çok 2942.3 ms · satır 115
+    özet: Hesaplanan KDV (391)=1.952.048,70 TL | İndirilecek KDV (191)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Devreden KDV=3.309.780,96 TL
+  KDV Özeti Bu Yıl (preset): 200 · ilk 2513.2 ms · ılık ortanca 2610.8 ms (en az 2223, en çok 2783.9) · olay döngüsü en çok 2608.9 ms · satır 115
+    özet: Hesaplanan KDV (391)=1.952.048,70 TL | İndirilecek KDV (191)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Devreden KDV=3.309.780,96 TL
+  KDV Özeti tek ay (Eylül 2026): 200 · ilk 2209.8 ms · ılık ortanca 2345.8 ms (en az 2148.4, en çok 2464.5) · olay döngüsü en çok 0 ms · satır 13
+    özet: Hesaplanan KDV (391)=70.832,34 TL | İndirilecek KDV (191)=1.396.635,75 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Devreden KDV=1.325.803,41 TL
+  KDV Mahsup ön izlemesi (Eylül 2026): 200 · ilk 4896.4 ms · ılık ortanca 4626.1 ms (en az 4299.9, en çok 4777.9) · olay döngüsü en çok 4617.9 ms · satır -
+yük (sonda) 1.47 1.87 1.99
+çıkış 0 · sonda 1.47 1.87 1.99 1/140 3140
+=== yeni (/dev/shm/m1-kdv/mut, 19af3660) · başta 1.47 1.87 1.99 1/140 3147 
+kod /dev/shm/m1-kdv/mut · veri /dev/shm/m1-kdv/veri · yük (başta) 1.47 1.87 1.99
+veri: 34026 fatura, 61162 kalem, 102295 cari satırı
+  KDV Özeti yıllık (01.01–31.12.2026): 200 · ilk 2425.3 ms · ılık ortanca 2326.6 ms (en az 2263.1, en çok 2512.5) · olay döngüsü en çok 2510.3 ms · satır 125
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=0,00 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=7.978,23 TL | Mahsup Edilmemiş Ay=Aralık 2025, Ocak 2026, Şubat 2026, Mart
+  KDV Özeti Bu Yıl (preset): 200 · ilk 2396.4 ms · ılık ortanca 2347.7 ms (en az 2160.1, en çok 2486.5) · olay döngüsü en çok 0 ms · satır 125
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=0,00 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=7.978,23 TL | Mahsup Edilmemiş Ay=Aralık 2025, Ocak 2026, Şubat 2026, Mart
+  KDV Özeti tek ay (Eylül 2026): 200 · ilk 2286.9 ms · ılık ortanca 2357.7 ms (en az 2206.3, en çok 2459.5) · olay döngüsü en çok 0 ms · satır 13
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=70.832,34 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=1.396.635,75 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=0,00 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=1.325.803,41 TL | Mahsup Edilmemiş Ay=Ağustos 2026 (devreden KDV mahsup fişind
+  KDV Mahsup ön izlemesi (Eylül 2026): 200 · ilk 4442.3 ms · ılık ortanca 4616.7 ms (en az 4295.4, en çok 4751.8) · olay döngüsü en çok 4748 ms · satır -
+yük (sonda) 1.60 1.77 1.94
+çıkış 0 · sonda 1.60 1.77 1.94 1/138 3468
+bitti 06:58:31
