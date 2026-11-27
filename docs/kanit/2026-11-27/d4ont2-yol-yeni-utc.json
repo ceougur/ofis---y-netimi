@@ -1,0 +1,32 @@
+{
+  "ad": "d4ont2-yol-yeni-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/devir-d4on-yol-251.test.mjs test/devir-d4on-yedek-tasima-251.test.mjs",
+  "commit": "1922113bf481f297e8791f504f4f50d2c4324fa9",
+  "dal": "worktree-agent-a45ed3c47fad8891c",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T14:37:58.856Z",
+  "sure_sn": 9.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 9,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d4ont2/kanit/2026-11-27/d4ont2-yol-yeni-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a45ed3c47fad8891c",
+  "ham_cikti_sha256": "26a1ff6be3596d91040f237ecfeb41cdf5dedd2df2045617f0cf0de6c6ed3c2a",
+  "ham_cikti_bayt": 4262
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "d4ont2-komsu-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/backup.test.mjs test/devir-arsiv-wal-250.test.mjs test/devir-d2-bakim-250.test.mjs test/devir-d2-yedek-250.test.mjs test/devir-d4on-belge-temizligi-251.test.mjs test/drive-kaldirildi.test.mjs test/geri-yukleme-uyari-244.test.mjs test/guvenilirlik-221-ariza.test.mjs test/guvenilirlik-221-bulgular.test.mjs test/guvenilirlik-221-goc.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-220.test.mjs test/yedek-denetim-221.test.mjs test/sema-kapisi-bs7.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "1922113bf481f297e8791f504f4f50d2c4324fa9",
+  "dal": "worktree-agent-a45ed3c47fad8891c",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T14:38:55.848Z",
+  "sure_sn": 243.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 135,
+    "gecen": 135,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d4ont2/kanit/2026-11-27/d4ont2-komsu-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a45ed3c47fad8891c",
+  "ham_cikti_sha256": "3fa4427600536d4e6bc1b23c06da660c2fe9280e4a34a7739671ae64b622afb2",
+  "ham_cikti_bayt": 53987
+}
