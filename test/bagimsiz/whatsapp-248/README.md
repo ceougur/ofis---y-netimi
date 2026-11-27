@@ -12,7 +12,7 @@ madde K0) bağımsız kâhinidir:
    aşağıda "Kâhin yorumları"nda (teyit gerekir). §7a'nın **revizyonu R1–R3** (30.10.2026 15:18 UTC, plan §7a sonu "REVİZYON ÖNERİSİ" + KARAR, programın
    davranışı görülmeden) da sabit: R1 Meta'ya hiç ulaşılamıyorsa "Bağlantı Bekleniyor", R2 kategori her 100 iletide / en geç 10 dakikada, R3 daha önce
    gönderilmiş dönem uyarısı (varsayılan Bunları Çıkar).
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 398 senaryo (güncelleme 20 ile; aşağıdaki döküm 291'e kadar, + **güncelleme 20** 9: S70 6, S71 2, R3T 1 — §25; + **güncelleme 19** 15: S58 3, S59 2, S60 2, S61 2, S62 3, S63 3 — §24; + **güncelleme 18** 7: S42 4, S43 3 — §23; + **güncelleme 17** 14: S34 2, S35 2, S36 2, S37 2, S38 2, S33 2, S41 2 — §22; + **güncelleme 16** 11: S29 4, S30 3, S31 2, S32 2 — §21; + W3 1 + **güncelleme 11** 18: SW1 3, SW2 2, SD1837 3, SD1915 5, SW4 3, S7 2 — §16 + **güncelleme 12** 8: S7A 3, S7B 5 — §17 + **güncelleme 13** 8: S16 4, S17 2, NB5 2 — §18 + **güncelleme 14** 6: S22 6 — §19 + **güncelleme 15** 10: S23 5, SW3 5 — §20): 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 419 senaryo (+ **güncelleme 22** 5: SW21 5 — §27, 2.5.1 S-W21-1 / 2 / 3 = A; 414'e kadar güncelleme 21 ile: + **güncelleme 21** 16: C5C4 2, C5C5 5, C5C6 3, C5C7 2, C5C8 3, C5C9 1 — §26, 2.5.1 Ç5-C; 398'e kadar: aşağıdaki döküm 291'e kadar, + **güncelleme 20** 9: S70 6, S71 2, R3T 1 — §25; + **güncelleme 19** 15: S58 3, S59 2, S60 2, S61 2, S62 3, S63 3 — §24; + **güncelleme 18** 7: S42 4, S43 3 — §23; + **güncelleme 17** 14: S34 2, S35 2, S36 2, S37 2, S38 2, S33 2, S41 2 — §22; + **güncelleme 16** 11: S29 4, S30 3, S31 2, S32 2 — §21; + W3 1 + **güncelleme 11** 18: SW1 3, SW2 2, SD1837 3, SD1915 5, SW4 3, S7 2 — §16 + **güncelleme 12** 8: S7A 3, S7B 5 — §17 + **güncelleme 13** 8: S16 4, S17 2, NB5 2 — §18 + **güncelleme 14** 6: S22 6 — §19 + **güncelleme 15** 10: S23 5, SW3 5 — §20): 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
    + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13) + 29 **güncelleme 9** (01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9; §14) + 8 **güncelleme 9b** (S9-1 / S9-2 kararları J10–J11; §14.10–14.12) + 3 **güncelleme 9c** (ekstre içeriği açılışta, J12; §14.13–14.14) + 7 **güncelleme 10** (2.4.9 W: teslim süresi 30 gün W1 + W-KÖK W2; §15).
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164), 1'i J7 düzeltmesinin (M165) ve 5'i W1/W2'nin (M166–M170; M7 de W1'e göre TERSİNE çevrildi), 1'i W3'ün (M171) ve 18'i güncelleme 11'in (M172–M189; M151 artık SW1'in tersi), 9'u güncelleme 12'nin (M190–M198), 11'i güncelleme 13'ün (M199–M209), 3'ü güncelleme 14'ün (M210–M212), 10'u güncelleme 15'in (M213–M222), 13'ü güncelleme 16'nın (M223–M235), 15'i güncelleme 17'nin (M236–M250), 9'u güncelleme 18'in (M251–M259), 18'i güncelleme 19'un (M260–M277), 15'i güncelleme 20'nin (M278–M292) tersi — toplam 291, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164), 1'i J7 düzeltmesinin (M165) ve 5'i W1/W2'nin (M166–M170; M7 de W1'e göre TERSİNE çevrildi), 1'i W3'ün (M171) ve 18'i güncelleme 11'in (M172–M189; M151 artık SW1'in tersi), 9'u güncelleme 12'nin (M190–M198), 11'i güncelleme 13'ün (M199–M209), 3'ü güncelleme 14'ün (M210–M212), 10'u güncelleme 15'in (M213–M222), 13'ü güncelleme 16'nın (M223–M235), 15'i güncelleme 17'nin (M236–M250), 9'u güncelleme 18'in (M251–M259), 18'i güncelleme 19'un (M260–M277), 15'i güncelleme 20'nin (M278–M292), 24'ü güncelleme 21'in (M293–M316, §26), 9'u güncelleme 22'nin (M317–M325, §27) tersi — toplam 324, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -36,7 +36,7 @@ karşılaştırılır (H).
 | `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 35) |
 | `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 19 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 398 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.py` | 419 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
 | `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
 | `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
@@ -2419,3 +2419,288 @@ Yeni 9 + değişen 2 senaryo, iki kip, iki saat dilimi (araç `wk20-araclar/eski
   S70'te Atlandı'dan sonra önce read sonra delivered; S71 × 1 yıl dolumu / S32 geri yüklemesiyle içeriği silinen iş (talep ile aynı yol), × K5 "Daha Önce Gönderildi" sırası (M286 yalnız "Zaten Kuyrukta" ile
   sınandı), × açık şüpheli kaydı (yalnız I17 e), içeriği silinmemiş işte boş kart telefonu (Y20-12 bilgi); R3T × Geçersiz / İstemiyor / Silinmiş / Pasif / Şüpheli / Gecikmiş Borç Yok (KÂHİN SUSUYOR
   Y20-17 — yalnız I17 d), × hatırlatmada yerel gün sınırı, × iki şirket, × geri yüklemede yalnız defterde kalan iz (D7); 29 Şubat; dinî bayram tarihleri (aranmadı — görev metni).
+
+## 26. Kâhin güncellemesi 21 — Ç5-C Ödeme Hatırlatma (2.5.1): KAÇ KEZ / NE ZAMAN / HANGİ İÇERİK (27.11.2026)
+
+### 26.1 Kaynak ve bağımsızlık
+Kaynak YALNIZ karar girdisi `docs/devir/2.5.1-DEVAM/c5c-kararlar.md` (ana oturum yazdı, 27.11.2026; ana ağaçtan okundu, kopyalanmadı) ve onun gösterdiği ONAYLI ilke taslağı
+`docs/devir/C5C-ILKE-TASLAK.md` (TAMAMI okundu). KULLANICI KARARI 27.11.2026 12:01 UTC (AYNEN: "ÖNERİLERİNİ UYGULA"): taslaktaki "YENİ — SORU" maddelerinin HEPSİNDE A (S-C5C-1 … S-C5C-10 = A),
+"ÖNERİ UYGULANIR" maddeleri aynen, taslak 2.2'deki "kaydı açık" okuması onaylı; BAŞ MİMAR EKLERİ (kullanıcıya gösterildi): S-C5C-1 için önizlemede bilgi satırı, S-C5C-9 için devrin ön denetiminde
+"N kişilik gönderim durdurulacak" uyarısı (DURDURMAZ). Metinler AYNEN `kahin.KARARLAR` C5C-* (kodlamada). Önceki kararlar bu README'den ve `kahin.KARARLAR`'dan; WhatsApp "kime kaç kez" genel ilkesi
+CLAUDE.md "WHATSAPP SÜRENLER" satırından (31.10, aynen).
+İŞ BÖLÜMÜ (girdi §2, BAŞ MİMAR KARARI 27.11 11:58 B-1): bu kâhin "KAÇ KEZ / NE ZAMAN / HANGİ İÇERİK" (taslak §4–§9); "KİME / HANGİ TUTAR / HANGİ VADE" (taslak §1–§3, §6.1–6.2'nin tutar yanı, §8.1'in
+son paragrafı) CARİ KÂHİNİNİNDİR — bu kâhin onu HESAPLAMAZ: her cari için zamana bağlı "kime / tutar / neden" GİRDİ olarak senaryoda elle yazılır (26.3). Cari kâhininin klasörü okunmadı, yazılmadı.
+Okunan başka dosya: CLAUDE.md (oturum bağlamında yüklü; dersler), `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`, bu README (başlık dizini python ile; 1–153, 190–270, 533–760, 765–862, 984–1453, 1588–1598,
+1752–1786 ve sonun 2272–2422'si), `kahin/kahin.py`, `kahin/senaryolar.py`, `kahin/kahin_test.py` (bölüm bölüm). `surucu.mjs`, `sahte-meta/`, program kodu (`server/`, `client/`, `bulut/`, `tools/` —
+`kanit.mjs` yalnız çalıştırılır), program testleri, `docs/kanit/` (kendi kanıtı dışında), iş listeleri, `docs/devir/2.5.1-DEVAM/` içinde girdi dışındaki dosyalar (`pc5c-*` dahil), `docs/erp/*-TASARIM.md`,
+yapım aşaması listesi ve git geçmişi AÇILMADI. Taslağın içindeki program ölçümleri ("bugün GİDİYOR / GİTMİYOR", 14 carilik deneme, 1.484 cari, 68,1 → 157,0 milyon) programın 2.5.0 davranışıdır —
+beklenen kaynağı YAPILMADI (girdinin başı; ders 40). Programa karşı KOŞULMADI (ana oturumun işi). Eski kâhinle karşılaştırma git'ten değil, taban ağaçtaki (`t251-taban` = 64396478) `kahin/*`
+dosyalarının değişiklikten ÖNCE not defterine alınmış kopyasıyla (`kahin.py` sha256 d42161ec…, `senaryolar.json` e2f30a78…). Bu bölümün 26.1–26.4'ü KODLAMADAN ÖNCE yazıldı ve ayrı commit'lendi
+(ders 40); 26.5 ve sonrası kodlamadan sonra.
+
+### 26.2 Kural başına yorum (girdi §2'de bu kâhine verilen taslak maddeleri §4–§9)
+| Madde (taslak) | Modelde bugün | Ne değişir (kâhinde) | Hangi eski beklenti değişir (eski → yeni, neden) |
+|---|---|---|---|
+| 4.1 dönem = GÜN; aynı gün ikinci hatırlatma "Daha Önce Gönderildi" (varsayılan Bunları Çıkar, Yine de Gönder ile gider); ertesi gün serbest; süren iş varken "Zaten Kuyrukta" (günsüz); tutar değişmesi dönemi değiştirmez | VAR: K1 ★5 (hatırlatmada R3 = aynı YEREL gün, gün = denemenin gönderim anı), D2 b ("Zaten Kuyrukta" günsüz), E3 (Sonucu Belirsiz aynı yerel gün); tutar R3 eşliğine girmez | DOKUNULMAZ; yalnız yeni girdiyle (26.3) denetim senaryoları ve gece yarısını geçen iş (N30: gün = iletinin gittiği gün) | YOK |
+| 4.2 genel ilke (1)–(5) + 01.11 06:28 sekiz madde aynen | VAR (G0, J1–J8) | DOKUNULMAZ | YOK |
+| 4.3 İLKEYLE 1: Tedarikçi / Şüpheli / Söz / Gecikmiş Borç Yok ile elenen ya da Atlandı olan o gün ALMAMIŞ; aynı gün koşul kalkarsa yeni gönderimde gider | VAR (elenen / Atlandı iş deneme açmaz → R3'te ve "Zaten Kuyrukta"da yok — Y12-5) — Tedarikçi / Söz yeni ad | Yeni adlar `tedarikci`, `odeme_sozu` aynı düzende (deneme açılmaz) | YOK |
+| 5.1 kuyruktayken borcun tamamı ödendi → "Atlandı — Gecikmiş Borç Yok" | VAR (§7a 20 gönderim anında, Y12-2) | Yeni girdide de gönderim anındaki girdiden | YOK |
+| 5.2 kısmen ödedi / yeni kalem gecikti → GİTTİĞİ ANDAKİ tutar; o an hazırlanan içerik DONAR (Meta Bekletti'nin 24 sa sonraki 2. denemesi AYNI içerikle) | Gönderim anındaki tutar VAR (Y9d-2); AMA kâhin Meta Bekletti 2. denemesinde Ödeme Hatırlatma içeriğini YENİDEN hazırlıyor (ekstre `hazir` ile zaten aynı) | Meta Bekletti 2. denemesinde Ödeme Hatırlatma içeriği 1. denemedeki içerikle AYNI (değişkenler; telefon ve eleme denetimi yine gönderim anında — Y9d-2, S7B-04 düzeni); iki deneme arasında borç tümüyle kapanırsa 5.1 gereği "Atlandı — Gecikmiş Borç Yok" (S-C5C-5 A "2. deneme de aynı denetimden geçer"). Yeniden deneme / Yine de Gönder / geçici hata dizisi DEĞİŞMEZ (ileti o anda "gider" → o anki içerik) | Eski senaryolarda Ödeme Hatırlatma + 131049 + iki deneme arasında borç değişen senaryo varsa {{4}} / {{5}} 2. denemede 1.'nin değeri (5.2) — kodlamadan sonra 26.8'de sayıyla |
+| 5.3 S-C5C-5 A: kuyruktayken Ödeme Sözü verildi → gönderim anında "Atlandı — Ödeme Sözü Var" (elle seçilmişse gider); Duraklatıldı → Devam Et, Sınır, Meta Bekletti 2. denemesi, Başarısızları Yeniden Dene aynı denetimden | YOK (kâhinde söz kavramı yoktu) | Gönderim anı denetimine `odeme_sozu` (2.5 sırasında Şüpheli'den sonra); elle (Yine de Ekle) işte gider; S22'nin söz karşılığı (Yine de Gönder basıldığında söz yoktu, sonra verildi) → aynı denetim: Atlandı | YOK (eski senaryolarda söz yok) |
+| 5.4 KARARLI S7-b + S22 | VAR | DOKUNULMAZ (yeni girdide etiketten) | YOK |
+| 5.5 S-C5C-6 A: kuyruktayken Tedarikçi yapıldı → gönderim anında "Atlandı — Tedarikçi" | YOK | Gönderim anı denetimine `tedarikci` (2.5 sırası: numaradan sonra, Şüpheli'den önce); elle işte de (S-C5C-3 A: Tedarikçi hiçbir yoldan gitmez) | YOK |
+| 5.6 silindi / pasif / İstemiyor / telefonu silindi → Atlandı | VAR (§7a 2) | 2.5 sırası (ÖNERİ UYGULANIR, "her yerde aynı sıra"): Ödeme Hatırlatma'da ad sırası Cari Silinmiş → İstemiyor → Pasif → numara (kâhinde bugün Pasif İstemiyor'dan önce) — YALNIZ ad, ileti iki sırada da gitmez; Ekstre DEĞİŞMEZ (girdi §4) | Eski senaryoda Ödeme Hatırlatma'da hem pasif hem İstemiyor olan cari varsa ad `pasif` → `istemiyor` (2.5) — 26.8'de sayıyla |
+| 6.1 S-C5C-7 A: önizlemede Şüpheli / Söz ile elenenin satırında "Yine de Ekle" → ELLE SEÇİLMİŞ (işte iz; Devam Et ve aynı işin yeniden denemesi taşır); Tedarikçi, Gecikmiş Borç Yok, Zaten Kuyrukta, Sonucu Belirsiz, Daha Önce Gönderildi aşılmaz | Şüpheli için VAR: `baslat.supheli_elle` + iş `supheli_elle` izi (Y12-3, Y12-7, Y12-8: Devam Et ve Başarısızları Yeniden Dene taşır) | Girdi adı `baslat.yine_de_ekle` (eski `supheli_elle` eşanlamlı kalır); Söz etiketine de; izin KAPSAMI = başlatmadaki etiketler; Tedarikçi'ye / etiketsiz kişiye verilirse girdi hatası (ekranda kutu yok — Y12-3 genişlemesi). Kuyruktayken iz KAPSAMI DIŞINDA yeni etiket doğarsa → KULLANICIYA SORULMALI S-W21-2 (26.4; kodlanmadı) | YOK |
+| 6.2 KARARLI S16 / S23 / S29 / S34: Sonucu Belirsiz işte Yine de Gönder basıldığında şüpheli kaydı açıksa ELLE | VAR | DOKUNULMAZ (yeni girdide Şüpheli etiketinden). Basma anında SÖZ sürüyorsa → KULLANICIYA SORULMALI S-W21-1 (26.4; kodlanmadı) | YOK |
+| 6.3 S-C5C-8 A: Ödeme Hatırlatma'da Yine de Gönder gönderim anındaki GÜNCEL tutarla; Ekstre'de "aynı ileti" AYNEN | VAR: kâhinde Ödeme Hatırlatma'nın içeriği her gönderimde (Yine de Gönder dahil) gönderim anında hazırlanır (Y9d-2), Ekstre `hazir` (J12) | DOKUNULMAZ; yalnız denetim (senaryo + mutant: hatırlatmada donmuş tutar; Ekstre'de yeniden hazırlama) | YOK |
+| 6.4 İLKEYLE 2 + 4: elle seçim "Daha Önce Gönderildi" ve "Sonucu Belirsiz"i aşmaz | VAR (eleme sırası) | DOKUNULMAZ | YOK |
+| 7.1 güncelleme günü 2.5.0'dan almış cari 2.5.1'de aynı gün (daha büyük tutarla da) "Daha Önce Gönderildi"; ertesi gün serbest; makine defteri güncellemeyle silinmez | VAR (defter + R3; tutar eşliğe girmez) | Yeni olay `surum_gecisi {surum}` — kâhinde ETKİSİZ (defter / kuyruk / dosya aynen; sürücü programı o anda günceller); sürüm öncesi kişi kümesi ve tutar GİRDİDEN (26.3; 2.5.0'ın kime'si girdide elle) | YOK |
+| 7.2 ÖNERİ (bilgi satırı "N cari yeni") | — | MODELLENMEDİ: görev metni bu kâhine 7.1 ve 7.3'ü verdi; kime değişmez; N'nin tanımı ("eski kuralla almayacak kişi") cari kâhininin bilgisi → SONRAYA | YOK |
+| 7.3 güncelleme anında kuyrukta bekleyen 2.5.0 işi gönderim anında YENİ kuralla (tutar, şüpheli / söz / tedarikçi elemesi 5.3–5.5); ikinci ileti doğmaz (aynı iş) | Gönderim anı düzeni VAR | Yeni denetimler (5.3, 5.5) gönderim anında olduğundan 2.5.0'da başlatılmış iş de bunlardan geçer (girdi güncelleme anında yeni kuralın sonucuna döner) | YOK |
+| 8.1 S-C5C-9 A: devir başlarken o şirketin SÜREN ve DURAKLATILMIŞ toplu işleri "Durduruldu (Devir)", kendiliğinden sürmez; gönderilmemiş kişiler ALMAMIŞ (ilke 1), yol yeni gönderim; Meta'ya gitmiş iletiler bugünkü gibi sayılır (01.11 (1)); devirden sonra makine defteri dokunulmaz → aynı gün elemesi sürer | YOK | Yeni olay `devir {sirket, ad}`: o şirketin bekleyen işleri (Bekliyor, Sınır, Meta Bekletti, Hazırlanıyor, Duraklatıldı, Lisans, açılışta sorulan — geri yüklemedeki küme) → "Durduruldu (Devir)", toplu iş `durduruldu` (neden "Durduruldu (Devir)"); Devam Et sürdürmez; Ekstre toplu işleri de (karar metni "o şirketin süren ve duraklatılmış toplu işleri" — ayrım yok; kâhin yorumu, teyit); Meta Bekletti'de duran ilk iletinin geç teslimi J1 gereği sayılır; Sonucu Belirsiz / Meta Kabul Etti işler değişmez (süren değil; dosya kopyayla taşınır — 8.1 "yeni yıl dosyasını kopyadan kurar"); BAŞ MİMAR EKİ uyarısı çıktı `devir_onu.<ad>.durdurulacak` (kişi sayısı ↔ iş sayısı ayrışırsa `secenek` — "N kişilik" iki türlü sayılabilir; kime değişmez) | YOK (yeni olay) |
+| 8.2 Devri Geri Al: dönen dosyadaki süren işler "Durduruldu (Geri Yükleme)"; devirden sonra giden hatırlatmalar defterde "almış" → aynı gün elenir, ertesi gün dönen dosyanın borcuyla serbest | Geri yükleme düzeni VAR (§7a 26, D7, E1, J1, H3) | Yeni olay `devri_geri_al {sirket}`: o şirketin dosyası devir anındaki kopyaya döner (yalnız o şirket), devirden sonra açılan işler dosyadan çıkar (defterde kalır — D7: R3'te sayılır; E1: yalnız defterde kalan belirsiz yeni gönderimi elemez), bekleyen iş "Durduruldu (Geri Yükleme)"; devirle "Durduruldu (Devir)" olmuş işlerin dönen dosyadaki ADI karar metninde iki türlü okunur (kopya durdurmadan önce mi sonra mı) → `secenek` [Durduruldu (Devir), Durduruldu (Geri Yükleme)] (kime / kaç kez iki okumada aynı: ikisi de sürmez); dönen dosyanın borcu girdiden | YOK (yeni olay) |
+| 8.3 yedekten geri yükleme / taşıma: 2.4.8 kuralları aynen; Devri Yenile → İLKEYLE 3 | VAR | Devri Yenile = yeniden `devir` (kâhinde aynı olay; defter dokunulmaz) | YOK |
+| 8.4 arşivden gönderim yok | YOK | Başlatmada `arsiv: true` → başlamaz, neden `arsiv` (ret sırasının BAŞINDA — düğme yok) | YOK |
+| 9.1 her şirket kendi carisinin kendi borcuyla; "Daha Önce Gönderildi" şirket başına; aynı WABA'nın sınırı ortak; iki şirkette cari olana aynı gün iki şirketten iki hatırlatma gidebilir | VAR (R3 eşliği şirket + cari; pencere WABA'ya göre) | DOKUNULMAZ; yeni girdiyle iki şirket senaryosu | YOK |
+
+### 26.3 Yeni girdi: `cari.borc` — "kime / tutar / neden" (cari kâhininin sorusunun yanıtı, senaryoda ELLE)
+`cariler[].borc` = zamana göre sıralı liste; her öğe o andan bir sonrakine kadar geçerli (zaman `t`: "+0s" / "+1d" / ISO; ilk öğe senaryonun başında olmalı — girdi eksikse kâhin HATA verir).
+Öğe: `{"t", "neden": null | "tedarikci" | "supheli_alacak" | "odeme_sozu" | "gecikmis_borc_yok", "etiketler": [...] (isteğe bağlı; o anda kişide olan Tedarikçi / Şüpheli Alacağı Var / Ödeme Sözü Var
+etiketleri — yoksa `neden` etiketse [neden]), "vade": "05.10.2026" ({{3}}), "tutar": "600.00" ({{4}}), "bakiye": "600.00" ({{5}}), "elle": {"neden": null | "gecikmis_borc_yok", "vade", "tutar",
+"bakiye"} (Şüpheli / Söz etiketli kişi ELLE seçilirse iletideki değerler — S7 / S17 / S-C5C-10; söz caride borcun tamamı — taslak 2.3)}`. `neden` = cari kâhininin TEK nedeni (2.5 sırası;
+Tedarikçi → Şüpheli → Söz → Gecikmiş Borç Yok); `null` = otomatik listeye girer. Bu kâhin girdiyi DEĞİŞTİRMEZ, yalnız okur: başlatmada, gönderim anında (Atlandı + içerik), Yine de Gönder'de.
+`borc` yoksa eski `vadeler` / `hareketler` yolu AYNEN (eski 398 senaryo). İki kâhinin birleştiği değişmez ("hatırlatmadaki tutar = cari kartındaki Gecikmiş Borç") sürücünün / ana oturumun işi.
+
+### 26.4 KULLANICIYA SORULMALI (kime / kaç kez — KODLANMADI; senaryo bu duruma girerse kâhin `ValueError` verir; TOPLU KÂHİN BAKIMI: hepsi birlikte)
+- **S-W21-1 ★ (UÇ DURUM) Sonucu Belirsiz Ödeme Hatırlatma işinde "Yine de Gönder" basıldığı anda Ödeme Sözü SÜRÜYOR** (iş elle değil). Şüpheli için karar var (S16 = A: Yine de Gönder elle sayılır);
+  söz için yok. 6.1 A "elle seçim = Yine de Ekle" der; 5.3 A "gönderim anında söz sürüyorsa Atlandı (elle seçilmişse gider)" der. İki okuma:
+  A) (ÖNERİ) S16 gibi — Yine de Gönder ELLE seçim sayılır, onay penceresinde "Ödeme Sözü Var" yazar, ileti gönderim anındaki (elle) tutarla gider (ilke 2: o gün tek yol işteki onaylı Yine de Gönder;
+     ilke 4: çıkmaz yok). Örnek: 10.10 1.000 TL hatırlatma Sonucu Belirsiz; 11.10 20.10'a söz; 11.10 Yine de Gönder → ileti "1.000,00 TL" ile gider (POST 2).
+  B) 5.3 A'nın gönderim anı denetimi — "Atlandı — Ödeme Sözü Var" (POST 1); aynı gün yeni gönderimde kişi "Sonucu Belirsiz" ile elenir (Yine de Ekle Sonucu Belirsiz'i aşmaz — 6.1 / 6.4) → o gün ÇIKMAZ;
+     söz geçince (21.10) asıl işte yeniden Yine de Gönder ya da ertesi gün Yine de Ekle ile.
+  C) Uç durum böyle kalsın (BİLİNEN SINIR olarak yazılır; B gibi davranır).
+  (Aynı soru: bekleyen belirsizlik onaylı işte söz verilip asıl işte yeniden basılınca — S23'ün söz karşılığı.)
+- **S-W21-2 ★ (UÇ DURUM) Çapraz etiket — "Yine de Ekle" ile (ya da S16 / S23 ile) elle seçilen kişiye, elle seçildiği anda OLMAYAN başka etiket gelirse** (söz için eklenene kuyruktayken şüpheli kaydı
+  açılır; şüpheli için eklenene söz verilir); ayrıca (b) başlatmada iki etiket birden (Şüpheli + Söz) varken satırda tek neden ("Şüpheli Alacağı Var") görünür ve kutu işaretlenir. 6.1 A "işaretlenen kişi
+  ELLE SEÇİLMİŞ sayılır" (kişi başına) der; S22 / S-C5C-5 A düzeni "kullanıcı onaylarken görmediği etiketle gönderim anında atlanır" der. İki okuma:
+  A) (ÖNERİ) elle iz yalnız işaretlendiği andaki etiket(ler)i aşar — sonradan doğan etiket gönderim anında "Atlandı — <etiket>" (S22 ile aynı yön; Y12-7'deki "elle kalır" yalnız AYNI etiket); (b)'de iki etiket
+     de aşılır (kutu kişi satırında; o anda ikisi de kişide). Örnek: söz için eklenen, 1.000 TL borçlu X'e kuyruktayken 300 TL şüpheli açılır → A: "Atlandı — Şüpheli Alacağı Var", POST 0.
+  B) elle iz kişinin bütün etiketlerini aşar — X gider (iletideki tutar elle tutarı, ör. şüphesiz 700 TL — cari kâhini).
+  C) Uç durum böyle kalsın (BİLİNEN SINIR olarak yazılır; A gibi davranır).
+- Yaygın programlar (Mikro, Netsis, Logo, AKINSOFT): belgeleri / ekranları OKUNMADI — dayanak yazılmadı (12.11 kuralı).
+- Bilgi (soru değil; kime değişmez, `secenek` ile modellendi): devir uyarısındaki "N kişilik" (kişi ↔ iş sayısı); Devri Geri Al sonrası devirle durmuş işin ekran adı (26.2 8.2).
+
+### 26.5 Kâhinde (kodlama) — yeni girdi, olaylar, çıktılar
+Kod (`kahin.py`): `KARARLAR` C5C4 … C5C9 (taslak metinleri AYNEN); `borc_ayristir` (girdi doğrulaması: neden kümesi, 2.5 sırasıyla TEK neden, giden kişide vade / tutar / bakiye, `elle` yalnız Şüpheli / Söz etiketlide,
+girdi senaryonun başından), `borc_kaydi`, `c5c_etiketler`, `c5c_kapsam` (elle izin aştığı etiketler; eski yolda Şüpheli), `c5c_degerler` (elle izi bütün Şüpheli / Söz etiketlerini aşıyorsa elle değerler),
+`c5c_baslat_engeli` (başlatma: Tedarikçi → Şüpheli / Söz (Yine de Ekle yoksa) → elle / otomatik değerde Gecikmiş Borç Yok), `c5c_gonderim_engeli` (gönderim anı: aynı sıra; iz kapsamı dışında yeni etiket elle
+işte → S-W21-2 hatası), `devir`, `devri_geri_al`; `supheli_acik` ve `hatirlatma_engeli` borç girdili caride girdiden; `_icerik` borç girdili caride {{3}} / {{4}} / {{5}} girdiden; `isci` borç girdili caride
+gönderim anı denetimi + Meta Bekletti 2. denemesinde 1. denemenin içeriği (5.2; iki deneme arasında elle iz değiştiyse `mb_elle` iki okuma — 26.7); Ödeme Hatırlatma'da Silinmiş → İstemiyor → Pasif (2.5);
+`yine_de_gonder` basma anında süren sözde S-W21-1 hatası, S16 / S23 elle izine Şüpheli kapsamı; `devam` "durduruldu" toplu işte etkisiz; olaylar `devir`, `devri_geri_al`, `surum_gecisi` (etkisiz);
+başlatmada `arsiv` (ret sırasının başında `arsiv`) ve `yine_de_ekle` (eski `supheli_elle` eşanlamlı); sabitler `SOZ`, `TEDARIKCI`, `ETIKET_SIRASI`, `DURDU_DEVIR` (KAPANDI_TESLIMSIZ ve PDF_SUSUYOR'a girdi —
+geri yüklemedeki gibi), `ARSIV`; okumalar `devir_geri` (Devri Geri Al sonrası devirle durmuş işin adı) ve `mb_elle` (S-W21-3). Çıktıda yeni alan yalnız `devir_onu` (yalnız devir senaryolarında); toplu iş
+durumu `durduruldu` (neden "Durduruldu (Devir)"). Eski `vadeler` yolu, eski olaylar ve eski çıktılar DEĞİŞMEDİ (26.8).
+
+### 26.6 Senaryolar (16) — girdi §3'ün WHATSAPP KÂHİNİ sınıfları (beklenenler ELLE, hesap açıklamada)
+| Sınıf (taslak §0) | Senaryo | Adım → sonuç (ileti gider / atlanır / elenir / sorulur, neden, iletideki tutar) |
+|---|---|---|
+| N12 (kuyruktayken öder / kısmen öder) + 5.1 / 5.2 | C5C5-01 (C5, F5), C5C5-02 (S3), C5C4-02 (N4) | C5: Devam Et'te 600 → 250,00 TL ile gider; F5: tümüyle ödedi → "Atlandı — Gecikmiş Borç Yok"; S3: sınırdan ertesi gün 350,00 TL; N4: gece yarısından sonra 1.250,00 TL |
+| N13 (kuyruktayken söz) — S-C5C-5 A | C5C5-01 (A5), C5C5-02 (S2), C5C5-03 (M2), C5C5-04 (F1), C5C5-05 (W5) | Devam Et / Sınır / Meta Bekletti 2. denemesi / Başarısızları Yeniden Dene / Yine de Gönder'den sonra verilen söz → gönderim anında "Atlandı — Ödeme Sözü Var" (POST 0 / 0 / 1 / 1 / 1); W5'te söz geçince asıl işte Yine de Gönder → 650,00 TL gider |
+| N14 (kuyruktayken şüpheli) — 5.4 | C5C5-01 (D5) | "Atlandı — Şüpheli Alacağı Var", POST 0 |
+| N15 (Tedarikçi / silindi / pasif) — S-C5C-6 A, 5.6, 2.5 | C5C5-01 (B5, E5), C5C5-04 (F2), C5C6-01 (X6), C5C7-02 (H1) | "Atlandı — Tedarikçi" (elle işte de: X6); hem Pasif hem İstemiyor → "Atlandı — İstemiyor" (2.5 sırası) ve yeni başlatmada "İstemiyor" ile elenir |
+| N16 (Yine de Gönder donmuş tutar) — S-C5C-8 A | C5C6-03 | hatırlatma 1.000 → gönderim anındaki 600,00 TL; Ekstre açılıştaki 2.000,00 TL (aynı ileti) |
+| N17 (elle seçimin yolu) — S-C5C-7 A | C5C6-01, C5C5-04 (F3) | Yine de Ekle: Y6 (söz) 1.000,00 TL, Z6 (şüpheli) 300,00 TL / 900,00 TL gider; iz Devam Et'te (C5C6-01) ve yeniden denemede (F3 1.000,00 TL) taşınır; işaretsiz V6 "Ödeme Sözü Var", elle değerde borcu olmayan U6 "Gecikmiş Borç Yok" ile elenir |
+| N18 (aynı gün eski + yeni sürüm) — 7.1 | C5C7-01 (G1) | 2.5.0'da 600,00 TL gitti; güncellemeden sonra aynı gün (1.100 TL'ye de) "Daha Önce Gönderildi" (uyarı 1, son 30.10); ertesi gün 1.100,00 TL gider |
+| N20 (kuyruktaki 2.5.0 işi) — 7.3 | C5C7-01 (G2, G3), C5C7-02 | yeni kuralla: G2 "Atlandı — Ödeme Sözü Var", G3 450,00 TL, H1 "Atlandı — Tedarikçi", H2 (2.5.0 elle şüpheli) 250,00 TL / 700,00 TL |
+| N21 (devirde süren gönderim) — S-C5C-9 A + BAŞ MİMAR EKİ | C5C8-01 | uyarı "3 kişilik gönderim durdurulacak"; D2, D3 (hatırlatma) ve D5 (Ekstre) "Durduruldu (Devir)", Devam Et sürdürmez; Gönderildi olan D6 değişmez; yeni gönderimde D1, D6 "Daha Önce Gönderildi" (uyarı 2), D2, D3 gider; şirket B'nin işi Duraklatıldı kalır |
+| N22 (Devri Geri Al sonrası aynı gün) — 8.2 | C5C8-02 | R3 / R4 işleri dosyadan çıkar; R2 "Durduruldu (Devir)" ya da "Durduruldu (Geri Yükleme)" (`secenek`); aynı gün R1, R3 "Daha Önce Gönderildi" (uyarı 2), R2, R4 gider; ertesi gün R3 gider |
+| N24 (arşivden gönderim) — 8.4 (+ 8.3 Devri Yenile) | C5C8-03 | başlamaz (`arsiv`); iki devirden sonra da aynı gün "Daha Önce Gönderildi"; ertesi gün gider |
+| N25 (iki şirket) — 9.1 / 9.2 | C5C9-01, C5C8-01 (B1) | aynı telefonlu kişiye aynı gün iki şirketten iki ileti (Alfa 300,00 TL, Beta 120,00 TL); "Daha Önce Gönderildi" şirket başına |
+| N30 (gece yarısını geçen iş) — 4.1 + 5.2 | C5C4-02, C5C5-02 | gün = iletinin gittiği gün (31.10): aynı gün N4 "Daha Önce Gönderildi" (son 31.10), dün (30.10) alan N5 gider; tutar gönderim anındaki |
+| ek: aynı gün ikinci (sorulur), ertesi gün serbest — 4.1 | C5C4-01 | P4: aynı gün "Daha Önce Gönderildi"; R3 "Yine de Gönder" ile gider; ertesi gün uyarısız (P4'e 3 ileti) |
+| ek: elenen / atlanan o gün almamış; koşul kalkınca aynı gün gider — 4.3 | C5C4-01 (R4), C5C5-01 (A5) | söz silinince aynı gün gider (R4 400,00 TL; A5 800,00 TL) — "Zaten Kuyrukta" / "Daha Önce Gönderildi" doğmaz |
+| ek: Sonucu Belirsiz + Yine de Gönder + şüpheli kaydı açılması — 6.2, 6.4 | C5C6-02 | Yine de Ekle Sonucu Belirsiz'i aşmaz ("Sonucu Belirsiz"); işaretsiz "Şüpheli Alacağı Var"; işteki Yine de Gönder ELLE (onay penceresinde "Şüpheli Alacağı Var") → 300,00 TL / 900,00 TL |
+| ek: Devri Geri Al sonrası aynı gün — 8.2 | C5C8-02 | yukarıda |
+| N19 (alıcı sayısı habersiz katlanır — 7.2 bilgi satırı) | — | MODELLENMEDİ (26.2; SONRAYA) |
+Taslaktaki program ölçümüyle (2.5.0) fark — kâhin onları beklenen yapmadı: 6.3 "bugün Yine de Gönder DONMUŞ içeriği gönderir" ↔ kâhin gönderim anındaki tutar (C5C6-03: program bugün 1.000,00 TL verirse ayrışma BEKLENİR); 6.1 "bugün kişi başı
+'yine de ekle' yolu YOK" ↔ kâhin Yine de Ekle yolu (C5C6-01, C5C5-04 — program bugün bu girdiyi üretemez); §5 söz / tedarikçi denetimi gönderim anında (programın bugünkü davranışı taslakta yazılı değil).
+Kime / tutar sayıları (taslağın 14 carilik / 1.484 carilik ölçümleri) cari kâhininin işidir — bu kâhinde girdi.
+
+### 26.7 Kodlamada ortaya çıkan çelişki — KULLANICIYA SORULMALI S-W21-3 ★ (kodlanmadı; iki okuma birlikte, `secenek`)
+- **S-W21-3 (UÇ DURUM) Meta Bekletti'nin 2. denemesinden ÖNCE elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği.** Taslak 5.2 KARARLI: "o an hazırlanan içerik sonra donar (Meta Bekletti'nin 24 saat
+  sonraki 2. denemesi aynı içerikle)". S23 = A / S29 = A (06.11): "bekleyen iş S16 ile elle sayılır … gönderim anında şüphesiz tutarla gider" — kâhinin S23-04 / S29-03 senaryoları tam bu sırayı (1. deneme
+  Meta Bekletti; arada şüpheli kaydı açılır ve asıl işte yeniden Yine de Gönder; 2. deneme) gönderim anındaki şüphesiz tutarla bekliyordu. 5.2 uygulanınca (G3 ön koşusu) iki senaryo değişti → iki KARARLI metin
+  bu sırada çelişir. A) (ÖNERİ) S23 / S29 özel kuralı geçer — iş 2. denemeden önce elle sayıldıysa 2. deneme gönderim anında şüphesiz tutarla yeniden hazırlanır (S7 "iletide şüphesiz tutar" ile tutarlı; donmuş
+  içerik şüpheli tutarı da yazardı); elle iz değişmediyse 5.2 aynen (1. deneme içeriği). Sayılar: S23-04 → 16.10.2026 / 250,00 TL; S29-03 → 30.10.2026 / 200,00 TL. B) 5.2 her durumda — 2. deneme 1. denemenin
+  içeriğiyle: S23-04 → 06.10.2026 / 650,00 TL (şüpheli 400 dahil), S29-03 → 06.10.2026 / 400,00 TL. C) Uç durum böyle kalsın (BİLİNEN SINIR; A gibi). Kime / kaç kez iki okumada aynı (POST, kabul, "Bu Ay",
+  eleme — I18 (c) denetler). Yaygın programlar: okunmadı.
+- Kâhinde: `isci` Meta Bekletti 2. denemesinde, işin elle izi 1. içerik hazırlandığından beri değiştiyse `mb_elle` okumasına düşer (`gonderim_ani` / `ilk_icerik`); ayrışan içerik yaprakları
+  `{"secenek": [...], "susuyor": "KULLANICIYA SORULMALI S-W21-3 …"}`. Elle iz değişmediyse 5.2 tek okumayla (C5C5-03: M1 800,00 TL; M304 bunun tersi).
+
+### 26.8 G3 — eski kâhin (taban 64396478, değişiklikten önce alınmış kopya; `senaryolar.json` sha256 e2f30a78…) ↔ yeni
+398 eski senaryonun girdi + elle + TAM model sonucu (başlık / kaynak / açıklama dahil): **396 bayt bayt aynı, 2 değişti, beklenmeyen değişiklik 0** (`wk21-g3-eski-398-tam-sonuc-fark`):
+| Senaryo | Değişen | Eski → yeni | Neden |
+|---|---|---|---|
+| S23-04 | elle + model `isler.T1/MK.degiskenler` {{3}}, {{4}} | "16.10.2026", "250,00 TL" → `secenek` ["16.10.2026", "06.10.2026"], ["250,00 TL", "650,00 TL"] | 5.2 ↔ S23 çelişkisi, S-W21-3 (26.7) |
+| S29-03 | elle + model `isler.T1/MZ.degiskenler` {{3}}, {{4}} | "30.10.2026", "200,00 TL" → `secenek` ["30.10.2026", "06.10.2026"], ["200,00 TL", "400,00 TL"] | 5.2 ↔ S29 çelişkisi, S-W21-3 (26.7) |
+2.5 sırası (Ödeme Hatırlatma'da İstemiyor Pasif'ten önce) hiçbir eski senaryoyu değiştirmedi (eski senaryolarda hem Pasif hem İstemiyor olan hatırlatma carisi yok). Üst alanlardan yalnız `kararlar`'a C5C4 … C5C9 eklendi
+(eski kararlar aynen). Eski kâhinle yeni / değişen 18 senaryo (`wk21-eski-kahinle-yeni-senaryolar`): **18/18 KIRMIZI** — ama nedeni çoğunda ZAYIF (ders 38): eski kâhin `borc` girdisini tanımıyor (herkes
+"Gecikmiş Borç Yok"), yeni olaylarda (`devir` …) "bilinmeyen olay", `yine_de_ekle` ile açılan iş yok (KeyError); S23-04 / S29-03'te beklenen nedenle (tek okuma). Yeni kuralların DİŞİ bu yüzden mutant matrisidir (26.9):
+her kuralın tersi değerle ve kendi senaryosunda yakalanıyor.
+
+### 26.9 Mutasyonlar (24 yeni: M293–M316) ve kâhinin kendi testi
+M293 söz denetimi yok · M294 tedarikçi denetimi yok · M295 Yine de Gönder donmuş içerik · M296 Ekstre Yine de Gönder yeniden hazırlar · M297 Yine de Ekle yalnız Şüpheli'ye · M298 Söz izi Devam Et'te kaybolur ·
+M299 Söz izi yeniden denemede kaybolur · M300 devir işlere dokunmaz · M301 devirle duran "almış" · M302 Devri Geri Al'da devirden sonrakiler defterden düşer · M303 sürüm geçişinde defter silinir · M304 Meta
+Bekletti 2. denemesi içeriği yeniden hazırlar · M305 eski ad sırası (Pasif önce) · M306 arşivden gönderim başlar · M307 "Durduruldu (Devir)" Devam Et ile sürer · M308 kime / tutar başlatmada donar · M309 Söz /
+Tedarikçi ile elenen almış sayılır · M310 devir duraklatılmışları durdurmaz · M311 "Daha Önce Gönderildi" şirketler arası · M312 devir öbür şirketi de durdurur · M313 Devri Geri Al dosyayı döndürmez · M314 uyarı
+Gönderildi işleri de sayar · M315 elle iz Tedarikçi'yi aşar · M316 günü toplu işin açıldığı gün. Hepsi DEĞERLE ve kendi senaryosunda yakalanıyor (`wk21-yeni-mutantlar`, iki TZ: 24/24). Kâhinin kendi testine
+**I18** (girdi doğrulaması; S-W21-1 / S-W21-2 / S-W21-2 (b) hata verir, B seçeneği M293 aynı girdide hesaplanır; `mb_elle` ve `devir_geri` okumalarında kime / kaç kez AYNI; yeni girdiler yalnız C5C
+başlıklarında; her C5C başlığı ≥ 2) ve **I19** (tohumlu rastgele üretici `c5c_rastgele` — 2511, 2512 × 120 senaryo × 2 zaman ucu; değişmezler: aynı şirket + cari + yerel gün en çok bir hatırlatma
+(R3 Yine de Gönder dışında), ilke 1 ("Daha Önce Gönderildi" yalnız o gün Meta'ya gerçekten ileti gittiyse), ilke 4 (Şüpheli / Söz ile elenen ya da atlanan Yine de Ekle ile, Tedarikçi Ekstre ile, "Daha Önce
+Gönderildi" R3 Yine de Gönder ile o nedenle elenmez — karşı-olgu koşuları)) eklendi; I19'un dişi ölçüldü (aynı küme, mutantla ihlalli senaryo: M73 21, M74 16, M309 7, M301 4 / 120; Devri Geri Al ve
+devir mutantlarını rastgele küme görmüyor — onları elle senaryolar yakalıyor). I2'ye C5C4 … C5C9, I4'e başlıklar (`senaryolar.YENI_250`); I10 (e) C5C6'yı (S16 borç girdisiyle), I14 okuma kümesini
+(`devir_geri`, `mb_elle`) tanır.
+
+### 26.10 Sürücü için (S-103 … S-111; programa karşı koşmadan önce gereken eşlemeler — kâhin tarafı sözleşme; sürücüye DOKUNULMADI)
+- **S-103 `cariler[].borc` (kime / tutar / neden GİRDİ):** her öğenin anında programdaki cari, Ödeme Hatırlatma'da TAM şunu vermeli: `neden` null → otomatik listeye girer ve ileti {{3}} = `vade` (gg.aa.yyyy),
+  {{4}} = `para(tutar)`, {{5}} = `para(bakiye)`; `tedarikci` → "Tedarikçi", `supheli_alacak` → "Şüpheli Alacağı Var", `odeme_sozu` → "Ödeme Sözü Var", `gecikmis_borc_yok` → "Gecikmiş Borç Yok" (2.5 adları);
+  `etiketler` = o anda kişide görünen etiketler; `elle` = Yine de Ekle / S16 / S23 ile elle seçilince iletideki değerler (ya da `neden` "gecikmis_borc_yok"). Girdiyi programda kuracak kayıtlar (fatura, taksit,
+  Borç Yaz, tahsilat, şüpheli kaydı, Ödeme Sözü, cari türü) CARİ KÂHİNİNİN senaryosundan / ana oturumdan gelir — bu kâhin bilmez. Program o anda girdiyi veremiyorsa (ör. tutar farklı) senaryo GEÇERSİZ, fark
+  iki kâhinin birleştiği değişmezde (hatırlatma tutarı = cari kartındaki Gecikmiş Borç) aranır.
+- **S-104 `baslat.yine_de_ekle: [cari]`** (eski `supheli_elle` eşanlamlı): önizlemede o kişinin satırındaki "Yine de Ekle" işaretlenir; kâhin bunu yalnız başlatmada Şüpheli / Söz etiketli kişiye verir.
+- **S-105 `surum_gecisi {surum}`:** programı o anda 2.5.0 → 2.5.1 güncelle (veri, makine defteri ve kuyruk korunarak); öncesinde 2.5.0'ın gerçek kodu (git etiketi v2.5.0) koşar. Kâhinde etkisiz.
+- **S-106 `devir {sirket, ad}`:** o şirkette devri başlat (Devri Yenile de aynı olay); ön denetimdeki "N kişilik gönderim durdurulacak" → `devir_onu.<ad>.durdurulacak` (kişi ≠ iş sayısıysa `secenek`
+  [kişi, iş]); iş durumu "Durduruldu (Devir)", toplu iş `durduruldu` + neden "Durduruldu (Devir)" (programın adı eşlenir); devirden sonraki gönderimler yeni yıl dosyasında.
+- **S-107 `devri_geri_al {sirket}`:** Devri Geri Al; dönen dosyada devirle durmuş işin adı `secenek` (README §26.2 8.2); devirden sonra açılan işler `isler`'den çıkar (`meta.post` bilinen ihlal — `GERI_IHLAL`).
+- **S-108 `baslat.arsiv: true`:** arşiv (geçmiş yıl) dosyasında toplu gönderim başlatmayı dene → düğme yok / ret → `baslamadi.<etiket> = "arsiv"`.
+- **S-109 okunacaklar:** `atlanma_nedeni` ve `elenen` yeni adları (`tedarikci`, `odeme_sozu`); Ödeme Hatırlatma'da hem Pasif hem İstemiyor cari → `istemiyor`; `secenek` yaprakları (`devir_geri`, `mb_elle` — S-W21-3).
+- **S-110 kod sırası:** Ç5-C programa birleşmeden 16 C5C senaryosunda ve S23-04 / S29-03'ün `secenek`'inde ayrışma BEKLENİR (S-98 düzeni). S-W21-1 / S-W21-2 sıralarına giren senaryo YOK (kâhin hata verir).
+- **S-111 rastgele küme:** `kahin_test.c5c_rastgele(random.Random(tohum), no)` sürücüye aynı girdiyi verir (programa karşı rastgele koşu için; kâhin tarafı hazır, sürücü yazılmadı).
+
+### 26.11 SONRAYA (20.11 kuralı — programı / kullanıcıyı etkilemeyen iç hususlar)
+- 7.2 bilgi satırı ("N cari yeni") ve S-C5C-1 baş mimar eki bilgi satırı modellenmedi (kime değişmez; N'nin tanımı cari kâhininde).
+- Eski `vadeler` yolunda S-C5C-10 A ({{5}} = bütün bakiye) ve 2.4 ÖNERİ (tek ad "Gecikmiş Borç Yok") yaprakları hâlâ `plan_susuyor` / `secenek` (S7S, NET_ENGEL) — tutar / kime adı cari kâhininin işi; istenirse
+  kesinleştirilir (eski senaryoların beklentisi daralır).
+- Eski kâhinle karşılaştırmanın "nötr" kopyası (yeni girdiyi eski `vadeler`e çeviren) yazılmadı — dişi mutant matrisi taşıyor.
+- I19 Devri Geri Al ve devir mutantlarını rastgele kümede görmüyor (elle senaryolar görüyor); üreticiye Yine de Gönder / iki şirket eklenmedi (S-W21-1 / S-W21-2'ye girmemek için tek etiket türü).
+
+### 26.12 Kanıt ve DENENMEYEN
+- **Kanıt:** `docs/kanit/2026-11-27/wk21-*` (koşu sayıları ve commit'leri raporda ve `wk21-OKU.txt`'de).
+- **DENENMEYEN:** programa karşı sürücü koşusu (görev gereği); S-W21-1 / S-W21-2 / S-W21-3 sıraları (kodlanmadı / iki okuma); 7.2; çapraz etiket ve iki etiketli kişi rastgele kümede; devir × Sonucu Belirsiz
+  (dosya kopyayla taşınır — senaryosuz), devir × Lisans Nedeniyle Durdu / açılışta sorulan (geri yüklemedeki küme; senaryosuz), devir × Meta Bekletti (Durduruldu (Devir) + geç teslim J1 — senaryosuz),
+  Devri Geri Al × taşıma / KVKK talebi (S32 düzeni `talepleri_uygula` çağrılıyor — senaryosuz); iki şirket aynı WABA × sınır × hatırlatma; 2.5.0'da elle şüpheli + 2.5.1'de söz (çapraz etiket S-W21-2);
+  29 Şubat, bayramlar.
+
+## 27. Kâhin güncellemesi 22 — S-W21-1 / 2 / 3 = A (2.5.1)
+
+### 27.1 Kaynak ve bağımsızlık
+Kaynak YALNIZ karar girdisi `docs/devir/2.5.1-DEVAM/c5c2-kararlar.md` (ana oturum yazdı, 27.11.2026; ana ağaçtan okundu, kopyalanmadı) §1.1, §2, §4 — KULLANICI KARARI 27.11 17:01 UTC (AYNEN: "önerilerini uygula"):
+S-W21-1 = A, S-W21-2 = A, S-W21-3 = A (soru metinleri girdide AYNEN; metinler kodlamada AYNEN `kahin.KARARLAR` W21). Bir önceki girdi `c5c-kararlar.md` ve onaylı ilke taslağı `docs/devir/C5C-ILKE-TASLAK.md`
+AYNEN geçerli (taslak bu bakımda yeniden açılmadı; §26'daki okuması sürer). Önceki kararlar bu README'den ve `kahin.KARARLAR`'dan. Girdinin §1.2 (SK-56/57/58) ve §1.3 (madde 28 / S-T4-1) satırları
+CARİ KÂHİNİNİNDİR (girdi §2 iş bölümü) — bu kâhinde kime / tutar yine GİRDİ (`cariler[].borc`, §26.3); cari kâhininin klasörü okunmadı, yazılmadı. Devri Geri Al'dan sonra devirle durmuş işin dönen
+dosyadaki ADI (`devir_geri`) bu bakımda TEKLEŞMEZ (girdi §2, BAŞ MİMAR KARARI 27.11 16:22 (2)) — iki okuma yaprağı aynen kalır.
+Okunan başka dosya: CLAUDE.md (oturum bağlamında yüklü), `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`, `docs/devir/2.5.1-DEVAM/c5c-kararlar.md`, bu README (başlık dizini python ile; 1–53, 1135, 1231 ve §26'nın tamamı),
+`kahin/kahin.py`, `kahin/senaryolar.py`, `kahin/kahin_test.py` (bölüm bölüm). Hazırlıkta ayrıca güncelleme 21'in kendi kanıt dizininden `docs/kanit/2026-11-27/wk21-OKU.txt` ve `wk21-kahin.json`
+(bu kâhinin önceki bakımının koşu özeti; program bilgisi yok) ve dizin listesi açıldı — görev metninin "kendi kanıtların dışında `docs/kanit/` OKUNMAZ" kuralına aykırı; raporda bildirildi.
+`surucu.mjs`, `sahte-meta/`, program kodu ve testleri, iş listeleri, `docs/devir/2.5.1-DEVAM/` içinde iki girdi dışındaki dosyalar (`pc5c-*`, `d3*` dahil), `docs/erp/*-TASARIM.md`, yapım aşaması
+listesi ve git geçmişi AÇILMADI. Girdideki soru metinlerinin "program bugün …" cümleleri ölçümdür — kural kaynağı yapılmadı (ders 40). Programa karşı KOŞULMADI (ana oturumun işi). Eski kâhinle
+karşılaştırma (G3) taban ağaçtaki (`t251-wk21` = c774eeea) `kahin/*` dosyalarının değişiklikten ÖNCE not defterine alınmış kopyasıyla (`kahin.py` sha256 3e252a37…, `senaryolar.json` 8d73121c…).
+Bu bölümün 27.1–27.3'ü KODLAMADAN ÖNCE yazıldı ve ayrı commit'lendi (ders 40); 27.4 ve sonrası kodlamadan sonra.
+
+### 27.2 Kural başına yorum (güncelleme 21'de bugün ne var → ne değişir → hangi beklenti değişir)
+| Karar (girdi §1.1) | Güncelleme 21'de bugün | Ne değişir (kâhinde) | Hangi eski beklenti değişir (eski → yeni, neden) |
+|---|---|---|---|
+| **S-W21-1 = A** — Sonucu Belirsiz Ödeme Hatırlatma'da işteki "Yine de Gönder" basıldığı anda Ödeme Sözü sürüyorsa ELLE seçim sayılır, onay penceresinde "Ödeme Sözü Var", ileti gider | `yine_de_gonder`: `borc` girdili caride basma anında söz sürüyor ve iz Söz'ü aşmıyorsa `ValueError` (KULLANICIYA SORULMALI S-W21-1); B seçeneği yalnız mutant M293 ile hesaplanıyordu | Y22-1 … Y22-4 (aşağıda): Söz, S16'nın Şüpheli'si gibi — iz basma anındaki Söz'ü de aşar, iş alınır, gönderim anında elle değerlerle (`borc[].elle` — cari kâhini) gider; onay penceresi etiketi yeni çıktı `yeniden.<etiket>.soz_etiketi` (YALNIZ boş değilse — eski çıktılar değişmez); S23'ün söz karşılığı aynı yoldan (bekleyen iş elle sayılır, yeni iş açılmaz, F1 uygulanmaz). Hata KALKAR | YOK (eski senaryolarda bu sıra yok — kâhin hata veriyordu); yeni senaryolar 27.5 |
+| **S-W21-2 = A** — elle seçim ("Yine de Ekle") yalnız işaretlendiği andaki etiketleri aşar; kuyruktayken sonradan gelen etiketle "Atlandı"; başlatmada iki etiket birlikte → ikisi birlikte aşılır | `c5c_gonderim_engeli`: iz kapsamı dışında yeni etiket elle işte → `ValueError` (S-W21-2); `c5c_baslat_engeli`: başlatmada Şüpheli + Söz birlikte "Yine de Ekle" → `ValueError` (S-W21-2 (b)) | Y22-5 … Y22-7: gönderim anında iz kapsamı DIŞINDAKİ ilk açık etiket (2.5 sırası: Şüpheli → Söz; Tedarikçi her zaman önce) → "Atlandı — <etiket>" (elle işte de); başlatmada iki etiket + "Yine de Ekle" → iz {Şüpheli, Söz}, elle değerlerle gider. İki hata KALKAR | YOK (eski senaryolarda bu sıra yok); yeni senaryolar 27.5 |
+| **S-W21-3 = A** — Meta Bekletti'nin 2. denemesinden ÖNCE iş elle sayılmışsa (S16 / S23 — ve S-W21-1'in söz karşılığı) S23 / S29 geçer: 2. deneme gönderim anındaki şüphesiz (elle) tutarla yeniden hazırlanır; elle iz değişmediyse 5.2 aynen | `isci` Meta Bekletti 2. denemesi: iz 1. içerik hazırlandığından beri değiştiyse `mb_elle` iki okuması (`gonderim_ani` / `ilk_icerik`), ayrışan yapraklar `secenek` (MBS) | `mb_elle` okuması KALKAR (`OKUMALAR` yalnız `devam_sd` + `devir_geri`): iz değiştiyse içerik gönderim anında yeniden hazırlanır (eski `gonderim_ani`), değişmediyse 1. denemenin içeriği (5.2; M304 aynen). Y22-8 | **S23-04** `isler.T1/MK.degiskenler` {{3}} / {{4}}: `secenek` ["16.10.2026", "06.10.2026"] / ["250,00 TL", "650,00 TL"] → "16.10.2026" / "250,00 TL" (S-W21-3 = A; güncelleme 20'deki değere döner). **S29-03** `isler.T1/MZ.degiskenler`: `secenek` ["30.10.2026", "06.10.2026"] / ["200,00 TL", "400,00 TL"] → "30.10.2026" / "200,00 TL" (aynı neden). Başka değişen BEKLENMEZ |
+
+Kâhin yorumları (kodlamadan önce; her birinin kaynağı):
+| No | Yorum | Kaynak |
+|---|---|---|
+| Y22-1 | **S-W21-1 tetiği**: işteki Yine de Gönder (asıl işte basma dahil — D6) BASILDIĞI ANDA `borc` girdisinin o anki öğesinde Söz etiketi var ve işin elle izi Söz'ü aşmıyor. İz Söz'ü zaten aşıyorsa (başlatmada "Yine de Ekle") iş zaten elle — davranış değişmez (yalnız onay etiketi, Y22-3) | S-W21-1 = A + S16 Y13-1 (aynı tetik, söz için) |
+| Y22-2 | **"elle seçim sayılır"** = S16 Y13-2 düzeni: iz basma anındaki Söz'ü (aynı anda Şüpheli de açıksa ikisini — S-W21-2 A "işaretlendiği andaki etiketler") aşar; iz işte kalır (Devam Et, aynı belirsizlik zincirinde yeniden deneme); gönderim anında elle değerler ({{3}} / {{4}} / {{5}} `borc[].elle` — söz caride borcun tamamı, taslak 2.3; cari kâhini). Basmada elle değerde borç yoksa S34 = A düzeni (iş alınır, gönderim anındaki değerle; yoksa gönderim anında "Atlandı — Gecikmiş Borç Yok"). F1 "Zaten Kuyrukta", K5 "Daha Önce Gönderildi", S71 "Telefon Yok", S31 öncelikleri AYNEN (S16 yolundaki sırayla) | S-W21-1 = A + S16 / S34 + Y13-2 + taslak 2.3 |
+| Y22-3 | **"onay penceresinde 'Ödeme Sözü Var' yazar"** = basma anında söz süren Ödeme Hatırlatma carisi için onay penceresi etiketi → çıktı `yeniden.<etiket>.soz_etiketi` = [cari] (YALNIZ boş değilse; Y13-4'ün `supheli_etiketi` düzeni — elense de görünür; iz Söz'ü zaten aşıyor olsa da görünür: "söz sürüyorsa … yazar", koşulsuz). Şüpheli de açıksa iki etiket birlikte | S-W21-1 = A + Y13-4 |
+| Y22-4 | **S23'ün söz karşılığı** (girdi §1.1 / §4 "aynı kural bekleyen belirsizlik onaylı işte söz verilip asıl işte yeniden basılınca"): belirsizlik onayıyla bekleyen (S23_BEKLEYEN: Bekliyor, Sınır, Duraklatıldı, Lisans, Soruluyor, Meta Bekletti) iş, basma anında söz sürüyor ve iz Söz'ü aşmıyor, asıl işte yeniden Yine de Gönder → bekleyen iş elle sayılır (iz Söz'ü — ve basma anındaki öbür etiketleri — aşar), yeni iş / deneme açılmaz, F1 uygulanmaz, yanıtta `elle_sayilan` + `soz_etiketi`; gönderim anında elle değerlerle. GENEL OKUMA (S23 metni "basıldı (şüpheli kaydı yoktu) … kayıt açıldı … YENİDEN bastı → elle sayılır"): S23'ün tetiği "işin izi basma anındaki etiketlerden en az birini aşmıyor" olur — güncelleme 15'in "iş elle işaretsiz" koşulu tek etiketli dünyada bunun aynısıydı (eski `vadeler` yolunda iz = Şüpheli: AYNEN). Böylece söz için "Yine de Ekle" ile elle seçilmiş, Yine de Gönder ile bekleyen işe şüpheli kaydı açılıp asıl işte yeniden basılırsa da S23 (iz Şüpheli'yi de aşar). İz basma anındaki bütün etiketleri zaten aşıyorsa F1 "Zaten Kuyrukta" AYNEN | S-W21-1 = A + S23 = A (Y15-1…4) + S-W21-2 = A |
+| Y22-5 | **S-W21-2 "sonradan gelen etiketle Atlandı"** = gönderim anı denetimi (Devam Et, Sınır, Meta Bekletti 2. denemesi, Başarısızları Yeniden Dene, Yine de Gönder'in gönderimi — 5.3 düzeni): iz kapsamı DIŞINDAKİ ilk açık etiket (2.5 sırası) → "Atlandı — Şüpheli Alacağı Var" / "Atlandı — Ödeme Sözü Var"; Tedarikçi önce (S-C5C-3 A, aynen). Atlandı iş o gün ALMAMIŞ (ilke 1, 4.3); yol: yeni gönderimde o anki etiketler için "Yine de Ekle" (Sonucu Belirsiz yoksa) ya da — işin belirsiz denemesi varsa — asıl işte Yine de Gönder (S16 / S-W21-1: basma anındaki etiketler aşılır) — ilke 4 | S-W21-2 = A + S22 / S-C5C-5 A + G0 (1, 4) |
+| Y22-6 | **"işaretlendiği andaki etiket(ler)"** = etiket TÜRÜ (Tedarikçi / Şüpheli / Söz): işaretleme anları başlatmadaki "Yine de Ekle" ve işteki / asıl işteki Yine de Gönder basışları (S16 / S23 / S-W21-1 — iz o anki etiketleri EKLER, eski izi silmez). Aynı türden etiket kuyruktayken kalkıp yeniden doğarsa (kayıt kapanıp yeni kayıt açılır, söz biter yeni söz verilir) iz onu aşmaya DEVAM EDER — Y12-7 "kaydı kapanıp yeniden açılsa da elle kalır" (güncelleme 12) AYNEN; S-W21-2 sorusu "seçildiği anda OLMAYAN BAŞKA bir etiket" der. Kâhinin bugünkü (güncelleme 21) davranışı da bu; DEĞİŞMEZ (bilgi — 27.3) | S-W21-2 = A (soru metni) + Y12-7 + Y13-2 |
+| Y22-7 | **S-W21-2 (b) "başlatmada iki etiket birlikte → ikisi birlikte aşılır"** = başlatmada kişide Şüpheli + Söz varken (satırda TEK neden, 2.5 sırasıyla "Şüpheli Alacağı Var") "Yine de Ekle" → iz {Şüpheli, Söz}; elle değerlerle gider (elle değerde borç yoksa başlatmada "Gecikmiş Borç Yok" — S7-a düzeni). İşaretsizse eleme adı 2.5 sırasının ilki (aynen) | S-W21-2 = A (b) + 2.5 |
+| Y22-8 | **S-W21-3 "iş elle sayılmışsa"** = Meta Bekletti 2. denemesinin anında işin izi, 1. denemenin içeriği hazırlandığı andaki izden FARKLI (S16 / S23 / S-W21-1 / Y22-4 ile genişledi). O zaman içerik gönderim anında hazırlanır: elle değerler (iz bütün açık etiketleri aşıyorsa) — "iletide şüpheli tutar yer almaz"; iz aynıysa 1. denemenin içeriği (5.2; Atlandı / Gecikmiş Borç Yok denetimleri gönderim anında AYNEN — S-C5C-5 A). Kime / kaç kez iki okumada da aynıydı (I18 (c)); okuma kalkınca `secenek` yaprakları tek değere iner | S-W21-3 = A + 5.2 + S23 / S29 |
+
+### 27.3 KULLANICIYA SORULMALI (kodlamadan önce)
+- YOK — üç kararın metni bu kâhinin iki okumalı / hata veren yerlerini tek davranışa indiriyor. Kodlamada yeni alt durum çıkarsa 27.6'ya yazılır (KODLANMAZ).
+- Bilgi (soru değil; önceki yorum sürer): Y22-6 (aynı tür etiket kuyrukta kalkıp yeniden doğarsa iz aşmaya devam eder — Y12-7). İstenirse ayrı soru olarak sorulabilir: A) böyle kalsın (Y12-7; ileti
+  gider), B) yeniden doğan etiket "sonradan gelen" sayılsın ("Atlandı"), C) uç durum böyle kalsın (BİLİNEN SINIR; A gibi).
+- Yaygın programlar (Mikro, Netsis, Logo, AKINSOFT): belgeleri / ekranları OKUNMADI — dayanak yazılmadı (12.11 kuralı).
+
+### 27.4 Kâhinde (kodlama) — ne değişti
+Kod (`kahin.py`): `KARARLAR` SW21 (girdi §1.1 karar satırı + üç soru metni + §4 sınıf satırı AYNEN); `yine_de_gonder` — S-W21-1 hatası KALKTI; basma anındaki etiketler (`basma`: Şüpheli açıksa ve S16
+yolu açıksa Şüpheli, `borc` girdisinde söz sürüyorsa Söz) izi genişletir (S16 / S23 / S-W21-1 aynı yoldan), onay etiketi `soz_etiketi` (çıktıda YALNIZ boş değilse); S23 tetiği "iz basma anındaki
+etiketlerden en az birini aşmıyor" (Y22-4; `s23_yeniden_bas(…, basma)`); `c5c_baslat_engeli` — S-W21-2 (b) hatası KALKTI (iki etiket birlikte aşılır); `c5c_gonderim_engeli` — S-W21-2 hatası KALKTI
+(iz kapsamı dışındaki ilk etiket "Atlandı"); `isci` — Meta Bekletti 2. denemesinde iz değiştiyse içerik gönderim anında, değişmediyse 1. denemenin içeriği (`mb_elle` okuması ve `MB_ELLE_SUSUYOR` KALKTI;
+`OKUMALAR` = `devam_sd`, `devir_geri`); 9 mutant M317–M325. Eski `vadeler` yolu, eski olaylar ve eski çıktılar DEĞİŞMEDİ (27.7). `devir_geri` iki okuması AYNEN (girdi §2).
+
+### 27.5 Senaryolar (5 yeni, başlık SW21) — girdi §4'ün WhatsApp satırı (beklenenler ELLE, hesap açıklamada)
+| Sınıf (girdi §4) | Senaryo | Adım → elle beklenen (ileti / atlanma / eleme, neden, iletideki tutar) | Önceki bakımdaki iki okumadan / hatadan hangisi |
+|---|---|---|---|
+| S-W21-1: Sonucu Belirsiz + söz → Yine de Gönder gider, onayda "Ödeme Sözü Var", içerik gönderim anındaki tutar | SW21-01 (P1) | 12:00 Yine de Gönder (söz 11:00'den beri) → alınır, `soz_etiketi` [P1], 05.10.2026 / 1.000,00 TL gider, POST 2 (B: "Atlandı — Ödeme Sözü Var", POST 1) | hata (S-W21-1) → A |
+| aynı gün en çok bir + ertesi gün serbest (S-W21-1 ile) | SW21-01 (T2, T3, T4) | 13:00 işaretsiz → "Ödeme Sözü Var"; 13:10 "Yine de Ekle" → "Daha Önce Gönderildi" (uyarı 1, son 30.10); 31.10 "Yine de Ekle" → 1.000,00 TL gider; P1'e 3 POST | — |
+| S23'ün söz karşılığı (bekleyen belirsizlik onaylı işte söz, asıl işte yeniden basma) + S-W21-3 iz değişti + gün dönümü | SW21-02 (Q1) | 11:00 Yine de Gönder (söz yok) → 400,00 TL / 650,00 TL içerik, Meta Bekletti; 12:00 söz; 14:00 asıl işte basma → `elle_sayilan` + `soz_etiketi`, yeni iş yok, POST 2; 31.10 2. deneme 06.10.2026 / 650,00 TL / 650,00 TL (B: donmuş 400,00 TL), POST 3; 31.10 11:10 "Daha Önce Gönderildi" (son 31.10) | hata (S-W21-1) → A; `mb_elle` → `gonderim_ani` |
+| S-W21-2: söz için eklenene kuyruktayken şüpheli → "Atlandı — Şüpheli Alacağı Var"; şüpheli için eklenene sonra söz → "Atlandı — Ödeme Sözü Var"; başlatmada iki etiket birlikte → ikisi aşılır, gider; çıkmaz yok | SW21-03 (X1–X4) | Devam Et: X1 "Atlandı — Şüpheli Alacağı Var", X2 "Atlandı — Ödeme Sözü Var" (POST 0); X3 (iki etiket + Yine de Ekle) 22.10.2026 / 250,00 TL / 800,00 TL; X4 işaretsiz "Şüpheli Alacağı Var"; 12:00 Yine de Ekle X1, X2 → X1 20.10.2026 / 700,00 TL / 1.000,00 TL, X2 21.10.2026 / 300,00 TL / 900,00 TL (Atlandı o gün almamış) | hata (S-W21-2, S-W21-2 (b)) → A |
+| S-W21-1 + S-W21-2: Yine de Gönder basma anında iki etiket birlikte aşılır; S-W21-3 iz değişmedi → 5.2 aynen | SW21-04 (Y1, Z1) | Y1: `supheli_etiketi` + `soz_etiketi`, 07.10.2026 / 200,00 TL / 500,00 TL, POST 2; Z1 (Yine de Ekle, söz) Meta Bekletti, arada elle 1.000 → 800, 2. deneme 1. içerikle 19.10.2026 / 1.000,00 TL, POST 2 | hata (S-W21-1) → A; 5.2 aynen (tek okuma zaten) |
+| Y22-4 genel okuma (söz için elle bekleyen işe şüpheli, asıl işte yeniden basma) + S-W21-3 | SW21-05 (W1) | 11:00 Yine de Gönder (söz; iz zaten aşıyor) → `soz_etiketi`, 900,00 TL içerik, Meta Bekletti; 12:00 şüpheli; 14:00 asıl işte basma → S23 (`elle_sayilan` + iki etiket), iz {Şüpheli, Söz}; 2. deneme 10.10.2026 / 500,00 TL / 900,00 TL (B: 900,00 TL), POST 3 | hata (S-W21-2) → A |
+| S-W21-3 eski senaryolar | S23-04, S29-03 | 16.10.2026 / 250,00 TL; 30.10.2026 / 200,00 TL (B: 06.10.2026 / 650,00 TL; 06.10.2026 / 400,00 TL — M321) | `mb_elle` `secenek` → `gonderim_ani` |
+Kime / tutar / neden GİRDİ (`borc`, elle; söz caride elle değer = borcun tamamı, taslak 2.3 — cari kâhininin sorusu). İki saat dilimi: senaryolar TZ=UTC ve TZ=Europe/Istanbul'da 419/419, `senaryolar.json`
+iki koşuda bayt bayt aynı (sha256 982f3a01…).
+
+### 27.6 Mutasyonlar (9 yeni: M317–M325) ve kâhinin kendi testi
+M317 S-W21-1 B (basma anındaki söz elle sayılmaz) · M318 S-W21-2 B (elle iz bütün etiketleri aşar — sonradan gelen başka etiketi de) · M319 S-W21-2 (b) tersi (başlatmada iki etiketten yalnız ilki) ·
+M320 Yine de Gönder basma anındaki iki etiketten yalnız ilki · M321 S-W21-3 B (iz değişse de donmuş içerik) · M322 iz değişmemişken de yeniden hazırlama (M304 ile aynı etki; ikisi de kalır) ·
+M323 S23'ün söz karşılığı yok (F1) · M324 Y22-4 genel okuma yok (S23 yalnız tamamen işaretsiz işte) · M325 onayda "Ödeme Sözü Var" yok. Her biri kendi SW21 senaryosunda DEĞERLE yakalanıyor
+(`wk22-yeni-mutantlar`, iki TZ: 9/9; yakalayan senaryolar: M317 SW21-01/02/04/05, M318 SW21-03/05, M319 SW21-03, M320 SW21-04, M321 S23-04, S29-03, SW21-02/05, M322 SW21-04, M323 SW21-02,
+M324 SW21-05, M325 SW21-01/02/04/05). Görev metnindeki "elle iz sonradan gelen etiketi de aşsın / yalnız birini aşsın" iki mutanta ayrıldı: sonradan gelen = M318 (B), yalnız biri = M319 (başlatma) + M320
+(basma). Kâhinin kendi testinde: **I18** artık eski S-W21 hata girdilerinde A sonucunu bekler (S-W21-1: Teslim, POST 2, `soz_etiketi`; S-W21-2: "Atlandı — Şüpheli Alacağı Var", POST 0; S-W21-2 (b):
+elle değerlerle gider) ve B mutantlarının (M317, M318, M319) aynı girdide ayrıştığını; `mb_elle` yok, S23-04 / S29-03 tek okuma grubunda A değerinde, M321 ile karar metnindeki B sayıları (650 / 400 TL);
+`kahin.py`'de S-W21 hata metni yok; `soz_etiketi` yalnız SW21'de; SW21 ≥ 5. **I19** üreticisi: carinin etiket türüne ÇAPRAZ (Şüpheli, Söz, ikisi birlikte) eklendi, toplu iş başına kişilere rastgele işteki /
+asıl işteki Yine de Gönder, carilerin %35'inde 1. ileti Sonucu Belirsiz (yanıtsız kabul + durum bildirimi yok); yeni değişmezler (4) "Atlandı — Şüpheli / Söz" yalnız işaretleme anlarının hiçbirinde
+olmayan etiketle, (5) basma anında söz sürüyorsa kabul edilen / elle sayılan basışın onayında "Ödeme Sözü Var", (6) gönderilen her hatırlatmada kişinin o anki Şüpheli / Söz etiketleri işaretleme
+anlarında aşılmış, Tedarikçi'ye hiç gitmez; (1)'in istisnasına onaylı işteki Yine de Gönder ve E1 + 8.2 (27.8) girdi. I19'un dişi (aynı küme, mutantla ihlalli senaryo / 120 — tohum 2511 · 2512):
+M317 9 · 8, M318 2 · 0, M319 26 · 20, M320 1 · 0, M321 1 · 0, M322 1 · 0, M323 1 · 0, M324 1 · 0, M325 9 · 8 (M293 5 · 3, M309 6 · 10); yeni sınıfların sıklığı: S-W21-1 basışı 9 · 10, elle işte etiketle
+Atlandı 2 · 1, iki etiketli "Yine de Ekle" 100 · 72. Seyrek sınıfların asıl dişi elle senaryolar (yukarıda). I2 / I4 / I10 / I12 / I14 SW21'i tanır.
+
+### 27.7 G3 — eski kâhin (taban t251-wk21 = c774eeea, değişiklikten önce alınmış kopya; `senaryolar.json` sha256 8d73121c…) ↔ yeni
+414 eski senaryonun girdi + elle + TAM model sonucu (başlık / kaynak / açıklama dahil): **412 bayt bayt aynı, 2 değişti, beklenmeyen değişiklik 0** (`wk22-g3-eski-414-tam-sonuc-fark`, iki TZ):
+| Senaryo | Değişen | Eski → yeni | Neden |
+|---|---|---|---|
+| S23-04 | elle + model `isler.T1/MK.degiskenler` [2], [3] ({{3}}, {{4}}) | `secenek` ["16.10.2026", "06.10.2026"] / ["250,00 TL", "650,00 TL"] → "16.10.2026" / "250,00 TL" | S-W21-3 = A (Y22-8) |
+| S29-03 | elle + model `isler.T1/MZ.degiskenler` [2], [3] | `secenek` ["30.10.2026", "06.10.2026"] / ["200,00 TL", "400,00 TL"] → "30.10.2026" / "200,00 TL" | S-W21-3 = A (Y22-8) |
+Üst alanlardan yalnız `kararlar`'a SW21 eklendi (eski kararlar aynen). Başka `secenek` yaprağı değişmedi (`devir_geri` C5C8-02'de aynen). Eski kâhinle yeni / değişen 7 senaryo
+(`wk22-eski-kahinle-yeni-senaryolar`, iki TZ): **7/7 KIRMIZI, nedeni BEKLENEN** (ders 38): SW21-01 / 02 / 04 `ValueError` S-W21-1, SW21-03 `ValueError` S-W21-2 (b), SW21-05 `ValueError` S-W21-2,
+S23-04 / S29-03 `secenek` ↔ tek değer.
+
+### 27.8 Kodlamada ortaya çıkan (KULLANICIYA SORULMALI YOK; bilgi)
+- I19'un yeni Sonucu Belirsiz üretimi iki rastgele senaryoda (tohum 2511 #87, 2512 #35) aynı gün iki hatırlatma gösterdi: devirden sonra giden ileti Sonucu Belirsiz kalırken Devri Geri Al işi dosyadan
+  çıkarıyor, aynı gün yeni gönderim gidiyor. Kural ZATEN kararlı: E1 ("yalnız defterde kalan belirsiz yeni gönderimi elemez") + 8.2 (Devri Geri Al'da devirden sonra açılan işler dosyadan çıkar);
+  S-W21 kararlarıyla ilgisi yok, kime / kaç kez kâhinde değişmedi. Değişmez (1)'e bu durum için istisna yazıldı (önceki ileti Devri Geri Al'dan önce ve işi dönen dosyada yok). Programa karşı
+  koşulduğunda aynı davranış BEKLENİR; kullanıcıya sorulacak bir okuma yok (E1 kullanıcı kararı). §26.12'nin "devir × Sonucu Belirsiz (senaryosuz)" DENENMEYEN'i rastgele kümede artık görülüyor.
+- Y22-6 (aynı tür etiket kuyrukta kalkıp yeniden doğarsa iz aşar — Y12-7) AYNEN; rastgele kümede de bu sıra oluşuyor, değişmezler (4) / (6) tür üzerinden denetler.
+
+### 27.9 Sürücü için (S-112 … S-115; kâhin tarafı sözleşme — sürücüye DOKUNULMADI)
+- **S-112 `yeniden.<etiket>.soz_etiketi`** = [cari]: işteki Yine de Gönder'in onay penceresinde (basma anında söz süren Ödeme Hatırlatma carisi için) "Ödeme Sözü Var" etiketi görünür; çıktıda YALNIZ boş değilse
+  (Y13-4'ün `supheli_etiketi` düzeni; ikisi birlikte olabilir). Elense de görünür.
+- **S-113 S23'ün söz / çapraz karşılığı:** asıl işte yeniden basmanın yanıtı `{"elenen": {}, "alinan": [], "oneri": null, ["supheli_etiketi"], "soz_etiketi", "elle_sayilan": [cari]}`; bekleyen iş durumunu,
+  bekleme anını, POST sayısını değiştirmez (S23 düzeni).
+- **S-114 S-W21-2:** elle (Yine de Ekle / S16 / S-W21-1) işte gönderim anında yeni etiket → `atlanma_nedeni` `supheli_alacak` / `odeme_sozu` (S-109'daki adlar); başlatmada iki etiket + Yine de Ekle → iş açılır.
+- **S-115 S-W21-3:** `secenek` (mb_elle) yaprağı YOK; Meta Bekletti 2. denemesinin {{3}} / {{4}} / {{5}}'i tek değer. S-110 güncellemesi: Ç5-C programa birleşmeden SW21 senaryolarında ve S23-04 / S29-03'te
+  ayrışma BEKLENİR (S-98 düzeni). S-111'in rastgele kümesi artık Yine de Gönder ve çapraz etiket de üretir (`kahin_test.c5c_rastgele`).
+
+### 27.10 SONRAYA (20.11 kuralı — programı / kullanıcıyı etkilemeyen iç hususlar)
+- M322 ile M304 aynı etkiyi taşıyor (ikisi de kalır; birleştirilebilir).
+- I19'un değişmez (6) iş anahtarında `#n` ekini kesiyor (aynı toplu işte aynı kişiye ikinci iş yalnız mutantlarda doğar) — yaklaşık.
+- Değişmez (1)'in E1 istisnası önceki iletinin teslim edilmediğini ayrıca denetlemiyor (dosyada olmayan iş = yaklaşık); D7'nin elle senaryoları (C5C8-02) bunu taşıyor.
+- §26.11'in maddeleri (7.2 bilgi satırı, eski `vadeler` yolunda S7S / NET_ENGEL, nötr kopya) AYNEN.
+
+### 27.11 Kanıt ve DENENMEYEN
+- **Kanıt:** `docs/kanit/2026-11-27/wk22-*` (koşu sayıları ve commit'leri `wk22-OKU.txt`'de; araçlar `wk22-araclar/`).
+- **DENENMEYEN:** programa karşı sürücü koşusu (görev gereği); S-W21-1 × S71 (içeriği ve kart telefonu silinmiş iş — S71 önce, senaryosuz); S-W21-1 × S34 (basmada elle değerde borç yok — S34 yolu aynı,
+  senaryosuz); S-W21-2 × Sınır / Başarısızları Yeniden Dene yolları (aynı gönderim anı denetimi — elle senaryosu yalnız Devam Et; rastgele kümede var); Devri Geri Al iş adı (`devir_geri`, girdi §2 gereği
+  iki okuma); iki şirket × S-W21; 29 Şubat, bayramlar.

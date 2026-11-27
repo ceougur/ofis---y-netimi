@@ -1,0 +1,21 @@
+taban senaryo 398; yeni senaryo 414; yeni eklenen 16; kalkan 0
+DEĞİŞTİ S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider: girdi 0, elle 2, model 2, üst 0
+   [0].yollar.isler.T1/MK.degiskenler[2]: "16.10.2026" → {"secenek": ["16.10.2026", "06.10.2026"], "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme 
+   [0].yollar.isler.T1/MK.degiskenler[3]: "250,00 TL" → {"secenek": ["250,00 TL", "650,00 TL"], "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme ay
+   [0].sonuc.isler.T1/MK.degiskenler[2]: "16.10.2026" → {"secenek": ["16.10.2026", "06.10.2026"], "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme 
+   [0].sonuc.isler.T1/MK.degiskenler[3]: "250,00 TL" → {"secenek": ["250,00 TL", "650,00 TL"], "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme ay
+DEĞİŞTİ S29-03-meta-bekletti-ikinci-denemede-tutar-dogar-net-borcla-sinirli: girdi 0, elle 2, model 2, üst 0
+   [0].yollar.isler.T1/MZ.degiskenler[2]: "30.10.2026" → {"secenek": ["30.10.2026", "06.10.2026"], "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme 
+   [0].yollar.isler.T1/MZ.degiskenler[3]: "200,00 TL" → {"secenek": ["200,00 TL", "400,00 TL"], "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme ay
+   [0].sonuc.isler.T1/MZ.degiskenler[2]: "30.10.2026" → {"secenek": ["30.10.2026", "06.10.2026"], "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme 
+   [0].sonuc.isler.T1/MZ.degiskenler[3]: "200,00 TL" → {"secenek": ["200,00 TL", "400,00 TL"], "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme ay
+SONUÇ: 396 aynı, 2 değişen (eski 398 senaryodan)
+beklenmeyen değişiklik: YOK
+# tests 398
+# pass 398
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+üst alanlar (kararlar dışında) aynı mı: True
+eklenen karar anahtarları: ['C5C4', 'C5C5', 'C5C6', 'C5C7', 'C5C8', 'C5C9'] ; değişen eski karar: []

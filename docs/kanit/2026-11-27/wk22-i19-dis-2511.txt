@@ -1,0 +1,12 @@
+# tohum 2511 × 120: S-W21-1 basışı (söz etiketiyle kabul / elle sayılan) 9; elle işte etiketle Atlandı (S-W21-2) 2; iki etiketli Yine de Ekle 100
+# M317: ihlalli senaryo 8 / 120
+# M318: ihlalli senaryo 1 / 120
+# M319: ihlalli senaryo 26 / 120
+# M320: ihlalli senaryo 0 / 120
+# M321: ihlalli senaryo 0 / 120
+# M322: ihlalli senaryo 0 / 120
+# M323: ihlalli senaryo 0 / 120
+# M324: ihlalli senaryo 0 / 120
+# M325: ihlalli senaryo 8 / 120
+# M293: ihlalli senaryo 4 / 120
+# M309: ihlalli senaryo 5 / 120

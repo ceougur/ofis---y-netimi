@@ -1,0 +1,25 @@
+KIRMIZI S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider (1 yaprak): isler.T1/MK.degiskenler: elle ["Mine Bekletilen", "Deneme Ticaret Ltd. Şti.", {"secenek": ["16.10.2026", "06.10.2026"], "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README  ≠ eski ["Mine Bekletilen", "Deneme Ticaret Ltd. Şti.", "16.10.2026", "250,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatı
+KIRMIZI S29-03-meta-bekletti-ikinci-denemede-tutar-dogar-net-borcla-sinirli (1 yaprak): isler.T1/MZ.degiskenler: elle ["Mert Bekleme", "Deneme Ticaret Ltd. Şti.", {"secenek": ["30.10.2026", "06.10.2026"], "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26 ≠ eski ["Mert Bekleme", "Deneme Ticaret Ltd. Şti.", "30.10.2026", "200,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırla
+KIRMIZI C5C4-01-ayni-gun-ikinci-daha-once-gonderildi-elenen-almamis-ertesi-gun-serbest (11 yaprak): elenen: elle {"T1": {"Q4": "tedarikci", "R4": "odeme_sozu", "S4": "gecikmis_borc_yok"}, "T2": {"P4": "daha_once_gonderildi"}} ≠ eski {"T1": {"P4": "gecikmis_borc_yok", "Q4": "gecikmis_borc_yok", "R4": "gecikmis_borc_yok", "S4": "gecikmis_borc_yok"}, "T2": {"P4": "gecikmis_ | olusmadi: elle [] ≠ eski ["T1", "T2", "T3", "T4"] | onceki_uyari: elle {"T2": {"sayi": 1, "son": "2026-10-30"}, "T3": {"sayi": 1, "son": "2026-10-30"}} ≠ eski {}
+KIRMIZI (istisna) C5C4-02-gece-yarisini-gecen-is-gonderim-gunu-ve-gonderim-anindaki-tutar: KeyError: 'T1'
+KIRMIZI (istisna) C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme: KeyError: 'T1'
+KIRMIZI C5C5-02-sinir-nedeniyle-bekleyen-ertesi-gun-soz-atlanir-sonraki-gonderim-anindaki-tutarla (7 yaprak): kontroller.K1.isler: elle {"T1/S1": "Teslim Edildi", "T1/S2": "Sınır Nedeniyle Bekliyor", "T1/S3": "Sınır Nedeniyle Bekliyor"} ≠ eski {} | isler.T1/S2.durum: elle "Atlandı" ≠ eski "<YOK>" | isler.T1/S2.atlanma_nedeni: elle "odeme_sozu" ≠ eski "<YOK>"
+KIRMIZI C5C5-03-meta-bekletti-ikinci-deneme-ayni-icerik-soz-ve-tam-odeme-atlanir (11 yaprak): kontroller.K1.isler: elle {"T1/M1": "Meta Bekletti (24 Saat Sonra Yeniden)", "T1/M2": "Meta Bekletti (24 Saat Sonra Yeniden)", "T1/M3": "Meta Bekletti (24 Saat Sonra  ≠ eski {} | isler.T1/M1.durum: elle "Teslim Edildi" ≠ eski "<YOK>" | isler.T1/M1.degiskenler: elle ["Mine Bekletti", "Deneme Ticaret Ltd. Şti.", "14.10.2026", "800,00 TL", "800,00 TL"] ≠ eski "<YOK>"
+KIRMIZI (istisna) C5C5-04-basarisizlari-yeniden-dene-soz-tedarikci-atlanir-yine-de-ekle-izi-tasinir: KeyError: 'T1'
+KIRMIZI (istisna) C5C5-05-yine-de-gonderden-sonra-soz-verilir-gonderim-aninda-atlanir-soz-gecince-asil-iste-gider: KeyError: 'T1'
+KIRMIZI (istisna) C5C6-01-yine-de-ekle-soz-ve-supheli-iz-devam-ette-tasinir-tedarikci-asilmaz: KeyError: 'T1'
+KIRMIZI (istisna) C5C6-02-sonucu-belirsiz-supheli-acilir-yine-de-gonder-elle-yine-de-ekle-belirsizi-asmaz: KeyError: 'T1'
+KIRMIZI (istisna) C5C6-03-yine-de-gonder-hatirlatmada-guncel-tutar-ekstrede-ayni-ileti: KeyError: 'T1'
+KIRMIZI (istisna) C5C7-01-guncelleme-gunu-2-5-0-dan-almis-sorulur-kuyruktaki-is-yeni-kuralla: KeyError: 'T2'
+KIRMIZI (istisna) C5C7-02-kuyruktaki-2-5-0-isi-tedarikci-atlanir-eski-elle-supheli-izi-kalir: ValueError: girdi tutarsız (README §17 Y12-3): supheli_elle yalnız başlatmada 'Şüpheli Alacağı Var' etiketli cariye verilir — H2
+KIRMIZI (istisna) C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer: KeyError: 'T2'
+KIRMIZI (istisna) C5C8-02-devri-geri-al-devirden-sonra-giden-ayni-gun-elenir-ertesi-gun-serbest: KeyError: 'T2'
+KIRMIZI (istisna) C5C8-03-devri-yenile-defter-surer-arsivden-gonderim-yok: ValueError: bilinmeyen olay: devir
+KIRMIZI C5C9-01-iki-sirkette-ayni-kisi-ayni-gun-iki-hatirlatma-daha-once-gonderildi-sirket-basina (6 yaprak): isler.T1/KA.degiskenler: elle ["Kaan Alfa", "Alfa Ltd.", "11.10.2026", "300,00 TL", "300,00 TL"] ≠ eski "<YOK>" | isler.T2/KB.degiskenler: elle ["Kaan Beta", "Beta Ltd.", "12.10.2026", "120,00 TL", "120,00 TL"] ≠ eski "<YOK>" | isler.T2/KB.durum: elle "Teslim Edildi" ≠ eski "<YOK>"
+# senaryo 18, KIRMIZI 18, AYNI 0
+# tests 18
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

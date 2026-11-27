@@ -1,0 +1,41 @@
+  S23-04-meta-bekletti-beklerken-yeniden-b beklenen[0].sonuc.isler.T1/MK.degiskenler[2]: "<yok>" → "16.10.2026"
+  S23-04-meta-bekletti-beklerken-yeniden-b beklenen[0].sonuc.isler.T1/MK.degiskenler[2].secenek[0]: "16.10.2026" → "<yok>"
+  S23-04-meta-bekletti-beklerken-yeniden-b beklenen[0].sonuc.isler.T1/MK.degiskenler[2].secenek[1]: "06.10.2026" → "<yok>"
+  S23-04-meta-bekletti-beklerken-yeniden-b beklenen[0].sonuc.isler.T1/MK.degiskenler[2].susuyor: "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle → "<yok>"
+  S23-04-meta-bekletti-beklerken-yeniden-b beklenen[0].sonuc.isler.T1/MK.degiskenler[3]: "<yok>" → "250,00 TL"
+  S23-04-meta-bekletti-beklerken-yeniden-b beklenen[0].sonuc.isler.T1/MK.degiskenler[3].secenek[0]: "250,00 TL" → "<yok>"
+  S23-04-meta-bekletti-beklerken-yeniden-b beklenen[0].sonuc.isler.T1/MK.degiskenler[3].secenek[1]: "650,00 TL" → "<yok>"
+  S23-04-meta-bekletti-beklerken-yeniden-b beklenen[0].sonuc.isler.T1/MK.degiskenler[3].susuyor: "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle → "<yok>"
+  S23-04-meta-bekletti-beklerken-yeniden-b elle[0].yollar.isler.T1/MK.degiskenler[2]: "<yok>" → "16.10.2026"
+  S23-04-meta-bekletti-beklerken-yeniden-b elle[0].yollar.isler.T1/MK.degiskenler[2].secenek[0]: "16.10.2026" → "<yok>"
+  S23-04-meta-bekletti-beklerken-yeniden-b elle[0].yollar.isler.T1/MK.degiskenler[2].secenek[1]: "06.10.2026" → "<yok>"
+  S23-04-meta-bekletti-beklerken-yeniden-b elle[0].yollar.isler.T1/MK.degiskenler[2].susuyor: "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle → "<yok>"
+  S23-04-meta-bekletti-beklerken-yeniden-b elle[0].yollar.isler.T1/MK.degiskenler[3]: "<yok>" → "250,00 TL"
+  S23-04-meta-bekletti-beklerken-yeniden-b elle[0].yollar.isler.T1/MK.degiskenler[3].secenek[0]: "250,00 TL" → "<yok>"
+  S23-04-meta-bekletti-beklerken-yeniden-b elle[0].yollar.isler.T1/MK.degiskenler[3].secenek[1]: "650,00 TL" → "<yok>"
+  S23-04-meta-bekletti-beklerken-yeniden-b elle[0].yollar.isler.T1/MK.degiskenler[3].susuyor: "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut beklenen[0].sonuc.isler.T1/MZ.degiskenler[2]: "<yok>" → "30.10.2026"
+  S29-03-meta-bekletti-ikinci-denemede-tut beklenen[0].sonuc.isler.T1/MZ.degiskenler[2].secenek[0]: "30.10.2026" → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut beklenen[0].sonuc.isler.T1/MZ.degiskenler[2].secenek[1]: "06.10.2026" → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut beklenen[0].sonuc.isler.T1/MZ.degiskenler[2].susuyor: "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut beklenen[0].sonuc.isler.T1/MZ.degiskenler[3]: "<yok>" → "200,00 TL"
+  S29-03-meta-bekletti-ikinci-denemede-tut beklenen[0].sonuc.isler.T1/MZ.degiskenler[3].secenek[0]: "200,00 TL" → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut beklenen[0].sonuc.isler.T1/MZ.degiskenler[3].secenek[1]: "400,00 TL" → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut beklenen[0].sonuc.isler.T1/MZ.degiskenler[3].susuyor: "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut elle[0].yollar.isler.T1/MZ.degiskenler[2]: "<yok>" → "30.10.2026"
+  S29-03-meta-bekletti-ikinci-denemede-tut elle[0].yollar.isler.T1/MZ.degiskenler[2].secenek[0]: "30.10.2026" → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut elle[0].yollar.isler.T1/MZ.degiskenler[2].secenek[1]: "06.10.2026" → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut elle[0].yollar.isler.T1/MZ.degiskenler[2].susuyor: "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut elle[0].yollar.isler.T1/MZ.degiskenler[3]: "<yok>" → "200,00 TL"
+  S29-03-meta-bekletti-ikinci-denemede-tut elle[0].yollar.isler.T1/MZ.degiskenler[3].secenek[0]: "200,00 TL" → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut elle[0].yollar.isler.T1/MZ.degiskenler[3].secenek[1]: "400,00 TL" → "<yok>"
+  S29-03-meta-bekletti-ikinci-denemede-tut elle[0].yollar.isler.T1/MZ.degiskenler[3].susuyor: "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle → "<yok>"
+# eski 414 senaryo: 412 bayt bayt aynı, 2 değişti; yeni senaryo 5: SW21-01-, SW21-02-, SW21-03-, SW21-04-, SW21-05-
+# üst alan kararlar: eklenen ['SW21'], çıkan [], değişen []
+# tests 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# beklenmeyen değişiklik 0

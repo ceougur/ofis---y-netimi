@@ -1,0 +1,32 @@
+{
+  "ad": "wk21-eski-kahinle-yeni-senaryolar-tz-istanbul",
+  "komut": "python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk21-c5c/araclar/eski_kahin_yeni.py /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk21-c5c/taban test/bagimsiz/whatsapp-248/kahin",
+  "commit": "c67072e9aa7926b6c5dab395561cb9eae5db9311",
+  "dal": "worktree-agent-a3cbae6158da1ba17",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T16:17:17.935Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 18,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk21-c5c/kanit/2026-11-27/wk21-eski-kahinle-yeni-senaryolar-tz-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3cbae6158da1ba17",
+  "ham_cikti_sha256": "471d2b72cd3c7d5e9269290b188801a38494f6a1c90cbaf5615aa18a6de28d57",
+  "ham_cikti_bayt": 4207
+}

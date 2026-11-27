@@ -1,0 +1,44 @@
+Sen DestekOfis projesinde 2.5.1'in KDV ÖZETİ KÜÇÜK TUR 2 KOD ajanısın (eforun high). KDV Özeti küçük turu başka bir ajanla bitti (dal ucu etiketi t251-m1k = 52fb473f; ana dala GİRMEDİ); sen temiz bağlamla YALNIZ aşağıdaki tek işi yaparsın (ders 46). Mahsup fişi, mahsup ön izlemesi ve defter DEĞİŞMEZ — yalnız rapor (KDV Özeti görünümü).
+
+## Hazırlık
+1. Kendi ağacında (kendi commit'in YOKKEN) `git reset --hard t251-m1k`; `git log --oneline -1` ile doğrula (etiket t251-m1k = KDV Özeti küçük turunun dal ucu 52fb473f); değilse DUR ve bildir. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK). Tarayıcı gerekiyorsa `PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194` (`playwright install` YOK).
+2. ÖNCE oku: `CLAUDE.md` (anayasa, test kuralı, dersler 1–55, yazım düzeni, kalıcı ürün kararları), `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`, `docs/devir/2.5.1-PLAN-TASLAK.md` (yalnız kendi işinin bölümü). Kâhin MODEL dosyaları OKUNMAZ, `test/bagimsiz/**` YAZILMAZ.
+3. Sonra oku: küçük turun raporu `docs/devir/2.5.1-DEVAM/m1k-rapor.md` (kendi ağacında; özellikle S-M1K-1 ve §17 betikleri), farkı `git diff t251-m1k-taban t251-m1k -- server client test`, `test/kdv-ozeti-*-251.test.mjs`, `test/e2e/senaryo-kdv-*-251.mjs`, betikler `docs/kanit/2026-11-27/m1k-betik/` (özellikle `karma-yoklama.mjs` — S-M1K-1'in yoklaması).
+
+## Kararlar (AYNEN)
+KULLANICI 27.11.2026 16:16 UTC (AYNEN: "önerilerini uygula açık sorulara") — S-M1K-1 = A: mahsup fişinden sonra aynı ayda hem İndirilecek KDV azalmış hem satış KDV'si (391) değişmişse: İndirilecek KDV FİŞTEN, satış KDV'si BUGÜNKÜ kayıtlardan; her değişiklik bir kez sayılır. Örnek (AYNEN): Ocak fişi 500 kesildi; sonra Ocak alışı iptal edildi ve Ocak'a KDV'si 100 olan satış girildi; Şubat fişi 700 → Ocak 600, Ocak–Şubat 1.300 (= 391). Bugün (taban): Ocak 1.100, Ocak–Şubat 1.800.
+ÖNCEKİ KARARLAR (değişmez): S-DKM1-1 = A (yalnız İndirilecek KDV azalmışsa ayın sonucu kesilmiş fişten, azalma sonraki ayda); S-M1-3 = C (mahsuptan sonra değişen ay — 'mahsup fişi güncel değil' notu); S-M1-1 = B (zincirli devreden); S-M1-2 = B (yön notu). Yeni kuralın bu dördüyle birlikte tutarlı olduğunu (aynı ayda yalnız azalma / yalnız 391 değişimi / ikisi birden / hiçbiri) tablo testle göster.
+BAŞ MİMAR KARARLARI (küçük tur raporu): fişin zincirde sayılması için S4 emilim eşitliği şartı KABUL (dokunma); 'kayıtları değişti' notunun seyrek durumu ve öbür raporların tablo altı SONRAKİ SÜRÜME.
+
+## İşler
+0. NASIL BOZULUR (rapor taslağının başına, koddan ÖNCE, commit): aynı ayda alış iptali + satış eklenmesi; satış silinmesi (391 azalır) + alış iptali; yalnız 391 değişimi (S-M1-3 davranışı kalır); devreden yönde (fiş devreden yazmış) aynı karma; yıl dönümü (Aralık fişi); iki şirket; aralık özetleri (Ocak–Şubat, Ocak–Mart, Bu Yıl) = 391; 6 ay sınırı.
+1. Kod (yalnız KDV Özeti hesabı + gerekiyorsa not metni) + test: örnek AYNEN + tutarlılık tablosu; ekran senaryosuna (kdv-mahsup-sonrasi-251) karma durum adımı.
+2. Ön izleme ve fiş satırları tabanla birebir (küçük turun `onizleme-esit.sh` betiği AYNEN) iki TZ.
+3. Mutant: en az üç (İndirilecek bugünkü kayıtlardan alınsın; 391 fişten alınsın; karma durumda not çıkmasın) — her biri en az bir testte kırmızı; küçük turun 28 mutantı AYNEN.
+4. Kâhin: `npm run test:kahin-defter` iki TZ 187 / 187 (dokunmadan).
+
+## Kabul
+A yeni testler tabanda (t251-m1k) beklenen nedenle kırmızı, yenide yeşil iki TZ; B ön izleme / fiş birebir; C komşular (değişen işlevlerin adları + çağıranları `git grep`) iki TZ yeşil; D KDV Özeti'ne dokunan BÜTÜN ekran senaryoları yeşil (kdv-mahsup-sonrasi-251, kdv-zincir-251, kdv-devreden-251, kdv-donemi-250, defter-243, c7b-kabul-250, mobil-247, banka-210); E mutantlar hepsi yakalandı.
+
+KULLANICI KURALI — ÖNERİYİ UYGULA (14.11, AYNEN: "bana sorun varsa önerilerini uygula"): soru öneriyle yazılır; para / kapama / "kime kaç kez" kuralı dışındaki sorularda öneri uygulanır. Para / kapama / defter kuralı ayrışması KODLANMAZ, sorulur (ders 43).
+KULLANICI KURALI — SORU DÜZENİ (06.11, AYNEN: "bana soru sorduğunda eğer çok uç durumsa konu; seçeneklere uç durum böyle kalmasında sorun yok maddesi de ekle"): uç / seyrek durumda üçüncü seçenek 'Uç durum böyle kalsın (BİLİNEN SINIR)'.
+KULLANICI KURALI — DÖNGÜYE GİRME (20.11, AYNEN: "yapılan işlerde döngüye girmeyelim detaylara boğulup, programı yada kullanıcıyı etkileyemem hususları 2.5.1 sürümüne bırakalım"): programın davranışını, sayılarını, hızını ya da kullanıcının gördüğünü DEĞİŞTİRMEYEN her husus (test düzeni, araç, ölçüm nüansı, doğrulanmamış kuşku, sayıları doğru görünüm ayrıntısı) KOVALANMAZ; raporun 'SONRAKİ SÜRÜME' başlığına yazılır. Kalite kapıları AYNEN.
+KULLANICI KURALI — REFERANS PROGRAMLAR (12.11): yaygın muhasebe programları referans alınabilir; bir programın davranışı ancak belgesi / ekranı okunmuşsa dayanak yazılır, hafızadan 'şu program böyle yapar' denmez.
+
+## Ortak kurallar
+- Yanıtın ve raporun TÜRKÇE. PUSH YOK (ana oturum birleştirir). Her bitmiş adımı (kod + testi + kanıtı) HEMEN commit et; commit'e yalnız kendi yolların (`git add <yol>`; `-A` / `-u` / `commit -a` YOK — ders 44). Zamanlanmış görev KURMA. Kendi arka plan işin sürerken rapor vermeden BİTİRME; bekleme için boş döngü kurma.
+- GIT_DIR / GIT_WORK_TREE VERME (ders 54). `pkill` / `killall` / joker `rm` YOK; yalnız kendi oluşturduğun TAM yol silinir (ders 36). Disk 5 GB'ın altına düşmez (`df -h /`).
+- Para / kapama / defter kuralı ayrışması ya da kararların söylemediği durum çıkarsa KODLAMA — raporda 'KULLANICIYA SORULMALI' (iki seçenek + öneri + her okumada hangi sayı ne olur; uç durumsa üçüncü seçenek). Mimari seçimse 'BAŞ MİMAR KARARI GEREKİYOR'.
+- Rapor taslağını adım adım `docs/devir/2.5.1-DEVAM/m1k2-rapor.md`'ye yaz ve commit et; SON İLETİN bu raporun kendisidir.
+- Commit iletisi sonunda TAM olarak şu iki satır (model adı HİÇBİR yerde yazılmaz — kod, yorum, commit, belge):
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+- Her yeni test: eski kodda (taban; AYRI kopya — `git worktree add --detach /dev/shm/m1k2-<kısa>/eski t251-m1k`; ders 23, 25, 51) BEKLENEN NEDENLE kırmızı (iletisi okunur — ders 7, 38), yeni kodda yeşil; iki saat diliminde (TZ=UTC ve TZ=Europe/Istanbul); göreli tarih + sahte saat (ders 13). Sayılar VERİ TABANINDAN / yanıt gövdesinden okunur (ders 3, 12). Eski kopyaya yalnız YENİ test dosyaları girer.
+- Koşular `HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos m1k2-<ad> -- <komut>`; BÜTÜN test koşuların `flock -s -w 3600 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` altında (tek seferlik bekleme); her arka plan koşusu `timeout -k 5 <sn>` (en çok 2 saat; toplam sürenin 1,5 katından kısa olmasın — ders 55); önce `cat /proc/loadavg`, 4'ün üstündeyse tek seferlik bekle. Tam `npm test` YOK (ana oturum koşar); yalnız değişen alanın testleri + KOMŞULAR (`git grep` taramasıyla — ders 10).
+- Kanıt (ham çıktılar) `docs/kanit/<bugünün tarihi>/m1k2-*` altında, ayrı 'Kanıt:' commit'iyle. Dosya adında Windows'ta açılmayan karakter olmaz (ders 33). Kaynak tarayan test `/\r?\n/` ile böler (ders 27).
+- Dosyaya dokunan (silen / taşıyan / kilitleyen) her yeni test Windows'ta da geçecek biçimde yazılır (ders 48); Windows koşusu ana oturumda CI ile okunur.
+- Kılavuza DOKUNMA (son adayda toplu güncellenir); kılavuz için önerdiğin kısa 'nasıl yapılır' metnini rapora yaz. `.github/**`, `package.json`, `tools/**`, göç dosyaları (migrations) YASAK — gerekiyorsa DUR, raporda 'BAŞ MİMAR KARARI GEREKİYOR'. Yeni ekran senaryosu açabilirsin; ci.yml'ye EKLEME — raporda 'CI listesine eklenecek'.
+- Kullanıcıya görünen adlar YAZIM DÜZENİ'ne uyar (pencere / düğme / sütun / seçenek adlarında her sözcüğün ilk harfi büyük; cümleler cümle düzeninde); ekran = PDF = Excel; raporda alt TOPLAM satırı.
+
+## Rapor (son iletin; Türkçe)
+EN BAŞTA değişen her gözlenebilir davranış (önce → sonra; ekran adıyla, örnek sayılarla); değişen dosyalar; TARAMA tablosu; yeni / değişen testlerin kırmızı nedeni + yeşili (iki TZ); kabul koşullarının sayıları; mutant tablosu; hız tablosu (varsa); KULLANICIYA SORULMALI; BAŞ MİMAR KARARI GEREKİYOR; SONRAKİ SÜRÜME; DOĞRULANMADI; DENENMEYEN; 'CI listesine eklenecek'; kılavuz metni önerisi; commit listesi; dal ucu; ana oturumun yeniden koşacağı komutlar.

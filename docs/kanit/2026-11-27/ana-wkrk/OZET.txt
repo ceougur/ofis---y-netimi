@@ -1,0 +1,11 @@
+başladı 20:06 4.89 3.06 3.22 5/196 10931
+senaryo UTC çıkış 0:  [kanit] wkrk-senaryo-UTC: GEÇTİ · çıkış 0 · 419/419 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 99b73ff · linux 6.18.44-fc-v880 x64 · Node v22.23.4 
+öz test UTC çıkış 0:  [kanit] wkrk-oztest-UTC: GEÇTİ · çıkış 0 · 454/454 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 99b73ff · linux 6.18.44-fc-v880 x64 · Node v22.23.4 
+senaryo Istanbul çıkış 0:  [kanit] wkrk-senaryo-Istanbul: GEÇTİ · çıkış 0 · 419/419 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 99b73ff · linux 6.18.44-fc-v880 x64 · Node v22.23.4 
+öz test Istanbul çıkış 0:  [kanit] wkrk-oztest-Istanbul: GEÇTİ · çıkış 0 · 454/454 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 99b73ff · linux 6.18.44-fc-v880 x64 · Node v22.23.4 
+yeni mutant çıkış 0: # cancelled 0 # skipped 0 # todo 0 
+G3 (wk21) çıkış 0: # cancelled 0 # skipped 0 # todo 0 # beklenmeyen değişiklik 0 
+G3 (taban, WK21+22) çıkış 0: # cancelled 0 # skipped 0 # todo 0 # beklenmeyen değişiklik 0 
+eski (wk21) kâhin çıkış 0: # cancelled 0 # skipped 0 # todo 0 
+eski (taban) kâhin çıkış 1: # cancelled 0 # skipped 0 # todo 0 
+BİTTİ 20:07

@@ -1,0 +1,24 @@
+ok M317 kendi senaryosu SW21-01 DEĞERLE: SW21-01-sonucu-belirsiz-yine-de-gonder-suren-soz-elle-gider-ayni-gun-bir-ertesi-gun-serbest * [{}…] yeniden.Y1: elle {"elenen": {}, "alinan": ["P1"], "oneri": null, "soz_etiketi": ["P1"]} ≠ model {"elenen": {}, "alinan":
+#   M317 (S-W21-1 A'nın tersi (B): işteki Yine de Gönder basıldığı anda süren söz elle seçim sayılma…) ← SW21-01-, SW21-02-, SW21-04-, SW21-05-
+ok M318 kendi senaryosu SW21-03 DEĞERLE: SW21-03-yine-de-ekle-sonradan-gelen-etiketle-atlanir-baslatmada-iki-etiket-birlikte-asilir-ayni-gun-yol * [{}…] elenen: elle {"T1": {"X4": "supheli_alacak"}, "T2": {"X4": "supheli_alacak"}} ≠ model {"T1": {"X4": "supheli
+#   M318 (S-W21-2 A'nın tersi (B): elle iz kişinin BÜTÜN etiketlerini aşar — sonradan gelen başka et…) ← SW21-03-, SW21-05-
+ok M319 kendi senaryosu SW21-03 DEĞERLE: SW21-03-yine-de-ekle-sonradan-gelen-etiketle-atlanir-baslatmada-iki-etiket-birlikte-asilir-ayni-gun-yol * [{}…] elenen: elle {"T1": {"X4": "supheli_alacak"}, "T2": {"X4": "supheli_alacak"}} ≠ model {"T1": {"X3": "odeme_s
+#   M319 (S-W21-2 A (b)'nin tersi: başlatmada Şüpheli + Söz birlikte 'Yine de Ekle' yalnız ilkini (Ş…) ← SW21-03-
+ok M320 kendi senaryosu SW21-04 DEĞERLE: SW21-04-yine-de-gonder-basma-anindaki-iki-etiket-birlikte-asilir-elle-iz-degismeyen-meta-bekletti-ayni-icerik * [{}…] isler.T1/Y1.durum: elle "Teslim Edildi" ≠ model "Atlandı"
+#   M320 (S-W21-2 A 'işaretlendiği andaki etiketler'in tersi: işteki Yine de Gönder basma anındaki i…) ← SW21-04-
+ok M321 kendi senaryosu SW21-02 DEĞERLE: SW21-02-bekleyen-belirsizlik-onayli-iste-soz-asil-iste-yeniden-basma-elle-ikinci-deneme-gonderim-anindaki-tutar * [{}…] isler.T1/Q1.degiskenler: elle ["Kaan Söz Bekletilen", "Deneme Ticaret Ltd. Şti.", "06.10.2026", "650
+#   M321 (S-W21-3 A'nın tersi (B): Meta Bekletti 2. denemesinden önce iz değişse de 2. deneme 1. den…) ← S23-04-m, S29-03-m, SW21-02-, SW21-05-
+ok M322 kendi senaryosu SW21-04 DEĞERLE: SW21-04-yine-de-gonder-basma-anindaki-iki-etiket-birlikte-asilir-elle-iz-degismeyen-meta-bekletti-ayni-icerik * [{}…] isler.T2/Z1.degiskenler: elle ["Figen Söz Bekletti", "Deneme Ticaret Ltd. Şti.", "19.10.2026", "1.000,
+#   M322 (S-W21-3 A 'elle iz değişmediyse 5.2 aynen'in tersi: iz değişmemişken de Meta Bekletti 2. d…) ← SW21-04-
+ok M323 kendi senaryosu SW21-02 DEĞERLE: SW21-02-bekleyen-belirsizlik-onayli-iste-soz-asil-iste-yeniden-basma-elle-ikinci-deneme-gonderim-anindaki-tutar * [{}…] yeniden.Y2: elle {"elenen": {}, "alinan": [], "oneri": null, "soz_etiketi": ["Q1"], "elle_sayilan": 
+#   M323 (S-W21-1 A 'aynı kural bekleyen belirsizlik onaylı işte söz verilip asıl işte yeniden basıl…) ← SW21-02-
+ok M324 kendi senaryosu SW21-05 DEĞERLE: SW21-05-soz-icin-elle-bekleyen-ise-supheli-asil-iste-yeniden-basma-s23-iz-iki-etiketi-asar * [{}…] yeniden.Y2: elle {"elenen": {}, "alinan": [], "oneri": null, "supheli_etiketi": ["W1"], "soz_etiketi": ["W1"], "elle_sayi
+#   M324 (Y22-4 genel okumanın tersi: S23 yalnız tamamen işaretsiz işte — söz için elle seçilmiş bek…) ← SW21-05-
+ok M325 kendi senaryosu SW21-01 DEĞERLE: SW21-01-sonucu-belirsiz-yine-de-gonder-suren-soz-elle-gider-ayni-gun-bir-ertesi-gun-serbest * [{}…] yeniden.Y1: elle {"elenen": {}, "alinan": ["P1"], "oneri": null, "soz_etiketi": ["P1"]} ≠ model {"elenen": {}, "alinan":
+#   M325 (S-W21-1 A 'onay penceresinde Ödeme Sözü Var yazar'ın tersi: Yine de Gönder onayında söz et…) ← SW21-01-, SW21-02-, SW21-04-, SW21-05-
+# tests 9
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

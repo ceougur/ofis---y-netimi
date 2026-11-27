@@ -1,0 +1,14 @@
+YEŞİL (dişsiz!) S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede
+YEŞİL (dişsiz!) S29-03-meta-bekletti-ikinci-denemede-tutar-dogar-net-borcla-
+KIRMIZI SW21-01-sonucu-belirsiz-yine-de-gonder-suren-soz-elle-gider-: istisna KeyError: 'T1'
+KIRMIZI SW21-02-bekleyen-belirsizlik-onayli-iste-soz-asil-iste-yenid: istisna KeyError: 'T1'
+KIRMIZI SW21-03-yine-de-ekle-sonradan-gelen-etiketle-atlanir-baslatm: istisna KeyError: 'T1'
+KIRMIZI SW21-04-yine-de-gonder-basma-anindaki-iki-etiket-birlikte-as: istisna KeyError: 'T1'
+KIRMIZI SW21-05-soz-icin-elle-bekleyen-ise-supheli-asil-iste-yeniden: istisna KeyError: 'T1'
+# eski kâhinle 7 yeni / değişen senaryo: 5 KIRMIZI
+# tests 7
+# pass 5
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
