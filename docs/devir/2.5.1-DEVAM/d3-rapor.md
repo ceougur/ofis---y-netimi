@@ -316,7 +316,11 @@ plan = {
 - Plan §8 / G10 / §3.11'de D4 / D5 işi olanlar (§0 tablosu: 11, 15, 17, 18, 21, 23–26; 33'ün yeni yıl tarafı) — D3 yazmaz.
 - Ekran senaryosu (D5). Windows: D3 dosya silmez / taşımaz (ders 48 kapsamı dışı); salt okunur iş parçacığı bağlantısı açıkken şirket takası BM-4 (Windows CI'de görülmedi).
 - Kâhin ↔ plan karşılaştırması (sürücü yok — BAŞ MİMAR 27.11 (5)).
-- Gerçek veride kart, çek, şüpheli, KDV mahsubu, banka (üreteç bunları içermiyor; elle testlerde var).
+- Gerçek veride kart, çek, şüpheli, KDV mahsubu, banka (üreteç bunları içermiyor; kart / şüpheli / KDV elle testlerde var).
+- §0'da "devir-d3-plan" diye planlanıp TESTİ YAZILMAYANLAR (açıkça): madde 1 K sonrası bağın yönlendirilmesi (`newYear.baglar` — okuyucu SQL'i ve açık kalem / arşiv başvurusu ayrımı
+  sınanmadı), madde 4 / 28 evrakın K'deki durumu (`newYear.evraklar` — çek testi yok; plan modül farkıyla yakalardı), madde 5 / 35'in 108 / 309 / 300 alt hesapları (yalnız 102.01 elle),
+  madde 22 tekrarlayan şablonun okuyucu SQL'i, madde 14 / 19'un e-Belge olgularının okuyucu SQL'i (ön denetim maddeleri OLGU düzeyinde sınandı — `test/devir-d3-plan.test.mjs`; okuyucunun
+  bu sayıları API verisinden doğru sayması sınanmadı). Sonraki turda API verisiyle bir test dosyası önerilir.
 - Tam `npm test` (ana oturum koşar).
 
 ## 16. CI listesine eklenecek
