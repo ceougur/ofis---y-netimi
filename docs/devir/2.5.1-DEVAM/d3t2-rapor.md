@@ -98,3 +98,7 @@ Koddaki durumlar (`lib/cheques.mjs` STATUSES): portfolio, endorsed, collected, b
 ### Gerçek veri (ders 17)
 Tur 1 üreteci yalnız fatura / tahsilat / ödeme / stok üretiyordu → v2.5.0 GERÇEK koduyla kart, evrak, şüpheli, KDV mahsubu, vergi ödemesi, banka, iade, sil + geri yükle, pasif cari, aynı adlı iki cari
 eklenir; bozulma "devirsiz eşdeğer ≠ 0" ya da sorun / değişmez kırmızısı.
+
+## Ara durum (taslak; son hâli aşağıda yeniden yazılır)
+- Bulunan ve düzeltilen plan hataları (D3 modülleri içinde): H1 bağ listesinde Mahsup Et'in karşı belgesi ve iade → asıl fatura eksikti; H2 M12 (bakiyesi 0, açık kalemsiz hareketli cariye iki toplam satırı); H3 POS'un 108 alt hesabı "atanmamış"; H4 e-Belge ön denetimi Gönderilecekler / Sonucu Belirsiz'i programın tanımıyla saymıyordu (devir DURMUYORDU); H5 129 karşılık carisiz defterde cari boyutunda bekleniyordu (karşılıklı şirkette yanlış DURDURMA).
+- KULLANICIYA SORULMALI: S-T2-1 (K sonrası Mahsup Et'in karşı belgesi ≤K).
