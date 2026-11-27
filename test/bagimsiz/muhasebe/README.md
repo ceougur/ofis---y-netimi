@@ -2087,3 +2087,16 @@ Sürücü ajanı programın devir planını (devir sihirbazı / Devir Raporu / y
 - Programla karşılaştırma (devir programda yok; sürücü ayrı ajan). Devir Kapanışı (banka) ve Hesabı Atanmamış kovası × devir (dil taşımıyor; S215 metni okunmadı). Takvim / Vade Takip (S67 Q3).
   Ödeme Hatırlatma devirli = devirsiz (KAPSAM DIŞI). Zincirleme Devri Yenile (G7 BİLİNEN SINIR) ve ikinci devirden sonra İLK arşivin yenilenmesi. Devri Geri Al'ın devirden SONRA girilen kayıtları
   taşıması (s29 BİLİNEN SINIR aynen). Kilit kaldırma (dil kuramıyor — §2 (6)'nın "kilit kaldırılsa da" kolu yalnız kilidin geri gitmemesiyle). 691 ≠ 0'lı JSON senaryo.
+
+### Kanıt (`docs/kanit/2026-11-27/kd-*`; koşu betiği `kd-kos.sh` — `temel` / `mutkd` / `mut`; her koşu `node tools/kanit.mjs kos`, `flock -s` ölçüm kilidi, süre sınırı kilidin içinde, ≤ 40 dk parçalar)
+- Ölçülen kâhin kodu 49a421f8 (sonraki commit'ler yalnız README / kanıt): `kd-test-utc / -ist` 249/249 (çıkış 0); `kd-denetle-*` "güncel" (çıkış 0; araç özet satırı tanımadığı için
+  BELİRSİZ yazıyor — SONRAYA 4; aynı denetim `Dosyalar` testinde 249'un içinde YEŞİL); `kd-g3-*` BEKLENMEYEN 0, döküm iki saat diliminde bayt bayt aynı (`kd-g3-dokum-utc/ist.json`);
+  `kd-g3-s1-*` 18/18.
+- `kd-taban-test-utc`: bakımdan önce taban (t251-taban) 223/223. `kd-eski-model-kirmizi-utc` (3400b615 — yeni senaryolar + testler, eski model): 247 testten 32 kırmızı, hepsi beklenen nedenle
+  ("Elle beklenenlerin yazılış sırası (bakım K-D)").
+- `kd-yeni-mutantlar-utc / -ist` (MUTASYON_ARALIK 330:347): 17/17 ÖLDÜ iki saat diliminde. Önceki denemeler korundu: `kd-yeni-mutantlar-ilk-deneme-*` (başlamadan durdu — parça tekilliği),
+  `kd-yeni-mutantlar-kd18-sag-*` (16/17; KD18 sağ → diş eklendi).
+- Tam mutasyon (görev metni: EN SONDA bir kez) UTC'de 7 parça: `kd-mutasyon1-utc` … `kd-mutasyon7-utc` (0:50, 50:100, …, 300:347) 50 + 50 + 50 + 50 + 50 + 50 + 47 = **347/347 ÖLDÜ**
+  (her parçada temel 243 test 0 kırmızı; çıkış 0). İlk 0:87'lik deneme 40 dk sınırına sığmayacağı görülünce (21 dk'da 41 mutant, hepsi ÖLDÜ) kendi süreci durduruldu, parçalar küçültüldü
+  (`kd-mutasyon-durdurulan-0-87-utc.log`). Europe/Istanbul'da tam mutasyon koşulmadı (yeni mutantlar ve öz test iki saat diliminde).
+- Ortam: 4 çekirdek; koşular boyunca yük 2–7 (başka ajanların işleri), boş disk 9,6–11 GB.
