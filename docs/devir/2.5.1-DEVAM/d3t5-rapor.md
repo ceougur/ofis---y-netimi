@@ -1,7 +1,7 @@
 # D3 TUR 5 raporu — tur 4'ün DOĞRULANMADI maddeleri, S-T4-1 = A'nın devir tarafı, kâhin okumaları (a) / (b), test düzeni (2.5.1)
 
 Ajan: D3 TUR 5 KOD ajanı (high), 27.11.2026. Taban `t251-d3-tur4` (8d9c87c0). D3 hâlâ HİÇBİR ŞEY YAZMAZ (plan + ön izleme + ön denetim + Devir Raporu).
-TASLAK — adım adım doldurulur; son hâl en sonda işaretlenir.
+SON HÂL (27.11.2026). Bütün işler yapıldı; kabul A–F TAM (§5).
 
 ## 0. NASIL BOZULUR (koddan ÖNCE yazıldı; testler buradan)
 
@@ -156,7 +156,7 @@ kümesi (D2 arşiv / yedek / bakım + yazım / taşınabilirlik / lisans / kanı
 - **A** `test:kahin-defter` UTC **187/187** + İstanbul **187/187**; `test:kahin-cari` UTC **25.298/25.298** + İstanbul **25.298/25.298** — tur 4 ile (187 / 25.298) AYNI; kâhin dosyalarına dokunulmadı.
 - **B** yeni testler eski kodda beklenen nedenle kırmızı (§4 E-1: 2 davranış testi + 3 yapısal; iki TZ aynı) ve sabitleme listesi gerekçesiyle (E-2); yeni kodda iki TZ **164/164**.
 - **C** mutantlar **64/64 YAKALANDI** UTC (`d3t5-mutasyon-utc`) + **64/64** İstanbul (`d3t5-mutasyon-ist`); taban **164/164** (D3'ün 26 dosyası) iki TZ. Tur 1–4'ün 56'sı AYNEN (M52 çapası taşındı) + bu turun 8'i; her mutantta beklenen neden çıktıda görüldü.
-- **D** gerçek veri (v2.5.0 GERÇEK kodu → yeni kod) 3 tohum × 2 TZ ⏳ (t11 iki TZ **22/22**, sınıf dışı fark 0, S-T4-1 sınıfı 12 karşılaştırma — §7).
+- **D** gerçek veri (v2.5.0 GERÇEK kodu → yeni kod) 3 tohum × 2 TZ: **6/6 koşu 22/22**, açıklanmamış (sınıf dışı) fark **0**; S-T4-1 sınıfı ayrı sayaçta yalnız t11'de (1 cari, 12 karşılaştırma, iki TZ aynı — tur 4'ün "Müşteri 108"i) (§7).
 - **E** katalog 56 neden (durdurur 46, uyarı 10), 176 ileti; iç kod / İngilizce / alan adı / tablo adı **0**; koşu sırasından bağımsız (§8).
 - **F** komşular iki TZ **103/103** + D3'ün tamamı **164/164** (§3b).
 
@@ -184,8 +184,8 @@ sayacına, öbür her fark denetimi KIRMIZI yapar (ders 53 (b)). İmzanın başk
 | ist t11 | **22/22** | 3684 / **0** | aynı (1 cari, 12; 128,00) | 8 (6 / 2) | 897 sn |
 | utc t7 | **22/22** | 3684 / **0** | 0 | 8 (6 / 2) | 822 sn |
 | ist t7 | **22/22** | 3684 / **0** | 0 | 8 (6 / 2) | 827 sn |
-| utc t23 | ⏳ | | | | |
-| ist t23 | ⏳ | | | | |
+| utc t23 | **22/22** | 3852 / **0** | 0 | 8 (6 / 2) | 711 sn |
+| ist t23 | **22/22** | 3852 / **0** | 0 | 8 (6 / 2) | 712 sn |
 Tur 4'te t11 "21/22 — KIRMIZI 1 (fark 12)" idi; şimdi aynı 12 karşılaştırma S-T4-1 sayacında, denetim yeşil. Kilit paketi girince bu sayaç 0'a inmeli (kabul ölçütü — iş listesi D 18:16 kararı (3)).
 
 ## 8. İLETİ KATALOĞU (iş 5)
@@ -270,3 +270,25 @@ for tz in UTC Europe/Istanbul; do TZ=$tz node tools/kanit.mjs kos d3t5-$tz -- no
 # katalog: D3T3_KATALOG_DIR=<k> node --test $T; node test/devir-d3-ileti-katalog.mjs <k> docs/devir/2.5.1-DEVAM/d3t5-iletiler.md   # bayt bayt aynı (UTC)
 npm run test:kahin-defter; npm run test:kahin-cari    # 187 / 25.298
 ```
+
+## 18. Commit listesi (dal `worktree-agent-a6db2913b8a9a708e`, taban 8d9c87c0 `t251-d3-tur4`)
+- a6fad9ea D3 tur 5: nasıl bozulur listesi (koddan önce)
+- bce17f49 D3 tur 5: S-T2-1 = B Borç Yaz karşısı testi — ≤K Borç Yaz ↔ Ocak alış (Vade Tarihi korunur), geriye tarihli sıra, kısmi, iki belge ≤K, ana belge ≤K alış, silinen, K günü, 002, iki seçenek; devirl
+- 6ce9265f D3 tur 5: S-T4-1 = A sabitleme testi — tur 4 tohum 11 carisinin elle kurulmuş eşdeğeri (280,00 / 1.245,40, gecikmiş 280,00, bakiye 1.525,40), iadesiz aynı sınıf, kilit K'de ve 30.06'da kilitli belgeye Ocak mahs
+- c6257720 D3 tur 5: gerçek veri karşılaştırmasında S-T4-1 = A sınıfı ayrı sayaç (BEKLENEN FARK — yalnız kilitBagImzasi tutan fark); sınıf dışı her fark başarısız
+- ab5672ab D3 tur 5: veri damgası — görüntüleme / dışa aktarma / şirket seçimi / ekran durumu izleri damgayı değiştirmez (tur 4'te invoice.% / account.% / company.% önekleri fatura PDF'ini, ekstreyi ve şirket seçim
+- c0f7d2da D3 tur 5: veri damgası testleri — arka plan yazıcıları (zamanlanmış yedek turu, bütünlük taraması, analiz işçisi, dondurmanın boş turu) ve kullanıcının veri değiştirmeyen işleri damgayı değiştir
+- 474d513f D3 tur 5: K kuyruğunda payı sıfıra inmiş belgeye ≤K bağlı tahsilat testi (pay 0, kısmi, başka açık borç) — bağın kapatamadığı kısım devirsizdeki gibi bağsız; devirli = devirsiz
+- 53246df6 D3 tur 5: kâhin okumaları testi — (a) gerçek zaman çizgisinde o gün hazırlanan ön izlemenin devirli eşdeğeri = devirsiz programın cari kartı (250 / 250 / 400 / 400 / 550), geriye dönük görünümde ikisi 
+- 473a8d2c D3 tur 5: ikinci devir testinde arşiv klasörü silinmeden önce açık tutamaç ölçümü (/proc/self/fd; ölçümün dişi: bilerek açılan bağlantı görünür) ve devir anı sunucunun sahte saatinden (iletideki 
+- 2f7af7aa D3 tur 5: mutasyon tabanı D3'ün bütün testleri (devir-d3-uc ve devir-d3-zaman dahil; tabanda olmayan D3 testi taramayı durdurur) + bu turun 8 mutantı (Borç Yaz karşısı, kilitli bağsız kapanış kayması, sı
+- 1ac415c3 D3 tur 5: ileti kataloğu üreticisi koşu sırasından bağımsız (her nedenin örneği bütün kayıtlarından en küçük test / senaryo / kaynak / metin; nedenler seviye ve iç kod sırasıyla; ihlaller sıralı)
+- aacd0545 D3 tur 5: ileti kataloğu (testlerin ürettiği gerçek iletilerden; 56 neden — durdurur 46, uyarı 10; 176 ileti; tarama 0 ihlal; koşu sırasından bağımsız)
+- a3211f4b D3 tur 5: rapor taslağı (davranış, dosyalar, tarama, eski kod kırmızısı)
+- 977b0d90 D3 tur 5: rapor taslağı (mutantlar, gerçek veri t11, katalog, baş mimar kararları, hız, doğrulanmadı)
+- 33139c02 D3 tur 5: rapor (mutasyon 64/64 iki TZ, kâhin cari 25.298 iki TZ, gerçek veri t7, denenmeyen, komutlar)
+- 81847e61 Kanıt: D3 tur 5 koşuları (yeni kod 164/164 iki TZ, eski kod 5 kırmızı iki TZ, komşular 103/103 iki TZ, kâhin defter 187 / cari 25.298 iki TZ, mutasyon 64/64 iki TZ, gerçek veri 3 tohum × 2 TZ 22/22 — S-T4-1 
+- (bu rapor commit'i — dal ucu SubagentHandback iletisinde)
+
+## 19. Ortam (bitişte)
+Yük 1,9 / 4 çekirdek (koşular sırasında 4–7, başka ajanlarla); bellek boş 2 GB (kullanılabilir 12 GB); disk boş 11 GB. Kendi kopyalarım (/dev/shm/d3t5-k5: v250, eski, iki mutasyon kopyası) KALDIRILDI (node_modules bağları önce tam yolla); gerçek veri üretecinin geçici klasörleri başarılı koşularda kendiliğinden silindi; kâhin aracının /tmp/kahin-* ham çıktıları aracın kendi düzeni (dokunulmadı). Not defterimde (scratchpad/d3t5) betikler, ham günlükler ve olcum-damga.mjs duruyor.
