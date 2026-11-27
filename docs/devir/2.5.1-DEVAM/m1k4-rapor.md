@@ -76,8 +76,8 @@ neden. "Ödenecek kalır (DEĞİŞMEZ)" sınaması tabanda da yeşil — beklene
   `npm run test:kahin-defter` (dokunmadan): UTC **187/187**, İstanbul **187/187**.
 - **D** ekran senaryoları (yeni kod, `m1k4-betik/e2e.sh`): senaryo-kdv-mahsup-sonrasi-251 **35/35**, senaryo-kdv-zincir-251 12/12, senaryo-kdv-devreden-251 14/14, senaryo-kdv-donemi-250
   23/23, senaryo-defter-243 33/33, senaryo-c7b-kabul-250 39/39, senaryo-mobil-247 77/77, senaryo-banka-210 429/429. Beklentisi değişen eski adım YOK (mahsup-sonrasi'ye yalnız E eklendi).
-  Görüntüler (baktım): `m1k4-ekran/m1k4-kdv-ozeti-guncel-degil-nisan.png` — özet Hesaplanan 200, İndirilecek 0, Önceki 300, Ödenecek 0, Sonraki 100; "Zincirle Uyuşmayan Mahsup Fişi"
-  kartı yukarıdaki metinle tam genişlikte; tablo altı Önceki 300 / Ödenecek 0 / Sonraki 100. `m1k4-kdv-ozeti-guncel-degil-mart-nisan.png` — 391 400, 191 500, 0 / 0 / 100; "Mahsuptan
+  Görüntüler (baktım): `m1k4-ekran/yeni/m1k4-kdv-ozeti-guncel-degil-nisan.png` (taban karşılığı `m1k4-ekran/taban/`: Önceki 0, Ödenecek 200, Sonraki 0, uyuşmazlık kartı YOK) — özet Hesaplanan 200, İndirilecek 0, Önceki 300, Ödenecek 0, Sonraki 100; "Zincirle Uyuşmayan Mahsup Fişi"
+  kartı yukarıdaki metinle tam genişlikte; tablo altı Önceki 300 / Ödenecek 0 / Sonraki 100. `m1k4-ekran/yeni/m1k4-kdv-ozeti-guncel-degil-mart-nisan.png` — 391 400, 191 500, 0 / 0 / 100; "Mahsuptan
   Sonra Değişen Ay: Mart 2026 (…)" ve Nisan uyuşmazlık kartı; tabloda "Mart 2026 Sonraki Döneme Devreden KDV ₺300,00".
 - **E** mutantlar — §5: 40 mutant; **38 ÖLDÜ** iki TZ (istenen üçü Y3b 4 / Y4b 5 / Y6 2 başarısız); D7 ve M4 EŞDEĞER (kanıtlı — §5).
 - **F** hız: yeni sorgu / döngü YOK (bir koşulun genişlemesi) — **ÖLÇÜLMEDİ** (ders 47 gereği gerekmez; ana oturum isterse `ana-kabul/betik/kabul.sh`).
