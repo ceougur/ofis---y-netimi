@@ -3,7 +3,8 @@
 //   devirsiz(t): carinin BÜTÜN satırları (bugünkü program, devir yok);
 //   devirli(t):  planın yeni yıla yazacağı satırlar (kuyruğa giren NET satır + açık kalemler — vade = planın vadesi, Ödeme Sözü = planın beklenen tarihi) + K'den sonraki gerçek satırlar.
 // D4a'nın yazacağı kuralı (devir satırları kuyruğa girmeden netleşir; açık kalem kendi vadesiyle) BENZETİR; D4a kodu yokken planın sayılarının doğruluğunu sınar. Kapsam dışı (D4a):
-// K sonrası satırın ≤K faturaya bağı, ≤K taksit kartının yeni yıldaki taksitleri, şüpheli kaydının yeni yıldaki ayırımı — senaryolar bunları içermez.
+// ≤K taksit kartının yeni yıldaki taksitleri, şüpheli kaydının yeni yıldaki ayırımı — senaryolar bunları içermez. K sonrası satırın ≤K faturaya bağı: tur 2'de `redirect` seçeneğiyle
+// (açık fatura kalemi kuyruğa faturanın kendi satırı gibi girer; bağ devir kalemine yönelir — D4a şartı, test/devir-d3-bag.test.mjs).
 import { buildObligations } from "../../server/lib/obligation-queue.mjs";
 import { createObligationInput } from "../../server/lib/obligation-input.mjs";
 
