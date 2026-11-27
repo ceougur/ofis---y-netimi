@@ -1,0 +1,9 @@
+(node:26162) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kurulum sn 11.8
+liste (GET doubtful) ms medyan 2.4 en az 2.3 en çok 3.0
+liste durum 200 kayıt 1 writeOff null
+cari kartı (GET account) ms medyan 8.8 en az 7.6 en çok 9.8
+Değersiz Yaz ms 313.4 200 
+bağsız tahsilat (kapı) ms 253.3 200 
+loadavg 4.91 5.61 5.83 4/209 26192

@@ -1,0 +1,10 @@
+(node:26197) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kurulum sn 13.5
+liste (GET doubtful) ms medyan 793.1 en az 773.3 en çok 848.3
+liste durum 200 kayıt 1 writeOff {"anyMinor":500000,"today":{"date":"2026-10-15","limitMinor":500000,"offerMinor":500000,"why":"remaining","whyText":"kayıtta kalan şüpheli tutar","s155":false,"s155Text":""},"best":{"date":"2026-01-03
+cari kartı (GET account) ms medyan 7.1 en az 6.5 en çok 9.2
+form ucu (GET write-off) ms medyan 785.1 en az 725.3 en çok 891.4
+Değersiz Yaz ms 330.5 200 
+bağsız tahsilat (kapı) ms 242.8 200 
+loadavg 5.23 5.62 5.83 3/207 26302
