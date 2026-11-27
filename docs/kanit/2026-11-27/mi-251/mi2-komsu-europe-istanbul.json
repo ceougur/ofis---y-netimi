@@ -1,0 +1,32 @@
+{
+  "ad": "mi2-komsu-europe-istanbul",
+  "komut": "node --test --test-concurrency=2 test/accounts-stock.test.mjs test/acilis-519-250.test.mjs test/banka-210-ariza.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-islem-no.test.mjs test/banka-210-raporlar.test.mjs test/banka-230-k8-taksit.test.mjs test/banka-230-supheli-ekran.test.mjs test/birlesik-tur1-yaris-250.test.mjs test/birlesik-tur2-yaris-250.test.mjs test/birlesik-tur3-yaris-250.test.mjs test/birlesik-tur4-degisiklik-yok-250.test.mjs test/bulgu-223.test.mjs test/c7bfix-kart-kapat-kuyruk-250.test.mjs test/cari-bilgi-222.test.mjs test/cari-tur-222.test.mjs test/cek-ciro-217.test.mjs test/cheques-overview.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/defter-213.test.mjs test/defter-243-raporlar.test.mjs test/duzeltmeler-211.test.mjs test/duzeltmeler-212.test.mjs test/ekstre-ayrinti-245.test.mjs test/ekstre-ayrinti-247.test.mjs test/ertelenen-224.test.mjs test/fatura-liste-243-fark.test.mjs test/form-izolasyon.test.mjs test/guvenilirlik-221-ariza.test.mjs test/guvenilirlik-221-bulgular.test.mjs test/guvenilirlik-221-goc.test.mjs test/guvenilirlik-221-tatbikat.test.mjs test/iade-224.test.mjs test/ice-aktarma-istek-kimligi-248.test.mjs test/import-crash.test.mjs test/inceleme-221.test.mjs test/inceleme-222.test.mjs test/is-akisi.test.mjs test/istek-kimligi-222.test.mjs test/kalan-metin-246.test.mjs test/kapanis-zamanlayici-248.test.mjs test/mi1-taksit-no-251.test.mjs test/mi2-grup-ozeti-251.test.mjs test/mobil-247.test.mjs test/mobil-gg247-b5.test.mjs test/mobil-ozet-247.test.mjs test/mobil-yazma-247.test.mjs test/odeme-yolu-222.test.mjs test/plan-case-link.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/rapor-220.test.mjs test/raporlar-209.test.mjs test/sirket-canli-olay-244.test.mjs test/sirket-listesi-221.test.mjs test/sirket-pencere-221.test.mjs test/sirket-yedeksiz-sil-249.test.mjs test/supheli-230-ayni-gun-degersiz.test.mjs test/tabela-adi-245.test.mjs test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/tyk-kapanis-250.test.mjs test/tyk-kapanis-dis-250.test.mjs test/tyk-son-250.test.mjs test/vade-takip-soz-b7-250.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-dk7-belirsiz-ileti-248.test.mjs test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs test/whatsapp-dk8-g-ek-248.test.mjs test/whatsapp-dk9-m-kanca-tasinan-248.test.mjs test/whatsapp-elle-alici-249.test.mjs test/whatsapp-gonderim-listesi-248.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs test/whatsapp-t2-3-248.test.mjs test/whatsapp-t2-4-248.test.mjs test/whatsapp-t2-6-248.test.mjs test/whatsapp-t2dk-orta1-248.test.mjs test/whatsapp-tur2-kvkk-250.test.mjs test/whatsapp-w2-cekirdek-248.test.mjs test/whatsapp-w2-veri-248.test.mjs test/whatsapp-w3-saklama-250.test.mjs test/yaslandirma-carisiz-evrak-250.test.mjs test/yazim-duzeni.test.mjs test/yedek-denetim-221.test.mjs",
+  "commit": "2ab4d7f20aa8592407c2bdf0e4bf6de26a902b2a",
+  "dal": "worktree-agent-a6937363537df626a",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T07:29:33.452Z",
+  "sure_sn": 313.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 957,
+    "gecen": 957,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/kanit/2026-11-27/mi2-komsu-europe-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6937363537df626a",
+  "ham_cikti_sha256": "2a4a0b4d830453b5729454501340858e6188db460939bdd0f33d5d990a20edfa",
+  "ham_cikti_bayt": 394111
+}

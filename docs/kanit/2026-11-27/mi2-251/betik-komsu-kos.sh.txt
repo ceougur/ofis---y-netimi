@@ -1,0 +1,12 @@
+#!/bin/bash
+# Mİ tur 2 komşu koşusu (karar 2: git grep listesi) — iki saat diliminde sırayla; her biri kanit.mjs kos ile.
+cd /home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7 || exit 1
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi2-t2
+mapfile -t FILES < $S/komsu-liste.txt
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/kanit
+for tz in UTC Europe/Istanbul; do
+  ad="mi2-komsu-$(echo $tz | tr '/' '-' | tr 'A-Z' 'a-z')"
+  cat /proc/loadavg
+  TZ=$tz node tools/kanit.mjs kos "$ad" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 "${FILES[@]}"
+  echo "$ad çıkış $?"
+done

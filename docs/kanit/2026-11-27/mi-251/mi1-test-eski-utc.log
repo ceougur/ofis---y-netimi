@@ -1,0 +1,233 @@
+TAP version 13
+# (node:24275) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz
+    # Subtest: ödenmemiş kart: en eski geciken 1. taksit; 1. taksit ödenince satır 2. taksitten (… gün gecikti (2. taksit))
+    not ok 1 - ödenmemiş kart: en eski geciken 1. taksit; 1. taksit ödenince satır 2. taksitten (… gün gecikti (2. taksit))
+      ---
+      duration_ms: 63.68468
+      type: 'test'
+      location: '/dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:69:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        düz: satırın taksitinin görünen numarası (no) var
+        + actual - expected
+        
+        + 'undefined'
+        - 'number'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'number'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        h.sameAsCard (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:55:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:72:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: SİLİNMİŞ taksit: saklanan sıra 2, 3 kalır — kart ve liste 1, 2 der (boşluk yok)
+    not ok 2 - SİLİNMİŞ taksit: saklanan sıra 2, 3 kalır — kart ve liste 1, 2 der (boşluk yok)
+      ---
+      duration_ms: 56.343681
+      type: 'test'
+      location: '/dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        silinmiş: satırın taksitinin görünen numarası (no) var
+        + actual - expected
+        
+        + 'undefined'
+        - 'number'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'number'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        h.sameAsCard (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:55:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:84:26)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sonradan EKLENEN, vadesi öncekilerden önce taksit: saklanan sıra 4 — görünen 1; eskiler 2, 3, 4
+    not ok 3 - sonradan EKLENEN, vadesi öncekilerden önce taksit: saklanan sıra 4 — görünen 1; eskiler 2, 3, 4
+      ---
+      duration_ms: 70.537754
+      type: 'test'
+      location: '/dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eklenen: satırın taksitinin görünen numarası (no) var
+        + actual - expected
+        
+        + 'undefined'
+        - 'number'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'number'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        h.sameAsCard (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:55:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:99:26)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: VADESİ DEĞİŞEN taksit: 3. taksitin vadesi öne alınınca kart sırası ve numara vadeden
+    not ok 4 - VADESİ DEĞİŞEN taksit: 3. taksitin vadesi öne alınınca kart sırası ve numara vadeden
+      ---
+      duration_ms: 42.99522
+      type: 'test'
+      location: '/dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:104:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        vadesi değişen: satırın taksitinin görünen numarası (no) var
+        + actual - expected
+        
+        + 'undefined'
+        - 'number'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'number'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        h.sameAsCard (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:55:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:109:26)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bağsız cari tahsilatı 1. taksiti kapatır (kuyruk): liste ve kart 2. taksit der
+    not ok 5 - bağsız cari tahsilatı 1. taksiti kapatır (kuyruk): liste ve kart 2. taksit der
+      ---
+      duration_ms: 56.082253
+      type: 'test'
+      location: '/dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:114:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bağsız: satırın taksitinin görünen numarası (no) var
+        + actual - expected
+        
+        + 'undefined'
+        - 'number'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'number'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        h.sameAsCard (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:55:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:118:26)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iade: 2000 tahsil, 1000 iade → iade en yeni taksitten düşer; satır 2. taksit
+    not ok 6 - iade: 2000 tahsil, 1000 iade → iade en yeni taksitten düşer; satır 2. taksit
+      ---
+      duration_ms: 76.496997
+      type: 'test'
+      location: '/dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:122:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iade: satırın taksitinin görünen numarası (no) var
+        + actual - expected
+        
+        + 'undefined'
+        - 'number'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'number'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        h.sameAsCard (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:55:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:127:21)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: birden çok kart: satır vadesi en erken geciken taksitten — numara O KARTTAKİ sırası
+    not ok 7 - birden çok kart: satır vadesi en erken geciken taksitten — numara O KARTTAKİ sırası
+      ---
+      duration_ms: 49.887528
+      type: 'test'
+      location: '/dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:131:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iki kart: satırın taksitinin görünen numarası (no) var
+        + actual - expected
+        
+        + 'undefined'
+        - 'number'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'number'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        h.sameAsCard (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:55:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:135:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: geciken yokken: sıradaki taksit ileride (gün ≥ 0) — numara alanı var, gecikme eki yalnız days < 0'da (istemci)
+    not ok 8 - geciken yokken: sıradaki taksit ileride (gün ≥ 0) — numara alanı var, gecikme eki yalnız days < 0'da (istemci)
+      ---
+      duration_ms: 43.798997
+      type: 'test'
+      location: '/dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:143:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        gecikmesiz: satırın taksitinin görünen numarası (no) var
+        + actual - expected
+        
+        + 'undefined'
+        - 'number'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'number'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        h.sameAsCard (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:55:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:146:21)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 1 - Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz
+  ---
+  duration_ms: 956.4209
+  type: 'suite'
+  location: '/dev/shm/mi-a69/eski/test/mi1-taksit-no-251.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 0
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1370.649677

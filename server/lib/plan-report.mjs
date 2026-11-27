@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { A4, PdfDocument, loadFont } from "./pdf-write.mjs";
 import { dayText } from "./plans.mjs";
+import { itemText } from "./plan-item-no.mjs";
 
 const FONT_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "assets", "fonts");
 let fonts = null;
@@ -136,7 +137,7 @@ export function planStatementPdf(plan, { officeName = "", officeLines = null, us
   header(["NO", "VADE", "TUTAR", "ÖDENEN", "KALAN", "DURUM"], itemWidths);
   if (!plan.items.length) line(["", "Taksit tanımlanmamış."], itemWidths);
   plan.items.forEach((item, index) =>
-    line([`${item.seq}.`, `${dayText(item.dueDate)}${item.note ? ` · ${item.note}` : ""}`, tl(item.amount), tl(item.paid), tl(item.remaining), stateText(item)], itemWidths, {
+    line([`${item.no}.`, `${dayText(item.dueDate)}${item.note ? ` · ${item.note}` : ""}`, tl(item.amount), tl(item.paid), tl(item.remaining), stateText(item)], itemWidths, {
       colors: [ink, ink, ink, green, item.remaining > 0 ? red : ink, item.state === "overdue" ? red : ink],
       fill: index % 2 ? "#fcfcfd" : null,
     }),
@@ -201,7 +202,7 @@ export function receiptPdf(plan, entry, { officeName = "", userName = "", now = 
   if (where) row("Grup", where, { lines: 2 });
   if (plan.phone) row("Telefon", plan.phone);
   // Cari makbuzunda (v2.0.6) açıklama hareketin türünden gelir ("Cari tahsilat", "Cariye ödeme").
-  row("Açıklama", `${item ? `${item.seq}. taksit (vade ${dayText(item.dueDate)})` : entry.label || (incoming ? "Taksit Tahsilatı" : "Ödeme / İade")}${entry.note ? ` · ${entry.note}` : ""}`, { lines: 2 });
+  row("Açıklama", `${item ? `${itemText(item.no)} (vade ${dayText(item.dueDate)})` : entry.label || (incoming ? "Taksit Tahsilatı" : "Ödeme / İade")}${entry.note ? ` · ${entry.note}` : ""}`, { lines: 2 });
   top += 2;
   // Tutar kutusu: rakamla ve yazıyla.
   const words = doc.wrap(`# ${amountInWords(entry.amount)} #`, W - P * 2 - 20, "regular", 8.5).slice(0, 2);

@@ -1,0 +1,81 @@
+// Mİ-2 hız ölçümü (ders 47, 53): Cari Listesi dönemsiz (taban ↔ yeni), dönemli Liste ve Grup Özeti (yeni) — temiz 100 bin verinin KOPYASINDA.
+// Kullanım: flock -x -w 1800 <olcum.lock> node olc-mi.mjs <kod kökü> <veri kopyası> <yeni|taban> [tekrar=5]
+// Kopyada carilere grup verilir (para dışı; iki kopyada AYNI SQL — 12 grup, her grubun 2 alt grubu, carilerin ~%85'i gruplu) ki Grup Özeti gerçekçi olsun.
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { monitorEventLoopDelay } from "node:perf_hooks";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir, kind = "yeni", repeatText = "5"] = process.argv.slice(2);
+const repeat = Number(repeatText) || 5;
+const load = () => readFileSync("/proc/loadavg", "utf8").trim().split(" ").slice(0, 3).join(" ");
+console.log(`kod ${root} (${kind}) · veri ${dir} · yük (başta) ${load()}`);
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+const { port } = await app.listen(0, "127.0.0.1");
+const client = createClient(`http://127.0.0.1:${port}`);
+if ((await client.login("admin", PASS)).status !== 200) throw new Error("giriş");
+const store = app.store;
+// Gruplar (para dışı, iki kopyada aynı): yoksa kurulur.
+if (!store.get("SELECT 1 AS found FROM plan_groups WHERE id = 'olc-g1'")) {
+  const stamp = "2026-10-01T00:00:00.000Z";
+  for (let g = 1; g <= 12; g += 1) {
+    store.run("INSERT INTO plan_groups (id, parent_id, name, position, created_by, created_at, updated_at) VALUES (?, NULL, ?, ?, 'admin', ?, ?)", `olc-g${g}`, `Ölçüm Grubu ${g}`, g, stamp, stamp);
+    for (let s = 1; s <= 2; s += 1) store.run("INSERT INTO plan_groups (id, parent_id, name, position, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, 'admin', ?, ?)", `olc-g${g}-s${s}`, `olc-g${g}`, `Alt ${s}`, s, stamp, stamp);
+  }
+  store.run("UPDATE accounts SET group_id = CASE WHEN rowid % 7 = 0 THEN NULL ELSE 'olc-g' || (rowid % 12 + 1) END, subgroup_id = CASE WHEN rowid % 7 = 0 OR rowid % 5 = 0 THEN NULL ELSE 'olc-g' || (rowid % 12 + 1) || '-s' || (rowid % 2 + 1) END WHERE deleted_at IS NULL");
+}
+const counts = store.get("SELECT (SELECT COUNT(*) FROM accounts WHERE deleted_at IS NULL) AS a, (SELECT COUNT(*) FROM account_entries) AS e, (SELECT COUNT(*) FROM plan_entries) AS pe, (SELECT COUNT(*) FROM plans WHERE deleted_at IS NULL) AS p, (SELECT COUNT(*) FROM accounts WHERE group_id IS NOT NULL AND deleted_at IS NULL) AS g");
+console.log(`veri: ${counts.a} cari (${counts.g} gruplu), ${counts.e} cari satırı, ${counts.pe} taksit hareketi, ${counts.p} kart`);
+const h = monitorEventLoopDelay({ resolution: 5 });
+h.enable();
+const r = v => Math.round(v * 10) / 10;
+const results = new Map();
+const timed = async (label, url) => {
+  h.reset();
+  const s = performance.now();
+  const res = await client.get(url);
+  const ms = performance.now() - s;
+  if (!results.has(label)) results.set(label, []);
+  results.get(label).push({ ms, loop: h.max / 1e6, status: res.status });
+  return res;
+};
+const PATHS = [
+  ["Liste dönemsiz (Aktif, 300)", "/api/workspace/accounts?status=active&limit=300"],
+  ["Liste dönemsiz (Tümü, 300)", "/api/workspace/accounts?status=all&limit=300"],
+  ...(kind === "yeni"
+    ? [
+        ["Liste dönemli (Bugün)", "/api/workspace/accounts?status=active&limit=300&period=today"],
+        ["Liste dönemli (Bu Ay)", "/api/workspace/accounts?status=active&limit=300&period=month"],
+        ["Liste dönemli (Bu Yıl aralığı + Ödeme Yapanlar)", "/api/workspace/accounts?status=all&limit=300&period=range&from=2026-01-01&to=2026-12-31&paid=1"],
+        ["Grup Özeti (Bugün)", "/api/workspace/accounts/group-summary?status=active&period=today"],
+        ["Grup Özeti (Bu Ay)", "/api/workspace/accounts/group-summary?status=active&period=month"],
+        ["Grup Özeti (Bu Yıl aralığı, Tümü)", "/api/workspace/accounts/group-summary?status=all&period=range&from=2026-01-01&to=2026-12-31"],
+        ["Grup Özeti Excel (Bu Ay)", "/api/workspace/accounts/group-summary.xlsx?status=active&period=month"],
+      ]
+    : []),
+  // Dışa aktarım Değişiklik Geçmişi'ne yazar → her çağrı önbelleği yeniden kurar (soğuk yol); taban ↔ yeni aynı koşulda.
+  ["Liste Excel dönemsiz (soğuk)", "/api/workspace/accounts/export.xlsx?status=active"],
+];
+// Her yol: bir ısınma + art arda `repeat` ölçüm (yol yol; Excel en sonda — dışa aktarım Değişiklik Geçmişi'ne yazar, ardından gelen ilk okuma önbelleği yeniden kurar).
+for (const [label, url] of PATHS) {
+  await client.get(url);
+  for (let i = 0; i < repeat; i += 1) await timed(label, url);
+}
+const median = list => {
+  const sorted = [...list].sort((a, b) => a - b);
+  return sorted[Math.floor(sorted.length / 2)];
+};
+for (const [label, list] of results) {
+  const ms = list.map(item => item.ms);
+  console.log(`  ${label}: durum ${[...new Set(list.map(item => item.status))].join("/")} · orta ${r(median(ms))} ms · en çok ${r(Math.max(...ms))} ms · en az ${r(Math.min(...ms))} ms · olay döngüsü en çok ${r(Math.max(...list.map(item => item.loop)))} ms · ${list.length} tekrar`);
+}
+console.log(`yük (sonda) ${load()}`);
+await app.close();

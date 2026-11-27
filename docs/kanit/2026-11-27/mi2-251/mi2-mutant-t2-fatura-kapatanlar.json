@@ -1,0 +1,38 @@
+{
+  "ad": "mi2-mutant-t2-fatura-kapatanlar",
+  "komut": "node --test test/mi1-taksit-no-251.test.mjs test/mi2-tek-numara-251.test.mjs",
+  "commit": "51109662dc569e5d0c4ce955fe69fea2596cc4f4",
+  "dal": "worktree-agent-ad6b71f2b91ca7ee7",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T14:21:55.267Z",
+  "sure_sn": 5.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 19,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › fatura penceresi 'Bu Faturayı Kapatanlar': vadesi öne alınan taksitin tahsilatı '· 1. taksit' (saklanan 3)",
+      "konum": "test/mi2-tek-numara-251.test.mjs:212:3",
+      "hata": "kapatanlar: [{\"id\":\"plan-entry:entry-5d309337-7abb-4802-b09f-da3d9e9c18e1\",\"date\":\"2026-10-19\",\"label\":\"Taksit Tahsilatı · 3. taksit\",\"note\":\"\",\"method\":\"\",\"amount\":500,\"mode\":\"linked\",\"modeLabel\":\"Bağlı\",\"methodLabel\":\"\"}] (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi2-t2/kanit/2026-11-27/mi2-mutant-t2-fatura-kapatanlar.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7",
+  "ham_cikti_sha256": "f58ff22bf52d0a674ba3672a0af6040713177ea5696b34c867a2dcbf08e4c3c4",
+  "ham_cikti_bayt": 8072
+}

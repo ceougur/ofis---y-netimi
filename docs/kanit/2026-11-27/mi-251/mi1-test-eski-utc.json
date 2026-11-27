@@ -1,0 +1,73 @@
+{
+  "ad": "mi1-test-eski-utc",
+  "komut": "node --test test/mi1-taksit-no-251.test.mjs",
+  "commit": "643964786dac426963eecaf2b7556f29849e8cb3",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T06:35:13.217Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 0,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz › ödenmemiş kart: en eski geciken 1. taksit; 1. taksit ödenince satır 2. taksitten (… gün gecikti (2. taksit))",
+      "konum": "test/mi1-taksit-no-251.test.mjs:69:3",
+      "hata": "düz: satırın taksitinin görünen numarası (no) var · + actual - expected · + 'undefined' (beklenen number, gelen undefined)"
+    },
+    {
+      "ad": "Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz › SİLİNMİŞ taksit: saklanan sıra 2, 3 kalır — kart ve liste 1, 2 der (boşluk yok)",
+      "konum": "test/mi1-taksit-no-251.test.mjs:79:3",
+      "hata": "silinmiş: satırın taksitinin görünen numarası (no) var · + actual - expected · + 'undefined' (beklenen number, gelen undefined)"
+    },
+    {
+      "ad": "Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz › sonradan EKLENEN, vadesi öncekilerden önce taksit: saklanan sıra 4 — görünen 1; eskiler 2, 3, 4",
+      "konum": "test/mi1-taksit-no-251.test.mjs:94:3",
+      "hata": "eklenen: satırın taksitinin görünen numarası (no) var · + actual - expected · + 'undefined' (beklenen number, gelen undefined)"
+    },
+    {
+      "ad": "Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz › VADESİ DEĞİŞEN taksit: 3. taksitin vadesi öne alınınca kart sırası ve numara vadeden",
+      "konum": "test/mi1-taksit-no-251.test.mjs:104:3",
+      "hata": "vadesi değişen: satırın taksitinin görünen numarası (no) var · + actual - expected · + 'undefined' (beklenen number, gelen undefined)"
+    },
+    {
+      "ad": "Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz › bağsız cari tahsilatı 1. taksiti kapatır (kuyruk): liste ve kart 2. taksit der",
+      "konum": "test/mi1-taksit-no-251.test.mjs:114:3",
+      "hata": "bağsız: satırın taksitinin görünen numarası (no) var · + actual - expected · + 'undefined' (beklenen number, gelen undefined)"
+    },
+    {
+      "ad": "Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz › iade: 2000 tahsil, 1000 iade → iade en yeni taksitten düşer; satır 2. taksit",
+      "konum": "test/mi1-taksit-no-251.test.mjs:122:3",
+      "hata": "iade: satırın taksitinin görünen numarası (no) var · + actual - expected · + 'undefined' (beklenen number, gelen undefined)"
+    },
+    {
+      "ad": "Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz › birden çok kart: satır vadesi en erken geciken taksitten — numara O KARTTAKİ sırası",
+      "konum": "test/mi1-taksit-no-251.test.mjs:131:3",
+      "hata": "iki kart: satırın taksitinin görünen numarası (no) var · + actual - expected · + 'undefined' (beklenen number, gelen undefined)"
+    },
+    {
+      "ad": "Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz › geciken yokken: sıradaki taksit ileride (gün ≥ 0) — numara alanı var, gecikme eki yalnız days < 0'da (istemci)",
+      "konum": "test/mi1-taksit-no-251.test.mjs:143:3",
+      "hata": "gecikmesiz: satırın taksitinin görünen numarası (no) var · + actual - expected · + 'undefined' (beklenen number, gelen undefined)"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi-ajan/kanit/2026-11-27/mi1-test-eski-utc.log",
+  "klasor": "/dev/shm/mi-a69/eski",
+  "ham_cikti_sha256": "3cc6e8f7f6cb275902d4710136f6251a6883b834318603999487da29fa6bee32",
+  "ham_cikti_bayt": 10047
+}

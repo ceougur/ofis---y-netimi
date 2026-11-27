@@ -1,0 +1,38 @@
+{
+  "ad": "mi2-mutant-t1-mi2-silinmis-kart",
+  "komut": "node --test test/mi2-grup-ozeti-251.test.mjs",
+  "commit": "51109662dc569e5d0c4ce955fe69fea2596cc4f4",
+  "dal": "worktree-agent-ad6b71f2b91ca7ee7",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T14:22:30.706Z",
+  "sure_sn": 5.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 12,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ-2 — dönemlik tahsilat ve Grup Özeti › (d) dönem sınırı: bitiş günü DAHİL, ertesi gün HARİÇ; başlangıçtan önceki gün HARİÇ — yardımcı, bellek içi küçük veri tabanıyla (program ileri tarihli hareketi zaten reddeder)",
+      "konum": "test/mi2-grup-ozeti-251.test.mjs:257:3",
+      "hata": "19 ve 20 dahil; 18 ve 21 hariç; silinmiş cari / kart, iade sayılmaz · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi2-t2/kanit/2026-11-27/mi2-mutant-t1-mi2-silinmis-kart.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7",
+  "ham_cikti_sha256": "0c4cd5dbb2c573dc921bf0a3afb8e5ef9b5f9bf1a08071e2cbe79f8187b23899",
+  "ham_cikti_bayt": 6440
+}

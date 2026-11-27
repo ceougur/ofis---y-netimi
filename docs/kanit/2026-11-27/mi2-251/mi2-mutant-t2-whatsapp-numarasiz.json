@@ -1,0 +1,38 @@
+{
+  "ad": "mi2-mutant-t2-whatsapp-numarasiz",
+  "komut": "node --test test/mi1-taksit-no-251.test.mjs test/mi2-tek-numara-251.test.mjs",
+  "commit": "51109662dc569e5d0c4ce955fe69fea2596cc4f4",
+  "dal": "worktree-agent-ad6b71f2b91ca7ee7",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T14:21:47.601Z",
+  "sure_sn": 7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 19,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › WhatsApp ekstresi (elle, wa.me metni): 'Taksit Tahsilatı · 2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:171:3",
+      "hata": "Sayın Mİ2 Silinmiş, · cari hesap ekstreniz: · 22.06.2026 Taksit Planı · Mİ2 Silinmiş · 2 taksit: +2.000,00 TL (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi2-t2/kanit/2026-11-27/mi2-mutant-t2-whatsapp-numarasiz.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad6b71f2b91ca7ee7",
+  "ham_cikti_sha256": "32546c7299058190acf70b5c2f41f7b64cca1f435f813da04b9abed804500ed5",
+  "ham_cikti_bayt": 8308
+}
