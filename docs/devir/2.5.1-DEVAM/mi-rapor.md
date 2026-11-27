@@ -78,3 +78,25 @@ Testler: `test/mi1-taksit-no-251.test.mjs` (8 senaryo: düz, silinmiş, sonradan
 senaryoda listede yazan numara = kart penceresinde AYNI taksitin numarası = cari kartı özeti; kartta 1..n; 409 iletisi) + ekran `test/e2e/senaryo-mi1-251.mjs`
 (gerçek tıklama + Enter; Ayşe "(2. taksit)", Burak silinmiş "(1. taksit)" ve kartta "1.", "2.", Cem "sıradaki taksit" parantezsiz). `test/plans.test.mjs` beklentisi:
 `ledger.next`'e `no: 2` eklendi (alan eklendi; sayı değişmedi).
+
+## 2. Mİ-2 — KOD ve TESTLER
+
+Tasarım notu: `docs/devir/2.5.1-DEVAM/mi2-tasarim.md` (koddan önce, commit 7504c4eb).
+
+- Yeni yardımcı `server/lib/account-collections.mjs`: `periodOf` (Bugün / Dün / Bu Hafta pazartesi–pazar / Bu Ay / Tarih Aralığı), `collectionsByAccount`
+  (üç `GROUP BY` sorgusu: cari tahsilatı, alınan evrak, taksit tahsilatı; kuruşla toplanır; silinmiş cari / kart sayılmaz), `addCollected`.
+- `server/routes/accounts.mjs`: Liste ucuna `period`, `from`, `to`, `paid=1`; dönem yoksa yardımcı çağrılmaz, yanıtta yeni alan YOK. Yeni uçlar
+  `GET /api/workspace/accounts/group-summary` (+ `.pdf`, `.xlsx`). `group=__none` / `subgroup=__none` (Grupsuz / Alt Grupsuz). Liste PDF / Excel'ine dönem
+  seçiliyse Tahsilat sütunu (Excel'de kırılım + TOPLAM satırı). Liste Excel'inin "Geciken" sütunu hep BOŞTU (satır anahtarı "Gecikmiş Borç" idi) → sütun
+  adı "Gecikmiş Borç", dolu.
+- `client/assets/hof-accounts.js` + `hof-ui.css`: Liste ↔ Grup Özeti geçişi, dönem seçici + tarih aralığı, "Bu Dönemde Ödeme Yapanlar", Tahsilat kartı ve
+  sütunu, Grup Özeti tablosu (▸ alt gruplar, Grupsuz, TOPLAM; satıra tıkla / Enter → Liste o gruba süzülür), PDF / Yazdır / Excel; "Grupsuz" ve "Alt Grupsuz"
+  süzgeç seçenekleri. "Bu Dönemde Ödeme Yapanlar" açıkken "Tümüne WhatsApp" gizli ve başlık kutusu yalnız ekrandakileri seçer (WhatsApp uçları bu süzgeci
+  bilmiyor; süzgeçte görünmeyen carilere gitmesin).
+- Yetki (koddan): Liste ve Grup Özeti `accounts.view` (yerleşik bütün roller; personel cari kartının defterinde de her tahsilat tutarını bugün görüyor —
+  `server/lib/permissions.mjs` "accounts.view": ALL). `accounts.view` olmayan özel rol dört uçta 403 (testte).
+
+Testler: `test/mi2-grup-ozeti-251.test.mjs` (14): elle senaryo, dönemler, ödeme yapanlar + süzgeçler, Grup Özeti satırlar = TOPLAM = Liste kartları (14 süzgeç
+seçeneği × her grup / alt grup satırı = o süzgeçteki Liste), rapor eşdeğerliği (3 dönem), karşılıksız çek, dönem sınırları (ay / yıl başı, hafta, artık yıl),
+bitiş günü dahil / ertesi gün hariç (bellek içi küçük veri tabanı — program ileri tarihli hareketi zaten reddediyor: integrity "İleri tarihli hareket"),
+PDF / Excel, yetki. Ekran: `test/e2e/senaryo-mi2-251.mjs` (23 denetim).
