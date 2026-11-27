@@ -5,7 +5,7 @@
 // kesilmez — bütün nedenler birlikte, sıra kararlı (bu dosyadaki denetim sırası); uyarılar ayrı listede. S-KD-1 / S-KD-2 (kullanıcı 27.11, öneri A) kural farkı maddelerinde.
 import { CHART, PLAN_SUBS, UNASSIGNED_SUBS } from "../general-ledger.mjs";
 import { DEVIR_DECISIONS, MODULE_ACCOUNTS } from "./plan.mjs";
-import { DEVIR_TARGETS, countText, dayText, devirIletisi, listText, monthText, sideText, tlText } from "./iletiler.mjs";
+import { DEVIR_TARGETS, countText, dayText, devirIletisi, listText, localStamp, monthText, sideText, tlText } from "./iletiler.mjs";
 
 /** Gidilecek yerler (D5 ekran yönlendirmesi bu anahtarlardan; ad yazım düzenine uygun) — iletiler.mjs DEVIR_TARGETS. */
 export const PREFLIGHT_TARGETS = DEVIR_TARGETS;
@@ -125,7 +125,8 @@ export function devirPreflight(facts = {}, plan = null, { isRoot = false, today 
   const half = [...marked.keys()].filter(item => !registered.has(item)).sort();
   if (year && registered.has(year)) {
     const entry = registered.get(year);
-    const when = dayText(String(marked.get(year)?.tarih || entry.tarih || "").slice(0, 10));
+    const raw = String(marked.get(year)?.tarih || entry.tarih || "");
+    const when = localStamp(raw).gun || dayText(raw.slice(0, 10));
     block({
       kod: "devir-yil-devredilmis", baslik: "Bu Yıl Zaten Devredildi",
       neOldu: `${year} yılı${when ? ` ${when} tarihinde` : ""} zaten devredilmiş; şirketin ${year} arşivi kayıtlı${entry.dosyaVar ? "" : ", ancak arşiv dosyası bulunamadı"}`,

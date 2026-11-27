@@ -24,6 +24,13 @@ export const sideText = minor => `${Number(minor) >= 0 ? "borç" : "alacak"} yö
 export const dayText = iso => (/^\d{4}-\d{2}-\d{2}/.test(String(iso || "")) ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
 /** YYYY-MM → "Aralık 2026". */
 export const monthText = ym => (/^\d{4}-\d{2}/.test(String(ym || "")) ? `${MONTHS[Number(ym.slice(5, 7)) - 1]} ${ym.slice(0, 4)}` : "");
+/** ISO an ("2027-01-05T10:15:00.000Z") → yerel saatle { gun: "05.01.2027", saat: "13:15" } (sunucunun saat dilimi; program kullanıcının bilgisayarında çalışır). Geçersizse boş. */
+export const localStamp = iso => {
+  const at = new Date(String(iso || ""));
+  if (!/^\d{4}-\d{2}-\d{2}T/.test(String(iso || "")) || Number.isNaN(at.getTime())) return { gun: "", saat: "" };
+  const local = new Date(at.getTime() - at.getTimezoneOffset() * 60_000).toISOString();
+  return { gun: dayText(local.slice(0, 10)), saat: local.slice(11, 16) };
+};
 /** Sayı → "1.234". */
 export const countText = value => COUNT.format(Number(value) || 0);
 /** "a, b ve c" */
@@ -134,7 +141,8 @@ export function onIzlemeReddiIletisi(code, { cutoff = "", today = "" } = {}) {
  * yeniden hesaplanan planın damgası ön izlemeninkiyle aynı değilse devir bu iletiyle durur, kullanıcı yeni ön izlemeyi inceleyip yeniden onaylar). Veri yazılmadan önce durulduğu için güvence var.
  */
 export function onIzlemeBayatIletisi({ onIzlemeAni = "" } = {}) {
-  const at = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(String(onIzlemeAni)) ? ` (${dayText(onIzlemeAni.slice(0, 10))} ${onIzlemeAni.slice(11, 16)})` : "";
+  const stamp = localStamp(onIzlemeAni);
+  const at = stamp.gun ? ` (${stamp.gun} saat ${stamp.saat})` : "";
   return devirIletisi({
     kod: "on-izleme-bayat",
     seviye: "durdurur",
