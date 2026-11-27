@@ -248,8 +248,31 @@ Tur 1 ile aynı: `server/routes/report-center.mjs` (YALNIZ KDV Özeti raporu ve 
 {rapor()}
 """
 
+# ---------------------------------------------------------------- P-Ç5C (plan; kod yok)
+PC5C = f"""Sen DestekOfis projesinde 2.5.1'in ÖDEME HATIRLATMA (Ç5-C) PLAN ajanısın (P-Ç5C; eforun high). KOD VE TEST YAZMAZSIN — yalnız belge. Amaç: WhatsApp Ödeme Hatırlatma'nın tutarı ve elemesi cari kartının tek borç sırasına (Gecikmiş Borç) geçmeden ÖNCE "kime kaç kez" ilkesini PLANDA yazmak (ders 45 — kullanıcı onaylayacak), bugünkü kodu okuyup değişecek her yolu çıkarmak ve kullanıcıya sorulması gereken her alt durumu TEK listede toplamak (TOPLU soru — sonradan tek tek soru çıkmasın). Devir işinin D6 parçası (Devri Geri Al / yedekten geri yükleme sonrası "kime kaç kez") da bu ilkeye bağlanır.
+
+{hazirlik(kod=False)}
+   Ayrıca oku: `docs/erp/C5-ACILIS-TASARIM.md` §2.10, §2.12, §8 (Ödeme Hatırlatma ve tek "gecikmiş" tanımı); `docs/erp/C5B-TYK-TASARIM.md` §1, §3; CLAUDE.md'deki WHATSAPP "KİME KAÇ KEZ" GENEL İLKESİ ve KULLANICI ONAYLI WHATSAPP DAVRANIŞLARI satırları + bunların `docs/GECMIS-KARARLAR.md`'deki tam metni (python ile satır satır ara: 'Arşiv 06.11.2026 (2)', '01.11 06:28', 'S9-1', 'S9-2'); `docs/2.5.0-IS-LISTESI.md` içinde şu kararların TAM metni (python ile 'S7', 'S16', 'S17', 'S22', 'S23', 'S29', 'S34', 'S67', 'S69', 'S93', 'S220', 'S260', 'B1-W', '22.11 06:32' geçen satırlar — dosya çok büyük, satırlar çok uzun: düzenli ifadeli grep TAKILIR, python ile oku ve yalnız ilgili parçayı yazdır); `docs/2.5.0-DEGISIKLIKLER.md`'de Ödeme Hatırlatma geçen BİLİNEN SINIR satırları; WhatsApp kâhininin karar belgesi (`test/bagimsiz/whatsapp-248/README.md` ve `kahin/` altındaki .md belgeleri — YALNIZ belge; model kodu OKUNMAZ, hiçbir kâhin dosyası YAZILMAZ); `docs/devir/D3-D4-TASARIM.md`'de WhatsApp / D6 geçen bölümler.
+{KURALLAR_KULLANICI}
+
+## İş (sırayla; her adım bitince commit)
+1. BUGÜNKÜ DURUM (koddan; dosya:satır): Ödeme Hatırlatma'da (a) otomatik seçim kimi alıyor, hangi alanı okuyor (eski anlamdaki taksit gecikmişi), (b) iletideki {{{{3}}}} / {{{{4}}}} / {{{{5}}}} nereden geliyor, (c) elle seçim, (d) önizleme / Zaten Kuyrukta / dönem eşliği / Sonucu Belirsiz / Yine de Gönder, (e) gönderim ANINDA yeniden değerlendirme (kuyruktayken borç ödenirse, şüpheli kaydı açılırsa, cari silinirse / türü değişirse), (f) ekrandaki etiketler ("Şüpheli Alacağı Var" …), (g) aynı sayıyı okuyan öbür yerler (cari kartının taksit özeti, Mevcut Borç kartı açma sınırı — S260, Rapor Merkezi kolonları). Tek borç sırasının bugün verdiği alanlar (gecikmiş, en eski vade, şüphesiz gecikmiş, Ödeme Sözü durumu, cari türü) — hangisi HAZIR, hangisi eksik.
+2. FARK TABLOSU (sayıyla; programın KENDİ ürettiği veride — `{SP}/ana-kabul` altındaki temiz büyük veri SALT OKUNUR, kopyasını kendi not defterine al; ya da küçük bir senaryoyu programın API'siyle kur): bugün seçilen ↔ tek borç sırasına göre seçilecek cari kümesi — yalnız taksidi gecikmiş / yalnız faturası gecikmiş / yalnız elle Borç Yaz'ı gecikmiş / kapatılmış kartın borçta kalanı (S220) / bakiyesi 0 ama eski anlamda gecikmiş görünen / tedarikçi / şüpheli / Ödeme Sözü olan. Her sınıf için "bugün gider mi → sonra gider mi → tutar bugün → tutar sonra". ALICI KÜMESİNİN BÜYÜMESİ kullanıcıya sayıyla gösterilecek ana değişikliktir.
+3. İLKE TASLAĞI — `docs/devir/C5C-ILKE-TASLAK.md` (KULLANICI DİLİNDE; kısa cümle, madde, örnek sayı; dosya / alan adı YOK): başlıklar — Kime Gider · Kime Gitmez (etiketiyle görünür, istenirse elle seçilir mi) · Hangi Tutar ve Hangi Vade · Kaç Kez (dönem; genel ilkenin beş maddesiyle birebir) · Kuyruktayken Durum Değişirse (ödedi / söz verdi / şüpheliye alındı / tedarikçi oldu / silindi) · Elle Seçim ve Yine de Gönder · Sürüm Geçişi (2.5.0'da bu dönem hatırlatma almış cari 2.5.1'de daha büyük tutarla yeniden seçilir mi) · Devir, Devri Geri Al, Yedekten Geri Yükleme (D6) · İki Şirket. HER madde şu ikisinden biriyle işaretlenir: "KARARLI (karar no + AYNEN metin)" ya da "YENİ — KULLANICIYA SORULMALI (A / B (+ uç durumsa C: böyle kalsın) + öneri + örnek sayı; genel ilke tek okumaya izin veriyorsa 'İLKEYLE' ve hangi maddesiyle)". Son adayda yeni kural girmeyeceği için (ders 45) listeyi EKSİKSİZ tut: "nasıl bozulur?" listesini önce yaz, her satırını bir maddeye bağla.
+4. PAKETLEME: WhatsApp kâhini bakımına girdi listesi (kural dilinde, kod adı yok — ana oturum karar girdisine çevirecek); kod turunun dosya sınırı ve sırası (D6 ile ilişkisi; aynı dosyaya dokunan öbür 2.5.1 işleri: müşteri isteklerinin cari listesi, devir); test planı ("nasıl bozulur?" → test; ders 20 zorla üretme, sahte Meta); hız bütçesi (ders 47: 2.000 cari önizleme ≤ 2 sn — bugünkü ölçümle); cari kartının taksit özeti ve S260'ın bu pakete girip girmeyeceği (öneri + gerekçe).
+
+## Kurallar
+- YAZABİLECEĞİN: yalnız `docs/devir/C5C-ILKE-TASLAK.md` ve `docs/devir/2.5.1-DEVAM/pc5c-*`. Kod, test, kâhin, iş listesi, CLAUDE.md YASAK.
+- Gerçek dış servise İSTEK YOK (program açılacaksa `HUKUK_LICENSE_URL=http://127.0.0.1:9`, WhatsApp sahte uçla); müşteri verisi yok. Koşu yaparsan `flock -s -w 3600 {SP}/olcum.lock timeout -k 5 <sn>` altında; önce `cat /proc/loadavg` (4'ün üstündeyse tek seferlik bekle). Tam `npm test` YOK.
+- Kararların söylemediği her "kime kaç kez" durumu baş mimarca KESİNLEŞTİRİLMEZ — soru olarak yazılır (ders 43, 45).
+
+{kurallar('pc5c', kod=False)}
+
+{rapor(kod=False)}
+"""
+
 out = os.path.dirname(os.path.abspath(__file__))
-for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2)):
+for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C)):
     yol = os.path.join(out, f"{ad}-istem.txt")
     open(yol, "w", encoding="utf-8").write(metin)
     print(ad, len(metin.encode()), yol)
