@@ -118,6 +118,7 @@ async function generate(client, { q = "", parties = PARTIES, suppliers = 40, ite
   const lastEntryId = account => store.get("SELECT id FROM account_entries WHERE account_id = ? ORDER BY rowid DESC LIMIT 1", account)?.id;
   let phase2 = false;
   let passive = "";
+  let offsetSeq = 0;
   const agenda = [];
   let agendaSeq = 0;
   // D3 tur 3 (ders 6 — gerçek veri t11 kök nedeni ÜRETEÇTE): saat GERİ ALINMAZ. Ocak'ta Şüpheliye Al'ınan carinin "K sonrası bağlı tahsilatı" Şüpheliye Al gününden ÖNCEKİ bir
@@ -202,7 +203,7 @@ async function generate(client, { q = "", parties = PARTIES, suppliers = 40, ite
       add("refund", parties * 0.02);
       add("delrestore", 1);
       // D3 tur 4 (S-T2-1 = B): Aralık 2026'da ≤K alış + K sonrası Mahsup Et (yalnız bu ay — önceki ayların rastgele dizisi değişmez).
-      if (y === 2026 && m === 12) add("offset", 6);
+      if (y === 2026 && m === 12) add("offset", 10);
     }
     for (let i = 0; i < Math.round(parties * 0.4 * perMonth); i += 1) events.push({ kind: "sale", day: pick(days) });
     for (let i = 0; i < Math.round(suppliers * 0.5 * perMonth); i += 1) events.push({ kind: "purchase", day: pick(days) });
@@ -428,32 +429,33 @@ async function generate(client, { q = "", parties = PARTIES, suppliers = 40, ite
         return true;
       }
       case "offset": {
-        // D3 tur 4 (S-T2-1 = B — KULLANICI 27.11.2026 14:18 UTC): satışı olan müşteriye ≤K alış faturası; Ocak'ta Mahsup Et — alış yönü (Ocak satışı ↔ Aralık alışı; tam ya da kısmi),
-        // satış yönü (Aralık satışı ↔ Ocak alışı), iki belge ≤K (Aralık satışı ↔ Aralık alışı, Ocak'ta), sonradan silinen mahsup. Reddedilen istek sayılır (ders 3).
-        const owners = [...salesOf.keys()].filter(owner => (salesOf.get(owner) || []).some(row => row.day <= K));
-        if (!owners.length) return true;
-        const customer = pick(owners);
+        // D3 tur 4 (S-T2-1 = B — KULLANICI 27.11.2026 14:18 UTC): KENDİNE AYRILMIŞ yeni cari (rastgele tahsilat / avans havuzuna girmez — ilk koşuda tohum 7'de bütün mahsuplar havuzdaki
+        // avans faturayı kapattığı için 409 "açık tutarı aşamaz" aldı; ders 6: kök neden üreteçte): Aralık satış + Aralık alış (≤K); Ocak'ta Mahsup Et — alış yönü (Ocak satışı ↔ Aralık alışı;
+        // tam ya da kısmi), satış yönü (Aralık satışı ↔ Ocak alışı), iki belge ≤K (Aralık satışı ↔ Aralık alışı, Ocak'ta), sonradan silinen mahsup. Reddedilen istek sayılır (ders 3).
+        offsetSeq += 1;
+        const customer = (await tryApi("mahsup-carisi", client.post("/api/workspace/accounts", { name: `Mahsup Carisi ${offsetSeq}`, type: "customer" })))?.id;
+        if (!customer) return true;
         const amount = between(100, 400);
         const line = price => [{ name: "Hizmet", qty: 1, unitPrice: price, discountRate: 0, vatRate: 0 }];
-        const bought = await tryApi("mahsup-alis-k-oncesi", client.post("/api/workspace/invoices", { kind: "purchase", accountId: customer, number: `MH-${day}-${between(1000, 9999)}`, issueDate: day, lines: line(amount), payment: pay, force: true }));
-        if (!bought?.id) return true;
-        const fate = rand();
+        const old = await tryApi("mahsup-satis-k-oncesi", client.post("/api/workspace/invoices", { kind: "sale", accountId: customer, issueDate: day, lines: line(amount + 200), payment: { ...pay, dueDate: addDays(day, 10) }, force: true }));
+        const bought = await tryApi("mahsup-alis-k-oncesi", client.post("/api/workspace/invoices", { kind: "purchase", accountId: customer, number: `MH-${day}-${offsetSeq}`, issueDate: day, lines: line(amount), payment: pay, force: true }));
+        if (!bought?.id || !old?.id) return true;
+        const fate = (offsetSeq - 1) % 5;
         const when = `2027-01-${pad(between(2, 19))}`;
-        const take = fate < 0.2 ? amount : Math.max(1, Math.round(amount / 2));
-        const old = (salesOf.get(customer) || []).find(row => row.day <= K);
         const offset = (cls, invoiceId, counterId, value) => tryApi(cls, client.post(`/api/workspace/invoices/${invoiceId}/offsets`, { counterType: "invoice", counterId, amount: String(value), date: when }));
+        const freshSale = () => tryApi("mahsup-ocak-satis", client.post("/api/workspace/invoices", { kind: "sale", accountId: customer, issueDate: when, lines: line(amount + 50), payment: { ...pay, dueDate: addDays(when, 15) }, force: true }));
         soon(when, async () => {
-          if (fate < 0.4) {
-            const fresh = await tryApi("mahsup-ocak-satis", client.post("/api/workspace/invoices", { kind: "sale", accountId: customer, issueDate: when, lines: line(amount + 50), payment: pay, force: true }));
-            if (fresh?.id) await offset(fate < 0.2 ? "mahsup-k-sonrasi-alis-yonu-tam" : "mahsup-k-sonrasi-alis-yonu-kismi", fresh.id, bought.id, take);
-          } else if (fate < 0.6) {
-            const jan = await tryApi("mahsup-ocak-alis", client.post("/api/workspace/invoices", { kind: "purchase", accountId: customer, number: `MJ-${when}-${between(1000, 9999)}`, issueDate: when, lines: line(amount), payment: pay, force: true }));
-            if (jan?.id && old) await offset("mahsup-k-sonrasi-satis-yonu", old.id, jan.id, 30);
-          } else if (fate < 0.8) {
-            if (old) await offset("mahsup-k-sonrasi-iki-belge-k-oncesi", old.id, bought.id, 30);
+          if (fate === 0 || fate === 1) {
+            const fresh = await freshSale();
+            if (fresh?.id) await offset(fate === 0 ? "mahsup-k-sonrasi-alis-yonu-tam" : "mahsup-k-sonrasi-alis-yonu-kismi", fresh.id, bought.id, fate === 0 ? amount : Math.max(1, Math.round(amount / 2)));
+          } else if (fate === 2) {
+            const jan = await tryApi("mahsup-ocak-alis", client.post("/api/workspace/invoices", { kind: "purchase", accountId: customer, number: `MJ-${when}-${offsetSeq}`, issueDate: when, lines: line(amount), payment: pay, force: true }));
+            if (jan?.id) await offset("mahsup-k-sonrasi-satis-yonu", old.id, jan.id, Math.max(1, Math.round(amount / 2)));
+          } else if (fate === 3) {
+            await offset("mahsup-k-sonrasi-iki-belge-k-oncesi", old.id, bought.id, Math.max(1, Math.round(amount / 2)));
           } else {
-            const fresh = await tryApi("mahsup-ocak-satis", client.post("/api/workspace/invoices", { kind: "sale", accountId: customer, issueDate: when, lines: line(amount + 50), payment: pay, force: true }));
-            if (fresh?.id && (await offset("mahsup-silinecek", fresh.id, bought.id, take))) {
+            const fresh = await freshSale();
+            if (fresh?.id && (await offset("mahsup-silinecek", fresh.id, bought.id, amount))) {
               const list = await tryApi("mahsup-listesi", client.get(`/api/workspace/invoices/${fresh.id}/offsets`));
               const id = list?.offsets?.[0]?.id;
               if (id) await tryApi("mahsup-silindi", client.del(`/api/workspace/invoices/${fresh.id}/offsets/${id}`));
