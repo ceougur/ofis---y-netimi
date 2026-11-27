@@ -9,6 +9,8 @@
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { boot, must } from "./banka-210-ortak.mjs";
+import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
+import { readFixture, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { katalogaYaz } from "./fixtures/devir-d3-ileti-katalog.mjs";
 
 const iletiModule = await import("../server/lib/devir/iletiler.mjs").catch(() => null);
@@ -284,5 +286,64 @@ describe("D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının
     } finally {
       await b.close();
     }
+  });
+});
+
+describe("D3 tur 3 — S-KD-2 GERÇEK eski sürüm verisiyle (ders 17): v2.4.9'un GERÇEK kodunun ürettiği fikstür (surum-2.4.9-s127; kilit 31.12.2025, Excel kartları) — K = 31.12.2025", () => {
+  const NAME = "surum-2.4.9-s127";
+  const K25 = "2025-12-31";
+  let fixture;
+  let server;
+  let api;
+  before(async () => {
+    process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+    const meta = readFixture(NAME);
+    fixture = unpackFixture(NAME);
+    server = await bootVersion(CURRENT, { dataDir: fixture.dataDir, backupDir: fixture.backupDir, maxCompanies: 10, now: { time: meta.now, fixed: true }, integrityScan: false });
+    await server.app.ledger.snapshots.runPending();
+    api = await server.login();
+  });
+  after(async () => {
+    await server?.close().catch(() => {});
+    fixture?.cleanup();
+  });
+  const previewOf = async () => {
+    const started = await api.post("/api/admin/devir/preview", { company: "sirket-001", cutoff: K25 });
+    assert.equal(started.status, 200, JSON.stringify(started.data));
+    for (let i = 0; i < 1200; i += 1) {
+      const job = (await api.get(`/api/admin/devir/preview/${started.data.id}`)).data;
+      if (job.state !== "running") return job;
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    throw new Error("ön izleme bitmedi");
+  };
+
+  it("kilit K'de (31.12.2025), kural farkı ≤K maddelerde: DURDURUR 'Kural Farkı Eski Yılda Düzeltilmeli'; ilette yazan fiş tutarı = kilit 30.12.2025'e alınınca Kural Farkı Düzeltme ön izlemesinin tutarı; çare → GEÇER", { timeout: 240_000 }, async () => {
+    assert.ok(iletiModule, "D3 tur 3 yok (eski kod)");
+    const job = await previewOf();
+    assert.equal(job.state, "done", JSON.stringify(job.error));
+    const items = job.result.onDenetim.durdurur.filter(row => row.kod.startsWith("kural-farki"));
+    assert.ok(items.some(row => row.kod === "kural-farki-kilit"), job.result.onDenetim.durdurur.map(row => row.kod).join(", "));
+    const row = items.find(item => item.kod === "kural-farki-kilit");
+    cleanFields(row, row.kod);
+    assert.match(row.neOldu, /^Dönem Kilidi 31\.12\.2025 gününde; .*01\.01\.2026 tarihine, yani yeni yıla düşüyor/);
+    katalogaYaz("devir-d3-kural", "S-KD-2 GERÇEK veri: v2.4.9 fikstürü (kilit 31.12.2025, Excel kartları; 2.4.9 → 2.5.0 kural değişikliği)", row, "eski sürümün GERÇEK verisi (fikstür)");
+    const amount = row.ayrinti.eskiYil.tutarMinor;
+    assert.ok(amount > 0, "eski yılın fişi tutarı");
+    const back = await api.put("/api/admin/period-lock", { lockedUntil: "2025-12-30" });
+    assert.equal(back.status, 200, JSON.stringify(back.data));
+    await server.app.ledger.snapshots.runPending();
+    const view = (await api.get(CORRECTION)).data;
+    assert.equal(view.disabled, false, view.reason);
+    assert.equal(view.date, "2025-12-31");
+    assert.equal(view.totalMinor, amount, "ilette yazan tutar = Kural Farkı Düzeltme ön izlemesi");
+    const posted = await api.post(CORRECTION, { requestId: rid(), digest: view.digest, confirm: true });
+    assert.equal(posted.status, 200, JSON.stringify(posted.data));
+    const again = await api.put("/api/admin/period-lock", { lockedUntil: K25 });
+    assert.equal(again.status, 200, JSON.stringify(again.data));
+    await server.app.ledger.snapshots.runPending();
+    const after = await previewOf();
+    assert.deepEqual(after.result.onDenetim.durdurur.filter(item => item.kod.startsWith("kural-farki")).map(item => item.kod), [], after.result.onDenetim.durdurur.map(item => `${item.kod}: ${item.neOldu}`).join(" | "));
+    assert.equal(after.result.plan.archive.donemSonucuMinor, job.result.plan.archive.donemSonucuMinor + row.ayrinti.eskiYil.karEtkisiMinor, "eski yılın dönem sonucu fişin kâr etkisi kadar değişti");
   });
 });

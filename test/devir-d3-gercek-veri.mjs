@@ -85,6 +85,11 @@ const NOW_DAY = "2027-01-20";
 // — saat geri alınmaz). Takip adımları (evrak tahsili, kart tahsilatı / Borçta Kalsın kapanışı, şüpheli adımları, KDV mahsubu ve ödemesi) gününe göre sıralı bir AJANDADA bekler.
 const START = "2025-12-01T08:00:00+03:00";
 const LOCK_AT = "2027-01-01T00:30:00+03:00";
+// D3 TUR 3 (S-KD-3 = B + S-KD-1 = A; görev iş 7): K'den SONRA ama kilitten ÖNCE (01.01.2027 00:10) Excel'den yüklenen taksit kartları; Kayıt Tarihleri K'den önce, tam K ve K+1.
+// v2.5.0 kartın maddesini yükleme gününe (01.01.2027) yazar ve kilit K'de donar; yeni kod (S-KD-3) maddeyi Kayıt Tarihi'ne (≤K) taşır → kilitli dönemde ALT DEFTER kural farkı (120) →
+// ön denetim "Kilidi Açıp Yeniden Kilitleyin" DURDURUR (S-KD-1); çare yeni kodun API'siyle (Kilidi Aç → Yeniden Kilitle) uygulanır, sonra bütün denetimler.
+const EXCEL_AT = "2027-01-01T00:10:00+03:00";
+const excelCards = [];
 const SIMPLE = process.argv.includes("--sade");
 
 async function generate(client, { q = "", parties = PARTIES, suppliers = 40, items = 20, perMonth = 1, rich = false, server = null }) {
@@ -152,6 +157,17 @@ async function generate(client, { q = "", parties = PARTIES, suppliers = 40, ite
       // S24 = A (Ocak'ta devirden önce yazılmış bağ / karşılıksız K kilidiyle değerlendirilir; devirsiz eşi "aynı kilitle" — tasarım §3.12): ≤K veri bitince Dönem Kilidi K
       // (01.01.2027 00:30), K sonrası olaylar kilitten SONRA yazılır.
       await runAgenda(K);
+      server.clock.set(EXCEL_AT);
+      const head = ["Ad Soyad", "Toplam", "Taksit Sayısı", "İlk Vade", "Ödenen", "Kayıt Tarihi"];
+      const registered = ["2026-11-15", "2026-12-05", "2026-12-20", "2026-12-31", "2027-01-01"];
+      const rows = registered.map((day, index) => [`Excel Kartı ${index + 1}`, String(between(10, 90) * 100), String(between(2, 6)), "20.01.2027", "0", `${day.slice(8, 10)}.${day.slice(5, 7)}.${day.slice(0, 4)}`]);
+      const loaded = await tryApi("excel-kart-k-sonrasi-yukleme", client.post("/api/workspace/plans/import", { matrix: [head, ...rows], headerAt: 0, roles: { 0: "name", 1: "total", 2: "count", 3: "firstDue", 4: "paid", 5: "registered" }, fileName: "devir-kartlar.xlsx", linkRecords: false }));
+      if (loaded) {
+        for (const [index, row] of rows.entries()) {
+          const card = server.app.store.get("SELECT p.id, p.account_id AS party, p.total FROM plans p JOIN accounts a ON a.id = p.account_id WHERE a.name = ?", row[0]);
+          if (card) excelCards.push({ ...card, registered: registered[index], totalMinor: Math.round(Number(card.total) * 100) });
+        }
+      }
       server.clock.set(LOCK_AT);
       await tryApi("donem-kilidi", client.put("/api/admin/period-lock", { lockedUntil: K }));
       await server.app.ledger.snapshots.runPending();
@@ -458,6 +474,23 @@ async function preview(body) {
     await new Promise(resolve => setTimeout(resolve, 100));
   }
 }
+// D3 tur 3: Excel kartlarının S-KD-1 durması (yeni kod; çare öncesi) — DURDURUR yalnız "kural-farki-alt-defter", satırları Kayıt Tarihi ≤K olan kartların carileri (120); çare: Kilidi Aç →
+// Yeniden Kilitle (yeni kodun API'si, dondurma iş parçacığında güncel kuralla).
+if (!SIMPLE && excelCards.length) {
+  const before = await preview({ company: "sirket-001", cutoff: K, option: "borc-alacak" });
+  const stops = before.state === "done" ? before.result.onDenetim.durdurur : [];
+  const rule = stops.find(row => row.kod === "kural-farki-alt-defter");
+  const partiesOld = excelCards.filter(card => card.registered <= K).map(card => card.party).sort();
+  const partiesInRule = [...new Set((rule?.ayrinti || []).filter(row => row.hesap === "120").map(row => row.cari))].sort();
+  check(before.state === "done" && stops.map(row => row.kod).join(",") === "kural-farki-alt-defter", `001 (çare öncesi): DURDURUR yalnız S-KD-1 "Kilidi Açıp Yeniden Kilitleyin" (${stops.map(row => row.kod).join(", ")})`);
+  check(JSON.stringify(partiesInRule) === JSON.stringify(partiesOld), `001 (çare öncesi): alt defter farkının carileri = Kayıt Tarihi ≤K olan Excel kartlarının carileri (${partiesInRule.length} / ${partiesOld.length})`);
+  console.log(`# 001 (çare öncesi) S-KD-1 iletisi: ${rule?.metin || "yok"}`);
+  for (const value of ["", K]) {
+    const res = await admin.put("/api/admin/period-lock", { lockedUntil: value });
+    check(res.status === 200, `çare: Dönem Kilidi ${value || "(aç)"} → ${res.status} ${JSON.stringify(res.data).slice(0, 200)}`);
+    await server.app.ledger.snapshots.runPending();
+  }
+}
 for (const [company, label, store] of [["sirket-001", "001", () => server.app.store], [secondId, "002", null]]) {
   const a = await preview({ company, cutoff: K, option: "borc-alacak" });
   const b = await preview({ company, cutoff: K, option: "borc-alacak" });
@@ -478,6 +511,15 @@ for (const [company, label, store] of [["sirket-001", "001", () => server.app.st
   check(sameOpen, `${label}: iki seçenekte açık kalemler ve net aynı`);
   const counts = plan.newYear.budama.filter(row => row.sinif === "B").every(row => row.kOncesi + row.kSonrasi === row.toplam);
   check(counts, `${label}: B tablolarında ≤K + >K = devir öncesi`);
+  if (store && excelCards.length) {
+    // S-KD-3 = B (elle kural): Kayıt Tarihi ≤K kart → eski yılda (K bakiyesi = kart, planda açık kart); K+1 kart → yeni yılda (planda yok, K bakiyesi 0).
+    const bad = excelCards.filter(card => {
+      const cari = plan.newYear.cariler.find(row => row.cari === card.party);
+      const inPlan = plan.newYear.kartlar.find(row => row.kart === card.id);
+      return card.registered <= K ? !(cari?.kBakiyeMinor === card.totalMinor && inPlan?.kalanMinor === card.totalMinor) : Boolean(inPlan) || (cari?.kBakiyeMinor || 0) !== 0;
+    });
+    check(bad.length === 0, `${label}: Excel kartları Kayıt Tarihi'ne göre (≤K ${excelCards.filter(card => card.registered <= K).length} eski yılda, >K ${excelCards.filter(card => card.registered > K).length} yeni yılda) ${JSON.stringify(bad).slice(0, 300)}`);
+  }
   const s = plan.sayilar;
   console.log(`# ${label}: cari ${s.cariKarti} kart / ${s.cariAcilis} açılış · açık fatura satış ${s.acikFatura.satis} (${s.acikFatura.satisMinor / 100}) alış ${s.acikFatura.alis} · açık kalem ${s.acikKalem.borc} · stok ${s.stok.urun} ürün ${s.stok.degerMinor / 100} · kasa ${s.kasaMinor / 100} · Dönem Net Kârı ${plan.archive.donemSonucuMinor / 100} · hareket ≤K ${s.hareket.budanacak} >K ${s.hareket.tasinacak} · süre ${JSON.stringify(a.result.zamanlama)}`);
   if (!store) {

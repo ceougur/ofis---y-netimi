@@ -23,6 +23,15 @@ const EVRAK = "test/devir-d3-evrak.test.mjs";
 const BANKA = "test/devir-d3-banka.test.mjs";
 const OLGU = "test/devir-d3-olgu.test.mjs";
 const SUPHELI = "test/devir-d3-supheli.test.mjs";
+// D3 tur 3 testleri
+const GL = "server/lib/general-ledger.mjs";
+const REPORT = "server/lib/devir/report.mjs";
+const ROUTES = "server/routes/devir.mjs";
+const ILETI = "test/devir-d3-ileti.test.mjs";
+const KURAL = "test/devir-d3-kural.test.mjs";
+const KART = "test/devir-d3-kart-tarihi.test.mjs";
+const WA = "test/devir-d3-wa.test.mjs";
+const ACIK = "test/devir-d3-acik.test.mjs";
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 const MUTASYONLAR = [
   [1, "açık kalemin vadesi kaybolur (K+1 olur; vadesizde belge günü yerine)", PLAN, "      vade: item.vade || item.date,", "      vade: nextDay,", [ELLE, ESDEGER], /not ok \d+ - (cari satırları|.*gecikmiş)/],
@@ -56,6 +65,20 @@ const MUTASYONLAR = [
   [27, "M12: bakiyesi 0 ve açık kalemsiz hareketli cariye iki toplam satırı yazılır", PLAN, "  if (balance === 0 && !open.length) return { rows: [], open, balance, openDebt: 0, openCredit: 0, net: 0 };", "", [EVRAK], /not ok \d+ - kapanış = açılış/],
   [28, "e-Belge: Sonucu Belirsiz gönderim sayılmaz (yalnız 'processing')", READER, "(e_status = 'processing' OR ${uncertain})", "(e_status = 'processing')", [OLGU], /not ok \d+ - ön denetim \(10\.02\.2027/],
   [29, "e-Belge: numaralı gönderilmemiş belge Gönderilecekler'de sayılmaz (yalnız 'waiting')", READER, "AND ${unsent} AND NOT ${uncertain}", "AND e_status = 'waiting' AND NOT ${uncertain}", [OLGU], /not ok \d+ - ön denetim \(10\.02\.2027/],
+  // ---- D3 tur 3: üç kararın ve ileti düzeninin her biri için en az bir mutant ----
+  [30, "S-KD-1: alt defter farkı TOPLAMDAN aranır (cari başına değil)", READER, "      altDefter: plan.excluded.length,", "      altDefter: Math.abs(plan.excluded.reduce((sum, row) => sum + row.minor, 0)),", [KURAL], /not ok \d+ - aynı caride 120/],
+  [31, "S-KD-1: alt defter farkının çaresi söylenmez (Dönem Kilidi yerine Kural Farkı Düzeltme Fişi'ne yönlendirir)", PRE, "      nereye: DEVIR_TARGETS.donemKilidi, ayrinti: rows,", "      nereye: DEVIR_TARGETS.kuralFarki, ayrinti: rows,", [KURAL], /not ok \d+ - aynı caride 120/],
+  [32, "S-KD-2: kilidin K'de olduğu görülmez (fiş yeni yıla düşerken genel S-3 iletisi)", PRE, "    if (K && rule.fisTarihi && rule.fisTarihi > K && rule.kOncesiFark) {", "    if (false) {", [KURAL], /not ok \d+ - kilit = 31\.12\.2026: DURDURUR/],
+  [33, "S-KD-2: yeni yıla yazılmış düzeltme fişi görülmez (devir yanlış GEÇER)", READER, "    const newYearVouchers = kOncesiFark ? posted.active.filter(voucher => voucher.date > K) : [];", "    const newYearVouchers = [];", [KURAL], /not ok \d+ - kilit = 31\.12\.2026 iken fiş YENİ YILA/],
+  [34, "S-KD-2: iletide yanlış fiş tutarı", PRE, "tutarı ${tlText(old.tutarMinor)})", "tutarı ${tlText(old.tutarMinor * 2)})", [KURAL], /not ok \d+ - kilit = 31\.12\.2026: DURDURUR/],
+  [35, "S-KD-3: defter maddesi Kayıt Tarihi yerine yükleme anında (tur 2 / v2.5.0 hâli)", GL, "      post(`plan:${plan.id}`, plan.date, \"Taksit kartı açılışı (Excel / tablo)\", \"Açılış alacağı (yüklenen taksit kartı)\", control, OPENING_GL, roundMoney(", "      post(`plan:${plan.id}`, localDayOf(plan.importedAt) || plan.date, \"Taksit kartı açılışı (Excel / tablo)\", \"Açılış alacağı (yüklenen taksit kartı)\", control, OPENING_GL, roundMoney(", [KART], /not ok \d+ - (defter maddesi Kayıt Tarihi|plan \(K = 31)/],
+  [36, "ileti düzeni: ilk durdurmada kesilir (bütün nedenler listelenmez)", PRE, "  const block = spec => stop.push(devirIletisi({ ...spec, seviye: \"durdurur\" }));", "  const block = spec => (stop.length ? 0 : stop.push(devirIletisi({ ...spec, seviye: \"durdurur\" })));", [ILETI], /not ok \d+ - \(a\) her DURDURUR nedeni/],
+  [37, "ileti düzeni: e-Belge örneğinde yanlış tutar (KDV'siz)", READER, "CAST(ROUND(try_payable * 100) AS INTEGER) AS tutarMinor", "CAST(ROUND(net_total * 100) AS INTEGER) AS tutarMinor", [ILETI], /not ok \d+ - \(a\) her DURDURUR nedeni/],
+  [38, "ileti düzeni: uyarı DURDURUR sayılır (WhatsApp)", PRE, "    notice({\n      kod: \"whatsapp-gonderim\"", "    block({\n      kod: \"whatsapp-gonderim\"", [WA], /not ok \d+ - 001: UYARIR/],
+  [39, "ileti düzeni: plan sorunu yardımcıyı atlar (ham iç kodlu metin)", PRE, "  for (const problem of [...readProblems, ...(plan?.sorunlar || [])]) stop.push(problemIletisi(problem, { names, K }));", "  for (const problem of [...readProblems, ...(plan?.sorunlar || [])]) stop.push({ kod: `plan-${problem.kod}`, seviye: \"durdurur\", baslik: \"Devir Hesabı Tutmuyor\", git: DEVIR_TARGETS.devirRaporu, metin: problem.kod });", [ILETI], /not ok \d+ - (\(a\) her DURDURUR nedeni|preflight\.mjs: stop)/],
+  [40, "Devir Raporu: uyarılar 'Devri Durduran Nedenler' başlığına karışır", REPORT, "  reasons(\"uyarilar\", \"Uyarılar\", preflight?.uyarir || [], \"Uyarı yok.\");", "  reasons(\"uyarilar\", \"Devri Durduran Nedenler\", preflight?.uyarir || [], \"Uyarı yok.\");", [ILETI], /not ok \d+ - \(e\) Devir Raporu/],
+  [41, "ön izleme ucu: beklenmeyen hatanın HAM iletisi yanıta girer", ROUTES, "        entry.error = { status: error.status || 500, code: ileti.kod, message: ileti.metin, ileti };", "        entry.error = { status: error.status || 500, code: ileti.kod, message: error.message, ileti };", [ILETI], /not ok \d+ - (beklenmeyen hata|routes\/devir\.mjs)/],
+  [42, "WhatsApp uyarısı bitmiş / iptal edilmiş işleri de sayar", READER, "FROM wa_batches b WHERE b.state IN ('running', 'paused')`", "FROM wa_batches b WHERE b.state IN ('running', 'paused', 'done', 'canceled')`", [WA], /not ok \d+ - işler bitince/],
 ];
 
 const run = files => {
@@ -65,7 +88,7 @@ const run = files => {
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
 };
 
-const taban = run([ELLE, ESDEGER, BAG, EVRAK, BANKA, OLGU, SUPHELI]);
+const taban = run([ELLE, ESDEGER, BAG, EVRAK, BANKA, OLGU, SUPHELI, ILETI, KURAL, KART, WA, ACIK]);
 console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${taban.status})`);
 if (taban.status !== 0 || taban.fail !== 0 || !(taban.pass > 0)) throw new Error("taban testi yeşil değil — mutasyon taraması anlamsız");
 let caught = 0;
