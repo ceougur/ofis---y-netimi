@@ -1,0 +1,9 @@
+(node:10748) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+L2.ocak-mahsup {"status":200,"offset":[0,50000,0],"error":""}
+L2.ocak-alis-iptal 200
+L2.subat-mahsup {"status":200,"offset":[0,70000,0],"error":""}
+L2.mart-mahsup {"status":200,"offset":[0,40000,0],"error":""}
+L2.aylar [[0,100000,0],[0,70000,0],[0,40000,0]]
+L2.ocak-mart {"three":[0,210000,0,null],"h391":160000,"h191":0,"notes":[["KDV Mahsup Fişi","Ocak 2026, Şubat 2026, Mart 2026"]],"lines":["Ocak 2026|Ödenecek KDV|100000","Şubat 2026|Ödenecek KDV|70000","Mart 2026|Ödenecek KDV|40000"]}
+L2.fisler [["2026-01",50000,false],["2026-02",70000,false],["2026-03",40000,false]]

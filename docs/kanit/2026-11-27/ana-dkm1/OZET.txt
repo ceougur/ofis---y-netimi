@@ -1,0 +1,5 @@
+ANA OTURUM — KDV Özeti dar kontrolü ORTA-1 yeniden üretimi (27.11.2026)
+Betik: senaryo.mjs.txt (dar kontrol ajanının betiği; senaryo L2). Komut: TZ=<tz> HUKUK_LICENSE_URL=http://127.0.0.1:9 node senaryo.mjs <kod kökü> L2
+Yeni kod (ana dal; KDV Özeti birleşimi c57e2710): UTC ve İstanbul aynı — aylar Ocak 1.000 / Şubat 700 / Mart 400 Ödenecek; Ocak–Mart özeti Ödenecek 2.100; 391 = 1.600, 191 = 0; mahsup fişleri 500 / 700 / 400 (toplam 1.600).
+Eski kod (64396478, ayrı seyrek kopya): aylar 1.000 / 200 / 400; Ocak–Mart Ödenecek 1.600 = 391.
+Sonuç: GERİLEME yeniden üretildi (aralık toplamında azalma iki kez sayılıyor). Kural sorusu kullanıcıya (S-DKM1-1).
