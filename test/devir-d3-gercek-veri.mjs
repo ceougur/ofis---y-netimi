@@ -583,16 +583,24 @@ for (const [company, label, store] of [["sirket-001", "001", () => server.app.st
   // devirsiz eşdeğerin DIŞINDA (sayısı yazılır, rapor DENENMEYEN). K sonrası bağlar açık kaleme yönlendirilir (redirect — D4a şartı; tur 2).
   const outside = new Set([...plan.newYear.kartlar.map(row => row.cari), ...plan.newYear.supheli.map(row => row.cari)].filter(Boolean));
   console.log(`# ${label}: devirsiz eşdeğer dışında kalan cari ${outside.size} (kartlı / şüpheli); bağ listesi ${plan.newYear.baglar.length} (açık kaleme ${plan.newYear.baglar.filter(row => row.tur === "acik-kalem").length}, arşive ${plan.newYear.baglar.filter(row => row.tur === "arsiv-basvurusu").length}); evrak ${plan.newYear.evraklar.length} ${JSON.stringify(plan.sayilar.evrak)}; kart ${plan.newYear.kartlar.length}; şüpheli ${plan.newYear.supheli.length}; banka ${JSON.stringify(plan.sayilar.banka)}; vergi ${plan.newYear.vergi.length}`);
+  // D3 tur 5 — S-T4-1 = A (KULLANICI 27.11 18:1x UTC, AYNEN: "önerlerini uygula"): kilitten sonra kurulan bağın kilitli bağsız kapanışı kaydırması programın tek borç sırasında (v2.5.0'dan
+  // beri; düzeltmesi kilit paketinde) — devir planı A'yı veriyor. Bu sınıfın farkı YALNIZ imzasıyla (test/fixtures/devir-d3-esdeger.mjs kilitBagImzasi) "BEKLENEN FARK (S-T4-1)" sayacına;
+  // imzası tutmayan HER fark başarısız (ders 53 (b)).
+  const expected = [];
   for (const option of [a, c]) {
     for (const row of option.result.plan.newYear.cariler) {
       if (outside.has(row.cari)) continue;
-      for (const out of eq.compare(row.cari, row, K, days, { redirect: !SIMPLE })) {
-        compared += 1;
-        if (out.devirli !== out.devirsiz || JSON.stringify(out.kalemDevirli) !== JSON.stringify(out.kalemDevirsiz) || out.sinceDevirli !== out.sinceDevirsiz) diffs.push({ cari: row.cari, ...out });
-      }
+      const outs = eq.compare(row.cari, row, K, days, { redirect: !SIMPLE });
+      compared += outs.length;
+      const bad = outs.filter(out => out.devirli !== out.devirsiz || JSON.stringify(out.kalemDevirli) !== JSON.stringify(out.kalemDevirsiz) || out.sinceDevirli !== out.sinceDevirsiz);
+      if (!bad.length) continue;
+      const sign = eq.kilitBagImzasi(row.cari, option.result.plan, outs);
+      if (sign) expected.push({ cari: row.cari, secenek: option === a ? "borc-alacak" : "sadece-bakiye", gun: bad.length, tutarMinor: sign.tutarMinor, ornek: bad[0] });
+      else diffs.push(...bad.map(out => ({ cari: row.cari, ...out })));
     }
   }
-  check(diffs.length === 0, `${label}: devirsiz eşdeğer — ${compared} karşılaştırma (cari × gün × seçenek), fark ${diffs.length} ${JSON.stringify(diffs.slice(0, 3)).slice(0, 600)}`);
+  console.log(`# ${label}: BEKLENEN FARK (S-T4-1 = A; program düzeltmesi kilit paketinde): ${new Set(expected.map(row => row.cari)).size} cari, ${expected.reduce((sum, row) => sum + row.gun, 0)} karşılaştırma ${JSON.stringify(expected.map(row => ({ cari: row.cari, secenek: row.secenek, gun: row.gun, kayanMinor: row.tutarMinor, devirsiz: row.ornek.kalemDevirsiz, devirli: row.ornek.kalemDevirli })))}`.slice(0, 1600));
+  check(diffs.length === 0, `${label}: devirsiz eşdeğer — ${compared} karşılaştırma (cari × gün × seçenek), sınıf dışı fark ${diffs.length} (S-T4-1 sınıfı ayrı: ${expected.reduce((sum, row) => sum + row.gun, 0)}) ${JSON.stringify(diffs.slice(0, 3)).slice(0, 600)}`);
   if (!SIMPLE) {
     // D3 tur 4 (S-T2-1 = B): K sonrası mahsup ayırımı planda VAR ve carilerinin benzetim içindekileri yukarıdaki devirsiz eşdeğerde (fark 0).
     const ayirim = plan.newYear.mahsupAyirmalari || [];
