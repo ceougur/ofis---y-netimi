@@ -2720,7 +2720,7 @@ class Benzetim:
         if "borc" in c:
             # C5C (README §26.3): {{3}} / {{4}} / {{5}} GİRDİDEN (cari kâhini) — elle izliyse elle değerler; içerik gönderim anında (5.2, S-C5C-8 A)
             j_ = getattr(self, "_icerik_j", None)
-            n_, d = self.c5c_degerler(c, t, self.c5c_kapsam(j_) if j_ is not None else set())
+            n_, d = self.c5c_degerler(c, t, (self.c5c_kapsam(j_) | ({SOZ} if "M293" in self.mut else set())) if j_ is not None else set())
             if "M308" in self.mut and j_ is not None and getattr(j_, "c5c_ilk", None) is not None:
                 d = j_.c5c_ilk; n_ = d.get("neden")
             if n_ == "gecikmis_borc_yok":
