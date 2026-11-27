@@ -35,6 +35,7 @@ function fourFields(ileti, label) {
   for (const field of FIELDS) assert.ok(ileti[field] !== undefined && ileti[field] !== "", `${label}: ${field} boş`);
   assert.ok(Array.isArray(ileti.neYapmali) && ileti.neYapmali.length >= 1, `${label}: adım yok`);
   assert.ok(ileti.nereye.ekran && ileti.nereye.hedef, `${label}: nereye`);
+  assert.ok(iletiModule, "ileti yardımcısı (iletiler.mjs) yok");
   assert.deepEqual(iletiModule.iletiDenetimi(ileti), [], `${label}: yasak kalıp / boş alan`);
   for (const part of [ileti.neOldu, ileti.neden, ...ileti.neYapmali]) assert.ok(ileti.metin.includes(part.replace(/[.]$/, "")), `${label}: metin "${part}" içermiyor`);
   assert.ok(ileti.metin.includes(ileti.nereye.ekran), `${label}: metin gidilecek yeri söylemiyor`);
@@ -93,7 +94,6 @@ describe("D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlik
   });
 
   it("(a) her DURDURUR nedeni dört alanlı; sayı / belge no / tarih veri tabanıyla aynı", () => {
-    assert.ok(iletiModule, "D3 tur 3 ileti yardımcısı yok (eski kod)");
     const job = jobs[0];
     assert.equal(job.state, "done", JSON.stringify(job.error));
     const stop = job.result.onDenetim.durdurur;
@@ -123,7 +123,6 @@ describe("D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlik
   });
 
   it("(a) UYARIR maddeleri de dört alanlı; uyarılar durdururla karışmaz", () => {
-    assert.ok(iletiModule, "D3 tur 3 ileti yardımcısı yok (eski kod)");
     const warn = jobs[0].result.onDenetim.uyarir;
     assert.deepEqual(warn.map(row => row.kod), ["aralik-mahsubu", "yeniden-baslatma", "erken-devir"]);
     for (const row of warn) {
@@ -136,12 +135,10 @@ describe("D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlik
   });
 
   it("(b) iki ön izleme: nedenler ve sıraları bayt bayt aynı", () => {
-    assert.ok(iletiModule, "D3 tur 3 ileti yardımcısı yok (eski kod)");
     assert.equal(JSON.stringify(jobs[1].result.onDenetim), JSON.stringify(jobs[0].result.onDenetim));
   });
 
   it("(e) Devir Raporu: 'Devri Durduran Nedenler' ve 'Uyarılar' ayrı başlıklar; ekran = Excel = PDF aynı cümleler", async () => {
-    assert.ok(iletiModule, "D3 tur 3 ileti yardımcısı yok (eski kod)");
     const job = jobs[0];
     const rapor = job.result.rapor;
     const expect = (list, levelWord) => list.flatMap(row => [[row.baslik, `Ne Oldu: ${row.neOldu}`], [row.baslik, `${levelWord}: ${row.neden}`], [row.baslik, `Ne Yapmalı: ${row.neYapmali.map((step, index) => `(${index + 1}) ${step}`).join(" ")}`], [row.baslik, `Nereye: ${row.nereye.ekran}`]]);
@@ -178,7 +175,6 @@ describe("D3 tur 3 — (a) Defter Mutabakatı (kural kancası; ön izlemenin ayn
   after(() => ctx?.server.close());
 
   it("Defter Mutabakatı DURDURUR (120 farkı 500,00 TL; dört alan)", () => {
-    assert.ok(iletiModule, "D3 tur 3 ileti yardımcısı yok (eski kod)");
     const stop = out.onDenetim.durdurur;
     const rec = stop.find(row => row.kod === "defter-mutabakati");
     assert.ok(rec, stop.map(row => row.kod).join(", "));
@@ -192,7 +188,6 @@ describe("D3 tur 3 — (a) Defter Mutabakatı (kural kancası; ön izlemenin ayn
 
 describe("D3 tur 3 — (a) planın kendi sorunları (program tutarlı veride üretmez — OLGU düzeyinde, her sorun türü): cari adı, hesap, iki tutar", () => {
   it("her plan sorunu ve değişmez dört alanlı; tutarlar sorundaki sayılarla aynı", async () => {
-    assert.ok(iletiModule, "D3 tur 3 ileti yardımcısı yok (eski kod)");
     const { problemIletisi } = await import("../server/lib/devir/preflight.mjs");
     const names = new Map([["account-1", "Kural Müşterisi"]]);
     const cases = [
@@ -225,7 +220,6 @@ describe("D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dö
   after(() => ctx?.server.close());
 
   it("(c) temiz şirket: DURDURUR yok, yalnız uyarı (Aralık mahsubu, 001) → geçilebilir", async () => {
-    assert.ok(iletiModule, "D3 tur 3 ileti yardımcısı yok (eski kod)");
     const job = await waitPreview(ctx.api, { company: "sirket-001", cutoff: K });
     assert.deepEqual(job.result.onDenetim.durdurur, []);
     assert.deepEqual(job.result.onDenetim.uyarir.map(row => row.kod), ["aralik-mahsubu", "yeniden-baslatma"]);
@@ -235,7 +229,6 @@ describe("D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dö
   });
 
   it("ret: 31.12 olmayan tarih / bu yıl / geçersiz seçenek → 400, kod makine alanında, ileti dört alanlı", async () => {
-    assert.ok(iletiModule, "D3 tur 3 ileti yardımcısı yok (eski kod)");
     const cases = [
       [{ company: "sirket-001", cutoff: "2026-06-30" }, "DEVIR_K_31_ARALIK", /Seçilen son işlem tarihi \(30\.06\.2026\) bir yılın son günü değil/],
       [{ company: "sirket-001", cutoff: "2027-12-31" }, "DEVIR_K_GELECEK", /\(31\.12\.2027\) bu yılın ya da gelecek bir yılın sonu \(bugün 15\.03\.2027\)/],
@@ -255,7 +248,6 @@ describe("D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dö
   });
 
   it("beklenmeyen hata (okuyucunun okuduğu sütun yok — ham veri): Türkçe cümle + 'Verileriniz değişmedi.'; ham ileti yanıta girmez; veri aynı", async () => {
-    assert.ok(iletiModule, "D3 tur 3 ileti yardımcısı yok (eski kod)");
     ctx.store.exec("ALTER TABLE invoice_repeats RENAME COLUMN next_date TO sonraki_gun");
     const before = fingerprint(ctx.store);
     try {

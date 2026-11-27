@@ -64,7 +64,6 @@ describe("D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYA
   });
 
   it("001: UYARIR 'WhatsApp Gönderimi Durdurulacak' — 2 iş (1 süren, 1 duraklatılmış), 3 kişi; dört alan; kuyruk değişmedi; 002'nin işi sayılmadı", async () => {
-    assert.ok(iletiModule, "D3 tur 3 yok (eski kod)");
     const before = JSON.stringify([ctx.store.all("SELECT id, state, updated_at FROM wa_batches ORDER BY id"), ctx.store.all("SELECT id, state, updated_at FROM wa_jobs ORDER BY id")]);
     const job = await waitPreview(ctx.api, { company: "sirket-001", cutoff: K });
     assert.equal(job.state, "done", JSON.stringify(job.error));
@@ -75,6 +74,7 @@ describe("D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYA
     assert.equal(job.result.onDenetim.durdurur.some(item => item.kod === "whatsapp-gonderim"), false, "uyarı durdurur listesinde değil");
     assert.match(row.neOldu, /^2 toplu WhatsApp gönderimi bitmedi \(1 süren ve 1 duraklatılmış\); 3 kişiye ileti henüz gitmedi\.$/);
     assert.match(row.neden, /Durduruldu \(Devir\) olur ve kendiliğinden sürmez/);
+    assert.ok(iletiModule, "ileti yardımcısı (iletiler.mjs) yok");
     assert.deepEqual(iletiModule.iletiDenetimi(row), []);
     assert.equal(row.adet, 3);
     katalogaYaz("devir-d3-wa", "S-C5C-9 eki: 001'de 1 süren (2 kişi) + 1 duraklatılmış (1 kişi) toplu gönderim", row);
@@ -82,14 +82,12 @@ describe("D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYA
   });
 
   it("002: yalnız kendi işi (1 iş, 1 kişi) — öbür şirketin işi sayılmaz", async () => {
-    assert.ok(iletiModule, "D3 tur 3 yok (eski kod)");
     const job = await waitPreview(ctx.api, { company: second.id, cutoff: K });
     assert.equal(job.state, "done", JSON.stringify(job.error));
     assert.deepEqual(waOf(job).map(row => [row.ayrinti.isSayisi, row.ayrinti.suren, row.ayrinti.duraklatilmis, row.ayrinti.kisiSayisi]), [[1, 1, 0, 1]]);
   });
 
   it("işler bitince / iptal edilince uyarı YOK; durdurur listesi uyarıyla değişmemişti", async () => {
-    assert.ok(iletiModule, "D3 tur 3 yok (eski kod)");
     const withWarning = await waitPreview(ctx.api, { company: "sirket-001", cutoff: K });
     await ctx.drain();
     const cancel = await ctx.api.post(`${URLS.batches}/${batches.paused}/cancel`, {});

@@ -61,8 +61,9 @@ async function scenario({ sales = [["A", "2026-03-10", 10000]], hook }) {
 const codes = out => out.onDenetim.durdurur.map(row => row.kod);
 const kural = out => out.onDenetim.durdurur.filter(row => row.kod.startsWith("kural-farki"));
 const cleanFields = (row, label) => {
+  assert.ok(row.neOldu && row.neden && row.neYapmali?.length && row.nereye?.ekran, `${label}: dört alan (ileti düzeni)`);
+  assert.ok(iletiModule, "ileti yardımcısı (iletiler.mjs) yok");
   assert.deepEqual(iletiModule.iletiDenetimi(row), [], `${label}: yasak kalıp / boş alan`);
-  assert.ok(row.neOldu && row.neden && row.neYapmali.length && row.nereye?.ekran, `${label}: dört alan`);
 };
 // Kancalar. "Alt defter" kancaları ESKİ kuraldır (oldRuleFreeze ile donar; canlı = alt defter, Defter Mutabakatı temiz). "Fiş" kancası YENİ kuraldır (dondurmadan SONRA açılır;
 // fazladan gider: 659 / 198 — alt defter dışı, fişle düzeltilir).
@@ -89,7 +90,7 @@ const HOOKS = {
 
 describe("D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter farkı (cari / alt hesap başına; toplamı 0 olsa da) devri DURDURUR; Kilidi Aç → Yeniden Kilitle ile geçer", () => {
   it("aynı caride 120 −4.000 / 128 +4.000 (toplam 0): DURDURUR, ileti iki satırı ve çareyi söyler; Kilidi Aç → Yeniden Kilitle (gerçek API) → GEÇER", { timeout: 120_000 }, async () => {
-    assert.ok(iletiModule && worker, "D3 tur 3 yok (eski kod)");
+    assert.ok(worker, "D3 ön izleme yok");
     const s = await scenario({ hook: HOOKS.sameParty });
     try {
       s.oldRuleFreeze(K); // eski kuralla donmuş; canlı türetme (güncel kural) alt defterle aynı
@@ -118,7 +119,7 @@ describe("D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter
   });
 
   it("iki AYRI caride +4.000 / −4.000 (hesap toplamı 0): DURDURUR (cari başına)", { timeout: 120_000 }, async () => {
-    assert.ok(iletiModule && worker, "D3 tur 3 yok (eski kod)");
+    assert.ok(worker, "D3 ön izleme yok");
     const s = await scenario({ hook: HOOKS.twoParties });
     try {
       s.oldRuleFreeze(K);
@@ -133,7 +134,7 @@ describe("D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter
   });
 
   it("aynı cari, aynı hesap, aynı yılın iki maddesinde +4.000 / −4.000 (kilit günündeki birikim 0): kural farkı DURDURMAZ (yanlış durdurma yok)", { timeout: 120_000 }, async () => {
-    assert.ok(iletiModule && worker, "D3 tur 3 yok (eski kod)");
+    assert.ok(worker, "D3 ön izleme yok");
     const s = await scenario({ sales: [["A", "2026-03-10", 10000], ["A", "2026-06-10", 2000]], hook: HOOKS.sameYear });
     try {
       s.oldRuleFreeze(K);
@@ -145,7 +146,7 @@ describe("D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter
   });
 
   it("fark hiç yokken (kilit 31.12.2026, kanca yok): kural farkı DURDURMAZ", { timeout: 120_000 }, async () => {
-    assert.ok(iletiModule && worker, "D3 tur 3 yok (eski kod)");
+    assert.ok(worker, "D3 ön izleme yok");
     const s = await scenario({ hook: HOOKS.sameParty });
     try {
       await s.lock(K);
@@ -161,7 +162,7 @@ describe("D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter
 describe("D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir", () => {
   const profit = out => out.plan.archive.donemSonucuMinor;
   it("kilit = 31.12.2026: DURDURUR (fiş 01.01.2027'ye düşüyor); ileti fiş tutarını (3.000,00 TL) ve kâr etkisini söyler; çare (kilit 30.12 → fiş 31.12 → kilit 31.12) → GEÇER, kâr 10.000 → 7.000", { timeout: 120_000 }, async () => {
-    assert.ok(iletiModule && worker, "D3 tur 3 yok (eski kod)");
+    assert.ok(worker, "D3 ön izleme yok");
     const s = await scenario({ hook: HOOKS.expense });
     try {
       await s.lock(K);
@@ -198,7 +199,7 @@ describe("D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının
   });
 
   it("kilit = 31.12.2026 iken fiş YENİ YILA yazılmış (01.01.2027): DURDURUR; Ters Kaydet → kilit 30.12 → fiş 31.12 → kilit 31.12 → GEÇER, kâr 7.000", { timeout: 120_000 }, async () => {
-    assert.ok(iletiModule && worker, "D3 tur 3 yok (eski kod)");
+    assert.ok(worker, "D3 ön izleme yok");
     const s = await scenario({ hook: HOOKS.expense });
     try {
       await s.lock(K);
@@ -229,7 +230,7 @@ describe("D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının
   });
 
   it("kilit K'den ÖNCE (30.06.2026): S-3 iletisi (fiş 01.07.2026, eski yılda) — S-KD-2 değil; fiş yazılınca GEÇER, kâr 7.000", { timeout: 120_000 }, async () => {
-    assert.ok(iletiModule && worker, "D3 tur 3 yok (eski kod)");
+    assert.ok(worker, "D3 ön izleme yok");
     const s = await scenario({ hook: HOOKS.expense });
     try {
       await s.lock("2026-06-30");
@@ -251,7 +252,7 @@ describe("D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının
   });
 
   it("kilit hiç yok: kural farkı tanımsız — DURDURMAZ; kâr canlı türetmeden 7.000", { timeout: 120_000 }, async () => {
-    assert.ok(iletiModule && worker, "D3 tur 3 yok (eski kod)");
+    assert.ok(worker, "D3 ön izleme yok");
     const s = await scenario({ hook: HOOKS.expense });
     try {
       s.rule.on = true;
@@ -264,7 +265,7 @@ describe("D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının
   });
 
   it("kilit K'yi AŞIYOR (15.01.2027), fark ≤K maddede: DURDURUR (fiş 16.01.2027); fark YALNIZ K'den sonraki maddedeyse S-3 genel iletisi", { timeout: 120_000 }, async () => {
-    assert.ok(iletiModule && worker, "D3 tur 3 yok (eski kod)");
+    assert.ok(worker, "D3 ön izleme yok");
     const a = await scenario({ hook: HOOKS.expense });
     try {
       await a.lock("2027-01-15");
@@ -319,7 +320,6 @@ describe("D3 tur 3 — S-KD-2 GERÇEK eski sürüm verisiyle (ders 17): v2.4.9'u
   };
 
   it("kilit K'de (31.12.2025), kural farkı ≤K maddelerde: DURDURUR 'Kural Farkı Eski Yılda Düzeltilmeli'; ilette yazan fiş tutarı = kilit 30.12.2025'e alınınca Kural Farkı Düzeltme ön izlemesinin tutarı; çare → GEÇER", { timeout: 240_000 }, async () => {
-    assert.ok(iletiModule, "D3 tur 3 yok (eski kod)");
     const job = await previewOf();
     assert.equal(job.state, "done", JSON.stringify(job.error));
     const items = job.result.onDenetim.durdurur.filter(row => row.kod.startsWith("kural-farki"));
