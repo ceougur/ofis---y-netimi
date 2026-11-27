@@ -55,8 +55,17 @@ const ms = start => Math.round((performance.now() - start) * 10) / 10;
 
 // Veri damgasına giren denetim izi türleri (D3 tur 4): YALNIZ verinin değişimini yazan iz (kayıt düzenleme / silme satır sayısını değiştirmez — izi değiştirir). Giriş (auth.*), lisans,
 // kullanıcı / rol, rapor / özet görüntüleme, WhatsApp gönderimi, mobil ve benzeri izler damgayı DEĞİŞTİRMEZ — yoksa ön izlemeden sonra bir kullanıcının girişi devri "kayıt girildi" diye durdururdu.
-const DATA_AUDIT_TYPES = ["invoice.%", "account.%", "plan.%", "cheque.%", "cash.%", "bank.%", "stock.%", "doubtful.%", "tax.%", "ledger.%", "accounting.%", "company.%", "import.%", "settings.%", "staff.%"];
-const DATA_AUDIT_SQL = `SELECT COUNT(*) AS n, COALESCE(MAX(rowid), 0) AS m FROM audit_events WHERE ${DATA_AUDIT_TYPES.map(() => "type LIKE ?").join(" OR ")}`;
+// D3 tur 5 (tur 4 DOĞRULANMADI-4; BM-T4-2 KABUL — "liste bu turda sınanır"): kaynak tarayan kalıcı test (test/devir-d3-damga-kaynak.test.mjs) programdaki HER iz türünü bu iki listeden
+// biriyle sınıflandırır — yeni bir iz türü (yeni para yazıcısı) listeye girmeden eklenirse test kırılır. Eklenen: kayıt tahsilatı (payments — para tablosu; düzeltmesi satır sayısını
+// değiştirmez) ve kayıt eşleştirmesinin tahsilat taşıması (payments.case_key).
+export const DATA_AUDIT_TYPES = Object.freeze(["invoice.%", "account.%", "plan.%", "cheque.%", "cash.%", "bank.%", "stock.%", "doubtful.%", "tax.%", "ledger.%", "accounting.%", "company.%", "import.%", "settings.%", "staff.%", "case.payment.%", "dataset.bonds.moved"]);
+// D3 tur 5: VERİ ad alanında olup veriyi DEĞİŞTİRMEYEN iz türleri — görüntüleme / dışa aktarma (fatura PDF'i, ekstre, liste Excel'i), entegratör bağlantı denemesi, ekran durumu, şirket
+// SEÇİMİ / erişim / öbür şirketin açılıp silinmesi (kayıt defteri; bu dosyanın verisi değil), içe aktarmanın ön okuması. Tur 4'te "invoice.%" / "account.%" / "company.%" önekleri bunları da
+// sayıyordu: ön izlemeden sonra bir fatura PDF'ini açmak ya da cari ekstresini indirmek devri "veri değişti" diye yanlış durdururdu (eski kodda kırmızı: test/devir-d3-damga.test.mjs).
+export const NON_DATA_AUDIT_TYPES = Object.freeze(["%.exported", "invoice.pdf", "invoice.pdf.bulk", "invoice.ubl.bulk", "invoice.integrator.tested", "invoice.restore-notice.dismissed", "import.sheet.read", "company.selected", "company.access", "company.created", "company.deleted", "settings.client.updated", "settings.office.updated"]);
+const DATA_AUDIT_SQL = `SELECT COUNT(*) AS n, COALESCE(MAX(rowid), 0) AS m FROM audit_events WHERE (${DATA_AUDIT_TYPES.map(() => "type LIKE ?").join(" OR ")}) AND NOT (${NON_DATA_AUDIT_TYPES.map(() => "type LIKE ?").join(" OR ")})`;
+/** Veri damgasının satır sayısı / en büyük rowid'iyle saydığı tablolar (yeni kayıt ve silme; düzeltmeyi iz türü karşılar). */
+export const DEVIR_DAMGA_TABLES = Object.freeze(["account_entries", "cash_entries", "stock_moves", "plan_entries", "plans", "plan_items", "invoices", "invoice_lines", "cheques", "cheque_events", "fin_events", "bank_lines", "vat_offsets", "invoice_offsets", "payments", "doubtful_receivables", "doubtful_provisions", "ledger_vouchers", "accounts", "stock_items", "bank_jobs", "pos_items"]);
 
 /**
  * Veri damgası (tasarım §3.9): okuma anındaki veri — para tablolarının satır sayısı / en büyük rowid'i, verinin değişimini yazan denetim izinin sayısı / son satırı ve dönem kilidi.
@@ -64,13 +73,13 @@ const DATA_AUDIT_SQL = `SELECT COUNT(*) AS n, COALESCE(MAX(rowid), 0) AS m FROM 
  */
 export function devirVeriSurumu(store) {
   const parts = [];
-  for (const table of ["account_entries", "cash_entries", "stock_moves", "plan_entries", "plans", "plan_items", "invoices", "invoice_lines", "cheques", "cheque_events", "fin_events", "bank_lines", "vat_offsets", "invoice_offsets", "payments", "doubtful_receivables", "doubtful_provisions", "ledger_vouchers", "accounts", "stock_items", "bank_jobs", "pos_items"]) {
+  for (const table of DEVIR_DAMGA_TABLES) {
     if (!has(store, table)) continue;
     const row = store.get(`SELECT COUNT(*) AS n, COALESCE(MAX(rowid), 0) AS m FROM ${table}`);
     parts.push(`${table}:${row.n}:${row.m}`);
   }
   if (has(store, "audit_events")) {
-    const row = store.get(DATA_AUDIT_SQL, ...DATA_AUDIT_TYPES);
+    const row = store.get(DATA_AUDIT_SQL, ...DATA_AUDIT_TYPES, ...NON_DATA_AUDIT_TYPES);
     parts.push(`iz:${row.n}:${row.m}`);
   }
   parts.push(`lock:${store.get("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")?.value || ""}`);
