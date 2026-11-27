@@ -399,6 +399,47 @@ EK İZİN (YALNIZ S-KD-3 (ii) çıkarsa): defter türetmesinde Excel'den / tablo
 Ek olarak raporda: İLETİ KATALOĞU'nun yolu ve neden sayısı; durdurma / hata yolları tarama tablosu (yol → yardımcıdan geçiyor mu); S-KD-3 ölçümünün sonucu ((i) mi (ii) mi; v2.5.0 gerçek koduyla); tur 2'nin açık listesinin madde madde SON durumu; plan biçiminde tur 2'ye göre DEĞİŞEN alanlar (sürücü ajanı ve D4a için); D4 / D5'in bu yardımcıyı nasıl kullanacağı (kısa).
 """
 
+# ---------------------------------------------------------------- DAR KONTROLLER (27.11; prensip §9 iskeleti — düzeltmenin raporu / görev metni VERİLMEZ)
+def dar(ad, n, aralik, isler, kararlar, yorumlar, ne_ara, yasak):
+    return f"""Sen DestekOfis projesinde bağımsız DAR KONTROL {n} incelemecisisin (2.5.1; eforun high); yalnız HATA ararsın, düzeltme / commit / push YAPMAZSIN, çalışma ağacının izlenen dosyalarına dokunmazsın. Yanıtın Türkçe. Kendi arka plan işin sürerken rapor vermeden BİTİRME.
+
+ÖNCE oku: `CLAUDE.md` (anayasa, test kuralı, dersler 1–55), `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md` (TAMAMI — §3 senin kuralların). OKUMA (bağımsızlık — prensip §3): {yasak}; iş listesinin KAYIT dosyası.
+KAPSAM (DURMA KURALI — yalnız bu fark): depo {ANA} (kendi ağacında `git log --oneline -1` ile `{aralik.split('..')[1]}` ucunun geçmişte olduğunu doğrula), `git diff {aralik} -- . ':!docs'`; bu farktaki işler: {isler}
+KULLANICI KARARLARI (AYNEN):
+{kararlar}
+BAŞ MİMAR YORUMLARI (DEĞERLENDİR — karar metnine uyuyor mu; uymuyorsa ya da iki okuma çıkıyorsa raporda 'KULLANICIYA SORULMALI'):
+{yorumlar}
+{KURALLAR_KULLANICI}
+NE ARA: {ne_ara} + prensip §3 genel listesi (kararın yanlış / eksik uygulanması; değişen yardımcıyı kullanan HER çağıran — `git grep` taramasıyla, ders 10; gün / ay / yıl dönümü ve saat dilimi TZ=UTC ve TZ=Europe/Istanbul — ders 13, 22; yarıda kesilme; eski veri ve göç; iki şirket / yedek geri yükleme — ders 17; yeni testin dişi: eski kodda BEKLENEN NEDENLE kırmızı mı — ders 7, 38, 51; mutasyonda rastlantıyla geçen test).
+YÖNTEM: prensip §3 — her bulgu GERÇEK programda betikle zorla üretilir (`HUKUK_LICENSE_URL=http://127.0.0.1:9`; gerçek dış servis YOK), çıktıda sayı; eski kod AYRI kopyada (`git worktree add --detach /dev/shm/{ad}-eski {aralik.split('..')[0]}` — ders 23, 54; işin bitince `git worktree remove` zorlamasız); not defterin BENZERSİZ: `{SP}/{ad}/` (ders 25). Koşular `flock -s -w 3600 {SP}/olcum.lock timeout -k 5 <sn> <komut>`; önce `cat /proc/loadavg`, 4'ün üstündeyse tek seferlik bekle. `node_modules` için `ln -s {ANA}/node_modules node_modules` (`npm ci` YOK); tarayıcı `PLAYWRIGHT_BROWSERS_PATH={SP}/pw-1194`. Tam `npm test` YOK. `pkill` / `killall` / joker `rm` YOK; yalnız kendi tam yolun silinir (ders 36). GIT_DIR / GIT_WORK_TREE VERME (ders 54). Disk 5 GB'ın altına düşmez.
+RAPOR (son iletin): her bulgu için sınıf (YÜKSEK / ORTA / DÜŞÜK), dosya:satır, betik yolu + çıktı (sayılarla), kök neden, eski kodda durum (gerileme mi, önceden var mı), en küçük düzeltme önerisi; para / kapama / 'kime kaç kez' kuralı gerekiyorsa 'KULLANICIYA SORULMALI' (iki seçenek + öneri + sayılar; uç durumsa 'Uç durum böyle kalsın (BİLİNEN SINIR)'); sonra DOĞRULANMADI ve DENENMEYEN; 'SONRAKİ SÜRÜME' (programı / kullanıcıyı etkilemeyenler — 20.11 kuralı). Bulgu yoksa açıkça 'YÜKSEK / ORTA YOK'. Okuduğun dosyaların listesi (bağımsızlık denetimi için).
+"""
+
+DK_D4ON = dar("dk-d4on", "D4-ÖN", "64396478..fce0e31f",
+ "devir yedeğinin son adına taşınmasına Windows'ta yeniden deneme; belge temizliğinin devir arşivlerinin başvurularını görmesi; D2 tasarımındaki iki yorum tutarsızlığı; bunların testleri ve mutasyon betiği.",
+ """- 2.5.1 plan taslağı (kullanıcı 27.11 AYNEN: "önerilerini uygula açık sorularında"; kapsam kararı "tüm işler bu sürümde yapılsın") §1 'D4 ön koşulları [H] (D4'ten ÖNCE, ayrı küçük paket)': "Windows'ta devir yedeğinin son adına taşınmasına yeniden deneme + Windows'ta zorla üretilen kırmızı (26.11 CI kırmızısı; ders 18, 48). Belge temizliğinin arşivin başvurularını görmesi (G8; yoksa yeni yılda silinen belge arşivden de gider). D2 tasarım §12'deki iki yorum tutarsızlığı."
+- Devir planı `docs/devir/DEVIR-PLANI.md` G8 (oku: yalnız G8 ve §0 / §1).""",
+ """- (1) Arşivin kendi silinmiş belge kaydında çalışma yılının kuralı: 30 günü geçmemiş silinmiş kayıt dosyayı tutar, geçmiş olan tutmaz.
+- (2) Taşımada eşzamanlı yeniden deneme (en kötü ~3,3 sn olay döngüsü; yedek bakım kipinde alınır) — kabul edildi; D4b tasarımında yeniden bakılacak.
+- (3) Windows'ta gerçek ön koşullu koşu CI'de okunacak (ders 18) — senin Linux koşun Windows'u kanıtlamaz; Windows'a özgü kuşkuyu DOĞRULANMADI başlığında yaz.""",
+ "yeniden denemenin sınırı ve sonunda ne olduğu (son hata yutuluyor mu, yarım kopya kalıyor mu, kaynak / hedef ikisi birden kayboluyor mu); yeniden denemenin yanlış hata kodlarında da denemesi; taşıma sırasında açık tutamak (ders 48 — 'açmayı denedi → sonra dosya değişti' sırası); belge temizliğinin arşiv başvurusunu görmediği yollar (iki arşiv, arşivi silinmiş / bozuk / kilitli şirket, aynı belge iki yılda, 30 gün sınırı ±1 gün, saat dilimi); temizlik yanlışlıkla HİÇ silmiyor mu (yeni yılda gereksiz büyüme); şema kapısı testinin değişen beklentisi gerçekten haklı mı (ders 10: ortak katman); iki yorum değişikliğinin kodla uyumu.",
+ "`docs/devir/2.5.1-DEVAM/d4on-*` (düzeltme ajanının görev metni ve raporu)")
+
+DK_M1 = dar("dk-m1", "M1", "64396478..f2b3b668",
+ "KDV Özeti (Beyanname Hazırlığı): 'Önceki Dönemden Devreden KDV' satırı, ödenecek / sonraki döneme devreden tutarın mahsup fişi formülüyle hesabı, mahsup fişi kesilmemiş aylarda ZİNCİRLİ devreden ve notlar ('Mahsup Edilmemiş Ay', 'Zincirle Uyuşmayan Mahsup Fişi'), adlar; beklentisi değişen testler / ekran senaryoları ve iki yeni ekran senaryosu.",
+ """- S261 (2.5.0 mali müşavir ara kabulü ORTA-1; KULLANICI 22.11 19:47 UTC AYNEN: "orta bulguyu 2.5.1 de düzeltelim"): KDV Özeti (Beyanname Hazırlığı) özetinin ve tablo altının 'Ödenecek / Devreden KDV' satırı önceki aydan devreden KDV'yi görmüyor; 391 / 191 satırları iadeleri düşülmüş gösteriyor. Örnek: Ocak alış KDV 2.000 + Ocak mahsubu (sonraki aya devreden 2.000), Şubat satış KDV 1.200 → Şubat KDV Özeti 'Ödenecek KDV 1.200,00 TL' (yanlış), Şubat mahsup fişi ön izlemesi önceki aydan devreden 2.000 / sonraki aya devreden 800 / ödenecek 0 (doğru — defter ve mahsup fişi DOĞRU).
+- 2.5.1 plan taslağı §2 'M1 [H]': "'Önceki Dönemden Devreden KDV' satırı, ödenecek / sonraki döneme devreden mahsup fişindeki formülle; adlar iadelerin düşüldüğünü söylesin; tablo altı 'Net KDV' aynı."
+- S-M1-1 = B (KULLANICI 27.11 07:07 UTC AYNEN: "önerini uygula"). Soru: mahsup fişi kesilmemiş aylarda KDV Özeti'nin "Önceki Dönemden Devreden KDV"si nereden gelsin? A: defterdeki bakiyeden (mahsup ön izlemesiyle aynı; atlanan ayda zincir kopar). B (SEÇİLEN): zincirli — atlanan ay sırayla mahsup edilmiş gibi hesaplanır, özette "Mahsup Edilmemiş Ay" notu. Örnek: Eylül sonu devreden 1.960, Ekim satış KDV 400 mahsup edilmedi, Kasım satış KDV 1.000 → A: Kasım önceki 1.960 / sonraki 960; B: önceki 1.560 / sonraki 560.
+- S-M1-3 = C (KULLANICI 27.11 09:29 UTC AYNEN: "önerilerini uygula, sıkıştırma hazırlığı yap"): mahsup fişi kesildikten SONRA o aya kayıt girilmiş / değişmiş ayda raporun o ay sonucu güncel kayıtlardan, sonraki ayın 'önceki dönemden devreden'i kesilmiş fişten gelir — BİLİNEN SINIR; o aya kısa not SONRAKİ KÜÇÜK TURDA eklenecek (bu farkta YOK — eksikliği bulgu sayma).""",
+ """- (1) Zincirin tanımı: mahsup edilmiş aylarda zincir defterle (kesilmiş fişle) eşit; mahsup edilmemiş ay sırayla mahsup edilmiş gibi; kopuk zincirde not.
+- (2) Mahsup ön izlemesi / fişi / defter DEĞİŞMEZ (yalnız rapor); ön izlemenin zincire uyması ayrı karar.
+- (3) 'Önceki KDV'li ay mahsup edilmeden sonraki ay mahsup EDİLEMESİN' — şimdilik HAYIR (bugünkü uyarı kalır).
+- (4) 'Mahsup Edilmemiş Ay' notu en çok 6 ay adı + 've N ay daha'.
+- (5) S-M1-2 (kopuk zincirde fişin YÖNÜ zincirle ters): sayılar aynı; not metni yön farkını da yazacak — SONRAKİ KÜÇÜK TURDA (bu farkta YOK).
+- (6) GÖRÜNÜM (ana oturumun ekran yürüyüşü; SONRAKİ KÜÇÜK TURDA düzelecek — bilinen, bulgu sayma): tablo penceresi dar gelince tablo altındaki çok satırlı toplam bölümünde satırlar üst üste biniyor; not kartında uzun cümle kalın.""",
+ f"zincirin yıl başında / ilk kayıttan önce / dönem kilidi ve Devir Kapanışı yapılmış aylarda nereden başladığı; yıllık özet ↔ ayların toplamı ↔ ekran = PDF = Excel (alt TOPLAM satırı); iade faturalı aylar (391 / 191 adları ve tutarı); KDV'siz ay, yalnız alış ayı, ödenecek ve devreden yön değişimi; mahsup fişi geri alınmış ay; sonraki yıl Ocak'ında Aralık'tan gelen devreden (yıl dönümü, iki saat dilimi); iki şirket; Muhasebe rolüyle açılış (yetki); hız (100 bin satırda yıllık özet — değişiklikten önce de ~2,5 sn; kötüleşme var mı: aynı veri kopyasıyla önce / sonra, `flock -x -w 1800 {SP}/olcum.lock` özel kilit, alamazsan 'ÖLÇÜLEMEDİ'); mahsup ön izlemesinin GERÇEKTEN değişmediği; beklentisi değiştirilen eski testlerin her değişikliği karara dayanıyor mu (ders 28, 40).",
+ "`docs/devir/2.5.1-DEVAM/m1-*`, `m1t2-*` (düzeltme ajanlarının görev metinleri ve raporları)")
+
 # ---------------------------------------------------------------- DEVİR SÜRÜCÜSÜ (27.11; kâhin ↔ D3 planı karşılaştırması — sürücü bakımı)
 SUR = f"""Sen DestekOfis projesinde 2.5.1'in DEVİR SÜRÜCÜSÜ ajanısın (muhasebe sürücüsü bakımı: kodu görmeyen muhasebe kâhininin DEVİR senaryolarını programın DEVİR PLANI ile karşılaştırmak; eforun high). Sen KÖPRÜSÜN: ne kâhini ne programı DEĞİŞTİRİRSİN — yalnız sürücüyü (`test/bagimsiz/muhasebe-surucu/**`) yazar, farkı SINIFLAR ve raporlarsın. Program hatası bulursan DÜZELTMEZSİN (ayrı kod ajanı düzeltir); kâhin şüphesi bulursan kâhini DÜZELTMEZSİN (ayrı kâhin bakımı).
 
@@ -474,7 +515,7 @@ Tur 1'in dosyaları + taksit numarasını GÖSTEREN / YAZAN çıktı yolları (m
 Ek olarak raporda: 'anlık üretilen ↔ saklı metin' tablosu (karar 3); teslim notu için tek cümle (kullanıcı dilinde: numara değişikliği ve eski kâğıtlarla fark); komşu listesinin çıkarılış komutları.
 """
 
-for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C), ("m2", M2), ("d3t2", D3T2), ("d3t3", D3T3), ("sur", SUR), ("mi2", MI2)):
+for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C), ("m2", M2), ("d3t2", D3T2), ("d3t3", D3T3), ("sur", SUR), ("mi2", MI2), ("dk-d4on", DK_D4ON), ("dk-m1", DK_M1)):
     yol = os.path.join(out, f"{ad}-istem.txt")
     open(yol, "w", encoding="utf-8").write(metin)
     print(ad, len(metin.encode()), yol)
