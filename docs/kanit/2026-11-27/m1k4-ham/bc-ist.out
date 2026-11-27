@@ -1,0 +1,9 @@
+== C kahin-defter ist 2.06 3.54 3.70 4/164 9917
+[kanit] m1k4-kahin-defter-ist: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 40ede14 +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== C komşu ist 2.61 3.63 3.73 8/195 10105
+# tests 644
+# pass 644
+# fail 0
+# cancelled 0
+# skipped 0
+[kanit] m1k4-komsu-ist: GEÇTİ · çıkış 0 · 644/644 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 40ede14 +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4

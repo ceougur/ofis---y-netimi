@@ -1,0 +1,7 @@
+== yeni kod 3.63 4.11 4.15 8/208 18832
+UTC: çıkış 0 · tests 67 · pass 67 · fail 0 · cancelled 0 · 'ESDEGERLIK BOZULDU' 0
+Europe/Istanbul: çıkış 0 · tests 67 · pass 67 · fail 0 · cancelled 0 · 'ESDEGERLIK BOZULDU' 0
+== diş: Y1 (güncel değil ayında fişin devredeni taşınır) uygulanmış kopya 4.28 4.23 4.19 9/205 19147
+UTC: çıkış 1 · tests 67 · pass 52 · fail 15 · cancelled 0 · 'ESDEGERLIK BOZULDU' 0
+== diş ayrıntı (Y1 kopyası, kdv-ozeti-yalniz391-251, spec): rapor yanıtları
+     14 : 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}  (değişmez denetimi vatView içinde hata fırlattı; Y1'in kendi sayı farkı 500 üretmez)

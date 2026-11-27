@@ -1,0 +1,22 @@
+== B ön izleme 3.85 3.37 3.49 6/255 6313
+taban UTC çıkış 0 · 54 satır
+taban UTC karma çıkış 0 · 6 satır
+yeni UTC çıkış 0 · 54 satır
+yeni UTC karma çıkış 0 · 6 satır
+UTC: ön izleme / fiş satırı taban 26 · yeni 26 · BİREBİR EVET
+  rapor satırlarında fark: 0 — 
+UTC karma: fiş satırı taban 3 · yeni 3 · BİREBİR EVET
+taban Europe/Istanbul çıkış 0 · 54 satır
+taban Europe/Istanbul karma çıkış 0 · 6 satır
+yeni Europe/Istanbul çıkış 0 · 54 satır
+yeni Europe/Istanbul karma çıkış 0 · 6 satır
+Europe/Istanbul: ön izleme / fiş satırı taban 26 · yeni 26 · BİREBİR EVET
+  rapor satırlarında fark: 0 — 
+Europe/Istanbul karma: fiş satırı taban 3 · yeni 3 · BİREBİR EVET
+== B yalnız 391 3.85 3.42 3.50 2/255 6731
+taban UTC çıkış 0 · 5 satır
+yeni UTC çıkış 0 · 5 satır
+UTC yalnız 391: fiş satırı taban 2 · yeni 2 · BİREBİR EVET
+taban Europe/Istanbul çıkış 0 · 5 satır
+yeni Europe/Istanbul çıkış 0 · 5 satır
+Europe/Istanbul yalnız 391: fiş satırı taban 2 · yeni 2 · BİREBİR EVET
