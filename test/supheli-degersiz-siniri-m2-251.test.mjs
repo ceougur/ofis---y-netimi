@@ -17,7 +17,14 @@ import { after, before, describe, it } from "node:test";
 import { ADMIN_PASSWORD, loginAdmin, startTestServer } from "./helpers.mjs";
 import { apiOf, integrityOf, must } from "./banka-210-ortak.mjs";
 import { M2_NOW, M2_TODAY, m2Base, m2Classes, m2Deg, runM2Classes } from "./fixtures/m2-degersiz-senaryo.mjs";
-import { doubtfulProblems, ledgerBalanceMinor } from "../server/lib/bank/doubtful.mjs";
+import * as doubtfulLib from "../server/lib/bank/doubtful.mjs";
+
+// Ad alanıyla içe aktarım: eski kodda (taban) olmayan yardımcı yalnız onu kullanan testi kırar, dosyanın yüklenmesini değil (ders 38 — kırmızının nedeni okunur).
+const { doubtfulProblems } = doubtfulLib;
+const ledgerBalanceMinor = (store, party) => {
+  if (typeof doubtfulLib.ledgerBalanceMinor !== "function") throw new Error("ledgerBalanceMinor yok (değişiklik öncesi kod)");
+  return doubtfulLib.ledgerBalanceMinor(store, party);
+};
 
 const OK = 200;
 const EXCEEDS = [400, "doubtful-writeoff-exceeds"];
