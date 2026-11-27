@@ -100,3 +100,110 @@ Testler: `test/mi2-grup-ozeti-251.test.mjs` (13): elle senaryo, dönemler, ödem
 seçeneği × her grup / alt grup satırı = o süzgeçteki Liste), rapor eşdeğerliği (3 dönem), karşılıksız çek, dönem sınırları (ay / yıl başı, hafta, artık yıl),
 bitiş günü dahil / ertesi gün hariç (bellek içi küçük veri tabanı — program ileri tarihli hareketi zaten reddediyor: integrity "İleri tarihli hareket"),
 PDF / Excel, yetki. Ekran: `test/e2e/senaryo-mi2-251.mjs` (23 denetim).
+
+## 3. SON RAPOR
+
+### Gözlenebilir davranış değişiklikleri (önce → sonra)
+1. **Cari Listesi, Taksit sütunu** (Mİ-1): "13.10.2026 · 45 gün gecikti" → "13.10.2026 · 45 gün gecikti (2. taksit)". Numara, gün sayısının ait olduğu taksitin KENDİ
+   kartındaki sırası; gecikme yoksa ("sıradaki taksit") ek yok. 1. taksiti silinmiş kartta "(1. taksit)".
+2. **Taksit kartı penceresi** (Mİ-1 karar (c)): taksit numarası boşluksuz 1..n (vade sırası). 1. taksiti silinmiş kart "2., 3." → "1., 2."; vadesi öne alınan 3. taksit
+   "3., 1., 2." → "1., 2., 3.". Aynı numara satır düğmelerinin adında, "N. taksiti düzelt" başlığında, tahsilat formunun "sıradaki N. taksit" metninde, "Hangi Taksite"
+   seçeneklerinde, Taksiti Sil onayında, hareket satırındaki "· N. taksit"te ve 409 iletisinde ("Seçilen 1. taksit ödendi"). Silme / vade değişikliği / öne ekleme
+   olmayan kartta numara DEĞİŞMEZ.
+3. **Cari ekranında "Liste | Grup Özeti" geçişi** (Mİ-2). Grup Özeti: firmanın her grubu bir satır (boş grup dahil), ▸ ile alt grup kırılımı ("Alt Grupsuz" dahil),
+   "Grupsuz", TOPLAM; sütunlar Cari, Bakiye, Taksitlerden Kalan, Gecikmiş Borç, Geciken Taksit, Tahsilat, Nakit, POS, Havale / EFT, Çek, Senet (+ değer varsa Diğer
+   ve Önceden Ödenen (Açılış)). Satıra tıkla / Enter → Liste o gruba süzülür. PDF / Yazdır / Excel ekranla aynı (alt TOPLAM satırı). Dönemsiz açılırsa dönem "Bugün".
+   Ekran senaryosu: A Grubu Tahsilat 600 = Nakit 100 + POS 200 + Havale / EFT 300; B Grubu 900 = Çek 400 + Senet 500; TOPLAM 1.500.
+4. **Liste'de dönem seçici** (Tahsilat Dönemi: Yok / Bugün / Dün / Bu Hafta / Bu Ay / Tarih Aralığı) + "Bu Dönemde Ödeme Yapanlar"; dönem seçilince "Tahsilat" kartı
+   (tutar · dönem · N cari) ve "Tahsilat" sütunu (toplam + yol kırılımı). Dönem seçilmezse liste ve yanıtı eskisi gibi (testle).
+5. **Grup süzgecinde "Grupsuz", alt grup süzgecinde "Alt Grupsuz"** seçenekleri.
+6. "Bu Dönemde Ödeme Yapanlar" açıkken "Tümüne WhatsApp Ekstre / Mesaj" gizli, başlık kutusu yalnız ekrandaki carileri seçer (WhatsApp toplu gönderiminin "süzgeçteki
+   hepsi" çözümü bu süzgeci bilmiyor — süzgeçte görünmeyen carilere gitmesin).
+7. **Liste Excel'i:** "Geciken" sütunu HEP BOŞTU (sütun adı ile satır anahtarı "Gecikmiş Borç" uyuşmuyordu) → "Gecikmiş Borç" adıyla dolu. Dönem seçiliyse Tahsilat +
+   kırılım sütunları ve TOPLAM satırı; Liste PDF'ine Tahsilat sütunu + özet.
+
+### Değişen dosyalar
+client/assets/hof-accounts.js, client/assets/hof-plans.js (yalnız numara gösterimi), client/assets/hof-ui.css, server/lib/plans.mjs (allocate: `no`), server/routes/plans.mjs
+(next.no; 409 iletisi), server/routes/accounts.mjs, YENİ server/lib/account-collections.mjs; testler YENİ test/mi1-taksit-no-251.test.mjs, test/mi2-grup-ozeti-251.test.mjs,
+test/e2e/senaryo-mi1-251.mjs, test/e2e/senaryo-mi2-251.mjs; test/plans.test.mjs (beklenen `next`'e `no: 2` alanı; sayı aynı); belgeler docs/devir/2.5.1-DEVAM/mi-rapor.md,
+mi2-tasarim.md; kanıt docs/kanit/2026-11-27/mi-251/. Göç / saklanan veri YOK; report-center.mjs, defter, banka, WhatsApp, e-Belge, devir kodu, ci.yml, package.json DEĞİŞMEDİ.
+
+### Yeni testlerin kırmızısı (eski kod, ayrı kopya) ve yeşili
+| Test | Eski kod (t251-taban) | Yeni kod |
+|---|---|---|
+| mi1-taksit-no-251 (8) | 0/8 — "satırın taksitinin görünen numarası (no) var" (alan yok) | 8/8 UTC + İstanbul |
+| mi2-grup-ozeti-251 (13) | 2/13 (geçen: ön koşul + "dönem yokken yanıt aynı" — beklenen); 11 kırmızı: `period` yok, group-summary 404 (":id" ucuna düşüyor), yardımcı modül yok, PDF'te "Tahsilat" yok | 13/13 UTC + İstanbul |
+| e2e senaryo-mi1-251 (7) | 3/7 — satırda "(N. taksit)" yok, kartta ["2.","3."] | 7/7 |
+| e2e senaryo-mi2-251 (23) | yarıda: "Grup Özeti" düğmesi yok | 23/23 |
+
+### Kabul koşulları
+- **A. Kâhin (taban = son, iki TZ):** test:kahin-cari 107 senaryo, 25.298 denetim, 0 fark, 7 bilinen sınır — taban ve son AYNI; test:kahin-defter 187 denetim, 0 fark,
+  0 yakalanmayan mutasyon — taban ve son AYNI.
+- **B. Komşular** (`git grep` taraması, 86 dosya: cari listesi / arama / liste PDF-Excel / bulk-plan / WhatsApp seçimi / list() çağıranları + allocate / next / seq /
+  planOverdueCount okuyanlar + değişen kaynakları tarayanlar): 957/957 UTC, 957/957 İstanbul. Mİ-1 ara komşu koşusu 317/317 iki TZ.
+- **C. Mutantlar — hepsi kırmızı:** numara saklanan sıradan (3 test), tedarikçi ödemesi sayılır (7), önceden ödenen toplama girer (7), grupsuz düşer (1), alt grup üst
+  gruba katılmaz (2), dönem sınırı bir gün kayar (9), silinmiş kartın tahsilatı (1), silinmiş carininki (1), çek ↔ senet karışır (2), "ödeme yapanlar"a açılış (1).
+- **D.** Beklentisi değişen ekran senaryosu yok; yeni iki senaryo koşuldu; plans.test.mjs (alan eklendi) koşuldu, yeşil.
+
+### Hız (temiz 100 bin kopyası /dev/shm; 1.484 cari — kopyada para dışı SQL ile 12 grup × 2 alt grup, 1.272'si gruplu; 102.295 cari satırı; ÖZEL kilit)
+| Yol | Ölçüm 2 (geçerli; başta yük 0,28 taban / 0,85 yeni) |
+|---|---|
+| Liste dönemsiz Aktif, 300 | taban orta 790 ms (en çok 891, olay döngüsü en çok 826) · yeni orta 908 (1.009, 968) — +%15 → DOĞRULANMADI |
+| Liste dönemsiz Tümü, 300 | taban 770 (961) · yeni 893 (992) — +%16; Ölçüm 1'de 735 → 766 (+%4) |
+| Liste dönemli Bugün / Bu Ay / Yıl + Ödeme Yapanlar | 809 / 888 / 916 ms (en çok 921 / 1.326 / 984; döngü en çok 1.319) — ≤ 2 sn ✔ |
+| Grup Özeti Bugün / Bu Ay / Yıl (Tümü) | 1.049 / 926 / 925 ms (en çok 1.169 / 1.012 / 1.199) — ≤ 2 sn ✔ |
+| Grup Özeti Excel (Bu Ay) | orta 1.849, en çok 2.154 ms — her dışa aktarım Değişiklik Geçmişi'ne yazdığından önbellek her çağrıda soğuk (mevcut Liste dışa aktarımlarıyla aynı düzen) |
+Ölçüm 1'de "Aktif" Excel'in yazdığı denetim satırından sonra soğuk ölçüldü (1.659 ms) → GEÇERSİZ, düzen değiştirildi. Aynı süreçte ABBA A/B ölçümü (betik-olc-mi-ab)
+ÖZEL kilidi 30 dk'da alamadı (başka işlerin tam testleri) → ÖLÇÜLEMEDİ.
+
+### KULLANICIYA SORULMALI
+- **S-Mİ1-1 (müşteriye giden numaralar):** taksit makbuzu PDF'i, taksit kartı PDF'i / Yazdır, Taksitler listesi ekranı + PDF'i ("veliye verilebilir"), cari ekstresi ve
+  WhatsApp ekstresi ("Taksit Tahsilatı · N. taksit") SAKLANAN sırayı yazıyor; dokunulmadı. Silinmiş / vadesi değiştirilmiş / öne eklenmiş taksitli kartta ekran "1." derken
+  makbuz "2. taksit" diyebilir. A) bunlar da görünen (boşluksuz) numaraya geçsin (önceden verilmiş kâğıttakiyle farklı olabilir); B) müşteriye gidenler saklanan numarada
+  kalsın; C) uç durum böyle kalsın (BİLİNEN SINIR). ÖNERİ: A.
+- **S-Mİ2-1 (açılış Tahsilat'a girsin mi):** görev metni (c) "önceden ödenen AYRI, toplamına KARIŞMAZ" → uygulandı (ayrı sütun). Ancak 'Cari Bazında Tahsilat' raporunun
+  Toplam'ı ve kalıcı karar (03.10.2026 "Tahsilat raporlarında toplam Excel'den gelen açılışı DAHİL eder") açılışı katıyor → rapor Toplam'ı ile Grup Özeti Tahsilat'ı
+  açılış kadar farklı (testte `Tahsilat + Önceden Ödenen = rapor Toplam`). A) böyle kalsın; B) Tahsilat açılışı da katsın. ÖNERİ: A (yükleme günü "Bugün"e devasa tutar
+  yazmasın; "kasaya giriş" sorusuna gerçek para).
+- **S-Mİ2-2 (karşılıksız çek):** rapor da bu ekran da alınan çeki dönem tahsilatında tutar, karşılıksız çıkınca düşmez. A) raporla aynı kalsın; B) düşsün (rapor da birlikte
+  değişmeli). ÖNERİ: A şimdilik; B istenirse Rapor Merkezi turunda ikisi birlikte.
+- **S-Mİ2-3 ("Diğer"):** rapor POS Komisyon İadesi'ni ve tedarikçiden "Kredi Kartına İade"yi tahsilat sayıyor; bu ekran onları "Diğer"de gösteriyor. A) böyle;
+  B) hiç sayılmasın (rapor da değişmeli); C) uç durum böyle kalsın (BİLİNEN SINIR). ÖNERİ: A.
+
+### BAŞ MİMAR KARARI GEREKİYOR (uygulandı, değerlendirilmeli)
+1. "Geciken Tutar" yerine Liste kartının adı "Gecikmiş Borç" (aynı sayı, iki ad olmasın); "Geciken Taksit" = satırlardaki "N geciken" toplamı.
+2. Grup Özeti dönemsiz açılırsa "Bugün".  3. Ödeme yapanlar süzgecinde toplu seçim yalnız işaretlenenler.  4. Liste Excel'inin boş "Geciken" sütunu düzeltildi.
+5. Grubu silinmiş (adı görünmeyen) cari "Grupsuz" sayılır (listede de öyle yazıyordu).  6. Tablo ekranı, zil / takvim, Taksitler listesi numaraları değişmedi (S-Mİ1-1).
+
+### SONRAKİ SÜRÜME / SONRAKİ TUR
+Rapor Merkezi kısmı (görev (d)); S-Mİ1-1'e göre öbür numara yerleri; "Tahsilat (çoktan aza)" sıralaması, "Ödeme Yapmayanlar"; dönem seçiminin hatırlanması; dışa
+aktarımın Değişiklik Geçmişi yazısının önbelleği soğutması (Excel / PDF'ten sonraki ilk okuma ~2 kat; mevcut düzen).
+
+### DOĞRULANMADI
+- Dönemsiz Liste ≤ %10 bütçesi: iki geçerli ölçüm çelişkili (+%4 ve +%15/16); ikincisinde yeni kodun DÖNEMLİ (daha çok iş yapan) yolları dönemsizden hızlı çıktı → sıra /
+  ısınma yanlılığı kuşkusu; dönemsiz yola eklenen iş birkaç koşul + satır başına `no` alanı. ABBA ölçümü ÖLÇÜLEMEDİ → ana oturum yeniden ölçmeli.
+- Windows koşusu (dosyaya dokunan yeni test yok; CI'de okunacak).
+
+### DENENMEYEN
+Excel kartının açılışının taksit numarasına etkisi; kapalı kart ("Borçta Kalsın") numara senaryosu (kural değişmedi); iki şirket; 2.000+ cari ekranda (hız 1.484 cari /
+100 bin satırda); Tarih Aralığı'nın ekrandan girişi (API'de denendi); mobil görünüm; Yazdır (PDF ile aynı adres).
+
+### BİLİNEN SINIRLAR
+Grup geçmişi tutulmuyor: carinin eski tahsilatı BUGÜNKÜ grubunda sayılır (teslim notuna). İleri tarihli tahsilat program tarafından reddediliyor; sınır davranışı bellek
+içi veriyle denendi.
+
+### CI listesine eklenecek
+test/e2e/senaryo-mi1-251.mjs, test/e2e/senaryo-mi2-251.mjs (`node test/e2e/<dosya>`; package.json'a betik eklenmedi).
+
+### Kılavuz metni önerisi (Cari)
+- **Gruba göre özet:** Cari penceresinde "Grup Özeti"ne tıklayın. Her grubun cari sayısı, bakiyesi, gecikmiş borcu ve seçtiğiniz dönemdeki tahsilatı (nakit, POS, havale /
+  EFT, çek, senet) görünür. ▸ ile alt grupları açın; bir satıra tıklayınca liste o gruba süzülür.
+- **Bugün kim ödedi:** Listede "Tahsilat Dönemi"nden Bugün'ü seçin, "Bu Dönemde Ödeme Yapanlar"ı işaretleyin; grup süzgeciyle birlikte kullanabilirsiniz.
+- **Hangi taksit gecikti:** Taksit sütununda "45 gün gecikti (2. taksit)" geciken taksitin numarasını gösterir.
+
+### Ana oturumun yeniden koşacağı komutlar (eski kod: `git worktree add --detach <yol> t251-taban`)
+- `TZ=UTC` ve `TZ=Europe/Istanbul`: `HUKUK_LICENSE_URL=http://127.0.0.1:9 node --test test/mi1-taksit-no-251.test.mjs test/mi2-grup-ozeti-251.test.mjs`
+- `PLAYWRIGHT_BROWSERS_PATH=<pw-1194> node test/e2e/senaryo-mi1-251.mjs` ve `… senaryo-mi2-251.mjs` (eski: `DEPO=<eski kök>`)
+- `npm run test:kahin-cari`, `npm run test:kahin-defter` (iki TZ)
+- mutantlar: docs/kanit/2026-11-27/mi-251/betik-mutantlar.sh.txt (+ betik-mutant.py.txt)
+- hız A/B: `flock -x <olcum.lock> node betik-olc-mi-ab.mjs.txt'nin .mjs kopyası <taban kökü> <taban veri kopyası> <yeni kökü> <yeni veri kopyası> 12`
