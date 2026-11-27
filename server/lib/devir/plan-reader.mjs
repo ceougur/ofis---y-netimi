@@ -15,6 +15,7 @@ import { bookTypeOf } from "../book-type.mjs";
 import { LEDGER_RULE_VERSION, reconcile, trialBalance } from "../general-ledger.mjs";
 import { CLOSE_RULE_WAIVE } from "../accounts.mjs";
 import { postedRuleDiffCorrections, ruleDiffCorrectionPlan, ruleDiffCorrectionYear } from "../ledger-opening.mjs";
+import { INVOICE_KINDS } from "../invoice-math.mjs";
 import { dayAfter } from "./plan.mjs";
 
 /**
@@ -194,9 +195,17 @@ function preflightFacts({ store, ledger, live, K, today, accountList }) {
     const cols = columns(store, "invoices");
     const one = (where, ...args) => ({ adet: Number(store.get(`SELECT COUNT(*) AS n FROM invoices WHERE ${where}`, ...args).n) || 0, ornek: sample(`SELECT id, number, kind, issue_date AS date FROM invoices WHERE ${where} ORDER BY issue_date, rowid`, ...args) });
     if (cols.has("e_status")) {
-      facts.eBelgeBekleyen = one("status = 'issued' AND e_status = 'waiting' AND issue_date <= ?", K);
+      // D3 tur 2 (gerçek veri tabanından; tur 1 yalnız e_status 'waiting' / 'processing' sayıyordu): Gönderilecekler'in tanımı programınkiyle AYNI (routes/invoices.mjs unsentSql:
+      // 'waiting' YA DA numara almış, gönderilebilir türde, kâğıt olmayan ve gönderilmemiş / hata almış belge); "Sonucu Belirsiz" programınki gibi (uncertainSend: e_status 'none' iken
+      // entegratör izi var — istek gitti, yanıt gelmedi) + İşleniyor ('processing'). Belirsiz olan bekleyen sayılmaz (iki kez durdurmaz). Canlı ortamda test serili gönderilmemiş
+      // belgenin Gönderilecekler'den düşülmesi (unsentSql'in canlı kolu) burada YOK — raporda DENENMEYEN.
+      const sendKinds = Object.entries(INVOICE_KINDS).filter(([, value]) => value.send).map(([key]) => `'${key}'`).join(", ");
+      const adapter = cols.has("e_adapter") ? "COALESCE(e_adapter, '') <> ''" : "0";
+      const uncertain = `(COALESCE(e_status, '') IN ('', 'none') AND ${adapter})`;
+      const unsent = `(e_status = 'waiting' OR (COALESCE(e_status, '') IN ('', 'none', 'error') AND COALESCE(profile, '') <> 'KAGIT' AND COALESCE(number, '') <> '' AND kind IN (${sendKinds})))`;
+      facts.eBelgeBekleyen = one(`status = 'issued' AND ${unsent} AND NOT ${uncertain} AND issue_date <= ?`, K);
       facts.eBelgeListedenSilinen = one("status = 'issued' AND e_status = 'withdrawn' AND issue_date <= ?", K);
-      facts.eBelgeBelirsiz = one("status = 'issued' AND e_status = 'processing' AND issue_date <= ?", K);
+      facts.eBelgeBelirsiz = one(`status = 'issued' AND (e_status = 'processing' OR ${uncertain}) AND issue_date <= ?`, K);
     }
     facts.taslakFatura = one("status = 'draft' AND issue_date <= ?", K);
   }
