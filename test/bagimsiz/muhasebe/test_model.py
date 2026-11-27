@@ -1519,6 +1519,17 @@ class BakimKD(unittest.TestCase):
         d = M.devir_degismezleri(arsiv, yeni, kayit["K"], None, kayit["id"], devirsiz=M.kilitli_kopya(kayit["yedek"], yeni.kilit))
         self.assertTrue(d["soz_hatirlatma_ayni"])
 
+    def test_KD18_590_yalniz_K_yili_degismezinin_disi(self):
+        # EK-1 §4 (6) "590 / 591 = yalnız K yılı" (README KD2): ikinci devrin arşivine K tarihli fazladan 590 satırı konunca (aktarım fişleri aynı kalır) m4 yakalar
+        m, r = self.model([o("satis_faturasi", "2026-06-01", cari="C1", M=1000, K=0), o("devir", K="2026-12-31"),
+                           o("satis_faturasi", "2027-06-01", cari="C1", M=800, K=0), o("devir", K="2027-12-31")])
+        kayit, arsiv, yeni = m.devirler[-1], m.arsivler[-1], m.canli
+        self.assertEqual(r["devirler"][-1]["degismezler"]["m4_m6_kapanis"], [])
+        arsiv.fis_ekle("2027-12-31", 3, "elle", [M.Bo("519", 10), M.Al("590", 10)])
+        d = M.devir_degismezleri(arsiv, yeni, kayit["K"], None, kayit["id"], devirsiz=M.kilitli_kopya(kayit["yedek"], yeni.kilit),
+                                 kapanis=kayit["kapanis"], acilis=kayit["acilis"])
+        self.assertTrue(any("yalnız K yılı" in x for x in d["m4_m6_kapanis"]), d["m4_m6_kapanis"])
+
     def test_KD9_devir_tabani_degismezi_disi(self):
         m, r = self.model([o("satis_faturasi", "2026-05-01", cari="C1", M=1000, K=0), o("devir", K="2026-12-31")])
         self.assertEqual(r["degismezler"]["canli"]["devir_tabani"], [])
