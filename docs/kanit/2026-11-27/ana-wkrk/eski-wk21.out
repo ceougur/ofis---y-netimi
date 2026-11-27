@@ -1,0 +1,14 @@
+KIRMIZI S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede: 1 fark; ilki S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider * [{}…] isler.T1/MK.degiskenler: elle ["Mine Bekletilen", "Deneme Ticaret Ltd. Şti.", "16.10.2026", "250,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} gü
+KIRMIZI S29-03-meta-bekletti-ikinci-denemede-tutar-dogar-net-borcla-: 1 fark; ilki S29-03-meta-bekletti-ikinci-denemede-tutar-dogar-net-borcla-sinirli * [{}…] isler.T1/MZ.degiskenler: elle ["Mert Bekleme", "Deneme Ticaret Ltd. Şti.", "30.10.2026", "200,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} günc
+KIRMIZI SW21-01-sonucu-belirsiz-yine-de-gonder-suren-soz-elle-gider-: istisna ValueError: KULLANICIYA SORULMALI S-W21-1 (README §26.4): işteki Yine de Gönder basıldığı anda Ödeme Sözü sürüyor (iş elle değil) — kodlanmadı
+KIRMIZI SW21-02-bekleyen-belirsizlik-onayli-iste-soz-asil-iste-yenid: istisna ValueError: KULLANICIYA SORULMALI S-W21-1 (README §26.4): işteki Yine de Gönder basıldığı anda Ödeme Sözü sürüyor (iş elle değil) — kodlanmadı
+KIRMIZI SW21-03-yine-de-ekle-sonradan-gelen-etiketle-atlanir-baslatm: istisna ValueError: KULLANICIYA SORULMALI S-W21-2 (b) (README §26.4): başlatmada Şüpheli + Söz birlikte; 'Yine de Ekle' iki etiketi de aşar mı — kodlanmadı
+KIRMIZI SW21-04-yine-de-gonder-basma-anindaki-iki-etiket-birlikte-as: istisna ValueError: KULLANICIYA SORULMALI S-W21-1 (README §26.4): işteki Yine de Gönder basıldığı anda Ödeme Sözü sürüyor (iş elle değil) — kodlanmadı
+KIRMIZI SW21-05-soz-icin-elle-bekleyen-ise-supheli-asil-iste-yeniden: istisna ValueError: KULLANICIYA SORULMALI S-W21-2 (README §26.4): elle seçilen kişiye elle seçildiği anda olmayan etiket geldi (supheli_alacak) — kodlanmadı
+# eski kâhinle 7 yeni / değişen senaryo: 7 KIRMIZI
+# tests 7
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
