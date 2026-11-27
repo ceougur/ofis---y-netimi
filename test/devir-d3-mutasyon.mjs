@@ -3,7 +3,7 @@
 // her seferinde TEK bilerek hata açılır, D3 testleri koşulur: çıkış ≠ 0 VE çıktıda beklenen neden (düzenli ifade) varsa YAKALANDI. Kopya dosyası her mutasyondan sonra geri yazılır.
 // Kullanım: HUKUK_LICENSE_URL=http://127.0.0.1:9 node test/devir-d3-mutasyon.mjs --kopya <git archive HEAD kopyası> [--yalniz 1,3]
 import { spawnSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 const argv = process.argv.slice(2);
@@ -38,6 +38,15 @@ const IKINCI = "test/devir-d3-ikinci.test.mjs";
 const UZMAN = "test/devir-d3-uzman.test.mjs";
 const STOK = "test/devir-d3-stok.test.mjs";
 const EVRAKSINIF = "test/devir-d3-evrak-sinif.test.mjs";
+// D3 tur 5: tabana tur 1'den beri eksik iki dosya (tur 4 SONRAKİ SÜRÜME notu) + bu turun testleri
+const UC = "test/devir-d3-uc.test.mjs";
+const ZAMAN = "test/devir-d3-zaman.test.mjs";
+const MAHSUPBORC = "test/devir-d3-mahsup-borc.test.mjs";
+const KILITBAG = "test/devir-d3-kilit-bag.test.mjs";
+const SIFIRPAY = "test/devir-d3-sifir-pay.test.mjs";
+const DAMGA = "test/devir-d3-damga.test.mjs";
+const DAMGAKAYNAK = "test/devir-d3-damga-kaynak.test.mjs";
+const TARIH = "test/devir-d3-tarih.test.mjs";
 const ILETITUM = "test/devir-d3-ileti-tum.test.mjs";
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 const MUTASYONLAR = [
@@ -101,6 +110,15 @@ const MUTASYONLAR = [
   [54, "Devir Raporu başlığı: ön izlemeyi hazırlayan yazılmaz", REPORT, "    [\"Ön İzlemeyi Hazırlayan\", preparedBy || \"Bilinmiyor\"],\n    ...(madeAt", "    [\"Ön İzlemeyi Hazırlayan\", \"Bilinmiyor\"],\n    ...(madeAt", [UZMAN], /not ok \d+ - \(6\) Devir Raporu başlığı/],
   [55, "ileti eksikleri: plan sorunlarında 'Ön İzleme'yi yeniden başlat' adımı yok (tur 3 hâli)", PRE, "  const steps = (...list) => [...list, RESTART, support];", "  const steps = (...list) => [...list, support];", [ILETITUM], /not ok \d+ - kâhin ↔ plan karşılaştırması/],
   [56, "ileti eksikleri: tutar yönsüz (eksi işaretli)", PRE, "`${accountText(row.hesap)} ${sideText(row.minor)}`", "`${accountText(row.hesap)} ${tlText(row.minor)}`", [ILETITUM, ILETI], /not ok \d+ - /],
+  // ---- D3 tur 5: bu turun her yeni kuralı / sınıfı için en az bir mutant ----
+  [57, "S-T2-1: Borç Yaz karşısı ayrılmaz (yalnız Alacak Yaz satırı belge sayılır)", READER, "(line.kind === \"debt\" || line.kind === \"credit\")", "line.kind === \"credit\"", [MAHSUPBORC], /not ok \d+ - açık kalemler \(elle\)/],
+  [58, "S-T4-1: kilitli bağsız kapanış kayar (K sonrası bağlı tahsilat K kuyruğuna girer — programın bugünkü sınırı taklit edilir)", READER, "    const own = lines.filter(line => line.date <= K);", "    const own = lines.filter(line => line.date <= K || links.some(link => link.table === \"account_entries\" && link.rowId === line.id));", [KILITBAG], /not ok \d+ - K1 plan/],
+  [59, "sıfır paylı belgeye ≤K bağ yanlış yönlenir (payın tamamı ayrılan belge K'de küçülmez; bağ belgeyi kapatır, bağsız dağılmaz)", READER, "    if (!less) return line;", "    if (!less || less >= lineMinor(line)) return line;", [SIFIRPAY], /not ok \d+ - plan \(elle\)/],
+  [60, "veri damgası: iz türü listesinden bir para yazıcısı düşer (taksit kartı — plan.%)", READER, "\"invoice.%\", \"account.%\", \"plan.%\", \"cheque.%\"", "\"invoice.%\", \"account.%\", \"cheque.%\"", [DAMGA, DAMGAKAYNAK], /not ok \d+ - (v-2|her iz türü|çakışma)/],
+  [61, "veri damgası: bu turun eklediği para yazıcısı (kayıt tahsilatı) düşer", READER, "\"staff.%\", \"case.payment.%\", \"dataset.bonds.moved\"", "\"staff.%\", \"dataset.bonds.moved\"", [DAMGA, DAMGAKAYNAK], /not ok \d+ - (v-2|her iz türü|çakışma)/],
+  [62, "veri damgası: görüntüleme izi (fatura PDF'i) yine damgaya girer (tur 4 hâli — devir sebepsiz durur)", READER, "\"%.exported\", \"invoice.pdf\", \"invoice.pdf.bulk\"", "\"%.exported\", \"invoice.pdf.bulk\"", [DAMGA], /not ok \d+ - v-1 KULLANICI/],
+  [63, "mahsup geriye dönük (K'de) uygulanmış sayılır — ayrılan pay yeni yıla taşınmaz", READER, "    const kind = old.length === 2 ? \"k-de-kapandi\" : \"yeni-yila-ayrildi\";", "    const kind = \"k-de-kapandi\";", [TARIH, MAHSUPBORC], /not ok \d+ - (o gün hazırlanan|açık kalemler)/],
+  [64, "bakiyesi 0 caride açık kalem varken de satır yazılmaz (iki yönlü kalem yutulur)", PLAN, "  if (balance === 0 && !open.length) return { rows: [], open, balance, openDebt: 0, openCredit: 0, net: 0 };", "  if (balance === 0) return { rows: [], open, balance, openDebt: 0, openCredit: 0, net: 0 };", [TARIH], /not ok \d+ - plan \(elle\): K bakiyesi 0/],
 ];
 
 const run = files => {
@@ -110,7 +128,11 @@ const run = files => {
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
 };
 
-const taban = run([ELLE, ESDEGER, BAG, EVRAK, BANKA, OLGU, SUPHELI, ILETI, KURAL, KART, WA, ACIK, MAHSUP, IKINCI, UZMAN, STOK, EVRAKSINIF, ILETITUM]);
+// D3 tur 5: tabanda D3'ün BÜTÜN test dosyaları (tur 1'den beri eksik devir-d3-uc ve devir-d3-zaman dahil) — tabanda yeşil olmayan dosyanın mutasyondaki kırmızısı anlamsızdır.
+const TABAN = [ELLE, ESDEGER, UC, ZAMAN, BAG, EVRAK, BANKA, OLGU, SUPHELI, ILETI, KURAL, KART, WA, ACIK, MAHSUP, IKINCI, UZMAN, STOK, EVRAKSINIF, ILETITUM, MAHSUPBORC, KILITBAG, SIFIRPAY, DAMGA, DAMGAKAYNAK, TARIH];
+const missing = readdirSync(path.join(COPY, "test")).filter(name => /^devir-d3-.+\.test\.mjs$/.test(name)).map(name => `test/${name}`).filter(name => !TABAN.includes(name));
+if (missing.length) throw new Error(`mutasyon tabanında olmayan D3 testi: ${missing.join(", ")} — TABAN listesine ekleyin`);
+const taban = run(TABAN);
 console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${taban.status})`);
 if (taban.status !== 0 || taban.fail !== 0 || !(taban.pass > 0)) throw new Error("taban testi yeşil değil — mutasyon taraması anlamsız");
 let caught = 0;
