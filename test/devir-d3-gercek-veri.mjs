@@ -120,8 +120,14 @@ async function generate(client, { q = "", parties = PARTIES, suppliers = 40, ite
   let passive = "";
   const agenda = [];
   let agendaSeq = 0;
+  // D3 tur 3 (ders 6 — gerçek veri t11 kök nedeni ÜRETEÇTE): saat GERİ ALINMAZ. Ocak'ta Şüpheliye Al'ınan carinin "K sonrası bağlı tahsilatı" Şüpheliye Al gününden ÖNCEKİ bir
+  // güne düşebiliyordu (tohum dizisi tur 3'ün Excel kartlarıyla kaydı); ajanda saati geri alınca kapı ileri tarihli satır görüp 500 veriyordu (v2.5.0 kapı eşdeğerliği). Geçmiş
+  // tarihli takip adımı o günün saatiyle değil, şimdiki saatle yazılır (satırın tarihi aynı — istekte açık tarih).
+  let lastClockDay = "";
   const clockTo = day => {
-    if (rich) server.clock.set(`${day}T09:00:00+03:00`);
+    if (!rich || day < lastClockDay) return;
+    lastClockDay = day;
+    server.clock.set(`${day}T09:00:00+03:00`);
   };
   // Takip adımı gününe ajandaya (boş tarih = yapılmaz; bugünden sonraysa da yapılmaz).
   const soon = (date, fn) => {
