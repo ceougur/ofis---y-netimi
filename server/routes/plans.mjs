@@ -335,7 +335,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       items,
       // ownOverdue: kartın kendi hesabıyla gecikmiş (taksit − kart tahsilatı; eski anlam) — onarım / göç karşılaştırmaları için.
       totals: { ...ledger.totals, paid: shown.paid, remaining: shown.remaining, returned: shown.returned, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0) + lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length, overdueRest: roundMoney(lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueExtras, ownOverdue: ledger.totals.overdue ?? 0 },
-      next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
+      next: next ? { id: next.id, seq: next.seq, no: next.no, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
       // S118 = B: kartın KENDİ hesabıyla sıradaki taksit (formun önerdiği tutar; ledger.next = allocate).
       ownNext: ledger.next || null,
       state,
@@ -1204,7 +1204,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (itemId) {
       const entries = entriesOf(planId).filter(entry => entry.id !== exceptId);
       const item = allocate({ total: row.total, status: row.status }, itemsOf(planId), entries, { today: today() }).items.find(candidate => candidate.id === itemId);
-      if (item && toMinor(item.remaining) <= 0) throw new HttpError(409, `Seçilen ${item.seq}. taksit ödendi (kalan ${tl(0)}); tahsilatı açık bir taksite ya da "En Eski Açık Taksite (önerilen)" seçeneğiyle yazın.`, { code: "installment-paid", planId, itemId, seq: item.seq });
+      if (item && toMinor(item.remaining) <= 0) throw new HttpError(409, `Seçilen ${item.no}. taksit ödendi (kalan ${tl(0)}); tahsilatı açık bir taksite ya da "En Eski Açık Taksite (önerilen)" seçeneğiyle yazın.`, { code: "installment-paid", planId, itemId, seq: item.seq, no: item.no });
     }
   }
   // v2.0.24 (mutabakat bulgusu): faturanın kendi kartında tahsilat eklenince/düzeltilince/silinince kartın kalanı faturanın
@@ -1802,7 +1802,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       const days = item.days;
       const state = days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
       if (state === "overdue") overdueCount += 1;
-      if (!next) next = { id: item.id, seq: item.seq, dueDate: item.dueDate, remaining, days, state };
+      if (!next) next = { id: item.id, seq: item.seq, no: item.no, dueDate: item.dueDate, remaining, days, state };
     }
     return { next, overdueCount };
   }

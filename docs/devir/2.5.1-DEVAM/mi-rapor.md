@@ -43,3 +43,38 @@ Görev metni: `docs/devir/2.5.1-DEVAM/mi-istem.txt` (ana ağaçta). Taban: etike
 21. Süzgeç birlikteliği: grup / alt grup / tür / gecikme / bakiye / arama + "Bu Dönemde Ödeme Yapanlar" — kartlar süzgeçten SONRA; Grup Özeti TOPLAM = süzgeçsiz Liste kartları.
 22. Carinin grubu değişmiş: eski tahsilatı BUGÜNKÜ grubunda (grup geçmişi yok).
 23. Silinmiş cari: listede yok, tahsilatı da Grup Özeti'nde yok (rapor ne yapıyorsa).
+
+## 1. Mİ-1 — TARAMA ve KOD
+
+Tek kaynak: `server/lib/plans.mjs` `allocate` taksitleri vade (sonra saklanan sıra) düzeninde sıralıyor (kartın penceresi de bu düzende çiziyor); her taksite
+`no` = bu düzendeki sıra (1..n, boşluksuz) eklendi; `next.no` aynı taksitten. `routes/plans.mjs` kuyruk görünümleri (`withQueue` → kart penceresi / cari kartı özeti,
+`queueBrief` → Cari Listesi) `next.no`'yu aynı taksitten taşır. Saklanan `seq` (veri tabanı) DEĞİŞMEDİ — göç yok.
+
+| # | Yer | Bugün (taban) | Ne yapıldı |
+|---|-----|---------------|------------|
+| 1 | Cari Listesi satırı, Taksit sütunu (`hof-accounts.js` renderList) | "15.10.2026 · 29 gün gecikti" (numara yok) | "… · 29 gün gecikti (2. taksit)" — `next.no`; yalnız gün < 0'da; "sıradaki taksit" satırı değişmez |
+| 2 | Cari Listesi PDF / Excel / Yazdır (`accounts.mjs` liste.pdf, export.xlsx; Yazdır = PDF) | bu satır YOK (Taksitten Kalan tutarı var) | değişmedi (karar (b): "satır varsa") |
+| 3 | Taksit kartı penceresi, taksit satırı No (`hof-plans.js` renderDetail) | saklanan `seq` ("2.", "3." — silinenden sonra boşluk; vadesi değişende "2., 1., 3.") | `item.no` (1..n) |
+| 4 | aynı pencerede satır düğmelerinin erişilebilir adı ("N. taksite tahsilat gir / düzelt / sil") | `seq` | `no` |
+| 5 | aynı pencerede hareket satırı "Tahsilat · N. taksit" | `seq` | `no` |
+| 6 | Taksit düzelt penceresi başlığı "N. taksiti düzelt" | `seq` | `no` |
+| 7 | Tahsilat formu açıklaması "sıradaki N. taksit" (kartın kendi hesabı, `ownNext`) | `seq` | `no` |
+| 8 | Tahsilat formu "Hangi Taksite" seçenekleri "N. taksit · vade · kalan" | `seq` | `no` |
+| 9 | Taksiti Sil onayı "N. taksit (…) silinecek" | `seq` | `no` |
+| 10 | Sunucu 409 iletisi "Seçilen N. taksit ödendi" (`plans.mjs` assertRoom; kart penceresinin formunda görünür) | `seq` | `no` (ayrıntıya `no` da eklendi; `seq` kaldı) |
+| 11 | Taksitler listesi ekranı "N. taksit · gün" (`hof-plans.js`:418) + Taksitler listesi PDF'i (`plans.mjs`:614 — kodda "Liste okula ya da veliye verilebilir") | `seq` | DOKUNULMADI — müşteriye gidebilen çıktı; ekranı PDF'iyle aynı kalsın diye ekran da değişmedi → KULLANICIYA SORULMALI S-Mİ1-1 |
+| 12 | Taksit kartı PDF'i / Yazdır (`lib/plan-report.mjs`:139, kart ekstresi) | `seq` | DOKUNULMADI (müşteriye verilebilir) → S-Mİ1-1 |
+| 13 | Taksit makbuzu PDF'i "N. taksit (vade …)" (`lib/plan-report.mjs`:204) | `seq` | DOKUNULMADI (müşteriye gider) → S-Mİ1-1 |
+| 14 | Cari defteri satırı "Taksit Tahsilatı · N. taksit" (`lib/accounts.mjs`:155 ← `lib/account-lines.mjs` itemSeq): cari kartı ekranı, cari ekstresi PDF'i, WhatsApp ekstresi | `seq` | DOKUNULMADI (ekstre / WhatsApp müşteriye gider; defter kodu yasak) → S-Mİ1-1 |
+| 15 | Tablo ekranı taksit bloğu (`hof-workspace.js`:81, 83, 121, 124, 1087) | `seq` | değişmedi (dosya sınırı dışı) → SONRAKİ TUR |
+| 16 | Zil / takvim / Vade Takip / nakit akışı etiketleri "N. taksit" (`plans.mjs`:1706, 1750) | `seq` | değişmedi (plan notu (d) "istenirse") → SONRAKİ TUR |
+| 17 | Rapor Merkezi (Taksit Tahsilatları, Taksit Vadeleri; `report-center.mjs`:2454, 2970) | `seq` | YASAK dosya — değişmedi |
+| 18 | WhatsApp şablonları / iletileri | numara yazmıyor (`server/lib/whatsapp` taramasında taksit numarası yok) | — |
+
+NOT: Numaralar ancak (a) taksit silinmişse, (b) taksitin vadesi başka taksitin önüne / arkasına alınmışsa, (c) "Taksit Ekle" ile vadesi öncekilerden önce taksit
+eklenmişse ayrışır; öbür kartlarda `no` = `seq` (hiçbir yerde değişiklik görünmez).
+
+Testler: `test/mi1-taksit-no-251.test.mjs` (8 senaryo: düz, silinmiş, sonradan eklenen, vadesi değişen, bağsız cari tahsilatı, iade, iki kart, gecikmesiz; her
+senaryoda listede yazan numara = kart penceresinde AYNI taksitin numarası = cari kartı özeti; kartta 1..n; 409 iletisi) + ekran `test/e2e/senaryo-mi1-251.mjs`
+(gerçek tıklama + Enter; Ayşe "(2. taksit)", Burak silinmiş "(1. taksit)" ve kartta "1.", "2.", Cem "sıradaki taksit" parantezsiz). `test/plans.test.mjs` beklentisi:
+`ledger.next`'e `no: 2` eklendi (alan eklendi; sayı değişmedi).

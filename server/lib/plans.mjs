@@ -110,7 +110,11 @@ export function allocate(plan, items, entries, { today = isoDay(new Date()), soo
   }
   const extra = Math.max(0, roundMoney(pool)); // taksitlerin üstünde kalan fazla tahsilat
   const closed = plan.status === "closed";
-  const shaped = ordered.map(item => {
+  // no (2.5.1 Mİ-1): taksitin GÖRÜNEN sıra numarası — kartın taksitleri bu sırayla (vade, sonra saklanan sıra) 1, 2, 3…, boşluksuz. Saklanan `seq` silinen
+  // taksitten sonra boşluk bırakır ('1.', '3.') ve vadesi değişen / sonradan eklenen taksitte sırayı tutmaz; ekranlar (Cari Listesi'nin "… gün gecikti (2. taksit)"
+  // eki, taksit kartı penceresi) numarayı YALNIZ buradan okur (tek kaynak). Müşteriye giden metinler (makbuz, ekstre, WhatsApp, kart / liste PDF'i) `seq`te kaldı.
+  const shaped = ordered.map((item, index) => {
+    const no = index + 1;
     const paid = roundMoney(paidByItem.get(item.id));
     const remaining = roundMoney(Math.max(0, item.amount - paid));
     const days = daysUntil(item.dueDate, today);
@@ -122,7 +126,7 @@ export function allocate(plan, items, entries, { today = isoDay(new Date()), soo
     else if (days <= soonDays) state = "upcoming";
     // ownPaid / ownRemaining (2.5.0 Ç5-B kapanış düzeltmesi, S129 = A): kartın KENDİ hesabı (kart tahsilatları) — kart ekranı `paid` / `remaining`i Tek Yükümlülük
     // Kuyruğu'ndan gösterir (routes/plans.mjs withQueue); sınır / soru / önerilen tutar (S118 = B), Mutabakat Testi ve mutabakat motoru bu alanları okur.
-    return { ...item, paid, remaining, ownPaid: paid, ownRemaining: remaining, partial: paid > EPS && remaining > EPS, days, state };
+    return { ...item, no, paid, remaining, ownPaid: paid, ownRemaining: remaining, partial: paid > EPS && remaining > EPS, days, state };
   });
   const planned = roundMoney(shaped.reduce((sum, item) => sum + item.amount, 0));
   const net = roundMoney(paidIn - paidOut);
@@ -139,7 +143,7 @@ export function allocate(plan, items, entries, { today = isoDay(new Date()), soo
   return {
     items: shaped,
     totals: { total, planned, unplanned, paidIn: roundMoney(paidIn), paidOut: roundMoney(paidOut), paid: net, remaining, ownPaid: net, ownRemaining: remaining, extra, overdue: overdueAmount, overdueCount: overdue.length },
-    next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
+    next: next ? { id: next.id, seq: next.seq, no: next.no, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
     state,
   };
 }
