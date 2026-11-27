@@ -271,8 +271,45 @@ PC5C = f"""Sen DestekOfis projesinde 2.5.1'in ÖDEME HATIRLATMA (Ç5-C) PLAN aja
 {rapor(kod=False)}
 """
 
+# ---------------------------------------------------------------- M2 kod turu (Değersiz Alacak sınırı)
+M2 = f"""Sen DestekOfis projesinde 2.5.1'in DEĞERSİZ ALACAK SINIRI KOD ajanısın (M2; eforun high). Para çekirdeğine dokunan dar bir düzeltme: 'Değersiz Alacak Yaz'ın üst sınırı, formun gösterdiği sınır ve fazla yazımı yakalayan değişmez. Bu aile 2.5.0'da iki kez gerileme verdi (ilk uygulama GERİ ALINDI) — bu yüzden kural ÖNCE kodu görmeyen kâhine yazıldı; senin kabul ölçütün kâhinin elle senaryosudur.
+
+{hazirlik(taban="t251-m2-taban", taban_ne="çalışma dalı + cari kâhini bakımı 30")}
+   Ayrıca oku (TAMAMI): karar girdisi `{ANA}/docs/devir/2.5.1-DEVAM/m2-kararlar.md` (kararlar AYNEN + baş mimar okuması + 14 senaryo sınıfı); 2.5.0'ın iki dar kontrol raporu `docs/devir/2.5.0-DEVAM/dk-ud3-rapor.md` ve `dk-ud4-rapor.md` (bulgular, örnek sayılar, betik adları — dk-ud4'ün min(...) önerisi bir ÖNERİDİR, kural değil); geri alınan uygulama `git show 7141a308` (yalnız NE YAPILMAMALI diye: sonradan gelen bağsız tahsilatta fazla yazıma izin veriyordu). İSTİSNA (bu görev için): kâhinin `test/bagimsiz/cari/senaryolar/d62-c5-m2-degersiz-siniri.json` senaryosunu ve `test/bagimsiz/cari/KARARLAR.md`'nin 'Bakım 30' bölümünü OKUYABİLİRSİN (beklenen sayılar ve kural yorumu orada); kâhinin model kodu OKUNMAZ, `test/bagimsiz/**` YAZILMAZ.
+
+## Kararlar (AYNEN metinleri karar girdisinde; özet)
+- S264 = A: Değersiz, yazıldığı günün faturaya bağlı payından ÖNCE değerlendirilir (o günün tarihiyle tam tutar).
+- S269 = A: bu sınır 'kayıt kapalı' denetiminden ÖNCE uygulanır (Değersiz Yaz ve Silinenler'den geri yükleme); düğme bu kayıtlarda görünür.
+- S268 = A: formun ipucu ve önerilen tutarı gerçek sınırı gösterir.
+- S270 = A: hiçbir sırada bir kaydın Değersiz toplamı, şüpheliye alınan tutardan kayda düşmüş tahsilatlar çıkınca kalanı aşamaz; Değersiz yazımı cariyi eksi bakiyeye düşürmez.
+- S-M2-1 = B (kullanıcı 27.11): aynı günün işlem sırası kuralı DEĞİŞMEZ; Değersiz kayıt gününün tarihiyle yazılırsa o günün bağlı payından önce, SONRAKİ tarihle yazılırsa önceki günlerin bağlı payı düşülmüş kalan kadar.
+- SK-55 = C (öneri uygulanıyor): aynı gün 'bağlı tahsilat → bağsız tahsilat → Şüpheliye Al' sırasında payın ölçüm anı BİLİNEN SINIR — bugünkü davranışı DEĞİŞTİRME, raporda bugünkü sayıyı yaz.
+- BAŞ MİMAR (kâhin Y30-6): ekranın önerdiği tutar HER ZAMAN kabul edilir → önerilen tutar = Değersiz sınırı ile bakiye kuralının (S155: kayıttan sonra carinin borcu açık şüphelinin altına düşemez) izin verdiğinin KÜÇÜĞÜ.
+- EKRAN (karar girdisi §2 madde 5): form tarihi kendiliğinden geriye KURMAZ; ipucu seçili tarihin sınırını ve (farklıysa) kayıt gününün tarihiyle yazılabilecek tutarı birlikte söyler; tarih değişince ipucu ve önerilen tutar sunucudan yeniden okunur. Düğme, izinli (kilitli olmayan) tarihlerden herhangi birinde sınır > 0 ise görünür.
+- KAPSAM DIŞI: aynı günün sıra kuralı (borç sırası ayırıcısı), Şüpheliden Çıkar, Karşılık Ayır (aynı sınıf ayrı karar bekliyor), defter kuralları.
+{KURALLAR_KULLANICI}
+
+## İş (sırayla)
+0. NASIL BOZULUR + TASARIM (rapor taslağının başına, koddan ÖNCE, commit): karar girdisi §3'ün 14 sınıfı + dk-ud3 P1–P8 + dk-ud4 Q1–Q6 + F (iki kayıt) + Silinenler'den geri yükleme iki sırayla + bağlı tahsilatın Değersiz'den SONRA silinmesi / bağının kalkması / tarih ve tutar değişimi + Dönem Kilidi + iki şirket + yedekten geri yükleme. 'Tarih → sınır' hesabının TEK yerde nasıl kurulacağı (liste, Değersiz Yaz, geri yükleme, form AYNI işlevi okur — üç kopya formül YOK) ve bugünkü ayırıcının hangi çıktılarından türeyeceği; ayırıcıyı kaç kez koşturduğu (hız).
+1. KOD: sınır işlevi + Değersiz Yaz + Silinenler'den geri yükleme + kayıt listesinin 'yazılabilir' alanı + form (ipucu, önerilen tutar, düğme). Ret iletileri: sınır aşımı iletisi gerçek sınırı ve nedeni söyler (dk-ud3 DÜŞÜK-1 ve dk-ud4 'breaks' iletisi — 'kalan şüpheli tutarı aşıyor' diyen yanıltıcı metinler düzelir); bildirimde 'şüphelide kalan' sayısı bu yazımdan sonraki gerçek kalan.
+2. DEĞİŞMEZ: mutabakat denetimine (kapı + Mutabakat Testi) 'her şüpheli kayıt için Değersiz toplamı ≤ alınan − kayda düşen tahsilat' ve 'Değersiz yazımı bakiyeyi eksiye düşürmez' — geri alınan uygulamanın ürettiği durum (Değersiz 3.000, bakiye −576,45) bu denetimde YAKALANMALI (bozuk durumu teste SQL ile kurup denetimin yakaladığını göster).
+3. TESTLER: karar girdisi §3'ün her sınıfı API'den (sayılar yanıt gövdesi + veri tabanından; kâhinin d62 beklenenleriyle AYNI — farklıysa DUR, raporda 'KÂHİNLE AYRIŞMA'); eski sürüm karşılaştırması KALICI testte (ders 53 (b)): v2.4.9'un gerçek koduyla aynı senaryolar — v2.4.9 ile AYNI olması gereken sınıflar (tam tutar, kısmi zincir, sonradan bağsız → 2.000) ve S-M2-1 = B yüzünden BİLEREK farklı olanlar (sonraki tarihli yazım) karar numarasıyla 'beklenen farklar' listesinde; rastgele sıra testi (tohumlu): her adımda değişmez + 'ekranın önerdiği tutar ve tarih kabul edilir'. Ekran senaryosu: gerçek tıklama + Tab + insan hızında yazım (ders 12) — önerilen tutarla yazım, tarih değiştirince ipucunun değişmesi, kısmi yazımdan sonra kalanın yazılması, fazla yazımın reddi; kayıttan sonra sayılar veri tabanından.
+4. KÂHİN ↔ PROGRAM: `npm run test:kahin-cari` iki TZ — bugün yeni elle senaryoda 52 fark 'yapım aşaması' listesinde; senin kodunla bu 52 kaydın HEPSİ kapanmalı (listeyi SEN yeniden yazma — `test/bagimsiz/**` yasak; koşunun çıktısından 'yapım aşaması kaydı olup artık TUTAN' sayısını oku ve raporla; ana oturum listeyi yeniden üretir). Öbür senaryolarda yeni fark 0.
+5. HIZ (ders 47, 53 (a)): Değersiz Yaz, şüpheli kayıt listesi, cari kartı ve Silinenler'den geri yükleme — temiz 100 bin kopyasında (`{SP}/ana-kabul/temiz-100k` SALT OKUNUR; kopyasını kendi klasörüne al; şüpheli kaydı olan carilerle) taban ↔ yeni, özel kilit (`flock -x -w 1800 {SP}/olcum.lock`), yük > 2 ise GEÇERSİZ; %10'dan kötü olmaz. Kilit alınamazsa 'ölçülemedi' yaz — bekleme döngüsü kurma.
+
+## Kabul koşulları
+A. Kâhin: iş 4. B. Yeni testler eski kodda (taban) beklenen nedenle kırmızı, yenide yeşil, iki TZ; komşular (`git grep` ile: şüpheli / Değersiz / mutabakat kapısı / cari kartı / Silinenler testleri + şema kapısı ve geri yükleme testleri — ders 10) iki TZ yeşil; `npm run test:kahin-defter` taban = yeni. C. MUTANTLAR (değerle; ayrı kopya): sonradan gelen bağsız sınırı küçültmesin; sonraki tarihli Değersiz satırı sayılmasın; önceki günün bağlı payı düşülmesin; o günün bağlı payı Değersiz'den önce düşülsün; değişmez denetimi atlansın; önerilen tutar bakiye sınırını bilmesin; geri yükleme sınırı atlasın; form eski 'kalan'ı göstersin — her biri en az bir testte kırmızı. D. Beklentisi değişen her test / ekran senaryosu KOŞULUR (ders 28).
+
+## Dosya sınırı
+`server/lib/bank/doubtful.mjs`; şüpheli kayıt uçlarının bulunduğu rota dosyası (yalnız Değersiz Yaz / geri yükleme / liste alanı); mutabakat denetiminin dosyası (yalnız yeni değişmez); `client/assets/hof-accounts.js` (yalnız Değersiz formu ve düğmesi) + gerekiyorsa `hof-ui.css`; testler + `test/fixtures/**`. Borç sırası ayırıcısı (`server/lib/obligation-queue.mjs`), defter, Rapor Merkezi, WhatsApp, devir kodu YASAK — gerekiyorsa DUR, 'BAŞ MİMAR KARARI GEREKİYOR'.
+
+{kurallar('m2', taban="t251-m2-taban")}
+
+{rapor()}
+"""
+
 out = os.path.dirname(os.path.abspath(__file__))
-for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C)):
+for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C), ("m2", M2)):
     yol = os.path.join(out, f"{ad}-istem.txt")
     open(yol, "w", encoding="utf-8").write(metin)
     print(ad, len(metin.encode()), yol)
