@@ -94,6 +94,16 @@ describe("2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)", () => 
         assert.ok(list && MALIYET_TABLE.test(list[0]), "app.mjs CARD_TABLES maliyet tablolarını içermeli (Tümünü Sıfırla)");
         src = src.replace(list[0], "");
       }
+      if (file === "server/lib/devir/plan-reader.mjs") {
+        // İzin (2.5.1 devir): şemadaki HER tablonun devir sınıfı listesi (DEVIR_TABLE_CLASSES) maliyet tablolarını yalnız "D" (dokunulmaz — veri yeni yıl dosyasında aynen
+        // kalır) olarak anabilir. Maliyet tablosu başka sınıfla ya da listenin dışında anılırsa ihlal.
+        const list = /export const DEVIR_TABLE_CLASSES = Object\.freeze\(\{[\s\S]*?\n\}\);/.exec(src);
+        assert.ok(list, "devir tablo sınıfı listesi bulunamadı");
+        const entries = [...list[0].matchAll(/\b(maliyet_[a-z_]+)\s*:\s*\{([^}]*)\}/g)];
+        assert.ok(entries.length > 0, "devir tablo sınıfı listesi maliyet tablolarını sınıflamalı");
+        for (const [, table, body] of entries) assert.match(body.trim(), /^sinif:\s*"D"$/, `${table} devirde yalnız D (dokunulmaz) olabilir`);
+        src = src.replace(list[0], "");
+      }
       src.split("\n").forEach((line, index) => {
         if (MALIYET_TABLE.test(line)) found.push(`${file}:${index + 1}: ${line.trim().slice(0, 120)}`);
       });
