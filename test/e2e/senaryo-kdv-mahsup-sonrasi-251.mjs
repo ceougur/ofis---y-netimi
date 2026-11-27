@@ -90,8 +90,9 @@ const footLayout = () =>
     box.scrollTop = 0;
     box.scrollIntoView({ block: "end" });
     const frame = box.getBoundingClientRect();
+    // Hücrenin kutusu (satırın değil): eski düzende hücreler tek tek yapışkandı — satır yerinde dururken hücreler üst üste biniyordu.
     const rows = [...box.querySelectorAll("tfoot tr")].map(row => {
-      const r = row.getBoundingClientRect();
+      const r = row.querySelector("td:nth-child(2)").getBoundingClientRect();
       return { text: row.querySelector("td:nth-child(2)")?.textContent.trim(), top: Math.round(r.top), bottom: Math.round(r.bottom) };
     });
     const overlap = rows.slice(1).filter((row, index) => row.top < rows[index].bottom - 1).map(row => row.text);
