@@ -162,6 +162,8 @@ try {
   await openWriteOff(page);
   const hint4 = await hint(page);
   ok(/15\.10\.2026 tarihiyle yazılabilecek tutar yok/.test(hint4) && /17\.09\.2026 tarihiyle en çok ₺2\.000,00/.test(hint4), `ipucu: "${hint4}"`);
+  const amount4 = await page.inputValue(`${top} input[name="amount"]`);
+  ok(amount4 === "", `bugünün tarihiyle yazılabilecek tutar yok → tutar boş gelir, eski 'kalan' (0,00) önerilmez (${JSON.stringify(amount4)})`);
   await typeDate(page, "17", "09", "2026");
   ok(/2\.000,00/.test(await page.inputValue(`${top} input[name="amount"]`)), "önerilen tutar 2.000,00");
   const before4 = lines(T.id);
