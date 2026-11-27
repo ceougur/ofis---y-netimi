@@ -12,7 +12,7 @@ madde K0) bağımsız kâhinidir:
    aşağıda "Kâhin yorumları"nda (teyit gerekir). §7a'nın **revizyonu R1–R3** (30.10.2026 15:18 UTC, plan §7a sonu "REVİZYON ÖNERİSİ" + KARAR, programın
    davranışı görülmeden) da sabit: R1 Meta'ya hiç ulaşılamıyorsa "Bağlantı Bekleniyor", R2 kategori her 100 iletide / en geç 10 dakikada, R3 daha önce
    gönderilmiş dönem uyarısı (varsayılan Bunları Çıkar).
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 414 senaryo (güncelleme 21 ile: + **güncelleme 21** 16: C5C4 2, C5C5 5, C5C6 3, C5C7 2, C5C8 3, C5C9 1 — §26, 2.5.1 Ç5-C; 398'e kadar: aşağıdaki döküm 291'e kadar, + **güncelleme 20** 9: S70 6, S71 2, R3T 1 — §25; + **güncelleme 19** 15: S58 3, S59 2, S60 2, S61 2, S62 3, S63 3 — §24; + **güncelleme 18** 7: S42 4, S43 3 — §23; + **güncelleme 17** 14: S34 2, S35 2, S36 2, S37 2, S38 2, S33 2, S41 2 — §22; + **güncelleme 16** 11: S29 4, S30 3, S31 2, S32 2 — §21; + W3 1 + **güncelleme 11** 18: SW1 3, SW2 2, SD1837 3, SD1915 5, SW4 3, S7 2 — §16 + **güncelleme 12** 8: S7A 3, S7B 5 — §17 + **güncelleme 13** 8: S16 4, S17 2, NB5 2 — §18 + **güncelleme 14** 6: S22 6 — §19 + **güncelleme 15** 10: S23 5, SW3 5 — §20): 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 419 senaryo (+ **güncelleme 22** 5: SW21 5 — §27, 2.5.1 S-W21-1 / 2 / 3 = A; 414'e kadar güncelleme 21 ile: + **güncelleme 21** 16: C5C4 2, C5C5 5, C5C6 3, C5C7 2, C5C8 3, C5C9 1 — §26, 2.5.1 Ç5-C; 398'e kadar: aşağıdaki döküm 291'e kadar, + **güncelleme 20** 9: S70 6, S71 2, R3T 1 — §25; + **güncelleme 19** 15: S58 3, S59 2, S60 2, S61 2, S62 3, S63 3 — §24; + **güncelleme 18** 7: S42 4, S43 3 — §23; + **güncelleme 17** 14: S34 2, S35 2, S36 2, S37 2, S38 2, S33 2, S41 2 — §22; + **güncelleme 16** 11: S29 4, S30 3, S31 2, S32 2 — §21; + W3 1 + **güncelleme 11** 18: SW1 3, SW2 2, SD1837 3, SD1915 5, SW4 3, S7 2 — §16 + **güncelleme 12** 8: S7A 3, S7B 5 — §17 + **güncelleme 13** 8: S16 4, S17 2, NB5 2 — §18 + **güncelleme 14** 6: S22 6 — §19 + **güncelleme 15** 10: S23 5, SW3 5 — §20): 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
    + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13) + 29 **güncelleme 9** (01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9; §14) + 8 **güncelleme 9b** (S9-1 / S9-2 kararları J10–J11; §14.10–14.12) + 3 **güncelleme 9c** (ekstre içeriği açılışta, J12; §14.13–14.14) + 7 **güncelleme 10** (2.4.9 W: teslim süresi 30 gün W1 + W-KÖK W2; §15).
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164), 1'i J7 düzeltmesinin (M165) ve 5'i W1/W2'nin (M166–M170; M7 de W1'e göre TERSİNE çevrildi), 1'i W3'ün (M171) ve 18'i güncelleme 11'in (M172–M189; M151 artık SW1'in tersi), 9'u güncelleme 12'nin (M190–M198), 11'i güncelleme 13'ün (M199–M209), 3'ü güncelleme 14'ün (M210–M212), 10'u güncelleme 15'in (M213–M222), 13'ü güncelleme 16'nın (M223–M235), 15'i güncelleme 17'nin (M236–M250), 9'u güncelleme 18'in (M251–M259), 18'i güncelleme 19'un (M260–M277), 15'i güncelleme 20'nin (M278–M292), 24'ü güncelleme 21'in (M293–M316, §26) tersi — toplam 315, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164), 1'i J7 düzeltmesinin (M165) ve 5'i W1/W2'nin (M166–M170; M7 de W1'e göre TERSİNE çevrildi), 1'i W3'ün (M171) ve 18'i güncelleme 11'in (M172–M189; M151 artık SW1'in tersi), 9'u güncelleme 12'nin (M190–M198), 11'i güncelleme 13'ün (M199–M209), 3'ü güncelleme 14'ün (M210–M212), 10'u güncelleme 15'in (M213–M222), 13'ü güncelleme 16'nın (M223–M235), 15'i güncelleme 17'nin (M236–M250), 9'u güncelleme 18'in (M251–M259), 18'i güncelleme 19'un (M260–M277), 15'i güncelleme 20'nin (M278–M292), 24'ü güncelleme 21'in (M293–M316, §26), 9'u güncelleme 22'nin (M317–M325, §27) tersi — toplam 324, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -36,7 +36,7 @@ karşılaştırılır (H).
 | `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 35) |
 | `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 19 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 398 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.py` | 419 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
 | `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
 | `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
@@ -2631,3 +2631,76 @@ Kâhin yorumları (kodlamadan önce; her birinin kaynağı):
 - Bilgi (soru değil; önceki yorum sürer): Y22-6 (aynı tür etiket kuyrukta kalkıp yeniden doğarsa iz aşmaya devam eder — Y12-7). İstenirse ayrı soru olarak sorulabilir: A) böyle kalsın (Y12-7; ileti
   gider), B) yeniden doğan etiket "sonradan gelen" sayılsın ("Atlandı"), C) uç durum böyle kalsın (BİLİNEN SINIR; A gibi).
 - Yaygın programlar (Mikro, Netsis, Logo, AKINSOFT): belgeleri / ekranları OKUNMADI — dayanak yazılmadı (12.11 kuralı).
+
+### 27.4 Kâhinde (kodlama) — ne değişti
+Kod (`kahin.py`): `KARARLAR` SW21 (girdi §1.1 karar satırı + üç soru metni + §4 sınıf satırı AYNEN); `yine_de_gonder` — S-W21-1 hatası KALKTI; basma anındaki etiketler (`basma`: Şüpheli açıksa ve S16
+yolu açıksa Şüpheli, `borc` girdisinde söz sürüyorsa Söz) izi genişletir (S16 / S23 / S-W21-1 aynı yoldan), onay etiketi `soz_etiketi` (çıktıda YALNIZ boş değilse); S23 tetiği "iz basma anındaki
+etiketlerden en az birini aşmıyor" (Y22-4; `s23_yeniden_bas(…, basma)`); `c5c_baslat_engeli` — S-W21-2 (b) hatası KALKTI (iki etiket birlikte aşılır); `c5c_gonderim_engeli` — S-W21-2 hatası KALKTI
+(iz kapsamı dışındaki ilk etiket "Atlandı"); `isci` — Meta Bekletti 2. denemesinde iz değiştiyse içerik gönderim anında, değişmediyse 1. denemenin içeriği (`mb_elle` okuması ve `MB_ELLE_SUSUYOR` KALKTI;
+`OKUMALAR` = `devam_sd`, `devir_geri`); 9 mutant M317–M325. Eski `vadeler` yolu, eski olaylar ve eski çıktılar DEĞİŞMEDİ (27.7). `devir_geri` iki okuması AYNEN (girdi §2).
+
+### 27.5 Senaryolar (5 yeni, başlık SW21) — girdi §4'ün WhatsApp satırı (beklenenler ELLE, hesap açıklamada)
+| Sınıf (girdi §4) | Senaryo | Adım → elle beklenen (ileti / atlanma / eleme, neden, iletideki tutar) | Önceki bakımdaki iki okumadan / hatadan hangisi |
+|---|---|---|---|
+| S-W21-1: Sonucu Belirsiz + söz → Yine de Gönder gider, onayda "Ödeme Sözü Var", içerik gönderim anındaki tutar | SW21-01 (P1) | 12:00 Yine de Gönder (söz 11:00'den beri) → alınır, `soz_etiketi` [P1], 05.10.2026 / 1.000,00 TL gider, POST 2 (B: "Atlandı — Ödeme Sözü Var", POST 1) | hata (S-W21-1) → A |
+| aynı gün en çok bir + ertesi gün serbest (S-W21-1 ile) | SW21-01 (T2, T3, T4) | 13:00 işaretsiz → "Ödeme Sözü Var"; 13:10 "Yine de Ekle" → "Daha Önce Gönderildi" (uyarı 1, son 30.10); 31.10 "Yine de Ekle" → 1.000,00 TL gider; P1'e 3 POST | — |
+| S23'ün söz karşılığı (bekleyen belirsizlik onaylı işte söz, asıl işte yeniden basma) + S-W21-3 iz değişti + gün dönümü | SW21-02 (Q1) | 11:00 Yine de Gönder (söz yok) → 400,00 TL / 650,00 TL içerik, Meta Bekletti; 12:00 söz; 14:00 asıl işte basma → `elle_sayilan` + `soz_etiketi`, yeni iş yok, POST 2; 31.10 2. deneme 06.10.2026 / 650,00 TL / 650,00 TL (B: donmuş 400,00 TL), POST 3; 31.10 11:10 "Daha Önce Gönderildi" (son 31.10) | hata (S-W21-1) → A; `mb_elle` → `gonderim_ani` |
+| S-W21-2: söz için eklenene kuyruktayken şüpheli → "Atlandı — Şüpheli Alacağı Var"; şüpheli için eklenene sonra söz → "Atlandı — Ödeme Sözü Var"; başlatmada iki etiket birlikte → ikisi aşılır, gider; çıkmaz yok | SW21-03 (X1–X4) | Devam Et: X1 "Atlandı — Şüpheli Alacağı Var", X2 "Atlandı — Ödeme Sözü Var" (POST 0); X3 (iki etiket + Yine de Ekle) 22.10.2026 / 250,00 TL / 800,00 TL; X4 işaretsiz "Şüpheli Alacağı Var"; 12:00 Yine de Ekle X1, X2 → X1 20.10.2026 / 700,00 TL / 1.000,00 TL, X2 21.10.2026 / 300,00 TL / 900,00 TL (Atlandı o gün almamış) | hata (S-W21-2, S-W21-2 (b)) → A |
+| S-W21-1 + S-W21-2: Yine de Gönder basma anında iki etiket birlikte aşılır; S-W21-3 iz değişmedi → 5.2 aynen | SW21-04 (Y1, Z1) | Y1: `supheli_etiketi` + `soz_etiketi`, 07.10.2026 / 200,00 TL / 500,00 TL, POST 2; Z1 (Yine de Ekle, söz) Meta Bekletti, arada elle 1.000 → 800, 2. deneme 1. içerikle 19.10.2026 / 1.000,00 TL, POST 2 | hata (S-W21-1) → A; 5.2 aynen (tek okuma zaten) |
+| Y22-4 genel okuma (söz için elle bekleyen işe şüpheli, asıl işte yeniden basma) + S-W21-3 | SW21-05 (W1) | 11:00 Yine de Gönder (söz; iz zaten aşıyor) → `soz_etiketi`, 900,00 TL içerik, Meta Bekletti; 12:00 şüpheli; 14:00 asıl işte basma → S23 (`elle_sayilan` + iki etiket), iz {Şüpheli, Söz}; 2. deneme 10.10.2026 / 500,00 TL / 900,00 TL (B: 900,00 TL), POST 3 | hata (S-W21-2) → A |
+| S-W21-3 eski senaryolar | S23-04, S29-03 | 16.10.2026 / 250,00 TL; 30.10.2026 / 200,00 TL (B: 06.10.2026 / 650,00 TL; 06.10.2026 / 400,00 TL — M321) | `mb_elle` `secenek` → `gonderim_ani` |
+Kime / tutar / neden GİRDİ (`borc`, elle; söz caride elle değer = borcun tamamı, taslak 2.3 — cari kâhininin sorusu). İki saat dilimi: senaryolar TZ=UTC ve TZ=Europe/Istanbul'da 419/419, `senaryolar.json`
+iki koşuda bayt bayt aynı (sha256 982f3a01…).
+
+### 27.6 Mutasyonlar (9 yeni: M317–M325) ve kâhinin kendi testi
+M317 S-W21-1 B (basma anındaki söz elle sayılmaz) · M318 S-W21-2 B (elle iz bütün etiketleri aşar — sonradan gelen başka etiketi de) · M319 S-W21-2 (b) tersi (başlatmada iki etiketten yalnız ilki) ·
+M320 Yine de Gönder basma anındaki iki etiketten yalnız ilki · M321 S-W21-3 B (iz değişse de donmuş içerik) · M322 iz değişmemişken de yeniden hazırlama (M304 ile aynı etki; ikisi de kalır) ·
+M323 S23'ün söz karşılığı yok (F1) · M324 Y22-4 genel okuma yok (S23 yalnız tamamen işaretsiz işte) · M325 onayda "Ödeme Sözü Var" yok. Her biri kendi SW21 senaryosunda DEĞERLE yakalanıyor
+(`wk22-yeni-mutantlar`, iki TZ: 9/9; yakalayan senaryolar: M317 SW21-01/02/04/05, M318 SW21-03/05, M319 SW21-03, M320 SW21-04, M321 S23-04, S29-03, SW21-02/05, M322 SW21-04, M323 SW21-02,
+M324 SW21-05, M325 SW21-01/02/04/05). Görev metnindeki "elle iz sonradan gelen etiketi de aşsın / yalnız birini aşsın" iki mutanta ayrıldı: sonradan gelen = M318 (B), yalnız biri = M319 (başlatma) + M320
+(basma). Kâhinin kendi testinde: **I18** artık eski S-W21 hata girdilerinde A sonucunu bekler (S-W21-1: Teslim, POST 2, `soz_etiketi`; S-W21-2: "Atlandı — Şüpheli Alacağı Var", POST 0; S-W21-2 (b):
+elle değerlerle gider) ve B mutantlarının (M317, M318, M319) aynı girdide ayrıştığını; `mb_elle` yok, S23-04 / S29-03 tek okuma grubunda A değerinde, M321 ile karar metnindeki B sayıları (650 / 400 TL);
+`kahin.py`'de S-W21 hata metni yok; `soz_etiketi` yalnız SW21'de; SW21 ≥ 5. **I19** üreticisi: carinin etiket türüne ÇAPRAZ (Şüpheli, Söz, ikisi birlikte) eklendi, toplu iş başına kişilere rastgele işteki /
+asıl işteki Yine de Gönder, carilerin %35'inde 1. ileti Sonucu Belirsiz (yanıtsız kabul + durum bildirimi yok); yeni değişmezler (4) "Atlandı — Şüpheli / Söz" yalnız işaretleme anlarının hiçbirinde
+olmayan etiketle, (5) basma anında söz sürüyorsa kabul edilen / elle sayılan basışın onayında "Ödeme Sözü Var", (6) gönderilen her hatırlatmada kişinin o anki Şüpheli / Söz etiketleri işaretleme
+anlarında aşılmış, Tedarikçi'ye hiç gitmez; (1)'in istisnasına onaylı işteki Yine de Gönder ve E1 + 8.2 (27.8) girdi. I19'un dişi (aynı küme, mutantla ihlalli senaryo / 120 — tohum 2511 · 2512):
+M317 9 · 8, M318 2 · 0, M319 26 · 20, M320 1 · 0, M321 1 · 0, M322 1 · 0, M323 1 · 0, M324 1 · 0, M325 9 · 8 (M293 5 · 3, M309 6 · 10); yeni sınıfların sıklığı: S-W21-1 basışı 9 · 10, elle işte etiketle
+Atlandı 2 · 1, iki etiketli "Yine de Ekle" 100 · 72. Seyrek sınıfların asıl dişi elle senaryolar (yukarıda). I2 / I4 / I10 / I12 / I14 SW21'i tanır.
+
+### 27.7 G3 — eski kâhin (taban t251-wk21 = c774eeea, değişiklikten önce alınmış kopya; `senaryolar.json` sha256 8d73121c…) ↔ yeni
+414 eski senaryonun girdi + elle + TAM model sonucu (başlık / kaynak / açıklama dahil): **412 bayt bayt aynı, 2 değişti, beklenmeyen değişiklik 0** (`wk22-g3-eski-414-tam-sonuc-fark`, iki TZ):
+| Senaryo | Değişen | Eski → yeni | Neden |
+|---|---|---|---|
+| S23-04 | elle + model `isler.T1/MK.degiskenler` [2], [3] ({{3}}, {{4}}) | `secenek` ["16.10.2026", "06.10.2026"] / ["250,00 TL", "650,00 TL"] → "16.10.2026" / "250,00 TL" | S-W21-3 = A (Y22-8) |
+| S29-03 | elle + model `isler.T1/MZ.degiskenler` [2], [3] | `secenek` ["30.10.2026", "06.10.2026"] / ["200,00 TL", "400,00 TL"] → "30.10.2026" / "200,00 TL" | S-W21-3 = A (Y22-8) |
+Üst alanlardan yalnız `kararlar`'a SW21 eklendi (eski kararlar aynen). Başka `secenek` yaprağı değişmedi (`devir_geri` C5C8-02'de aynen). Eski kâhinle yeni / değişen 7 senaryo
+(`wk22-eski-kahinle-yeni-senaryolar`, iki TZ): **7/7 KIRMIZI, nedeni BEKLENEN** (ders 38): SW21-01 / 02 / 04 `ValueError` S-W21-1, SW21-03 `ValueError` S-W21-2 (b), SW21-05 `ValueError` S-W21-2,
+S23-04 / S29-03 `secenek` ↔ tek değer.
+
+### 27.8 Kodlamada ortaya çıkan (KULLANICIYA SORULMALI YOK; bilgi)
+- I19'un yeni Sonucu Belirsiz üretimi iki rastgele senaryoda (tohum 2511 #87, 2512 #35) aynı gün iki hatırlatma gösterdi: devirden sonra giden ileti Sonucu Belirsiz kalırken Devri Geri Al işi dosyadan
+  çıkarıyor, aynı gün yeni gönderim gidiyor. Kural ZATEN kararlı: E1 ("yalnız defterde kalan belirsiz yeni gönderimi elemez") + 8.2 (Devri Geri Al'da devirden sonra açılan işler dosyadan çıkar);
+  S-W21 kararlarıyla ilgisi yok, kime / kaç kez kâhinde değişmedi. Değişmez (1)'e bu durum için istisna yazıldı (önceki ileti Devri Geri Al'dan önce ve işi dönen dosyada yok). Programa karşı
+  koşulduğunda aynı davranış BEKLENİR; kullanıcıya sorulacak bir okuma yok (E1 kullanıcı kararı). §26.12'nin "devir × Sonucu Belirsiz (senaryosuz)" DENENMEYEN'i rastgele kümede artık görülüyor.
+- Y22-6 (aynı tür etiket kuyrukta kalkıp yeniden doğarsa iz aşar — Y12-7) AYNEN; rastgele kümede de bu sıra oluşuyor, değişmezler (4) / (6) tür üzerinden denetler.
+
+### 27.9 Sürücü için (S-112 … S-115; kâhin tarafı sözleşme — sürücüye DOKUNULMADI)
+- **S-112 `yeniden.<etiket>.soz_etiketi`** = [cari]: işteki Yine de Gönder'in onay penceresinde (basma anında söz süren Ödeme Hatırlatma carisi için) "Ödeme Sözü Var" etiketi görünür; çıktıda YALNIZ boş değilse
+  (Y13-4'ün `supheli_etiketi` düzeni; ikisi birlikte olabilir). Elense de görünür.
+- **S-113 S23'ün söz / çapraz karşılığı:** asıl işte yeniden basmanın yanıtı `{"elenen": {}, "alinan": [], "oneri": null, ["supheli_etiketi"], "soz_etiketi", "elle_sayilan": [cari]}`; bekleyen iş durumunu,
+  bekleme anını, POST sayısını değiştirmez (S23 düzeni).
+- **S-114 S-W21-2:** elle (Yine de Ekle / S16 / S-W21-1) işte gönderim anında yeni etiket → `atlanma_nedeni` `supheli_alacak` / `odeme_sozu` (S-109'daki adlar); başlatmada iki etiket + Yine de Ekle → iş açılır.
+- **S-115 S-W21-3:** `secenek` (mb_elle) yaprağı YOK; Meta Bekletti 2. denemesinin {{3}} / {{4}} / {{5}}'i tek değer. S-110 güncellemesi: Ç5-C programa birleşmeden SW21 senaryolarında ve S23-04 / S29-03'te
+  ayrışma BEKLENİR (S-98 düzeni). S-111'in rastgele kümesi artık Yine de Gönder ve çapraz etiket de üretir (`kahin_test.c5c_rastgele`).
+
+### 27.10 SONRAYA (20.11 kuralı — programı / kullanıcıyı etkilemeyen iç hususlar)
+- M322 ile M304 aynı etkiyi taşıyor (ikisi de kalır; birleştirilebilir).
+- I19'un değişmez (6) iş anahtarında `#n` ekini kesiyor (aynı toplu işte aynı kişiye ikinci iş yalnız mutantlarda doğar) — yaklaşık.
+- Değişmez (1)'in E1 istisnası önceki iletinin teslim edilmediğini ayrıca denetlemiyor (dosyada olmayan iş = yaklaşık); D7'nin elle senaryoları (C5C8-02) bunu taşıyor.
+- §26.11'in maddeleri (7.2 bilgi satırı, eski `vadeler` yolunda S7S / NET_ENGEL, nötr kopya) AYNEN.
+
+### 27.11 Kanıt ve DENENMEYEN
+- **Kanıt:** `docs/kanit/2026-11-27/wk22-*` (koşu sayıları ve commit'leri `wk22-OKU.txt`'de; araçlar `wk22-araclar/`).
+- **DENENMEYEN:** programa karşı sürücü koşusu (görev gereği); S-W21-1 × S71 (içeriği ve kart telefonu silinmiş iş — S71 önce, senaryosuz); S-W21-1 × S34 (basmada elle değerde borç yok — S34 yolu aynı,
+  senaryosuz); S-W21-2 × Sınır / Başarısızları Yeniden Dene yolları (aynı gönderim anı denetimi — elle senaryosu yalnız Devam Et; rastgele kümede var); Devri Geri Al iş adı (`devir_geri`, girdi §2 gereği
+  iki okuma); iki şirket × S-W21; 29 Şubat, bayramlar.
