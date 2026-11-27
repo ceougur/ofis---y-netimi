@@ -1,0 +1,63 @@
+{
+  "ad": "m2-eski-taban-e2e-degersiz-siniri",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-degersiz-siniri-m2-251.mjs",
+  "commit": "0e96418a13d3e76d4d55141fff3f5f66ffa37a35",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T12:14:57.255Z",
+  "sure_sn": 21.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12,
+    "gecen": 6,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ipucu: \"\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ipucu: \"\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "önerilen tutar 3.000,00 (123,55)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "bildirim: \"Değersiz alacak yazıldı: ₺1.000,00 · şüphelide kalan ₺0,00.\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S269: kalanı o günün bağlı payıyla 0 görünen kayıtta düğme DURUR",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo kesildi: page.click: Timeout 10000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-afce913f2c07f70a9/docs/kanit/2026-11-27/m2-eski-taban-e2e-degersiz-siniri.log",
+  "klasor": "/dev/shm/m2-kod/eski",
+  "ham_cikti_sha256": "075fe8466e1a65817c6d05e4468710b0f05e0fb7c5a3a575e6a959dccefc1b92",
+  "ham_cikti_bayt": 1197
+}
