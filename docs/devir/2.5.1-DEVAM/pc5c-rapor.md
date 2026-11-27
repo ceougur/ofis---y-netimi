@@ -5,6 +5,14 @@
 > `docs/erp/C5B-TYK-TASARIM.md` §1, §3, WhatsApp kâhininin `README.md`'si (yalnız belge; model kodu okunmadı), `docs/devir/D3-D4-TASARIM.md` (dal `claude/epic-thompson-w0lc2l`; tabanda yok).
 > İlke taslağı (kullanıcı dili): `docs/devir/C5C-ILKE-TASLAK.md`.
 
+## SONUÇ
+Ödeme Hatırlatma bugün hâlâ yalnız taksit kartlarının (kartın kendi hesabıyla) gecikmişine bakıyor; şüpheli alacak, Ödeme Sözü, tedarikçi ve "bize alacaklı" elemeleri için verilmiş
+kararların (S7 ailesi, S52 / S72 / S73, S93, karar (5)) HİÇBİRİ kodda yok. Programın kendi API'siyle kurulan 14 carilik denemede bugün seçilen 6 kişiden 4'ü kararlara aykırı (bakiyesi 0,
+bize alacaklı, şüpheli, söz vermiş); tek borç sırasına geçince bu 4'ü çıkar, faturası / borç kaydı / kapatılmış kartı gecikmiş 3 kişi girer. Büyük veride (1.484 cari) küme aynı kalıyor
+(848), iletideki toplam tutar 68,1 milyon TL'den 157,0 milyon TL'ye (2,3 kat) çıkıyor. "Kime kaç kez" ilke taslağı yazıldı: 30 satırlık "nasıl bozulur?" listesi, her madde KARARLI / İLKEYLE /
+SORU; 10 soru TEK listede (en önemlileri: vadesiz faturanın ertesi gün hatırlatmaya girmesi, "elle seçim"in programda yolu olmaması, "Yine de Gönder"in donmuş tutarı S16 / S29 / S34 ile
+çelişmesi). Önerilen sıra: kullanıcı onayı → iki kâhin bakımı (kodu görmeyen) → tek kod turu (müşteri istekleri tur 2'den sonra) → S260 ayrı küçük tur (seçilirse) → D6 en sonda.
+
 ## 1. BUGÜNKÜ DURUM (koddan; taban t251-taban)
 
 ### 1a. Otomatik seçim kimi alıyor
@@ -117,6 +125,20 @@ geçersiz kılar).
 `docs/devir/C5C-ILKE-TASLAK.md` (kullanıcı dilinde; 30 satırlık "nasıl bozulur?" listesi önce, her satır bir maddeye bağlı; her madde KARARLI / İLKEYLE / YENİ — SORU / ÖNERİ UYGULANIR).
 Soruların tam metni taslağın §10'unda; aşağıda raporun KULLANICIYA SORULMALI bölümü aynı numaralarla.
 
+### 3a. KULLANICIYA SORULMALI (para / kime kaç kez — ders 43, 45; 5 dk yetkisi YOK; tam metin ve örnekler taslak §10)
+1. **S-C5C-1 vadesiz borç (kör nokta):** vadesi yazılmamış fatura / Borç Yaz ertesi gün gecikmiş (S1) → hatırlatmaya da girsin mi? A (öneri) evet / B yalnız vadesi yazılmış kalem.
+   Sayı: 07.10'da kesilen vadesiz 750 TL'lik fatura → A ile 08.10'da hatırlatma gider.
+2. **S-C5C-2 Diğer türü:** A (öneri) gider / B yalnız Müşteri. Sayı: Diğer türlü 300 TL gecikmişli cari (büyük veride 0).
+3. **S-C5C-3 tedarikçi elle:** A (öneri) hiçbir yoldan gitmez (yol Ekstre) / B elle seçilirse gider. Sayı: 1.000 TL avanslı tedarikçi.
+4. **S-C5C-4 S260 (taksitlendirme sınırı):** A (öneri) 2.5.1'de tek borç sırasından, ayrı küçük tur / B bugünkü gibi / C uç durum böyle kalsın. Sayı: S260 örneği 300 → 600.
+5. **S-C5C-5 kuyruktayken söz:** A (öneri) gönderim anında "Atlandı — Ödeme Sözü Var" / B başlatmadaki seçimle gider.
+6. **S-C5C-6 kuyruktayken tedarikçi (uç):** A (öneri) "Atlandı — Tedarikçi" / B gider / C uç durum böyle kalsın.
+7. **S-C5C-7 elle seçimin yolu:** A (öneri) önizlemede etiketli kişiye "Yine de Ekle" / B yalnız cari kartından tek cari. Sayı: 14 carilik denemede etiketli 2 kişi (300 TL, 1.000 TL).
+8. **S-C5C-8 Yine de Gönder tutarı:** A (öneri) gönderim anındaki güncel tutar / B donmuş tutar (şüphelide güncel). Sayı: 1.000 TL belirsiz, 400 ödendi → A 600 / B 1.000.
+9. **S-C5C-9 devir anında süren gönderim:** A (öneri) "Durduruldu (Devir)", gönderilmeyenler almamış sayılır / B gönderim bitmeden devir başlamaz.
+10. **S-C5C-10 elle şüpheli caride {{5}} (uç):** A (öneri) bütün bakiye / B şüpheli hariç / C uç durum böyle kalsın. Sayı: bakiye 900, şüpheli 300 → A 900 / B 600 ({{4}} iki okumada 300).
+
+
 ## 4. BAŞ MİMAR KARARI GEREKİYOR (mimari; soru değil — ders 40 gereği kullanıcıya gösterilir)
 - **B-1 İki kâhinin iş bölümü (bağımsızlık, ders 5).** Hatırlatmanın KİME / HANGİ TUTAR'ı muhasebe (cari) kâhininde ZATEN modelli: sürücü `test/bagimsiz/muhasebe-surucu/karsilastir.py:822-833`
   "hatirlatma" raporunu `otomatik` (cari → tutar), `supheli_etiketli`, `elle` alanlarıyla karşılaştırıyor ve bugün `{"Ç5-C"}` kimliğiyle "uygulanmadı" (U) sayıyor; Ödeme Sözü olayı sürücüde
@@ -153,7 +175,65 @@ Soruların tam metni taslağın §10'unda; aşağıda raporun KULLANICIYA SORULM
 
 ## 6. ÖNERİLEN PAKETLEME VE SIRA
 
-PAKET_YERI
+### 6a. Sıra
+1. **P-0 Kullanıcı onayı** — `docs/devir/C5C-ILKE-TASLAK.md` §10'daki 10 soru TEK iletide (turun SON iletisinde; ders 43, 45 — 5 dk yetkisi YOK, "önerilerini uygula" kuralı bu sorularda
+   UYGULANMAZ çünkü hepsi kime / kaç kez ya da para görünümü; yalnız taslakta "ÖNERİ UYGULANIR" diye işaretli görünüm maddeleri öneriyle sürer). Yanıtlar iş listesi D'ye AYNEN.
+2. **P-1 Kâhin bakımları (kodu görmeyen, yeni ajanlar, high) — KODDAN ÖNCE** ("kâhin önce", 23.10):
+   - WhatsApp kâhini bakımı (WK 21) — §7'deki girdi listesi (kime kaç kez, gönderim anı, Yine de Gönder içeriği, elle seçim, eleme sırası).
+   - Muhasebe (cari) kâhini "hatirlatma" raporunun tutar / küme kuralları (§7 madde 1–2, 4, 7) — bakımı ayrı ajan değil, TOPLU KÂHİN BAKIMI kuralıyla kâhinin bir sonraki bakımına (o sırada
+     M2 Değersiz sınırı / devir bakımı sürüyorsa onlarla aynı bakımda) eklenir; sürücünün `{"Ç5-C"}` "uygulanmadı" satırları ancak kod turu birleşince kapanır.
+3. **P-2 Kod turu Ç5-C (tek ajan, high)** — dosya sınırı §6b; kabul §6c. Başlama koşulu: P-1 bitti + müşteri istekleri tur 2 ana dala girdi (`routes/accounts.mjs` çakışması).
+4. **P-3 S260 (yalnız S-C5C-4 = A ise; ayrı küçük tur, high)** — `server/routes/plans.mjs` (`uncoveredDebt`), cari kâhini satırı; Ç5-C ile PARALEL olabilir (dosya ayrı). B / C ise iş yok.
+5. **D6 (WhatsApp ilke 5 — devir)** Ç5-C'den SONRA ve D4b'den (Geri Al yolu) SONRA; aynı ajanda DEĞİL (D3-D4 §6.3'ün "ya da aynı ajanda"sı önerilmez: D4b kritik yolda, Ç5-C beklemesin).
+   S-C5C-9'un yanıtı D4b'nin görev metnine (devir başlarken süren toplu iş) girer; Ç5-C kod turu devir koduna DOKUNMAZ.
+
+### 6b. Kod turunun dosya sınırı
+| Dosya | Ne | Çakışan 2.5.1 işi |
+|---|---|---|
+| `server/lib/whatsapp/queue.mjs` | `overdueOf` → tek borç sırası (`overdueDebt`, `overdueSince`); `eligibility` yeni nedenler (Tedarikçi, Şüpheli Alacağı Var, Ödeme Sözü Var) ve sıra (taslak 2.5); elle seçim izi; `prepare` {{3}}/{{4}}/{{5}}; `inheritContent` hatırlatma dalı (S-C5C-8) | D6 (aynı dosya, Geri Al) → Ç5-C ÖNCE; K4 WhatsApp küçükleri (olası) → aynı dalgaya konmaz |
+| `server/routes/accounts.mjs` | yalnız `waFacts` (şüpheli kayıt kalanı toplu — B-3; tür zaten var) | müşteri istekleri tur 2 (cari listesi) → onlardan SONRA |
+| `server/routes/whatsapp.mjs` | elle (wa.me) metni / ekstre satırı yeni alanlardan (taslak 3.5) | — |
+| `client/assets/hof-whatsapp-api.js` | önizlemede etiketler + "Yine de Ekle" (S-C5C-7 = A) + güncelleme bilgi satırı (7.2); yazım düzeni | K4 (olası) |
+| `client/assets/hof-whatsapp.js` | "Gecikmiş Borç" şablon adı ve `{Vadesi Geçen}` | — |
+| `server/lib/migrations.mjs` | YALNIZ S-C5C-7 = A ise elle izi sütunu (B-5); numarayı ana oturum verir | D4a, M1 KDV, M2 Değersiz (göç numaraları) |
+| `test/bagimsiz/whatsapp-248/surucu.mjs`, `test/bagimsiz/muhasebe-surucu/program.mjs` / `karsilastir.py` | YALNIZ sürücü eşlemeleri (söz, tür, elle); kâhin dosyalarına DOKUNULMAZ | Ç6 öncesi / devir sürücü işleri (sürücü dosyası ÇAKIŞIR — D3-D4 §6.2) → birleşim sırası ana oturumda |
+| `test/whatsapp-c5c-*.test.mjs` (yeni), `test/whatsapp-onizleme-olcek-248.test.mjs` (eleme alanları — B-4), `test/e2e/senaryo-whatsapp-gonder-248.mjs`, `senaryo-is-akisi-248.mjs` (beklenti değişirse koşulur — ders 28) | testler | — |
+| `docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html` + PDF (ders 42) | WhatsApp bölümüne tek satır: kime gider, etiketler, Yine de Ekle | D5 kılavuzu (aynı dosya; farklı bölüm) |
+OKUR, DOKUNMAZ: `server/lib/obligation-queue.mjs`, `obligation-input.mjs`, `routes/invoices.mjs`, `lib/bank/doubtful.mjs`, `routes/plans.mjs` (S260 ayrı turda).
+NOT (M2 Değersiz sınırı): değersiz yazılan kısım tek borç sırasından düşer → hatırlatma tutarı da düşer (kendiliğinden). Ç5-C'nin fark tablosu ve hız ölçümü M2 ana dala girdikten SONRA
+yeniden okunur (aynı veri kopyasıyla).
+
+### 6c. Test planı ("nasıl bozulur?" → test; taslak §0'ın N1–N30'u)
+- **Sınıf testi (ders 53 (b), KALICI):** taslak 2a'nın 14 sınıfı × (bugün / yeni) programın API'siyle; her caride önizlemenin nedeni + {{3}}/{{4}}/{{5}} = cari kartının Gecikmiş Borç / en eski
+  vade / bakiye (DEĞİŞMEZ, §2.10 9). Eski sürüm karşılaştırması: aynı betik `v2.5.0` etiketinin `git worktree add --detach` kopyasında (ders 23, 54) → farklar YALNIZ karar numaralı sınıflarda
+  (1.1, 2.1–2.4, 3.1–3.3); numarasız fark birleşmez.
+- **Gönderim anı (N12–N15, N30) — zorla (ders 20):** sahte Meta + elle işçi (`manual: true`); kuyruktaki işe arada tam / kısmi ödeme, söz, şüpheli kaydı, tür değişimi, silme, gece yarısı
+  (sahte saat 23:59 → 00:01; ders 13, 22) → Atlandı nedeni, POST sayısı, iletideki tutar. İki saat diliminde (TZ=UTC ve Europe/Istanbul).
+- **Yine de Gönder (N16):** sahte Meta yanıtsız → Sonucu Belirsiz; arada kısmi ödeme; Yine de Gönder → S-C5C-8'in yanıtındaki tutar; şüpheli kaydı açıkken S16 / S23 / S29 / S34 satırları.
+- **Elle seçim (N17, N28):** önizleme → "Yine de Ekle" → başlatma → iş üzerinde iz; Devam Et ve aynı işin yeniden denemesi izi taşır; Başarısızları Yeniden Dene TOPLU (elle değil — kâhin Y12-8).
+  Ekranda insan hızı + klavye (ders 12), yazım düzeni (Her Sözcük Büyük — "Yine de Ekle", "Ödeme Sözü Var").
+- **Sürüm geçişi (N18–N20):** v2.5.0 gerçek koduyla hatırlatma gönder (sahte Meta) → aynı veri dosyası ve makine defteriyle 2.5.1 → aynı gün "Daha Önce Gönderildi"; kuyrukta bırakılan 2.5.0 işi
+  2.5.1 işçisinde yeni kuralla.
+- **Geri yükleme / taşıma (N22):** bugünkü 2.4.8 testleri AYNEN yeşil + tutar geri yüklenen dosyadan. Devir / Geri Al / arşiv (N21, N23, N24) → D6 paketinde.
+- **İki şirket (N25):** 001 / 002 aynı kişi, aynı WABA → iki ileti, sınır ortak (bugünkü kâhin senaryoları yeşil kalmalı).
+- **Eski kod kırmızısı (ders 7, 38):** her yeni test `t251-taban`'da BEKLENEN nedenle kırmızı (ör. K5 / K11 bugün 600 TL gönderir; K2 / K3 / K4 bugün elenir).
+- **Mutasyon:** eleme sırası, söz günü dahil / hariç, tür okunmaz, Diğer, şüpheli kayıt ↔ kuyruk payı, elle izi tedarikçiyi geçirir, gönderim anında söz denetlenmez, Yine de Gönder donmuş tutar.
+- **Komşular (ders 10):** `totals.overdue` / `plan.next` okuyucuları (`grep -rn "totals.overdue\|totals?.overdue\|overdueOf" server client test`), muhasebe sürücüsünün hatırlatma raporu, kâhin ↔ program
+  (`npm run test:kahin-cari`, WhatsApp sürücüsü) iki TZ.
+
+### 6d. Hız bütçesi (ders 47, 53 (a))
+- Bütçe: 2.000 carilik önizleme ≤ 2 sn (WhatsApp planı; 2.4.8 İş Z kökü). Ç5-C cari başına ek ağır okuma GETİRMEZ: gecikmiş / en eski vade / söz / tür `waFacts`'te zaten var (tek borç sırası
+  bütün carilerin önbelleğinden); tek ek şüpheli kayıt kalanı → plan() başında TEK toplu okuma (B-3). Gönderim anı: bugünkü gibi cari başına tam kart (iş başına bir kez; değişmez).
+- Bugünkü ölçüm (bu ajan; GEÇERSİZ — yük 6,7–7,3, paylaşılan kilit, ders 52): 1.484 cari için `waFacts` döngüsü 3.360 ms + tek borç sırası önbelleğinin ilk kurulumu 988 ms (HTTP, dönem
+  anahtarları ve makine defteri sorguları HARİÇ). Bu, bütçenin BUGÜN de aşılıyor olabileceğini gösterir; Ç5-C'den bağımsız bir kuşku → ana oturumun özel kilitli ölçümü
+  (`betik/kabul.sh`'ye önizleme satırı; yük ≤ 2) Ç5-C'den ÖNCE ve SONRA aynı veri kopyasıyla. Kötüleşen birleşmez; önceden aşılıyorsa BİLİNEN SINIR mı, hız işi mi — kullanıcıya (11.10 kararı
+  "bütçeyi az aşanlar BİLİNEN SINIR").
+
+### 6e. Cari kartının taksit özeti ve S260 bu pakete girer mi
+- **Taksit özeti: GİRMEZ** — görünen sayıları birleşik tur 8'de (S129, S142) zaten tek borç sırasından; kalan tek eski okuyucu WhatsApp'ın `plan.next`'i Ç5-C'nin kendi işi (§1g). Gerekçe: dosya
+  sınırını küçük tutar, kanıtı olan işi yeniden açmaz.
+- **S260: GİRMEZ** (öneri; S-C5C-4) — farklı dosya (`routes/plans.mjs`), farklı kâhin (cari), para / taksitlendirme kuralı; WhatsApp'ın kime / kaç kezine dokunmaz. A seçilirse ayrı küçük tur
+  (P-3), Ç5-C ile paralel.
 
 ## 7. WHATSAPP KÂHİNİ BAKIMINA GİRDİ LİSTESİ (kural dilinde; ana oturum karar girdisine çevirir — kâhine iş listesi verilmez, ders 5)
 
@@ -164,15 +244,26 @@ Kâhin bugün S7 ailesini (S7, S7-a, S7-b, S16, S17, S22, S23, S29, S34) ve kara
 4. ELLE SEÇİM (S-C5C-7'ye göre): A ise elle işareti şüpheli VE söz etiketli kişiye uygulanır (kâhinin `supheli_elle` girdisi genelleşir: etiketli kişi listesi); tedarikçiye uygulanmaz (S-C5C-3 = A ise). Elle işaretli işte söz / şüpheli gönderim anında elemez; tutar şüphesiz gecikmiş (S17).
 5. GÖNDERİM ANI (S-C5C-5, S-C5C-6'ya göre): söz ve tür gönderim anında da denetlenir (S7-b düzeni); Devam Et, Sınır, Meta Bekletti 2. denemesi, Başarısızları Yeniden Dene aynı denetim.
 6. YİNE DE GÖNDER İÇERİĞİ (S-C5C-8'e göre): A ise hatırlatmada içerik gönderim anında yeniden hazırlanır ({{3}}/{{4}}/{{5}} gönderim anındaki); Ekstre'de donmuş içerik aynen.
-7. {{3}}: gecikmiş açık kalemlerin (şüpheli payı düşülmüş kalanı > 0) en eski vadesi; {{4}}: onların toplamı (net borçla sınırlı); {{5}}: gönderim anındaki bakiye (S7 caride {{5}} bugün `plan_susuyor` — B-7 öneri: güncel bakiye, şüpheli dahil; görünüm, soru değil).
+7. {{3}}: gecikmiş açık kalemlerin (şüpheli payı düşülmüş kalanı > 0) en eski vadesi; {{4}}: onların toplamı (net borçla sınırlı); {{5}}: gönderim anındaki bakiye (elle seçilmiş şüpheli caride kâhin bugün `plan_susuyor` — S-C5C-10'un yanıtıyla kesinleşir).
 8. DÖNEM: değişmez (gün; Zaten Kuyrukta günsüz). Sürüm geçişi senaryosu: aynı gün eski kuralla gitmiş hatırlatma → yeni kuralla aynı gün R3 (İLKEYLE 3).
 9. DEVİR (S-C5C-9'a göre; D6 bakımı ile aynı bakımda değil — D4b'den sonra ayrı): devir anında süren toplu iş; devir sonrası kimlik / kalem vadeleri aynı.
 10. Mutantlar (her yeni kural ≥ 1): söz günü hariç sayılırsa; tür okunmazsa; Diğer elenirse/elenmezse; şüpheli kaydı yerine kuyruk payı; elle işareti tedarikçiyi geçirirse; gönderim anında söz denetlenmezse; Yine de Gönder donmuş tutar.
 
 ## 8. DOĞRULANMADI / DENENMEYEN
 
-DOG_YERI
+- Büyük veride şüpheli kaydı açık, Ödeme Sözü süren, tedarikçi / Diğer'de gecikmişi olan cari YOK → bu sınıflar yalnız 14 carilik küçük senaryoda görüldü (her biri tek cari).
+- Önizlemenin kendisi (HTTP + sahte Meta) koşulmadı; "bugün" sütunu `overdueOf` + `eligibility`'nin aynı alanlarla yeniden okunmasıdır (kod değiştirilmedi, betikte birebir). Kod turu sınıf testini
+  gerçek önizlemeyle koşmalı.
+- Hız sayıları yük 6–7 altında (GEÇERSİZ); yalnız büyüklük fikri verir.
+- İkinci şirket (002) büyük veride okunmadı (yalnız 001).
+- Muhasebe (cari) kâhininin "hatirlatma" modelinin söz / tür / Diğer'i nasıl ele aldığı OKUNMADI (kâhin kodu ve README'si bu görevin okuma listesinde değil) — kâhin bakımında teyit.
+- Devir anında WhatsApp işçisinin bakım kipinde durup durmadığı (D3-D4 G7 "arka plan yazıcıları kapalı") doğrulanmadı → S-C5C-9 ve D4b'ye.
+- Arşiv görünümünde WhatsApp düğmelerinin kapalı olduğu (taslak 8.4) koddan doğrulanmadı (D5 henüz yok).
+- Yaygın muhasebe programlarının (Mikro, Netsis, Logo, AKINSOFT) hatırlatma davranışı: belgeleri / ekranları okunmadı — dayanak yazılmadı.
+DENENMEYEN: e2e / ekran (plan ajanı); tam `npm test` (görev gereği YOK); Windows.
 
 ## 9. SONRAKİ SÜRÜME (2.5.1'in içinde kovalanmaz — 20.11 kuralı)
 
-SONRA_YERI
+- `totals.overdue` alanının adı / anlamı (B-4: anlam değişmez; yeniden adlandırma ayrı iş).
+- Rapor Merkezi "Geciken taksiti olan" süzgecinin ADI (sayı zaten doğru) → müşteri isteğinin Rapor Merkezi turuna (2.5.1 içinde; Ç5-C değil).
+- Önizlemenin bugünkü hızı bütçeyi aşıyorsa (6d) ve Ç5-C kötüleştirmiyorsa → hız işi kullanıcı kararına; Ç5-C'yi bekletmez.
