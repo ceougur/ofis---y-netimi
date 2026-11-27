@@ -120,10 +120,11 @@ describe("S127 = A — eski kuralla donmuş yılın iki yanına düşen Excel ka
     const of = name => entries.find(entry => entry.id === `plan:${plans[name]}`);
     assert.equal(of("Kart Bir").date, "2025-10-01");
     assert.equal(of("Ters Kart").date, "2026-01-15");
-    assert.equal(of("Açık Kart").date, "2026-03-01", "iv: Kayıt Tarihi (S-KD-3 = B; yükleme günü değil)");
-    assert.equal(of("Kilitli Kart").date, "2025-06-01", "iii: Kayıt Tarihi (S-KD-3 = B; donmuş dönemde — karma okuma donmuş defterden)");
-    assert.equal(of("Kart İki").date, "2025-10-01", "ii-0: Kayıt Tarihi (bağlanmadan; donmuş dönemde)");
-    assert.equal(of("Ters Sıfır").date, "2026-01-20", "ters-0: Kayıt Tarihi (bağlanmadan; açık dönemde)");
+    // Kayıt Tarihi veri tabanından (v2.4.9'un yazdığı plans.registered_on; ilk vadeye göre ayarlanmış olabilir).
+    const registered = name => server.app.store.get("SELECT COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS day FROM plans WHERE name = ?", name).day;
+    for (const [name, label] of [["Açık Kart", "iv"], ["Kilitli Kart", "iii (donmuş dönemde — karma okuma donmuş defterden)"], ["Kart İki", "ii-0 (bağlanmadan)"], ["Ters Sıfır", "ters-0 (bağlanmadan)"]]) {
+      assert.equal(of(name).date, registered(name), `${label}: Kayıt Tarihi (S-KD-3 = B; yükleme günü değil)`);
+    }
     for (const entry of entries) assert.equal(entry.lines.reduce((sum, line) => sum + line.debit - line.credit, 0), 0, `${entry.id} dengesiz`);
   });
 
