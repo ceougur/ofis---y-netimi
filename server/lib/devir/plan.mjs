@@ -597,7 +597,8 @@ export function buildDevirPlan(facts, { option = "borc-alacak" } = {}) {
     stok: { urun: stock.length, degerMinor: sumOf(stock, "degerMinor"), eksi: stock.filter(row => row.eksi).length },
     kasaMinor: cash.minor,
     supheli: { kayit: doubtful.length, kalanMinor: sumOf(doubtful, "kalanMinor"), karsilikMinor: sumOf(doubtful, "karsilikMinor") },
-    hareket: { budanacak: sumOf(prune, "kOncesi"), tasinacak: sumOf(prune, "kSonrasi") },
+    // Hareket = budanır (B) ve açık olan kalır (A) tablolarının satırları; dokunulmaz (D) tablolar hareket sayılmaz (yeni yılda aynen; arşivde kopya).
+    hareket: { budanacak: sumOf(prune.filter(row => row.sinif !== "D"), "kOncesi"), tasinacak: sumOf(prune.filter(row => row.sinif !== "D"), "kSonrasi") },
   };
   return {
     surum: DEVIR_PLAN_VERSION,
