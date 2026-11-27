@@ -1,0 +1,31 @@
+yakalandı M293 ← C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme: C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme * [{}…] kontroller.K1.isler: elle {"T1/A5": "Atlandı", "T1/B5": "Atlandı"
+yakalandı M294 ← C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme: C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme * [{}…] kontroller.K1.isler: elle {"T1/A5": "Atlandı", "T1/B5": "Atlandı"
+yakalandı M295 ← C5C6-03-yine-de-gonder-hatirlatmada-guncel-tutar-ekstrede-ayni-ileti: C5C6-03-yine-de-gonder-hatirlatmada-guncel-tutar-ekstrede-ayni-ileti * [{}…] isler.T1/V8.degiskenler: elle ["Vedat Ödedi", "Deneme Ticaret Ltd. Şti.",
+yakalandı M296 ← C5C6-03-yine-de-gonder-hatirlatmada-guncel-tutar-ekstrede-ayni-ileti: C5C6-03-yine-de-gonder-hatirlatmada-guncel-tutar-ekstrede-ayni-ileti * [{}…] isler.T2/E8.degiskenler: elle ["Ece Ekstre", "Deneme Ticaret Ltd. Şti.", 
+yakalandı M297 ← C5C6-01-yine-de-ekle-soz-ve-supheli-iz-devam-ette-tasinir-tedarikci-asilmaz: C5C6-01-yine-de-ekle-soz-ve-supheli-iz-devam-ette-tasinir-tedarikci-asilmaz * [{}…] elenen: elle {"T1": {"V6": "odeme_sozu", "U6": "gecikmis_borc_yok"
+yakalandı M298 ← C5C6-01-yine-de-ekle-soz-ve-supheli-iz-devam-ette-tasinir-tedarikci-asilmaz: C5C6-01-yine-de-ekle-soz-ve-supheli-iz-devam-ette-tasinir-tedarikci-asilmaz * [{}…] isler.T1/Y6.durum: elle "Teslim Edildi" ≠ model "Atlandı"
+yakalandı M299 ← C5C5-04-basarisizlari-yeniden-dene-soz-tedarikci-atlanir-yine-de-ekle-izi-tasinir: C5C5-04-basarisizlari-yeniden-dene-soz-tedarikci-atlanir-yine-de-ekle-izi-tasinir * [{}…] isler.T1/F3.durum: elle "Teslim Edildi" ≠ model "Atlandı"
+yakalandı M300 ← C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer: C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer * [{}…] kontroller.K1.isler: elle {"T1/D1": "Teslim Edil
+yakalandı M301 ← C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer: C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer * [{}…] elenen: elle {"T4": {"D1": "daha_once_gonderildi
+yakalandı M302 ← C5C8-02-devri-geri-al-devirden-sonra-giden-ayni-gun-elenir-ertesi-gun-serbest: C5C8-02-devri-geri-al-devirden-sonra-giden-ayni-gun-elenir-ertesi-gun-serbest * [{}…] elenen: elle {"T5": {"R1": "daha_once_gonderildi", "R3": "daha_o
+yakalandı M303 ← C5C7-01-guncelleme-gunu-2-5-0-dan-almis-sorulur-kuyruktaki-is-yeni-kuralla: C5C7-01-guncelleme-gunu-2-5-0-dan-almis-sorulur-kuyruktaki-is-yeni-kuralla * [{}…] elenen: elle {"T3": {"G1": "daha_once_gonderildi"}} ≠ model {}
+yakalandı M304 ← C5C5-03-meta-bekletti-ikinci-deneme-ayni-icerik-soz-ve-tam-odeme-atlanir: C5C5-03-meta-bekletti-ikinci-deneme-ayni-icerik-soz-ve-tam-odeme-atlanir * [{}…] isler.T1/M1.degiskenler: elle ["Mine Bekletti", "Deneme Ticaret Ltd. 
+yakalandı M305 ← C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme: C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme * [{}…] isler.T1/E5.atlanma_nedeni: elle "istemiyor" ≠ model "pasif"
+yakalandı M306 ← C5C8-03-devri-yenile-defter-surer-arsivden-gonderim-yok: C5C8-03-devri-yenile-defter-surer-arsivden-gonderim-yok * [{}…] baslamadi: elle {"T4": "arsiv"} ≠ model {}
+yakalandı M307 ← C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer: C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer * [{}…] toplular.T2: elle {"durum": "durduruldu", "neden
+yakalandı M308 ← C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme: C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme * [{}…] kontroller.K1.isler: elle {"T1/A5": "Atlandı", "T1/B5": "Atlandı"
+yakalandı M309 ← C5C4-01-ayni-gun-ikinci-daha-once-gonderildi-elenen-almamis-ertesi-gun-serbest: C5C4-01-ayni-gun-ikinci-daha-once-gonderildi-elenen-almamis-ertesi-gun-serbest * [{}…] elenen: elle {"T1": {"Q4": "tedarikci", "R4": "odeme_sozu", "S4
+yakalandı M310 ← C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer: C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer * [{}…] devir_onu: elle {"DV1": {"durdurulacak": 3}} ≠ m
+yakalandı M311 ← C5C9-01-iki-sirkette-ayni-kisi-ayni-gun-iki-hatirlatma-daha-once-gonderildi-sirket-basina: C5C9-01-iki-sirkette-ayni-kisi-ayni-gun-iki-hatirlatma-daha-once-gonderildi-sirket-basina * [{}…] isler.T2/KB.degiskenler: elle ["Kaan Beta", "Beta Lt
+yakalandı M312 ← C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer: C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer * [{}…] devir_onu: elle {"DV1": {"durdurulacak": 3}} ≠ m
+yakalandı M313 ← C5C8-02-devri-geri-al-devirden-sonra-giden-ayni-gun-elenir-ertesi-gun-serbest: C5C8-02-devri-geri-al-devirden-sonra-giden-ayni-gun-elenir-ertesi-gun-serbest * [{}…] kontroller.K1.isler: elle {"T1/R1": "Teslim Edildi", "T2/R2": {"
+yakalandı M314 ← C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer: C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer * [{}…] devir_onu: elle {"DV1": {"durdurulacak": 3}} ≠ m
+yakalandı M315 ← C5C6-01-yine-de-ekle-soz-ve-supheli-iz-devam-ette-tasinir-tedarikci-asilmaz: C5C6-01-yine-de-ekle-soz-ve-supheli-iz-devam-ette-tasinir-tedarikci-asilmaz * [{}…] isler.T1/X6.durum: elle "Atlandı" ≠ model "Teslim Edildi"
+yakalandı M316 ← C5C4-02-gece-yarisini-gecen-is-gonderim-gunu-ve-gonderim-anindaki-tutar: C5C4-02-gece-yarisini-gecen-is-gonderim-gunu-ve-gonderim-anindaki-tutar * [{}…] elenen: elle {"T3": {"N4": "daha_once_gonderildi"}} ≠ model {}
+# mutant 24, yakalanan 24, yakalanmayan 0
+# tests 24
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

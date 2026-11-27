@@ -2158,10 +2158,15 @@ BNS = "190 / 0 ile duran toplu işin neden adı (hata kodu ya da 'Bağlantı Sü
 BKS = "190 / 0 alıp bekleyenlere dönen işin hata kodu karar metninde yok ('kalan kişilerle bekler')"
 S7S = "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"
 TASINAN_D = "Taşınan Veri — Durduruldu"
+# güncelleme 21 (README §26.4 S-W21-3): Meta Bekletti 2. denemesinden önce elle sayılan işin içeriği — taslak 5.2 ↔ S23 / S29 (iki okuma; kime / kaç kez aynı).
+# Güncelleme 22 (README §27 Y22-8): S-W21-3 = A — okuma KALKTI; sabit yalnız tarihsel (hiçbir beklentide kullanılmıyor)
+MBS = ("KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 "
+       "'2. deneme aynı içerikle' ↔ S23 / S29 'gönderim anında şüphesiz tutarla' (iki okuma; kime / kaç kez aynı)")
 YENI_250 = ("SW1", "SW2", "SD1837", "SD1915", "SW4", "S7", "S7A", "S7B", "S16", "S17", "NB5", "S22", "S23", "SW3", "S29", "S30", "S31", "S32",
             "S34", "S35", "S36", "S37", "S38", "S33", "S41", "S42", "S43",
             "S58", "S59", "S60", "S61", "S62", "S63",
-            "S70", "S71", "R3T")   # kahin_test I4: bu başlıklar "eski senaryo" değil (S7A, S7B: güncelleme 12; S16, S17, NB5: 13; S22: 14; S23, SW3: 15; S29–S32: 16; S33–S38, S41: 17; S42, S43: 18; S58–S63: 19; S70, S71, R3T: 20)
+            "S70", "S71", "R3T",
+            "C5C4", "C5C5", "C5C6", "C5C7", "C5C8", "C5C9", "SW21")   # kahin_test I4: bu başlıklar "eski senaryo" değil (SW21: güncelleme 22) (S7A, S7B: güncelleme 12; S16, S17, NB5: 13; S22: 14; S23, SW3: 15; S29–S32: 16; S33–S38, S41: 17; S42, S43: 18; S58–S63: 19; S70, S71, R3T: 20; C5C4–C5C9: 21)
 
 
 def SA_(**kw):
@@ -2893,7 +2898,9 @@ S("S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider", "S23",
    "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/MK": BEKLETTI}, "yeniden.Y2": s23_yanit("MK"),
    "kontroller.K2.isler": {"T1/A": "Teslim Edildi", "T1/MK": BEKLETTI}, "kontroller.K2.toplam_post": 3,
    "kontroller.K3.isler": {"T1/A": "Teslim Edildi", "T1/MK": "Teslim Edildi"},
-   "isler.T1/MK.degiskenler": ["Mine Bekletilen", FIRMA, "16.10.2026", "250,00 TL", SUS7], "isler.T1/MK.post": 3, "isler.T1/MK.atlanma_nedeni": None,
+   # güncelleme 21 (README §26.8): eski "16.10.2026 / 250,00 TL" → iki okuma (S-W21-3); güncelleme 22 (README §27.7): S-W21-3 = A — S23 gönderim anı: 16.10.2026 / 250,00 TL (B: 06.10.2026 / 650,00 TL — M321)
+   "isler.T1/MK.degiskenler": ["Mine Bekletilen", FIRMA, "16.10.2026", "250,00 TL", SUS7],
+   "isler.T1/MK.post": 3, "isler.T1/MK.atlanma_nedeni": None,
    "meta.post": {"A": 1, "MK": 3}, "bu_ay": {"W1": {"2026-10": ay_kova(2)}}},
   meta_davranis={"mesaj": {"MK": ["yanitsiz_kabul", "kabul", "kabul"]}, "kanca": {"MK": {"1": [], "2": K49, "3": K_STD}, "*": K_STD}})
 
@@ -3082,7 +3089,9 @@ S("S29-03-meta-bekletti-ikinci-denemede-tutar-dogar-net-borcla-sinirli", "S29",
    "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/MZ": BEKLETTI}, "yeniden.Y2": s23_yanit("MZ"),
    "kontroller.K2.isler": {"T1/A": "Teslim Edildi", "T1/MZ": BEKLETTI}, "kontroller.K2.toplam_post": 3,
    "kontroller.K3.isler": {"T1/A": "Teslim Edildi", "T1/MZ": "Teslim Edildi"},
-   "isler.T1/MZ.degiskenler": ["Mert Bekleme", FIRMA, "30.10.2026", "200,00 TL", SUS7], "isler.T1/MZ.post": 3, "isler.T1/MZ.atlanma_nedeni": None,
+   # güncelleme 21 (README §26.8): eski "30.10.2026 / 200,00 TL" → iki okuma (S-W21-3); güncelleme 22 (README §27.7): S-W21-3 = A — S29 gönderim anı: 30.10.2026 / 200,00 TL (B: 06.10.2026 / 400,00 TL — M321)
+   "isler.T1/MZ.degiskenler": ["Mert Bekleme", FIRMA, "30.10.2026", "200,00 TL", SUS7],
+   "isler.T1/MZ.post": 3, "isler.T1/MZ.atlanma_nedeni": None,
    "meta.post": {"A": 1, "MZ": 3}, "bu_ay": {"W1": {"2026-10": ay_kova(2)}}},
   meta_davranis={"mesaj": {"MZ": ["yanitsiz_kabul", "kabul", "kabul"]}, "kanca": {"MZ": {"1": [], "2": K49, "3": K_STD}, "*": K_STD}})
 
@@ -4098,6 +4107,421 @@ S("R3T-01-telefonsuz-daha-once-almis-uyari-sayisi-ve-son-tarih-tek-basina-uyari-
    "isler.T5/A.durum": TESLIM_E, "isler.T6/A.durum": TESLIM_E,
    "meta.post": {"A": 3, "C": 1}, "bu_ay": {"W1": {"2026-10": ay_kova(1), "2026-11": ay_kova(3)}}},
   meta_davranis={"kanca": {"*": K_STD}})
+
+
+# ======================================================================== kâhin güncellemesi 21 (2.5.1 Ç5-C, KULLANICI KARARI 27.11.2026 12:01 UTC "ÖNERİLERİNİ UYGULA" — README §26)
+# Elle beklenen YALNIZ ilke taslağından (kahin.KARARLAR C5C4…C5C9) ve README §26.2 yorumlarından (kodlamadan önce yazıldı). Kime / tutar / neden GİRDİ (`borc`, README §26.3 —
+# cari kâhininin sorusu; burada elle). Hesaplar her senaryonun açıklamasında.
+def bk(t, neden=None, vade=None, tutar=None, bakiye=None, etiketler=None, elle=None):
+    o = {"t": t, "neden": neden}
+    for k, v in (("vade", vade), ("tutar", tutar), ("bakiye", bakiye), ("etiketler", etiketler), ("elle", elle)):
+        if v is not None:
+            o[k] = v
+    return o
+
+
+def ell(vade=None, tutar=None, bakiye=None, neden=None):
+    o = {"neden": neden}
+    for k, v in (("vade", vade), ("tutar", tutar), ("bakiye", bakiye)):
+        if v is not None:
+            o[k] = v
+    return o
+
+
+def bc(id_, ad, tel, borc, **kw):
+    return cari(id_, ad, tel, [], borc=borc, **kw)
+
+
+def hd(ad, vade, tutar, bakiye=None, firma=FIRMA):
+    return [ad, firma, vade, tutar, tutar if bakiye is None else bakiye]
+
+
+def hb(t, etiket, secim, **kw):
+    return baslat(t, etiket, secim, sablon="hatirlatma", **kw)
+
+
+SOZ_ = "odeme_sozu"
+TED_ = "tedarikci"
+SUP_ = "supheli_alacak"
+GBY_ = "gecikmis_borc_yok"
+DEVIR_D = "Durduruldu (Devir)"
+DGS = ("Devri Geri Al: dönen dosyada devirle 'Durduruldu (Devir)' olmuş işin adı — 'Durduruldu (Devir)' kalır mı, 'Durduruldu (Geri Yükleme)' mi olur "
+       "(taslak 8.2 'dönen dosyadaki süren işler Durduruldu (Geri Yükleme)'; ikisinde de kendiliğinden sürmez)")
+SINIR_BEK = "Sınır Nedeniyle Bekliyor"
+
+# ---- C5C4: dönem = gün; elenen / Atlandı o gün almamış; gece yarısı ----
+S("C5C4-01-ayni-gun-ikinci-daha-once-gonderildi-elenen-almamis-ertesi-gun-serbest", "C5C4",
+  "30.10 10:00 Ödeme Hatırlatma P4, Q4, R4, S4: P4 gider (05.10.2026 / 600,00 TL — girdi); Q4 'Tedarikçi', R4 'Ödeme Sözü Var', S4 'Gecikmiş Borç Yok' ile elenir (2.5 adları; girdi). "
+  "11:00'de R4'ün sözü silinir (girdi: 400,00 TL). 12:00'de P4 + R4: P4 aynı gün almış → 'Daha Önce Gönderildi' (4.1; uyarı 1 kişi, son 30.10), R4 o gün ALMAMIŞ → gider (4.3 İLKEYLE 1). "
+  "13:00'de P4 uyarıda 'Yine de Gönder' ile gider (4.1). 31.10 10:00 P4 → ertesi gün serbest, uyarısız gider. P4'e 3, R4'e 1 ileti",
+  "C5C4 (4.1, 4.3, 2.5) + R3 + K1 ★5", [
+   bc("P4", "Pelin Dört", "0561 400 00 01", [bk("+0s", vade="05.10.2026", tutar="600.00", bakiye="600.00")]),
+   bc("Q4", "Kerem Tedarik", "0561 400 00 02", [bk("+0s", TED_)]),
+   bc("R4", "Rana Söz", "0561 400 00 03", [bk("+0s", SOZ_, elle=ell("01.10.2026", "400.00", "400.00")), bk("+1h", vade="01.10.2026", tutar="400.00", bakiye="400.00")]),
+   bc("S4", "Sinan Ödedi", "0561 400 00 04", [bk("+0s", GBY_)])],
+  [hb("+0s", "T1", ["P4", "Q4", "R4", "S4"]), hb("+2h", "T2", ["P4", "R4"]), hb("+3h", "T3", ["P4"], onceki="gonder"), hb("+1d", "T4", ["P4"])],
+  {"elenen": {"T1": {"Q4": TED_, "R4": SOZ_, "S4": GBY_}, "T2": {"P4": DO}}, "olusmadi": [],
+   "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}, "T3": {"sayi": 1, "son": "2026-10-30"}},
+   "isler.T1/P4.durum": TESLIM_E, "isler.T1/P4.degiskenler": hd("Pelin Dört", "05.10.2026", "600,00 TL"),
+   "isler.T2/R4.durum": TESLIM_E, "isler.T2/R4.degiskenler": hd("Rana Söz", "01.10.2026", "400,00 TL"),
+   "isler.T3/P4.durum": TESLIM_E, "isler.T4/P4.durum": TESLIM_E,
+   "meta.post": {"P4": 3, "R4": 1}, "bu_ay": {"W1": {"2026-10": ay_kova(4)}}},
+  meta_davranis={"kanca": {"*": K_STD}})
+
+S("C5C4-02-gece-yarisini-gecen-is-gonderim-gunu-ve-gonderim-anindaki-tutar", "C5C4",
+  "30.10 23:40 N4'ün hatırlatması açılır ve duraklatılır; 31.10 00:00'da girdi 500 → 1.250 TL olur (dün kesilen vadesiz fatura bugün gecikmiş — S-C5C-1 A, cari kâhini); 00:20 Devam Et → "
+  "N4 gönderim anındaki 1.250,00 TL ile gider (5.2), günü 31.10 (4.1: gün = iletinin gittiği gün). 23:41'de N5'e (30.10) gider. 00:30'da N4 + N5: N4 aynı gün (31.10) → 'Daha Önce Gönderildi' "
+  "(son 31.10), N5'in iletisi DÜN (30.10, yerel) → gider. UTC'de ikisi de 30.10 — yerel gün geçer",
+  "C5C4 (4.1, N30) + C5C5 (5.2) + K1 ★5 + §7a 20 yerel gün", [
+   bc("N4", "Nazlı Gece", "0561 400 00 11", [bk("+0s", vade="05.10.2026", tutar="500.00", bakiye="1250.00"), bk("+20m", vade="05.10.2026", tutar="1250.00", bakiye="1250.00")]),
+   bc("N5", "Nuri Önce", "0561 400 00 12", [bk("+0s", vade="10.10.2026", tutar="300.00", bakiye="300.00")])],
+  [hb("+0s", "T1", ["N4"]), olay("+0s", "duraklat", toplu="T1"), hb("+1m", "T2", ["N5"]), olay("+40m", "devam", toplu="T1"), hb("+50m", "T3", ["N4", "N5"])],
+  {"isler.T1/N4.durum": TESLIM_E, "isler.T1/N4.degiskenler": hd("Nazlı Gece", "05.10.2026", "1.250,00 TL"),
+   "elenen": {"T3": {"N4": DO}}, "onceki_uyari": {"T3": {"sayi": 1, "son": "2026-10-31"}},
+   "isler.T3/N5.durum": TESLIM_E, "isler.T3/N5.degiskenler": hd("Nuri Önce", "10.10.2026", "300,00 TL"),
+   "meta.post": {"N4": 1, "N5": 2}},
+  baslangic="2026-10-30T23:40:00+03:00", meta_davranis={"kanca": {"*": K_STD}})
+
+# ---- C5C5: kuyruktayken durum değişir — gönderim anı denetimi ----
+S("C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme", "C5C5",
+  "Hatırlatma A5…F5 açılır, hemen duraklatılır. 11:00'de (girdi) A5'e söz, B5 Tedarikçi, C5 600 → 250 TL, D5'e şüpheli kaydı, E5 hem Pasif hem İstemiyor (kart), F5 borcunu tümüyle öder. 12:00 Devam Et "
+  "(gönderim anı): A5 'Atlandı — Ödeme Sözü Var' (5.3 = S-C5C-5 A), B5 'Atlandı — Tedarikçi' (5.5 = S-C5C-6 A), C5 250,00 TL ile gider (5.2), D5 'Atlandı — Şüpheli Alacağı Var' (5.4), E5 'Atlandı — "
+  "İstemiyor' (5.6 + 2.5 sırası: İstemiyor Pasif'ten önce), F5 'Atlandı — Gecikmiş Borç Yok' (5.1). 13:00'de A5'in sözü silinir; yeni hatırlatma A5 + E5: A5 aynı gün gider (Atlandı almamış — 4.3; "
+  "Zaten Kuyrukta değil), E5 'İstemiyor' ile elenir (2.5)",
+  "C5C5 (5.1–5.6) + C5C4 (4.3, 2.5) + S7B", [
+   bc("A5", "Ahmet Söz", "0561 500 00 01", [bk("+0s", vade="05.10.2026", tutar="800.00", bakiye="800.00"),
+                                             bk("+1h", SOZ_, elle=ell("05.10.2026", "800.00", "800.00")), bk("+3h", vade="05.10.2026", tutar="800.00", bakiye="800.00")]),
+   bc("B5", "Banu Tedarik", "0561 500 00 02", [bk("+0s", vade="06.10.2026", tutar="700.00", bakiye="700.00"), bk("+1h", TED_, vade="06.10.2026", tutar="700.00", bakiye="700.00")]),
+   bc("C5", "Cem Kısmi", "0561 500 00 03", [bk("+0s", vade="07.10.2026", tutar="600.00", bakiye="600.00"), bk("+1h", vade="07.10.2026", tutar="250.00", bakiye="250.00")]),
+   bc("D5", "Derya Şüpheli", "0561 500 00 04", [bk("+0s", vade="08.10.2026", tutar="900.00", bakiye="900.00"), bk("+1h", SUP_, elle=ell("08.10.2026", "600.00", "900.00"))]),
+   bc("E5", "Erdem Pasif", "0561 500 00 05", [bk("+0s", vade="09.10.2026", tutar="500.00", bakiye="500.00")]),
+   bc("F5", "Filiz Ödedi", "0561 500 00 06", [bk("+0s", vade="10.10.2026", tutar="400.00", bakiye="400.00"), bk("+1h", GBY_)])],
+  [hb("+0s", "T1", ["A5", "B5", "C5", "D5", "E5", "F5"]), olay("+0s", "duraklat", toplu="T1"), olay("+1h", "cari", id="E5", pasif=True, istemiyor=True),
+   olay("+2h", "devam", toplu="T1"), kontrol("+2h30m", "K1"), hb("+3h", "T2", ["A5", "E5"])],
+  {"kontroller.K1.isler": {"T1/A5": ATL, "T1/B5": ATL, "T1/C5": TESLIM_E, "T1/D5": ATL, "T1/E5": ATL, "T1/F5": ATL},
+   "isler.T1/A5.atlanma_nedeni": SOZ_, "isler.T1/B5.atlanma_nedeni": TED_, "isler.T1/D5.atlanma_nedeni": SUP_, "isler.T1/E5.atlanma_nedeni": "istemiyor",
+   "isler.T1/F5.atlanma_nedeni": GBY_, "isler.T1/C5.degiskenler": hd("Cem Kısmi", "07.10.2026", "250,00 TL"),
+   "elenen": {"T2": {"E5": "istemiyor"}}, "isler.T2/A5.durum": TESLIM_E, "isler.T2/A5.degiskenler": hd("Ahmet Söz", "05.10.2026", "800,00 TL"),
+   "meta.post": {"A5": 1, "B5": 0, "C5": 1, "D5": 0, "E5": 0, "F5": 0}},
+  meta_davranis={"kanca": {"*": K_STD}})
+
+S("C5C5-02-sinir-nedeniyle-bekleyen-ertesi-gun-soz-atlanir-sonraki-gonderim-anindaki-tutarla", "C5C5",
+  "Günlük sınır 1: S1 hemen gider; S2 ve S3 'Sınır Nedeniyle Bekliyor'. 12:00'de S2'ye söz (girdi). 31.10 10:00'da (girdi) S3'ün tutarı 200 → 350 TL. Pencere açılınca (S1'in kabulünden 24 sa sonra) "
+  "S2 gönderim anında 'Atlandı — Ödeme Sözü Var' (5.3 — Sınır yolu da aynı denetimden), yer boşaldığı için S3 aynı anda 350,00 TL ile gider (5.2)",
+  "C5C5 (5.2, 5.3) + C5C4 (N30) + §6 W2 sınır", [
+   bc("S1", "Selin Bir", "0561 500 00 11", [bk("+0s", vade="11.10.2026", tutar="300.00", bakiye="300.00")]),
+   bc("S2", "Sevgi İki", "0561 500 00 12", [bk("+0s", vade="12.10.2026", tutar="450.00", bakiye="450.00"), bk("+2h", SOZ_, elle=ell("12.10.2026", "450.00", "450.00"))]),
+   bc("S3", "Serkan Üç", "0561 500 00 13", [bk("+0s", vade="13.10.2026", tutar="200.00", bakiye="200.00"), bk("+1d", vade="13.10.2026", tutar="350.00", bakiye="350.00")])],
+  [hb("+0s", "T1", ["S1", "S2", "S3"]), kontrol("+1h", "K1")],
+  {"kontroller.K1.isler": {"T1/S1": TESLIM_E, "T1/S2": SINIR_BEK, "T1/S3": SINIR_BEK},
+   "isler.T1/S2.durum": ATL, "isler.T1/S2.atlanma_nedeni": SOZ_, "isler.T1/S2.post": 0,
+   "isler.T1/S3.durum": TESLIM_E, "isler.T1/S3.degiskenler": hd("Serkan Üç", "13.10.2026", "350,00 TL"),
+   "meta.post": {"S1": 1, "S2": 0, "S3": 1}},
+  ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
+
+S("C5C5-03-meta-bekletti-ikinci-deneme-ayni-icerik-soz-ve-tam-odeme-atlanir", "C5C5",
+  "Üç kişiye hatırlatma; Meta üçüne de 131049 (Meta Bekletti) döner. 12:00'de (girdi) M1 800 → 300 TL öder, M2'ye söz, M3 borcunu tümüyle öder. 24 sa sonra 2. denemeler: M1 1. denemenin "
+  "İÇERİĞİYLE (800,00 TL — 5.2 'o an hazırlanan içerik donar, Meta Bekletti'nin 2. denemesi aynı içerikle') gider; M2 'Atlandı — Ödeme Sözü Var' (5.3 — 2. deneme aynı denetimden), M3 'Atlandı — "
+  "Gecikmiş Borç Yok' (5.1). POST: M1 2, M2 1, M3 1",
+  "C5C5 (5.1, 5.2, 5.3) + §7a 14 + K7", [
+   bc("M1", "Mine Bekletti", "0561 500 00 21", [bk("+0s", vade="14.10.2026", tutar="800.00", bakiye="800.00"), bk("+2h", vade="14.10.2026", tutar="300.00", bakiye="300.00")]),
+   bc("M2", "Murat Söz", "0561 500 00 22", [bk("+0s", vade="15.10.2026", tutar="500.00", bakiye="500.00"), bk("+2h", SOZ_, elle=ell("15.10.2026", "500.00", "500.00"))]),
+   bc("M3", "Melek Ödedi", "0561 500 00 23", [bk("+0s", vade="16.10.2026", tutar="200.00", bakiye="200.00"), bk("+2h", GBY_)])],
+  [hb("+0s", "T1", ["M1", "M2", "M3"]), kontrol("+1h", "K1")],
+  {"kontroller.K1.isler": {"T1/M1": BEKLETTI, "T1/M2": BEKLETTI, "T1/M3": BEKLETTI},
+   "isler.T1/M1.durum": TESLIM_E, "isler.T1/M1.degiskenler": hd("Mine Bekletti", "14.10.2026", "800,00 TL"), "isler.T1/M1.post": 2,
+   "isler.T1/M2.durum": ATL, "isler.T1/M2.atlanma_nedeni": SOZ_, "isler.T1/M2.post": 1,
+   "isler.T1/M3.durum": ATL, "isler.T1/M3.atlanma_nedeni": GBY_, "isler.T1/M3.post": 1,
+   "meta.post": {"M1": 2, "M2": 1, "M3": 1}},
+  meta_davranis={"mesaj": {"M1": [{"hata": 131049}, "kabul"], "M2": [{"hata": 131049}], "M3": [{"hata": 131049}]}, "kanca": {"*": K_STD}})
+
+S("C5C5-04-basarisizlari-yeniden-dene-soz-tedarikci-atlanir-yine-de-ekle-izi-tasinir", "C5C5",
+  "Hatırlatma F1, F2 ve 'Yine de Ekle' ile elle seçilen F3 (söz; elle tutar 1.000,00 TL — girdi): üçü de 131021 ile Başarısız. 11:00'de F1'e söz, F2 Tedarikçi (girdi). 12:00 Başarısızları Yeniden "
+  "Dene: üçü alınır (söz / Tedarikçi denetimi gönderim anında); F1 'Atlandı — Ödeme Sözü Var', F2 'Atlandı — Tedarikçi' (5.3, 5.5 — yeniden deneme aynı denetimden); F3'ün elle izi yeniden denemeye "
+  "taşınır (6.1 = S-C5C-7 A) → 1.000,00 TL ile gider",
+  "C5C5 (5.3, 5.5) + C5C6 (6.1) + §6 W4", [
+   bc("F1", "Ferhat Bir", "0561 500 00 31", [bk("+0s", vade="17.10.2026", tutar="300.00", bakiye="300.00"), bk("+1h", SOZ_, elle=ell("17.10.2026", "300.00", "300.00"))]),
+   bc("F2", "Fulya İki", "0561 500 00 32", [bk("+0s", vade="18.10.2026", tutar="400.00", bakiye="400.00"), bk("+1h", TED_)]),
+   bc("F3", "Fikret Üç", "0561 500 00 33", [bk("+0s", SOZ_, elle=ell("19.10.2026", "1000.00", "1000.00"))])],
+  [hb("+0s", "T1", ["F1", "F2", "F3"], yine_de_ekle=["F3"]), kontrol("+1h", "K1"), olay("+2h", "basarisizlari_yeniden_dene", toplu="T1", etiket="Y1")],
+  {"kontroller.K1.isler": {"T1/F1": "Başarısız", "T1/F2": "Başarısız", "T1/F3": "Başarısız"},
+   "yeniden.Y1": {"elenen": {}, "alinan": ["F1", "F2", "F3"], "oneri": None},
+   "isler.T1/F1.durum": ATL, "isler.T1/F1.atlanma_nedeni": SOZ_, "isler.T1/F2.durum": ATL, "isler.T1/F2.atlanma_nedeni": TED_,
+   "isler.T1/F3.durum": TESLIM_E, "isler.T1/F3.degiskenler": hd("Fikret Üç", "19.10.2026", "1.000,00 TL"),
+   "meta.post": {"F1": 1, "F2": 1, "F3": 2}},
+  meta_davranis={"mesaj": {"F1": [{"hata": 131021}], "F2": [{"hata": 131021}], "F3": [{"hata": 131021}, "kabul"]}, "kanca": {"*": K_STD}})
+
+S("C5C5-05-yine-de-gonderden-sonra-soz-verilir-gonderim-aninda-atlanir-soz-gecince-asil-iste-gider", "C5C5",
+  "W5'in hatırlatması Sonucu Belirsiz. 11:00'de işteki Yine de Gönder (o an söz YOK) ve toplu iş duraklatılır. 12:00'de söz verilir (girdi, 01.11 10:00'a kadar). 13:00 Devam Et: gönderim anında "
+  "'Atlandı — Ödeme Sözü Var' (5.3 = S-C5C-5 A; S22'nin söz karşılığı). 14:00'de yeni hatırlatma: W5 'Ödeme Sözü Var' ile elenir (2.5: Söz, Sonucu Belirsiz'den önce). Söz geçince (01.11 11:00) "
+  "asıl işte Yine de Gönder → alınır, 650,00 TL ile gider (yol — ilke 4). POST 2",
+  "C5C5 (5.3) + C5C6 (6.4) + C5C4 (2.5) + S22 + G0 (2, 4)", [
+   bc("W5", "Volkan Belirsiz", "0561 500 00 41", [bk("+0s", vade="20.10.2026", tutar="650.00", bakiye="650.00"),
+                                                  bk("+2h", SOZ_, elle=ell("20.10.2026", "650.00", "650.00")), bk("+2d", vade="20.10.2026", tutar="650.00", bakiye="650.00")])],
+  [hb("+0s", "T1", ["W5"]), olay("+1h", "yine_de_gonder", toplu="T1", cari="W5", etiket="Y1"), olay("+1h", "duraklat", toplu="T1"),
+   olay("+3h", "devam", toplu="T1"), kontrol("+3h30m", "K1"), hb("+4h", "T2", ["W5"]),
+   olay("+2d1h", "yine_de_gonder", toplu="T1", cari="W5", etiket="Y2", hedef="asil")],
+  {"yeniden.Y1": {"elenen": {}, "alinan": ["W5"], "oneri": None}, "kontroller.K1.isler": {"T1/W5": ATL},
+   "elenen": {"T2": {"W5": SOZ_}}, "olusmadi": ["T2"], "yeniden.Y2": {"elenen": {}, "alinan": ["W5"], "oneri": None},
+   "isler.T1/W5.durum": TESLIM_E, "isler.T1/W5.post": 2, "isler.T1/W5.degiskenler": hd("Volkan Belirsiz", "20.10.2026", "650,00 TL"),
+   "meta.post": {"W5": 2}},
+  meta_davranis={"mesaj": {"W5": ["yanitsiz_kabul", "kabul"]}, "kanca": {"T1/W5": {"1": [], "*": K_STD}}})
+
+# ---- C5C6: elle seçim ("Yine de Ekle") ve Yine de Gönder ----
+S("C5C6-01-yine-de-ekle-soz-ve-supheli-iz-devam-ette-tasinir-tedarikci-asilmaz", "C5C6",
+  "Hatırlatma Y6 (söz), Z6 (şüpheli), V6 (söz, işaretsiz), U6 (şüpheli, elle değerde borç yok), X6 (şüpheli): 'Yine de Ekle' Y6, Z6, U6, X6. Başlatma: V6 'Ödeme Sözü Var', U6 'Gecikmiş Borç Yok' "
+  "(S7-a düzeni) ile elenir; Y6, Z6, X6 elle iş. Toplu iş duraklatılır; 10:30'da X6 Tedarikçi olur (girdi). 11:00 Devam Et: Y6 elle tutarla 1.000,00 TL (söz — borcun tamamı, girdi), Z6 şüphesiz "
+  "300,00 TL / bakiye 900,00 TL (S-C5C-10 A — girdi) ile gider (iz Devam Et'te taşınır — 6.1); X6 'Atlandı — Tedarikçi' (elle iz Tedarikçi'yi aşmaz — S-C5C-3 A)",
+  "C5C6 (6.1) + C5C5 (5.5) + S7 + S7A", [
+   bc("Y6", "Yasin Söz", "0561 600 00 01", [bk("+0s", SOZ_, elle=ell("21.10.2026", "1000.00", "1000.00"))]),
+   bc("Z6", "Zehra Şüpheli", "0561 600 00 02", [bk("+0s", SUP_, elle=ell("22.10.2026", "300.00", "900.00"))]),
+   bc("V6", "Veli Söz", "0561 600 00 03", [bk("+0s", SOZ_, elle=ell("23.10.2026", "200.00", "200.00"))]),
+   bc("U6", "Ufuk Elle Yok", "0561 600 00 04", [bk("+0s", SUP_, elle=ell(neden=GBY_))]),
+   bc("X6", "Xenia Tedarik", "0561 600 00 05", [bk("+0s", SUP_, elle=ell("24.10.2026", "150.00", "500.00")),
+                                                bk("+30m", TED_, etiketler=[TED_, SUP_], elle=ell("24.10.2026", "150.00", "500.00"))])],
+  [hb("+0s", "T1", ["Y6", "Z6", "V6", "U6", "X6"], yine_de_ekle=["Y6", "Z6", "U6", "X6"]), olay("+0s", "duraklat", toplu="T1"), olay("+1h", "devam", toplu="T1")],
+  {"elenen": {"T1": {"V6": SOZ_, "U6": GBY_}},
+   "isler.T1/Y6.durum": TESLIM_E, "isler.T1/Y6.degiskenler": hd("Yasin Söz", "21.10.2026", "1.000,00 TL"),
+   "isler.T1/Z6.durum": TESLIM_E, "isler.T1/Z6.degiskenler": hd("Zehra Şüpheli", "22.10.2026", "300,00 TL", "900,00 TL"),
+   "isler.T1/X6.durum": ATL, "isler.T1/X6.atlanma_nedeni": TED_,
+   "meta.post": {"X6": 0, "Y6": 1, "Z6": 1}},
+  meta_davranis={"kanca": {"*": K_STD}})
+
+S("C5C6-02-sonucu-belirsiz-supheli-acilir-yine-de-gonder-elle-yine-de-ekle-belirsizi-asmaz", "C5C6",
+  "U7'nin hatırlatması Sonucu Belirsiz; 11:00'de şüpheli kaydı açılır (girdi: elle 300,00 TL, bakiye 900,00 TL). 11:30 yeni hatırlatma 'Yine de Ekle' ile: şüpheli aşılır ama 'Sonucu Belirsiz' "
+  "ile elenir (6.4); 11:40 işaretsiz: 'Şüpheli Alacağı Var' (2.5 — Şüpheli Sonucu Belirsiz'den önce). 12:00 işteki Yine de Gönder: şüpheli kaydı açık → ELLE (6.2 = S16), onay penceresinde "
+  "'Şüpheli Alacağı Var', 300,00 TL / 900,00 TL ile gider",
+  "C5C6 (6.2, 6.4) + C5C4 (2.5) + S16 + D1 + E3", [
+   bc("U7", "Umut Belirsiz", "0561 600 00 11", [bk("+0s", vade="23.10.2026", tutar="900.00", bakiye="900.00"), bk("+1h", SUP_, elle=ell("23.10.2026", "300.00", "900.00"))])],
+  [hb("+0s", "T1", ["U7"]), hb("+1h30m", "T2", ["U7"], yine_de_ekle=["U7"]), hb("+1h40m", "T3", ["U7"]),
+   olay("+2h", "yine_de_gonder", toplu="T1", cari="U7", etiket="Y1")],
+  {"elenen": {"T2": {"U7": "sonucu_belirsiz"}, "T3": {"U7": SUP_}}, "olusmadi": ["T2", "T3"],
+   "yeniden.Y1": {"elenen": {}, "alinan": ["U7"], "oneri": None, "supheli_etiketi": ["U7"]},
+   "isler.T1/U7.durum": TESLIM_E, "isler.T1/U7.post": 2, "isler.T1/U7.degiskenler": hd("Umut Belirsiz", "23.10.2026", "300,00 TL", "900,00 TL"),
+   "meta.post": {"U7": 2}},
+  meta_davranis={"mesaj": {"U7": ["yanitsiz_kabul", "kabul"]}, "kanca": {"T1/U7": {"1": [], "*": K_STD}}})
+
+S("C5C6-03-yine-de-gonder-hatirlatmada-guncel-tutar-ekstrede-ayni-ileti", "C5C6",
+  "30.10'da V8'e 1.000,00 TL'lik hatırlatma ve E8'e Ekim ekstresi (2.000,00 TL) Sonucu Belirsiz. 01.11'de V8 400 TL öder (girdi: 600 TL) ve E8'e 31.10 tarihli 500 TL tahsilat girer. 02.11'de iki "
+  "işte Yine de Gönder: hatırlatma GÖNDERİM ANINDAKİ tutarla 600,00 TL (6.3 = S-C5C-8 A), Ekstre AYNI ileti — açılıştaki 2.000,00 TL (6.3 'Ekstre'de aynı ileti AYNEN', J12)",
+  "C5C6 (6.3) + J12 + Y9d-2", [
+   bc("V8", "Vedat Ödedi", "0561 600 00 21", [bk("+0s", vade="10.10.2026", tutar="1000.00", bakiye="1000.00"), bk("+2d", vade="10.10.2026", tutar="600.00", bakiye="600.00")]),
+   cari("E8", "Ece Ekstre", "0561 600 00 22", [("2026-10-05", 2000, 0)])],
+  [hb("+0s", "T1", ["V8"]), baslat("+0s", "T2", ["E8"]), olay("+2d", "cari", id="E8", hareket_ekle={"tarih": "2026-10-31", "borc": 0, "alacak": 500}),
+   olay("+3d", "yine_de_gonder", toplu="T1", cari="V8", etiket="Y1"), olay("+3d", "yine_de_gonder", toplu="T2", cari="E8", etiket="Y2")],
+  {"yeniden.Y1": {"elenen": {}, "alinan": ["V8"], "oneri": None}, "yeniden.Y2": {"elenen": {}, "alinan": ["E8"], "oneri": None},
+   "isler.T1/V8.durum": TESLIM_E, "isler.T1/V8.post": 2, "isler.T1/V8.degiskenler": hd("Vedat Ödedi", "10.10.2026", "600,00 TL"),
+   "isler.T2/E8.durum": TESLIM_E, "isler.T2/E8.post": 2, "isler.T2/E8.degiskenler": ["Ece Ekstre", FIRMA, DON, "2.000,00 TL"],
+   "isler.T2/E8.pdf.donem_sonu_bakiye": "2000.00"},
+  meta_davranis={"mesaj": {"V8": ["yanitsiz_kabul", "kabul"], "E8": ["yanitsiz_kabul", "kabul"]},
+                 "kanca": {"T1/V8": {"1": [], "*": K_STD}, "T2/E8": {"1": [], "*": K_STD}}})
+
+# ---- C5C7: sürüm geçişi ----
+S("C5C7-01-guncelleme-gunu-2-5-0-dan-almis-sorulur-kuyruktaki-is-yeni-kuralla", "C5C7",
+  "10:00 (2.5.0) G1'e hatırlatma gider (600,00 TL — 2.5.0'ın kime / tutarı girdide); G2 + G3'ün işi açılıp duraklatılır. 11:00 sürüm geçişi; girdi yeni kurala döner: G1 1.100 TL, G2 söz, G3 "
+  "450 TL. 12:00 Devam Et: G2 'Atlandı — Ödeme Sözü Var', G3 450,00 TL (7.3 — kuyruktaki 2.5.0 işi gönderim anında YENİ kuralla). 13:00 G1 (daha büyük tutarla da) 'Daha Önce Gönderildi' "
+  "(7.1 — defter güncellemeyle silinmez); 31.10 G1 1.100,00 TL ile gider",
+  "C5C7 (7.1, 7.3) + C5C5 (5.3) + C5C4 (4.1)", [
+   bc("G1", "Gül Önce", "0561 700 00 01", [bk("+0s", vade="05.10.2026", tutar="600.00", bakiye="600.00"), bk("+1h", vade="05.10.2026", tutar="1100.00", bakiye="1100.00")]),
+   bc("G2", "Gürkan Söz", "0561 700 00 02", [bk("+0s", vade="06.10.2026", tutar="300.00", bakiye="300.00"), bk("+1h", SOZ_, elle=ell("06.10.2026", "300.00", "300.00"))]),
+   bc("G3", "Gamze Yeni", "0561 700 00 03", [bk("+0s", vade="07.10.2026", tutar="200.00", bakiye="200.00"), bk("+1h", vade="07.10.2026", tutar="450.00", bakiye="450.00")])],
+  [hb("+0s", "T1", ["G1"]), hb("+0s", "T2", ["G2", "G3"]), olay("+0s", "duraklat", toplu="T2"), olay("+1h", "surum_gecisi", surum="2.5.1"),
+   olay("+2h", "devam", toplu="T2"), hb("+3h", "T3", ["G1"]), hb("+1d", "T4", ["G1"])],
+  {"isler.T1/G1.degiskenler": hd("Gül Önce", "05.10.2026", "600,00 TL"),
+   "isler.T2/G2.durum": ATL, "isler.T2/G2.atlanma_nedeni": SOZ_, "isler.T2/G3.durum": TESLIM_E, "isler.T2/G3.degiskenler": hd("Gamze Yeni", "07.10.2026", "450,00 TL"),
+   "elenen": {"T3": {"G1": DO}}, "olusmadi": ["T3"], "onceki_uyari": {"T3": {"sayi": 1, "son": "2026-10-30"}},
+   "isler.T4/G1.durum": TESLIM_E, "isler.T4/G1.degiskenler": hd("Gül Önce", "05.10.2026", "1.100,00 TL"),
+   "meta.post": {"G1": 2, "G2": 0, "G3": 1}},
+  meta_davranis={"kanca": {"*": K_STD}})
+
+S("C5C7-02-kuyruktaki-2-5-0-isi-tedarikci-atlanir-eski-elle-supheli-izi-kalir", "C5C7",
+  "2.5.0'da açılıp duraklatılmış hatırlatma: H1 (2.5.0'da taksit gecikmişiyle listede — girdi), H2 şüpheli ve 2.5.0'ın elle seçimiyle (eski girdi adı `supheli_elle`; elle 250,00 TL / bakiye 700,00 TL). "
+  "11:00 sürüm geçişi; girdi: H1 Tedarikçi (2.5.1 kuralı), H2 aynı. 12:00 Devam Et: H1 'Atlandı — Tedarikçi' (7.3 + 5.5), H2 elle izle 250,00 TL / 700,00 TL ile gider",
+  "C5C7 (7.3) + C5C5 (5.5) + C5C6 (6.1) + S7", [
+   bc("H1", "Hakan Tedarik", "0561 700 00 11", [bk("+0s", vade="08.10.2026", tutar="500.00", bakiye="500.00"), bk("+1h", TED_)]),
+   bc("H2", "Hande Şüpheli", "0561 700 00 12", [bk("+0s", SUP_, elle=ell("09.10.2026", "250.00", "700.00"))])],
+  [hb("+0s", "T1", ["H1", "H2"], supheli_elle=["H2"]), olay("+0s", "duraklat", toplu="T1"), olay("+1h", "surum_gecisi", surum="2.5.1"), olay("+2h", "devam", toplu="T1")],
+  {"isler.T1/H1.durum": ATL, "isler.T1/H1.atlanma_nedeni": TED_,
+   "isler.T1/H2.durum": TESLIM_E, "isler.T1/H2.degiskenler": hd("Hande Şüpheli", "09.10.2026", "250,00 TL", "700,00 TL"),
+   "meta.post": {"H1": 0, "H2": 1}},
+  meta_davranis={"kanca": {"*": K_STD}})
+
+# ---- C5C8: devir, Devri Geri Al, Devri Yenile, arşiv ----
+S("C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer", "C5C8",
+  "Şirket A: D1'e hatırlatma gider; D2 + D3'ün hatırlatması ve D5'in Ekim ekstresi açılıp duraklatılır; D6'nın iletisi Meta Kabul Etti / Gönderildi (teslim bildirimi yok). Şirket B: B1'in hatırlatması "
+  "duraklatılmış. 11:00 devir (A): ön denetim 'N kişilik gönderim durdurulacak' = 3 (D2, D3, D5 — BAŞ MİMAR EKİ); A'nın süren / duraklatılmış işleri 'Durduruldu (Devir)' (S-C5C-9 A; Ekstre de — "
+  "karar metni ayrım yapmaz), toplu işler durur; D6'nın gitmiş iletisi değişmez. 12:00 Devam Et sürdürmez. B'nin işi DEĞİŞMEZ (9.1 / 9.2). 13:00 yeni hatırlatma D1, D2, D3, D6: D1 ve D6 aynı gün "
+  "almış → 'Daha Önce Gönderildi' (8.1 — defter dokunulmaz; uyarı 2 kişi), D2 ve D3 almamış (ilke 1) → gider",
+  "C5C8 (8.1) + C5C9 (9.1, 9.2) + ilke 1", [
+   bc("D1", "Dilek Gitti", "0561 800 00 01", [bk("+0s", vade="01.10.2026", tutar="500.00", bakiye="500.00")]),
+   bc("D2", "Doğan Bekler", "0561 800 00 02", [bk("+0s", vade="02.10.2026", tutar="400.00", bakiye="400.00")]),
+   bc("D3", "Duygu Bekler", "0561 800 00 03", [bk("+0s", vade="03.10.2026", tutar="300.00", bakiye="300.00")]),
+   cari("D5", "Deniz Ekstre", "0561 800 00 05", [("2026-10-05", 700, 0)]),
+   bc("D6", "Defne Kabul", "0561 800 00 06", [bk("+0s", vade="06.10.2026", tutar="250.00", bakiye="250.00")]),
+   bc("B1", "Bora Beta", "0562 800 00 01", [bk("+0s", vade="07.10.2026", tutar="150.00", bakiye="150.00")], sirket="B")],
+  [hb("+0s", "T1", ["D1"]), hb("+0s", "T2", ["D2", "D3"]), olay("+0s", "duraklat", toplu="T2"), baslat("+0s", "T3", ["D5"]), olay("+0s", "duraklat", toplu="T3"),
+   hb("+0s", "T5", ["D6"]), hb("+0s", "T6", ["B1"], sirket="B"), olay("+0s", "duraklat", toplu="T6"),
+   olay("+1h", "devir", sirket="A", ad="DV1"), kontrol("+1h30m", "K1"), olay("+2h", "devam", toplu="T2"), hb("+3h", "T4", ["D1", "D2", "D3", "D6"])],
+  {"devir_onu": {"DV1": {"durdurulacak": 3}},
+   "kontroller.K1.isler": {"T1/D1": TESLIM_E, "T2/D2": DEVIR_D, "T2/D3": DEVIR_D, "T3/D5": DEVIR_D, "T5/D6": "Gönderildi", "T6/B1": "Duraklatıldı"},
+   "kontroller.K1.toplular": {"T1": "aktif", "T2": "durduruldu", "T3": "durduruldu", "T5": "aktif", "T6": "duraklatildi"},
+   "toplular.T2": {"durum": "durduruldu", "neden": DEVIR_D, "is_sayisi": 2},
+   "elenen": {"T4": {"D1": DO, "D6": DO}}, "onceki_uyari": {"T4": {"sayi": 2, "son": "2026-10-30"}},
+   "isler.T2/D2.durum": DEVIR_D, "isler.T4/D2.durum": TESLIM_E, "isler.T4/D3.durum": TESLIM_E,
+   "isler.T4/D2.degiskenler": hd("Doğan Bekler", "02.10.2026", "400,00 TL", firma="Alfa Ltd."),
+   "meta.post": {"B1": 0, "D1": 1, "D2": 1, "D3": 1, "D5": 0, "D6": 1}},
+  **iki_sirket(), meta_davranis={"kanca": {"T5/D6": YANLIZ_KS, "*": K_STD}})
+
+S("C5C8-02-devri-geri-al-devirden-sonra-giden-ayni-gun-elenir-ertesi-gun-serbest", "C5C8",
+  "R1'e hatırlatma gider; R2'nin işi duraklatılmış. 11:00 devir (R2 'Durduruldu (Devir)'; uyarı 1). Yeni yıl dosyasında 12:00'de R3'e gider, R4'ün işi duraklatılır. 13:00 Devri Geri Al: dosya devir "
+  "anındaki kopyaya döner — R3 / R4'ün işleri dosyadan çıkar (R3'ün iletisi defterde kalır — D7), R2'nin işi 'Durduruldu (Devir)' ya da 'Durduruldu (Geri Yükleme)' (README §26.2 8.2 — iki okuma, "
+  "kendiliğinden sürmez). 14:00 yeni hatırlatma R1–R4: R1 ve R3 aynı gün almış → 'Daha Önce Gönderildi' (8.2; uyarı 2), R2 ve R4 almamış → gider; 31.10 R3 serbest",
+  "C5C8 (8.2) + D7 + §7a 26 + ilke 1, 3, 5", [
+   bc("R1", "Rıza Bir", "0561 800 00 11", [bk("+0s", vade="04.10.2026", tutar="100.00", bakiye="100.00")]),
+   bc("R2", "Reyhan İki", "0561 800 00 12", [bk("+0s", vade="05.10.2026", tutar="200.00", bakiye="200.00")]),
+   bc("R3", "Recep Üç", "0561 800 00 13", [bk("+0s", vade="06.10.2026", tutar="300.00", bakiye="300.00")]),
+   bc("R4", "Rukiye Dört", "0561 800 00 14", [bk("+0s", vade="07.10.2026", tutar="400.00", bakiye="400.00")])],
+  [hb("+0s", "T1", ["R1"]), hb("+0s", "T2", ["R2"]), olay("+0s", "duraklat", toplu="T2"), olay("+1h", "devir", sirket="A", ad="DV1"),
+   hb("+2h", "T3", ["R3"]), hb("+2h", "T4", ["R4"]), olay("+2h", "duraklat", toplu="T4"), olay("+3h", "devri_geri_al", sirket="A"), kontrol("+3h30m", "K1"),
+   hb("+4h", "T5", ["R1", "R2", "R3", "R4"]), hb("+1d", "T6", ["R3"])],
+  {"devir_onu": {"DV1": {"durdurulacak": 1}},
+   "kontroller.K1.isler": {"T1/R1": TESLIM_E, "T2/R2": {"secenek": [DEVIR_D, GERI], "susuyor": DGS}},
+   "isler.T3/R3": "<YOK>", "isler.T4/R4": "<YOK>",
+   "elenen": {"T5": {"R1": DO, "R3": DO}}, "onceki_uyari": {"T5": {"sayi": 2, "son": "2026-10-30"}},
+   "isler.T5/R2.durum": TESLIM_E, "isler.T5/R4.durum": TESLIM_E, "isler.T6/R3.durum": TESLIM_E,
+   "meta.post": {"R1": 1, "R2": 1, "R3": 1, "R4": 1}, "meta.toplam_post": 5},
+  meta_davranis={"kanca": {"*": K_STD}}, bilinen_ihlal=GERI_IHLAL)
+
+S("C5C8-03-devri-yenile-defter-surer-arsivden-gonderim-yok", "C5C8",
+  "Y8'e hatırlatma gider; 11:00 devir (durdurulacak 0); 12:00 aynı gün → 'Daha Önce Gönderildi'; 13:00 Devri Yenile (yeniden devir, durdurulacak 0); 14:00 yine 'Daha Önce Gönderildi' (8.3 İLKEYLE 3 — "
+  "defter dokunulmaz); 15:00 arşivden (geçmiş yıl) başlatma → başlamaz (8.4); 31.10 serbest",
+  "C5C8 (8.1, 8.3, 8.4) + C5C4 (4.1)", [
+   bc("Y8", "Yaşar Yenile", "0561 800 00 21", [bk("+0s", vade="08.10.2026", tutar="350.00", bakiye="350.00")])],
+  [hb("+0s", "T1", ["Y8"]), olay("+1h", "devir", sirket="A", ad="DV1"), hb("+2h", "T2", ["Y8"]), olay("+3h", "devir", sirket="A", ad="DV2"), hb("+4h", "T3", ["Y8"]),
+   hb("+5h", "T4", ["Y8"], arsiv=True), hb("+1d", "T5", ["Y8"])],
+  {"devir_onu": {"DV1": {"durdurulacak": 0}, "DV2": {"durdurulacak": 0}}, "baslamadi": {"T4": "arsiv"},
+   "elenen": {"T2": {"Y8": DO}, "T3": {"Y8": DO}}, "olusmadi": ["T2", "T3"],
+   "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}, "T3": {"sayi": 1, "son": "2026-10-30"}},
+   "isler.T5/Y8.durum": TESLIM_E, "meta.post": {"Y8": 2}},
+  meta_davranis={"kanca": {"*": K_STD}})
+
+# ---- C5C9: iki şirket ----
+S("C5C9-01-iki-sirkette-ayni-kisi-ayni-gun-iki-hatirlatma-daha-once-gonderildi-sirket-basina", "C5C9",
+  "Aynı telefonlu kişi şirket A'da KA (Alfa Ltd., 300,00 TL), şirket B'de KB (Beta Ltd., 120,00 TL) carisi; aynı gün ikisine de hatırlatma gider (9.1 — farklı firma, farklı borç). 12:00'de A'da KA, "
+  "B'de KB yeniden → her şirkette kendi 'Daha Önce Gönderildi'si (şirket başına)",
+  "C5C9 (9.1, 9.2) + R3 + K2", [
+   bc("KA", "Kaan Alfa", "0561 900 00 01", [bk("+0s", vade="11.10.2026", tutar="300.00", bakiye="300.00")]),
+   bc("KB", "Kaan Beta", "0561 900 00 01", [bk("+0s", vade="12.10.2026", tutar="120.00", bakiye="120.00")], sirket="B")],
+  [hb("+0s", "T1", ["KA"]), hb("+1m", "T2", ["KB"], sirket="B"), hb("+2h", "T3", ["KA"]), hb("+2h", "T4", ["KB"], sirket="B")],
+  {"isler.T1/KA.degiskenler": hd("Kaan Alfa", "11.10.2026", "300,00 TL", firma="Alfa Ltd."),
+   "isler.T2/KB.degiskenler": hd("Kaan Beta", "12.10.2026", "120,00 TL", firma="Beta Ltd."),
+   "isler.T2/KB.durum": TESLIM_E, "elenen": {"T3": {"KA": DO}, "T4": {"KB": DO}}, "olusmadi": ["T3", "T4"],
+   "meta.post": {"KA": 1, "KB": 1}},
+  **iki_sirket(), meta_davranis={"kanca": {"*": K_STD}})
+
+
+# ======================================================================== kâhin güncellemesi 22 (2.5.1 Ç5-C, KULLANICI KARARI 27.11.2026 17:01 UTC "önerilerini uygula" — S-W21-1 / 2 / 3 = A; README §27)
+# Elle beklenen YALNIZ karar girdisinden (kahin.KARARLAR SW21; c5c2-kararlar.md §1.1, §4) ve README §27.2 yorumlarından (kodlamadan önce yazıldı ve commit'lendi). Kime / tutar / neden GİRDİ (`borc`).
+# Hesaplar her senaryonun açıklamasında. T0 = 30.10.2026 10:00 (İstanbul).
+S("SW21-01-sonucu-belirsiz-yine-de-gonder-suren-soz-elle-gider-ayni-gun-bir-ertesi-gun-serbest", "SW21",
+  "P1'in hatırlatması (1.000,00 TL) Sonucu Belirsiz; 11:00'de 20.10'a söz verilir (girdi: elle değer borcun tamamı 1.000,00 TL — taslak 2.3). 12:00 işteki Yine de Gönder: söz SÜRÜYOR → elle "
+  "seçim sayılır (S-W21-1 = A, Y22-1/2), onay penceresinde 'Ödeme Sözü Var' (Y22-3 → soz_etiketi), ileti gönderim anındaki elle tutarla 05.10.2026 / 1.000,00 TL gider (POST 2; B olsaydı "
+  "'Atlandı — Ödeme Sözü Var', POST 1). 13:00 yeni hatırlatma: 'Ödeme Sözü Var' ile elenir (2.5); 13:10 'Yine de Ekle' ile: söz aşılır ama o gün ileti gitti → 'Daha Önce Gönderildi' (4.1; uyarı 1, "
+  "son 30.10; 6.4 elle seçim bunu aşmaz) — aynı gün en çok bir (onaylı Yine de Gönder dışında). 31.10 10:00 'Yine de Ekle' ile ertesi gün serbest → 1.000,00 TL gider. P1'e 3 POST",
+  "SW21 (S-W21-1) + C5C6 (6.1, 6.4) + C5C4 (4.1, 2.5) + S16 (Y13-4) + H1 + K1 ★5", [
+   bc("P1", "Pınar Söz", "0561 700 00 01", [bk("+0s", vade="05.10.2026", tutar="1000.00", bakiye="1000.00"),
+                                            bk("+1h", SOZ_, elle=ell("05.10.2026", "1000.00", "1000.00"))])],
+  [hb("+0s", "T1", ["P1"]), olay("+2h", "yine_de_gonder", toplu="T1", cari="P1", etiket="Y1"),
+   hb("+3h", "T2", ["P1"]), hb("+3h10m", "T3", ["P1"], yine_de_ekle=["P1"]), hb("+1d", "T4", ["P1"], yine_de_ekle=["P1"])],
+  {"yeniden.Y1": {"elenen": {}, "alinan": ["P1"], "oneri": None, "soz_etiketi": ["P1"]},
+   "isler.T1/P1.durum": TESLIM_E, "isler.T1/P1.post": 2, "isler.T1/P1.degiskenler": hd("Pınar Söz", "05.10.2026", "1.000,00 TL"),
+   "elenen": {"T2": {"P1": SOZ_}, "T3": {"P1": DO}}, "olusmadi": ["T2", "T3"], "onceki_uyari": {"T3": {"sayi": 1, "son": "2026-10-30"}},
+   "isler.T4/P1.durum": TESLIM_E, "isler.T4/P1.degiskenler": hd("Pınar Söz", "05.10.2026", "1.000,00 TL"),
+   "meta.post": {"P1": 3}},
+  meta_davranis={"mesaj": {"P1": ["yanitsiz_kabul", "kabul", "kabul"]}, "kanca": {"T1/P1": {"1": [], "*": K_STD}, "*": K_STD}})
+
+S("SW21-02-bekleyen-belirsizlik-onayli-iste-soz-asil-iste-yeniden-basma-elle-ikinci-deneme-gonderim-anindaki-tutar", "SW21",
+  "Q1'in hatırlatması Sonucu Belirsiz; 11:00'de işteki Yine de Gönder (söz YOK): ileti 06.10.2026 / 400,00 TL / bakiye 650,00 TL ile hazırlanır, Meta Bekletti (131049). 12:00'de söz verilir (girdi: "
+  "elle değer borcun tamamı 650,00 TL). 14:00 asıl işte yeniden Yine de Gönder: S23'ün söz karşılığı (S-W21-1 = A 'aynı kural bekleyen belirsizlik onaylı işte …'; Y22-4) — bekleyen iş elle "
+  "sayılır (elle_sayilan + soz_etiketi), yeni iş açılmaz, F1 uygulanmaz, Meta Bekletti beklemesi sürer (POST 2). 31.10 ~10:00 2. deneme: iz değişti → S-W21-3 = A: içerik gönderim anında "
+  "elle değerlerle 06.10.2026 / 650,00 TL / 650,00 TL (B olsaydı donmuş 400,00 TL). Gün dönümü: ileti 31.10'da gitti → 31.10 11:10 'Yine de Ekle' ile yeni hatırlatma 'Daha Önce Gönderildi' "
+  "(uyarı 1, son 31.10). POST 3",
+  "SW21 (S-W21-1, S-W21-3) + S23 (Y15-1…4) + C5C5 (5.2) + C5C4 (4.1, N30) + §7a 14", [
+   bc("Q1", "Kaan Söz Bekletilen", "0561 700 00 11", [bk("+0s", vade="06.10.2026", tutar="400.00", bakiye="650.00"),
+                                                      bk("+2h", SOZ_, elle=ell("06.10.2026", "650.00", "650.00"))])],
+  [hb("+0s", "T1", ["Q1"]), olay("+1h", "yine_de_gonder", toplu="T1", cari="Q1", etiket="Y1"), kontrol("+3h", "K1"),
+   olay("+4h", "yine_de_gonder", toplu="T1", cari="Q1", etiket="Y2", hedef="asil"), kontrol("+5h", "K2"), kontrol("+25h5m", "K3"),
+   hb("+25h10m", "T2", ["Q1"], yine_de_ekle=["Q1"])],
+  {"yeniden.Y1": {"elenen": {}, "alinan": ["Q1"], "oneri": None},
+   "kontroller.K1.isler": {"T1/Q1": BEKLETTI},
+   "yeniden.Y2": {"elenen": {}, "alinan": [], "oneri": None, "soz_etiketi": ["Q1"], "elle_sayilan": ["Q1"]},
+   "kontroller.K2.isler": {"T1/Q1": BEKLETTI}, "kontroller.K2.toplam_post": 2,
+   "kontroller.K3.isler": {"T1/Q1": TESLIM_E},
+   "isler.T1/Q1.degiskenler": hd("Kaan Söz Bekletilen", "06.10.2026", "650,00 TL", "650,00 TL"), "isler.T1/Q1.post": 3,
+   "elenen": {"T2": {"Q1": DO}}, "olusmadi": ["T2"], "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-31"}},
+   "meta.post": {"Q1": 3}},
+  meta_davranis={"mesaj": {"Q1": ["yanitsiz_kabul", "kabul", "kabul"]}, "kanca": {"Q1": {"1": [], "2": K49, "3": K_STD}, "*": K_STD}})
+
+S("SW21-03-yine-de-ekle-sonradan-gelen-etiketle-atlanir-baslatmada-iki-etiket-birlikte-asilir-ayni-gun-yol", "SW21",
+  "Hatırlatma X1 (söz), X2 (şüpheli), X3 (Şüpheli + Söz birlikte), X4 (Şüpheli + Söz, işaretsiz); 'Yine de Ekle' X1, X2, X3. Başlatma: X4 'Şüpheli Alacağı Var' ile elenir (2.5 sırasının ilki); "
+  "toplu iş duraklatılır. 10:30'da X1'e şüpheli kaydı açılır, X2'ye söz verilir (girdi). 11:00 Devam Et (gönderim anı — S-W21-2 = A, Y22-5): X1 'Atlandı — Şüpheli Alacağı Var', X2 'Atlandı — "
+  "Ödeme Sözü Var' (iz yalnız işaretlendiği andaki etiketi aşar); X3'ün izi iki etiketi birlikte aşar (Y22-7) → elle değerlerle 22.10.2026 / 250,00 TL / 800,00 TL gider. 12:00 yeni hatırlatma, "
+  "'Yine de Ekle' X1, X2 (o anki iki etiket birlikte aşılır): Atlandı o gün almamış (ilke 1, 4.3) → X1 20.10.2026 / 700,00 TL / 1.000,00 TL, X2 21.10.2026 / 300,00 TL / 900,00 TL gider "
+  "(çıkmaz yok — ilke 4); X4 yine 'Şüpheli Alacağı Var'. POST: X1 1, X2 1, X3 1",
+  "SW21 (S-W21-2) + C5C6 (6.1) + C5C5 (5.3, 5.4) + C5C4 (4.3, 2.5) + G0 (1, 4)", [
+   bc("X1", "Ayşe Sözlü", "0561 700 00 21", [bk("+0s", SOZ_, elle=ell("20.10.2026", "1000.00", "1000.00")),
+                                              bk("+30m", SUP_, etiketler=[SUP_, SOZ_], elle=ell("20.10.2026", "700.00", "1000.00"))]),
+   bc("X2", "Bora Şüpheli", "0561 700 00 22", [bk("+0s", SUP_, elle=ell("21.10.2026", "300.00", "900.00")),
+                                                bk("+30m", SUP_, etiketler=[SUP_, SOZ_], elle=ell("21.10.2026", "300.00", "900.00"))]),
+   bc("X3", "Cansu İki Etiket", "0561 700 00 23", [bk("+0s", SUP_, etiketler=[SUP_, SOZ_], elle=ell("22.10.2026", "250.00", "800.00"))]),
+   bc("X4", "Deniz İki Etiket", "0561 700 00 24", [bk("+0s", SUP_, etiketler=[SUP_, SOZ_], elle=ell("23.10.2026", "150.00", "600.00"))])],
+  [hb("+0s", "T1", ["X1", "X2", "X3", "X4"], yine_de_ekle=["X1", "X2", "X3"]), olay("+0s", "duraklat", toplu="T1"), olay("+1h", "devam", toplu="T1"),
+   kontrol("+1h30m", "K1"), hb("+2h", "T2", ["X1", "X2", "X4"], yine_de_ekle=["X1", "X2"])],
+  {"elenen": {"T1": {"X4": SUP_}, "T2": {"X4": SUP_}}, "olusmadi": [],
+   "kontroller.K1.isler": {"T1/X1": ATL, "T1/X2": ATL, "T1/X3": TESLIM_E},
+   "isler.T1/X1.atlanma_nedeni": SUP_, "isler.T1/X2.atlanma_nedeni": SOZ_, "isler.T1/X1.post": 0, "isler.T1/X2.post": 0,
+   "isler.T1/X3.degiskenler": hd("Cansu İki Etiket", "22.10.2026", "250,00 TL", "800,00 TL"),
+   "isler.T2/X1.durum": TESLIM_E, "isler.T2/X1.degiskenler": hd("Ayşe Sözlü", "20.10.2026", "700,00 TL", "1.000,00 TL"),
+   "isler.T2/X2.durum": TESLIM_E, "isler.T2/X2.degiskenler": hd("Bora Şüpheli", "21.10.2026", "300,00 TL", "900,00 TL"),
+   "meta.post": {"X1": 1, "X2": 1, "X3": 1}},
+  meta_davranis={"kanca": {"*": K_STD}})
+
+S("SW21-04-yine-de-gonder-basma-anindaki-iki-etiket-birlikte-asilir-elle-iz-degismeyen-meta-bekletti-ayni-icerik", "SW21",
+  "Y1'in hatırlatması (500,00 TL) Sonucu Belirsiz; 10:30'da Y1'e şüpheli kaydı açılır VE söz verilir (girdi: elle 200,00 TL / 500,00 TL). 11:00 işteki Yine de Gönder: basma anındaki iki etiket "
+  "birlikte aşılır (S16 + S-W21-1 = A; S-W21-2 'işaretlendiği andaki etiketler' — Y22-2), onay penceresinde ikisi ('Şüpheli Alacağı Var', 'Ödeme Sözü Var'), ileti 07.10.2026 / 200,00 TL / "
+  "500,00 TL gider (POST 2). Z1 'Yine de Ekle' (söz, elle 1.000,00 TL) ile seçilir; Meta Bekletti (131049); 12:00'de Z1 200 TL öder (girdi: elle 800,00 TL), söz sürer; 31.10 10:00 2. deneme: elle iz "
+  "DEĞİŞMEDİ → 5.2 aynen, 1. denemenin içeriği 19.10.2026 / 1.000,00 TL (S-W21-3 = A 'elle iz değişmediyse 5.2 aynen'). POST: Y1 2, Z1 2",
+  "SW21 (S-W21-1, S-W21-2, S-W21-3) + S16 (Y13-4) + C5C5 (5.2) + C5C6 (6.1) + §7a 14", [
+   bc("Y1", "Emre İki Etiket", "0561 700 00 31", [bk("+0s", vade="07.10.2026", tutar="500.00", bakiye="500.00"),
+                                                  bk("+30m", SUP_, etiketler=[SUP_, SOZ_], elle=ell("07.10.2026", "200.00", "500.00"))]),
+   bc("Z1", "Figen Söz Bekletti", "0561 700 00 32", [bk("+0s", SOZ_, elle=ell("19.10.2026", "1000.00", "1000.00")),
+                                                     bk("+2h", SOZ_, elle=ell("19.10.2026", "800.00", "800.00"))])],
+  [hb("+0s", "T1", ["Y1"]), hb("+0s", "T2", ["Z1"], yine_de_ekle=["Z1"]), olay("+1h", "yine_de_gonder", toplu="T1", cari="Y1", etiket="Y1"),
+   kontrol("+3h", "K1"), kontrol("+1d1h", "K2")],
+  {"yeniden.Y1": {"elenen": {}, "alinan": ["Y1"], "oneri": None, "supheli_etiketi": ["Y1"], "soz_etiketi": ["Y1"]},
+   "isler.T1/Y1.durum": TESLIM_E, "isler.T1/Y1.post": 2, "isler.T1/Y1.degiskenler": hd("Emre İki Etiket", "07.10.2026", "200,00 TL", "500,00 TL"),
+   "kontroller.K1.isler": {"T1/Y1": TESLIM_E, "T2/Z1": BEKLETTI}, "kontroller.K2.isler": {"T1/Y1": TESLIM_E, "T2/Z1": TESLIM_E},
+   "isler.T2/Z1.post": 2, "isler.T2/Z1.degiskenler": hd("Figen Söz Bekletti", "19.10.2026", "1.000,00 TL"),
+   "meta.post": {"Y1": 2, "Z1": 2}},
+  meta_davranis={"mesaj": {"Y1": ["yanitsiz_kabul", "kabul"], "Z1": [{"hata": 131049}, "kabul"]}, "kanca": {"T1/Y1": {"1": [], "*": K_STD}, "*": K_STD}})
+
+S("SW21-05-soz-icin-elle-bekleyen-ise-supheli-asil-iste-yeniden-basma-s23-iz-iki-etiketi-asar", "SW21",
+  "W1 'Yine de Ekle' ile (söz; elle 900,00 TL) seçilir; ileti Sonucu Belirsiz. 11:00 işteki Yine de Gönder: söz sürüyor (iz zaten aşıyor) → alınır, onayda 'Ödeme Sözü Var' (Y22-3), ileti 10.10.2026 / "
+  "900,00 TL ile hazırlanır, Meta Bekletti. 12:00'de şüpheli kaydı açılır (girdi: elle 500,00 TL / 900,00 TL). 14:00 asıl işte yeniden Yine de Gönder: iz basma anındaki Şüpheli'yi aşmıyor → S23 "
+  "(Y22-4 genel okuma): bekleyen iş elle sayılır, iz iki etiketi aşar (elle_sayilan + supheli_etiketi + soz_etiketi), F1 uygulanmaz. 31.10 2. deneme: iz değişti → S-W21-3 = A: gönderim anında "
+  "elle değerlerle 10.10.2026 / 500,00 TL / 900,00 TL (iletide şüpheli tutar yok; B olsaydı donmuş 900,00 TL). POST 3",
+  "SW21 (S-W21-1, S-W21-2, S-W21-3) + S23 (Y15-1…4) + C5C6 (6.1) + §7a 14", [
+   bc("W1", "Gül Söz Şüpheli", "0561 700 00 41", [bk("+0s", SOZ_, elle=ell("10.10.2026", "900.00", "900.00")),
+                                                  bk("+2h", SUP_, etiketler=[SUP_, SOZ_], elle=ell("10.10.2026", "500.00", "900.00"))])],
+  [hb("+0s", "T1", ["W1"], yine_de_ekle=["W1"]), olay("+1h", "yine_de_gonder", toplu="T1", cari="W1", etiket="Y1"), kontrol("+3h", "K1"),
+   olay("+4h", "yine_de_gonder", toplu="T1", cari="W1", etiket="Y2", hedef="asil"), kontrol("+25h5m", "K2")],
+  {"yeniden.Y1": {"elenen": {}, "alinan": ["W1"], "oneri": None, "soz_etiketi": ["W1"]},
+   "kontroller.K1.isler": {"T1/W1": BEKLETTI},
+   "yeniden.Y2": {"elenen": {}, "alinan": [], "oneri": None, "supheli_etiketi": ["W1"], "soz_etiketi": ["W1"], "elle_sayilan": ["W1"]},
+   "kontroller.K2.isler": {"T1/W1": TESLIM_E},
+   "isler.T1/W1.degiskenler": hd("Gül Söz Şüpheli", "10.10.2026", "500,00 TL", "900,00 TL"), "isler.T1/W1.post": 3,
+   "meta.post": {"W1": 3}},
+  meta_davranis={"mesaj": {"W1": ["yanitsiz_kabul", "kabul", "kabul"]}, "kanca": {"W1": {"1": [], "2": K49, "3": K_STD}, "*": K_STD}})
 
 
 # ======================================================================== üretim / denetim

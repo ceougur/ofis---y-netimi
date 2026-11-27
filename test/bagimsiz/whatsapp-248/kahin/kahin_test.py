@@ -54,6 +54,17 @@ Bölümler:
      S61-a girdileri (işteki / asıl işte Yine de Gönder) S71 ile `telefonsuz` + iş Sonucu Belirsiz (M284 ayrışır); 1 yıl dolumunda Atlandı işe teslim (Y20-4, gerçek kurulumda oluşamaz) Teslim Edildi;
      R3T İstemiyor / Geçersiz numarayı saymaz (Y20-17 KÂHİN SUSUYOR — kâhinin okuması), M289 telefonsuzu da saymaz; S71 + açık şüpheli kaydı etiketi (Y13-4); S59-a / S61-a hata metinleri yok;
      S70 ≥ 5, S71 ≥ 2, R3T (başlık + kaynak) ≥ 3 senaryo
+  I18 (güncelleme 21, 2.5.1 Ç5-C — README §26): borç girdisi doğrulaması (Tedarikçi'ye / etiketsize Yine de Ekle, geç başlayan girdi, 2.5 sırası dışı neden, eksik değer); KULLANICIYA SORULMALI
+     S-W21-1 (Yine de Gönder + süren söz) ve S-W21-2 (çapraz etiket; başlatmada iki etiket) hata verir, B seçeneği (M293) aynı girdide hesaplanır; S-W21-3 (mb_elle) ve Devri Geri Al (devir_geri)
+     okumalarında kime / kaç kez alanları AYNI; yeni girdiler yalnız C5C başlıklarında; her C5C başlığı ≥ 2 senaryo.
+     Güncelleme 22 (S-W21-1 / 2 / 3 = A — README §27): (b) eski hata girdileri artık A sonucunu verir (S-W21-1: elle, 'Ödeme Sözü Var' etiketi, POST 2; S-W21-2: 'Atlandı — Şüpheli Alacağı Var';
+     S-W21-2 (b): iki etiket birlikte aşılır, elle değerlerle gider) ve B mutantları (M317, M318, M319) aynı girdide ayrışır; hata metinleri yok; (c) `mb_elle` okuması yok, S23-04 / S29-03 tek değerli
+     (M321 ile karar metnindeki B sayıları 650 / 400 TL), Devri Geri Al (devir_geri) iki okumada kime / kaç kez AYNI; `soz_etiketi` yalnız SW21 senaryolarında; SW21 ≥ 5 senaryo
+  I19 (güncelleme 21): tohumlu rastgele üretici (C5C_TOHUMLAR, C5C_SAYI; varsayılan 2511,2512 × 120) — değişmezler: aynı şirket + cari + yerel gün en çok bir hatırlatma (R3 Yine de Gönder dışında),
+     ilke 1 ('Daha Önce Gönderildi' yalnız o gün Meta'ya gerçekten ileti gittiyse), ilke 4 (Şüpheli / Söz ile elenen ya da atlanan Yine de Ekle ile, Tedarikçi Ekstre ile, Daha Önce Gönderildi R3 Yine de
+     Gönder ile o nedenle elenmez — karşı-olgu koşuları). Güncelleme 22: üretici çapraz etiket (Şüpheli ↔ Söz, iki etiket birlikte) ve işteki / asıl işteki Yine de Gönder üretir;
+     (1)'in istisnasına onaylı işteki Yine de Gönder girer; yeni değişmez (4) S-W21-2 A: "Atlandı — <etiket>" yalnız işin herhangi bir işaretleme anında (Yine de Ekle başlatması, kabul edilen /
+     elle sayılan Yine de Gönder basışı) kişide OLMAYAN etiketle; (5) S-W21-1 A: söz sürerken kabul edilen Yine de Gönder yanıtında 'Ödeme Sözü Var' etiketi
 """
 import copy
 import json
@@ -523,6 +534,41 @@ MUTASYON_IPUCU = {
     "M290": "R3T-01-telefonsuz-daha-once-almis-uyari-sayisi-ve-son-tarih-tek-basina-uyari-sonraki-donem-yok",
     "M291": "R3T-01-telefonsuz-daha-once-almis-uyari-sayisi-ve-son-tarih-tek-basina-uyari-sonraki-donem-yok",
     "M292": "R3T-01-telefonsuz-daha-once-almis-uyari-sayisi-ve-son-tarih-tek-basina-uyari-sonraki-donem-yok",
+    # güncelleme 21 (2.5.1 Ç5-C, README §26)
+    "M293": "C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme",
+    "M294": "C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme",
+    "M295": "C5C6-03-yine-de-gonder-hatirlatmada-guncel-tutar-ekstrede-ayni-ileti",
+    "M296": "C5C6-03-yine-de-gonder-hatirlatmada-guncel-tutar-ekstrede-ayni-ileti",
+    "M297": "C5C6-01-yine-de-ekle-soz-ve-supheli-iz-devam-ette-tasinir-tedarikci-asilmaz",
+    "M298": "C5C6-01-yine-de-ekle-soz-ve-supheli-iz-devam-ette-tasinir-tedarikci-asilmaz",
+    "M299": "C5C5-04-basarisizlari-yeniden-dene-soz-tedarikci-atlanir-yine-de-ekle-izi-tasinir",
+    "M300": "C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer",
+    "M301": "C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer",
+    "M302": "C5C8-02-devri-geri-al-devirden-sonra-giden-ayni-gun-elenir-ertesi-gun-serbest",
+    "M303": "C5C7-01-guncelleme-gunu-2-5-0-dan-almis-sorulur-kuyruktaki-is-yeni-kuralla",
+    "M304": "C5C5-03-meta-bekletti-ikinci-deneme-ayni-icerik-soz-ve-tam-odeme-atlanir",
+    "M305": "C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme",
+    "M306": "C5C8-03-devri-yenile-defter-surer-arsivden-gonderim-yok",
+    "M307": "C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer",
+    "M308": "C5C5-01-devam-et-soz-tedarikci-kismi-odeme-supheli-istemiyor-pasif-tam-odeme",
+    "M309": "C5C4-01-ayni-gun-ikinci-daha-once-gonderildi-elenen-almamis-ertesi-gun-serbest",
+    "M310": "C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer",
+    "M311": "C5C9-01-iki-sirkette-ayni-kisi-ayni-gun-iki-hatirlatma-daha-once-gonderildi-sirket-basina",
+    "M312": "C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer",
+    "M313": "C5C8-02-devri-geri-al-devirden-sonra-giden-ayni-gun-elenir-ertesi-gun-serbest",
+    "M314": "C5C8-01-devir-suren-ve-duraklatilmis-durduruldu-devir-gonderilmeyen-almamis-obur-sirket-surer",
+    "M315": "C5C6-01-yine-de-ekle-soz-ve-supheli-iz-devam-ette-tasinir-tedarikci-asilmaz",
+    "M316": "C5C4-02-gece-yarisini-gecen-is-gonderim-gunu-ve-gonderim-anindaki-tutar",
+    # güncelleme 22 (README §27.6)
+    "M317": "SW21-01-sonucu-belirsiz-yine-de-gonder-suren-soz-elle-gider-ayni-gun-bir-ertesi-gun-serbest",
+    "M318": "SW21-03-yine-de-ekle-sonradan-gelen-etiketle-atlanir-baslatmada-iki-etiket-birlikte-asilir-ayni-gun-yol",
+    "M319": "SW21-03-yine-de-ekle-sonradan-gelen-etiketle-atlanir-baslatmada-iki-etiket-birlikte-asilir-ayni-gun-yol",
+    "M320": "SW21-04-yine-de-gonder-basma-anindaki-iki-etiket-birlikte-asilir-elle-iz-degismeyen-meta-bekletti-ayni-icerik",
+    "M321": "SW21-02-bekleyen-belirsizlik-onayli-iste-soz-asil-iste-yeniden-basma-elle-ikinci-deneme-gonderim-anindaki-tutar",
+    "M322": "SW21-04-yine-de-gonder-basma-anindaki-iki-etiket-birlikte-asilir-elle-iz-degismeyen-meta-bekletti-ayni-icerik",
+    "M323": "SW21-02-bekleyen-belirsizlik-onayli-iste-soz-asil-iste-yeniden-basma-elle-ikinci-deneme-gonderim-anindaki-tutar",
+    "M324": "SW21-05-soz-icin-elle-bekleyen-ise-supheli-asil-iste-yeniden-basma-s23-iz-iki-etiketi-asar",
+    "M325": "SW21-01-sonucu-belirsiz-yine-de-gonder-suren-soz-elle-gider-ayni-gun-bir-ertesi-gun-serbest",
 }
 
 
@@ -680,7 +726,8 @@ def _i2():
     for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5", "G6", "H1", "H2", "H3", "H4",
               "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J11", "J12", "W1", "W2", "W3",
               "SW1", "SW2", "SD1837", "SD1915", "SW4", "S7", "S7A", "S7B", "S16", "S17", "NB5", "S22", "S23", "SW3", "S29", "S30", "S31", "S32",
-              "S34", "S35", "S36", "S37", "S38", "S33", "S41", "S42", "S43", "S58", "S59", "S60", "S61", "S62", "S63", "S70", "S71", "R3T"):
+              "S34", "S35", "S36", "S37", "S38", "S33", "S41", "S42", "S43", "S58", "S59", "S60", "S61", "S62", "S63", "S70", "S71", "R3T",
+              "C5C4", "C5C5", "C5C6", "C5C7", "C5C8", "C5C9", "SW21"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
@@ -926,7 +973,7 @@ def _i10():
     # (e) supheli_etiketi yalnız S16 senaryolarının (güncelleme 14: ve S22'nin yolu S16 ile yeniden basma — README §19 Y14-4) yanıtında (Y13-4; eski çıktılar değişmez)
     for s in TUM:
         for e, y in (beklenen(s)[0]["sonuc"].get("yeniden") or {}).items():
-            if "supheli_etiketi" in y and s["baslik"] not in ("S16", "S22", "S23", "S29", "S34"):  # güncelleme 15: S23 (Y15-2); 16: S29; 17: S34 (S16 ilk basma)
+            if "supheli_etiketi" in y and s["baslik"] not in ("S16", "S22", "S23", "S29", "S34", "C5C6", "SW21"):   # 22: SW21 (S16 + S-W21-1 birlikte)  # güncelleme 15: S23 (Y15-2); 16: S29; 17: S34 (S16 ilk basma); 21: C5C6 (6.2 = S16, borç girdisiyle)
                 h.append(f"{s['ad']} {e}: S16 / S22 / S23 / S29 / S34 dışı yanıtta supheli_etiketi")
     # (f) net eleme adı iki seçenekli (Y13-7) ve en az bir senaryoda başlatmada + gönderim anında
     ne = kahin.Benzetim.NET_ENGEL
@@ -1053,8 +1100,8 @@ def _i12():
         if s["baslik"] not in ("SW3", "S30", "S31", "S32", "S35", "S36", "S37", "S38", "S42", "S59", "S60", "S61", "S62", "S70", "S71") and (any("icerik_silindi" in j for j in r.get("isler", {}).values())
                                                                                                  or any("icerik" in k for k in r.get("kontroller", {}).values())):
             h.append(f"{s['ad']}: SW3 / S30–S32 / S35–S38 / S42 / S59–S62 / S70–S71 dışında icerik_silindi / kontrol içerik")   # güncelleme 17: S35–S38 (silme); 18: S42; 19: S59–S62; 20: S70, S71
-        if s["baslik"] not in ("S23", "S29") and any("elle_sayilan" in y for y in (r.get("yeniden") or {}).values()):
-            h.append(f"{s['ad']}: S23 / S29 dışında elle_sayilan")
+        if s["baslik"] not in ("S23", "S29", "SW21") and any("elle_sayilan" in y for y in (r.get("yeniden") or {}).values()):   # güncelleme 22: SW21 (S23'ün söz karşılığı — Y22-4)
+            h.append(f"{s['ad']}: S23 / S29 / SW21 dışında elle_sayilan")
     sw3 = [s for s in TUM if s["baslik"] == "SW3"]
     s23 = [s for s in TUM if s["baslik"] == "S23"]
     if len(sw3) < 5 or len(s23) < 5:
@@ -1184,8 +1231,9 @@ def _i14():
             return None
     # (a) S34 (README §22 Y17-1…3): s16_an okuması yok; I10'un eski (d) "ayrışma" girdisi (ilk Yine de Gönder'de tutar yok, iş alınıp duraklatılır, ertesi gün Devam Et) hesaplanır:
     #     iş alınmıştı, 30.10 kalemiyle (150,00 TL) gider, POST 2 — M236 (S34 B) ile basmada elenir, iş Sonucu Belirsiz kalır, POST 1 (A ↔ B ayrışır)
-    if set(kahin.OKUMALAR) != {"devam_sd"} or hasattr(kahin, "S16_OKUMALARI") or hasattr(kahin, "S30_OKUMALARI"):
-        h.append(f"okumalar: {sorted(kahin.OKUMALAR)} (yalnız devam_sd kalmalı)")
+    # güncelleme 21 (README §26): devir_geri (8.2 adı) ve mb_elle (S-W21-3) okumaları eklendi — s16_an / s30_an yine YOK; güncelleme 22 (README §27 Y22-8): mb_elle KALKTI (S-W21-3 = A)
+    if set(kahin.OKUMALAR) != {"devam_sd", "devir_geri"} or hasattr(kahin, "S16_OKUMALARI") or hasattr(kahin, "S30_OKUMALARI"):
+        h.append(f"okumalar: {sorted(kahin.OKUMALAR)} (yalnız devam_sd + güncelleme 21'in devir_geri'si kalmalı)")
     for s in TUM:
         metin = json.dumps(beklenen(s), ensure_ascii=False)
         if "S16 'yoksa elenir': elemenin" in metin or "S30 'bekleyen iş gönderilmez': silme talebi / 1 yıl dolumu anında bekleyen işin o anda" in metin:
@@ -1608,6 +1656,382 @@ def _i17():
     else:
         bilgi.append(f"bilgi: R3T: {n_} senaryo (başlık + kaynak)")
     return h + bilgi
+
+
+# ---- I18 / I19 (güncelleme 21, 2.5.1 Ç5-C — README §26) -------------------------------------------------------------------
+def _c5c_temel(cariler, olaylar, **kw):
+    return {"baslangic": "2026-10-30T10:00:00+03:00", "cariler": cariler, "olaylar": olaylar, "meta_davranis": kw.pop("meta_davranis", {"kanca": {"*": senaryolar.K_STD}}), **kw}
+
+
+@test("I güncelleme 21 (Ç5-C): borç girdisi doğrulaması; güncelleme 22: S-W21-1 / S-W21-2 eski hata girdileri A sonucunu verir, B mutantları ayrışır; mb_elle yok; Devri Geri Al okumalarında kime / kaç kez AYNI; yeni girdiler yalnız C5C / SW21 başlıklarında")
+def _i18():
+    h = []; bilgi = []
+    bk, ell, bc, hb = senaryolar.bk, senaryolar.ell, senaryolar.bc, senaryolar.hb
+    SOZ_, SUP_, TED_ = kahin.SOZ, kahin.SUPHELI, kahin.TEDARIKCI
+    def hata_bekle(g, parca, ad):
+        try:
+            kahin.hesapla(g)
+        except ValueError as e:
+            if parca not in str(e):
+                h.append(f"{ad}: başka hata: {e}")
+            return
+        h.append(f"{ad}: hata vermedi (beklenen: {parca})")
+    v = dict(vade="05.10.2026", tutar="100.00", bakiye="100.00")
+    # (a) girdi doğrulaması (README §26.3; ekranda olmayan yol — kâhin anlam uydurmaz)
+    hata_bekle(_c5c_temel([bc("X", "X", "0561 111 00 01", [bk("+0s", TED_)])], [hb("+0s", "T1", ["X"], yine_de_ekle=["X"])]), "Tedarikçi'ye 'Yine de Ekle' yok", "Tedarikçi'ye Yine de Ekle")
+    hata_bekle(_c5c_temel([bc("X", "X", "0561 111 00 01", [bk("+0s", **v)])], [hb("+0s", "T1", ["X"], yine_de_ekle=["X"])]), "yalnız Şüpheli / Söz etiketli", "etiketsize Yine de Ekle")
+    hata_bekle(_c5c_temel([bc("X", "X", "0561 111 00 01", [bk("+1h", **v)])], [hb("+0s", "T1", ["X"])]), "senaryonun başından", "borç girdisi geç başlıyor")
+    hata_bekle(_c5c_temel([bc("X", "X", "0561 111 00 01", [bk("+0s", SOZ_, etiketler=[SOZ_, SUP_], elle=ell(**v))])], [hb("+0s", "T1", ["X"])]), "TEK neden", "2.5 sırası dışı neden")
+    hata_bekle(_c5c_temel([bc("X", "X", "0561 111 00 01", [bk("+0s", vade="05.10.2026")])], [hb("+0s", "T1", ["X"])]), "vade / tutar / bakiye eksik", "eksik değer")
+    hata_bekle(_c5c_temel([bc("X", "X", "0561 111 00 01", [bk("+0s", "bilinmez")])], [hb("+0s", "T1", ["X"])]), ".neden", "bilinmeyen neden")
+    # (b) güncelleme 21'in KULLANICIYA SORULMALI girdileri (README §26.4) — güncelleme 22'de S-W21-1 / 2 = A (README §27): hata YOK, A sonucu; B mutantı aynı girdide ayrışır
+    def hesap(g, ad, mut=frozenset()):
+        try:
+            return kahin.hesapla(g, frozenset(mut))[0]["sonuc"]
+        except ValueError as e:
+            h.append(f"{ad}: hata verdi: {e}")
+            return None
+    g_w1 = _c5c_temel([bc("W", "W", "0561 111 00 02", [bk("+0s", **v), bk("+1h", SOZ_, elle=ell(**v))])],
+                      [hb("+0s", "T1", ["W"]), {"t": "+2h", "tur": "yine_de_gonder", "toplu": "T1", "cari": "W", "etiket": "Y1"}],
+                      meta_davranis={"mesaj": {"W": ["yanitsiz_kabul", "kabul"]}, "kanca": {"T1/W": {"1": [], "*": senaryolar.K_STD}}})
+    r = hesap(g_w1, "S-W21-1 (Yine de Gönder + süren söz)")
+    if r is not None and (r["isler"]["T1/W"]["post"] != 2 or r["isler"]["T1/W"]["durum"] != kahin.TESLIM or r["yeniden"]["Y1"].get("soz_etiketi") != ["W"]
+                          or r["isler"]["T1/W"]["degiskenler"][3] != "100,00 TL"):
+        h.append(f"S-W21-1 = A: POST {r['isler']['T1/W']['post']}, durum {r['isler']['T1/W']['durum']}, yanıt {r['yeniden']['Y1']}")
+    r = hesap(g_w1, "S-W21-1 M317", ["M317"])
+    if r is not None and (r["isler"]["T1/W"]["durum"] != kahin.ATLANDI or r["isler"]["T1/W"].get("atlanma_nedeni") != SOZ_ or r["isler"]["T1/W"]["post"] != 1):
+        h.append(f"S-W21-1 B (M317) ayrışmadı: {r['isler']['T1/W']['durum']} / POST {r['isler']['T1/W']['post']}")
+    g_w2 = _c5c_temel([bc("Y", "Y", "0561 111 00 03", [bk("+0s", SOZ_, elle=ell(**v)), bk("+30m", SOZ_, etiketler=[SUP_, SOZ_], elle=ell(**v))])],
+                      [hb("+0s", "T1", ["Y"], yine_de_ekle=["Y"]), {"t": "+0s", "tur": "duraklat", "toplu": "T1"}, {"t": "+1h", "tur": "devam", "toplu": "T1"}])
+    g_w2["cariler"][0]["borc"][1]["neden"] = SUP_
+    r = hesap(g_w2, "S-W21-2 (söz için eklenene şüpheli)")
+    if r is not None and (r["isler"]["T1/Y"]["durum"] != kahin.ATLANDI or r["isler"]["T1/Y"].get("atlanma_nedeni") != SUP_ or r["isler"]["T1/Y"]["post"] != 0):
+        h.append(f"S-W21-2 = A: {r['isler']['T1/Y']['durum']} / {r['isler']['T1/Y'].get('atlanma_nedeni')} / POST {r['isler']['T1/Y']['post']}")
+    r = hesap(g_w2, "S-W21-2 M318", ["M318"])
+    if r is not None and r["isler"]["T1/Y"]["post"] != 1:
+        h.append(f"S-W21-2 B (M318) ayrışmadı: POST {r['isler']['T1/Y']['post']}")
+    g_w2b = _c5c_temel([bc("Y", "Y", "0561 111 00 03", [bk("+0s", SUP_, etiketler=[SUP_, SOZ_], elle=ell(**v))])], [hb("+0s", "T1", ["Y"], yine_de_ekle=["Y"])])
+    r = hesap(g_w2b, "S-W21-2 (b) (başlatmada iki etiket)")
+    if r is not None and (r["elenen"].get("T1") or r["isler"]["T1/Y"]["durum"] != kahin.TESLIM or r["isler"]["T1/Y"]["degiskenler"][3] != "100,00 TL"):
+        h.append(f"S-W21-2 (b) = A: elenen {r['elenen']}, {r['isler'].get('T1/Y', {}).get('durum')}")
+    r = hesap(g_w2b, "S-W21-2 (b) M319", ["M319"])
+    if r is not None and r["elenen"].get("T1", {}).get("Y") != SOZ_:
+        h.append(f"S-W21-2 (b) M319 ayrışmadı: elenen {r['elenen']}")
+    # güncelleme 21'in S-W21 hata metinleri kalktı (kodda ve beklenenlerde)
+    kaynak_ = open(os.path.join(_BURASI, "kahin.py"), encoding="utf-8").read()
+    if 'raise ValueError("KULLANICIYA SORULMALI S-W21' in kaynak_:
+        h.append("kahin.py'de güncelleme 21'in S-W21 hata metni duruyor")
+    for s in TUM:
+        if s["baslik"] == "SW21" and "S-W21" not in s["kaynak"]:
+            h.append(f"{s['ad']}: SW21 senaryosu kaynakta S-W21 kararını anmıyor")
+    # (c) okumalar: S-W21-3 (mb_elle) KALKTI (güncelleme 22) — S23-04 / S29-03 tek değerli, M321 (B) karar metnindeki sayıları verir; Devri Geri Al (devir_geri) iki okuması sürer
+    if "mb_elle" in kahin.OKUMALAR or hasattr(kahin.Benzetim, "MB_ELLE_SUSUYOR"):
+        h.append("mb_elle okuması hâlâ var")
+    for ad_, cid, tok, a_, b_ in (("S23-04", "MK", "T1/MK", ("16.10.2026", "250,00 TL"), ("06.10.2026", "650,00 TL")),
+                                   ("S29-03", "MZ", "T1/MZ", ("30.10.2026", "200,00 TL"), ("06.10.2026", "400,00 TL"))):
+        s = next(x for x in TUM if x["ad"].startswith(ad_))
+        for mut, bek in ((frozenset(), a_), (frozenset(["M321"]), b_)):
+            sonuclar = kahin.hesapla(senaryolar.girdi(s), mut)
+            if len(sonuclar) != 1:
+                h.append(f"{ad_} {sorted(mut)}: {len(sonuclar)} okuma grubu ≠ 1")
+            d = sonuclar[0]["sonuc"]["isler"][tok]["degiskenler"]
+            if tuple(d[2:4]) != bek:
+                h.append(f"{ad_} {sorted(mut)}: {d[2:4]} ≠ {bek}")
+    alanlar = ("elenen", "olusmadi", "onceki_uyari", "bu_ay", "baslamadi")
+    for ad_, anahtar in (("C5C8-02", "devir_geri"),):
+        s = next(x for x in TUM if x["ad"].startswith(ad_))
+        g = senaryolar.girdi(s)
+        for zaman in kahin.ZAMANLAR:
+            b0 = kahin.Benzetim(g, kahin.tam_secim({}), zaman); r0 = b0.calistir()
+            if anahtar not in b0.okuma_izi:
+                h.append(f"{ad_}: {anahtar} okumasına düşmedi")
+                continue
+            for ok in kahin.OKUMALAR[anahtar][1:]:
+                r1 = kahin.Benzetim(g, kahin.tam_secim({}), zaman, okuma={anahtar: ok}).calistir()
+                for a in alanlar:
+                    if not senaryolar._esit(r0.get(a), r1.get(a)):
+                        h.append(f"{ad_} {zaman} {anahtar}={ok}: {a} okumalar arası farklı")
+                for a in ("post", "kabul", "meta_ileti", "toplam_post", "toplam_meta_ileti"):
+                    if not senaryolar._esit(r0["meta"].get(a), r1["meta"].get(a)):
+                        h.append(f"{ad_} {zaman} {anahtar}={ok}: meta.{a} okumalar arası farklı")
+    # (d) yeni girdiler / olaylar yalnız C5C başlıklarında; her C5C başlığı ≥ 2 senaryo (başlık + kaynak)
+    for s in TUM:
+        g_ = senaryolar.girdi(s)
+        yeni = (["borc"] if any("borc" in c for c in g_["cariler"]) else []) + sorted({o["tur"] for o in g_["olaylar"] if o["tur"] in ("devir", "devri_geri_al", "surum_gecisi")}) \
+            + sorted({k for o in g_["olaylar"] if o["tur"] == "baslat" for k in ("yine_de_ekle", "arsiv") if k in o})
+        if yeni and not s["baslik"].startswith(("C5C", "SW21")):
+            h.append(f"{s['ad']}: C5C / SW21 dışında yeni girdi {yeni}")
+        y_ = beklenen(s)[0]["sonuc"].get("yeniden") or {}
+        if s["baslik"] != "SW21" and any("soz_etiketi" in v for v in y_.values()):
+            h.append(f"{s['ad']}: SW21 dışında soz_etiketi (Y22-3)")
+    n_sw = sum(1 for s in TUM if s["baslik"] == "SW21")
+    if n_sw < 5:
+        h.append(f"SW21: {n_sw} < 5 senaryo")
+    for k in ("C5C4", "C5C5", "C5C6", "C5C7", "C5C8", "C5C9"):
+        n_ = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"])
+        if n_ < 2:
+            h.append(f"{k}: {n_} < 2 senaryo")
+        else:
+            bilgi.append(f"bilgi: {k}: {n_} senaryo (başlık + kaynak)")
+    return h + bilgi
+
+
+class _IzliBenzetim(kahin.Benzetim):
+    """I19: Meta'ya ulaşan her iletinin (şirket, cari, şablon, an) ve her Atlandı'nın (an, iş, neden) kaydı — yalnız test (modelin kuralına dokunmaz)."""
+    def __init__(self, *a, **kw):
+        super().__init__(*a, **kw)
+        self.iz_ileti = []; self.iz_atla = []; self.iz_ileti_is = []
+
+    def meta_ileti(self, j, ts, programa):
+        self.iz_ileti.append((j.sirket, j.cari, self.toplular[j.toplu].sablon, ts))
+        self.iz_ileti_is.append((ts, j.anahtar, j.cari, self.toplular[j.toplu].sablon))    # güncelleme 22: değişmez (6) için iş anahtarıyla
+        return super().meta_ileti(j, ts, programa)
+
+    def atla(self, j, neden, t):
+        self.iz_atla.append((t, j.anahtar, j.cari, neden))
+        return super().atla(j, neden, t)
+
+
+def c5c_rastgele(rnd, no):
+    """I19 üreticisi (tohumlu): carinin etiket türü düz / söz / şüpheli / tedarikçi ya da (güncelleme 22) ÇAPRAZ (Şüpheli, Söz ya da ikisi birlikte — S-W21-2); borç girdisi
+    3 gün içinde rastgele değişir; başlatma (Yine de Ekle, R3 'Yine de Gönder'), duraklat / Devam Et, Başarısızları Yeniden Dene, (güncelleme 22) işteki / asıl işteki Yine de Gönder
+    (S-W21-1, S23), devir / Devri Geri Al, sınır, Meta yanıtları rastgele."""
+    bk, ell = senaryolar.bk, senaryolar.ell
+    turler = ("duz", "soz", "supheli", "tedarikci", "capraz", "capraz")
+    cariler = []; seriler = {}
+    for i in range(rnd.randint(3, 6)):
+        cid = f"R{no}x{i}"
+        tur = rnd.choice(turler)
+        anlar = sorted(set([0] + [rnd.randint(1, 72 * 60) for _ in range(rnd.randint(0, 3))]))
+        for m in anlar:
+            secenek = {"duz": [None, None, "gecikmis_borc_yok"], "soz": [None, kahin.SOZ, kahin.SOZ, "gecikmis_borc_yok"],
+                       "supheli": [None, kahin.SUPHELI, kahin.SUPHELI, "gecikmis_borc_yok"], "tedarikci": [None, kahin.TEDARIKCI],
+                       "capraz": [None, kahin.SOZ, kahin.SUPHELI, "iki", "iki"]}[tur]
+            n_ = rnd.choice(secenek)
+            tutar = str(rnd.choice((100, 250, 600, 1000, 1100))) + ".00"
+            vade = f"{rnd.randint(1, 28):02d}.10.2026"
+            if n_ is None:
+                e = bk(f"+{m}m", vade=vade, tutar=tutar, bakiye=tutar)
+            elif n_ == "iki":                                               # güncelleme 22: Şüpheli + Söz birlikte (S-W21-2 (b)); TEK neden 2.5 sırasıyla Şüpheli
+                e = bk(f"+{m}m", kahin.SUPHELI, etiketler=[kahin.SUPHELI, kahin.SOZ],
+                       elle=(ell(neden="gecikmis_borc_yok") if rnd.random() < 0.2 else ell(vade, tutar, tutar)))
+                n_ = kahin.SUPHELI
+            elif n_ in (kahin.SOZ, kahin.SUPHELI):
+                e = bk(f"+{m}m", n_, elle=(ell(neden="gecikmis_borc_yok") if rnd.random() < 0.2 else ell(vade, tutar, tutar)))
+            else:
+                e = bk(f"+{m}m", n_)
+            seriler.setdefault(cid, []).append((m, n_))
+            if m == anlar[0]:
+                cariler.append(senaryolar.bc(cid, f"Rastgele {no} {i}", f"0570 {no % 1000:03d} {i:02d} {rnd.randint(10, 99)}", [e]))
+            else:
+                cariler[-1]["borc"].append(e)
+    ids = [c["id"] for c in cariler]
+
+    def neden_an(cid, m):
+        n_ = None
+        for (m_, x) in seriler[cid]:
+            if m_ <= m:
+                n_ = x
+        return n_
+    olaylar = []; etiketler = []
+    for k in range(rnd.randint(2, 6)):
+        m = rnd.randint(0, 72 * 60)
+        secim = rnd.sample(ids, rnd.randint(1, len(ids)))
+        ekle = [c for c in secim if neden_an(c, m) in (kahin.SOZ, kahin.SUPHELI) and rnd.random() < 0.5]
+        et = f"T{k + 1}"
+        o = {"t": f"+{m}m", "tur": "baslat", "etiket": et, "secim": secim, "sablon": "hatirlatma"}
+        if ekle:
+            o["yine_de_ekle"] = ekle
+        if rnd.random() < 0.1:
+            o["onceki"] = "gonder"
+        olaylar.append(o); etiketler.append((et, m))
+        if rnd.random() < 0.3:
+            olaylar.append({"t": f"+{m}m", "tur": "duraklat", "toplu": et})
+            olaylar.append({"t": f"+{m + rnd.randint(10, 600)}m", "tur": "devam", "toplu": et})
+        if rnd.random() < 0.2:
+            olaylar.append({"t": f"+{m + rnd.randint(30, 900)}m", "tur": "basarisizlari_yeniden_dene", "toplu": et})
+        for c_ in secim:                                                    # güncelleme 22: işteki / asıl işteki Yine de Gönder (S-W21-1, S16, S23 — Sonucu Belirsiz değilse etkisiz)
+            if rnd.random() < 0.35:
+                y_ = {"t": f"+{m + rnd.randint(60, 900)}m", "tur": "yine_de_gonder", "toplu": et, "cari": c_, "etiket": f"Y{k + 1}{c_}"}
+                if rnd.random() < 0.3:
+                    y_["hedef"] = "asil"
+                olaylar.append(y_)
+                if rnd.random() < 0.4:
+                    olaylar.append({"t": f"+{m + rnd.randint(620, 1500)}m", "tur": "yine_de_gonder", "toplu": et, "cari": c_, "etiket": f"Y{k + 1}{c_}b", "hedef": "asil"})
+    if rnd.random() < 0.35:
+        md = rnd.randint(30, 60 * 60)
+        olaylar.append({"t": f"+{md}m", "tur": "devir", "sirket": "A", "ad": "DV"})
+        if rnd.random() < 0.5:
+            olaylar.append({"t": f"+{md + rnd.randint(10, 600)}m", "tur": "devri_geri_al", "sirket": "A"})
+    mesaj = {}; kanca = {"*": senaryolar.K_STD}
+    for c in ids:
+        mesaj[c] = [rnd.choice(["kabul", "kabul", "kabul", {"hata": 131021}, {"hata": 131049}, "yanitsiz_kabul"]) for _ in range(4)]
+        if rnd.random() < 0.35:                                             # güncelleme 22: 1. ileti Sonucu Belirsiz (yanıtsız kabul + durum bildirimi yok) — Yine de Gönder'in yolu
+            mesaj[c][0] = "yanitsiz_kabul"
+            kanca[c] = {"1": [], "*": senaryolar.K_STD}
+    g = {"baslangic": "2026-10-30T10:00:00+03:00", "cariler": cariler, "olaylar": olaylar,
+         "meta_davranis": {"mesaj": mesaj, "kanca": kanca}}
+    if rnd.random() < 0.3:
+        g["ayar"] = {"gunluk_ust_sinir": rnd.choice((1, 2))}
+    # oluşmayan toplu işe (seçilenlerin hepsi elendi — §7a 31) yönelen duraklat / Devam Et / yeniden deneme olaylarını ve (güncelleme 22) işi olmayan kişiye Yine de Gönder'i çıkar
+    # (üretici düzeni; kural değil)
+    for _ in range(60):
+        try:
+            kahin.Benzetim(g, kahin.tam_secim({}), "hizli").calistir()
+            break
+        except KeyError as e:
+            ad = e.args[0]
+            if isinstance(ad, str) and "/" in ad:
+                tp_, c_ = ad.split("/", 1)
+                g["olaylar"] = [o for o in g["olaylar"] if not (o["tur"] == "yine_de_gonder" and o.get("toplu") == tp_ and o.get("cari") == c_)]
+            else:
+                g["olaylar"] = [o for o in g["olaylar"] if o.get("toplu") != ad]
+    return g, etiketler
+
+
+def c5c_degismez(g, zaman="hizli"):
+    """I19 değişmezleri (README §26.5): (1) aynı şirket + cari + yerel gün en çok BİR Ödeme Hatırlatma iletisi Meta'da (o gün o kişi için R3 'Yine de Gönder' yoksa);
+    (2) İLKE 1: 'Daha Önce Gönderildi' ile elenen kişiye o gün gerçekten ileti gitmiş (Meta'da); (3) İLKE 4: Şüpheli / Söz ile elenen ya da atlanan kişi aynı anda 'Yine de Ekle' ile seçilirse
+    etiketle elenmez; Tedarikçi'nin yolu Ekstre (etiketle elenmez); 'Daha Önce Gönderildi' ile elenen R3 'Yine de Gönder' ile o nedenle elenmez."""
+    h = []
+    b = _IzliBenzetim(g, kahin.tam_secim({}), zaman); r = b.calistir()
+    tz = b.tz
+    gun = lambda ms: kahin.tarih(ms, tz)
+    onay = set()
+    for o in g["olaylar"]:
+        if o["tur"] == "baslat" and o.get("onceki") == "gonder":
+            for c in o["secim"]:
+                onay.add((o.get("sirket", "A"), c, gun(kahin.zaman_ayristir(o["t"], b.T0))))
+    # güncelleme 22: onaylı işteki Yine de Gönder (ilke 2 — Sonucu Belirsiz'in tek yolu) — kabul edilen basıştan sonraki ilk ileti (o günü ve iletinin gittiği gün) istisna
+    yine_kabul = []                                                       # (an, toplu, cari, kabul mü, elle sayıldı mı)
+    for o in g["olaylar"]:
+        if o["tur"] == "yine_de_gonder":
+            y_ = (r.get("yeniden") or {}).get(o["etiket"]) or {}
+            yine_kabul.append((kahin.zaman_ayristir(o["t"], b.T0), o["toplu"], o["cari"], o["cari"] in (y_.get("alinan") or []), o["cari"] in (y_.get("elle_sayilan") or []), y_))
+    for (tb, _tp, c, kabul, _el, _y) in yine_kabul:
+        if kabul:
+            sonraki = [ts for (s_, c_, sab, ts) in b.iz_ileti if c_ == c and sab == "hatirlatma" and ts >= tb]
+            if sonraki:
+                onay.add(("A", c, gun(min(sonraki))))
+    sayac = {}
+    for (s, c, sab, ts) in b.iz_ileti:
+        if sab == "hatirlatma":
+            sayac[(s, c, gun(ts))] = sayac.get((s, c, gun(ts)), 0) + 1
+    # güncelleme 22: E1 (yalnız defterde kalan belirsiz yeni gönderimi elemez) + 8.2 — Devri Geri Al dosyadan çıkardığı işin iletisi (dönen dosyada yok) ile sonraki ileti arasında istisna
+    #   (üretici güncelleme 22'de Sonucu Belirsiz üretince görüldü: devir → ileti (belirsiz) → Devri Geri Al → aynı gün yeni ileti; kural E1 — README §27.8)
+    geri_anlar = [kahin.zaman_ayristir(o["t"], b.T0) for o in g["olaylar"] if o["tur"] == "devri_geri_al"]
+    for k, n in sayac.items():
+        if n > 1 and k not in onay:
+            ilet = sorted((ts, an) for (ts, an, c_, sab) in b.iz_ileti_is if sab == "hatirlatma" and c_ == k[1] and gun(ts) == k[2])
+            e1 = all(any(a[0] < tg < b_[0] for tg in geri_anlar) and a[1] not in r["isler"] for a, b_ in zip(ilet, ilet[1:]))
+            if not e1:
+                h.append(f"(1) {k}: aynı gün {n} hatırlatma")
+    anlar = {o["etiket"]: kahin.zaman_ayristir(o["t"], b.T0) for o in g["olaylar"] if o["tur"] == "baslat"}
+    for et, el in r["elenen"].items():
+        t_ = anlar[et]
+        for c, n in el.items():
+            if n == kahin.DAHA_ONCE and not any(s == "A" and c_ == c and sab == "hatirlatma" and gun(ts) == gun(t_) and ts <= t_ for (s, c_, sab, ts) in b.iz_ileti):
+                h.append(f"(2) {et}/{c}: 'Daha Önce Gönderildi' ama o gün Meta'da ileti yok")
+    # (3) ilke 4 — karşı-olgu koşuları
+    def ekle_kos(c, t_, **kw):
+        g2 = copy.deepcopy(g)
+        o = {"t": t_ + 1, "tur": "baslat", "etiket": "YOL", "secim": [c], "sablon": kw.get("sablon", "hatirlatma")}
+        if kw.get("ekle"):
+            o["yine_de_ekle"] = [c]
+        if kw.get("onceki"):
+            o["onceki"] = "gonder"
+        if o["sablon"] == "ekstre":
+            o["donem"] = {"bas": "2026-10-01", "son": "2026-10-31"}
+        g2["olaylar"] = [x for x in g2["olaylar"]] + [o]
+        r2 = kahin.Benzetim(g2, kahin.tam_secim({}), zaman).calistir()
+        return r2["elenen"].get("YOL", {}).get(c), r2
+    adaylar = []
+    for et, el in r["elenen"].items():
+        for c, n in el.items():
+            adaylar.append((anlar[et], c, n))
+    for (t_, _a, c, n) in b.iz_atla:
+        adaylar.append((t_, c, n))
+    # (4) güncelleme 22 — S-W21-2 A (README §27 Y22-5/6): "Atlandı — Şüpheli / Söz" yalnız işin işaretleme anlarının (Yine de Ekle başlatması, kabul edilen ya da elle sayılan Yine de Gönder
+    #     basışı) HİÇBİRİNDE kişide olmayan etiketle (iz o anlardaki etiket türlerini aşar); (5) S-W21-1 A (Y22-3): basma anında söz süren kişiye kabul edilen / elle sayılan basışın yanıtında
+    #     'Ödeme Sözü Var' etiketi
+    def etiket_an(c, ms):
+        e = None
+        for x in next(cc for cc in g["cariler"] if cc["id"] == c)["borc"]:
+            if kahin.zaman_ayristir(x["t"], b.T0) <= ms:
+                e = x
+        et = list(e.get("etiketler") or ([e["neden"]] if e.get("neden") in kahin.ETIKET_SIRASI else []))
+        return set(et)
+    isaret = {}                                                           # iş anahtarı → işaretleme anları
+    for o in g["olaylar"]:
+        if o["tur"] == "baslat" and o.get("yine_de_ekle"):
+            for c in o["yine_de_ekle"]:
+                isaret.setdefault(f"{o['etiket']}/{c}", []).append(kahin.zaman_ayristir(o["t"], b.T0))
+    for (tb, tp_, c, kabul, el, y_) in yine_kabul:
+        if kabul or el:
+            isaret.setdefault(f"{tp_}/{c}", []).append(tb)
+            if kahin.SOZ in etiket_an(c, tb) and y_.get("soz_etiketi") != [c]:
+                h.append(f"(5) {tp_}/{c} @{tb}: basma anında söz sürüyor, onayda 'Ödeme Sözü Var' yok ({y_})")
+    for (t_, anahtar, c, n) in b.iz_atla:
+        if n in (kahin.SOZ, kahin.SUPHELI):
+            anlar_ = [x for x in isaret.get(anahtar, []) if x <= t_]
+            if any(n in etiket_an(c, x) for x in anlar_):
+                h.append(f"(4) {anahtar} @{t_}: '{n}' ile Atlandı ama iz bu etiketi işaretleme anında aşmıştı")
+    # (6) güncelleme 22 — gönderilen her Ödeme Hatırlatma iletisinde (gönderim anı = Meta anı − adım) kişinin Şüpheli / Söz etiketleri işin işaretleme anlarından birinde aşılmış;
+    #     Tedarikçi'ye hiç gitmez (5.3 = S-C5C-5 A, 5.4, 5.5 = S-C5C-6 A, S-W21-2 A — README §27 Y22-5/6)
+    for (ts, anahtar, c, sab) in b.iz_ileti_is:
+        if sab != "hatirlatma" or "borc" not in next(cc for cc in g["cariler"] if cc["id"] == c):
+            continue
+        an_ = ts - b.adim
+        et_ = etiket_an(c, an_)
+        if kahin.TEDARIKCI in et_:
+            h.append(f"(6) {anahtar} @{an_}: Tedarikçi'ye hatırlatma gitti")
+        asilan = set()
+        for x in isaret.get(anahtar.split("#")[0], []):
+            if x <= an_:
+                asilan |= etiket_an(c, x)
+        kalan_ = (et_ & set(kahin.ELLE_ETIKET)) - asilan
+        if kalan_:
+            h.append(f"(6) {anahtar} @{an_}: işaretleme anlarında olmayan etiketle ({sorted(kalan_)}) ileti gitti")
+    for (t_, c, n) in adaylar[:6]:
+        if n in (kahin.SOZ, kahin.SUPHELI):
+            n2, _ = ekle_kos(c, t_, ekle=True)
+            if n2 in (kahin.SOZ, kahin.SUPHELI):
+                h.append(f"(3) {c} @{t_}: '{n}' — Yine de Ekle ile de etiketle elendi ({n2})")
+        elif n == kahin.TEDARIKCI:
+            n2, _ = ekle_kos(c, t_, sablon="ekstre")
+            if n2 == kahin.TEDARIKCI:
+                h.append(f"(3) {c} @{t_}: Tedarikçi — Ekstre yolu da kapalı")
+        elif n == kahin.DAHA_ONCE:
+            n2, _ = ekle_kos(c, t_, onceki=True)
+            if n2 == kahin.DAHA_ONCE:
+                h.append(f"(3) {c} @{t_}: 'Daha Önce Gönderildi' — R3 Yine de Gönder ile de elendi")
+    return h, r
+
+
+@test("I19 güncelleme 21 (Ç5-C): rastgele sıra (tohumlu) — aynı gün en çok bir hatırlatma, ilke 1 (almayan almış sayılmaz), ilke 4 (elenenin yolu var); C5C_TOHUMLAR / C5C_SAYI ortamdan")
+def _i19():
+    import random
+    h = []; bilgi = []
+    tohumlar = [int(x) for x in os.environ.get("C5C_TOHUMLAR", "2511,2512").split(",")]
+    sayi = int(os.environ.get("C5C_SAYI", "120"))
+    for tohum in tohumlar:
+        rnd = random.Random(tohum)
+        koşu = elenen = atlanan = devirli = 0
+        for no in range(sayi):
+            g, _et = c5c_rastgele(rnd, no)
+            for zaman in kahin.ZAMANLAR:
+                try:
+                    hh, r = c5c_degismez(g, zaman)
+                except ValueError as e:
+                    h.append(f"tohum {tohum} #{no} {zaman}: kâhin hata verdi: {e}")
+                    continue
+                koşu += 1
+                elenen += sum(len(v) for v in r["elenen"].values())
+                atlanan += sum(1 for j in r["isler"].values() if j["durum"] == kahin.ATLANDI)
+                devirli += 1 if r.get("devir_onu") else 0
+                h += [f"tohum {tohum} #{no} {zaman}: {x}" for x in hh]
+        bilgi.append(f"bilgi: tohum {tohum}: {sayi} senaryo × 2 zaman ucu = {koşu} koşu; elenen {elenen}, Atlandı {atlanan}, devirli koşu {devirli}")
+    return h[:40] + bilgi
 
 
 # ---- H -----------------------------------------------------------------------------------------------------------------------
