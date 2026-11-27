@@ -447,3 +447,45 @@ Değişmezler kopyada ve takastan sonra (§4.1 adım 7); her adım arası kesint
 zinciri (v2.4.9 → v2.5.0 GERÇEK kodu → 2.5.1 devir) ve 2.5.0'ın devirli dosyayı açması (BS-7 salt okunur); şemadaki her tablo §2 sınıflamasında (yeni tablo eklenince kırılan test — plan §8.16);
 arşivde her yazma ucu 403 + bütün raporlar açılır; G10 17–28 ve §3.11 29–42; Devri Yenile (G10.24, çakışma, devirden sonra açılan banka hesabının açılışı korunur); Geri Al → yeniden devir;
 mutasyon (budama ölçütü ≤ / <, devir tabanı, ≤K bastırma, takas sırası, kopyaların atılması, açık kalem vadesi, netleşme); ana oturum yeniden koşusu iki TZ'de; eski kod kırmızısı ayrı kopyada.
+
+---
+
+## 6. Paketleme önerisi (D3, D4, D5, D6)
+
+Ad notu: kullanıcı kararı 21.11 21:32'de "D6 = mutasyon, bağımsız gözden geçirme, dar kontrol, Uzun Doğrulama, elle kabul"; 2.5.1 plan taslağı (§1) bunu "D-SON" diye ayırıp "D6"yı WhatsApp
+"kime kaç kez" işine verdi. Aşağıda plan taslağının adları (D6 = WhatsApp ilke 5, D-SON = kabul) kullanılır; kapsam ikisinde aynı.
+
+### 6.1 Paketler, dosya sınırları, kabul
+| Paket | Dosya sınırı (yazar) | Okur (dokunmaz) | Kabul koşulu | Tahmin |
+|---|---|---|---|---|
+| **D4-ÖK** ön koşullar | `server/lib/devir/devir-backups.mjs` (yeniden denemeli taşıma), `server/lib/company-backups.mjs` yalnız `swapInRestoredFile` (yeniden denemeli rename), `server/lib/documents.mjs` (purge arşiv başvurularını görür), D2 §12'deki iki yorum (`test/sema-kapisi-bs7.test.mjs`, `server/routes/ledger.mjs` ~186) + testleri | `devir/archive-open.mjs` (desen) | Windows CI'de zorla üretilen EPERM kırmızısı (eski kod) → yeşil, iki koşu (ders 18, 48); belge temizliği arşivli şirkette belgeyi silmez (eski kodda kırmızı); dar kontrol | küçük (1 ajan turu) |
+| **D3** saf hesap + Devir Raporu | YENİ: `server/lib/devir/plan.mjs`, `plan-reader.mjs`, `preflight.mjs`, `report.mjs`, `plan-worker.mjs`; `server/routes/devir.mjs` (ek uçlar); `test/devir-d3-*`; sürücüde devir olayının PLAN düzeyi karşılaştırması (`test/bagimsiz/muhasebe-surucu/program.mjs` — yalnız `devir` dalı) | `obligation-queue.mjs`, `obligation-input.mjs`, `financial-statements.mjs`, `stock-valuation.mjs`, `general-ledger.mjs`, `routes/ledger.mjs` (DEĞİŞTİRMEZ; değiştirmesi gerekirse ayrı karar — §6.2) | Kâhin ↔ plan (28 senaryo + 3 tohum; açık kalemler, net satırlar, kapanış, N13, stok); değişmezler §3.12; v2.5.0 gerçek verisinde devirsiz eşdeğer; hacim (100 bin ≤ 10 sn, 1 M ölçüldü); mutasyon; dar kontrol | büyük (2–3 tur) |
+| **D4a** devirli dosyanın kuralları | `server/lib/migrations.mjs` (G-1 … G-5), `period.mjs` (devir tabanı), `routes/ledger.mjs` + `doubtful-gl.mjs` + KG-5 kartı (≤K bastırma, açık kalem 519, net tek madde, çek "devir" olayı), `obligation-queue.mjs` / `obligation-input.mjs` (Borç / Alacak Toplamı netleşmesi, kart → net pay), `routes/tax.mjs` (KDV açılışı dönem etiketi), çek modülü (devir olayı), `bank/accounts.mjs` (opening_date), devir satırı koruması (yazım yolları) | D3 planının türleri | Elle kurulmuş (D3 planından yazılmış) devirli dosyada: ≤K madde yok, iki seçenek eşdeğer, gecikmiş devirli = devirsiz, KDV Ocak mahsubu; şema kapısı + geri yükleme testleri (ders 10); eski kod kırmızısı; mutasyon; hız kabulü (ders 53 (a): defter / TYK / KDV yolları büyük veride önce / sonra) | en büyük (3–4 tur) |
+| **D4b** uygulayıcı + takas + Geri Al | YENİ: `server/lib/devir/apply.mjs` (kopya, budama, açılış yazımı), `swap.mjs` (takas, 001 hazırlık), `devir-worker.mjs`; `ledger-vouchers.mjs` (`pruneVouchersThrough`), `ledger-snapshots.mjs` (`pruneThrough`, arşiv kuralı); `server/app.mjs` (takas sonrası açılış), `company-backups.mjs` (Geri Al çağrısı), `companies.mjs` (gerekirse), `routes/devir.mjs` (başlat / durum / geri al) | D2 modülleri | Değişmezler kopyada + takastan sonra; her adım arası kesinti; disk dolu; Windows dosya işlemleri CI'de iki yeşil; 001 yeniden başlatmalı + 002 canlı; Geri Al → yeniden devir; kâhin ↔ iki dosya; 1 M devir ≤ 5 dk; tablo sınıflaması testi; mutasyon | büyük (2–3 tur) |
+| **D4c** Devri Yenile | `apply.mjs` / `swap.mjs` (yenileme dalı), yazılabilir arşiv örneği (`server/app.mjs`), fişlerin dar silme / yeniden yazma yolu (`ledger-vouchers.mjs`), arşivin dar geri çekmesi (`ledger-snapshots.mjs`) | — | s28 / G10.24 / M9 çakışma / "devirden sonra açılan banka hesabının açılışı korunur"; önceki ↔ yeni raporu; kâhin `devri_yenile` | orta (1–2 tur) |
+| **D5** sihirbaz + arşiv görünümü + kılavuz | `client/` (yeni `hof-devir.js`, `admin.html`, şirket seçicide "… (Arşiv)" şeridi), iade formunun arşiv seçicisi, `docs/kilavuz/**` + PDF (ders 42) | D3 / D4 uçları | e2e baştan sona ekrandan (insan hızı + klavye — ders 12), arşivde yazma düğmesi yok, Geri Al / Yenile ekranı, yarıda kalan bakımın gösterilmesi, yazım düzeni testleri, kılavuz PDF denetimi | orta (2 tur) |
+| **D6** WhatsApp ilke 5 | `server/lib/whatsapp/**` (Geri Al / geri yüklemede wa_jobs ↔ makine defteri birleşimi; eski yedeğin genel geri yüklemesinde süre uzaması), WhatsApp kâhini bakımı (kodu görmeyen) | D4b Geri Al yolu | WhatsApp kâhini ↔ program; ilke 5 senaryoları; sahte Meta | küçük–orta (1 tur + kâhin) |
+| **D-SON** kabul | — | hepsi | mutasyon (para çekirdeği), bağımsız gözden geçirme, dar kontroller, mali müşavir S (kapanış / açılış fişleri, Devir Raporu), Uzun Doğrulama (kâhin 5 tohum × 1 yıl, 1 M devir süresi, Windows), ELLE KABUL LİSTESİ (kullanıcı 27.11 06:09 (3)) | son aday |
+
+### 6.2 Dosya çakışması tablosu (2.5.1'in öbür paketleriyle)
+| | D4-ÖK | D3 | D4a | D4b | D4c | D5 | D6 |
+|---|---|---|---|---|---|---|---|
+| M1 KDV devreden (`routes/tax.mjs`) | — | — | **ÇAKIŞIR** | — | — | — | — |
+| M2 Değersiz sınırı (şüpheli modülü, `doubtful-gl.mjs`) | — | — | **ÇAKIŞIR** | — | — | — | — |
+| Ç5-C Ödeme Hatırlatma (TYK / WhatsApp) | — | — | **ÇAKIŞIR** (TYK) | — | — | — | **ÇAKIŞIR** |
+| Ç6 öncesi (`financial-statements.mjs`, sürücü) | — | okur (dokunursa ÇAKIŞIR) + sürücü dosyası ÇAKIŞIR | — | — | — | — | — |
+| Ç6-EKRAN (istemci + mali tablolar) | — | — | — | — | — | istemci ortak dosyaları (admin) | — |
+| H yapısal hız (TYK "kirli küme") | — | okur | **ÇAKIŞIR** | — | — | — | — |
+| Mİ-1 / Mİ-2 (cari listesi, Rapor Merkezi) | — | — | — | — | — | yalnız ortak istemci dosyası olursa | — |
+| K1 (taksit / fatura görünümü) | — | — | olası (plans / invoices) | — | — | — | — |
+| K3 / K4 (iletiler, WhatsApp küçükleri) | — | — | — | — | — | — | olası |
+İç sıra: D4-ÖK ‖ D3 (çakışmaz) → D4a (D3'ün plan türlerini kullanır) → D4b → D4c ‖ D5 (D5'in sihirbaz / ön izleme ekranı D3'ten sonra başlayabilir; arşiv görünümü ve Geri Al ekranı
+D4b'den sonra) → D6 (D4b'den sonra) → D-SON.
+
+### 6.3 Önerilen sıra (takvim taslağıyla, 2.5.1 plan §0)
+- Dalga 1 (Aralık 1.–2. hafta): D4-ÖK ‖ D3 ‖ M1 ‖ M2 ‖ Ç6 öncesi (D3 sürücü dosyasına dokunacaksa Ç6 öncesinden SONRA birleşir). K-D (devir kâhini bakımı — rapor §7) D3'ten ÖNCE başlar.
+- Dalga 2 (Aralık 2.–4. hafta): D4a (M1, M2 ana dala girdikten SONRA başlar — `tax.mjs` / şüpheli modülü çakışması; H yapısal hız ile aynı dalgaya konmaz) → D4b ‖ D5 (ön izleme ekranı).
+- Dalga 3 (Aralık sonu – Ocak 1. hafta): D4c ‖ D5 (kalan) ‖ D6 (Ç5-C'den SONRA ya da aynı ajanda).
+- Ocak 2. hafta: D-SON.
+- Kritik yol: D3 → D4a → D4b → D4c → D-SON. Limit sıkışırsa (KESME ÇİZGİSİ devir'i korur) D4c'nin en geç kesilebilecek parçası yok — Devri Yenile G0 kararı; kesilirse Aralık KDV mahsubu
+  ve geç gelen Aralık faturası için yol kalmaz (BAŞ MİMAR UYARISI: kesme çizgisine D4c girmemeli).
