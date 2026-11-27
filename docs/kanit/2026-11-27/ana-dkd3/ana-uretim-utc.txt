@@ -1,0 +1,17 @@
+(node:10973) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+plans: [{"name":"Acik Kart Musterisi","status":"active","closed_at":null,"close_rule":"","total":1000},{"name":"Kapali Kart Musterisi","status":"closed","closed_at":null,"close_rule":"2.4.9","total":1000}]
+cari Acik Kart Musterisi bakiye {"debit":1000,"credit":300,"balance":700,"collected":300,"planTotal":1000,"planRemaining":700,"overdue":700,"overdueCount":2,"overdueInstallments":700,"overdueDebt":700,"overdueDebtCount":2,"overdueSi
+cari Kapali Kart Musterisi bakiye {"debit":1000,"credit":1000,"balance":0,"collected":300,"planTotal":0,"planRemaining":0,"overdue":0,"overdueCount":0,"overdueInstallments":0,"overdueDebt":0,"overdueDebtCount":0,"overdueSince":"","dou
+mutabakat ok: true
+durum done 
+kart plan-3607b7d8-2857-4678-a103-82aa2704c5fd account-82dcc5fa acik toplam 100000 odenen 30000 kalan 70000
+kart plan-5707d3cc-e8d4-435b-9a57-7bd44699ddbb account-3bea9bb0 acik toplam 100000 odenen 30000 kalan 70000
+cari-satir Acik Kart Musterisi K bakiye 70000 [["borc-toplami","debt",100000],["alacak-toplami","credit",30000]]
+cari-satir Kapali Kart Musterisi K bakiye 0 []
+sayilar.taksitKarti {"acik":2,"kalanMinor":140000,"kapali":0}
+sorunlar []
+rapor: "Taksit Kartı","2 açık (1.400,00 TL) · 0 kapalı",""
+rapor: "Taksit Kartı","Kalan 0 Taksit","700,00 TL"
+rapor: "Taksit Kartı","Kalan 2 Taksit","700,00 TL"
+durdurur []
