@@ -327,3 +327,123 @@ okuma); çakışan yazımlar sonucu bayatlatır, bozamaz. İş parçacığı öl
 - **Yarıda kesilme ve zaman:** iş parçacığı öldürülür → veri aynı, sonraki ön izleme baştan; iki TZ (UTC, Europe/Istanbul), sahte saat 31.12 23:59 / 01.01 00:00, Şubat'ta devir, 29 Şubat'lı
   yıl (ders 13, 22).
 - **Hacim:** §3.10.
+
+---
+
+## 4. D4 tasarım iskeleti — kopyada üret → doğrula → takas
+
+### 4.1 Akış (D2 §12 sözleşmesiyle)
+0. Şirket ÖNCE açılır (bekleyen göçü koşar), SONRA bakıma alınır (D2 §12 — bakımda ilk kez açılan göç bekleyen şirket 503). Ön denetim (D3 `preflight`) DURDURUR maddesi yoksa onay.
+1. `maintenance.run(şirket, { reason: "devir", runId }, async () => { … })` (`devir/maintenance.mjs:40`; 001 için geçici tetikleyiciler `:196`; güncelleme tutması).
+2. Kalıcı devir yedeği: `createDevirBackupFor(company, { label: "devir-oncesi-<K yılı>", year, runId })` (`company-backups.mjs:750`).
+3. Boş alan denetimi (≥ 3 × veri dosyası + yedek; yoksa 507 / ileti) → `VACUUM INTO` ile TEK tutarlı kopya, ondan iki çalışma dosyası: `<şirket klasörü>/devir-calisma/<runId>/arsiv.sqlite`
+   ve `yeni-yil.sqlite`. Canlı dosya takasa kadar DEĞİŞMEZ (G1.3).
+4. İş parçacığında (iki kopyanın KENDİ yazılabilir bağlantıları; ana iş parçacığı tek büyük işlem açmaz — §4.11): kopyada D3 planı yeniden hesaplanır; ön izlemenin `dataVersion`'ıyla fark
+   varsa rapor "ön izlemeden sonra kayıt girilmiş" der (devam eder; sayılar kopyanınkidir).
+5. ARŞİV kopyası (≤K): >K satırlar budanır (sınıf tablosu §2; DOKUNULMAZ tablolara dokunulmaz, `edoc_usage*` tetikleyicili); kapanış fişleri `postAll(…, { lockThrough: K })` (kilit + freezeSync
+   aynı işlemde — C3 §4); `devir.archive` işareti; `sessions`, `mobile_*` boşaltılır; `meta.instanceId` yenilenir (G8); WhatsApp içerik kararı (rapor B-1); günlük kipi DELETE; son şema.
+6. YENİ YIL kopyası (>K + açılışlar): ≤K budama (dar işlevler: fiş defteri `pruneVouchersThrough` — C2 §11 kısıtları; donmuş defter `pruneThrough` — C3 §11 kısıt (2)); modül açılışları,
+   açık kalemler, çek "devir" olayları, N-13, bağ yönlendirmeleri, şablon taslakları; settings (`ledger.lockedUntil` = K, `devir.years`, `invoice.numberFloor` (seri, K) tabanı); TEK işlem.
+7. DEĞİŞMEZLER (iki kopyada, iş parçacığında): kitap §6 (1–6); EK-1 §4 devir maddeleri; tam Mutabakat (`integrity.mjs:480`) iki dosyada yeşil; plan ↔ ölçüm farkı 0 (Devir Raporu); ≤K
+   tarihli madde yok (yeni yılda); tablo sayıları. Biri tutmazsa: kopyalar silinir, canlı dosya aynen, rapor nedeni gösterir, kip kapanır.
+8. TAKAS (D2 §2 sıra şartı + §12): 002+ → `closeCompany` (arşiv örnekleri de kapanır) → (a) arşiv dosyası `arsiv/<yıl>/`'a taşınır (kayıtsız; çalışma dosyası henüz eski → `reconcileArchives`
+   TANIMAZ, "sahipsiz" — zararsız) → (b) yeni yıl dosyası `swapInRestoredFile` ile canlının yerine (`company-backups.mjs:221`) → (c) `addArchive` (sha256, boy, şema, runId, yedek adı) + yan dosya.
+   001 → hazırlık (`stageRootRestore(..., { devirCheck: false })` deseni `:648`; ortak katman canlıdan aktarılır — `transplantCommon` `:130`, bakımda kullanıcı / rol / mobil yazmaları açık kalmıştı)
+   + arşiv yerleştirme + `addArchive` yeniden başlatmadan ÖNCE; kullanıcıya "program yeniden başlatılacak".
+9. Kip kapanır; Devir Raporu kalıcı (`arsiv/<yıl>/devir-raporu.json` + denetim izi `devir.completed`); ekran D5.
+
+### 4.2 Yarıda kesilme ve yeniden başlatma
+- Kip bellekte; süreç ölünce kalkar, açılışta YENİDEN AÇILMAZ (D2 K3). İz `bakim-kipi.json` (`lastAborted`) → açılışta `devir-calisma/<runId>/` silinir (yalnız kendi tam yolu).
+- Adım arası kesinti: 1–7 → canlı dosya aynen (ROLLBACK = kopyayı at). 8(a)–8(b) arası → sahipsiz arşiv; yeniden denemede aynı yılın SAHİPSİZ arşivi (başka runId) `arsiv/silinen/<zaman>/`'a taşınır
+  (silinmez), sonra baştan. 8(b)–8(c) arası → yeni yıl takaslı, kayıt yok → `reconcileArchives` tanır (işaret + `devir.years` aynı runId — D2 §2). 001'de hazırlık yazıldı, yeniden başlatma
+  olmadı → bir sonraki açılışta `applyStagedRestore` uygular (`:246`; `devirCheck` false); hazırlık yazılamadıysa kayıt eklenmez.
+- Disk dolu (VACUUM INTO / kopya / budama) → hata, kopyalar silinir. Kilitli dosya → yeniden denemeli taşıma (§4.9). Her kesme noktası D2'nin `step` (YALNIZ TEST) deseniyle zorla üretilir (ders 20).
+
+### 4.3 GÖÇ GEREKSİNİMİ (yalnız ihtiyaç; numarayı ana oturum dağıtır)
+| # | İhtiyaç | Neden | Öneri / not |
+|---|---|---|---|
+| G-1 | `cheque_events.kind` CHECK'ine 'devir' | `migrations.mjs:732` yalnız 6 tür; G3 "≤K olayları tek devir olayına" | Tabloyu YENİDEN KURAN göç (indeksler, bağlar); yalnız şema — mevcut satıra değer yazmaz. BS-7: 2.5.0 bu dosyayı salt okunur açar |
+| G-2 | Devir satırını tanıyan alan (devir çalışma kimliği) | Devri Yenile yalnız kendi satırlarını siler / yerinde günceller; normal ekranlar devir satırını düzenleyemez (G7); kullanıcının kendi açılışı ayrı kalır | `source` alanı olan `account_entries`'te 'devir' + source_id yeter; `cash_entries`, `stock_moves`, `plan_entries`, `fin_events`, `cheque_events` için dizinli `devir_run TEXT NOT NULL DEFAULT ''` (yalnız ekleyici). Kimlik öneki (göçsüz) seçeneği → BAŞ MİMAR KARARI GEREKİYOR (rapor B-3) |
+| G-3 | KDV açılışının dönem boyutu (190, 191@dönem, 391@dönem, 360) | K6: fiş alt defter hesabına yazamaz (`ledger-vouchers.mjs:305-315`); `tax.mjs:167` dönem etiketini faturadan okuyor, faturalar budanıyor (§1.2 madde 5) | Alt defter satırı (yeni tablo ya da var olan KDV alt defterinde açılış türü) + `figureTable` etiketi oradan okur + `expected()`'e eklenir → BAŞ MİMAR KARARI GEREKİYOR (rapor B-4) |
+| G-4 | Arşiv başvurusu | kapanmış ≤K faturaya K sonrası bağ, iade bağı (G14 (1)), fatura kartının bağı, tekrar şablonu — "bağ arşiv başvurusuna (yıl + belge no) çevrilir" (G2) | Tek ek tablo (ör. kaynak tablo, kaynak kimlik, alan, yıl, belge no, belge tarihi, arşivdeki fatura kimliği) — birçok tabloya sütun eklemekten güvenli |
+| G-5 | Şüpheli kayıt (128 / 129) ve kartın devir açılış tutarı | kayıt ≤K tarihiyle kalır; K+1 açılışı (N-12) ve kartın tek açılışı ayrı tutar ister; ≤K maddesi bastırılır (§4.4) | G-2 sütunu + açılış tutarı alanı ya da kayıt başına açılış satırı; D4 tasarımında kesinleşir |
+| — | Settings'te kalanlar (göç GEREKMEZ) | `devir.years`, `devir.archive`, `invoice.numberFloor`, kilit | D2 deseni |
+| — | Mevcut satıra değer yazan göç | YOK | devir verisi yalnız devir işlemiyle oluşur |
+Defter kuralı ekleri (açık kalem → 519, cari başına net tek madde, ≤K bastırma, çek "devir" olayı) yalnız devirli dosyada K+1 ve sonrasını etkiler → kilitli dönemin donmuş satırlarına
+dokunmaz; `LEDGER_RULE_VERSION` (`general-ledger.mjs:27`) artırılıp artırılmayacağı Ç3 kural sürümü düzeniyle BAŞ MİMAR KARARI (öneri: artırılır; GAP_RULE / kural farkı yanlış alarmı denenir).
+
+### 4.4 Devirli dosyada genel kurallar (bugünkü koddan türetilen — BAŞ MİMAR KARARI olarak gösterilir)
+1. **Devir tabanı:** `devir.years`'ın en büyük cutoff'u. Bu tarih ve öncesine HİÇBİR yazım yok (409 `devir-closed`) — kilit kaldırılsa da (plan §7.5); Silinenler'den ≤K kayıt geri alma da 409.
+   Tek yer: `period.mjs` (assertOpen / checkLock / movementDate / restoreDate — `:25-93`). Şirket Verisini Sıfırla `ledger.` ayarlarını siler ama `devir.` anahtarlarını korur (KEEP_SETTINGS,
+   `app.mjs:1247`) → taban sıfırlamadan sonra da geçerli.
+2. **≤K kaynaklı türetme kapalı:** yeni yılda kalan ≤K tarihli kayıtlar (açık / kapalı taksit kartı, KG-5 Excel kartı, açık şüpheli kaydı, açık evrak kaydı, bekleyen POS satışı, şablon) ≤K tarihli
+   madde ÜRETMEZ; etkileri yalnız devir açılış satırlarından (K+1) gelir. Uygulama türetme katmanında (`routes/ledger.mjs:313` build; `doubtful-gl.mjs`; KG-5 kartı `routes/ledger.mjs:146-181`).
+   Değişmez: yeni yıl dosyasında ≤K tarihli madde YOK (kâhin `m12_k_oncesi_satir`).
+3. **Devir satırları korumalı:** normal ekranlar düzenleyemez / silemez (409 `devir-row`); yalnız Devri Yenile / Geri Al (G7).
+4. **TYK:** devir Borç / Alacak Toplamı önce birbiriyle netleşir (§3.5 madde 4); açık kalemin vadesi `due_date` (vadesizde belge günü).
+5. **Kilit izi:** yeni yılda `lockDigestOf` (`integrity.mjs:370`) budamadan sonra yeniden hesaplanır (aksi hâlde "kilitli dönem değişti" yanlış alarmı); donmuş defter kapsamı = K.
+
+### 4.5 Kilit ve yazma yolları
+- Arşiv: K'ye kadar kilit + donma, iş parçacığında arşiv kopyasının bağlantısında (`freezeSync` — C3 §11 D4 notu); bekleyen eski kurallı koşu varsa önce `runPending` ya da `rule` bekleyenin
+  kuralından (C3 §11 kısıt (3)); arşivin kural sürümü kayıt defterinde (Devri Yenile'nin yeniden dondurması aynı kuralla — kısıt (1)).
+- Yeni yıl: `ledger.lockedUntil` = K (`period.mjs:88`), donmuş defter ≤K budanır (`state_*` tutarlı — kısıt (2)), devir tabanı (§4.4).
+- Arşiv salt okunur; yazma yasağı merkezî (D2, `app.mjs:698`). Devri Yenile dışında arşiv yazılabilir açılmaz.
+- Kural Farkı (KG-15) ve KG-16 adaylarının devirdeki yeri: rapor S-2, S-3 (yanıta kadar KODLANMAZ).
+
+### 4.6 Devri Yenile (G7, M9, karar (7) A, N-14; C2 §11a ve C3 §11 kısıtları)
+- Yetki system.manage + gerekçe (denetim izi) + uyarı (G14 (4) metni AYNEN) + 30 Nisan'dan sonra ikinci onay; yalnız EN SON arşiv; sonraki yılın devri varsa durur (zincirleme BİLİNEN SINIR).
+- Akış: `devri-yenile-oncesi-<yıl>` yedeği → bakım kipi (şirket + arşivi) → ARŞİV KOPYASINDA: devrin kapanış fişleri DAR işlevle silinir (C2 kısıtları: silme yolu modül içi, izler budanmaz,
+  rowid sırası korunur, "company.reset" benzeri iz yazılmaz) → kilit dar yolla geri çekilir (thaw yalnız voucher-* satırlarını etkiler ya da arşivin kendi kuralıyla yeniden donar — C3 kısıt (1))
+  → kullanıcı düzeltmesi YAZILABİLİR ARŞİV ÖRNEĞİNDE (bakım kipinde; GET'te yazan yollar ve arka plan yazıcıları kapalı: tekrarlayan fatura, test serisi başlangıcı — G7; D2'nin `openArchive`'ı
+  yalnız salt okunur → D4 ayrı kurar) → yeniden kapanış + kilit + donma → YENİ YIL KOPYASINDA yalnız devir satırları (G-2 alanı) deterministik kimlikle yerinde güncellenir; K sonrası
+  kullanıcı kayıtları korunur → ÇAKIŞMA (M9: yalnız tamamen kapanan / yok olan kaleme K sonrası bağ varsa durur, liste) → değişmezler → takas (yeni yıl + arşiv; `updateArchive` yeni sha256)
+  → Devir Raporu (önceki ↔ yeni; "Bağı Değişen Ödemeler", "Gecikmiş Tutarı Değişen Cariler"; Kasa / banka eksiye düşerse uyarı).
+- Fiş numarası politikası (C2 kısıt (3): yeniden yazılan fiş "en büyük + 1" mi, aynı numara mı) → BAŞ MİMAR KARARI GEREKİYOR (rapor B-5).
+- WhatsApp: Devri Yenile gecikmiş tutarını değiştirebilir; daha önce giden hatırlatma → genel ilke (3) ALDIYSA aynı dönemde elenir — İLKEYLE (soru değil).
+
+### 4.7 Devri Geri Al (§6, G5, D2 §12)
+- Yalnız yönetici, yalnız SON devir; onay şirket kodu + "GERİ AL" + parola; `devri-geri-al-oncesi-<yıl>` yedeği; devirden sonra yeni yıla girilmiş kayıt sayısı penceresi + ikinci onay
+  (kayıtlar o yedekte kalır; taşıyarak geri alma KAPSAM DIŞI — plan §6 BİLİNEN SINIR).
+- `restoreCompany({ file: devir-öncesi yedeğin veri dosyası, devirCheck: false, allowPaused: true })` (`company-backups.mjs:680`; 002 hemen, 001 hazırlık) → `removeArchive` → arşiv klasörü
+  `arsiv/silinen/<zaman>/`'a taşınır (silinmez).
+- `belgeler/`: devir yedeğinden GERİ YAZILMAZ (devirden sonra eklenen belge kaybolurdu); belgeler içerik adresli (sha256) → yalnız eksik dosyalar yedekten tamamlanır. `secret.key`: canlı kalır
+  (yedekteki aynı anahtar). `mesaj-arsivi/`: birleştirilir. (BAŞ MİMAR önerisi.)
+- WhatsApp "kime kaç kez" (D6, ilke 5): makine defteri dokunulmaz; dönen dosyadaki `wa_jobs` makine defteriyle birleşir (devirden sonra gidenler defterde "ALDI" → aynı dönemde elenir).
+
+### 4.8 Belgeler, arşiv ve iade
+- Arşivde `belgeler/`, `secret.key`, `mesaj-arsivi/` şirket klasörüne çözülür (D2 HAZIR).
+- BELGE TEMİZLİĞİ (D4 ÖN KOŞULU): `documents.mjs:92` purge yalnız canlı `case_documents.sha256` kümesine bakıyor → arşivlerin kullandığı sha256'lar da "kullanılıyor" sayılmalı (arşiv salt okunur
+  açılıp okunur; sonuç arşivin sha256'sıyla önbellekte — ders 47). Aksi hâlde yeni yılda silinen belge 30 gün sonra diskten gider, arşivin gösterdiği dosya da (G8).
+- e-Belge resmî görüntü / PDF / XML "Arşivde Aç" (salt okunur arşiv örneği).
+- Ocak'ta Aralık faturasının iadesi (G14 (1)): iade formunun asıl fatura seçicisi arşivi SALT OKUNUR okur (yıl, belge no, tarih, kalemler); iade yeni yılda 610 / 191 ↔ cari; açık kalem varsa önce
+  onu kapatır (iade bağı → devir kalemi); KDV iade ayında; stok yeni yıla girer; e-Belge'de asıl belgeye başvuru (G-4 arşiv başvurusu). Sunucu D4, ekran D5.
+
+### 4.9 Bakım kipi ve Windows dosya işlemleri (ders 48)
+- Devrin dosya işlemleri: devir yedeği klasör adı (`devir-backups.mjs:101` — YENİDEN DENEMESİZ, D4 ÖN KOŞULU; 26.11 CI EPERM), VACUUM INTO kopyaları, arşiv dosyasının `arsiv/<yıl>/`'a
+  taşınması, `swapInRestoredFile` (`company-backups.mjs:242` — yeniden denemesiz), `arsiv/silinen/`'e taşıma, çalışma klasörünün silinmesi, -wal / -shm.
+- Hepsi `archive-open.mjs:95` moveIntoPlace deseniyle (EPERM / EBUSY / EACCES, 6 deneme, artan bekleme, olay döngüsü tutulmaz, her denemeden önce bakım denetimi); tutamaklar kapalı
+  (closeCompany → closeArchives; iş parçacığı bağlantıları kapalı) doğrulanarak; "açmayı denedi → sonra dosya değişti" sırası ayrı test; yazıldığı gün çalışma dalına itilip CI Windows'ta
+  (ders 48), iki yeşil (ders 18). Windows'ta zorla üretilen kırmızı (yeniden denemesiz kodda EPERM) ön koşul paketinin kanıtı.
+
+### 4.10 001 ile 002+ farkı
+- 002+: canlı takas (yeniden başlatma yok); şirket örneği ve arşiv örnekleri kapanır, takastan sonra yeniden açılır.
+- 001: ortak katman (users, roles, sessions, mobile_*) ve şirket verisi AYNI dosyada → bakımda ortak katman yazmaları açık (D2 K4) → takasta canlıdan aktarılır (transplantCommon); takas yeniden
+  başlatmada (geri yükleme hazırlığı deseni); `addArchive` yeniden başlatmadan ÖNCE (D2 §7 denetimi hazırlanan dosyanın `devir.years`'ını kayıtla karşılaştırır); G4 "001'de devir program yeniden
+  başlatması ister" UYARIR; güncelleme tutması yeniden başlatmayı engellememeli (servis yöneticisi ile — D2 §5.3). Arşivin `users` okuması (ortak katmandan) G8 "DOĞRULANACAK" → D4 testi.
+- Arşiv şirket sınırına SAYILMAZ (D2); iki şirkette yalnız seçilen devredilir.
+
+### 4.11 Ç3'ten kalan madde: "postAll lockThrough eşzamanlı kipi 1 M'de ana iş parçacığında tek işlem"
+- ÇÖZÜM (tasarım): devrin bütün yazımları — arşivde kapanış + kilit + freezeSync, yeni yılda budama + açılışlar — İŞ PARÇACIĞINDA, KOPYA dosyanın kendi bağlantısında; ana iş parçacığı devir
+  için hiçbir zaman tek büyük işlem açmaz (bakım kipinde istekler 503; olay döngüsü ≤ 50 ms — G9). Canlı dosyada `postAll(lockThrough)` devir yolunda HİÇ çağrılmaz.
+- Kalan risk: kopyadaki tek işlemin 1 M'de süresi / belleği (freezeSync bütün yılı tek işlemde türetir) ve `ledger_voucher_lines_closed` tetikleyicisinin satır başına COUNT(*) yapması (C3 §11 —
+  N-13 K6 yüzünden az satırlı, beklenen küçük) → 1 M ölçümü (≤ 5 dk bütçe); aşılırsa freezeSync'in iş parçacığı kipi deseniyle parçalanması (BAŞ MİMAR KARARI, ölçümden sonra). Devri Yenile'de aynı.
+- Ön adım `pos.beforeLock` (C2 §11a): kilit K'ye ilerlerken çağrılır; G4 "yarım POS gün sonu" DURDURUR olduğundan devirde aktarılacak kalem kalmamalı (değişmez olarak denetlenir).
+
+### 4.12 Arşivli şirkette Şirket Verisini Sıfırla (D2 K5'in açık bıraktığı)
+- BAŞ MİMAR KARARI GEREKİYOR (rapor B-6). Öneri: izinli; `devir.*` korunur (KEEP_SETTINGS — bugünkü kod), devir tabanı (§4.4) K öncesine yazımı engellemeye devam eder; arşivler kayıtlı kalır.
+
+### 4.13 D4 test planı (özet)
+Değişmezler kopyada ve takastan sonra (§4.1 adım 7); her adım arası kesinti (kesme noktaları), disk dolu, kilitli dosya (Windows CI), 001 yeniden başlatmalı, 002 canlı, iki şirket; eski sürüm
+zinciri (v2.4.9 → v2.5.0 GERÇEK kodu → 2.5.1 devir) ve 2.5.0'ın devirli dosyayı açması (BS-7 salt okunur); şemadaki her tablo §2 sınıflamasında (yeni tablo eklenince kırılan test — plan §8.16);
+arşivde her yazma ucu 403 + bütün raporlar açılır; G10 17–28 ve §3.11 29–42; Devri Yenile (G10.24, çakışma, devirden sonra açılan banka hesabının açılışı korunur); Geri Al → yeniden devir;
+mutasyon (budama ölçütü ≤ / <, devir tabanı, ≤K bastırma, takas sırası, kopyaların atılması, açık kalem vadesi, netleşme); ana oturum yeniden koşusu iki TZ'de; eski kod kırmızısı ayrı kopyada.
