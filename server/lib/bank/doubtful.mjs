@@ -503,6 +503,7 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
   for (const [party, own] of byParty) {
     const ctx = writeOffContextOf(store, party);
     const records = new Map(ctx.rows.records.map(record => [record.id, record]));
+    const openWorld = ctx.rows.records.map(record => (record.status === "released" ? { ...record, status: "open", closedDate: "" } : record));
     // Satırın son değişme anı (yalnız sonradan değişen satırlar): cari satırı updated_at; evrak satırında evrakın updated_at'i; taksit tahsilatı updated_at; fatura updated_at / issued_at.
     const changed = new Map();
     for (const row of store.all(`SELECT e.id, COALESCE(e.updated_at, '') AS u${has("cheques") ? ", COALESCE((SELECT c.updated_at FROM cheques c WHERE e.source = 'cheque' AND c.id = e.source_id), '') AS c" : ", '' AS c"} FROM account_entries e WHERE e.account_id = ?`, party)) {
@@ -524,7 +525,8 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
         if (ctx.bound.has(credit.key)) return false;
         return !writtenAfter(credit, line) && !((changed.get(credit.key) || "") >= line.at);
       });
-      const { state } = allocateDoubtful({ records: ctx.rows.records, provisions: ctx.rows.provisions, credits, linked: ctx.rows.linked || null });
+      // Şüpheliden Çıkar Değersiz'den SONRA gelir (çıkarılmış kayda Değersiz yazılmaz): W'nin yazıldığı andaki dünyada kayıtlar açıktır — çıkarma kalanı sıfırlamaz.
+      const { state } = allocateDoubtful({ records: openWorld, provisions: ctx.rows.provisions, credits, linked: ctx.rows.linked || null });
       const room = Math.max(0, state.get(record.id)?.remaining ?? 0);
       if (line.minor > room) out.push({ key: `${line.id}:writeoff-limit`, sample: `Değersiz Alacak satırı ${dayText(line.date)} ${tl(line.minor)}: yazıldığı andaki sınırı (${tl(room)}) aşıyor — kaydın kalanından önce yararlanan bağsız tahsilat düşülmeden yazılmış (S270)` });
     }

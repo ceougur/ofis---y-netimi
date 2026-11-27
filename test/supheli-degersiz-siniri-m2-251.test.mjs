@@ -117,6 +117,7 @@ describe("M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12)
 describe("M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5)", () => {
   let ctx;
   let ids;
+  let steps;
   const q = (cari, kayit, date = "") => must("sınır", ctx.api.get(`/api/workspace/accounts/${ids.cari[cari]}/doubtful/${ids.record[kayit]}/write-off${date ? `?date=${date}` : ""}`));
   const rec = async (cari, kayit) => (await must("liste", ctx.api.get(`/api/workspace/accounts/${ids.cari[cari]}/doubtful`))).records.find(item => item.id === ids.record[kayit]);
   before(async () => {
@@ -126,8 +127,12 @@ describe("M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 /
       { ad: "Q6", adimlar: m2Base("Q6") },
       { ad: "Q9", adimlar: [...m2Base("Q9"), { op: "tahsilat", cari: "Q9", ad: "Q9-N", tutar: "1000", tarih: "2026-10-01" }] },
       { ad: "Q26", adimlar: [...m2Base("Q26"), { op: "al", cari: "Q26", ad: "Q26-S2", tutar: 500, tarih: "2026-09-25" }] },
+      // Değersiz'den SONRA Şüpheliden Çıkar (komşu banka-230-supheli-bozma R'nin sırası): değişmez çıkarmayı reddetmez.
+      { ad: "QR", adimlar: [...m2Base("QR"), m2Deg("qrd1", "QR-S", "100", "2026-09-17"), { op: "cikar", id: "qrx", kayit: "QR-S", tarih: "2026-09-18" }] },
     ];
-    ids = (await runM2Classes(ctx.client, classes)).ids;
+    const out = await runM2Classes(ctx.client, classes);
+    ids = out.ids;
+    steps = out.steps;
   });
   after(() => ctx.server.close());
 
@@ -169,6 +174,12 @@ describe("M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 /
     assert.equal(done.writtenMinor, 50000, "bu yazım (toplam değil)");
     assert.equal(done.record.remainingMinor, 0, "gerçek kalan: o günün bağlı payı kalanı kapatır");
     assert.deepEqual([done.writeOffAfter.date, done.writeOffAfter.offerMinor], ["2026-09-17", 250000], "aynı tarihle 2.500 daha");
+  });
+  it("Değersiz'den SONRA Şüpheliden Çıkar kabul; değişmez çıkarılmış kaydı Değersiz anının dünyasında açık sayar (ihlal yok)", async () => {
+    assert.deepEqual([steps.qrd1.status, steps.qrx.status], [200, 200], JSON.stringify([steps.qrd1, steps.qrx]));
+    assert.deepEqual(doubtfulProblems(ctx.store, { parties: [ids.cari.QR] }), []);
+    assert.equal((await rec("QR", "QR-S")).stateKey, "released");
+    assert.equal((await rec("QR", "QR-S")).writeOff, null, "çıkarılmış kayıtta yazılabilir alanı yok (düğme gizli)");
   });
   it("m.12 Dönem Kilidi 17.09: liste en çok yazdıran gün 18.09 (123,55), formun ucu 17.09'u kilitli söyler", async () => {
     await must("kilit", ctx.api.put("/api/admin/period-lock", { lockedUntil: "2026-09-17" }));
