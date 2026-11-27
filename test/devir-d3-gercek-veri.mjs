@@ -84,11 +84,13 @@ const NOW_DAY = "2027-01-20";
 // Zengin üretim TAKVİM SIRASIYLA yazılır: sahte saat her olayın gününe ilerler (kayıt anı = olay günü; kilit izi karar (3) yazım anına bakar; mutabakat kapısı ileri tarihli hareketi reddeder
 // — saat geri alınmaz). Takip adımları (evrak tahsili, kart tahsilatı / Borçta Kalsın kapanışı, şüpheli adımları, KDV mahsubu ve ödemesi) gününe göre sıralı bir AJANDADA bekler.
 const START = "2025-12-01T08:00:00+03:00";
-const LOCK_AT = "2027-01-01T00:30:00+03:00";
-// D3 TUR 3 (S-KD-3 = B + S-KD-1 = A; görev iş 7): K'den SONRA ama kilitten ÖNCE (01.01.2027 00:10) Excel'den yüklenen taksit kartları; Kayıt Tarihleri K'den önce, tam K ve K+1.
+// D3 tur 3: kilit 03:30 (UTC 00:30) — Excel yüklemesi (03:10; UTC 00:10) iki TZ'de de 01.01.2027'nin yerel gününde olsun (00:30 +03 UTC'de hâlâ 31.12'ydi: yükleme günü K'ye düşüyor,
+// K+1 Kayıt Tarihi "bugünden ileri" diye K'ye çekiliyordu — duman koşusunda görüldü). K sonrası olaylar yine kilitten sonra (S24 = A).
+const LOCK_AT = "2027-01-01T03:30:00+03:00";
+// D3 TUR 3 (S-KD-3 = B + S-KD-1 = A; görev iş 7): K'den SONRA ama kilitten ÖNCE (01.01.2027 03:10) Excel'den yüklenen taksit kartları; Kayıt Tarihleri K'den önce, tam K ve K+1.
 // v2.5.0 kartın maddesini yükleme gününe (01.01.2027) yazar ve kilit K'de donar; yeni kod (S-KD-3) maddeyi Kayıt Tarihi'ne (≤K) taşır → kilitli dönemde ALT DEFTER kural farkı (120) →
 // ön denetim "Kilidi Açıp Yeniden Kilitleyin" DURDURUR (S-KD-1); çare yeni kodun API'siyle (Kilidi Aç → Yeniden Kilitle) uygulanır, sonra bütün denetimler.
-const EXCEL_AT = "2027-01-01T00:10:00+03:00";
+const EXCEL_AT = "2027-01-01T03:10:00+03:00";
 const excelCards = [];
 const SIMPLE = process.argv.includes("--sade");
 
@@ -164,8 +166,9 @@ async function generate(client, { q = "", parties = PARTIES, suppliers = 40, ite
       const loaded = await tryApi("excel-kart-k-sonrasi-yukleme", client.post("/api/workspace/plans/import", { matrix: [head, ...rows], headerAt: 0, roles: { 0: "name", 1: "total", 2: "count", 3: "firstDue", 4: "paid", 5: "registered" }, fileName: "devir-kartlar.xlsx", linkRecords: false }));
       if (loaded) {
         for (const [index, row] of rows.entries()) {
-          const card = server.app.store.get("SELECT p.id, p.account_id AS party, p.total FROM plans p JOIN accounts a ON a.id = p.account_id WHERE a.name = ?", row[0]);
-          if (card) excelCards.push({ ...card, registered: registered[index], totalMinor: Math.round(Number(card.total) * 100) });
+          // Kayıt Tarihi VERİ TABANINDAN (ders 3; program ileri tarihi bugüne çekebilir) — beklenti girdiden değil.
+          const card = server.app.store.get("SELECT p.id, p.account_id AS party, p.total, p.registered_on AS registered FROM plans p JOIN accounts a ON a.id = p.account_id WHERE a.name = ?", row[0]);
+          if (card) excelCards.push({ ...card, girdi: registered[index], totalMinor: Math.round(Number(card.total) * 100) });
         }
       }
       server.clock.set(LOCK_AT);
@@ -485,6 +488,7 @@ if (!SIMPLE && excelCards.length) {
   check(before.state === "done" && stops.map(row => row.kod).join(",") === "kural-farki-alt-defter", `001 (çare öncesi): DURDURUR yalnız S-KD-1 "Kilidi Açıp Yeniden Kilitleyin" (${stops.map(row => row.kod).join(", ")})`);
   check(JSON.stringify(partiesInRule) === JSON.stringify(partiesOld), `001 (çare öncesi): alt defter farkının carileri = Kayıt Tarihi ≤K olan Excel kartlarının carileri (${partiesInRule.length} / ${partiesOld.length})`);
   console.log(`# 001 (çare öncesi) S-KD-1 iletisi: ${rule?.metin || "yok"}`);
+  console.log(`# Excel kartları (Kayıt Tarihi veri tabanından / girdi): ${excelCards.map(card => `${card.registered}/${card.girdi} ${card.totalMinor / 100}`).join(" · ")}`);
   for (const value of ["", K]) {
     const res = await admin.put("/api/admin/period-lock", { lockedUntil: value });
     check(res.status === 200, `çare: Dönem Kilidi ${value || "(aç)"} → ${res.status} ${JSON.stringify(res.data).slice(0, 200)}`);
