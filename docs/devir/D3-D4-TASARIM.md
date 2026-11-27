@@ -165,3 +165,165 @@ kendi Defter Türü aynen.
 **AÇIK (adıyla, G3'te yok):** `ledger_vouchers`, `ledger_voucher_lines`, `ledger_snapshot_runs`, `ledger_snapshots` (G3'te yalnız "ölü ad" diye), `ledger_valuation_cards`. Öneri sınıfları
 yukarıda (C2 / C3 tasarım notlarının önerisi — BAŞ MİMAR KARARI olarak gösterilir). Planın §8.16 / §9 "şemadaki her tablo sınıflamada" testi bugün YOK → D4'te yazılır (bu tablo kaynak;
 yeni tablo eklenince kırılır).
+
+---
+
+## 3. D3 tasarımı — saf hesap + Devir Raporu
+
+### 3.1 İlke: "devir planı = yazım kümesi"
+D3 HİÇBİR ŞEY YAZMAZ. Tek saf işlev, devrin bütün sonucunu bir DEVİR PLANI nesnesi olarak üretir; ön izleme sayıları, Devir Raporu ve D4'ün yazımı AYNI nesneden gelir (plan §7.3 "ön izleme ve
+rapor aynı fonksiyonu kullanır" + G1 kopyada üretim). D4 planı yalnız UYGULAR (kopyalarda) ve sonra iki dosyanın ÖLÇÜLMÜŞ bakiyelerini aynı rapor işlevine verir: rapor = plan ↔ ölçüm.
+Belirlenimli: aynı veri + aynı girdi → bayt bayt aynı plan (anahtarlar sıralı, kimlikler `devir-<yıl>-<varlık>-<kaynak kimliği>` — G7). Tutarlar kuruş tamsayı (kuruş toleransı YOK — §0).
+
+### 3.2 Modül sınırı (öneri; dosya adları §6)
+| Dosya | Görev |
+|---|---|
+| `server/lib/devir/plan.mjs` | `buildDevirPlan(reader, { K, option, mode, previous })` — saf; okuyucu arayüzü dışında veri tabanı bilmez |
+| `server/lib/devir/plan-reader.mjs` | Tek okuma işleminde (WAL anlık görüntüsü) toplu SQL ile girdi: ≤K / >K satır sayıları, TYK girdisi (batchSettleInput + withExtras), mizan (yevmiye TEK kez), Ç6 işlevleri, değerleme `yearEnd(K)`, kasa / banka / POS / evrak / kart / şüpheli durumları |
+| `server/lib/devir/preflight.mjs` | Ön denetim (§5 + G4) — saf; DURDURUR / UYARIR listesi, her madde "Git" hedefiyle |
+| `server/lib/devir/report.mjs` | Devir Raporu satırları (§3.4) + PDF / Excel üreticisi (ekran = PDF = Excel; alt TOPLAM satırları — kalıcı ürün kararı) |
+| `server/lib/devir/plan-worker.mjs` | İş parçacığı: salt okunur bağlantı, `BEGIN` tek okuma, okuyucu → plan → ön denetim → rapor; ilerleme iletileri |
+| `server/routes/devir.mjs` (ek) | `POST /api/admin/devir/preview` (iş başlatır, iş kimliği), `GET …/preview/:id` (durum / sonuç), `GET …/preview/:id/report.pdf|xlsx`; system.manage; ortak katmanda (HUB_ONLY deseni) |
+
+Girdi: `{ companyId, K (yalnız geçmiş bir yılın 31.12'si — M11; değilse 400 DEVIR_K_31_ARALIK / DEVIR_K_GELECEK), option: "borc-alacak" (varsayılan) | "sadece-bakiye", today, mode: "devir" |
+"yenile", previous (yenilemede önceki devrin satırları), archives (kayıt defteri) }`.
+Çıktı (özet): `{ meta { K, option, runId, dataVersion, bookType, ruleVersion }, preflight { blockers[], warnings[] }, archive { closingVouchers[] (K tarihli), lockThrough: K },
+newYear { prune { tablo → ölçüt, satır sayısı }, cash, accounts[] { cari, K bakiyesi, açılış satırları[], açık kalemler[] }, stock[], bank[], cards[], credits[], posPending[], cheques[],
+plans[], doubtful[], vat[] (dönem boyutlu), openingVoucher (N-13'ün fişe girebilen satırları), settings, links[] (K sonrası bağların yeni hedefi / arşiv başvurusu), repeats[] (taslak şablon) },
+counts, report }`.
+
+### 3.3 Ön izleme sayılarının TANIMI (sihirbaz 4. adım, plan §1 madde 5)
+Hepsi plandan SAYILIR (ayrı sorgu yok — sayı ile yazılan aynı kaynaktan).
+| Sayı | Tanım |
+|---|---|
+| Cari | (a) yeni yıla geçen cari KARTI = bütün kartlar, silinmişler dahil (§11.3); (b) açılış satırı yazılacak cari = K bakiyesi (CH; 128 hariç) ≠ 0 YA DA açık kalemi olan (M12; bakiyesi 0 ve açık kalemi yok → satır YOK); tutar: Σ borçlu, Σ alacaklı K bakiyesi |
+| Açık fatura / açık kalem | TYK'nın K'deki açık yükümlülük kalemleri (M2 A): fatura kalanı ayrı sayı + tutar (satış / alış); fatura dışı kalemler (Borç Yaz, açılış kalanı, karşılıksız evrak borcu, kapatılmış kart kalanı) ayrı sayı + tutar. HARİÇ: taksit kartının tükettiği kalemler (kart taşır — M2), şüpheli kuyruğundaki pay (128 — M13) |
+| Taksit kartı | açık kart (kalanı > 0) sayısı + Σ kalan; kapalı kart sayısı (kart kalır, hareketi tek açılış satırına iner — §3.8) |
+| Çek / senet | açık evrak durum bazında adet + tutar: alınan portföyde (101.01 / 121.01), tahsilde (101.02 / 121.02), ciro edilmiş (bizde değil, iz için), karşılıksız (cari borcu açık kalemde), verilen ödenmemiş (103 / 321) |
+| Banka hesabı | hesap sayısı (açılış yazılacak = K bakiyesi ≠ 0 ya da hesap etkin) + K bakiyesi; ayrıca şirket kartı (309.NN), kredi (300.NN), POS bekleyen kalem sayısı + brüt (108.NN) |
+| Stok kalemi | açılışı yazılacak ürün = K miktarı ≠ 0 ve silinmemiş (S207 = A: silinmiş kart envantere girmez); Σ değer = DSS_K; eksi stoklu ürün sayısı (M5: miktar eksi devreder, değer 0) |
+| Kasa | K bakiyesi (tek açılış) |
+| Şüpheli alacak | açık kayıt sayısı; 128 ve 129 K bakiyeleri |
+| Taşınacak hareket | tablo bazında K'den SONRA tarihli satır sayısı (yeni yılda aynen kalan); ayrıca ≤K budanacak satır sayısı; değişmez: arşiv ≤K + yeni yıl >K = devir öncesi (kitap §6.6) |
+| Tahmini süre | ölçülmüş satır / sn katsayısıyla (§3.10 ölçümünden); "yaklaşık" |
+
+### 3.4 Devir Raporu satırları (plan §1 madde 8; kitap §6)
+Başlık: şirket, K, seçenek, Defter Türü (arşivin), devir çalışma kimliği, "590 / 591 vergi öncesi dönem sonucudur" (§11.5 / KG-13 A), tarih; Devri Yenile'de "önceki ↔ yeni".
+1. **Hesap hesap (kuruşu kuruşuna):** her bilanço hesabı (1–5 sınıfı) alt hesap ve cari boyutuyla: Arşiv K Kapanış (Borç / Alacak / Bakiye) · Yeni Yıl K+1 Açılış · Fark (= 0; ≠ 0 → devir
+   DURUR). Alt TOPLAM: Σ aktif, Σ pasif, 519 satırı (değişmez: yeni yıl G = arşiv G).
+2. **Kapanış:** 6 / 7 sınıfı hesap bakiyeleri (kapanış öncesi), N-01 dönem sonu stok değerleme farkı (153 ↔ 621), yansıtmalar (N-02 / N-03), 690, 691 (= 0, KG-13 A), 692, 590 / 591;
+   her kapanmamış önceki yıl için "Önceki Yıl Sonucu Fişi (Y)" satırı (570.Y / 580.Y — M4, EK-2 S26). Değişmez: 590 / 591 = devir öncesi hesaplanmış Dönem Net Kârı (Ç6 `balanceSheet`
+   `hesaplanmis.donemNetKari`), Σ önceki yıl sonuçları = `hesaplanmis.gecmisYillar` (aynı K).
+3. **Modül modül (K'de iki dosyada eşit — kitap §6.4):** Kasa; her banka hesabı / kart / kredi / POS; her cari (K bakiyesi, açılış satırları, açık kalem sayısı ve tutarı, şüpheli 128);
+   taksit kartları (açık kalan); çek / senet (durum bazında); stok (ürün: miktar, birim maliyet, değer, dayanak; "Eksi Stokla Devreden Ürünler" — M5); KDV (190, 191 dönem dönem, 391 dönem
+   dönem, 360); şüpheli 128 / 129.
+4. **Hareket sayıları:** tablo bazında devir öncesi = arşiv ≤K + yeni yıl >K.
+5. **Listeler:** UYARIR maddeleri (G4), "Bağı Arşiv Başvurusuna Çevrilen Ödemeler" (K sonrası bağ → kapanmış ≤K fatura; 28 = A: bağsız gibi dağılır), S24 kayıtları (K öncesine yönelen
+   Ocak karşılıksızı / bağı — K kilidiyle değerlendirildi), taşınan tekrarlayan fatura şablonları, KG-16 bekleyen adaylar (rapor S-2'ye bağlı), Kural Farkı durumu (rapor S-3'e bağlı).
+6. **Devri Yenile ek:** önceki ↔ yeni her satır farkı; "Bağı Değişen Ödemeler", "Gecikmiş Tutarı Değişen Cariler" (M9), çakışma listesi (DEVIR_YENILE_CAKISMA).
+Ekran = PDF = Excel; her bölümün alt TOPLAM satırı.
+
+### 3.5 AYRI AÇIK KALEMİN tek borç sırasından üretimi (G2 + M2 A + M12 + M13)
+1. **K'deki kuyruk:** her cari için `buildObligations(withExtras(batchSettleInput(cari, ≤K satırlar, tablolar, gün = K+1), extras, cari))` (`obligation-queue.mjs:107`, `obligation-input.mjs:106`;
+   toplu kullanım deseni `routes/invoices.mjs:724-735`), kilit geçmişine K eklenmiş olarak (28 = A: kilitli / devredilmiş dönemde bağsız kapanmış kalem sonraki bağla açılmaz → K'nin durumu
+   yalnız ≤K kayıtlardan; S24 = A: Ocak'ta devirden önce yazılmış karşılıksız / bağ K kilidiyle değerlendirilir). >K satırlar kuyruğa GİRMEZ (yeni yılda kendi yerlerinde kalırlar).
+2. **Her açık kalem** (`items`: side, vade, remaining − doubtful > 0; kartın tükettiği kalem HARİÇ) → bir `account_entries` satırı: yön = kalemin yönü (müşteri borcu `debt`, bizim borcumuz
+   `credit`), tutar = kalan − şüpheli pay, tarih K+1, `due_date` = **asıl vade; vadesizde asıl belge günü** (§1.2 madde 1 — türetildi), `expected_date` = Ödeme Sözü (varsa), açıklama
+   "Devir: <belge no / tür> (<belge tarihi>)", `source` = 'devir', `source_id` = kalem anahtarı, kimlik `devir-<K yılı>-kalem-<kaynak>`. Satır GELİR / GİDER DEĞİLDİR: defterde B CH / A 519
+   (satışta) ya da B 519 / A CH (alışta) — N-10, G14 KABUL. Defterde cari başına TEK NET madde (KG-17 A / M3): açık kalemler ve net satır birlikte tek madde; ekstrede ayrı satırlar.
+3. **Net satır(lar):** cari K bakiyesi (CH; 128 hariç) − Σ açık kalemler (yön işaretli) = net (avans, fazla ödeme ya da kartların karşıladığı kısım — M2). "Borç ve Alacakları Aktar": iki satır
+   — Borç Toplamı = ≤K bütün borç hareketleri (açılışlar dahil) − devreden açık BORÇ kalemleri; Alacak Toplamı = ≤K bütün alacak hareketleri − devreden açık ALACAK kalemleri (M12).
+   "Sadece Bakiyeyi Aktar": tek "Devir Bakiyesi" satırı. `is_opening = 1`, tarih K+1, VADESİZ (EK-2 S27), sıfır satır yazılmaz; bakiyesi 0 ve açık kalemsiz cariye HİÇ satır yok (M12).
+   Aynı gün sırası: Borç Toplamı → Alacak Toplamı (ya da Devir Bakiyesi) → açık kalemler vade sırasıyla (eşitse belge tarihi) (M12).
+4. **TASARIM TEHLİKESİ (koddan; BAŞ MİMAR KARARI — türetildi, soru değil):** iki satırlı seçenekte "Alacak Toplamı" TYK'da bağsız alacak gibi işlenirse S2 sırasıyla (vadesi en önce gelen)
+   vadesi K'den önce olan GECİKMİŞ açık kalemi kapatır → gecikmiş devirle değişir (M2 değişmezi ve §11.2 "fark yalnız ekstrede görünüşte" kırılır). KURAL: devrin Borç Toplamı / Alacak Toplamı
+   satırları TYK'ya girmeden ÖNCE birbiriyle netleşir; kuyruğa yalnız net (EK-2 S27'deki "net kalan satırı") girer. İki seçenekte gecikmiş, kalan, bakiye AYNI (test: iki seçenek × gecikmiş kalem).
+5. **Kartın karşıladığı kısım:** net satıra girer (M2) ve "gecikmiş hesabına borç kalemi olarak girmez" → yeni yılda kart, alttaki borç olarak bu net payı tüketmeli (M1e). Fatura kartında
+   (`plans.invoice_id`) fatura yeni yılda YOK → kartın bağı arşiv başvurusuna döner, alttaki borç = net pay. Kâhin değişmezi (4) ile sınanır (s27, s45). Risk: TYK'nın "kart → alttaki borç"
+   eşlemesi devir satırını tanımalı (D4 kodu + kâhin karşılaştırması).
+6. **Şüpheli (M13):** şüpheli kuyruğundaki tutar CH açık kalemi DEĞİL; `doubtful_receivables` açık kaydı kalır, 128 / 129 N-12 ile K+1 açılır; fatura başvurusu (belge no) kayıtta korunur.
+   Değişmez: CH açılışı + Σ CH açık kalemleri = CH bakiyesi (128 hariç); carinin bakiyesi (CH + 128) K = K+1.
+7. **K sonrası bağlar** (G2): `account_entries.invoice_id`, `invoice_offsets`, `cheque_events.invoice_id` / `cheques.invoice_id`, `fin_events.invoice_id`, `plans.invoice_id`, iade bağı
+   (`account_entries.refund_of`, G14 (1)) → açık faturanın DEVİR KALEMİNE; kapanmış ≤K faturaya yönelen bağ → arşiv başvurusu (yıl + belge no + tarih) ve 28 = A gereği bağsız ödeme gibi
+   dağılır, program kayıtta yazar. Plan `links[]` bunların listesini taşır (Devir Raporu §3.4 madde 5).
+
+### 3.6 Kapanış fişi (arşivde, K tarihli — N-01 … N-08, EK-1 M4, EK-2 S25 / S40)
+Sıra ve sınıf (C2 §11; yevmiye G-4): (1) her kapanmamış önceki yıl Y için "Önceki Yıl Sonucu Fişi (Y)" (`prior-year-result`, kapanış sınıfı; eskiden yeniye; 570.Y / 580.Y) → (2) N-01 dönem
+sonu stok değerleme (`closing` türü, `period-end` sınıfı; tutar = SMM_K = DSS_(K−1) + alış − iade − DSS_K; "153 bakiyesi − DSS" ancak önceki yıl fişlerinden SONRA buna eşit — M4) → (3) N-02 / N-03
+7/A yansıtma (631 / 632 / 660 ← 761 / 771 / 781; 761 / 771 / 781 ↔ 760 / 770 / 780; `general-ledger.mjs:103-109`) → (4) N-04 6 sınıfı → 690 (691 HARİÇ) → (5) N-05 691 / 370: KG-13 A, tutar 0,
+satır YAZILMAZ → (6) N-06 690 → 692 ve **691 → 692 (B 692 / A 691; 691, 690'a DEĞİL 692'ye kapanır — EK-2 S40)** → (7) N-07 692 → 590 (kâr) / 591 (zarar).
+Tutarlar: dönem sonucu, N-01 ve önceki yıl sonuçları YALNIZ Ç6-HESAP işlevlerinden (`incomeStatement`, `balanceSheet.hesaplanmis`, `createStockValuation(...).yearEnd`) — BAŞ MİMAR 06.11 (2);
+hesap başına kapanış satırları aynı yevmiyenin mizanından; değişmez Σ (N-04 + N-06) = Ç6 Dönem Net Kârı. Kapanıştan sonra: 6 / 7 sınıfı (690, 691, 692 dahil) = 0, 153 = DSS_K (kitap §6.1).
+691 ≠ 0 yolu programda yok (KG-13 A; elle fiş ekranı yok) → D4'te AYRI birim testi 691 ≠ 0 veriyle (iş listesi D4 notu).
+Yazım D4'te: `vouchers.postAll(user, [ … ], { lockThrough: K })` arşiv kopyasında (aynı işlemde kilit + freezeSync — C3 §4 eşzamanlı kip).
+
+### 3.7 Açılış (yeni yılda, K+1) ve geçici hesabın eşleşmesi
+- Modül açılışları (N-09, karşı hesap 519 — kitap 3-M): Kasa (`cash_entries.is_opening`), cari (§3.5), banka / kart / kredi (`fin_events` opening, `bank_accounts.opening_date` = K+1 —
+  `bank/accounts.mjs:724`; `:1043` açılıştan önceki hareketi 409 ile reddeder — kalan >K hareketler K+1 ve sonrası olduğundan tutar), stok (`stock_moves.is_opening`), çek / senet ("devir"
+  olayı — §4.3 göç), taksit (`plan_entries.opening`), POS bekleyen (N-11 108.NN), şüpheli (N-12 128 / 129), KDV (190, 191@dönem, 391@dönem, 360 — §3.8).
+- N-13 tamamlayıcı fiş (`opening` türü): her bilanço hesabı için arşiv K bakiyesi − modül açılışlarının karşıladığı = fark, karşı taraf 519. K6 (fiş alt defter hesabına yazamaz) yüzünden
+  fişe girebilenler pratikte 500–503, 52x, 54x, 570, 580, 590, 591 (ve alt defteri olmayan öteki hesaplar); alt defter hesaplarının farkı fişle KAPATILAMAZ → fark ≠ 0 ise devir DURUR (kural:
+  her alt defter hesabı kendi modül açılışıyla tam karşılanır). Sonuç: yeni yıl 519 = arşiv 519 (eşleştirilmemiş açılış aynen taşınır — C5 §2), 590 / 591 AYNEN açılır (§11.1; rapor S-1).
+
+### 3.8 Modül ayrıntıları
+- **Stok (§11.4, KG-9 / KG-10, M5, S207):** `yearEnd(K)` ürün bazında { miktar (eksi dahil), birim maliyet, değer, dayanak }; açılış hareketi miktar = K miktarı, birim = değer ÷ miktar
+  (miktar > 0), eksi miktarda değer 0; silinmiş ürün kartına açılış YAZILMAZ (S207 = A — plan §8.6 "153'te kalır" ESKİDİ); Σ açılış değeri = DSS_K = arşiv 153 (N-01 sonrası).
+  Yeni yılın ortalamasında eksi dönem başı miktar 0 sayılır (M5) — Ç6 değerlemesinin "DBS = açılış hareketleri" yolu (C6 §3) bunu karşılamalı (D4 testi).
+- **Çek / senet:** açık evrak (portföy, tahsilde, ciroda, karşılıksız, verilen ödenmemiş) kalır; ≤K olayları tek "devir" olayına (K+1, durum ve hesap korunur: 101.01 / 101.02 / 121.01 /
+  121.02 / 103 / 321, karşı 519); ciroda evrakın defter bakiyesi yok (yalnız iz). Kapanmış ≤K evrak budanır.
+- **Banka / POS:** hesap başına K bakiyesi (`bank/money-lines.mjs` bakiyeleri); bekleyen POS kalemi olan satış ve kalemi kalır (`pos_items` ↔ `pos_sales` INNER JOIN — G3), açılışı 108.NN
+  K+1; hesabı atanmamış 102.00 / 108.00 K bakiyesi de taşınmalı (değişmez 2) — alt defter yeri D4'te (risk; kâhinde senaryo yok — rapor §7).
+- **Taksit kartları:** açık kartta ≤K tahsilatlar tek açılış (`plan_entries.opening` = K'ye kadar ödenen; Kasa'ya girmez), taksit dağılımı korunur; KAPALI / ödenmiş kart da kalır ve aynı tek
+  açılışı alır (yoksa yeni yılda tahsilatsız kart TYK'da açık borç gibi görünür — türetildi, değişmez (4)); "Borçta Kalsın" kapanmış kartın kalanı açık kalem (M2). KG-5 Excel kartı ve fatura
+  kartının ≤K maddesi yeni yılda ÜRETİLMEZ (§4.4).
+- **KDV (M8 1–5):** 190, 191 (KDV dönemi boyutuyla: `vat_period`, boşsa belge ayı), 391 (belge ayı boyutuyla), 360 K bakiyeleri AYNEN; dönemi ≤ Aralık olan 191 / 391 yeni yılın HİÇBİR
+  mahsubuna girmez (Bilanço Kesin Değil "Önceki Yıl KDV Mahsubu Yapılmamış" + ay listesi — EK-2 S34); dönemi Ocak olan Aralık alışının 191'i Ocak mahsubuna girer. Aralık mahsubu yapılmamışsa
+  G4 UYARIR (yol: Devri Yenile). DİKKAT: Aralık KDV beyannamesi Ocak'ın son haftasında verildiği için Ocak başındaki devirlerin çoğu bu uyarıya düşer → sihirbazda belirgin uyarı + "Önce
+  Aralık Mahsubunu Yapın" bağlantısı (BAŞ MİMAR önerisi; G4 "UYARIR" aynen kalır).
+- **Arşivin Defter Türü:** arşiv `settings`'in kopyasını taşır (`book-type.mjs:10`) → arşivin raporları kendi türüyle; yeni yılda tür değişse de arşiv değişmez (iş listesi D4 notu) — değişmez testi.
+
+### 3.9 Arka planda koşma
+İş parçacığında, salt okunur bağlantıda, TEK okuma işleminde (WAL anlık görüntüsü — `financial-statements-worker.mjs:15-40` deseni: router + hizmetler iş parçacığında kurulur). Ana iş parçacığı
+yalnız işi başlatır / ilerlemeyi iletir / sonucu tutar; olay döngüsü en çok ≤ 50 ms. Aynı şirkette aynı anda tek ön izleme (ikinci istek süreni döndürür). Sonuçta `dataVersion` (okuma
+anındaki veri damgası) → D4 başlarken plan KOPYADA yeniden hesaplanır; ön izleme ile kopyadaki plan farklıysa (araya kayıt girmiş) sihirbaz uyarır. Ön izleme bakım kipi GEREKTİRMEZ (salt
+okuma); çakışan yazımlar sonucu bayatlatır, bozamaz. İş parçacığı öldürülürse (kesinti) sonuç yok, veri aynı.
+
+### 3.10 Hacim bütçesi ve ölçüm planı (G9; ders 47, 52, 53)
+- BÜTÇE: ön izleme 100.000 para satırında ≤ 10 sn (iş parçacığında), olay döngüsü en çok ≤ 50 ms; 1.000.000'da ÖLÇÜLÜR (sayı kullanıcıya). Devir (D4: kopya + değişmezler) 1.000.000'da ≤ 5 dk.
+- RİSK (ölçülmüş girdilerden): Ç6 Bilanço 100 bin ~5,5–6 sn, 1 M ~58–60 sn; Gelir Tablosu 100 bin ~3,3–3,7 sn (S224). İkisi + TYK toplu kuyruğu + mizan ayrı ayrı yevmiye kurarsa 10 sn AŞILIR.
+  ÖNLEM (tasarım): yevmiye TEK kez kurulur; mizan, Gelir Tablosu, değerleme, TYK aynı girdiyi paylaşır; kapanış bilançosu için tam `balanceSheet` (MSUGT sınıflaması, brütleştirme) GEREKMEZ —
+  kapanış = hesap bazında mizan + Ç6'nın dönem sonucu / değerleme işlevleri (tek kaynak korunur); `balanceSheet` yalnız Devir Raporu'nun 590 / 591 karşılaştırması için. Aşılırsa S224
+  deseniyle kullanıcıya SAYIYLA sorulur (hız; ders 43 değil).
+- ÖLÇÜM: ana oturumun düzeneğinde (temiz-100k; `scratchpad/ana-kabul`), programın KENDİ ürettiği veriyle (ders 17), 1 M kopyada; bileşen bileşen (okuma, yevmiye, TYK, değerleme, plan, rapor)
+  + toplam + olay döngüsü en çok; `flock -x scratchpad/olcum.lock`, /proc/loadavg yazılır (ders 52); önce / sonra aynı kopya (ders 15). D3 var olan bir yolun yanıtını değiştirmez (yeni uçlar)
+  → ders 53 (a) yeni uçlar + D3'ün dokunduğu Ç6 / TYK yolları (dokunursa).
+
+### 3.11 "Nasıl bozulur?" (plan §8 1–16 + G10 17–28 aynen geçerli; aşağıdakiler bugünkü koddan EKLENEN — testler buradan)
+29. İki satırlı seçenekte Alacak Toplamı gecikmiş açık kalemi kapatır (§3.5 madde 4) — iki seçenek × K'de gecikmiş kalem; gecikmiş(K+1), gecikmiş(vade+1) devirli = devirsiz.
+30. Vadesiz açık kalem (vadesiz fatura, vadesiz Borç Yaz, karşılıksız evrak) K+1 tarihli satırda vadesizlik yüzünden gecikmişten çıkar / gün sayısı sıfırlanır (§1.2 madde 1).
+31. Ödeme Sözü olan açık kalem — söz taşınmazsa takvim / Vade Takip ayrışır.
+32. Kapalı ve "Borçta Kalsın" ile kapanmış kart; KG-5 Excel kartı; fatura kartı — yeni yılda ≤K tarihli madde, tahsilatsız açık kart görünümü (§1.2 madde 7, §3.8).
+33. Açık şüpheli kaydı yeni yılda kendi ≤K tarihinde J-01 maddesi üretir (`doubtful-gl.mjs:137`) → 120 / 128 bozulur.
+34. Dönemi Ocak olan Aralık alış faturası (KG-7) — budanınca Ocak mahsubundan düşer; dönemi Aralık olan 191 açılışı Ocak mahsubuna yanlışlıkla girer (§1.2 madde 5).
+35. Hesabı atanmamış 102.00 / 108.00 bakiyesi ve Devir Kapanışı yapılmış hesap (S179 / S184 / S215) — açılışı taşınmaz, değişmez 2 kırılır.
+36. KG-16 "Açılış Olabilir" onay bekleyen aday devirde (rapor S-2).
+37. Kural Değişikliği Farkı (KG-15) düzeltilmemiş arşiv (rapor S-3).
+38. Ön izlemeden sonra kayıt girilir, devir başlatılır (dataVersion farkı).
+39. Aynı veride iki ön izleme; ön izleme sürerken Şirket Verisini Sıfırla / geri yükleme / şirket silme (iş parçacığı kapanışı — Ç3 DÜŞÜK-2 deseni).
+40. Ön izleme işi sürerken bakım kipi açılır (Devri Başlat) — ön izleme sonucu bayat sayılır.
+41. Silinmiş ürünün K miktarı (S207 A: açılış yok) — plan §8.6'nın eski "153'te kalır" beklentisi TEST EDİLMEZ (eskidi).
+42. 001'de ön izleme (ortak katman aynı dosyada — budama sayıları users / roles / mobile_* / sessions'ı saymamalı).
+
+### 3.12 Test planı (D3)
+- **Kâhin karşılaştırması (ders 5, 40):** muhasebe kâhininin devir olayları (`devir {K, secenek}`; 28 senaryo + 3 rastgele tohum) sürücüde artık "uygulanmadı" değil: sürücü D3 planını
+  (D4'ten sonra iki dosyayı) okur, kâhinin `acilis` çıktısıyla (açık kalemler, cariler, ekstre, kartlar, şüpheli, stok, eksi stok, N13) ve kapanış / mizan çıktısıyla karşılaştırır. Fark önce
+  hatadır (ders 6); yapım aşaması listesi kuralı (CLAUDE.md SÜREN ESASLAR) aynen.
+- **Gerçek veri (test kuralı, ders 17):** `v2.5.0` etiketinin GERÇEK koduyla (`git worktree add --detach`, ders 23 / 54) API'den üretilmiş 12+ aylık veri (binlerce cari / satır, 001 + 002),
+  + v2.4.9 verisinin göç zinciri. Bu verinin devirsiz eşi: aynı olaylar devirsiz, aynı kilitle (28 = A) — gecikmiş, bakiyeler, 1–4 sınıfı aynı ("devir şirketin durumunu değiştirmez").
+- **Değişmezler:** kitap §6 (1–6), EK-1 §4 (devir maddeleri) ve §3.11'den: iki seçenek eşdeğer; ≤K tarihli madde yok; ön izleme sayıları = planın yazım kümesi; plan belirlenimli (iki koşu bayt bayt).
+- **Eski kod kırmızısı (ders 7, 38):** D3 yeni modül — eski kodda "modül yok" kırmızısı kanıt sayılmaz; dişi eski sürümün gerçek koduyla FARK testi (devirsiz eşdeğer) ve mutasyon taşır.
+- **Mutasyon (para çekirdeği):** açık kalem vadesi (vadesizde belge günü), net satır formülü ve netleşmesi, M13 şüpheli payı, N-01 tutarı, 691 → 692, kapanış sırası, KDV dönem etiketi, kartın
+  tükettiği kalemin dışlanması, bakiyesi 0 cariye satır yazılmaması.
+- **Yarıda kesilme ve zaman:** iş parçacığı öldürülür → veri aynı, sonraki ön izleme baştan; iki TZ (UTC, Europe/Istanbul), sahte saat 31.12 23:59 / 01.01 00:00, Şubat'ta devir, 29 Şubat'lı
+  yıl (ders 13, 22).
+- **Hacim:** §3.10.
