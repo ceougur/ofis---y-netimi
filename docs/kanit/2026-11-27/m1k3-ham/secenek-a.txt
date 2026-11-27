@@ -1,0 +1,18 @@
+== Y3 ödenecek yönde kesilmiş fişte de yeni kural (yön dönen ayda bugünkü devreden)
+   AssertionError [ERR_ASSERTION]: ödenecek → devreden · yalnız 391 azaldı, yön döndü (DEĞİŞMEZ, karar dışı): Nisan [["Hesaplanan KDV (391) (İadeler Düşülmüş)","200,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","300,00 TL"],["Ödenecek KDV","0,00 TL"],["Sonraki Döneme Devreden KDV","100,00 TL"],["KDV
+   + actual - expected
+   +   30000,
+   +   10000
+   -   20000,
+   -   0
+   actual: [ 30000, 0, 10000 ],
+   expected: [ 0, 20000, 0 ],
+== Y4 İ artan güncel değil ayında da yeni kural (karar yalnız satış KDV'si)
+   AssertionError [ERR_ASSERTION]: devreden · İ arttı (S-M1-3 = C, karar dışı): Nisan [["Hesaplanan KDV (391) (İadeler Düşülmüş)","1.000,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","900,00 TL"],["Ödenecek KDV","100,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Nisan 2026"],
+   + actual - expected
+   +   90000,
+   +   10000,
+   -   80000,
+   -   20000,
+   actual: [ 90000, 10000, 0 ],
+   expected: [ 80000, 20000, 0 ],

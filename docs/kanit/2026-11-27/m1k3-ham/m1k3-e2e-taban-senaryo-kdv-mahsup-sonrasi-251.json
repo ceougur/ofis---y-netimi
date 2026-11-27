@@ -1,0 +1,58 @@
+{
+  "ad": "m1k3-e2e-taban-senaryo-kdv-mahsup-sonrasi-251",
+  "komut": "node test/e2e/senaryo-kdv-mahsup-sonrasi-251.mjs",
+  "commit": "f2412ba939d069796f4d7dc4e40a7791ae8f71f0",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T20:12:26.364Z",
+  "sure_sn": 13.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 26,
+    "gecen": 22,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "yalnız 391: Mart–Nisan 0 / 300 / 0 (taban 200), tablo altı = özet ({\"summary\":[\"0,00\",\"200,00\",\"0,00\"],\"foot\":[\"0,00\",\"200,00\",\"0,00\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yalnız 391: ay satırları Mart devreden 700 / Nisan 700 devredenle 300 (taban Nisan 800 devredenle 200) ([[\"Mart 2026\",\"Sonraki Döneme Devreden KDV\",\"700,00\"],[\"Nisan 2026\",\"Önceki Dönemden Devreden KDV\",\"800,00\"],[\"Nisan 2026\",\"Ödenecek KDV\",\"200,00\"]])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yalnız 391: Nisan fişi zincirle uyuşmuyor: undefined",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yalnız 391: Bu Yıl 0 / 300 / 0 ({\"summary\":[\"0,00\",\"200,00\",\"0,00\"],\"foot\":[\"0,00\",\"200,00\",\"0,00\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-kdv-mahsup-sonrasi-251: 22 geçti, 4 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k3/kanit/2026-11-27/m1k3-e2e-taban-senaryo-kdv-mahsup-sonrasi-251.log",
+  "klasor": "/dev/shm/m1k3-kdv/eski",
+  "ham_cikti_sha256": "00b329f0564b11da787419a62d8c2c595037b00a7d3e90d40d4c40386cbcda72",
+  "ham_cikti_bayt": 6341
+}

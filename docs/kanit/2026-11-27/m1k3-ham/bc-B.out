@@ -1,0 +1,30 @@
+== B ön izleme 4.47 5.56 4.94 10/188 19608
+taban UTC çıkış 0 · 54 satır
+taban UTC karma çıkış 0 · 6 satır
+yeni UTC çıkış 0 · 54 satır
+yeni UTC karma çıkış 0 · 6 satır
+UTC: ön izleme / fiş satırı taban 26 · yeni 26 · BİREBİR EVET
+  rapor satırlarında fark: 0 — 
+UTC karma: fiş satırı taban 3 · yeni 3 · BİREBİR EVET
+taban Europe/Istanbul çıkış 0 · 54 satır
+taban Europe/Istanbul karma çıkış 0 · 6 satır
+yeni Europe/Istanbul çıkış 0 · 54 satır
+yeni Europe/Istanbul karma çıkış 0 · 6 satır
+Europe/Istanbul: ön izleme / fiş satırı taban 26 · yeni 26 · BİREBİR EVET
+  rapor satırlarında fark: 0 — 
+Europe/Istanbul karma: fiş satırı taban 3 · yeni 3 · BİREBİR EVET
+== B yalnız 391 4.95 5.55 4.97 5/202 19873
+taban UTC çıkış 0 · 5 satır
+yeni UTC çıkış 0 · 5 satır
+UTC yalnız 391: fiş satırı taban 2 · yeni 2 · BİREBİR EVET
+  rapor taban: Nisan raporu {"three":[80000,20000,0],"h391":100000,"h191":0,"notes":[["KDV Mahsup Fişi","Nisan 2026"]]} 
+        yeni : Nisan raporu {"three":[70000,30000,0],"h391":100000,"h191":0,"notes":[["KDV Mahsup Fişi","Nisan 2026"],["Zincirle Uyuşmayan Mahsup Fişi","Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıyd
+  rapor taban: Mart–Nisan raporu {"three":[0,20000,0],"h391":130000,"h191":100000,"notes":[["KDV Mahsup Fişi","Mart 2026, Nisan 2026"],["Mahsuptan Sonra Değişen Ay","Mart 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsu 
+        yeni : Mart–Nisan raporu {"three":[0,30000,0],"h391":130000,"h191":100000,"notes":[["KDV Mahsup Fişi","Mart 2026, Nisan 2026"],["Mahsuptan Sonra Değişen Ay","Mart 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsu
+taban Europe/Istanbul çıkış 0 · 5 satır
+yeni Europe/Istanbul çıkış 0 · 5 satır
+Europe/Istanbul yalnız 391: fiş satırı taban 2 · yeni 2 · BİREBİR EVET
+  rapor taban: Nisan raporu {"three":[80000,20000,0],"h391":100000,"h191":0,"notes":[["KDV Mahsup Fişi","Nisan 2026"]]} 
+        yeni : Nisan raporu {"three":[70000,30000,0],"h391":100000,"h191":0,"notes":[["KDV Mahsup Fişi","Nisan 2026"],["Zincirle Uyuşmayan Mahsup Fişi","Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıyd
+  rapor taban: Mart–Nisan raporu {"three":[0,20000,0],"h391":130000,"h191":100000,"notes":[["KDV Mahsup Fişi","Mart 2026, Nisan 2026"],["Mahsuptan Sonra Değişen Ay","Mart 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsu 
+        yeni : Mart–Nisan raporu {"three":[0,30000,0],"h391":130000,"h191":100000,"notes":[["KDV Mahsup Fişi","Mart 2026, Nisan 2026"],["Mahsuptan Sonra Değişen Ay","Mart 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsu
