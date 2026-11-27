@@ -182,7 +182,8 @@ işlem); ana oturumun 100 bin verisinde mahsup fişi yok (tur 2 raporu §6) → 
 - 9913294f M1 küçük tur: KDV Özeti ekranı — tablo altı satırları üst üste binmez (tfoot bütün olarak sabit), notlar tutar kartlarının altında normal yazıyla; yeni ekran senaryosu
 - ef0ccf16 M1 küçük tur: Excel denetim betiği (ekran-hafta) KDV Özeti'nin yeni kart adları ve üç sonuç kartı
 - 3248c7e2 M1 küçük tur: ekran senaryosu tablo altını hücre kutusundan ölçer (eski düzende hücreler tek tek yapışkandı)
-- (son) Kanıt: M1 küçük tur — ham çıktılar, betikler, ekran görüntüleri; rapor
+- 17999831 Kanıt: M1 küçük tur — ham çıktılar, betikler, ekran görüntüleri; rapor
+- (son) rapor son hâli (bu belge)
 
 ## 17. ANA OTURUMUN YENİDEN KOŞACAĞI KOMUTLAR
 ```
