@@ -76,7 +76,10 @@ export function createEquivalence(store) {
     const ids = new Set(after.filter(line => line.origin === "invoice").map(line => line.sourceId));
     base.invoices = base.invoices.filter(invoice => ids.has(invoice.id) || redirected.has(invoice.id)).map(invoice => (redirected.has(invoice.id) ? { ...invoice, dueDate: redirected.get(invoice.id).vade, payable: redirected.get(invoice.id).amount } : invoice));
     base.offsets = base.offsets.filter(offset => offset.date > K);
-    const result = buildObligations({ ...input.withExtras(base, { ...extras, dueDates, promises }, party), doubtfulRecords: [] });
+    // ≤K şüpheli kaydının yeni yıldaki ayırımı D4a'nın işi (kapsam dışı); K'den SONRA alınmış şüpheli kayıt yeni yılda kendi tarihiyle kalır — devirsizdeki gibi kuyruğa girer (tur 2:
+    // gerçek veri UTC tohum 11 — 14.01.2027 Şüpheliye Al'ı benzetim dışarıda bırakıyordu).
+    const later = (extras.doubtful?.get?.(party) || []).filter(record => record.date > K);
+    const result = buildObligations({ ...input.withExtras(base, { ...extras, dueDates, promises }, party), doubtfulRecords: later });
     if (!paymentVade.size) return result;
     const items = result.items.map(item => (paymentVade.has(item.lineId) ? { ...item, vade: paymentVade.get(item.lineId) } : item));
     return { ...result, items, overdue: (t = day) => overdueOf(items, t) };
