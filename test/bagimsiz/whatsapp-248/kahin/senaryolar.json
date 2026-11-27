@@ -694,6 +694,16 @@
     "9.2 KARARLI — Şirket 002'de de aynı kurallar (kural şirkete göre değişmez)."
    ]
   },
+  "SW21": {
+   "kaynak_turu": "kullanıcı (27.11.2026 17:01 UTC 'önerilerini uygula' = A — öneri; girdi c5c2-kararlar.md §1.1, iş listesi D + C aynen) — WK güncellemesi 21'in KULLANICIYA SORULMALI S-W21-1 / 2 / 3'ü (README §26.4, §26.7)",
+   "metin": [
+    "KULLANICI KARARI 27.11 17:01 UTC (AYNEN: \"önerilerini uygula\" — bekleyen altı sorunun yanıtı; hepsi A): S-W21-1 = A (Sonucu Belirsiz hatırlatmada \"Yine de Gönder\" anında Ödeme Sözü sürüyorsa elle seçim sayılır, onay penceresinde \"Ödeme Sözü Var\" yazar, ileti gider); S-W21-2 = A (elle seçim — \"Yine de Ekle\" — yalnız işaretlendiği andaki etiketleri aşar; kuyruktayken sonradan gelen etiketle \"Atlandı\"; başlatmada iki etiket birlikte varsa ikisini birlikte aşar); S-W21-3 = A (Meta'nın beklettiği iletinin 2. denemesinden önce iş elle sayılmışsa S23 / S29 geçer — iletide şüpheli tutar yer almaz; örnekte 250 / 200 TL); …",
+    "soru (S-W21-1; KİME KAÇ KEZ — ders 45; UÇ DURUM): Sonucu Belirsiz hatırlatmada \"Yine de Gönder\" basıldığı anda carinin Ödeme Sözü sürüyor. A (ÖNERİ): elle seçim sayılır (S16'daki şüpheli kuralı gibi), onay penceresinde \"Ödeme Sözü Var\" yazar, ileti gider (örnek 1.000 TL) — genel ilke (4) \"çıkmaz yok\" ile uyumlu. B: gönderim anında \"Atlandı — Ödeme Sözü Var\"; o gün kişiye hiçbir yoldan gidemez (yeni gönderimi Sonucu Belirsiz eler, Yine de Ekle bunu aşmaz). C: uç durum böyle kalsın (BİLİNEN SINIR; B gibi).",
+    "soru (S-W21-2; KİME KAÇ KEZ — ders 45; UÇ DURUM): elle seçilen (\"Yine de Ekle\") kişiye, seçildiği anda OLMAYAN başka bir etiket kuyruktayken gelirse (örnek: söz için eklenen kişiye sonra şüpheli kaydı açılıyor). A (ÖNERİ): elle seçim yalnız işaretlendiği andaki etiketleri aşar; sonradan gelen etiketle \"Atlandı\" (ileti gitmez); başlatmada iki etiket birlikte varsa ikisini birlikte aşar. B: elle seçim bütün etiketleri aşar, ileti gider (örnek 700 TL). C: uç durum böyle kalsın (BİLİNEN SINIR; A gibi).",
+    "soru (S-W21-3; İLETİ İÇERİĞİ / TUTAR — ders 43; UÇ DURUM; iki onaylı karar çatışıyor): Meta'nın beklettiği iletinin 2. denemesinden ÖNCE iş elle sayılmışsa (şüpheli carinin elle seçimi — S16 / S23): ilke taslağı 5.2 \"2. deneme aynı içerikle\" der, S23 / S29 kararları \"gönderim anında şüphesiz tutarla\" der. A (ÖNERİ): S23 / S29 geçer — örnekte 250 TL / 200 TL (şüpheli tutar iletiye girmez). B: 5.2 her durumda geçer — 650 TL / 400 TL (donmuş içerik şüpheli tutarı da yazar). C: uç durum böyle kalsın (BİLİNEN SINIR; A gibi). Yaygın programlar: belgesi okunmadı.",
+    "girdi §4 (WhatsApp kâhini sınıfları, AYNEN): S-W21-1 (Sonucu Belirsiz + söz → Yine de Gönder gider, onayda \"Ödeme Sözü Var\"; içerik gönderim anındaki tutar); bekleyen belirsizlik onaylı işte söz verilip asıl işte yeniden basılınca (S23'ün söz karşılığı); S-W21-2 (söz için eklenen kişiye kuyruktayken şüpheli → \"Atlandı — Şüpheli Alacağı Var\"; şüpheli için eklenene sonra söz → \"Atlandı — Ödeme Sözü Var\"; başlatmada iki etiket birlikte → ikisi birlikte aşılır, gider); S-W21-3 (2. denemeden önce elle sayılan iş → 2. deneme gönderim anındaki şüphesiz tutarla; elle iz değişmediyse 5.2 aynen); her sınıfta \"aynı gün en çok bir\" ve \"çıkmaz yok\" değişmezleri; iki saat dilimi; gün dönümü."
+   ]
+  },
   "K8": {
    "kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
    "metin": [
@@ -131252,20 +131262,8 @@
       "isler.T1/MK.degiskenler": [
        "Mine Bekletilen",
        "Deneme Ticaret Ltd. Şti.",
-       {
-        "secenek": [
-         "16.10.2026",
-         "06.10.2026"
-        ],
-        "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme aynı içerikle' ↔ S23 / S29 'gönderim anında şüphesiz tutarla' (iki okuma; kime / kaç kez aynı)"
-       },
-       {
-        "secenek": [
-         "250,00 TL",
-         "650,00 TL"
-        ],
-        "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme aynı içerikle' ↔ S23 / S29 'gönderim anında şüphesiz tutarla' (iki okuma; kime / kaç kez aynı)"
-       },
+       "16.10.2026",
+       "250,00 TL",
        {
         "plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"
        }
@@ -131459,20 +131457,8 @@
         "degiskenler": [
          "Mine Bekletilen",
          "Deneme Ticaret Ltd. Şti.",
-         {
-          "secenek": [
-           "16.10.2026",
-           "06.10.2026"
-          ],
-          "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme aynı içerikle' ↔ S23 / S29 'gönderim anında şüphesiz tutarla' (iki okuma; kime / kaç kez aynı)"
-         },
-         {
-          "secenek": [
-           "250,00 TL",
-           "650,00 TL"
-          ],
-          "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme aynı içerikle' ↔ S23 / S29 'gönderim anında şüphesiz tutarla' (iki okuma; kime / kaç kez aynı)"
-         },
+         "16.10.2026",
+         "250,00 TL",
          {
           "plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"
          }
@@ -135757,20 +135743,8 @@
       "isler.T1/MZ.degiskenler": [
        "Mert Bekleme",
        "Deneme Ticaret Ltd. Şti.",
-       {
-        "secenek": [
-         "30.10.2026",
-         "06.10.2026"
-        ],
-        "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme aynı içerikle' ↔ S23 / S29 'gönderim anında şüphesiz tutarla' (iki okuma; kime / kaç kez aynı)"
-       },
-       {
-        "secenek": [
-         "200,00 TL",
-         "400,00 TL"
-        ],
-        "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme aynı içerikle' ↔ S23 / S29 'gönderim anında şüphesiz tutarla' (iki okuma; kime / kaç kez aynı)"
-       },
+       "30.10.2026",
+       "200,00 TL",
        {
         "plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"
        }
@@ -135964,20 +135938,8 @@
         "degiskenler": [
          "Mert Bekleme",
          "Deneme Ticaret Ltd. Şti.",
-         {
-          "secenek": [
-           "30.10.2026",
-           "06.10.2026"
-          ],
-          "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme aynı içerikle' ↔ S23 / S29 'gönderim anında şüphesiz tutarla' (iki okuma; kime / kaç kez aynı)"
-         },
-         {
-          "secenek": [
-           "200,00 TL",
-           "400,00 TL"
-          ],
-          "susuyor": "KULLANICIYA SORULMALI S-W21-3 (README §26.4): Meta Bekletti'nin 2. denemesinden önce elle sayılan (S16 / S23) Ödeme Hatırlatma işinin içeriği — taslak 5.2 '2. deneme aynı içerikle' ↔ S23 / S29 'gönderim anında şüphesiz tutarla' (iki okuma; kime / kaç kez aynı)"
-         },
+         "30.10.2026",
+         "200,00 TL",
          {
           "plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"
          }
@@ -168791,6 +168753,1818 @@
         "post": 1,
         "kabul": 1,
         "meta_ileti": 1,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "SW21-01-sonucu-belirsiz-yine-de-gonder-suren-soz-elle-gider-ayni-gun-bir-ertesi-gun-serbest",
+   "baslik": "SW21",
+   "aciklama": "P1'in hatırlatması (1.000,00 TL) Sonucu Belirsiz; 11:00'de 20.10'a söz verilir (girdi: elle değer borcun tamamı 1.000,00 TL — taslak 2.3). 12:00 işteki Yine de Gönder: söz SÜRÜYOR → elle seçim sayılır (S-W21-1 = A, Y22-1/2), onay penceresinde 'Ödeme Sözü Var' (Y22-3 → soz_etiketi), ileti gönderim anındaki elle tutarla 05.10.2026 / 1.000,00 TL gider (POST 2; B olsaydı 'Atlandı — Ödeme Sözü Var', POST 1). 13:00 yeni hatırlatma: 'Ödeme Sözü Var' ile elenir (2.5); 13:10 'Yine de Ekle' ile: söz aşılır ama o gün ileti gitti → 'Daha Önce Gönderildi' (4.1; uyarı 1, son 30.10; 6.4 elle seçim bunu aşmaz) — aynı gün en çok bir (onaylı Yine de Gönder dışında). 31.10 10:00 'Yine de Ekle' ile ertesi gün serbest → 1.000,00 TL gider. P1'e 3 POST",
+   "kaynak": "SW21 (S-W21-1) + C5C6 (6.1, 6.4) + C5C4 (4.1, 2.5) + S16 (Y13-4) + H1 + K1 ★5",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "P1",
+      "ad": "Pınar Söz",
+      "telefon": "0561 700 00 01",
+      "hareketler": [],
+      "borc": [
+       {
+        "t": "+0s",
+        "neden": null,
+        "vade": "05.10.2026",
+        "tutar": "1000.00",
+        "bakiye": "1000.00"
+       },
+       {
+        "t": "+1h",
+        "neden": "odeme_sozu",
+        "elle": {
+         "neden": null,
+         "vade": "05.10.2026",
+         "tutar": "1000.00",
+         "bakiye": "1000.00"
+        }
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "P1"
+      ],
+      "sablon": "hatirlatma"
+     },
+     {
+      "t": "+2h",
+      "tur": "yine_de_gonder",
+      "toplu": "T1",
+      "cari": "P1",
+      "etiket": "Y1"
+     },
+     {
+      "t": "+3h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "P1"
+      ],
+      "sablon": "hatirlatma"
+     },
+     {
+      "t": "+3h10m",
+      "tur": "baslat",
+      "etiket": "T3",
+      "secim": [
+       "P1"
+      ],
+      "sablon": "hatirlatma",
+      "yine_de_ekle": [
+       "P1"
+      ]
+     },
+     {
+      "t": "+1d",
+      "tur": "baslat",
+      "etiket": "T4",
+      "secim": [
+       "P1"
+      ],
+      "sablon": "hatirlatma",
+      "yine_de_ekle": [
+       "P1"
+      ]
+     }
+    ],
+    "meta_davranis": {
+     "mesaj": {
+      "P1": [
+       "yanitsiz_kabul",
+       "kabul",
+       "kabul"
+      ]
+     },
+     "kanca": {
+      "T1/P1": {
+       "1": [],
+       "*": [
+        [
+         "sent",
+         "+1s"
+        ],
+        [
+         "delivered",
+         "+5s"
+        ]
+       ]
+      },
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "yeniden.Y1": {
+       "elenen": {},
+       "alinan": [
+        "P1"
+       ],
+       "oneri": null,
+       "soz_etiketi": [
+        "P1"
+       ]
+      },
+      "isler.T1/P1.durum": "Teslim Edildi",
+      "isler.T1/P1.post": 2,
+      "isler.T1/P1.degiskenler": [
+       "Pınar Söz",
+       "Deneme Ticaret Ltd. Şti.",
+       "05.10.2026",
+       "1.000,00 TL",
+       "1.000,00 TL"
+      ],
+      "elenen": {
+       "T2": {
+        "P1": "odeme_sozu"
+       },
+       "T3": {
+        "P1": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2",
+       "T3"
+      ],
+      "onceki_uyari": {
+       "T3": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "isler.T4/P1.durum": "Teslim Edildi",
+      "isler.T4/P1.degiskenler": [
+       "Pınar Söz",
+       "Deneme Ticaret Ltd. Şti.",
+       "05.10.2026",
+       "1.000,00 TL",
+       "1.000,00 TL"
+      ],
+      "meta.post": {
+       "P1": 3
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "P1": "odeme_sozu"
+       },
+       "T3": {
+        "P1": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2",
+       "T3"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T3": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       },
+       "T4": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "P1": 3
+       },
+       "kabul": {
+        "P1": 2
+       },
+       "meta_ileti": {
+        "P1": 3
+       },
+       "medya_yukleme": {
+        "P1": 0
+       },
+       "medya_silme": {
+        "P1": 0
+       },
+       "toplam_post": 3,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 0
+      },
+      "kontroller": {},
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "yeniden": {
+       "Y1": {
+        "elenen": {},
+        "alinan": [
+         "P1"
+        ],
+        "oneri": null,
+        "soz_etiketi": [
+         "P1"
+        ]
+       }
+      },
+      "isler": {
+       "T1/P1": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905617000001",
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": [
+         "Pınar Söz",
+         "Deneme Ticaret Ltd. Şti.",
+         "05.10.2026",
+         "1.000,00 TL",
+         "1.000,00 TL"
+        ],
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 2,
+        "kabul": 1,
+        "meta_ileti": 2,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       },
+       "T4/P1": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905617000001",
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": [
+         "Pınar Söz",
+         "Deneme Ticaret Ltd. Şti.",
+         "05.10.2026",
+         "1.000,00 TL",
+         "1.000,00 TL"
+        ],
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "SW21-02-bekleyen-belirsizlik-onayli-iste-soz-asil-iste-yeniden-basma-elle-ikinci-deneme-gonderim-anindaki-tutar",
+   "baslik": "SW21",
+   "aciklama": "Q1'in hatırlatması Sonucu Belirsiz; 11:00'de işteki Yine de Gönder (söz YOK): ileti 06.10.2026 / 400,00 TL / bakiye 650,00 TL ile hazırlanır, Meta Bekletti (131049). 12:00'de söz verilir (girdi: elle değer borcun tamamı 650,00 TL). 14:00 asıl işte yeniden Yine de Gönder: S23'ün söz karşılığı (S-W21-1 = A 'aynı kural bekleyen belirsizlik onaylı işte …'; Y22-4) — bekleyen iş elle sayılır (elle_sayilan + soz_etiketi), yeni iş açılmaz, F1 uygulanmaz, Meta Bekletti beklemesi sürer (POST 2). 31.10 ~10:00 2. deneme: iz değişti → S-W21-3 = A: içerik gönderim anında elle değerlerle 06.10.2026 / 650,00 TL / 650,00 TL (B olsaydı donmuş 400,00 TL). Gün dönümü: ileti 31.10'da gitti → 31.10 11:10 'Yine de Ekle' ile yeni hatırlatma 'Daha Önce Gönderildi' (uyarı 1, son 31.10). POST 3",
+   "kaynak": "SW21 (S-W21-1, S-W21-3) + S23 (Y15-1…4) + C5C5 (5.2) + C5C4 (4.1, N30) + §7a 14",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "Q1",
+      "ad": "Kaan Söz Bekletilen",
+      "telefon": "0561 700 00 11",
+      "hareketler": [],
+      "borc": [
+       {
+        "t": "+0s",
+        "neden": null,
+        "vade": "06.10.2026",
+        "tutar": "400.00",
+        "bakiye": "650.00"
+       },
+       {
+        "t": "+2h",
+        "neden": "odeme_sozu",
+        "elle": {
+         "neden": null,
+         "vade": "06.10.2026",
+         "tutar": "650.00",
+         "bakiye": "650.00"
+        }
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "Q1"
+      ],
+      "sablon": "hatirlatma"
+     },
+     {
+      "t": "+1h",
+      "tur": "yine_de_gonder",
+      "toplu": "T1",
+      "cari": "Q1",
+      "etiket": "Y1"
+     },
+     {
+      "t": "+3h",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+4h",
+      "tur": "yine_de_gonder",
+      "toplu": "T1",
+      "cari": "Q1",
+      "etiket": "Y2",
+      "hedef": "asil"
+     },
+     {
+      "t": "+5h",
+      "tur": "kontrol",
+      "ad": "K2"
+     },
+     {
+      "t": "+25h5m",
+      "tur": "kontrol",
+      "ad": "K3"
+     },
+     {
+      "t": "+25h10m",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "Q1"
+      ],
+      "sablon": "hatirlatma",
+      "yine_de_ekle": [
+       "Q1"
+      ]
+     }
+    ],
+    "meta_davranis": {
+     "mesaj": {
+      "Q1": [
+       "yanitsiz_kabul",
+       "kabul",
+       "kabul"
+      ]
+     },
+     "kanca": {
+      "Q1": {
+       "1": [],
+       "2": [
+        [
+         "sent",
+         "+1s"
+        ],
+        [
+         "failed",
+         "+10s",
+         {
+          "kod": 131049
+         }
+        ]
+       ],
+       "3": [
+        [
+         "sent",
+         "+1s"
+        ],
+        [
+         "delivered",
+         "+5s"
+        ]
+       ]
+      },
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "yeniden.Y1": {
+       "elenen": {},
+       "alinan": [
+        "Q1"
+       ],
+       "oneri": null
+      },
+      "kontroller.K1.isler": {
+       "T1/Q1": "Meta Bekletti (24 Saat Sonra Yeniden)"
+      },
+      "yeniden.Y2": {
+       "elenen": {},
+       "alinan": [],
+       "oneri": null,
+       "soz_etiketi": [
+        "Q1"
+       ],
+       "elle_sayilan": [
+        "Q1"
+       ]
+      },
+      "kontroller.K2.isler": {
+       "T1/Q1": "Meta Bekletti (24 Saat Sonra Yeniden)"
+      },
+      "kontroller.K2.toplam_post": 2,
+      "kontroller.K3.isler": {
+       "T1/Q1": "Teslim Edildi"
+      },
+      "isler.T1/Q1.degiskenler": [
+       "Kaan Söz Bekletilen",
+       "Deneme Ticaret Ltd. Şti.",
+       "06.10.2026",
+       "650,00 TL",
+       "650,00 TL"
+      ],
+      "isler.T1/Q1.post": 3,
+      "elenen": {
+       "T2": {
+        "Q1": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-31"
+       }
+      },
+      "meta.post": {
+       "Q1": 3
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "Q1": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-31"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 1
+      },
+      "meta": {
+       "post": {
+        "Q1": 3
+       },
+       "kabul": {
+        "Q1": 2
+       },
+       "meta_ileti": {
+        "Q1": 3
+       },
+       "medya_yukleme": {
+        "Q1": 0
+       },
+       "medya_silme": {
+        "Q1": 0
+       },
+       "toplam_post": 3,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 0
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-10-30T13:00:00+03:00",
+        "durum_sayilari": {
+         "Meta Bekletti (24 Saat Sonra Yeniden)": 1
+        },
+        "toplam_post": 2,
+        "toplam_kabul": 1,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/Q1": "Meta Bekletti (24 Saat Sonra Yeniden)"
+        }
+       },
+       "K2": {
+        "t": "2026-10-30T15:00:00+03:00",
+        "durum_sayilari": {
+         "Meta Bekletti (24 Saat Sonra Yeniden)": 1
+        },
+        "toplam_post": 2,
+        "toplam_kabul": 1,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/Q1": "Meta Bekletti (24 Saat Sonra Yeniden)"
+        }
+       },
+       "K3": {
+        "t": "2026-10-31T11:05:00+03:00",
+        "durum_sayilari": {
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 2,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/Q1": "Teslim Edildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "yeniden": {
+       "Y1": {
+        "elenen": {},
+        "alinan": [
+         "Q1"
+        ],
+        "oneri": null
+       },
+       "Y2": {
+        "elenen": {},
+        "alinan": [],
+        "oneri": null,
+        "soz_etiketi": [
+         "Q1"
+        ],
+        "elle_sayilan": [
+         "Q1"
+        ]
+       }
+      },
+      "isler": {
+       "T1/Q1": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905617000011",
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": [
+         "Kaan Söz Bekletilen",
+         "Deneme Ticaret Ltd. Şti.",
+         "06.10.2026",
+         "650,00 TL",
+         "650,00 TL"
+        ],
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 3,
+        "kabul": 2,
+        "meta_ileti": 3,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "SW21-03-yine-de-ekle-sonradan-gelen-etiketle-atlanir-baslatmada-iki-etiket-birlikte-asilir-ayni-gun-yol",
+   "baslik": "SW21",
+   "aciklama": "Hatırlatma X1 (söz), X2 (şüpheli), X3 (Şüpheli + Söz birlikte), X4 (Şüpheli + Söz, işaretsiz); 'Yine de Ekle' X1, X2, X3. Başlatma: X4 'Şüpheli Alacağı Var' ile elenir (2.5 sırasının ilki); toplu iş duraklatılır. 10:30'da X1'e şüpheli kaydı açılır, X2'ye söz verilir (girdi). 11:00 Devam Et (gönderim anı — S-W21-2 = A, Y22-5): X1 'Atlandı — Şüpheli Alacağı Var', X2 'Atlandı — Ödeme Sözü Var' (iz yalnız işaretlendiği andaki etiketi aşar); X3'ün izi iki etiketi birlikte aşar (Y22-7) → elle değerlerle 22.10.2026 / 250,00 TL / 800,00 TL gider. 12:00 yeni hatırlatma, 'Yine de Ekle' X1, X2 (o anki iki etiket birlikte aşılır): Atlandı o gün almamış (ilke 1, 4.3) → X1 20.10.2026 / 700,00 TL / 1.000,00 TL, X2 21.10.2026 / 300,00 TL / 900,00 TL gider (çıkmaz yok — ilke 4); X4 yine 'Şüpheli Alacağı Var'. POST: X1 1, X2 1, X3 1",
+   "kaynak": "SW21 (S-W21-2) + C5C6 (6.1) + C5C5 (5.3, 5.4) + C5C4 (4.3, 2.5) + G0 (1, 4)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "X1",
+      "ad": "Ayşe Sözlü",
+      "telefon": "0561 700 00 21",
+      "hareketler": [],
+      "borc": [
+       {
+        "t": "+0s",
+        "neden": "odeme_sozu",
+        "elle": {
+         "neden": null,
+         "vade": "20.10.2026",
+         "tutar": "1000.00",
+         "bakiye": "1000.00"
+        }
+       },
+       {
+        "t": "+30m",
+        "neden": "supheli_alacak",
+        "etiketler": [
+         "supheli_alacak",
+         "odeme_sozu"
+        ],
+        "elle": {
+         "neden": null,
+         "vade": "20.10.2026",
+         "tutar": "700.00",
+         "bakiye": "1000.00"
+        }
+       }
+      ]
+     },
+     {
+      "id": "X2",
+      "ad": "Bora Şüpheli",
+      "telefon": "0561 700 00 22",
+      "hareketler": [],
+      "borc": [
+       {
+        "t": "+0s",
+        "neden": "supheli_alacak",
+        "elle": {
+         "neden": null,
+         "vade": "21.10.2026",
+         "tutar": "300.00",
+         "bakiye": "900.00"
+        }
+       },
+       {
+        "t": "+30m",
+        "neden": "supheli_alacak",
+        "etiketler": [
+         "supheli_alacak",
+         "odeme_sozu"
+        ],
+        "elle": {
+         "neden": null,
+         "vade": "21.10.2026",
+         "tutar": "300.00",
+         "bakiye": "900.00"
+        }
+       }
+      ]
+     },
+     {
+      "id": "X3",
+      "ad": "Cansu İki Etiket",
+      "telefon": "0561 700 00 23",
+      "hareketler": [],
+      "borc": [
+       {
+        "t": "+0s",
+        "neden": "supheli_alacak",
+        "etiketler": [
+         "supheli_alacak",
+         "odeme_sozu"
+        ],
+        "elle": {
+         "neden": null,
+         "vade": "22.10.2026",
+         "tutar": "250.00",
+         "bakiye": "800.00"
+        }
+       }
+      ]
+     },
+     {
+      "id": "X4",
+      "ad": "Deniz İki Etiket",
+      "telefon": "0561 700 00 24",
+      "hareketler": [],
+      "borc": [
+       {
+        "t": "+0s",
+        "neden": "supheli_alacak",
+        "etiketler": [
+         "supheli_alacak",
+         "odeme_sozu"
+        ],
+        "elle": {
+         "neden": null,
+         "vade": "23.10.2026",
+         "tutar": "150.00",
+         "bakiye": "600.00"
+        }
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "X1",
+       "X2",
+       "X3",
+       "X4"
+      ],
+      "sablon": "hatirlatma",
+      "yine_de_ekle": [
+       "X1",
+       "X2",
+       "X3"
+      ]
+     },
+     {
+      "t": "+0s",
+      "tur": "duraklat",
+      "toplu": "T1"
+     },
+     {
+      "t": "+1h",
+      "tur": "devam",
+      "toplu": "T1"
+     },
+     {
+      "t": "+1h30m",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+2h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "X1",
+       "X2",
+       "X4"
+      ],
+      "sablon": "hatirlatma",
+      "yine_de_ekle": [
+       "X1",
+       "X2"
+      ]
+     }
+    ],
+    "meta_davranis": {
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "elenen": {
+       "T1": {
+        "X4": "supheli_alacak"
+       },
+       "T2": {
+        "X4": "supheli_alacak"
+       }
+      },
+      "olusmadi": [],
+      "kontroller.K1.isler": {
+       "T1/X1": "Atlandı",
+       "T1/X2": "Atlandı",
+       "T1/X3": "Teslim Edildi"
+      },
+      "isler.T1/X1.atlanma_nedeni": "supheli_alacak",
+      "isler.T1/X2.atlanma_nedeni": "odeme_sozu",
+      "isler.T1/X1.post": 0,
+      "isler.T1/X2.post": 0,
+      "isler.T1/X3.degiskenler": [
+       "Cansu İki Etiket",
+       "Deneme Ticaret Ltd. Şti.",
+       "22.10.2026",
+       "250,00 TL",
+       "800,00 TL"
+      ],
+      "isler.T2/X1.durum": "Teslim Edildi",
+      "isler.T2/X1.degiskenler": [
+       "Ayşe Sözlü",
+       "Deneme Ticaret Ltd. Şti.",
+       "20.10.2026",
+       "700,00 TL",
+       "1.000,00 TL"
+      ],
+      "isler.T2/X2.durum": "Teslim Edildi",
+      "isler.T2/X2.degiskenler": [
+       "Bora Şüpheli",
+       "Deneme Ticaret Ltd. Şti.",
+       "21.10.2026",
+       "300,00 TL",
+       "900,00 TL"
+      ],
+      "meta.post": {
+       "X1": 1,
+       "X2": 1,
+       "X3": 1
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T1": {
+        "X4": "supheli_alacak"
+       },
+       "T2": {
+        "X4": "supheli_alacak"
+       }
+      },
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 3
+       },
+       "T2": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       }
+      },
+      "durum_sayilari": {
+       "Atlandı": 2,
+       "Teslim Edildi": 3
+      },
+      "meta": {
+       "post": {
+        "X1": 1,
+        "X2": 1,
+        "X3": 1
+       },
+       "kabul": {
+        "X1": 1,
+        "X2": 1,
+        "X3": 1
+       },
+       "meta_ileti": {
+        "X1": 1,
+        "X2": 1,
+        "X3": 1
+       },
+       "medya_yukleme": {
+        "X1": 0,
+        "X2": 0,
+        "X3": 0
+       },
+       "medya_silme": {
+        "X1": 0,
+        "X2": 0,
+        "X3": 0
+       },
+       "toplam_post": 3,
+       "toplam_kabul_program": 3,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 0
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-10-30T11:30:00+03:00",
+        "durum_sayilari": {
+         "Atlandı": 2,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 1,
+        "toplam_kabul": 1,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/X1": "Atlandı",
+         "T1/X2": "Atlandı",
+         "T1/X3": "Teslim Edildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 3,
+         "yaklasik_usd": "0.0027"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/X1": {
+        "durum": "Atlandı",
+        "telefon": null,
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": null,
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 0,
+        "kabul": 0,
+        "meta_ileti": 0,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": "supheli_alacak"
+       },
+       "T1/X2": {
+        "durum": "Atlandı",
+        "telefon": null,
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": null,
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 0,
+        "kabul": 0,
+        "meta_ileti": 0,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": "odeme_sozu"
+       },
+       "T1/X3": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905617000023",
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": [
+         "Cansu İki Etiket",
+         "Deneme Ticaret Ltd. Şti.",
+         "22.10.2026",
+         "250,00 TL",
+         "800,00 TL"
+        ],
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       },
+       "T2/X1": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905617000021",
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": [
+         "Ayşe Sözlü",
+         "Deneme Ticaret Ltd. Şti.",
+         "20.10.2026",
+         "700,00 TL",
+         "1.000,00 TL"
+        ],
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       },
+       "T2/X2": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905617000022",
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": [
+         "Bora Şüpheli",
+         "Deneme Ticaret Ltd. Şti.",
+         "21.10.2026",
+         "300,00 TL",
+         "900,00 TL"
+        ],
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "SW21-04-yine-de-gonder-basma-anindaki-iki-etiket-birlikte-asilir-elle-iz-degismeyen-meta-bekletti-ayni-icerik",
+   "baslik": "SW21",
+   "aciklama": "Y1'in hatırlatması (500,00 TL) Sonucu Belirsiz; 10:30'da Y1'e şüpheli kaydı açılır VE söz verilir (girdi: elle 200,00 TL / 500,00 TL). 11:00 işteki Yine de Gönder: basma anındaki iki etiket birlikte aşılır (S16 + S-W21-1 = A; S-W21-2 'işaretlendiği andaki etiketler' — Y22-2), onay penceresinde ikisi ('Şüpheli Alacağı Var', 'Ödeme Sözü Var'), ileti 07.10.2026 / 200,00 TL / 500,00 TL gider (POST 2). Z1 'Yine de Ekle' (söz, elle 1.000,00 TL) ile seçilir; Meta Bekletti (131049); 12:00'de Z1 200 TL öder (girdi: elle 800,00 TL), söz sürer; 31.10 10:00 2. deneme: elle iz DEĞİŞMEDİ → 5.2 aynen, 1. denemenin içeriği 19.10.2026 / 1.000,00 TL (S-W21-3 = A 'elle iz değişmediyse 5.2 aynen'). POST: Y1 2, Z1 2",
+   "kaynak": "SW21 (S-W21-1, S-W21-2, S-W21-3) + S16 (Y13-4) + C5C5 (5.2) + C5C6 (6.1) + §7a 14",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "Y1",
+      "ad": "Emre İki Etiket",
+      "telefon": "0561 700 00 31",
+      "hareketler": [],
+      "borc": [
+       {
+        "t": "+0s",
+        "neden": null,
+        "vade": "07.10.2026",
+        "tutar": "500.00",
+        "bakiye": "500.00"
+       },
+       {
+        "t": "+30m",
+        "neden": "supheli_alacak",
+        "etiketler": [
+         "supheli_alacak",
+         "odeme_sozu"
+        ],
+        "elle": {
+         "neden": null,
+         "vade": "07.10.2026",
+         "tutar": "200.00",
+         "bakiye": "500.00"
+        }
+       }
+      ]
+     },
+     {
+      "id": "Z1",
+      "ad": "Figen Söz Bekletti",
+      "telefon": "0561 700 00 32",
+      "hareketler": [],
+      "borc": [
+       {
+        "t": "+0s",
+        "neden": "odeme_sozu",
+        "elle": {
+         "neden": null,
+         "vade": "19.10.2026",
+         "tutar": "1000.00",
+         "bakiye": "1000.00"
+        }
+       },
+       {
+        "t": "+2h",
+        "neden": "odeme_sozu",
+        "elle": {
+         "neden": null,
+         "vade": "19.10.2026",
+         "tutar": "800.00",
+         "bakiye": "800.00"
+        }
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "Y1"
+      ],
+      "sablon": "hatirlatma"
+     },
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "Z1"
+      ],
+      "sablon": "hatirlatma",
+      "yine_de_ekle": [
+       "Z1"
+      ]
+     },
+     {
+      "t": "+1h",
+      "tur": "yine_de_gonder",
+      "toplu": "T1",
+      "cari": "Y1",
+      "etiket": "Y1"
+     },
+     {
+      "t": "+3h",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+1d1h",
+      "tur": "kontrol",
+      "ad": "K2"
+     }
+    ],
+    "meta_davranis": {
+     "mesaj": {
+      "Y1": [
+       "yanitsiz_kabul",
+       "kabul"
+      ],
+      "Z1": [
+       {
+        "hata": 131049
+       },
+       "kabul"
+      ]
+     },
+     "kanca": {
+      "T1/Y1": {
+       "1": [],
+       "*": [
+        [
+         "sent",
+         "+1s"
+        ],
+        [
+         "delivered",
+         "+5s"
+        ]
+       ]
+      },
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "yeniden.Y1": {
+       "elenen": {},
+       "alinan": [
+        "Y1"
+       ],
+       "oneri": null,
+       "supheli_etiketi": [
+        "Y1"
+       ],
+       "soz_etiketi": [
+        "Y1"
+       ]
+      },
+      "isler.T1/Y1.durum": "Teslim Edildi",
+      "isler.T1/Y1.post": 2,
+      "isler.T1/Y1.degiskenler": [
+       "Emre İki Etiket",
+       "Deneme Ticaret Ltd. Şti.",
+       "07.10.2026",
+       "200,00 TL",
+       "500,00 TL"
+      ],
+      "kontroller.K1.isler": {
+       "T1/Y1": "Teslim Edildi",
+       "T2/Z1": "Meta Bekletti (24 Saat Sonra Yeniden)"
+      },
+      "kontroller.K2.isler": {
+       "T1/Y1": "Teslim Edildi",
+       "T2/Z1": "Teslim Edildi"
+      },
+      "isler.T2/Z1.post": 2,
+      "isler.T2/Z1.degiskenler": [
+       "Figen Söz Bekletti",
+       "Deneme Ticaret Ltd. Şti.",
+       "19.10.2026",
+       "1.000,00 TL",
+       "1.000,00 TL"
+      ],
+      "meta.post": {
+       "Y1": 2,
+       "Z1": 2
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {},
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       },
+       "T2": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "Y1": 2,
+        "Z1": 2
+       },
+       "kabul": {
+        "Y1": 1,
+        "Z1": 1
+       },
+       "meta_ileti": {
+        "Y1": 2,
+        "Z1": 1
+       },
+       "medya_yukleme": {
+        "Y1": 0,
+        "Z1": 0
+       },
+       "medya_silme": {
+        "Y1": 0,
+        "Z1": 0
+       },
+       "toplam_post": 4,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 0
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-10-30T13:00:00+03:00",
+        "durum_sayilari": {
+         "Meta Bekletti (24 Saat Sonra Yeniden)": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 1,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
+        "isler": {
+         "T1/Y1": "Teslim Edildi",
+         "T2/Z1": "Meta Bekletti (24 Saat Sonra Yeniden)"
+        }
+       },
+       "K2": {
+        "t": "2026-10-31T11:00:00+03:00",
+        "durum_sayilari": {
+         "Teslim Edildi": 2
+        },
+        "toplam_post": 4,
+        "toplam_kabul": 2,
+        "pencere_farkli_alici": {
+         "W1": 2
+        },
+        "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
+        "isler": {
+         "T1/Y1": "Teslim Edildi",
+         "T2/Z1": "Teslim Edildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "yeniden": {
+       "Y1": {
+        "elenen": {},
+        "alinan": [
+         "Y1"
+        ],
+        "oneri": null,
+        "supheli_etiketi": [
+         "Y1"
+        ],
+        "soz_etiketi": [
+         "Y1"
+        ]
+       }
+      },
+      "isler": {
+       "T1/Y1": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905617000031",
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": [
+         "Emre İki Etiket",
+         "Deneme Ticaret Ltd. Şti.",
+         "07.10.2026",
+         "200,00 TL",
+         "500,00 TL"
+        ],
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 2,
+        "kabul": 1,
+        "meta_ileti": 2,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       },
+       "T2/Z1": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905617000032",
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": [
+         "Figen Söz Bekletti",
+         "Deneme Ticaret Ltd. Şti.",
+         "19.10.2026",
+         "1.000,00 TL",
+         "1.000,00 TL"
+        ],
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 2,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "SW21-05-soz-icin-elle-bekleyen-ise-supheli-asil-iste-yeniden-basma-s23-iz-iki-etiketi-asar",
+   "baslik": "SW21",
+   "aciklama": "W1 'Yine de Ekle' ile (söz; elle 900,00 TL) seçilir; ileti Sonucu Belirsiz. 11:00 işteki Yine de Gönder: söz sürüyor (iz zaten aşıyor) → alınır, onayda 'Ödeme Sözü Var' (Y22-3), ileti 10.10.2026 / 900,00 TL ile hazırlanır, Meta Bekletti. 12:00'de şüpheli kaydı açılır (girdi: elle 500,00 TL / 900,00 TL). 14:00 asıl işte yeniden Yine de Gönder: iz basma anındaki Şüpheli'yi aşmıyor → S23 (Y22-4 genel okuma): bekleyen iş elle sayılır, iz iki etiketi aşar (elle_sayilan + supheli_etiketi + soz_etiketi), F1 uygulanmaz. 31.10 2. deneme: iz değişti → S-W21-3 = A: gönderim anında elle değerlerle 10.10.2026 / 500,00 TL / 900,00 TL (iletide şüpheli tutar yok; B olsaydı donmuş 900,00 TL). POST 3",
+   "kaynak": "SW21 (S-W21-1, S-W21-2, S-W21-3) + S23 (Y15-1…4) + C5C6 (6.1) + §7a 14",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "W1",
+      "ad": "Gül Söz Şüpheli",
+      "telefon": "0561 700 00 41",
+      "hareketler": [],
+      "borc": [
+       {
+        "t": "+0s",
+        "neden": "odeme_sozu",
+        "elle": {
+         "neden": null,
+         "vade": "10.10.2026",
+         "tutar": "900.00",
+         "bakiye": "900.00"
+        }
+       },
+       {
+        "t": "+2h",
+        "neden": "supheli_alacak",
+        "etiketler": [
+         "supheli_alacak",
+         "odeme_sozu"
+        ],
+        "elle": {
+         "neden": null,
+         "vade": "10.10.2026",
+         "tutar": "500.00",
+         "bakiye": "900.00"
+        }
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "W1"
+      ],
+      "sablon": "hatirlatma",
+      "yine_de_ekle": [
+       "W1"
+      ]
+     },
+     {
+      "t": "+1h",
+      "tur": "yine_de_gonder",
+      "toplu": "T1",
+      "cari": "W1",
+      "etiket": "Y1"
+     },
+     {
+      "t": "+3h",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+4h",
+      "tur": "yine_de_gonder",
+      "toplu": "T1",
+      "cari": "W1",
+      "etiket": "Y2",
+      "hedef": "asil"
+     },
+     {
+      "t": "+25h5m",
+      "tur": "kontrol",
+      "ad": "K2"
+     }
+    ],
+    "meta_davranis": {
+     "mesaj": {
+      "W1": [
+       "yanitsiz_kabul",
+       "kabul",
+       "kabul"
+      ]
+     },
+     "kanca": {
+      "W1": {
+       "1": [],
+       "2": [
+        [
+         "sent",
+         "+1s"
+        ],
+        [
+         "failed",
+         "+10s",
+         {
+          "kod": 131049
+         }
+        ]
+       ],
+       "3": [
+        [
+         "sent",
+         "+1s"
+        ],
+        [
+         "delivered",
+         "+5s"
+        ]
+       ]
+      },
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "yeniden.Y1": {
+       "elenen": {},
+       "alinan": [
+        "W1"
+       ],
+       "oneri": null,
+       "soz_etiketi": [
+        "W1"
+       ]
+      },
+      "kontroller.K1.isler": {
+       "T1/W1": "Meta Bekletti (24 Saat Sonra Yeniden)"
+      },
+      "yeniden.Y2": {
+       "elenen": {},
+       "alinan": [],
+       "oneri": null,
+       "supheli_etiketi": [
+        "W1"
+       ],
+       "soz_etiketi": [
+        "W1"
+       ],
+       "elle_sayilan": [
+        "W1"
+       ]
+      },
+      "kontroller.K2.isler": {
+       "T1/W1": "Teslim Edildi"
+      },
+      "isler.T1/W1.degiskenler": [
+       "Gül Söz Şüpheli",
+       "Deneme Ticaret Ltd. Şti.",
+       "10.10.2026",
+       "500,00 TL",
+       "900,00 TL"
+      ],
+      "isler.T1/W1.post": 3,
+      "meta.post": {
+       "W1": 3
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {},
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 1
+      },
+      "meta": {
+       "post": {
+        "W1": 3
+       },
+       "kabul": {
+        "W1": 2
+       },
+       "meta_ileti": {
+        "W1": 3
+       },
+       "medya_yukleme": {
+        "W1": 0
+       },
+       "medya_silme": {
+        "W1": 0
+       },
+       "toplam_post": 3,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 0
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-10-30T13:00:00+03:00",
+        "durum_sayilari": {
+         "Meta Bekletti (24 Saat Sonra Yeniden)": 1
+        },
+        "toplam_post": 2,
+        "toplam_kabul": 1,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/W1": "Meta Bekletti (24 Saat Sonra Yeniden)"
+        }
+       },
+       "K2": {
+        "t": "2026-10-31T11:05:00+03:00",
+        "durum_sayilari": {
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 2,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/W1": "Teslim Edildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "yeniden": {
+       "Y1": {
+        "elenen": {},
+        "alinan": [
+         "W1"
+        ],
+        "oneri": null,
+        "soz_etiketi": [
+         "W1"
+        ]
+       },
+       "Y2": {
+        "elenen": {},
+        "alinan": [],
+        "oneri": null,
+        "supheli_etiketi": [
+         "W1"
+        ],
+        "soz_etiketi": [
+         "W1"
+        ],
+        "elle_sayilan": [
+         "W1"
+        ]
+       }
+      },
+      "isler": {
+       "T1/W1": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905617000041",
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": [
+         "Gül Söz Şüpheli",
+         "Deneme Ticaret Ltd. Şti.",
+         "10.10.2026",
+         "500,00 TL",
+         "900,00 TL"
+        ],
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 3,
+        "kabul": 2,
+        "meta_ileti": 3,
         "medya_yukleme": 0,
         "medya_silme": 0,
         "atlanma_nedeni": null
