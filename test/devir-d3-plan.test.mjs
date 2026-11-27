@@ -206,6 +206,17 @@ describe("D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 
     assert.deepEqual(plan.degismezler.filter(r => !r.ok), []);
   });
 
+  it("carisiz cari kontrol hücresi (336.90 kayıt tahsilatları — KG-3 A) ayrı listede; modül farkı DEĞİL", () => {
+    need();
+    const facts = FACTS_A();
+    facts.entries = [...ENTRIES_A, E("payment:k1", "2026-06-01", L("100", 5000, 0), L("336", 0, 5000, "336.90"))];
+    const plan = planModule.buildDevirPlan(facts);
+    assert.deepEqual(plan.newYear.digerAltDefter.map(r => [r.hesap, r.alt, r.minor, r.neden, r.kimlik]), [["336", "336.90", -5000, "kayit-tahsilati", "devir-2026-altdefter-336.90"]]);
+    assert.equal(plan.newYear.kasa.minor, 148000);
+    assert.deepEqual(plan.sorunlar, []);
+    assert.deepEqual(plan.degismezler.filter(r => !r.ok), []);
+  });
+
   it("K yılı zaten kapanmış (Kapanış Fişi var) → plan sorunu, ön denetim DURDURUR", () => {
     need();
     const plan = planModule.buildDevirPlan({ ...FACTS_A(), closedOn: "2026-12-31" });

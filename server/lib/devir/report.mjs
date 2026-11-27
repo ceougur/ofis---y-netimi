@@ -41,6 +41,7 @@ export function plannedOpenings(plan) {
   for (const row of ny.evraklar) if (row.hesap) add(row.hesap, row.alt, "", row.yon === "in" ? row.minor : -row.minor);
   add("153", "", "", ny.stok.reduce((sum, row) => sum + row.degerMinor, 0));
   for (const row of ny.vergi) add(row.hesap, "", "", row.minor);
+  for (const row of ny.digerAltDefter || []) add(row.hesap, row.alt, "", row.minor);
   let opening = 0;
   for (const [key, minor] of out) if (!key.startsWith(`${OPENING_GL}|`)) opening -= minor;
   for (const line of ny.acilisFisi?.lines || []) {
@@ -121,6 +122,7 @@ export function devirReport(plan, preflight = null, { companyLabel = "", measure
   for (const item of plan.newYear.stok) moduleRow(`Stok · ${item.kod || item.urun}`, `${item.ad} — ${String(item.miktar).replace(".", ",")} ${item.birim}${item.eksi ? " (Eksi Stok)" : ""}`, item.degerMinor);
   for (const item of plan.newYear.vergi) moduleRow(item.hesap, `${accountName(item.hesap)}${item.donem ? ` — ${monthText(item.donem)}` : ""}`, item.minor);
   for (const item of plan.newYear.supheli) moduleRow("Şüpheli Alacak", `${partyLabel(item.cari)} — Karşılık ${tl(item.karsilikMinor)}`, item.kalanMinor);
+  for (const item of plan.newYear.digerAltDefter || []) moduleRow(`${item.hesap}${item.alt ? ` · ${item.alt}` : ""}`, item.neden === "kayit-tahsilati" ? "Kayıt Tahsilatları (Carisiz)" : `${accountName(item.hesap)} (Carisiz)`, item.minor);
   // 4. Hareket sayıları: devir öncesi = arşiv ≤K + yeni yıl >K (kitap §6.6).
   open("hareketler", "Hareketler");
   let le = 0;

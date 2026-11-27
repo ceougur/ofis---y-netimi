@@ -389,6 +389,14 @@ export function buildDevirPlan(facts, { option = "borc-alacak" } = {}) {
     bank.push({ kimlik: `devir-${year}-banka-${row.alt || row.hesap}`, hesap: row.hesap, alt: row.alt, ad: owner?.name || UNASSIGNED_SUBS[row.alt] || PLAN_SUBS[row.alt] || accountName(row.hesap), bankaHesabi: owner?.id || "", tur: owner?.kind || "", tarih: nextDay, minor: row.minor, atanmamis: !owner });
     cover(row.hesap, row.alt, row.cari, row.minor);
   }
+  // Carisiz cari kontrol hücreleri (ör. 336.90 kayıt / dosya tahsilatları — KG-3 A; cari boyutu yok): alt defterleri kayıt tahsilatlarıdır (payments, ≤K budanır); açılışın alt defter
+  // yeri D4a'da (raporda BAŞ MİMAR KARARI GEREKİYOR BM-2). Planda ayrı liste — tutar K bakiyesi.
+  const other = [];
+  for (const row of closingBalances) {
+    if (!CH_ACCOUNTS.has(row.hesap) || row.cari) continue;
+    other.push({ kimlik: `devir-${year}-altdefter-${row.alt || row.hesap}`, hesap: row.hesap, alt: row.alt, tarih: nextDay, minor: row.minor, neden: row.alt === "336.90" ? "kayit-tahsilati" : "carisiz" });
+    cover(row.hesap, row.alt, "", row.minor);
+  }
   // Cariler (tasarım §3.5): CH hücresi cari başına; açık kalemler TYK'dan.
   const chByParty = new Map();
   for (const [key, cell] of sortedEntries(before)) {
@@ -614,7 +622,7 @@ export function buildDevirPlan(facts, { option = "borc-alacak" } = {}) {
       donemSonucuMinor: closing.result,
       oncekiYillar: closing.priorResults,
     },
-    newYear: { kasa: cash, banka: bank, cariler: accounts, kartlar: cards, evraklar: cheques, stok: stock, supheli: doubtful, vergi: vat, acilisFisi: openingVoucher, baglar: links, sablonlar: repeats, budama: prune },
+    newYear: { kasa: cash, banka: bank, cariler: accounts, digerAltDefter: other, kartlar: cards, evraklar: cheques, stok: stock, supheli: doubtful, vergi: vat, acilisFisi: openingVoucher, baglar: links, sablonlar: repeats, budama: prune },
     degismezler: invariants,
     sorunlar: problems,
     sayilar: counts,
