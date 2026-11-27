@@ -291,6 +291,10 @@ export function accountRows({ party, account, debit, credit, items, option, year
       vade: item.vade || item.date,
       beklenenTarih: item.promise || "",
       kalemSinifi: cls,
+      // Kalemin tek borç sırasındaki ROLÜ (D4a ŞARTI — koddan türetildi, raporda BM-6): yükümlülük (fatura, Borç / Alacak Yaz, karşılıksız, kart kalanı) ya da ödeme (netleşmemiş borç
+      // yönlü bağsız ödeme: tedarikçiye avans, müşteriye para iadesi — EK-1 §1 adım 5'e göre gecikmişe girer). Ödeme rolündeki kalem yeni yılda ÖDEME satırı olarak yazılmalı ve kuyrukta
+      // vadesi asıl tarihi olmalı; yükümlülük olarak (Borç Yaz) yazılırsa sonraki alış faturasıyla netleşme sırası değişir (gerçek veride görüldü).
+      rol: item.due ? "yukumluluk" : "odeme",
       belge: { tarih: item.date, ...(item.invoiceId ? { faturaId: item.invoiceId, no: docs.get(item.invoiceId)?.number || "" } : {}), ...(item.lineId ? { satirId: item.lineId } : {}), ...(item.planId ? { kartId: item.planId } : {}) },
     });
   }

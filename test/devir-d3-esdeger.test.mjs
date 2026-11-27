@@ -10,6 +10,10 @@
 //     bugünkü kalanlardan) → gecikmiş(01.01) = 300 + 200 = 500,00; gecikmiş(11.01) = 500,00; gecikmiş(01.02) = 300 + 200 + 600 = 1.100,00.
 //   C2: 01.09.2026 satış 500,00 vade 01.10 · 20.12 tahsilat 800,00 (avans 300,00) · 05.01.2027 satış 400,00 → avans kapatır; gecikmiş hep 0, K'de açık kalem yok, net −300 (avans).
 //   S1 (tedarikçi): 01.12.2026 alış 1.200,00 vade 20.01.2027 · 10.12 ödeme 500,00 · 10.01.2027 ödeme 300,00 — alacak tarafı açık kalem 700,00.
+//   S2 (tedarikçi, gerçek veride görülen sınıf): 10.11.2026 avans 500,00, 20.11 avans 700,00 (faturasız) · 03.01.2027 alış 600,00, 06.01 alış 900,00 · 15.01 ödeme 800,00. K'de borç
+//       tarafı ÖDEME rolünde iki açık kalem (vade 10.11 ve 20.11 — EK-1 §1 adım 5: netleşmemiş borç yönlü ödeme gecikmişe girer). Devirsiz: alışlar avansları tüketir, 15.01 ödemesinin
+//       500,00'ı avans kalır. Kalemler yeni yılda ÖDEME olarak yazılmazsa (Borç Yaz gibi yükümlülük) netleşme sırası değişir.
+//   C3: 01.10.2026 müşteriye para iadesi (ödeme) 300,00, borcu yok → ÖDEME rolünde açık kalem 300,00 (vade 01.10) → gecikmiş(01.01) = 300,00 devirli = devirsiz.
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { boot, must } from "./banka-210-ortak.mjs";
@@ -40,6 +44,8 @@ describe("D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmi�
     ids.c1 = (await must("C1", api.post("/api/workspace/accounts", { name: "Müşteri Bir", type: "customer" }))).id;
     ids.c2 = (await must("C2", api.post("/api/workspace/accounts", { name: "Müşteri İki", type: "customer" }))).id;
     ids.s1 = (await must("S1", api.post("/api/workspace/accounts", { name: "Tedarikçi Bir", type: "supplier" }))).id;
+    ids.s2 = (await must("S2", api.post("/api/workspace/accounts", { name: "Tedarikçi İki", type: "supplier" }))).id;
+    ids.c3 = (await must("C3", api.post("/api/workspace/accounts", { name: "Müşteri Üç", type: "customer" }))).id;
     const line = price => [{ name: "Hizmet", qty: 1, unitPrice: price, discountRate: 0, vatRate: 0 }];
     // Satış belgeleri tarih sırasıyla (numara ↔ tarih kronolojisi).
     await must("C2 satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: ids.c2, issueDate: "2026-09-01", lines: line(500), payment: { ...pay, dueDate: "2026-10-01" }, force: true }));
@@ -54,6 +60,12 @@ describe("D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmi�
     await must("S1 alış", api.post("/api/workspace/invoices", { kind: "purchase", accountId: ids.s1, number: "AL-1", issueDate: "2026-12-01", lines: line(1200), payment: { ...pay, dueDate: "2027-01-20" }, force: true }));
     await must("S1 ödeme", api.post(`/api/workspace/accounts/${ids.s1}/entries`, { kind: "out", amount: "500", date: "2026-12-10", note: "Kısmi", cashForce: true }));
     await must("S1 ocak ödeme", api.post(`/api/workspace/accounts/${ids.s1}/entries`, { kind: "out", amount: "300", date: "2027-01-10", note: "Ocak", cashForce: true }));
+    await must("S2 avans 1", api.post(`/api/workspace/accounts/${ids.s2}/entries`, { kind: "out", amount: "500", date: "2026-11-10", note: "Avans", cashForce: true }));
+    await must("S2 avans 2", api.post(`/api/workspace/accounts/${ids.s2}/entries`, { kind: "out", amount: "700", date: "2026-11-20", note: "Avans", cashForce: true }));
+    await must("S2 ocak alış 1", api.post("/api/workspace/invoices", { kind: "purchase", accountId: ids.s2, number: "AL-2", issueDate: "2027-01-03", lines: line(600), payment: pay, force: true }));
+    await must("S2 ocak alış 2", api.post("/api/workspace/invoices", { kind: "purchase", accountId: ids.s2, number: "AL-3", issueDate: "2027-01-06", lines: line(900), payment: pay, force: true }));
+    await must("S2 ocak ödeme", api.post(`/api/workspace/accounts/${ids.s2}/entries`, { kind: "out", amount: "800", date: "2027-01-15", note: "Ödeme", cashForce: true }));
+    await must("C3 iade", api.post(`/api/workspace/accounts/${ids.c3}/entries`, { kind: "out", amount: "300", date: "2026-10-01", note: "İade", cashForce: true }));
   });
   after(() => ctx?.server.close());
 
@@ -69,7 +81,9 @@ describe("D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmi�
     const c2 = rows(ids.c2);
     assert.deepEqual([c2.kBakiyeMinor, c2.netMinor, c2.acikKalemSayisi], [-30000, -30000, 0]);
     const s1 = rows(ids.s1);
-    assert.deepEqual(s1.satirlar.filter(r => r.tur === "acik-kalem").map(r => [r.yon, r.tutarMinor, r.vade]), [["credit", 70000, "2027-01-20"]]);
+    assert.deepEqual(s1.satirlar.filter(r => r.tur === "acik-kalem").map(r => [r.yon, r.tutarMinor, r.vade, r.rol]), [["credit", 70000, "2027-01-20", "yukumluluk"]]);
+    assert.deepEqual(rows(ids.s2).satirlar.filter(r => r.tur === "acik-kalem").map(r => [r.yon, r.tutarMinor, r.vade, r.rol]), [["debt", 50000, "2026-11-10", "odeme"], ["debt", 70000, "2026-11-20", "odeme"]]);
+    assert.deepEqual(rows(ids.c3).satirlar.filter(r => r.tur === "acik-kalem").map(r => [r.yon, r.tutarMinor, r.vade, r.rol]), [["debt", 30000, "2026-10-01", "odeme"]]);
     assert.deepEqual(job.result.plan.sorunlar, []);
     assert.deepEqual(job.result.plan.degismezler.filter(r => !r.ok), []);
   });
@@ -81,7 +95,7 @@ describe("D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmi�
       assert.equal(job.state, "done", JSON.stringify(job.error));
       const eq = fixture.createEquivalence(ctx.store);
       const days = ["2027-01-01", "2027-01-02", "2027-01-11", "2027-01-21", "2027-02-01", "2027-02-10", "2027-02-16", "2027-03-01"];
-      for (const id of [ids.c1, ids.c2, ids.s1]) {
+      for (const id of [ids.c1, ids.c2, ids.s1, ids.s2, ids.c3]) {
         const row = job.result.plan.newYear.cariler.find(r => r.cari === id);
         for (const out of eq.compare(id, row, K, days)) {
           assert.equal(out.devirli, out.devirsiz, `${option} ${id} ${out.day} gecikmiş`);
@@ -92,6 +106,8 @@ describe("D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmi�
       const c1 = job.result.plan.newYear.cariler.find(r => r.cari === ids.c1);
       const byDay = Object.fromEntries(eq.compare(ids.c1, c1, K, ["2027-01-01", "2027-01-11", "2027-02-01"]).map(out => [out.day, out.devirsiz]));
       assert.deepEqual(byDay, { "2027-01-01": 50000, "2027-01-11": 50000, "2027-02-01": 110000 }, "elle hesaplanan gecikmiş");
+      const c3 = job.result.plan.newYear.cariler.find(r => r.cari === ids.c3);
+      assert.equal(eq.compare(ids.c3, c3, K, ["2027-01-01"])[0].devirsiz, 30000, "elle: müşteriye iade 300,00 gecikmişte");
     });
   }
 
@@ -105,11 +121,22 @@ describe("D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmi�
     assert.notEqual(split.devirli, split.devirsiz, "ayrı satırlarla gecikmiş devirsizden farklı (Alacak Toplamı gecikmiş faturayı kapatır)");
   });
 
+  it("ROL (D4a şartı): ödeme rolündeki kalem Borç Yaz gibi (yükümlülük) yazılırsa sonraki alışla netleşme değişir — planın `rol` alanı gerekli (bu testin dişi)", async () => {
+    assert.ok(planModule, "D3 devir planı modülü yok (eski kod)");
+    const job = await waitPreview(api, { company: "sirket-001", cutoff: K, option: "borc-alacak" });
+    const eq = fixture.createEquivalence(ctx.store);
+    const s2 = job.result.plan.newYear.cariler.find(r => r.cari === ids.s2);
+    const [right] = eq.compare(ids.s2, s2, K, ["2027-01-16"]);
+    const [wrong] = eq.compare(ids.s2, s2, K, ["2027-01-16"], { roleless: true });
+    assert.deepEqual(right.kalemDevirli, right.kalemDevirsiz);
+    assert.notDeepEqual([wrong.kalemDevirli, wrong.devirli], [wrong.kalemDevirsiz, wrong.devirsiz], "yükümlülük olarak yazılan avans devirsizden ayrışır");
+  });
+
   it("bakiye: devirli kuyruğun satırları (net + açık kalemler + K sonrası) = devirsiz carinin bugünkü bakiyesi", async () => {
     assert.ok(planModule, "D3 devir planı modülü yok (eski kod)");
     const job = await waitPreview(api, { company: "sirket-001", cutoff: K, option: "borc-alacak" });
     const eq = fixture.createEquivalence(ctx.store);
-    for (const id of [ids.c1, ids.c2, ids.s1]) {
+    for (const id of [ids.c1, ids.c2, ids.s1, ids.s2, ids.c3]) {
       const row = job.result.plan.newYear.cariler.find(r => r.cari === id);
       const lines = eq.ledgers.get(id);
       const all = Math.round(lines.reduce((sum, line) => sum + (line.debit - line.credit) * 100, 0));

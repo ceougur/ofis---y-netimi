@@ -8,7 +8,15 @@ import { buildObligations } from "../../server/lib/obligation-queue.mjs";
 import { createObligationInput } from "../../server/lib/obligation-input.mjs";
 
 const toTl = minor => Math.round(minor) / 100;
-const lineOf = (id, kind, date, minor) => ({ id, origin: "account", kind, date, at: "", label: "Devir", sourceId: "", invoiceId: "", doubtfulSkip: false, doubtfulNormal: false, method: "", note: "", receiptNo: null, debit: kind === "debt" ? toTl(minor) : 0, credit: kind === "credit" ? toTl(minor) : 0 });
+const DEBIT_KINDS = new Set(["debt", "out"]);
+const lineOf = (id, kind, date, minor) => ({ id, origin: "account", kind, date, at: "", label: "Devir", sourceId: "", invoiceId: "", doubtfulSkip: false, doubtfulNormal: false, method: kind === "in" || kind === "out" ? "cash" : "", note: "", receiptNo: null, debit: DEBIT_KINDS.has(kind) ? toTl(minor) : 0, credit: DEBIT_KINDS.has(kind) ? 0 : toTl(minor) });
+// D4a ŞARTININ benzetimi (plan.mjs `rol`): ödeme rolündeki devir kalemi yeni yılda ÖDEME satırıdır (müşteriye para iadesi / tedarikçiye ödeme: "out"; tahsilat: "in") ve kuyrukta vadesi
+// asıl tarihidir. Bugünkü kuyruk ödeme satırının vadesini satır tarihinden alır; benzetim kuyruğun sonucundaki o kalemin vadesini planın vadesiyle değiştirir ve gecikmişi kuyruğun
+// kendi tanımıyla (lib/obligation-queue.mjs overdue: borç tarafı, vade < t, kalan − şüpheli) yeniden sayar.
+const overdueOf = (items, day) => {
+  const list = items.filter(item => item.side === "receivable" && item.vade < day && item.remaining - item.doubtful > 0.005);
+  return { amount: Math.round(list.reduce((sum, item) => sum + item.remaining - item.doubtful, 0) * 100) / 100, since: list.reduce((min, item) => (!min || item.vade < min ? item.vade : min), "") };
+};
 
 export function createEquivalence(store) {
   const input = createObligationInput({ store });
@@ -23,7 +31,7 @@ export function createEquivalence(store) {
    * Devirli kuyruk (t günü): planın satırları + K sonrası gerçek satırlar. split: true → Borç Toplamı / Alacak Toplamı AYRI satır olarak kuyruğa (netleşme kuralı OLMADAN — tasarım §3.5 madde 4'ün
    * tehlikesini göstermek için); varsayılan net tek satır (kuyrugaGirenMinor).
    */
-  function devirli(party, planRow, K, day, { split = false } = {}) {
+  function devirli(party, planRow, K, day, { split = false, roleless = false } = {}) {
     const after = (ledgers.get(party) || []).filter(line => line.date > K);
     const synthetic = [];
     const dueDates = new Map(extras.dueDates);
@@ -33,8 +41,14 @@ export function createEquivalence(store) {
     if (split) {
       for (const row of planRow.satirlar) if (row.tur === "borc-toplami" || row.tur === "alacak-toplami" || row.tur === "devir-bakiyesi") totals.push(lineOf(row.kimlik, row.yon, row.tarih, row.tutarMinor));
     } else if (net) synthetic.push(lineOf(`${planRow.cari}-net`, net > 0 ? "debt" : "credit", planRow.satirlar[0].tarih, Math.abs(net)));
+    const paymentVade = new Map();
     for (const row of planRow.satirlar) {
       if (row.tur !== "acik-kalem") continue;
+      if (row.rol === "odeme" && !roleless) {
+        synthetic.push(lineOf(row.kimlik, row.yon === "debt" ? "out" : "in", row.tarih, row.tutarMinor));
+        paymentVade.set(row.kimlik, row.vade);
+        continue;
+      }
       synthetic.push(lineOf(row.kimlik, row.yon, row.tarih, row.tutarMinor));
       dueDates.set(row.kimlik, row.vade);
       if (row.beklenenTarih) promises.set(row.kimlik, row.beklenenTarih);
@@ -45,7 +59,10 @@ export function createEquivalence(store) {
     const ids = new Set(after.filter(line => line.origin === "invoice").map(line => line.sourceId));
     base.invoices = base.invoices.filter(invoice => ids.has(invoice.id));
     base.offsets = base.offsets.filter(offset => offset.date > K);
-    return buildObligations({ ...input.withExtras(base, { ...extras, dueDates, promises }, party), doubtfulRecords: [] });
+    const result = buildObligations({ ...input.withExtras(base, { ...extras, dueDates, promises }, party), doubtfulRecords: [] });
+    if (!paymentVade.size) return result;
+    const items = result.items.map(item => (paymentVade.has(item.lineId) ? { ...item, vade: paymentVade.get(item.lineId) } : item));
+    return { ...result, items, overdue: (t = day) => overdueOf(items, t) };
   }
   /** Karşılaştırma: gecikmiş(t) ve borç tarafındaki açık kalemlerin (vade, kalan − şüpheli) çoklu kümesi. */
   const receivables = result => result.items.filter(item => item.side === "receivable" && item.remaining - item.doubtful > 0.005).map(item => `${item.vade}|${Math.round((item.remaining - item.doubtful) * 100)}`).sort();

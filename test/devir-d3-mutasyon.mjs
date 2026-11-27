@@ -32,6 +32,7 @@ const MUTASYONLAR = [
   [12, "S-3: düzeltilmemiş Kural Değişikliği Farkı devri DURDURMAZ (uyarır)", PRE, "    if (decisions.S3 === \"A\") block(\"kural-farki\"", "    if (decisions.S3 === \"A\") notice(\"kural-farki\"", [ELLE], /not ok \d+ - her DURDURUR maddesi/],
   [13, "N-13 alt defter hesabına da yazar (modül hesabı fişe girer)", PLAN, "    if (MODULE_ACCOUNTS[row.hesap] || row.hesap === OPENING_GL) continue;", "    if (row.hesap === OPENING_GL) continue;", [ELLE], /not ok \d+ - (N-13|arşiv K kapanışı)/],
   [14, "eksi stoklu ürüne değer verilir (KG-9 / M5)", PLAN, "degerMinor: product.qty > 0 ? product.valueMinor : 0, dayanak", "degerMinor: product.qty < 0 ? 1 : product.valueMinor, dayanak", [ELLE], /not ok \d+ - (stok|kapanış)/],
+  [15, "açık kalemin kuyruk rolü kaybolur (ödeme rolündeki kalem yükümlülük olur)", PLAN, "      rol: item.due ? \"yukumluluk\" : \"odeme\",", "      rol: \"yukumluluk\",", [ESDEGER], /not ok \d+ - (plan elle|.*gecikmiş|ROL)/],
 ];
 
 const run = files => {
