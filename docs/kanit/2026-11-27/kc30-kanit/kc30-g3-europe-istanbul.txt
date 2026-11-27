@@ -1,0 +1,8 @@
+üretici: 20/20 aynı dizi
+--kural 2.4.9 / 2.4.6 / 2.4.5: 405/405 bayt bayt aynı
+2.5.0 G3: eski 80568 denetim · yeni 81227 (+ rastgele m2 9514 — yeni sınıf) · değişen / kalkan / yeni 0 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+# tests 1
+# pass 1
+# fail 0
+
+[kanit] kc30-g3-europe-istanbul: GEÇTİ · çıkış 0 · 1/1 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbebba2 · linux 6.18.44-fc-v880 x64 · Node v22.23.4

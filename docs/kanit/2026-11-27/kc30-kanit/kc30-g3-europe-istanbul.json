@@ -1,0 +1,32 @@
+{
+  "ad": "kc30-g3-europe-istanbul",
+  "komut": "python3 -I docs/kanit/2026-11-27/kc30-arac/g3.py /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc30-m2/eski test/bagimsiz/cari --tohum 1-10 --islem 120",
+  "commit": "fbebba252a47964020b47e5bced819953c16ed2e",
+  "dal": "worktree-agent-a9d7b2ca3365fd27e",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T08:27:44.281Z",
+  "sure_sn": 67.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc30-m2/2026-11-27/kc30-g3-europe-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d7b2ca3365fd27e",
+  "ham_cikti_sha256": "4408c676ea057b14fc792e3a86b8e5a6854fe3d40c2e10b4e285278d623f5ee6",
+  "ham_cikti_bayt": 270
+}

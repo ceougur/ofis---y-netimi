@@ -4,6 +4,7 @@
 
   python3 -I test/bagimsiz/cari/uretici.py --tohum 3 --islem 60 > senaryo.json
   python3 -I test/bagimsiz/cari/uretici.py --tur s1 --tohum 3 --islem 60 > senaryo.json   # /3 (2.4.5 madde 6, S1 + K6.1–K6.4)
+  python3 -I test/bagimsiz/cari/uretici.py --tur m2 --tohum 3 --islem 120 > senaryo.json  # bakım 30 (§42): Değersiz sınırı sınıfı (girdi §3 madde 13)
 
 --tur s1 (24.10.2026, 2.4.5 kâhini): iki müşteri (D, E) + bir tedarikçi (S); Açılış Bakiyesi (vadeli/vadesiz, tedarikçide alacak yönlü), satış ve alış
 faturaları, elle Borç / Alacak (Vade Tarihi, Beklenen Ödeme Tarihi; ara sıra kaydın tarihinden önce ya da biçimsiz → 400 beklenir), KS7 bağsız kapatıcılar (faturasız stok
@@ -461,11 +462,97 @@ def uret_s1(tohum, islem):
     return sen
 
 
+def uret_m2(tohum, islem):
+    """Bakım 30 (§42; girdi §3 madde 13) rastgele M2 dizisi. Her bölüm YENİ bir müşteri carisinde (önceki bölümlerin faturaya bağlı düşüşleri S138 = C görünüm susmasıyla birikmesin):
+    fatura (+ Borç), aynı gün faturaya bağlı tahsilat + Şüpheliye Al (+ aynı gün / ertesi gün bağsız tahsilat, + aynı gün ikinci kayıt) — yazım sırası rastgele —, sonra 1–4 tur:
+    Değersiz denemesi (kaydın günü / ertesi gün / daha sonra; tutar kâhinin sınırı, sınır + 0,01, yarısı ya da rastgele), sonradan bağsız tahsilat, bağlı tahsilatın silinmesi.
+    Değişmez (oz-test.py §10): her adımda her şüpheli kaydın Σ Değersiz ≤ alınan − kayda düşen tahsilat; Değersiz yazımı bakiyeyi eksiye düşürmez. Sınırlar 2.5.0 kâhiniyle seçilir
+    (uç tutarı bulmak için — beklenen DEĞİL); para satırı carinin var olan bir Değersiz'inden önceki güne yazılmaz (girdinin konusu dışı)."""
+    rnd = random.Random(tohum * 7919 + 30)
+    bugun = date(2026, 10, 15)
+    gun = date(2026, 3, 2)
+    adimlar = []
+    sen = {"dil": M.DIL, "ad": "rastgele-m2-%d" % tohum, "aciklama": "uretici.py --tur m2 --tohum %d --islem %d" % (tohum, islem),
+           "dayanak": "KARARLAR.md §42 (bakım 30; girdi §3 madde 13); ders 17", "bugun": bugun.isoformat(), "adimlar": adimlar}
+    sayac = [0]
+    kontrol = 0
+
+    def durum():
+        m = M.Model(dict(sen, adimlar=[x for x in adimlar if x["islem"] != "kontrol"]), kural="2.5.0")
+        m.kos()
+        return m
+
+    def ekle(x):
+        sayac[0] += 1
+        x["id"] = "m%03d" % sayac[0]
+        adimlar.append(x)
+
+    n_c = n_f = n_s = 0
+    while sayac[0] < islem and gun < bugun - timedelta(days=12):
+        gun = gun + timedelta(days=rnd.choice([2, 3, 5, 8]))
+        t = gun.isoformat()
+        n_c += 1
+        c = "C%d" % n_c
+        adimlar.append({"id": "c-%d" % n_c, "islem": "cari_ac", "ad": c, "isim": "Rastgele M2 %d Cari %d" % (tohum, n_c), "tarih": "2026-03-01"})
+        n_f += 1
+        f = "MF%d" % n_f
+        ft = rnd.randint(50000, 600000)
+        ekle({"islem": "fatura", "ad": f, "cari": c, "tutar": tl(ft), "tarih": t})
+        borc = rnd.choice([0, rnd.randint(10000, 400000)])
+        if borc:
+            ekle({"islem": "borc", "cari": c, "tutar": tl(borc), "tarih": t})
+        g1 = (gun + timedelta(days=rnd.randint(1, 4))).isoformat()   # şüpheliye alma günü
+        bt = rnd.choice([ft, rnd.randint(1, ft), rnd.randint(1, ft)])
+        nt = rnd.choice([0, 0, rnd.randint(1, 100000)])
+        nt_gun = rnd.choice([g1, (date.fromisoformat(g1) + timedelta(days=1)).isoformat()])
+        bos = ft + borc - bt - nt
+        if bos <= 0:
+            continue
+        n_s += 1
+        s1 = "MS%d" % n_s
+        parca = [{"islem": "tahsilat", "cari": c, "tutar": tl(bt), "tarih": g1, "fatura": f},
+                 {"islem": "supheli_al", "ad": s1, "cari": c, "tutar": tl(rnd.choice([rnd.randint(1, bos), bos, min(bos, bt + rnd.randint(1, 50000))])), "tarih": g1}]
+        if nt:
+            parca.append({"islem": "tahsilat", "cari": c, "tutar": tl(nt), "tarih": nt_gun})
+        if rnd.random() < 0.25:
+            n_s += 1
+            parca.append({"islem": "supheli_al", "ad": "MS%d" % n_s, "cari": c, "tutar": tl(rnd.randint(1, max(1, bos // 3))), "tarih": g1})
+        rnd.shuffle(parca)
+        for x in parca:
+            ekle(x)
+        son = max(g1, nt_gun if nt else g1)   # carinin en geç para / Değersiz günü
+        for _tur in range(rnd.randint(1, 4)):
+            m = durum()
+            kayit = sorted(n for n, sp in m.supheliler.items() if sp["cari"] == c)
+            op = rnd.choices(["degersiz", "tahsilat", "sil"], weights=[6, 2, 1])[0] if kayit else "tahsilat"
+            ileri = (date.fromisoformat(son) + timedelta(days=rnd.randint(0, 3))).isoformat()
+            if op == "tahsilat":
+                ekle({"islem": "tahsilat", "cari": c, "tutar": tl(rnd.randint(1, 150000)), "tarih": ileri})
+                son = ileri
+            elif op == "sil":
+                bagli = sorted(tn for tn, x in m.tahsilatlar.items() if x["aktif"] and x["cari"] == c and x["fatura"])
+                if bagli:
+                    ekle({"islem": "hareket_sil", "hareket": rnd.choice(bagli)})
+            else:
+                n = rnd.choice(kayit)
+                d0 = m.supheliler[n]["tarih"]
+                D = rnd.choice([d0, d0, (date.fromisoformat(d0) + timedelta(days=1)).isoformat(), ileri])
+                sinir = m._m2_sinir(n, D)
+                for tutar in rnd.sample([sinir, sinir + 1, max(1, sinir // 2), rnd.randint(1, max(1, m.supheliler[n]["tutar"]))], rnd.randint(1, 3)):
+                    ekle({"islem": "degersiz", "supheli": n, "tutar": tl(max(1, tutar)), "tarih": D})
+                son = max(son, D)
+        if sayac[0] // 25 > kontrol:
+            kontrol += 1
+            adimlar.append({"id": "k%d" % kontrol, "islem": "kontrol"})
+    adimlar.append({"id": "kson", "islem": "kontrol"})
+    return sen
+
+
 def main(argv):
     tohum = int(argv[argv.index("--tohum") + 1]) if "--tohum" in argv else 1
     islem = int(argv[argv.index("--islem") + 1]) if "--islem" in argv else 60
     tur = argv[argv.index("--tur") + 1] if "--tur" in argv else "ux18"
-    sen = uret_s1(tohum, islem) if tur == "s1" else uret(tohum, islem)
+    sen = uret_s1(tohum, islem) if tur == "s1" else uret_m2(tohum, islem) if tur == "m2" else uret(tohum, islem)
     sys.stdout.write(json.dumps(sen, ensure_ascii=False, indent=1) + "\n")
     return 0
 

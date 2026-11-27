@@ -298,6 +298,49 @@ def basit(m, cari):
     return True
 
 
+def m2_degismez(m):
+    """Bakım 30 (§42 Y30-3) S270 değişmezinin SAF hesabı (model.py'nin `_m2_zaman` / `_m2_sinir`'inden ayrı yazıldı; yalnız modelin DURUMUNU okur): kayıt → sondaki kalan.
+    Olaylar gün → sınıf (şüpheliye alma, Değersiz, alacak satırı) → yazım sırasıyla; alacak satırı kayıt tarihinden sonra (aynı gün dahil) en eski kayıttan, kaydın o anki kalanıyla
+    sınırlı düşer: bağsız tahsilat / evrak / elle Alacak / iade faturası / stok iadesi tutarıyla, faturaya bağlı tahsilat / evrak şüpheli payı (s168) kadar."""
+    kalan = {}
+    for n in sorted({sp["cari"] for sp in m.supheliler.values()}):
+        olay = []
+        for ad, sp in m.supheliler.items():
+            if sp["cari"] == n:
+                olay.append((sp["tarih"], 0, sp["seq"], "al", ad, sp["tutar"]))
+        for x in m.kapaticilar.values():
+            if x["aktif"] and x["cari"] == n and x["tur"] == "degersiz":
+                olay.append((x["tarih"], 1, x["seq"], "deg", x["supheli"], x["tutar"]))
+            elif x["aktif"] and x["cari"] == n and x["tur"] == "stok_iade":
+                olay.append((x["tarih"], 2, x["seq"], "ala", "", x["tutar"]))
+        for t in m.tahsilatlar.values():
+            if t["aktif"] and t["cari"] == n:
+                tutar = (t.get("s168") or 0) if t["fatura"] else t["tutar"]
+                olay.append((t["tarih"], 2, t["seq"], "ala", "", tutar))
+        for e in m.evraklar.values():
+            if e["cari"] == n and e["durum"] not in ("silindi", "karsiliksiz"):
+                olay.append((e["tarih"], 2, e["seq"], "ala", "", e["s168"] if "s168" in e else e["tutar"]))
+        for h in m.hareketler.values():
+            if h["cari"] == n and h["aktif"] and h["tur"] == "alacak":
+                olay.append((h["tarih"], 2, h["seq"], "ala", "", h["tutar"]))
+        for f in m.faturalar.values():
+            if f["cari"] == n and f["durum"] == "kesildi" and f["tur"] == "iade":
+                olay.append((f["tarih"], 2, f["seq"], "ala", "", f["tutar"]))
+        acik = []
+        for _t, _s, _q, tur, ad, x in sorted(olay):
+            if tur == "al":
+                kalan[ad] = x
+                acik.append(ad)
+            elif tur == "deg":
+                kalan[ad] -= x
+            else:
+                for a_ in acik:
+                    d_ = min(max(0, kalan[a_]), x)
+                    kalan[a_] -= d_
+                    x -= d_
+    return kalan
+
+
 def main():
     gecen, kalan, satirlar = 0, 0, []
 
@@ -349,7 +392,7 @@ def main():
         eski_sk = [b for b in _m.son_belirsiz if "SK-9 … SK-12" in b or "(SK-13;" in b]
         denetle("%s SK-9 … SK-13 susması yok (S102–S105 A, S99 A)" % ad, not eski_sk, json.dumps(eski_sk[:2], ensure_ascii=False))
     # 2. mutantlar 200–223 (… bakım 20: 313–316)
-    SUSMA_MUTANTLARI = {316, 324, 353, 357, 361, 364, 366}  # bakım 29 (§41 — SK-54 / S265): 364 / 366 da SUS kuralı · bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 26 (§38 — SK-47; 347 KALDIRILDI — S243 = A ile kural oldu) / bakım 27 (§39 — SK-51; 351 / 354 S249 / S251 ile DEĞERLE) / bakım 28 (§40 — S254): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
+    SUSMA_MUTANTLARI = {316, 324, 353, 357, 361, 364, 366, 375}  # bakım 30 (§42 — SK-55): 375 da SUS kuralı · bakım 29 (§41 — SK-54 / S265): 364 / 366 da SUS kuralı · bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 26 (§38 — SK-47; 347 KALDIRILDI — S243 = A ile kural oldu) / bakım 27 (§39 — SK-51; 351 / 354 S249 / S251 ile DEĞERLE) / bakım 28 (§40 — S254): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
     for n, ad in M.MUTASYONLAR.items():
         if n < 200:
             continue
@@ -518,6 +561,25 @@ def main():
         if ret250:
             _m249, out249 = calistir(sen, 0, "2.4.9")
             denetle("%s Y7-3 reddi yalnız 2.5.0'da (2.4.9 kabul)" % os.path.basename(p), all(out249.get(k, {}).get("b") == "ok" for k in ret250), ",".join(ret250))
+    # 10. bakım 30 (§42 Y30-3; girdi §3 madde 13): rastgele M2 dizileri (tohum 1–3 × 120) — HER adımdan sonra S270 değişmezi saf hesapla (model.py'nin sınır işlevinden ayrı):
+    #     her şüpheli kaydın sondaki kalanı ≥ 0 (Σ Değersiz ≤ alınan − kayda düşen tahsilat); kabul edilen her Değersiz'den sonra carinin bakiyesi ≥ 0.
+    m2_say = 0
+    for t in (1, 2, 3):
+        r = subprocess.run([sys.executable, "-I", os.path.join(BURASI, "uretici.py"), "--tur", "m2", "--tohum", str(t), "--islem", "120"], capture_output=True, check=True)
+        sen = json.loads(r.stdout)
+        adim = [a for a in sen["adimlar"] if a["islem"] != "kontrol"]
+        for i in range(len(adim)):
+            if adim[i]["islem"] == "cari_ac":
+                continue
+            m, out = calistir(dict(sen, adimlar=adim[:i + 1]))
+            for n, v in m2_degismez(m).items():
+                m2_say += 1
+                denetle("rastgele-m2-%d adım %s kayıt %s Σ Değersiz ≤ alınan − düşen" % (t, adim[i]["id"], n), v >= 0, "sondaki kalan %d" % v)
+            if adim[i]["islem"] == "degersiz" and out.get("adim:%s:durum" % adim[i]["id"], {}).get("b") == "ok":
+                c = m.supheliler[adim[i]["supheli"]]["cari"]
+                m2_say += 1
+                denetle("rastgele-m2-%d adım %s Değersiz bakiyeyi eksiye düşürmez" % (t, adim[i]["id"]), m.bakiye(c) >= 0, "bakiye %d" % m.bakiye(c))
+    print("  M2 (bakım 30): rastgele m2 tohum 1–3 × 120 — %d değişmez denetimi" % m2_say)
     toplam = gecen + kalan
     if satirlar:
         print("BAŞARISIZ:")
