@@ -1986,3 +1986,104 @@ KULLANICIYA SORULMALI (S54–S57 eki; SORU DÜZENİ 06.11 09:01):
 ### Rastgele üretici (bakım K-D)
 - Tohum 1–3 DEĞİŞMEZ (aynı olaylar; beklenenleri yalnız KD1 / KD9 gösterimiyle değişir). YENİ tohum 4 ve 5: aynı akış + rastgele sayı tüketmeyen devir ekleri — K öncesi verilen, yeni yıla
   uzanan Ödeme Sözü; Excel kartı (KG-5 A) yeni yıla uzanan taksitlerle; Kartı Kapat'lı kart. Değişmezler ve devirli = devirsiz denetimi aynen (yeni `soz_hatirlatma_ayni` dahil).
+
+### Yorumun kod sırasında netleşen yerleri (yorum commit'inden SONRA — açıkça)
+- KD8 (i): bakiyesi 0 carinin devir kartı yeni yıl kuyruğuna carinin devir satırı OLMADAN da yüklenir; açık taksitli kart devir satırsız olamaz (TYK: avans taksiti kapatır) — öyle
+  bir durum kâhin hatası diye durur. Arşiv dosyasında da (ikinci devirde) aynı.
+- KD2 ek: zincirleme devirde kartın İLK kaynağı (`ilk_kaynak`) korunur (önceki kod ikinci devirde "devir" yazıyordu → Mevcut Borç kartının K3 kart kapısı kaybolurdu). Bu ek
+  için senaryo / mutant YOK (DENENMEYEN; SONRAYA 2).
+- Ekstre / M12 / M3 / N-13 düzeni, KG-12 M4 fişleri, `devir_yoldaki` ve öbür devir kuralları DEĞİŞMEDİ (G3: yalnız aşağıdaki üç sınıf).
+
+### Elle beklenenlerin yazılış sırası (bakım K-D)
+- db501e1d: kural başına yorum (KODDAN ÖNCE). 3400b615: 15 yeni elle senaryo (s122 … s135; s124 iki kararla a / b), eski senaryolarda S-1 gösterimiyle değişen 11 elle grup
+  (s04, s21, s22, s23 ×2 dal, s25, s27, s28, s31, s32, s34) ve `BakimKD` birim testleri model DEĞİŞTİRİLMEDEN ÖNCE commit'lendi.
+- Eski modelle (3400b615, kd-eski-model-kirmizi-utc): 247 testten 32 kırmızı, HEPSİ beklenen nedenle — S-1 gösterimi (V.F / V.D / V.E, `onceki_yil_dagitilmamis` yok), S-2 / S-3 reddi
+  yok (`[]` / `YOK` / `KURAL_FARKI_YOK`), `DEVIR_TABANI` yerine `YOK`, söz taşınmıyor (`{'C1': 50000} != {}`), ödenmiş / S15 kart yeni yılda yok (`'TK1' yok`), cari türü arşivi
+  değiştiriyor (`[] != ['KILITLI_DONEM']`), `defter_turu_degistir` olayı yok, SUS yok (S-3 / B5), yeni değişmez anahtarları yok, Dosyalar (beklenenler eski). Eski modelde YEŞİL kalan yeni
+  testler (var olan kuralın zaten karşıladığı — KD5, KD6, KD12, KD13, KD16): s126 (Excel kartı), `test_KD5_KD6_iki_secenek_ayni_sayilar`, `test_KD13_yeni_yilda_hesapsiz_hareket_susar`.
+- Model değiştikten sonra ilk koşuda elle değerlerin HİÇBİRİ değişmedi (tek kırmızı Dosyalar — beklenenler yeniden yazılmadan önce).
+
+### Önceki beklentilerle çelişen yerler (eski → yeni, nedeni; G3 — `docs/kanit/2026-11-27/kd-g3-*`, betikler `kd-g3-betik.py`, `kd-g3-s1-denetim.py`)
+- Karşılaştırma: bakımdan önceki `senaryolar/` (çalışma ağacından kopya; git geçmişi okunmadı) ↔ yeni; 77.002 yaprak. Eski senaryolarda değişen 146 yaprak, BEKLENMEYEN 0:
+  | Sınıf | Yaprak | Neden |
+  |---|---|---|
+  | S-1 gösterim (beklenen dosyaları) | 90 | KD1: devirle gelen önceki yıl 590 / 591'i canlı yeni yıl Bilanço'sunda V.F'den V.D (`Önceki Yıl Kârı — Dağıtılmamış (Y)`) / V.E (`Önceki Yıl Zararı (Y)`)'ye; yeni `onceki_yil_dagitilmamis` |
+  | S-1 elle beklenen (senaryo dosyaları) | 26 | KD1: yukarıdaki elle grup (README tablosu KD1 satırı) |
+  | Yeni değişmez anahtarı | 30 | KD9: `degismezler/canli/devir_tabani` = [] (devirli 24 elle senaryo — s29 geri alındığı için yok — + 3 ikinci dal + 3 tohum) |
+  | YENİ | 12.594 | s122 … s135, rastgele-7 |
+- `kd-g3-s1-denetim.py`: değişen 18 bilanço raporunun HEPSİ canlı dosyada ve bir devirden sonra; aktif, pasif toplamı, hesaplanmış Dönem Net Kârı ve V.D + V.E + V.F toplamı eskiyle AYNI
+  (yalnız özkaynak içinde yer değişti): rastgele 1–3, s04, s21, s22, s23 (A, KG6=B), s25 (A, KG12=B), s27, s28, s31, s32, s34, s48 (iki rapor), s50. Arşiv Bilanço'larının hiçbiri değişmedi.
+- Döküm iki saat diliminde bayt bayt aynı.
+
+### KULLANICIYA SORULMALI / KÂHİN SUSUYOR (kodlanmadı; SORU DÜZENİ 06.11 09:01: uç durumda üçüncü seçenek; "yaygın programlarda" — belge OKUNMADI)
+1. **S-3: devirde yalnız ALT DEFTER kural farkı kaldı (UÇ — KD4 (a)).** Örnek (birim testi): 2.4.9 kilidinde bağlı çek tahsilatı 4.000 eski kuralla 120'de, yeni kuralla 128'de → fark 120|C1 +4.000 /
+   128|C1 −4.000; Kural Farkı Düzeltme Fişi bunu düzeltmez (B14, `KURAL_FARKI_ALT_DEFTER`). (a) Devir DURUR ("Kilidi Aç → Yeniden Kilitle" ile fark temizlenmeden geçmez) — carinin 120 + 128
+   toplamı zaten aynı, ayrım arşivde düzelir. (b) Devir GEÇER — alt defter farkı arşive "Kesin Değil — Kural Değişikliği Farkı" ile gider; yeni yıl 120 / 128 ayrımı eski kuralın ayrımıyla açılır.
+   Öneri (a) (kararın sözü "düzeltilmemiş fark varken devir yapılamaz"; çıkış yolu var). C: uç durum böyle kalsın (kâhin susar, BİLİNEN SINIR). Yaygın programlarda: okunmadı.
+2. **S-3: kilit K'ye (31.12) dayanmış, düzeltme fişi yeni yılın ilk gününe düşüyor (UÇ — KD4 (b)).** Örnek (birim testi): 2.4.9 kilidi 31.12.2026, açılış çeki 3.000 eski kuralla 602'de. (a) Devir
+   DURUR, önce kilit 2026'nın içine geri alınıp fiş 2026'da yazılır (kararın "kapanan yılın İÇİNDE"si; 2026 kârı 3.000 azalır, 2027 Gelir Tablosu temiz). (b) Fiş 01.01.2027'ye (ilk açık gün)
+   yazılır ve devir GEÇER: fark M7'ye göre 2027'de 681 (Olağandışı Gider) 3.000; 2026 kârı düzeltilmeden kapanır. Öneri (a). C: uç durum böyle kalsın (kâhin susar). Yaygın programlarda: okunmadı.
+3. **Excel kartı Kayıt Tarihi ≤ K, yükleme anı > K (devirden önce, Ocak'ta yüklenmiş — B5; UÇ — KD9).** Örnek (birim testi): Kayıt Tarihi 20.12.2026, yükleme 03.01.2027, kart 9.000. (a) Ön denetim
+   DURDURUR (kart yeniden yüklenir ya da Kayıt Tarihi düzeltilir). (b) Devirde kart da maddesi de Kayıt Tarihi'ne göre ARŞİVE sayılır (B5'in yükleme günü penceresi K'de kapanır), yeni yıla
+   K+1 devir açılışıyla gelir: arşivde 120 9.000 / 519, 2027 açılışında 120 9.000 (BM§2 (5): eski tarihli kaydın etkisi yalnız K+1 devir satırından). Öneri (b). C: uç durum böyle kalsın
+   (kâhin susar). Yaygın programlarda: okunmadı.
+- BAŞ MİMAR değerlendirir (kâhin yorumu, kodlandı): KD1 (590 → V.D, 591 → V.E — kararın "Geçmiş Yıllar Kârları (Zararları)" kalemi MSUGT'nin iki satırına; toplam aynı); KD3 (adayın tarihi
+  ne olursa olsun durur — kararın "listede"si); KD21 (arşivde hareketi olan carinin türü yeni yılda değişmez — genel ölçüt; öbür okuma devirli ≠ devirsiz verirdi); KD8 (ii) (S15 kapalı kartı
+  da "kapalı kart" sayıldı); KD7 (söz cari düzeyinde — kâhinin S52 dili; "devir satırına taşınır"ın kâhindeki karşılığı söz kaydının yeni yıl dosyasına taşınması).
+- Sürer: önceki bakımların KULLANICIYA SORULMALI maddeleri aynen.
+
+### Yeni senaryolar, testler ve mutasyonlar
+- Elle senaryolar (girdi §3 sınıfı → senaryo): (1) s122 · (2) s123 · (3) s124a / s124b · (4) s125 · (5) s126 · (6) s127 · (7) s128 · (8) s129 · (9) s130 · (10) s131 · (11) s132 · (12) s133 ·
+  (13) s134 / s135 · (14) var olan `test_N06_691_692ye_kapanir` + B23 / B23b (691 dil olayıyla doğmaz — JSON senaryo kurulamaz) · (15) var olan s26a / s26b + s45 + yeni birim testi.
+- Birim testleri (`BakimKD`, 10): aktarım ↔ M4 kapanmamış yıl sırası (eskiden yeniye), S-2 K sonrası tarihli aday, S-3 iki susma, B5 susması, yeni yılda hesapsız hareket susması, Geri Al →
+  yeniden devir rapor eşitliği (söz dahil), iki seçenek aynı sayılar (tohum 1, yoğunluk 1), söz değişmezinin dişi, devir tabanı değişmezinin dişi, "590 = yalnız K yılı" değişmezinin dişi. Toplam test 223 → 249.
+- Rastgele: tohum 7 (Borç ve Alacakları Aktar) devir ekleriyle; tohum 1–3 aynen. Tohum 4 (Sadece Bakiyeyi Aktar, ekli) `uretici.py 4` koşusunda yeşildi (red yok, bütün değişmezler boş; kanıt
+  dosyası yok) ama mutasyon süresi için listeden çıkarıldı (tek başına ~36 sn × 347 mutant); iki seçenek karşılaştırması `test_KD5_KD6_iki_secenek_ayni_sayilar` (tohum 1, yoğunluk 1).
+  Tohum 5 kullanılmadı (eklerden bağımsız 'S14 planı yakınsamadı' — SONRAYA 1).
+- Mutantlar KD01–KD08, KD10–KD18 (17; KD09 numarası kullanılmadı); "691, 690'a kapansın" var olan B23. İlk koşuda KD18 (kapanıştan sonra "590 = yalnız K yılı" denetimi yok)
+  SAĞ KALDI (`kd-yeni-mutantlar-kd18-sag-*`: 16/17, iki saat dilimi) — model doğru olduğundan denetim hiçbir testte ateşlenmiyordu; dişi `test_KD18_590_yalniz_K_yili_degismezinin_disi`
+  eklendi (49a421f8), yeniden koşu 17/17. Daha önceki bir deneme (`kd-yeni-mutantlar-ilk-deneme-*`) eski B-mutantının parçası aktarım çağrısında ikinci kez geçtiği için başlamadan durdu
+  (çağrı adlandırılmış değişkenlere çevrildi, 8ac74dd9).
+
+### Sürücü için — devir olaylarının çıktı sözleşmesi (kâhin tarafı; sürücüye DOKUNULMADI)
+Sürücü ajanı programın devir planını (devir sihirbazı / Devir Raporu / yeni yıl dosyası) bu çıktılarla karşılaştırır. Tutarlar kuruş, borç +. Alan alan:
+- **Olay** `devir {K, secenek borc_alacak | sadece_bakiye, bugun?, ad}`; `devri_yenile {duzeltmeler[], bugun?, ad}`; `devri_geri_al {ad}`; YENİ `defter_turu_degistir {defter_turu bilanco |
+  serbest_meslek | isletme}` (yalnız canlı dosyanın Defter Türü ayarı; arşiv kendi türünü korur).
+- **Red** (program devri başlatmaz, HİÇBİR şey değişmez — sürücü devir öncesi dosyayla bütün raporların aynı kaldığını da denetler): `DEVIR_K_31_ARALIK`, `DEVIR_K_GELECEK`,
+  YENİ `DEVIR_ACILIS_OLABILIR` (ön denetim "Açılış Olabilir Kayıtları Onaylayın"), YENİ `DEVIR_KURAL_FARKI` ("Önce Kural Farkı Düzeltme Fişi'ni yazın"). Devirden sonra yeni yılda:
+  K ve öncesi tarihli YENİ kayıt `KILITLI_DONEM`; arşivdeki (K ve öncesi) kayda düzenle / iptal / sil / Silinenler'den geri yükle YENİ `DEVIR_TABANI` (programın kendi kodu eşlenir —
+  409 / bulunamadı; önemli olan istek reddi + veri değişmezliği); arşivde hareketi olan carinin türünü değiştirme `KILITLI_DONEM`.
+- **Devir raporu** `raporlar[ad]`:
+  - `arsiv_kapanis` {hesap | hesap|cari: K bakiyesi} ve `yeni_acilis` {…: yalnız K+1 devir açılış maddelerinin bakiyesi} ↔ programın Devir Raporu "kapanış = açılış" tablosu (hesap hesap, alt hesap
+    ve cari boyutuyla; kuruşu kuruşuna). 570.Y / 580.Y alt hesapları EK-2 26'ya göre ana hesap düzeyinde de karşılaştırılır.
+  - `kapanis` {`N01` {yıl: stok değerleme farkı}, `DSS`, `onceki_yil` {Y: {SMM, R}} (M4), YENİ `aktarim` {Y: önceki yıl 590 / 591'in 570.Y / 580.Y'ye aktarılan tutarı, kâr +} (yalnız doluysa),
+    `R`, `sonuc`} ↔ arşivin K günü kapanış fişleri: sıra Önceki Yıl Sonucu Fişleri (aktarım fişleri DAHİL, eskiden yeniye; sınıf "önceki yıl sonucu") → N-01 → N-02 … N-07. Sürücü arşivin K günü
+    yevmiyesini bu sırayla karşılaştırır (s134 `yevK`).
+  - `acilis.acik_kalemler` [{cari, k ("fatura:<id>", "borc:<id>", "acilis:<id>", "kart_kalani:<kart>", …), tur, kalan (yön işaretli), vade (asıl vade; vadesiz kalemde BELGE GÜNÜ), belge_tarihi}]
+    ↔ programın yeni yıl dosyasındaki devir açık kalem satırları (devir planı G2: açıklama "Devir: <belge no> (<belge tarihi>)", vade = asıl vade, tutar = K kalanı). Satırın tarihi K+1.
+  - `acilis.cariler` {cari: {bakiye (CH K bakiyesi), acilis (= net kalan satırı)}}; `acilis.ekstre` {cari: {"Borç Toplamı", "Alacak Toplamı" | "Devir Bakiyesi", acik_kalemler, satirlar
+    [tarih, aciklama, borc, alacak, vade, bakiye]}} ↔ programın cari ekstresinin K+1 satırları (iki seçenek). Kuyruğa (gecikmiş / kalan) yalnız `acik_kalemler` + net kalan girer — Borç /
+    Alacak Toplamı satırları YALNIZ ekstre görünümü (BM§2 (1)); sürücü iki seçenekte gecikmiş, açık kalem ve bakiyelerin AYNI olduğunu karşılaştırır.
+  - `acilis.kartlar` {kart: {cari, acik_taksitler [{vade, kalan}]}} — açık, kapalı (Kartı Kapat), ödenmiş ve YENİ: faturası iptal edilip kapanan (S15) kartların HEPSİ yeni yılda kalır;
+    K'ye kadar ödenen TEK açılış (`moduller` raporunda `taksit_odenen|<kart>`); `kartlar` raporunda kapalı kart `kapali: true`, taksitsiz; ödenmiş kart açık taksitsiz (bakiyesi 0 caride de).
+  - `acilis.supheli` {cari: {tutar, kalemler}} (açık şüpheli kayıtları; K'den önce Değersiz yazılmış kayıt TAŞINMAZ), `acilis.stok`, `acilis.eksi_stok`, `acilis.N13` (tamamlayıcı fiş satırları).
+  - `degismezler`, `s19_devir`: kâhinin kendi denetimi — sürücü karşılaştırmaz (YENİ `soz_hatirlatma_ayni` dahil).
+- **Bilanço** (yeni yıl dosyasında): devirle gelen önceki yıl 590 → `pasif/V.D` + `detay/V.D/Önceki Yıl Kârı — Dağıtılmamış (Y)`; 591 → `pasif/V.E` + `detay/V.E/Önceki Yıl Zararı (Y)`; YENİ
+  `onceki_yil_dagitilmamis` {Y: kâr + / zarar −}; `pasif/V.F` ve `donem_net_kari` yalnız içinde bulunulan yılın sonucu. Sürücü programın Bilanço satır adını bu iki ada eşler.
+- **Ödeme Sözü**: söz kaydı yeni yıl dosyasına taşınır (cari düzeyinde; S52 dili); kâhinin `hatirlatma` raporu (`odeme_sozu_var`) söz süresince yeni yılda da dolu. NOT (girdi §3 KAPSAM DIŞI):
+  Ödeme Hatırlatma çıktısının devirli = devirsiz olması ayrı karar bekliyor — sürücü s132 / söz değişmezini YAYIN KAPISI saymaz; takvim / Vade Takip kâhin dilinde yok.
+- **Devri Geri Al** → `{geri_alindi, kaybolan_hareketler}`; yeniden devir aynı kimlikle, raporu ilk devirle AYNI (s133).
+- **Kâhinin sustuğu (senaryo kurulmaz; sürücü bu girişleri denemez)**: S-3 yalnız alt defter farkı / fişi K'den sonra; B5 Excel kartı yükleme günü > K; yeni yılda hesapsız hareket (Hesabı
+  Atanmamış); Devir Kapanışı ve Hesabı Atanmamış kovası (dilde yok); 691 ≠ 0 (dil olayı yok — birim testinde elle fiş).
+
+### SONRAYA (2.5.1 iç düzen — kullanıcı 20.11 kuralı; programı etkilemez)
+1. Rastgele tohum 5 "S14 planı yakınsamadı", tohum 3 yoğunluk 1 "kuyruk yakınsamadı: T3 2026-07-15" ile susuyor — İKİSİ DE taban kâhinde de (t251-taban'ın `git archive` kopyasında
+   koşuldu; K-D'den bağımsız). Yakınsama sınırı ayrı bakımda.
+2. KD2 ekinin (zincirleme devirde `ilk_kaynak`) senaryosu / mutantı yok.
+3. M-11 açılış eşleştirmesinin 590 / 591 satırı yılsız → "önceki yıl" sayılmaz (yılı belirtilmemiş eşleştirme 590'ı varsa ilk devirde K yılının 590'ına karışır; gösterim).
+4. `uret_beklenen.py --denetle` kanıt aracının özet satırını basmıyor (`BELİRSİZ`; içerik "güncel", çıkış 0) — özet satırı eklenebilir. README "Dosyalar" tablosundaki eski sayaçlar.
+
+### DENENMEYEN (bu bakım)
+- Programla karşılaştırma (devir programda yok; sürücü ayrı ajan). Devir Kapanışı (banka) ve Hesabı Atanmamış kovası × devir (dil taşımıyor; S215 metni okunmadı). Takvim / Vade Takip (S67 Q3).
+  Ödeme Hatırlatma devirli = devirsiz (KAPSAM DIŞI). Zincirleme Devri Yenile (G7 BİLİNEN SINIR) ve ikinci devirden sonra İLK arşivin yenilenmesi. Devri Geri Al'ın devirden SONRA girilen kayıtları
+  taşıması (s29 BİLİNEN SINIR aynen). Kilit kaldırma (dil kuramıyor — §2 (6)'nın "kilit kaldırılsa da" kolu yalnız kilidin geri gitmemesiyle). 691 ≠ 0'lı JSON senaryo.
