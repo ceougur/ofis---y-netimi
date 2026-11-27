@@ -1,0 +1,38 @@
+{
+  "ad": "tam-sinama1",
+  "komut": "npm test",
+  "commit": "c654ecc257dcdfe20382c26377a04d76fd29f20f",
+  "dal": "t251-sinama-1",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T10:56:26.764Z",
+  "sure_sn": 5451.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6182,
+    "gecen": 6181,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı › sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi",
+      "konum": "test/obligation-input-250.test.mjs:415:3",
+      "hata": "hakemden farklı çıktı (taşıma davranışı değiştirdi): ilk|001|OZ 001 Silinen Kart · ilk|001|OZ 001 Stok Taksit · iade-sil|001|OZ 001 Stok Taksit · geri|001|OZ 001 Silinen Kart · geri|001|OZ 001 Stok Taksit · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-sinama1/kanit/2026-11-27/tam-sinama1.log.gz",
+  "klasor": "/dev/shm/ana-d4on/yeni",
+  "ham_cikti_sha256": "3ac4248ca1da71e148e2010e44e159bc57a2d3e8a9cb85e5d643930e35aca53b",
+  "ham_cikti_bayt": 2434863
+}

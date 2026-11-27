@@ -1,0 +1,16 @@
+ANA OTURUM — TEK SINAMA AĞACI TAM TESTİ VE BİRLEŞİM (2.5.1; 27.11.2026)
+
+Sınama ağacı: /dev/shm/ana-d4on/yeni, dal t251-sinama-1, uç c654ecc2 =
+  çalışma dalı 96484d5b + birleşim fce0e31f (D4 ön koşulları) + c674b41b (müşteri istekleri tur 1) + f2b3b668 (KDV Özeti tur 1 + 2)
+  + 9201b740 (package.json / ci.yml dört senaryo betiği) + c654ecc2 (release.yml dört senaryo).
+Komut: HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=<not defteri>/ana-sinama1/kanit node tools/kanit.mjs kos tam-sinama1 -- npm test
+  (flock -n tam-npm-test.lock, flock -s olcum.lock, timeout 6900 sn). Başlama 10:56:26 UTC (yük 3,53), bitiş 12:27:17 UTC (yük 2,85).
+Sonuç: tests 6182 / pass 6181 / fail 1 / cancelled 0 / skipped 0 / todo 0; çıkış 1 (tam-sinama1.json, tam-sinama1.log.gz).
+Tek kırmızı: not ok 1076 test/obligation-input-250.test.mjs:282 — "hakemden farklı çıktı" (taksit kartlı beş cari sınıfı).
+  Yeniden üretim (aynı test tek başına, 12:04): ana dal 2/2, KDV Özeti dalı 2/2, D4 ön koşulları dalı 2/2, müşteri istekleri dalı 1/2 KIRMIZI
+  → neden müşteri istekleri paketi (görünen taksit numarası tek borç sırasının girdisine sızıyor). Hakem dosyası DEĞİŞMEZ; paket BİRLEŞMEZ (tur 2'de düzeltilir).
+Birleşim (müşteri istekleri HARİÇ): b0895406 = merge fce0e31f, c57e2710 = merge f2b3b668.
+Kod denetimi: `git diff HEAD c654ecc2 -- server client test | git patch-id --stable` = 5817857e78ad…
+  = `git diff 64396478 c674b41b -- server client test | git patch-id --stable` → ana dalın kodu sınanan ağaçtan YALNIZ müşteri istekleri farkı kadar ayrılıyor.
+İş akışı listeleri: yalnız senaryo-kdv-devreden-251 ve senaryo-kdv-zincir-251 (package.json, ci.yml adım + --beklenen, release.yml); iki dosya python yaml ile ayrıştı;
+  test/ci-kapi-listesi.test.mjs + test/kanit-araci.test.mjs 54/54 (birlesim-kapi-listesi.json / .log).
