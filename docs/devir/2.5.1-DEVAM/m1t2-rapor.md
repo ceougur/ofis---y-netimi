@@ -1,7 +1,7 @@
 # M1 TUR 2 — KDV Özeti: devreden KDV'nin ZİNCİRLİ hesabı (2.5.1; S-M1-1 = B) — RAPOR
 
 Taban `t251-m1-tur1` (60f1a0a7) → dal ucu: bu raporun son commit'i (`worktree-agent-af18bb1989d74249b`). PUSH YOK. Defter, KDV Mahsup Fişi ve ön izlemesi DEĞİŞMEDİ — yalnız rapor.
-Ortam (son okuma 08:26 UTC): yük 8,70 / 4 çekirdek (öbür ajanların koşuları), bellek boş 0 GB / kullanılabilir ~5 GB, disk boş 11 GB.
+Ortam (son okuma ~08:33 UTC): yük 3,98 / 4 çekirdek (08:26'da 8,70 — öbür ajanların koşuları), bellek boş 2 GB / kullanılabilir 5 GB, disk boş 6,5 GB (5 GB sınırına yakın; benim /dev/shm kopyalarım bellekte, diski kullanmıyor). Arka plan işim YOK.
 
 ## A. DEĞİŞEN GÖZLENEBİLİR DAVRANIŞ (önce = tur 1 → sonra = tur 2; Raporlar → Tüm Raporlar → KDV Özeti (Beyanname Hazırlığı))
 1. **Mahsup fişi kesilmemiş aydan sonraki ay** (S-M1-1 örneği: Eylül sonu devreden 1.960, Ekim satış KDV 400 MAHSUPSUZ, Kasım satış KDV 1.000):
@@ -111,7 +111,8 @@ Ekran senaryosunun İLK koşusu (a61f334e) 11/12'ydi: notta tutar ekranda "₺2.
 - a61f334e M1 tur 2: 'Güncel Değil' ayında rapor = ön izleme sınaması (D7 mutantı yaşıyordu); zincirli KDV Özeti ekran senaryosu
 - fe27f518 M1 tur 2: zincir ekran senaryosu — notun tutar biçimi ekranda ₺ önekli
 - 66d318df Kanıt: M1 tur 2 (…)
-- (son) Kanıt + rapor (bu belge)
+- 4c158329 Kanıt: M1 tur 2 — 100 bin verisinde zincir sayıları; hız ölçümünün kilit sonucu; M1 tur 2 raporu
+- (son) rapor son hâli (bu belge)
 
 ## 15. ANA OTURUMUN YENİDEN KOŞACAĞI KOMUTLAR
 ```
