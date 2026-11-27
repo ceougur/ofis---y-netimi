@@ -1,0 +1,20 @@
+#!/bin/bash
+# Ana oturum HIZ KABUL ölçümü — Mİ (dönemsiz Cari Listesi, sıralı ABBA) + M1 (KDV Özeti; taban ↔ tur 2, A B B A). flock -x altında çağrılır.
+SP=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+H=$SP/ana-hiz; OUT=$H/hiz.out
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+cd /home/user/ofis---y-netimi || exit 1
+ac() { [ -d $H/$1 ] || { git worktree add -q --no-checkout --detach $H/$1 $2 && git -C $H/$1 sparse-checkout set --no-cone '/*' '!/docs/kanit/' && git -C $H/$1 checkout -q; } || exit 1; [ -e $H/$1/node_modules ] || ln -s /home/user/ofis---y-netimi/node_modules $H/$1/node_modules; }
+ac taban t251-taban; ac mi-yeni c674b41b; ac m1-yeni f2b3b668
+for v in mi-a mi-b kdv-t1 kdv-y1 kdv-y2 kdv-t2; do [ -d $H/veri-$v ] || cp -a $SP/ana-kabul/temiz-100k $H/veri-$v || exit 1; done
+sync
+for i in $(seq 1 24); do l=$(cut -d' ' -f1 /proc/loadavg); awk -v l=$l 'BEGIN{exit !(l<1.5)}' && break; sleep 20; done
+echo "HIZ KABUL · nproc $(nproc) · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S)" > $OUT
+echo "=== Mİ dönemsiz liste (taban t251-taban ↔ yeni c674b41b; 12 çift, ABBA)" >> $OUT
+timeout 900 node --disable-warning=ExperimentalWarning $H/olc-mi-ab.mjs $H/taban $H/veri-mi-a $H/mi-yeni $H/veri-mi-b 12 >> $OUT 2>&1; echo "çıkış $? · sonda $(cat /proc/loadavg)" >> $OUT
+for side in taban:kdv-t1 m1-yeni:kdv-y1 m1-yeni:kdv-y2 taban:kdv-t2; do
+  code=${side%%:*}; veri=${side#*:}
+  echo "=== M1 KDV Özeti · $code · veri $veri · başta $(cat /proc/loadavg)" >> $OUT
+  timeout 900 node --disable-warning=ExperimentalWarning $H/olc-kdv.mjs $H/$code $H/veri-$veri 5 >> $OUT 2>&1; echo "çıkış $? · sonda $(cat /proc/loadavg)" >> $OUT
+done
+echo "bitti $(date -u +%H:%M:%S)" >> $OUT

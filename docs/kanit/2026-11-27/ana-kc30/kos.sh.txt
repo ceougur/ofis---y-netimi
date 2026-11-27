@@ -1,0 +1,24 @@
+#!/bin/bash
+# Ana oturum: cari kâhini bakımı 30 YENİDEN KOŞUSU (025ce3ca; eski kâhin = t251-taban). flock -s olcum.lock altında çağrılır.
+SP=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+H=$SP/ana-kc30; R=/home/user/ofis---y-netimi; O=$H/cikti
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+cd $R || exit 1
+[ -d $H/yeni ] || { git worktree add -q --no-checkout --detach $H/yeni 025ce3ca && git -C $H/yeni sparse-checkout set --no-cone '/*' '!/docs/kanit/' '/docs/kanit/2026-11-27/kc30-arac/' && git -C $H/yeni checkout -q; } || exit 1
+[ -e $H/yeni/node_modules ] || ln -s $R/node_modules $H/yeni/node_modules || exit 1
+[ -d $H/eski ] || { mkdir -p $H/eski && git archive t251-taban test/bagimsiz/cari | tar -x -C $H/eski; } || exit 1
+cd $H/yeni || exit 1
+A=docs/kanit/2026-11-27/kc30-arac; K=test/bagimsiz/cari; D62=$K/senaryolar/d62-c5-m2-degersiz-siniri.json; EK=$H/eski/test/bagimsiz/cari
+[ -f $A/elle.py ] && [ -f $D62 ] && [ -f $EK/model.py ] || { echo "ön koşul eksik"; exit 1; }
+kos() { ad=$1; shift; s=$(date +%s); timeout 1500 "$@" > $O/$ad.out 2>&1; c=$?; echo "$ad · çıkış $c · $(( $(date +%s)-s )) sn · $(tail -1 $O/$ad.out | cut -c1-220)"; }
+echo "başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S) · $(git rev-parse --short HEAD)"
+for tz in UTC Europe/Istanbul; do t=${tz##*/}; export TZ=$tz
+  kos oztest-$t python3 -I $K/oz-test.py
+  kos mutant-$t python3 -I $A/yeni-mutant.py $K
+  kos elle-yeni-$t python3 -I $A/elle.py $K $D62
+  kos elle-eski-$t python3 -I $A/elle.py $EK $D62 --kirmizi-bekle
+  kos g3-$t python3 -I $A/g3.py $EK $K --tohum 1-10 --islem 120
+  kos kahin-program-$t npm run -s test:kahin-cari
+done
+unset TZ
+echo "sonda $(cat /proc/loadavg) · $(date -u +%H:%M:%S)"; git -C $H/yeni status -s | head -5; echo "bitti"

@@ -1,0 +1,66 @@
+HIZ KABUL · nproc 4 · başta 1.34 3.52 4.37 1/117 1497 · 10:03:40
+=== Mİ dönemsiz liste (taban t251-taban ↔ yeni c674b41b; 12 çift, ABBA)
+taban /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/taban · yeni /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/mi-yeni · yük (başta) 1.34 3.52 4.37
+  Liste dönemsiz (Aktif, 300): taban orta 842.3 ms (en çok 1152.7, olay döngüsü en çok 1148.2) · yeni orta 793.9 ms (en çok 1062.5, olay döngüsü en çok 1058) · fark -5.7 % · 12 çift
+    yanıt gövdesi (Mİ-1 'no' alanı çıkarılınca) taban = yeni: true
+  Liste dönemsiz (Tümü, 300): taban orta 789 ms (en çok 1315.5, olay döngüsü en çok 1309.7) · yeni orta 939.5 ms (en çok 1077.4, olay döngüsü en çok 1069.5) · fark 19.1 % · 12 çift
+    yanıt gövdesi (Mİ-1 'no' alanı çıkarılınca) taban = yeni: true
+yük (sonda) 1.11 2.84 4.04
+çıkış 0 · sonda 1.11 2.84 4.04 1/120 1822
+=== M1 KDV Özeti · taban · veri kdv-t1 · başta 1.11 2.84 4.04 1/120 1823
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/taban · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/veri-kdv-t1 · yük (başta) 1.11 2.84 4.04
+veri: 34026 fatura, 61162 kalem, 102295 cari satırı
+  KDV Özeti yıllık (01.01–31.12.2026): 200 · ilk 2720.9 ms · ılık ortanca 2544.2 ms (en az 2412.4, en çok 2559.3) · olay döngüsü en çok 2556.4 ms · satır 115
+    özet: Hesaplanan KDV (391)=1.952.048,70 TL | İndirilecek KDV (191)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Devreden KDV=3.309.780,96 TL
+  KDV Özeti Bu Yıl (preset): 200 · ilk 2195.5 ms · ılık ortanca 2557.8 ms (en az 2318.3, en çok 2701.4) · olay döngüsü en çok 2554.3 ms · satır 115
+    özet: Hesaplanan KDV (391)=1.952.048,70 TL | İndirilecek KDV (191)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Devreden KDV=3.309.780,96 TL
+  KDV Özeti tek ay (Eylül 2026): 200 · ilk 2379.1 ms · ılık ortanca 2555.2 ms (en az 2214.3, en çok 2580.3) · olay döngüsü en çok 2554.3 ms · satır 13
+    özet: Hesaplanan KDV (391)=70.832,34 TL | İndirilecek KDV (191)=1.396.635,75 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Devreden KDV=1.325.803,41 TL
+  KDV Mahsup ön izlemesi (Eylül 2026): 200 · ilk 4648 ms · ılık ortanca 4733.4 ms (en az 4338.8, en çok 4943.1) · olay döngüsü en çok 0 ms · satır -
+  KDV Özeti tek ay (Ağustos 2026) — elle sağlama: 200 · ilk 2414 ms · ılık ortanca 2487.6 ms (en az 2331, en çok 3014.8) · olay döngüsü en çok 0 ms · satır 11
+    özet: Hesaplanan KDV (391)=122.696,91 TL | İndirilecek KDV (191)=452.078,82 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Devreden KDV=329.381,91 TL
+yük (sonda) 1.36 2.42 3.75
+çıkış 0 · sonda 1.36 2.42 3.75 1/124 1983
+=== M1 KDV Özeti · m1-yeni · veri kdv-y1 · başta 1.36 2.42 3.75 1/124 1984
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/m1-yeni · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/veri-kdv-y1 · yük (başta) 1.36 2.42 3.75
+veri: 34026 fatura, 61162 kalem, 102295 cari satırı
+  KDV Özeti yıllık (01.01–31.12.2026): 200 · ilk 2658.8 ms · ılık ortanca 2495.8 ms (en az 2452.8, en çok 2866.9) · olay döngüsü en çok 2493.5 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti Bu Yıl (preset): 200 · ilk 2416.6 ms · ılık ortanca 2507 ms (en az 2124.9, en çok 2763.6) · olay döngüsü en çok 2504 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti tek ay (Eylül 2026): 200 · ilk 2427.8 ms · ılık ortanca 2395.4 ms (en az 2291.8, en çok 2793.2) · olay döngüsü en çok 2791.3 ms · satır 13
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=70.832,34 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=1.396.635,75 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.761.404,34 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.087.207,75 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 41 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Mahsup ön izlemesi (Eylül 2026): 200 · ilk 4466.3 ms · ılık ortanca 4460.7 ms (en az 4281.2, en çok 5085.1) · olay döngüsü en çok 5083.5 ms · satır -
+  KDV Özeti tek ay (Ağustos 2026) — elle sağlama: 200 · ilk 2372 ms · ılık ortanca 2568.2 ms (en az 2103.5, en çok 2888.7) · olay döngüsü en çok 2877.3 ms · satır 11
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=122.696,91 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=452.078,82 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.432.022,43 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=10.761.404,34 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 40 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+yük (sonda) 1.27 2.04 3.46
+çıkış 0 · sonda 1.27 2.04 3.46 1/120 2016
+=== M1 KDV Özeti · m1-yeni · veri kdv-y2 · başta 1.27 2.04 3.46 1/120 2017
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/m1-yeni · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/veri-kdv-y2 · yük (başta) 1.27 2.04 3.46
+veri: 34026 fatura, 61162 kalem, 102295 cari satırı
+  KDV Özeti yıllık (01.01–31.12.2026): 200 · ilk 2275.2 ms · ılık ortanca 2393.1 ms (en az 2345.2, en çok 2627.5) · olay döngüsü en çok 2357.2 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti Bu Yıl (preset): 200 · ilk 2257.2 ms · ılık ortanca 2384.1 ms (en az 2188.9, en çok 2442.8) · olay döngüsü en çok 0 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti tek ay (Eylül 2026): 200 · ilk 2077.5 ms · ılık ortanca 2359.3 ms (en az 2054.5, en çok 2497.9) · olay döngüsü en çok 2497.7 ms · satır 13
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=70.832,34 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=1.396.635,75 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.761.404,34 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.087.207,75 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 41 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Mahsup ön izlemesi (Eylül 2026): 200 · ilk 4210.9 ms · ılık ortanca 4284.7 ms (en az 4190.8, en çok 4435.1) · olay döngüsü en çok 4206.9 ms · satır -
+  KDV Özeti tek ay (Ağustos 2026) — elle sağlama: 200 · ilk 2188.5 ms · ılık ortanca 2155.6 ms (en az 2065.3, en çok 2297) · olay döngüsü en çok 2149.6 ms · satır 11
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=122.696,91 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=452.078,82 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.432.022,43 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=10.761.404,34 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 40 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+yük (sonda) 1.11 1.76 3.20
+çıkış 0 · sonda 1.11 1.76 3.20 1/121 2052
+=== M1 KDV Özeti · taban · veri kdv-t2 · başta 1.11 1.76 3.20 1/121 2053
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/taban · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/veri-kdv-t2 · yük (başta) 1.11 1.76 3.20
+veri: 34026 fatura, 61162 kalem, 102295 cari satırı
+  KDV Özeti yıllık (01.01–31.12.2026): 200 · ilk 2266.1 ms · ılık ortanca 2203 ms (en az 2062.2, en çok 2439.2) · olay döngüsü en çok 2269.1 ms · satır 115
+    özet: Hesaplanan KDV (391)=1.952.048,70 TL | İndirilecek KDV (191)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Devreden KDV=3.309.780,96 TL
+  KDV Özeti Bu Yıl (preset): 200 · ilk 2081.9 ms · ılık ortanca 2152.4 ms (en az 2050.6, en çok 2289) · olay döngüsü en çok 2145.4 ms · satır 115
+    özet: Hesaplanan KDV (391)=1.952.048,70 TL | İndirilecek KDV (191)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Devreden KDV=3.309.780,96 TL
+  KDV Özeti tek ay (Eylül 2026): 200 · ilk 2195.9 ms · ılık ortanca 2301.3 ms (en az 2075.3, en çok 2517.1) · olay döngüsü en çok 2386.6 ms · satır 13
+    özet: Hesaplanan KDV (391)=70.832,34 TL | İndirilecek KDV (191)=1.396.635,75 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Devreden KDV=1.325.803,41 TL
+  KDV Mahsup ön izlemesi (Eylül 2026): 200 · ilk 4510.6 ms · ılık ortanca 4170.2 ms (en az 4057, en çok 4500.2) · olay döngüsü en çok 4169.1 ms · satır -
+  KDV Özeti tek ay (Ağustos 2026) — elle sağlama: 200 · ilk 2031.6 ms · ılık ortanca 2241.7 ms (en az 2044.1, en çok 2531.4) · olay döngüsü en çok 2170.6 ms · satır 11
+    özet: Hesaplanan KDV (391)=122.696,91 TL | İndirilecek KDV (191)=452.078,82 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Devreden KDV=329.381,91 TL
+yük (sonda) 1.06 1.55 2.98
+çıkış 0 · sonda 1.06 1.55 2.98 3/125 2092
+bitti 10:12:27

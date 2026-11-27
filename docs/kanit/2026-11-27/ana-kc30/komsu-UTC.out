@@ -1,0 +1,310 @@
+TAP version 13
+# (node:4529) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: İzleyen küçük tur — P-2 (karar (4): fazlası carinin avansı)
+    # Subtest: P2a — açık Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+    ok 1 - P2a — açık Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+      ---
+      duration_ms: 655.862736
+      type: 'test'
+      ...
+    # Subtest: P2k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+    ok 2 - P2k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı: tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0; iadenin açığı 300
+      ---
+      duration_ms: 539.447894
+      type: 'test'
+      ...
+    # Subtest: P2o — kendi kartı (taksitli fatura): tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0 (bekçi)
+    ok 3 - P2o — kendi kartı (taksitli fatura): tahsilat 600 + iade 600 → kart 600 · Tahsil Edilen 600 · Kalan 0 (bekçi)
+      ---
+      duration_ms: 458.709596
+      type: 'test'
+      ...
+    1..3
+ok 1 - İzleyen küçük tur — P-2 (karar (4): fazlası carinin avansı)
+  ---
+  duration_ms: 1655.138499
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — P-1 / S238 = A (iade iptali aynı taksite)
+    # Subtest: P1a — açık Mevcut Borç kartı: tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+    ok 1 - P1a — açık Mevcut Borç kartı: tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+      ---
+      duration_ms: 483.843221
+      type: 'test'
+      ...
+    # Subtest: P1k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı (S205: kalemler kapanış ertesinden gecikmiş): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 600
+    ok 2 - P1k — Borçta Kalsın ile kapatılmış Mevcut Borç kartı (S205: kalemler kapanış ertesinden gecikmiş): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 600
+      ---
+      duration_ms: 579.801647
+      type: 'test'
+      ...
+    # Subtest: P1o — kendi kartı (taksitli fatura): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+    ok 3 - P1o — kendi kartı (taksitli fatura): tahsilat 300 → 10.11 iade 300 → 20.11 iptal → taksitler iade öncesiyle AYNI; 20.11 gecikmiş 300
+      ---
+      duration_ms: 482.743007
+      type: 'test'
+      ...
+    # Subtest: P1e — kesim kaydı olmayan (eski sürümün) iadesi: iptalde büyüme bugünkü gibi SON taksite
+    ok 4 - P1e — kesim kaydı olmayan (eski sürümün) iadesi: iptalde büyüme bugünkü gibi SON taksite
+      ---
+      duration_ms: 460.659342
+      type: 'test'
+      ...
+    1..4
+ok 2 - İzleyen küçük tur — P-1 / S238 = A (iade iptali aynı taksite)
+  ---
+  duration_ms: 2007.950241
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — BULGU-1 (kuyruk kapama defteriyle aynı kapsam okuması)
+    # Subtest: B1a — iki açık kart: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 0; bakiye 900
+    ok 1 - B1a — iki açık kart: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 0; bakiye 900
+      ---
+      duration_ms: 583.982836
+      type: 'test'
+      ...
+    # Subtest: B1k — ilk kart Borçta Kalsın ile kapatılmış: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 600; bakiye 900
+    ok 2 - B1k — ilk kart Borçta Kalsın ile kapatılmış: ilk faturaya iade 300 → gecikmiş 08.10 0 / 09.10 600; bakiye 900
+      ---
+      duration_ms: 534.799246
+      type: 'test'
+      ...
+    1..2
+ok 3 - İzleyen küçük tur — BULGU-1 (kuyruk kapama defteriyle aynı kapsam okuması)
+  ---
+  duration_ms: 1119.340797
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — S234-c (Düzenle ile azaltma iade gibi)
+    # Subtest: C1a — açık Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+    ok 1 - C1a — açık Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+      ---
+      duration_ms: 461.741993
+      type: 'test'
+      ...
+    # Subtest: C1k — Borçta Kalsın kapalı Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+    ok 2 - C1k — Borçta Kalsın kapalı Mevcut Borç kartı: Düzenle 900 → 300 → kart 300 (05.12 kalır)
+      ---
+      duration_ms: 502.961783
+      type: 'test'
+      ...
+    1..2
+ok 4 - İzleyen küçük tur — S234-c (Düzenle ile azaltma iade gibi)
+  ---
+  duration_ms: 965.060369
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — S234-c sınırı (Düzenle'de eklenen peşin ödeme kartı küçültmez — ödemedir, iade değil)
+    # Subtest: C2: fatura 900 → kart 900 → Düzenle aynı tutar + 300 peşin → kart 900 kalır; bakiye 600
+    ok 1 - C2: fatura 900 → kart 900 → Düzenle aynı tutar + 300 peşin → kart 900 kalır; bakiye 600
+      ---
+      duration_ms: 467.111078
+      type: 'test'
+      ...
+    1..1
+ok 5 - İzleyen küçük tur — S234-c sınırı (Düzenle'de eklenen peşin ödeme kartı küçültmez — ödemedir, iade değil)
+  ---
+  duration_ms: 467.533653
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — S239 = A ve S240 = A (bugünkü davranış kararla aynı — bekçi)
+    # Subtest: S239: fatura 900, kart 600 (faturanın 600'ü kartta), iade 300 → kart DEĞİŞMEZ (dışarıdaki 300 kapanır); 06.10 gecikmiş = ilk taksit 200
+    ok 1 - S239: fatura 900, kart 600 (faturanın 600'ü kartta), iade 300 → kart DEĞİŞMEZ (dışarıdaki 300 kapanır); 06.10 gecikmiş = ilk taksit 200
+      ---
+      duration_ms: 443.237128
+      type: 'test'
+      ...
+    # Subtest: S240: elle borç 300 + fatura 900 → kart 1200, tahsilat 300, iade 300 → kart 900 · Tahsil Edilen 300 · Kalan 600; fatura 600'ü kartta
+    ok 2 - S240: elle borç 300 + fatura 900 → kart 1200, tahsilat 300, iade 300 → kart 900 · Tahsil Edilen 300 · Kalan 600; fatura 600'ü kartta
+      ---
+      duration_ms: 531.916464
+      type: 'test'
+      ...
+    1..2
+ok 6 - İzleyen küçük tur — S239 = A ve S240 = A (bugünkü davranış kararla aynı — bekçi)
+  ---
+  duration_ms: 975.43546
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — BULGU-2 (Düzenle değiştirmeden Kaydet kartı aynen bırakır)
+    # Subtest: E2: aynı ödeme planıyla Düzenle → kart kimliği, kart no, taksitler aynı; taksit sayısı değişince yeni kart
+    ok 1 - E2: aynı ödeme planıyla Düzenle → kart kimliği, kart no, taksitler aynı; taksit sayısı değişince yeni kart
+      ---
+      duration_ms: 593.027446
+      type: 'test'
+      ...
+    1..1
+ok 7 - İzleyen küçük tur — BULGU-2 (Düzenle değiştirmeden Kaydet kartı aynen bırakır)
+  ---
+  duration_ms: 593.27902
+  type: 'suite'
+  ...
+# Subtest: İzleyen küçük tur — İş 6 eşdeğerlik (fatura kartı GET önbelleği = baştan kurulan)
+    # Subtest: H6: kapama defteri ve kuyruk okumaları her yazım türünden sonra işlem içinde baştan kurulanla aynı
+    ok 1 - H6: kapama defteri ve kuyruk okumaları her yazım türünden sonra işlem içinde baştan kurulanla aynı
+      ---
+      duration_ms: 678.883863
+      type: 'test'
+      ...
+    1..1
+ok 8 - İzleyen küçük tur — İş 6 eşdeğerlik (fatura kartı GET önbelleği = baştan kurulan)
+  ---
+  duration_ms: 679.065213
+  type: 'suite'
+  ...
+# (node:4538) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S264 = A — Değersiz sınırı aynı günün sırasına uyar (o günün bağlı payından ÖNCE)
+    # Subtest: (a) aynı gün, şüpheliye almadan önce yazılmış BAĞLI tahsilat: Değersiz 3.000 (tam tutar) kabul; kayıt Değersiz Yazıldı, kalan 0; bakiye 423,55
+    ok 1 - (a) aynı gün, şüpheliye almadan önce yazılmış BAĞLI tahsilat: Değersiz 3.000 (tam tutar) kabul; kayıt Değersiz Yazıldı, kalan 0; bakiye 423,55
+      ---
+      duration_ms: 218.526395
+      type: 'test'
+      ...
+    # Subtest: (a′) aynı kurulumda kalanı aşan Değersiz (3.000,01) yine 400 doubtful-writeoff-exceeds — sınır 3.000; hiçbir satır yazılmaz
+    ok 2 - (a′) aynı kurulumda kalanı aşan Değersiz (3.000,01) yine 400 doubtful-writeoff-exceeds — sınır 3.000; hiçbir satır yazılmaz
+      ---
+      duration_ms: 142.988699
+      type: 'test'
+      ...
+    # Subtest: (b) aynı gün BAĞSIZ tahsilat: karar kapsamaz — sınır kalan 123,55; Değersiz 3.000 400 doubtful-writeoff-exceeds (kâhin ve v2.4.9 aynı)
+    ok 3 - (b) aynı gün BAĞSIZ tahsilat: karar kapsamaz — sınır kalan 123,55; Değersiz 3.000 400 doubtful-writeoff-exceeds (kâhin ve v2.4.9 aynı)
+      ---
+      duration_ms: 170.183448
+      type: 'test'
+      ...
+    # Subtest: (e) aynı gün BAĞLI 1.000 + BAĞSIZ 500 tahsilat, sonra Şüpheliye Al 3.000: sınır 3.000 − 500 = 2.500 (yalnız bağlı pay geri sayılır); 2.500,01 400, 2.500 kabul
+    ok 4 - (e) aynı gün BAĞLI 1.000 + BAĞSIZ 500 tahsilat, sonra Şüpheliye Al 3.000: sınır 3.000 − 500 = 2.500 (yalnız bağlı pay geri sayılır); 2.500,01 400, 2.500 kabul
+      ---
+      duration_ms: 192.31325
+      type: 'test'
+      ...
+    # Subtest: (c) bağlı tahsilat kayıttan SONRAKİ bir günde (S25 (c)): payı şüpheliden düşer — ertesi günün Değersiz'inde sınır 123,55 (S264 yalnız aynı günü söyler)
+    ok 5 - (c) bağlı tahsilat kayıttan SONRAKİ bir günde (S25 (c)): payı şüpheliden düşer — ertesi günün Değersiz'inde sınır 123,55 (S264 yalnız aynı günü söyler)
+      ---
+      duration_ms: 132.741483
+      type: 'test'
+      ...
+    # Subtest: (d) komşu yol — (a)'da kabul edilen Değersiz satırı silinip Silinenler'den geri yüklenir (aynı sınır; önceden 409)
+    ok 6 - (d) komşu yol — (a)'da kabul edilen Değersiz satırı silinip Silinenler'den geri yüklenir (aynı sınır; önceden 409)
+      ---
+      duration_ms: 222.46472
+      type: 'test'
+      ...
+    1..6
+ok 9 - S264 = A — Değersiz sınırı aynı günün sırasına uyar (o günün bağlı payından ÖNCE)
+  ---
+  duration_ms: 1557.879042
+  type: 'suite'
+  ...
+# (node:4545) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+    # Subtest: dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+    ok 1 - dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+      ---
+      duration_ms: 2.425233
+      type: 'test'
+      ...
+    # Subtest: CRLF satır sonlu dolu liste de ret (ders 27)
+    ok 2 - CRLF satır sonlu dolu liste de ret (ders 27)
+      ---
+      duration_ms: 0.354126
+      type: 'test'
+      ...
+    # Subtest: boş liste → geçer (LF ve CRLF)
+    ok 3 - boş liste → geçer (LF ve CRLF)
+      ---
+      duration_ms: 0.329344
+      type: 'test'
+      ...
+    # Subtest: dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+    ok 4 - dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+      ---
+      duration_ms: 0.653601
+      type: 'test'
+      ...
+    # Subtest: yalnız 'eşleme' paketli kayıtlar → yine ret (sayılır; paket dağılımında görünür)
+    ok 5 - yalnız 'eşleme' paketli kayıtlar → yine ret (sayılır; paket dağılımında görünür)
+      ---
+      duration_ms: 0.383715
+      type: 'test'
+      ...
+    # Subtest: varsayılan yol çalışma dizininden bağımsız: başka klasörden çağrılınca da depodaki listeyi okur (aynı sonuç)
+    ok 6 - varsayılan yol çalışma dizininden bağımsız: başka klasörden çağrılınca da depodaki listeyi okur (aynı sonuç)
+      ---
+      duration_ms: 100.019403
+      type: 'test'
+      ...
+    # Subtest: varsayılan çağrı (release.mjs'in yolu: yol ve commit verilmez) listeyi commit'le karşılaştırır; başka yolda karşılaştırmaz
+    ok 7 - varsayılan çağrı (release.mjs'in yolu: yol ve commit verilmez) listeyi commit'le karşılaştırır; başka yolda karşılaştırmaz
+      ---
+      duration_ms: 1.475788
+      type: 'test'
+      ...
+    # Subtest: kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+    ok 8 - kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+      ---
+      duration_ms: 1.073537
+      type: 'test'
+      ...
+    1..8
+ok 10 - YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+  ---
+  duration_ms: 107.94879
+  type: 'suite'
+  ...
+# Subtest: YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree / assume-unchanged atlatması)
+    # Subtest: çalışma ağacında boş, commit'te dolu → ret: 'FARKLI' + 'commit'te boş değil'; ikisi aynıysa (CRLF ↔ LF dahil) geçer; commit'ten okunamıyor / bozuk → ret
+    ok 1 - çalışma ağacında boş, commit'te dolu → ret: 'FARKLI' + 'commit'te boş değil'; ikisi aynıysa (CRLF ↔ LF dahil) geçer; commit'ten okunamıyor / bozuk → ret
+      ---
+      duration_ms: 0.956276
+      type: 'test'
+      ...
+    # Subtest: gerçek git: dolu liste commit'lenir, skip-worktree işaretlenir, çalışma ağacında boşaltılır → git status temiz (ön koşul), kapı ret; işaret yoksa status 'M' gösterir
+    ok 2 - gerçek git: dolu liste commit'lenir, skip-worktree işaretlenir, çalışma ağacında boşaltılır → git status temiz (ön koşul), kapı ret; işaret yoksa status 'M' gösterir
+      ---
+      duration_ms: 126.371101
+      type: 'test'
+      ...
+    # Subtest: gerçek git: replace + skip-worktree → git status temiz ve bayraksız 'git show' boş liste (ön koşul), kapı ret (yerine koyma okunmaz)
+    ok 3 - gerçek git: replace + skip-worktree → git status temiz ve bayraksız 'git show' boş liste (ön koşul), kapı ret (yerine koyma okunmaz)
+      ---
+      duration_ms: 119.728324
+      type: 'test'
+      ...
+    1..3
+ok 11 - YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree / assume-unchanged atlatması)
+  ---
+  duration_ms: 247.334631
+  type: 'suite'
+  ...
+# Subtest: tools/release.mjs YAPIM AŞAMASI kapısı
+    # Subtest: depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa dolu liste iletisi yok, git yokken 'okunamadı' der
+    ok 1 - depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa dolu liste iletisi yok, git yokken 'okunamadı' der
+      ---
+      duration_ms: 118.60887
+      type: 'test'
+      ...
+    # Subtest: release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+    ok 2 - release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+      ---
+      duration_ms: 1.190847
+      type: 'test'
+      ...
+    1..2
+ok 12 - tools/release.mjs YAPIM AŞAMASI kapısı
+  ---
+  duration_ms: 120.475967
+  type: 'suite'
+  ...
+1..12
+# tests 35
+# suites 12
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11838.752795

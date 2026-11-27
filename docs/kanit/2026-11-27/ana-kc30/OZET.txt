@@ -1,0 +1,14 @@
+başta 1.06 1.55 2.98 2/132 2142 · 10:12:28 · 025ce3ca
+oztest-UTC · çıkış 0 · 208 sn · 13750/13750 denetim geçti
+mutant-UTC · çıkış 0 · 10 sn · 9/9 mutasyon yakalandı
+elle-yeni-UTC · çıkış 0 · 1 sn · 193/193 elle denetim tuttu
+elle-eski-UTC · çıkış 0 · 0 sn · 140/193 elle denetim tuttu
+g3-UTC · çıkış 0 · 49 sn · # fail 0
+kahin-program-UTC · çıkış 0 · 739 sn · 25905/25905 denetim geçti (7 bilinen sınır dahil) (52 yapım aşaması ayrı sayıldı — 52 denetim + 0 okuma hatası; geçti sayılmadı)
+oztest-Istanbul · çıkış 0 · 222 sn · 13750/13750 denetim geçti
+mutant-Istanbul · çıkış 0 · 10 sn · 9/9 mutasyon yakalandı
+elle-yeni-Istanbul · çıkış 0 · 1 sn · 193/193 elle denetim tuttu
+elle-eski-Istanbul · çıkış 0 · 0 sn · 140/193 elle denetim tuttu
+g3-Istanbul · çıkış 0 · 55 sn · # fail 0
+kahin-program-Istanbul · çıkış 0 · 710 sn · 25905/25905 denetim geçti (7 bilinen sınır dahil) (52 yapım aşaması ayrı sayıldı — 52 denetim + 0 okuma hatası; geçti sayılmadı)
+sonda 5.00 5.02 4.79 5/137 4361 · 10:45:53
