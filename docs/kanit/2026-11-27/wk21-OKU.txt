@@ -1,0 +1,15 @@
+WK 21 — WhatsApp kâhini güncellemesi 21 (2.5.1 Ç5-C Ödeme Hatırlatma: KAÇ KEZ / NE ZAMAN / HANGİ İÇERİK) — KANIT DİZİNİ (27.11.2026)
+
+Taban: t251-taban = 64396478 (kâhin klasörü değişiklikten önce not defterine kopyalandı: kahin.py sha256 d42161ec…, senaryolar.json e2f30a78…).
+Kod commit'leri: abe204ef (README yorum, kodlamadan önce) → 0ad98c24 (model + 16 senaryo + 24 mutant) → c67072e9 (kendi testi I18 / I19) → 5da0678e (README sonuç bölümleri).
+Koşular `KANIT_DIR=<not defteri> node tools/kanit.mjs kos …`, her biri `flock -s scratchpad/olcum.lock timeout …` altında; araçlar `wk21-araclar/` (not defterinden kopya).
+
+wk21-senaryolar(.log/.json)               TZ=UTC              414/414 elle = model; senaryolar.json sha256 8d73121c… (commit'lenenle aynı, ağaç temiz)
+wk21-senaryolar-tz-istanbul               TZ=Europe/Istanbul  414/414; senaryolar.json sha256 8d73121c… (aynı)
+wk21-yeni-mutantlar / -tz-istanbul        iki TZ              M293–M316: 24/24 DEĞERLE ve kendi C5C senaryosunda yakalanıyor
+wk21-g3-eski-398-tam-sonuc-fark / -tz-…   iki TZ              398 eski senaryo: 396 bayt bayt aynı + 2 açıklanmış (S23-04, S29-03 — S-W21-3), beklenmeyen 0
+wk21-eski-kahinle-yeni-senaryolar / -tz-… iki TZ              eski kâhinle 18 yeni / değişen senaryo: 18/18 KIRMIZI (çoğu ZAYIF neden: eski kâhin `borc` / yeni olayları tanımıyor — README §26.8)
+wk21-kahin / -tz-istanbul                 iki TZ, AYRI arka plan işleri — kâhinin kendi testi (A–I19) + F TAM mutasyon (315); sonuç aşağıda
+wk21-kahin                                TZ=UTC              449/449 (F TAM mutasyon 315/315; I18, I19 geçti) — commit 5da0678e
+wk21-kahin-tz-istanbul                    TZ=Europe/Istanbul  449/449 (F 315/315) — commit 5da0678e
+I19: tohum 2511 → 240 koşu (elenen 1749, Atlandı 48, devirli 70); tohum 2512 → 240 koşu (elenen 1596, Atlandı 42, devirli 96); ihlal 0

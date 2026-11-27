@@ -1,0 +1,32 @@
+{
+  "ad": "wk21-yeni-mutantlar-tz-istanbul",
+  "komut": "python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk21-c5c/araclar/yeni_mutant.py test/bagimsiz/whatsapp-248/kahin",
+  "commit": "c67072e9aa7926b6c5dab395561cb9eae5db9311",
+  "dal": "worktree-agent-a3cbae6158da1ba17",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T16:17:13.087Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 24,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk21-c5c/kanit/2026-11-27/wk21-yeni-mutantlar-tz-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3cbae6158da1ba17",
+  "ham_cikti_sha256": "76158dcea655090063a5191a18171aa9b5f6e36fead37e41a70427ada7c81ae9",
+  "ham_cikti_bayt": 6153
+}
