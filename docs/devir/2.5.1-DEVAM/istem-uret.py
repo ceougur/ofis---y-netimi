@@ -394,7 +394,43 @@ YALNIZ `test/bagimsiz/muhasebe-surucu/**` + rapor + kanıt. `server/**`, `client
 EN BAŞTA beş-altı cümlelik sonuç (kaç senaryo, kaç denetim, sınıf sayıları, program hatası önerisi var mı); eşleme tablosu; sonuç tablosu; P önerileri (yeniden üretimleriyle); K önerileri; R / KULLANICIYA SORULMALI (numaralı; iki seçenek + öneri + sayılar); kâhinin üç boşluğunun programdaki durumu; BM-1 / BM-5 / BM-6 sonucu; bekleyen kurallar (kimlik → paket); öz denetim tablosu; gerileme; ÖLÇÜLEMEDİ; DOĞRULANMADI; DENENMEYEN; kâhin bakımına girdi listesi; commit listesi; dal ucu; ana oturumun yeniden koşacağı komutlar.
 """
 
-for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C), ("m2", M2), ("d3t2", D3T2), ("sur", SUR)):
+# ---------------------------------------------------------------- Mİ TUR 2 (27.11; tam testte düşen hakem testi + her yerde tek taksit numarası + dönem etiketi)
+MI2 = f"""Sen DestekOfis projesinde 2.5.1'in MÜŞTERİ İSTEKLERİ TUR 2 KOD ajanısın (Mİ tur 2; eforun high). Tur 1 başka bir ajanla bitti (dal ucu etiketi t251-mi-tur1); sen temiz bağlamla YALNIZ aşağıdaki üç işi yaparsın (ders 46).
+
+{hazirlik(taban="t251-mi-tur1", taban_ne="Mİ tur 1'in dal ucu (c674b41b)")}
+3. Sonra oku: `docs/devir/2.5.1-DEVAM/mi-rapor.md` ve `mi2-tasarim.md` (tur 1'in raporu ve tasarımı — özellikle taksit numarasının TEK kaynağı, tarama tablosu, DENENMEYEN), tur 1'in görev metni `{ANA}/docs/devir/2.5.1-DEVAM/mi-istem.txt` (kararlar AYNEN geçerli), tur 1'in kodu (`git diff t251-taban..t251-mi-tur1 -- server client test`).
+
+## Kararlar
+KULLANICI 27.11 (müşteri istekleri — tur 1 görev metninde AYNEN).
+S-Mİ1-1 = A (KULLANICI KARARI 27.11 08:06 UTC, AYNEN: "önerini uygula"): ekranda taksit numarası boşluksuz 1, 2, 3 (vade sırası) olmuştu; müşteriye giden çıktılar eski saklanan numarayı yazıyordu. KARAR: **müşteriye gidenler de aynı numaraya geçer — tek numara HER YERDE** (önceden verilmiş kâğıtla fark olabilir; teslim notuna yazılır). Reddedilen B: müşteriye gidenler eski numarada kalır.
+BAŞ MİMAR KARARLARI 27.11 (kullanıcıya gösterildi; değiştirebilir):
+ (1) TAM TESTTE DÜŞEN TEST (ana oturum buldu; tur 1 dalında tek başına da düşüyor, ana dalda geçiyor): `test/obligation-input-250.test.mjs` — "hakemden farklı çıktı (taşıma davranışı değiştirdi)" (taksit kartı olan beş cari sınıfı). NEDEN: tur 1'in taksit satırına eklediği görünen sıra numarası alanı TEK BORÇ SIRASININ GİRDİSİNE de sızıyor; hakem dosyası (`test/fixtures/obligation-input-250-hakem.json`) o girdinin değişmediğini denetler. KARAR: **hakem dosyası DEĞİŞMEZ** (hakem davranışın kâhinidir — ders 40; yeniden üretmek yasak). Görünen numara tek borç sırasının girdisine GİRMEZ: girdi baytı baytına eskisiyle aynı kalır; numara yalnız gösterim / çıktı yollarının okuduğu yerde bulunur (tek kaynak kuralı korunur — numarayı iki yerde hesaplama). Çözümü sen seç, raporda gerekçesiyle yaz; tek borç sırası modülünün kendisi (`server/lib/obligation-queue.mjs`) DEĞİŞTİRİLMEZ.
+ (2) TARAMA DERSİ: tur 1'in komşu listesi bu testi seçmemişti (ders 10). Bu turda komşu listesi `git grep` ile, değişen HER işlevin adı ve onu çağıranların adlarıyla çıkarılır (taksit dağıtımı, kart özeti, cari satırları, tek borç sırası girdisi, makbuz, PDF'ler, ekstre, WhatsApp metni, Tablo, zil / takvim); raporda komşu listesinin NASIL çıkarıldığı (komutlar) ve dosya sayısı yazılır.
+ (3) TEK NUMARA HER YERDE'nin kapsamı (hepsi; koddan TARA, burada sayılmayan bir yer bulursan EKLE ve raporda yaz): tahsilat makbuzu (ekran + PDF), taksit kartı PDF'i, Taksitler listesi (ekran + PDF + Excel), cari ekstresi (ekran + PDF + Excel), WhatsApp ekstresi ve elle (wa.me) metinleri, Tablo, zil / takvim / Vade Takip, Ödeme Hatırlatma iletisindeki taksit anlatımı (varsa), Rapor Merkezi'nde taksit numarası yazan raporlar, mobil özet. SAKLANAN sıra alanı VERİDE DEĞİŞMEZ (göç YOK); yalnız GÖSTERİLEN numara değişir. Geçmişte yazılmış ve SAKLANMIŞ metinler (ör. gönderilmiş WhatsApp iletisinin donmuş içeriği, kayıtlı makbuz metni varsa) YENİDEN YAZILMAZ — hangi çıktı anlık üretiliyor, hangisi saklı: tabloyla raporla.
+ (4) Cari Listesi'nde dönem seçildiğinde dönem seçicinin "Tahsilat Dönemi:" etiketi kayboluyor (ana oturumun ekran yürüyüşünde görüldü) — etiket her durumda görünür kalır.
+ (5) Para / bakiye / gecikmiş / tahsilat SAYILARI bu turda DEĞİŞMEZ (yalnız numara gösterimi ve etiket). Değişen bir sayı görürsen DUR — hata.
+{KURALLAR_KULLANICI}
+
+## İş (her adım bitince commit)
+0. NASIL BOZULUR (rapor taslağının başına, koddan ÖNCE, commit): taksiti silinmiş kart ('1., 3.' → '1., 2.'); vadesi öne alınmış taksit; araya eklenen taksit; aynı vadeli iki taksit; kapatılmış / yeniden açılmış kart; "Borçta Kalsın" ile kapanan kart; Excel'den yüklenen kart; kısmen ödenmiş taksit; iade ile küçülen kart; silinip geri yüklenen kart; iki kartlı cari; makbuz tahsilattan SONRA taksit silinirse (makbuz yeniden açılınca numara ne yazar); iki şirket; dönem kilidi; eski sürümden gelen veri.
+1. DÜZELTME (karar 1): hakem testi YEŞİL, hakem dosyası `git diff` ile DEĞİŞMEMİŞ; tek borç sırasının girdisinin değişmediğini gösteren ek sınama (taksitli cari sınıflarında girdide numara alanı YOK).
+2. TEK NUMARA (karar 3): her çıktı yolu için sınama — taksiti silinmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp metni AYNI numarayı yazar (elle beklenen: '2. taksit'); PDF / Excel içeriği dosyadan OKUNARAK (ders 3).
+3. ETİKET (karar 4): ekran senaryosuna denetim.
+4. EKRAN SENARYOLARI: tur 1'in iki senaryosu (`senaryo-mi1-251`, `senaryo-mi2-251`) güncellenir ve KOŞULUR (ders 28); beklentisi değişen her var olan ekran senaryosu KOŞULUR.
+
+## Kabul koşulları
+A. `npm run test:kahin-cari` ve `npm run test:kahin-defter` iki TZ — tur 1 ile AYNI. B. `test/obligation-input-250.test.mjs` iki TZ yeşil + hakem dosyası değişmedi. C. Tur 1'in BÜTÜN testleri + karar (2)'ye göre çıkarılmış komşu listesi iki TZ yeşil. D. MUTANTLAR: tur 1'in mutantları + en az: numarayı saklanan sıradan oku (bir çıktı yolunda); numarayı tek borç sırası girdisine geri sızdır; aynı vadeli iki taksitte sırayı ters çevir; etiketi dönem seçilince gizle — her biri en az bir testte kırmızı. E. Yeni sınamalar tur 1 kodunda (taban t251-mi-tur1; AYRI kopya) BEKLENEN NEDENLE kırmızı (makbuz '3. taksit' yazıyor; hakem testi kırmızı).
+
+## Dosya sınırı
+Tur 1'in dosyaları + taksit numarasını GÖSTEREN / YAZAN çıktı yolları (makbuz, PDF / Excel üreticileri, ekstre, WhatsApp metin kurucusu, Tablo, zil / takvim, mobil özet, Rapor Merkezi'nin taksit numarası yazan raporları — YALNIZ numara gösterimi). YASAK: tek borç sırası modülü, Değersiz Alacak / şüpheli dosyaları ve Cari ekranındaki Değersiz formu (başka ajanda), KDV Özeti ve KDV mahsup hesabı (başka ajanda), devir modülleri (başka ajanda), `test/bagimsiz/**`, göçler, hakem dosyası.
+
+{kurallar('mi2', taban="t251-mi-tur1")}
+
+{rapor()}
+Ek olarak raporda: 'anlık üretilen ↔ saklı metin' tablosu (karar 3); teslim notu için tek cümle (kullanıcı dilinde: numara değişikliği ve eski kâğıtlarla fark); komşu listesinin çıkarılış komutları.
+"""
+
+for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C), ("m2", M2), ("d3t2", D3T2), ("sur", SUR), ("mi2", MI2)):
     yol = os.path.join(out, f"{ad}-istem.txt")
     open(yol, "w", encoding="utf-8").write(metin)
     print(ad, len(metin.encode()), yol)
