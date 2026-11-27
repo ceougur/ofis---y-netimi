@@ -8687,6 +8687,45 @@ button.hof-source-card:focus-visible {
   color: var(--do-muted);
   font-weight: 600;
 }
+/* 2.5.1 M1 küçük tur (KDV Özeti; baş mimarın ekran yürüyüşü): tablo altı çok satırlı (TOPLAM Satış / Alış … + Önceki Dönemden Devreden, Ödenecek, Sonraki Döneme
+   Devreden). Satırlar tek tek "bottom: 0"a yapışınca üst üste biniyordu: tfoot bir bütün olarak altta sabit; kutunun yarısından yüksekse (dar pencere) sabitlenmez. */
+.hof-rc-table.is-kdv tfoot {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+}
+.hof-rc-table.is-kdv tfoot td {
+  position: static;
+  border-top: 1px solid #cfe0d6;
+}
+.hof-rc-table.is-kdv tfoot tr:first-child td {
+  border-top: 2px solid var(--do-ink);
+}
+.hof-rc-table.is-kdv.is-foot-free tfoot {
+  position: static;
+}
+/* Notlar (tutar olmayan özet satırları): tutar kartlarının altında ayrı blok, alt alta, tam genişlik; başlık ve cümle aynı satırda başlar, cümle normal ağırlıkta
+   okunur yazıyla sarılır (alçak ekranda da yana kaymaz). */
+.hof-rc-summary.is-kdv-notes {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 4px;
+  overflow: visible;
+  padding-bottom: 0;
+}
+.hof-rc-summary.is-kdv-notes span.is-note {
+  display: block;
+  flex: none;
+  padding: 5px 10px;
+}
+.hof-rc-summary.is-kdv-notes span.is-note small {
+  display: inline;
+  margin-right: 6px;
+}
+.hof-rc-summary.is-kdv-notes span.is-note b {
+  font: 400 13px/1.45 var(--do-font);
+  white-space: normal;
+}
 .hof-rc-table .hof-empty .hof-button {
   margin-left: 8px;
 }
