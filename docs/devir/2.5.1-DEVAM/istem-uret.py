@@ -309,7 +309,53 @@ A. Kâhin: iş 4. B. Yeni testler eski kodda (taban) beklenen nedenle kırmızı
 """
 
 out = os.path.dirname(os.path.abspath(__file__))
-for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C), ("m2", M2)):
+# ---------------------------------------------------------------- D3 TUR 2 (27.11; tur 1'in eksik testleri + doğrulanmamışları + gerçek veri kapsamı)
+D3T2 = f"""Sen DestekOfis projesinde 2.5.1'in D3 TUR 2 KOD ajanısın (devir: SAF HESAP + DEVİR RAPORU + ÖN DENETİM; PARA ÇEKİRDEĞİ; eforun high). Tur 1 başka bir ajanla bitti (dal ucu etiketi t251-d3-tur1); sen temiz bağlamla YALNIZ aşağıdaki işleri yaparsın (ders 46). D3 hâlâ HİÇBİR ŞEY YAZMAZ (yalnız plan + ön izleme). Bu turun amacı YENİ ÖZELLİK DEĞİL: tur 1'in kendi raporunda 'testi yazılmadı' / 'DOĞRULANMADI' dediği sınıfları kapatmak ve gerçek veri kapsamını genişletmek — hata çıkarsa düzeltmek.
+
+{hazirlik(taban="t251-d3-tur1", taban_ne="D3 tur 1'in dal ucu (e1a6f263)")}
+3. Sonra oku: `docs/devir/2.5.1-DEVAM/d3-rapor.md` (tur 1'in raporu — TAMAMI: nasıl bozulur tablosu, plan biçimi §12, D4a eşlemesi §13, DOĞRULANMADI, DENENMEYEN), tur 1'in görev metni `{ANA}/docs/devir/2.5.1-DEVAM/d3-istem.txt` (kararlar ve dosya sınırı AYNEN geçerli), tasarım `{ANA}/docs/devir/D3-D4-TASARIM.md` (§3 TAMAMI, §4.4), tur 1'in kodu (`git diff t251-taban..t251-d3-tur1 -- server test`) ve kanıt açıklaması `docs/kanit/2026-11-27/d3-OKU-BENI.txt`.
+
+## Kararlar
+Tur 1 görev metnindeki BÜTÜN kararlar (kullanıcı kararları, S-1 / S-2 / S-3 = A, baş mimar kararları (1)–(5)) AYNEN geçerli.
+KULLANICI 27.11 (AYNEN: "1 ajan sürekli devir zincirinin işini yapsın, maş mimar olarak senin içinde uygunsa") — devir zinciri ara vermeden sürer; bu tur o zincirin sıradaki adımıdır.
+BAŞ MİMAR KARARLARI 27.11 (tur 1 raporunun BM maddeleri üzerine; kullanıcıya gösterildi, değiştirebilir):
+ BM-1 (şüpheli carinin devir 'Alacak Toplamı' satırı): DOKUNMA — kodu görmeyen kâhinin sonucu bekleniyor; davranışı DEĞİŞTİRME, yalnız testle SABİTLE (bugünkü sayılar elle yazılı) ki sonradan karar değişirse tek yerden değişsin.
+ BM-3 (ön denetimde tam Mutabakat Testi yerine Defter Mutabakatı DURDURUR): KABUL — değişmez.
+ BM-4 (şirket kapanırken ön izleme iş parçacığı): bu turda YOK (devri uygulayan pakette bağlanacak).
+ BM-6 (ödeme rolündeki açık kalem yeni yılda ÖDEME satırı olarak yazılır, vadesini ASIL tarihten alır): planın bu satırı yazmaya yetecek alanları taşıdığını (rol, asıl tarih, tutar, karşı kalem) testle SABİTLE; eksik alan varsa ekle ve raporda plan biçimi farkını yaz.
+ BM-7 (sonucun boyu): bu turda YOK.
+ H-1 (hız bütçesi): KARAR KULLANICIDA — tek borç sırasına ve devrin hız yoluna KOD DEĞİŞİKLİĞİ YOK. Yalnız İNCELEME (iş 5).
+{KURALLAR_KULLANICI}
+
+## İş (her adım bitince commit)
+0. NASIL BOZULUR (rapor taslağının başına, koddan ÖNCE, commit): aşağıdaki her sınıf için 'ne ters giderse devirli ≠ devirsiz olur' listesi; tur 1'in 42 maddelik tablosundan bu tura düşenler numarasıyla.
+1. TUR 1'İN 'TESTİ YAZILMADI' DEDİĞİ DÖRT SINIF (elle hesaplanmış küçük senaryolar — beklenen sayılar testte ELLE yazılı; her birinde devirsiz eşdeğer de):
+ (a) K'den SONRA yazılmış, K'den ÖNCEKİ belgeye bağlı kayıt (tahsilat / ödeme / mahsup / iade) — planın bağ yönlendirmesi: bağ yeni yıldaki hangi açılış kalemine gider, tutarlar, kısmi bağ, bağın karşı tarafı da K'den önceyse / sonraysa.
+ (b) EVRAKIN K'DEKİ DURUMU: çek ve senet, alınan ve verilen; K gününde portföyde / ciro edilmiş / tahsile ya da teminata verilmiş / vadesi K'den sonra / K'den önce ödenmiş ya da tahsil edilmiş / karşılıksız ya da protestolu / K'den SONRA durumu değişmiş (plan K'deki durumu taşımalı) — koddaki bütün durumları tara, her durum en az bir satır.
+ (c) Alt hesaplı öbür hesaplar: kredi kartı / POS alacağı / banka kredisi gibi cari ve banka dışındaki alt defterli hesapların açılışları (tur 1 raporunda numaralarıyla); her birinin kapanış = açılış değişmezi.
+ (d) Şablonlar ve e-Belge olguları: okuyucunun bu tabloları doğru okuduğu (yinelenen işlem şablonu, gönderilmemiş / iptal bekleyen e-Belge, numara sayaçları) — ön denetim maddeleri yalnız olgu düzeyinde değil GERÇEK veri tabanından okunarak.
+2. TUR 1'İN 'DOĞRULANMADI' MADDELERİ (her biri için senaryo + sonuç; hata ise düzelt, para kuralı ayrışması ise KODLAMA — SORULMALI):
+ (e) K'den sonra faturaya bağlı tahsilatı olan şüpheli cari: planın K'deki şüpheli payı doğru mu; plan yanlışlıkla DURDURUYOR mu (yanlış durdurma da hatadır — kullanıcı devir yapamaz).
+ (f) K'den SONRA 'Borçta Kalsın' ile kapanan taksit kartı: taksit vadeleri devirli ↔ devirsiz aynı mı (gecikmiş, kalan, vade listesi).
+ (g) Dönem Kilidi: kilit K'yi kapsıyorken / K'den önceyken / hiç yokken plan; kilit geçmişine dokunulmadığı.
+ (h) Evrak durum sınıfları (b ile birlikte) ve K günü ile K+1 günü yazılmış aynı tutarlı iki kayıt.
+3. GERÇEK VERİ KAPSAMI (ders 17; tur 1'in üreteci yalnız fatura / tahsilat / ödeme / stok üretiyordu): `test/devir-d3-gercek-veri.mjs` üretecine v2.5.0'ın GERÇEK kodunun API'siyle şunlar eklenir — taksit kartı (açık, bitmiş, Borçta Kalsın ile kapanmış, erken kapatılmış), çek ve senet (yukarıdaki durumlar), şüpheli alacak (Şüpheliye Al, kısmi ve tam Değersiz, Şüpheliden Çıkar, Karşılık), KDV mahsup fişi (bazı aylar kesilmiş, bazıları atlanmış), vergi ödemesi, banka hareketleri (havale / EFT, POS, kredi kartı, virman), iade faturaları, silinmiş ve geri yüklenmiş kayıt, pasif cari, aynı adlı iki cari. Her isteğin yanıt kodu okunur (ders 3: reddedilen istek veri üretmez — üretilen her sınıfın SAYISI rapora). Üç tohum × iki TZ; her koşuda devirsiz eşdeğer 0 fark ve bütün değişmezler. Fark çıkarsa: yeniden üret, kök neden (ders 6); plan hatasıysa düzelt + o sınıf için elle sayılı KÜÇÜK test (kalıcı); kural ayrışmasıysa SORULMALI. `--veri` seçeneği (hazır veriyi yeniden kullanma) eklenebilir.
+4. MUTANTLAR: tur 1'in 15 mutantı AYNEN yakalanır + bu turun her sınıfı için en az bir yeni mutant (bağ yönlendirmesi, evrak durumu, alt hesap açılışı, şüphelinin K payı, kart vadesi, kilit) — her biri en az bir testte kırmızı.
+5. HIZ İNCELEMESİ (KOD DEĞİŞİKLİĞİ YOK; karar için sayı): temiz 100 bin kopyasında (`{SP}/ana-kabul/temiz-100k` OKUNUR; KENDİ kopyan) ön izlemenin en pahalı bileşeni olan tek borç sırası çağrısının İÇİNDE sürenin nereye gittiğini ölç (hangi adım kaç sn; devrin ihtiyaç duymadığı hangi hesaplar yapılıyor) ve 'devre özel dar kip' yazılsa beklenen kazancı SAYIYLA tahmin et; ayrıca tek borç sırasını DEĞİŞTİRMEDEN devir tarafında yapılabilecek kazançları (aynı çağrının yinelenmesi, gereksiz ikinci okuma) listele. ÖZEL kilit `flock -x -w 1800 {SP}/olcum.lock` tek seferlik (alamazsan 'ÖLÇÜLEMEDİ' — yük altında gösterge ayrıca, GEÇERSİZ diye işaretli); /proc/loadavg yazılır.
+
+## Kabul koşulları
+A. `npm run test:kahin-defter` ve `npm run test:kahin-cari` iki TZ — tur 1 ile AYNI. B. Tur 1'in BÜTÜN testleri + komşu listesi iki TZ yeşil. C. Mutantlar (iş 4) iki TZ. D. Gerçek veri: üç tohum × iki TZ, 0 fark; üretilen sınıf sayıları tabloda. E. Bu turun testlerinden tur 1 kodunda (taban t251-d3-tur1; AYRI kopya) KIRMIZI olanlar = bulduğun hatalar (nedenleriyle); tur 1 kodunda da yeşil olanlar 'yeni sınıf testi — dişi mutasyonda' diye AYRI listelenir (kırmızı kanıt diye yazılmaz — ders 7, 38).
+
+## Dosya sınırı
+Tur 1 ile aynı: `server/lib/devir/` altındaki D3 modülleri (plan, okuyucu, ön denetim, rapor, iş parçacığı), `server/routes/devir.mjs` (yalnız ön izleme uçları), `test/devir-d3-*` + `test/fixtures/**`. OKUR, DEĞİŞTİRMEZ: tek borç sırası, mali tablo hesabı, stok değerlemesi, defter türetmesi, D2 modülleri, şüpheli / evrak / kart modülleri. YASAK: istemci, göçler, `server/app.mjs`, KDV mahsup hesabı ve Rapor Merkezi, Cari ekranı, `test/bagimsiz/**`. Sınır dışında hata bulursan DÜZELTME — raporda 'BAŞ MİMAR KARARI GEREKİYOR' (yeniden üretim betiğiyle).
+
+{kurallar('d3t2', taban="t251-d3-tur1")}
+
+{rapor()}
+Ek olarak raporda: tur 1'in DOĞRULANMADI / DENENMEYEN listesinin madde madde SON durumu (kapandı / hata bulundu ve düzeltildi / hâlâ açık + neden); plan biçiminde tur 1'e göre DEĞİŞEN alanlar (sürücü ajanı ve D4a için); gerçek veride üretilen sınıf sayıları; hız incelemesi tablosu.
+"""
+
+for ad, metin in (("pd", PD), ("d4on", D4ON), ("mi", MI), ("m1", M1), ("d3", D3), ("m1t2", M1T2), ("pc5c", PC5C), ("m2", M2), ("d3t2", D3T2)):
     yol = os.path.join(out, f"{ad}-istem.txt")
     open(yol, "w", encoding="utf-8").write(metin)
     print(ad, len(metin.encode()), yol)
