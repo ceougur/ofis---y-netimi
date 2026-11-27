@@ -266,6 +266,8 @@ export function accountRows({ party, account, debit, credit, items, option, year
   const net = balance - openDebt + openCredit;
   const rows = [];
   const base = (tur, yon, tutarMinor, aciklama, extra = {}) => ({ kimlik: `devir-${year}-cari-${party}-${tur}`, tur, tarih: nextDay, yon, tutarMinor, aciklama, kaynak: "devir", acilis: true, vade: "", ...extra });
+  // M12 (EK-1, AYNEN): "Bakiyesi 0 ve açık kalemi olmayan cariye HİÇ satır yazılmaz — iki seçenekte de." (D3 tur 2: hareketli ama K'de bakiyesi 0 olan caride iki eşit toplam satırı yazılıyordu.)
+  if (balance === 0 && !open.length) return { rows: [], open, balance, openDebt: 0, openCredit: 0, net: 0 };
   if (option === "sadece-bakiye") {
     if (net) rows.push(base("devir-bakiyesi", net > 0 ? "debt" : "credit", Math.abs(net), "Devir Bakiyesi", { kuyrugaGirenMinor: net }));
   } else {
