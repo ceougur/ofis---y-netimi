@@ -159,3 +159,84 @@ kümesi (D2 arşiv / yedek / bakım + yazım / taşınabilirlik / lisans / kanı
 - **D** gerçek veri (v2.5.0 GERÇEK kodu → yeni kod) 3 tohum × 2 TZ ⏳ (t11 iki TZ **22/22**, sınıf dışı fark 0, S-T4-1 sınıfı 12 karşılaştırma — §7).
 - **E** katalog 56 neden (durdurur 46, uyarı 10), 176 ileti; iç kod / İngilizce / alan adı / tablo adı **0**; koşu sırasından bağımsız (§8).
 - **F** komşular iki TZ **103/103** + D3'ün tamamı **164/164** (§3b).
+
+## 6. Mutant tablosu
+Tur 1–4'ün 56'sı AYNEN (M52'nin çapa metni bu turun listesine taşındı — `"settings.%", "staff.%"];` → `"case.payment.%", "dataset.bonds.moved"]);`; amacı aynen: giriş izi damgaya girerse uzman (2) kırılmalı).
+Taban artık D3'ün 26 test dosyasının TAMAMI (tur 1'den eksik `devir-d3-uc` ve `devir-d3-zaman` dahil); `test/` altında tabanda olmayan bir `devir-d3-*.test.mjs` varsa tarama DURUR (yeni test unutulamaz).
+| # | Mutant (bu turun 8'i) | Kırmızı test |
+|---|---|---|
+| 57 | S-T2-1: Borç Yaz karşısı ayrılmaz (yalnız Alacak Yaz satırı belge sayılır) | ⏳ |
+| 58 | S-T4-1: kilitli bağsız kapanış kayar (K sonrası bağlı tahsilat K kuyruğuna girer — programın bugünkü sınırını taklit) | ⏳ |
+| 59 | sıfır paylı belgeye ≤K bağ yanlış yönlenir (payın tamamı ayrılan belge K'de küçülmez; bağ belgeyi kapatır) | ⏳ |
+| 60 | veri damgası: iz türü listesinden para yazıcısı düşer (taksit kartı `plan.%`) | ⏳ |
+| 61 | veri damgası: bu turun eklediği para yazıcısı (kayıt tahsilatı) düşer | ⏳ |
+| 62 | veri damgası: görüntüleme izi (fatura PDF'i) yine damgaya girer (tur 4 hâli) | ⏳ |
+| 63 | mahsup geriye dönük (K'de) uygulanmış sayılır — ayrılan pay yeni yıla taşınmaz | ⏳ |
+| 64 | bakiyesi 0 caride açık kalem varken de satır yazılmaz (iki yönlü kalem yutulur) | ⏳ |
+
+## 7. GERÇEK VERİ (ders 17) — v2.5.0'ın GERÇEK kodu (`git worktree add --detach /dev/shm/d3t5-k5/v250 v2.5.0`), üç tohum × iki TZ
+Üreteç tur 4'ünkü AYNEN; değişen yalnız devirsiz eşdeğerin farkı SINIFLAMASI: imzası (`kilitBagImzasi`: K sonrası bağ ARŞİV BAŞVURUSU + devirsiz kuyrukta o bağ aynı faturayı "Bağlı" kapatıyor
+(T > 0) + fark T ile sınırlı: her gün |gecikmiş farkı| ≤ T, açık kalem toplamı aynı, kalem kalem mutlak fark ≤ 2T) tutan fark "BEKLENEN FARK (S-T4-1 = A; program düzeltmesi kilit paketinde)"
+sayacına, öbür her fark denetimi KIRMIZI yapar (ders 53 (b)). İmzanın başka farkı yutmadığı kalıcı testte sınandı (devir-d3-kilit-bag "imza başka farkları yutmaz").
+| Koşu | Sonuç | Devirsiz eşdeğer (karşılaştırma / sınıf dışı fark) | BEKLENEN FARK (S-T4-1) | S-T2-1 ayırımı (yeni yıla / K'de) | Süre |
+|---|---|---|---|---|---|
+| utc t11 | **22/22** | 3684 / **0** | 1 cari, 12 karşılaştırma (2 seçenek × 6 gün), kayan 128,00 — devirsiz 408,00 / 1.117,40, devirli 280,00 / 1.245,40 (tur 4'ün "Müşteri 108"i AYNEN) | 8 (6 / 2) | 896 sn |
+| ist t11 | **22/22** | 3684 / **0** | aynı (1 cari, 12; 128,00) | 8 (6 / 2) | 897 sn |
+| utc t7 | ⏳ | | | | |
+| ist t7 | ⏳ | | | | |
+| utc t23 | ⏳ | | | | |
+| ist t23 | ⏳ | | | | |
+Tur 4'te t11 "21/22 — KIRMIZI 1 (fark 12)" idi; şimdi aynı 12 karşılaştırma S-T4-1 sayacında, denetim yeşil. Kilit paketi girince bu sayaç 0'a inmeli (kabul ölçütü — iş listesi D 18:16 kararı (3)).
+
+## 8. İLETİ KATALOĞU (iş 5)
+`docs/devir/2.5.1-DEVAM/d3t5-iletiler.md`: **56 neden** (durdurur 46, uyarı 10), kayıtlı **176** ileti; tarama (iç kod / İngilizce / alan adı / tablo adı / ISO tarih / nokta ondalık) **0 ihlal**;
+neden kümesi tur 4 ile AYNI (56 başlık birebir — bu turda yeni ileti yok). BELİRLENİMCİLİK: üretici her nedenin örneğini bütün kayıtlarından (test, senaryo, kaynak, metin) sırasıyla en küçüğü
+olarak seçer, nedenleri seviye + iç kod sırasıyla dizer. Kanıt: (A) UTC, testler alfabetik sırayla → katalog A; (B) A'nın kayıtları her dosyada TERS satır sırasıyla → katalog B: **A = B bayt bayt**;
+(C) İstanbul, testler TERS dosya sırasıyla → katalog C: A ile farkı YALNIZ bir satır — "Ön İzlemeden Sonra Kayıt Girildi" iletisindeki yerel saat (10:15 UTC ↔ 13:15 İstanbul; tur 4 H8 davranışı,
+doğru). "Bu Yıl Zaten Devredildi" iletisindeki gün artık testin sahte saatinden ("10.02.2027"; tur 4'te koşu günü "27.11.2026" idi).
+
+## 9. BAŞ MİMAR KARARI GEREKİYOR
+- **BM-T5-1 (kâhin okuması (a) — sürücünün görünümü):** program "kendi gününden itibaren" sonucunu GERÇEK zaman çizgisinde veriyor (o güne kadar girilmiş veriyle cari kartı = o gün hazırlanan
+  ön izlemenin devirli eşdeğeri = 250 · 250 · 400 · 400 · 550; devir-d3-tarih). Programın EKRANINDA geriye dönük gecikmiş görünümü YOK (gecikmiş hep "bugün"e göre; ileri tarihli Mahsup Et
+  `date-future` ile reddediliyor). Ama tek borç sırası "görünüm günü" parametresiyle bütün veriden geçmiş günü sorulursa Mahsup Et'i tarihten bağımsız 0. adımda uygular (karar (2) = A) →
+  400 · 400 · 400 · 400 · 550 (devirli de aynı). Kâhin sürücüsü karşılaştırmayı bu ikinci görünümle (bütün olaylar + geçmiş gün) yaparsa 01.01–16.01'de 250 ↔ 400 farkı çıkar. Öneri: sürücü
+  gecikmişi gerçek zaman çizgisiyle (o güne kadar yazılmış olaylar) karşılaştırsın — programın kullanıcıya gösterdiği tek görünüm o; fark yine çıkarsa iş listesi D'deki karar gereği "para
+  gösterimi" sorusu (ders 43).
+- **BM-T5-2 (kâhin okuması (b) — bakiyesi 0 caride avansın biçimi):** para aynı (bakiye 0, açık kalem 150 taşınıyor, gecikmiş 0, devirli = devirsiz), ama satır biçimi kâhinin metninden ayrışıyor:
+  plan avansı EK-1 M2 A ("Net açılış satırı … K'de açık ALACAK") gereği NET satıra koyar — Borç ve Alacakları Aktar: "Devir — Borç Toplamı" 250 + "Devir — Alacak Toplamı" 400 + açık kalem 150;
+  Sadece Bakiyeyi Aktar: "Devir Bakiyesi" alacak 150 + açık kalem 150. Kâhinin "iki kalem devir satırı olmadan" okuması avansı ayrı kalem sayıyor. Öneri: M2 A AYNEN (bütün carilerde avans net
+  satırda; ayrı kalem yapmak her avanslı caride satır yapısını değiştirir), sürücü karşılaştırmayı satır biçiminde değil "açık kalemler + net" düzeyinde yapsın. Baş mimar bunu defter / ekstre
+  satırı kuralı sayarsa kullanıcıya sorulmalı: A (öneri) avans net satırda (bugünkü plan); B avans da ayrı açık kalem, bakiyesi 0 caride devir satırı yazılmaz; C uç durum böyle kalsın (BİLİNEN
+  SINIR — örnek ancak geriye tarihli girişle oluşur: doğal sırada program bu mahsubu 409 "faturanın açık tutarını (0,00 TL) aşamaz" ile reddediyor).
+- **BM-T5-3 (S-KD2-3 = A ↔ devir iletisi; kilit paketinin şartı):** ön denetimin "Kilidi Açıp Yeniden Kilitleyin" (`kural-farki-alt-defter`) iletisinin 1. adımı "Dönem Kilidi'nde Kilidi Aç".
+  Alt defter farkıyla AYNI ANDA etkin bir Kural Farkı Düzeltme Fişi varsa kilit paketinden sonra bu adım reddedilecek. Öneri: kilit paketi bu iletiye (fiş etkinse) "önce Kural Farkı Düzeltme'de
+  fişi Ters Kaydet" adımını eklesin ya da iki nedeni birlikte versin (DEVİR NEDEN DURDU (d)); `kural-farki-fis-yeni-yilda` iletisi zaten önce Ters Kaydet diyor (uyumlu).
+- **BM-T5-4 (veri damgası — dondurma izi):** defter dondurmasının izi (`ledger.snapshot.frozen` / `extended` / `thawed`) `ledger.%` önekiyle damgaya giriyor. Dondurma yalnız kilit değişince
+  (kilit zaten damgada) ya da kural sürümü değişince koşuyor ve dondurma sürerken ön denetim DURDURUYOR (`dondurma-suruyor`) → yanlış durdurma üretmiyor (boş turun damgayı değiştirmediği
+  ölçüldü). Öneri: böyle kalsın (güvenli taraf); D4b'nin "kopyada yeniden hesaplanan planın karşılaştırması" asıl güvence (BM-T4-2) aynen.
+
+## 10. KULLANICIYA SORULMALI
+- **Devir kuralında yeni para / kapama / defter sorusu ÇIKMADI.** S-T4-1 = A devir tarafında sabitlendi (plan değişmedi); kâhin okumaları (a) / (b) programın bugünkü davranışıyla para
+  düzeyinde AYNI — biçim / görünüm farkları §9'da baş mimara (BM-T5-2 baş mimar defter kuralı sayarsa üç seçenekli soru hazır).
+- S-SUR-1 / S-SUR-2 / S-UZ-1 / H-1 DOKUNULMADI; bu turun testleri bu davranışları SABİTLEMEZ (senaryolarda POS iadesi, Borçta Kalsın kalanı, rapor yok).
+
+## 11. HIZ
+Hız yoluna yapısal değişiklik YOK (kullanıcı 18:3x: ön izleme hızı sonraki sürüme). Değişen tek sorgu veri damgasının iz sayımı: tur 4'te de bütün `audit_events` taranıyordu; şimdi aynı
+taramada 13 `NOT LIKE` koşulu daha — öğe başına okuma YOK (ders 47). Ölçülmedi: yük 6–7 / 4 çekirdek (ders 52 — ölçüm geçersiz olurdu; özel kilit diğer işler sürerken alınmadı). Ana oturumun
+ölçüm penceresinde (temiz-100k KOPYASIYLA): `flock -x …/olcum.lock node /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t5/olcum-damga.mjs <t251-d3-tur4 kopyası> <bu dal> <destekofis.sqlite kopyası>`
+(eski ↔ yeni `devirVeriSurumu` ortanca / en çok ms, aynı veri, iki kez sırayla).
+
+## 12. SONRAKİ SÜRÜME (20.11 kuralı)
+- Kaynak taraması iz türünü yalnız yazılı biçimlerden bulur (`audit(…, "tür")`, şablonun durağan öneki, koşullu iki tür, `audit: { type }`, `*_TRACE`, `INSERT INTO audit_events … VALUES (?, 'tür'`);
+  değişkenle geçen tür (ör. `routes/dues.mjs`'in iç içe koşullusu "dues.reopened") görünmez — öneki VERİ DIŞI listede olduğu için bugün zararsız.
+- Devir Raporu'nun Hareketler / Listeler bölümündeki şema tablo adları → D5 ŞARTI (BM-T4 (6); bu turun işi değil).
+- Kâhin aracı ham çıktısını `/tmp/kahin-defter-*` / `/tmp/kahin-cari-*` altına bırakıyor (aracın kendi düzeni; dokunulmadı).
+
+## 13. DOĞRULANMADI
+- **Devirden SONRA yeni yılda eski yıl belgesiyle Mahsup Et** (gerçek zaman çizgisinde en olası sıra: devir 05.01'de, Ocak satışı ↔ Aralık alışı mahsubu 17.01'de): devir 05.01'de yapılınca
+  plan alışı K'de Aralık satışıyla netler (ayırım yok — mahsup henüz yok); yeni yıl dosyasında Aralık alışı YOK → 17.01'de o mahsup yapılamaz. Devirsiz program 17.01–29.01'de 400 gösterirken
+  devirli dosya 250 gösterir (01.02'de ikisi 550). D4 (devirli dosya) olmadan üretilemez — devirli dosyanın kuralları adımının / D5'in şartı (Devri Yenile ile eski yıla mahsup ya da yeni yılda
+  açık kalemle mahsup yolu); para etkisi görülürse ders 43.
+- Gerçek veride (v2.5.0 GERÇEK kodu) Borç Yaz karşısı ve sıfır paylı belge olayı üretilmedi (üreteç tur 4'ünkü AYNEN); sınıflar kalıcı testlerde (elle kurulmuş, programın API'siyle).
+- Arka plan yazıcılarından e-Belge durum turu, gelen kutusu çekmesi ve POS valör kuyruğu ayrı senaryoyla koşulmadı (sahte EDM / POS kurulumu gerekir): üçü de veri ad alanında (`invoice.%`,
+  `bank.%`) → damgayı değiştirir (güvenli taraf); kaynak taraması onları sınıflandırılmış buluyor.
