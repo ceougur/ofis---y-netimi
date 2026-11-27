@@ -1608,7 +1608,7 @@ try {
     await admin.waitForSelector(`${modal} [data-rc-main] .hof-rc-summary`, { timeout: 15000 });
     await admin.waitForTimeout(600);
     const cards = await admin.$$eval(`${modal} [data-rc-main] .hof-rc-summary span`, spans => Object.fromEntries(spans.map(span => [span.querySelector("small")?.innerText.trim(), span.querySelector("b")?.innerText.trim()])));
-    const shown = cards["İndirilecek KDV (191)"] || "";
+    const shown = cards["İndirilecek KDV (191) (İadeler Düşülmüş)"] || ""; // 2.5.1 M1 (S261): ad iadelerin düşüldüğünü söyler
     const t = await trial();
     ok(shown && shown.includes(HOF_MONEY(model.get("191"))) && t["191"] === model.get("191"), `ekranda İndirilecek KDV ${shown} = Ana Defter 191 ${(t["191"] || 0) / 100} = model ${model.get("191") / 100}`);
     await shot(admin, "gg2-kdv-ozeti-ekran");
