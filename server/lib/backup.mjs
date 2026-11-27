@@ -2,6 +2,7 @@
 import { existsSync, mkdirSync, readdirSync, renameSync, rmdirSync, rmSync, statSync, unlinkSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { renameWithRetry } from "./app-layout.mjs";
 
 // Yedek adı (v2.0.20): "destekofis-<şirket kodu>-<zaman>[-etiket].sqlite" — ör. destekofis-002-2026-10-03T09-15-00-000Z-manuel.sqlite.
 // Önceki adlar tanınmaya, listelenmeye ve geri yüklenmeye devam eder: "destekofis-<zaman>…" (2.0.19'a kadar, kodsuz) ve
@@ -127,7 +128,7 @@ export function readBackupIdentity(file) {
  * Yedek alır. `company` ({ id, code, name }) verilirse adda şirket kodu olur ve kimlik dosyanın içine yazılır (v2.0.20).
  * `stamp` aynı turda alınan bütün şirket yedeklerine aynı zamanı verir.
  */
-export function createBackup(db, backupDir, { label = "", keep = 30, company = null, stamp: fixedStamp = "", usageRows = null } = {}) {
+export function createBackup(db, backupDir, { label = "", keep = 30, company = null, stamp: fixedStamp = "", usageRows = null, moveRetry = false } = {}) {
   mkdirSync(backupDir, { recursive: true });
   const safeLabel = String(label).toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
   const code = company && CODE.test(String(company.code ?? "")) ? `${company.code}-` : "";
@@ -161,7 +162,9 @@ export function createBackup(db, backupDir, { label = "", keep = 30, company = n
         // Kimlik yazılamasa da yedek geçerlidir; şirketin kendi klasöründe durduğu için yalnız o şirkete geri yüklenir.
       }
     }
-    renameSync(partial, target);
+    // 2.5.1 D4-ÖN tur 2: moveRetry YALNIZ devir yedeğinden gelir (lib/devir/devir-backups.mjs) — Windows'ta antivirüs yeni yazılan kopyayı kısa süre tutarsa
+    // taşıma yeniden denenir (app-layout.mjs renameWithRetry). Öbür yedek yolları (rutin, elle, güvenlik, göç öncesi) DEĞİŞMEDİ: tek deneme.
+    (moveRetry ? renameWithRetry : renameSync)(partial, target);
   } catch (error) {
     // v2.0.21 (arıza testi bulgusu): disk dolu ya da yazma hatasında yarım dosya diskte kalıyordu (bir saat boyunca
     // silinmiyor, dolu diski daha da dolduruyordu). Yarım kopya hemen silinir; hata çağırana iletilir.

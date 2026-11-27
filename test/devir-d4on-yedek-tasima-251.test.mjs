@@ -3,6 +3,9 @@
 // sarılarak (syncBuiltinESMExports: programın named import'ları da sarmalı görür) yalnız ".yaziliyor" → son ad taşımasında enjekte edilir.
 // Windows'ta 4. test GERÇEK ön koşulla koşar (klasördeki veri tabanı kopyası açık tutamakla tutulur; ders 18, 20, 48); Linux'ta aynı test enjeksiyonlu eşdeğeriyle
 // (test sayısı iki platformda aynı — CI kapısı atlanan test kabul etmez).
+// 2.5.1 D4-ÖN tur 2: 2. ve 3. test (uzun etiketler) CI #1115 Windows Node 24'te "unable to open database file" ile düşüyordu — kök neden taşıma değil, veri tabanı
+// kopyasının yolu (Windows 260 karakter sınırı; docs/devir/2.5.1-DEVAM/d4ont2-rapor.md §1). Bu iki test Windows'ta o ön koşulun GERÇEK sınamasıdır; yol, yazma
+// hatası ve iç dosya taşımaları test/devir-d4on-yol-251.test.mjs'te.
 import assert from "node:assert/strict";
 import fs, { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readdirSync, writeFileSync } from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
@@ -140,7 +143,9 @@ describe("D4-ÖN: devir yedeğinin son adına taşınması (Windows yeniden dene
     assert.equal(failure.status, 503, `${failure.status} ${failure.message}`);
     assert.equal(failure.extra?.code, "devir-backup-move");
     assert.equal(failure.extra?.cause, "EXDEV");
-    assert.match(failure.message, /dosya sistemi hatası EXDEV/);
+    // 2.5.1 D4-ÖN tur 2 (DEVİR NEDEN DURDU, kullanıcı kararı 27.11.2026): iletide iç kod yok — kod yalnız makine alanında (cause, yukarıda).
+    assert.match(failure.message, /dosya sistemi taşımaya izin vermedi/);
+    assert.doesNotMatch(failure.message, /EXDEV/);
     assert.equal(calls, 1, "yeniden denenmeyen türde tek deneme");
     assert.ok(elapsed < 2500, `bekleme yok: ${elapsed} ms`);
     assert.equal(listDevirBackups(folder()).filter(item => item.state === "yarim" && /devri-geri-al-oncesi-2026$/.test(item.name)).length, 1);

@@ -1,0 +1,1086 @@
+TAP version 13
+# Subtest: yedekleme
+    # Subtest: çalışan veritabanının tutarlı kopyasını alır ve eski yedekleri temizler
+    ok 1 - çalışan veritabanının tutarlı kopyasını alır ve eski yedekleri temizler
+      ---
+      duration_ms: 244.124909
+      type: 'test'
+      ...
+    # Subtest: yeni yedekler sektörden bağımsız adla alınır; eski adlı yedekler tanınır ve zamanına göre sıralanır
+    ok 2 - yeni yedekler sektörden bağımsız adla alınır; eski adlı yedekler tanınır ve zamanına göre sıralanır
+      ---
+      duration_ms: 54.896853
+      type: 'test'
+      ...
+    # Subtest: veritabanı dosyası: yeni kurulumda destekofis.sqlite, eski kurulumda hukuk-ofisi.sqlite korunur
+    ok 3 - veritabanı dosyası: yeni kurulumda destekofis.sqlite, eski kurulumda hukuk-ofisi.sqlite korunur
+      ---
+      duration_ms: 3.793268
+      type: 'test'
+      ...
+    # Subtest: npm run backup aracı doğru klasörü kullanır (v1.0.0 hatası)
+    ok 4 - npm run backup aracı doğru klasörü kullanır (v1.0.0 hatası)
+      ---
+      duration_ms: 518.287782
+      type: 'test'
+      ...
+    # Subtest: npm run backup aracı düşerse adımı ve SQLite hata kodunu yazar, çıkış kodu 1
+    ok 5 - npm run backup aracı düşerse adımı ve SQLite hata kodunu yazar, çıkış kodu 1
+      ---
+      duration_ms: 188.147493
+      type: 'test'
+      ...
+    # Subtest: yönetici yedek alır, listeler ve indirir
+    ok 6 - yönetici yedek alır, listeler ve indirir
+      ---
+      duration_ms: 82.410849
+      type: 'test'
+      ...
+    # Subtest: sistem bilgisini döndürür
+    ok 7 - sistem bilgisini döndürür
+      ---
+      duration_ms: 7.618878
+      type: 'test'
+      ...
+    # Subtest: ofis adı kaydedilir, keşif bilgisine ve giriş ekranına yansır, geçmişe yazılır
+    ok 8 - ofis adı kaydedilir, keşif bilgisine ve giriş ekranına yansır, geçmişe yazılır
+      ---
+      duration_ms: 70.410177
+      type: 'test'
+      ...
+    1..8
+ok 1 - yedekleme
+  ---
+  duration_ms: 2233.714059
+  type: 'suite'
+  ...
+# Subtest: D2 tur 3 — arşivin yanında işlenmemiş günlük: arşiv 'değişmiş' (K2), göç etmez, yan dosya silinmez (ORTA-2)
+    # Subtest: eski şemalı arşiv + işlenmemiş -wal (kesinleşmiş kayıt yalnız WAL'da) → 409 archive-changed; ana dosya, -wal, klasör ve kayıt DEĞİŞMEDİ; WAL'daki satır duruyor; göç öncesi kopya / çalışma kopyası oluşmadı; Doğrula ve liste 'Değişmiş'
+    ok 1 - eski şemalı arşiv + işlenmemiş -wal (kesinleşmiş kayıt yalnız WAL'da) → 409 archive-changed; ana dosya, -wal, klasör ve kayıt DEĞİŞMEDİ; WAL'daki satır duruyor; göç öncesi kopya / çalışma kopyası oluşmadı; Doğrula ve liste 'Değişmiş'
+      ---
+      duration_ms: 1168.510274
+      type: 'test'
+      ...
+    # Subtest: son şemalı arşiv + işlenmemiş -wal → salt okunur açılır, UYARI ile (değişmiş); WAL'daki satır arşivde GÖRÜNÜR (bugünkü davranış: salt okunur bağlantı WAL'ı uygular, işlemez); dosyalar değişmedi
+    ok 2 - son şemalı arşiv + işlenmemiş -wal → salt okunur açılır, UYARI ile (değişmiş); WAL'daki satır arşivde GÖRÜNÜR (bugünkü davranış: salt okunur bağlantı WAL'ı uygular, işlemez); dosyalar değişmedi
+      ---
+      duration_ms: 1292.956835
+      type: 'test'
+      ...
+    # Subtest: sıcak -journal (yarıda kalmış yazım; salt okunur bağlantı geri alamaz) → 409 archive-changed (önceden 503 'dosya bozuk olabilir'); ana dosya ve -journal değişmedi, göç denenmedi
+    ok 3 - sıcak -journal (yarıda kalmış yazım; salt okunur bağlantı geri alamaz) → 409 archive-changed (önceden 503 'dosya bozuk olabilir'); ana dosya ve -journal değişmedi, göç denenmedi
+      ---
+      duration_ms: 959.10982
+      type: 'test'
+      ...
+    # Subtest: özetsiz kayıtlı (bütünlük özeti yok) eski şemalı arşiv + işlenmemiş -wal → 409 archive-changed; kayda özet YAZILMAZ; Doğrula 'changed'; ana dosya, -wal ve klasör değişmedi
+    ok 4 - özetsiz kayıtlı (bütünlük özeti yok) eski şemalı arşiv + işlenmemiş -wal → 409 archive-changed; kayda özet YAZILMAZ; Doğrula 'changed'; ana dosya, -wal ve klasör değişmedi
+      ---
+      duration_ms: 1357.892206
+      type: 'test'
+      ...
+    # Subtest: BOŞ (0 bayt) -wal ve -shm kalıntısı zararsız: arşiv değişmiş SAYILMAZ, göç eder, uyarısız açılır; göçün sonucu yerine geçerken boş yan dosyalar silinir (D10)
+    ok 5 - BOŞ (0 bayt) -wal ve -shm kalıntısı zararsız: arşiv değişmiş SAYILMAZ, göç eder, uyarısız açılır; göçün sonucu yerine geçerken boş yan dosyalar silinir (D10)
+      ---
+      duration_ms: 1572.929784
+      type: 'test'
+      ...
+    # Subtest: göç sürerken (bekleyen özet yazıldıktan sonra, taşımadan önce) arşivin yanında işlenmemiş -wal belirirse: taşınmaz, silinmez → 409 archive-changed; ana dosya ve -wal değişmedi; kayıtta bekleyen özet kalmadı; çalışma kopyası silindi
+    ok 6 - göç sürerken (bekleyen özet yazıldıktan sonra, taşımadan önce) arşivin yanında işlenmemiş -wal belirirse: taşınmaz, silinmez → 409 archive-changed; ana dosya ve -wal değişmedi; kayıtta bekleyen özet kalmadı; çalışma kopyası silindi
+      ---
+      duration_ms: 1530.38608
+      type: 'test'
+      ...
+    1..6
+ok 2 - D2 tur 3 — arşivin yanında işlenmemiş günlük: arşiv 'değişmiş' (K2), göç etmez, yan dosya silinmez (ORTA-2)
+  ---
+  duration_ms: 7887.772484
+  type: 'suite'
+  ...
+# Subtest: D2 tur 3 — devir yedeği yarıda kesilen göçün geçici dosyalarını almaz (dar kontrol DÜŞÜK-4: D13, ürün yolundan)
+    # Subtest: göç 'bekleyen-yazildi' adımında SIGKILL → arşiv klasöründe çalışma kopyası + göç öncesi kopya; createDevirBackupFor yedeğinde ikisi de YOK, arşiv dosyası ve kaydı VAR; yedek doğrulaması tutar
+    ok 1 - göç 'bekleyen-yazildi' adımında SIGKILL → arşiv klasöründe çalışma kopyası + göç öncesi kopya; createDevirBackupFor yedeğinde ikisi de YOK, arşiv dosyası ve kaydı VAR; yedek doğrulaması tutar
+      ---
+      duration_ms: 2535.5742
+      type: 'test'
+      ...
+    1..1
+ok 3 - D2 tur 3 — devir yedeği yarıda kesilen göçün geçici dosyalarını almaz (dar kontrol DÜŞÜK-4: D13, ürün yolundan)
+  ---
+  duration_ms: 2536.167989
+  type: 'suite'
+  ...
+# Subtest: D2 bakım kipi (G1.1)
+    # Subtest: tarama tam: kaynaktaki her router.post/put/patch/delete kaydı çözüldü; HUB_ONLY ifadesi sunucudakiyle aynı
+    ok 1 - tarama tam: kaynaktaki her router.post/put/patch/delete kaydı çözüldü; HUB_ONLY ifadesi sunucudakiyle aynı
+      ---
+      duration_ms: 48.032379
+      type: 'test'
+      ...
+    # Subtest: sözleşme sabitleri: test yardımcısının yerel değerleri programınkiyle aynı (işaret anahtarları, dosya adları)
+    ok 2 - sözleşme sabitleri: test yardımcısının yerel değerleri programınkiyle aynı (işaret anahtarları, dosya adları)
+      ---
+      duration_ms: 1.768155
+      type: 'test'
+      ...
+    # Subtest: 001 bakımda: şirket yazma uçlarının HEPSİ 503, ortak katmanın şirket / yedek / güncelleme / devir yazmaları 503, giriş çalışır; GET'ler 001'in verisini değiştirmez (GET'te yazan yol dahil); kip kalkınca yazılır
+    ok 3 - 001 bakımda: şirket yazma uçlarının HEPSİ 503, ortak katmanın şirket / yedek / güncelleme / devir yazmaları 503, giriş çalışır; GET'ler 001'in verisini değiştirmez (GET'te yazan yol dahil); kip kalkınca yazılır
+      ---
+      duration_ms: 4528.976077
+      type: 'test'
+      ...
+    # Subtest: 002 bakımda: 002 yazmaları 503, 001 yazar; 002 bağlantısı query_only (bakımda açılan örnek dahil); GET'ler 002'yi değiştirmez; ortak katmanın şirket / yedek yazmaları 503
+    ok 4 - 002 bakımda: 002 yazmaları 503, 001 yazar; 002 bağlantısı query_only (bakımda açılan örnek dahil); GET'ler 002'yi değiştirmez; ortak katmanın şirket / yedek yazmaları 503
+      ---
+      duration_ms: 4355.930046
+      type: 'test'
+      ...
+    # Subtest: arka plan yazıcıları bakımdaki şirkette durur, öbür şirkette sürer (canWriteInBackground, WhatsApp işçisi, otomatik yedek)
+    ok 5 - arka plan yazıcıları bakımdaki şirkette durur, öbür şirkette sürer (canWriteInBackground, WhatsApp işçisi, otomatik yedek)
+      ---
+      duration_ms: 1966.142832
+      type: 'test'
+      ...
+    # Subtest: güncelleme tutması (uygulama): kip açılırken update:hold istenir, kapanınca bırakılır; güncelleme geçişteyse kip açılmaz; güncelleyici yoksa sürer; ulaşılamazsa açılmaz
+    ok 6 - güncelleme tutması (uygulama): kip açılırken update:hold istenir, kapanınca bırakılır; güncelleme geçişteyse kip açılmaz; güncelleyici yoksa sürer; ulaşılamazsa açılmaz
+      ---
+      duration_ms: 869.597714
+      type: 'test'
+      ...
+    # Subtest: güncelleme orkestratörü: tutma varken kendiliğinden kurmaz, Şimdi Güncelle reddedilir; indirme sürerken tutma gelirse eski sürüm durdurulmaz; geçiş adımında tutma 'switching' döner; tutma kalkınca / süresi dolunca kurar
+    ok 7 - güncelleme orkestratörü: tutma varken kendiliğinden kurmaz, Şimdi Güncelle reddedilir; indirme sürerken tutma gelirse eski sürüm durdurulmaz; geçiş adımında tutma 'switching' döner; tutma kalkınca / süresi dolunca kurar
+      ---
+      duration_ms: 8.415055
+      type: 'test'
+      ...
+    # Subtest: yarıda kesilme: bakım kipi açıkken süreç ölür → açılışta kip YOK (canlı veri aynı), önceki çalışmanın izi lastAborted'da, işaret dosyası silinir, geçici tetikleyici kalmaz
+    ok 8 - yarıda kesilme: bakım kipi açıkken süreç ölür → açılışta kip YOK (canlı veri aynı), önceki çalışmanın izi lastAborted'da, işaret dosyası silinir, geçici tetikleyici kalmaz
+      ---
+      duration_ms: 3489.206775
+      type: 'test'
+      ...
+    # Subtest: bakımdaki şirketin arşivi açılmaz (503 maintenance): 001 bakımda eski şemalı arşiv istenince dosya / klasör / kayıt değişmez; açılış sürerken kip açılırsa (özet alınırken, göç kopyası hazırken) iş durur; 002 bakımda açık arşiv örneğine de istek gitmez, closeCompany sonrası yeniden açılmaz; öbür şirketin arşivi açılır; kip kalkınca açılır
+    ok 9 - bakımdaki şirketin arşivi açılmaz (503 maintenance): 001 bakımda eski şemalı arşiv istenince dosya / klasör / kayıt değişmez; açılış sürerken kip açılırsa (özet alınırken, göç kopyası hazırken) iş durur; 002 bakımda açık arşiv örneğine de istek gitmez, closeCompany sonrası yeniden açılmaz; öbür şirketin arşivi açılır; kip kalkınca açılır
+      ---
+      duration_ms: 3234.261046
+      type: 'test'
+      ...
+    # Subtest: 001 bakımda veri tabanı korumasının düşürdüğü yazım 503 maintenance (görevlerini devrederek kullanıcı sil), veri değişmez, kip kalkınca 200; koruma ortak katman dışındaki HER tabloda
+    ok 10 - 001 bakımda veri tabanı korumasının düşürdüğü yazım 503 maintenance (görevlerini devrederek kullanıcı sil), veri değişmez, kip kalkınca 200; koruma ortak katman dışındaki HER tabloda
+      ---
+      duration_ms: 1675.951114
+      type: 'test'
+      ...
+    1..10
+ok 4 - D2 bakım kipi (G1.1)
+  ---
+  duration_ms: 20180.444267
+  type: 'suite'
+  ...
+# Subtest: D2 kalıcı devir yedeği ve geri yüklemenin arşiv denetimi
+    # Subtest: devir yedeği: veri tabanı + arşiv + belgeler + mesaj arşivi + gizli anahtar, her dosyanın özeti bildirgede; doğrulama değişen / eksik / fazla dosyayı bulur; liste ucu
+    ok 1 - devir yedeği: veri tabanı + arşiv + belgeler + mesaj arşivi + gizli anahtar, her dosyanın özeti bildirgede; doğrulama değişen / eksik / fazla dosyayı bulur; liste ucu
+      ---
+      duration_ms: 2434.859243
+      type: 'test'
+      ...
+    # Subtest: budanmaz: devir yedeği alındıktan sonra 35 rutin + 40 güvenlik yedeği (gerçek createBackup + pruneBackups; zaman damgaları sahte, 35 gün) ve zamanlayıcı turu — rutin 30, güvenlik 30 kalır, devir yedeği eksiksiz; ad değişince yedek klasörüyle taşınır
+    ok 2 - budanmaz: devir yedeği alındıktan sonra 35 rutin + 40 güvenlik yedeği (gerçek createBackup + pruneBackups; zaman damgaları sahte, 35 gün) ve zamanlayıcı turu — rutin 30, güvenlik 30 kalır, devir yedeği eksiksiz; ad değişince yedek klasörüyle taşınır
+      ---
+      duration_ms: 8219.118751
+      type: 'test'
+      ...
+    # Subtest: Yedekten Geri Yükle (002, hemen): devir ÖNCESİ yedek 409 devir-oncesi-yedek; devir sonrası yedek geri yüklenir; devir geri alınınca devir SONRASI yedek 409 devir-sonrasi-yedek; aynı yıl başka devir çalışması 409; bakımdaki şirkete 503
+    ok 3 - Yedekten Geri Yükle (002, hemen): devir ÖNCESİ yedek 409 devir-oncesi-yedek; devir sonrası yedek geri yüklenir; devir geri alınınca devir SONRASI yedek 409 devir-sonrasi-yedek; aynı yıl başka devir çalışması 409; bakımdaki şirkete 503
+      ---
+      duration_ms: 3338.820528
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla (Tümünü Sıfırla) devir işaretini (devir.years) korur: arşiv kayıtlı kalır, sıfırlamadan sonra alınan yedek geri yüklenebilir, sıfırlama öncesi yedeği yine denetlenir
+    ok 4 - Şirket Verisini Sıfırla (Tümünü Sıfırla) devir işaretini (devir.years) korur: arşiv kayıtlı kalır, sıfırlamadan sonra alınan yedek geri yüklenebilir, sıfırlama öncesi yedeği yine denetlenir
+      ---
+      duration_ms: 2188.111805
+      type: 'test'
+      ...
+    # Subtest: Yedekten Geri Yükle (001, yeniden açılışta): devir öncesi yedek hazırlanmaz (409); devirden ÖNCE hazırlanıp devirden SONRA uygulanacak geri yükleme açılışta uygulanmaz, veri aynı kalır, neden Yedekler'de görünür
+    ok 5 - Yedekten Geri Yükle (001, yeniden açılışta): devir öncesi yedek hazırlanmaz (409); devirden ÖNCE hazırlanıp devirden SONRA uygulanacak geri yükleme açılışta uygulanmaz, veri aynı kalır, neden Yedekler'de görünür
+      ---
+      duration_ms: 2296.529225
+      type: 'test'
+      ...
+    1..5
+ok 5 - D2 kalıcı devir yedeği ve geri yüklemenin arşiv denetimi
+  ---
+  duration_ms: 18481.235556
+  type: 'suite'
+  ...
+# Subtest: D4-ÖN: belge temizliği arşivin belge kayıtlarını görür
+    # Subtest: iki arşiv yılı (002) + arşivsiz 001: arşivin gösterdiği dosya kalır (ilk ve son arşiv, arşivin 30 günü geçmemiş silinmiş kaydı), hiçbir kaydın göstermediği silinir; 001 bugünkü gibi; arşiv bağlantısı kapanır, arşiv dosyası değişmez
+    ok 1 - iki arşiv yılı (002) + arşivsiz 001: arşivin gösterdiği dosya kalır (ilk ve son arşiv, arşivin 30 günü geçmemiş silinmiş kaydı), hiçbir kaydın göstermediği silinir; 001 bugünkü gibi; arşiv bağlantısı kapanır, arşiv dosyası değişmez
+      ---
+      duration_ms: 7193.451682
+      type: 'test'
+      ...
+    # Subtest: açılamayan (bozuk) arşiv kaydı: o şirkette hiçbir belge dosyası silinmez (yalnız eski .tmp artığı ve silineli kayıt); arşiv dosyası olduğu gibi kalır
+    ok 2 - açılamayan (bozuk) arşiv kaydı: o şirkette hiçbir belge dosyası silinmez (yalnız eski .tmp artığı ve silineli kayıt); arşiv dosyası olduğu gibi kalır
+      ---
+      duration_ms: 7110.176536
+      type: 'test'
+      ...
+    # Subtest: eksik ve kilitli arşiv dosyası: temizlik beklemeden 'gösteriyor' sayar, dosya kalır; kilit kalkınca ve arşiv göstermiyorsa silinir; arşivsiz (boş liste) bugünkü gibi
+    ok 3 - eksik ve kilitli arşiv dosyası: temizlik beklemeden 'gösteriyor' sayar, dosya kalır; kilit kalkınca ve arşiv göstermiyorsa silinir; arşivsiz (boş liste) bugünkü gibi
+      ---
+      duration_ms: 1643.841414
+      type: 'test'
+      ...
+    1..3
+ok 6 - D4-ÖN: belge temizliği arşivin belge kayıtlarını görür
+  ---
+  duration_ms: 15950.342055
+  type: 'suite'
+  ...
+# Subtest: Drive'a yedek kaldırıldı — klasör kipi ayarı dolu eski kurulum
+    # Subtest: kaldırılan uçlar 404: GET/POST /api/admin/backups/cloud ve POST …/cloud/test (yönetici ve oturumsuz)
+    ok 1 - kaldırılan uçlar 404: GET/POST /api/admin/backups/cloud ve POST …/cloud/test (yönetici ve oturumsuz)
+      ---
+      duration_ms: 48.833788
+      type: 'test'
+      ...
+    # Subtest: Şimdi Yedek Al — Tüm Şirketler ve Yalnız 001: yerel yedek alınır, Drive klasörüne dosya gitmez, yanıtta Drive alanı yok
+    ok 2 - Şimdi Yedek Al — Tüm Şirketler ve Yalnız 001: yerel yedek alınır, Drive klasörüne dosya gitmez, yanıtta Drive alanı yok
+      ---
+      duration_ms: 701.581072
+      type: 'test'
+      ...
+    # Subtest: veri yükleme öncesi yedek (001 ve 002): yerel yedek alınır, kopya yok
+    ok 3 - veri yükleme öncesi yedek (001 ve 002): yerel yedek alınır, kopya yok
+      ---
+      duration_ms: 813.190511
+      type: 'test'
+      ...
+    # Subtest: otomatik zamanlayıcı (son yedek 7 saat önce: zamanı gelmiş): iki şirket yedeklenir, kopya yok
+    ok 4 - otomatik zamanlayıcı (son yedek 7 saat önce: zamanı gelmiş): iki şirket yedeklenir, kopya yok
+      ---
+      duration_ms: 548.705579
+      type: 'test'
+      ...
+    # Subtest: Drive ayarı okunmaz, silinmez, değişmez (001 ve 002); gerçek zamanlayıcı ve bootstrap `yedek` de kopyalamaz
+    ok 5 - Drive ayarı okunmaz, silinmez, değişmez (001 ve 002); gerçek zamanlayıcı ve bootstrap `yedek` de kopyalamaz
+      ---
+      duration_ms: 1281.435926
+      type: 'test'
+      ...
+    1..5
+ok 7 - Drive'a yedek kaldırıldı — klasör kipi ayarı dolu eski kurulum
+  ---
+  duration_ms: 5912.008468
+  type: 'suite'
+  ...
+# Subtest: Drive'a yedek kaldırıldı — bağlantı kipi ayarı dolu eski kurulum (sahte lisans servisi)
+    # Subtest: Şimdi Yedek Al (Tüm + Yalnız) ve otomatik tur: yerel yedek var, servise ve Google'a tek istek yok; ayar ortak katmana taşınmaz
+    ok 1 - Şimdi Yedek Al (Tüm + Yalnız) ve otomatik tur: yerel yedek var, servise ve Google'a tek istek yok; ayar ortak katmana taşınmaz
+      ---
+      duration_ms: 785.787551
+      type: 'test'
+      ...
+    1..1
+ok 8 - Drive'a yedek kaldırıldı — bağlantı kipi ayarı dolu eski kurulum (sahte lisans servisi)
+  ---
+  duration_ms: 2332.742445
+  type: 'suite'
+  ...
+# Subtest: Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler
+    # Subtest: N1/N6 002 geri yüklenince uyarı yalnız 002'de; e-Belge kullanmayan şirkette edoc=false (yalnız kâğıt/fiş cümlesi); 001'de yok
+    ok 1 - N1/N6 002 geri yüklenince uyarı yalnız 002'de; e-Belge kullanmayan şirkette edoc=false (yalnız kâğıt/fiş cümlesi); 001'de yok
+      ---
+      duration_ms: 647.541832
+      type: 'test'
+      ...
+    # Subtest: N8 iki oturum: eski işaretle kapatma yeni uyarıyı kapatmaz; birinci kapatır, ikincinin kapatması hata vermez; liste yenilenince ikisinde de yok
+    ok 2 - N8 iki oturum: eski işaretle kapatma yeni uyarıyı kapatmaz; birinci kapatır, ikincinin kapatması hata vermez; liste yenilenince ikisinde de yok
+      ---
+      duration_ms: 119.447982
+      type: 'test'
+      ...
+    # Subtest: N5 kapatılan uyarı program yeniden açılınca geri gelmez
+    ok 3 - N5 kapatılan uyarı program yeniden açılınca geri gelmez
+      ---
+      duration_ms: 245.436489
+      type: 'test'
+      ...
+    # Subtest: N1/N10 001 geri yüklenince (sunucu yeniden açılırken, ortak katman aktarılır) uyarı 001'de, edoc=true + Test Ortamı; 002'de yok
+    ok 4 - N1/N10 001 geri yüklenince (sunucu yeniden açılırken, ortak katman aktarılır) uyarı 001'de, edoc=true + Test Ortamı; 002'de yok
+      ---
+      duration_ms: 853.781837
+      type: 'test'
+      ...
+    # Subtest: N7 yetki: Fatura Ayarları yetkisi olmayan (avukat) uyarıyı görür ama kapatamaz (403); Fatura'yı görmeyen (personel) listeyi alamaz
+    ok 5 - N7 yetki: Fatura Ayarları yetkisi olmayan (avukat) uyarıyı görür ama kapatamaz (403); Fatura'yı görmeyen (personel) listeyi alamaz
+      ---
+      duration_ms: 287.648266
+      type: 'test'
+      ...
+    # Subtest: N2 uyarı beklerken alınan yedek (içinde eski işaret) geri yüklenince işaret YENİDEN yazılır; kapatıldıktan sonraki geri yükleme uyarıyı yeniden çıkarır
+    ok 6 - N2 uyarı beklerken alınan yedek (içinde eski işaret) geri yüklenince işaret YENİDEN yazılır; kapatıldıktan sonraki geri yükleme uyarıyı yeniden çıkarır
+      ---
+      duration_ms: 660.247751
+      type: 'test'
+      ...
+    # Subtest: N4 Şirket Verisini Sıfırla geri yükleme değildir: uyarı çıkarmaz (002) ve bekleyen uyarıyı silmez (001 Tümünü Sıfırla)
+    ok 7 - N4 Şirket Verisini Sıfırla geri yükleme değildir: uyarı çıkarmaz (002) ve bekleyen uyarıyı silmez (001 Tümünü Sıfırla)
+      ---
+      duration_ms: 487.255759
+      type: 'test'
+      ...
+    # Subtest: N9 yarıda kalan geri yükleme uyarı yazmaz: bozuk yedek (002), vazgeçilen 001, açılışta uygulanamayan 001
+    ok 8 - N9 yarıda kalan geri yükleme uyarı yazmaz: bozuk yedek (002), vazgeçilen 001, açılışta uygulanamayan 001
+      ---
+      duration_ms: 564.591725
+      type: 'test'
+      ...
+    # Subtest: 11048 (test serisi): ileti test hesabının ortaklığını VE yedekten geri yükleme olasılığını söyler; İptal Et yolu durur
+    ok 9 - 11048 (test serisi): ileti test hesabının ortaklığını VE yedekten geri yükleme olasılığını söyler; İptal Et yolu durur
+      ---
+      duration_ms: 458.143841
+      type: 'test'
+      ...
+    1..9
+ok 9 - Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler
+  ---
+  duration_ms: 6216.483774
+  type: 'suite'
+  ...
+# Subtest: 11048 (canlı seri): ileti yedekten geri yükleme olasılığını söyler ve sıradaki numarayı EDM'deki son numaranın ilerisine aldırır
+    # Subtest: canlı e-Arşiv numarası EDM'de kullanılmış → Hata + ileti
+    ok 1 - canlı e-Arşiv numarası EDM'de kullanılmış → Hata + ileti
+      ---
+      duration_ms: 315.337573
+      type: 'test'
+      ...
+    1..1
+ok 10 - 11048 (canlı seri): ileti yedekten geri yükleme olasılığını söyler ve sıradaki numarayı EDM'deki son numaranın ilerisine aldırır
+  ---
+  duration_ms: 1467.754669
+  type: 'suite'
+  ...
+# Subtest: N3 eski sürümün (v2.4.3) yedeği geri yüklenince göçten sonra uyarı yazılır
+    # Subtest: güncellemeden sonra uyarı yok; v2.4.3 yedeği geri yüklenince var (edoc=false)
+    ok 1 - güncellemeden sonra uyarı yok; v2.4.3 yedeği geri yüklenince var (edoc=false)
+      ---
+      duration_ms: 716.228576
+      type: 'test'
+      ...
+    1..1
+ok 11 - N3 eski sürümün (v2.4.3) yedeği geri yüklenince göçten sonra uyarı yazılır
+  ---
+  duration_ms: 2307.007894
+  type: 'suite'
+  ...
+# Subtest: yedek alırken kesinti ve disk dolu
+    # Subtest: yarıda kesilen yedek (.yaziliyor) listelenmez, geri yüklenemez; bir saatten eskisi sonraki yedekte temizlenir, tazesi kalır
+    ok 1 - yarıda kesilen yedek (.yaziliyor) listelenmez, geri yüklenemez; bir saatten eskisi sonraki yedekte temizlenir, tazesi kalır
+      ---
+      duration_ms: 75.638695
+      type: 'test'
+      ...
+    # Subtest: disk dolu (VACUUM INTO yarıda): açık hata, yarım dosya kalmaz, listede yeni yedek yok, canlı veri aynı
+    ok 2 - disk dolu (VACUUM INTO yarıda): açık hata, yarım dosya kalmaz, listede yeni yedek yok, canlı veri aynı
+      ---
+      duration_ms: 367.243218
+      type: 'test'
+      ...
+    1..2
+ok 12 - yedek alırken kesinti ve disk dolu
+  ---
+  duration_ms: 1813.081057
+  type: 'suite'
+  ...
+# Subtest: geri yükleme ortasında hata: şirketin canlı verisi bozulmaz
+    # Subtest: kopyalama adımı hata verir (EIO): 500, veri aynı
+    ok 1 - kopyalama adımı hata verir (EIO): 500, veri aynı
+      ---
+      duration_ms: 250.60923
+      type: 'test'
+      ...
+    # Subtest: dosya değiştirme adımı hata verir (EBUSY: Windows'ta dosya başka programda açık): 500, veri aynı
+    ok 2 - dosya değiştirme adımı hata verir (EBUSY: Windows'ta dosya başka programda açık): 500, veri aynı
+      ---
+      duration_ms: 692.998789
+      type: 'test'
+      ...
+    # Subtest: hata geçince aynı geri yükleme çalışır; veri yedek anına döner
+    ok 3 - hata geçince aynı geri yükleme çalışır; veri yedek anına döner
+      ---
+      duration_ms: 764.29644
+      type: 'test'
+      ...
+    # Subtest: 001'in hazırlanan geri yüklemesi açılışta kopyalanamazsa sunucu mevcut veriyle açılır; sonuç ekranda
+    ok 4 - 001'in hazırlanan geri yüklemesi açılışta kopyalanamazsa sunucu mevcut veriyle açılır; sonuç ekranda
+      ---
+      duration_ms: 793.974728
+      type: 'test'
+      ...
+    1..4
+ok 13 - geri yükleme ortasında hata: şirketin canlı verisi bozulmaz
+  ---
+  duration_ms: 3975.207442
+  type: 'suite'
+  ...
+# Subtest: meşgul şirket: aynı anda ikinci işlem 409, veri isteği 503; hiçbir istek başka şirketin verisini görmez
+    # Subtest: geri yükleme sürerken (meşgul) geri yükleme, ad, sıfırlama, silme 409; veri isteği 503
+    ok 1 - geri yükleme sürerken (meşgul) geri yükleme, ad, sıfırlama, silme 409; veri isteği 503
+      ---
+      duration_ms: 215.170441
+      type: 'test'
+      ...
+    # Subtest: aynı şirkete aynı anda iki geri yükleme ve okuma: biri uygulanır, öbürü 409 ya da sırayla; okuma hiçbir zaman 001'in verisini görmez
+    ok 2 - aynı şirkete aynı anda iki geri yükleme ve okuma: biri uygulanır, öbürü 409 ya da sırayla; okuma hiçbir zaman 001'in verisini görmez
+      ---
+      duration_ms: 1562.867819
+      type: 'test'
+      ...
+    1..2
+ok 14 - meşgul şirket: aynı anda ikinci işlem 409, veri isteği 503; hiçbir istek başka şirketin verisini görmez
+  ---
+  duration_ms: 3020.691536
+  type: 'suite'
+  ...
+# Subtest: kilitli, eksik ya da bozuk veri dosyası: 503 company-unavailable, 001'e düşmez, boş şirket açılmaz
+    # Subtest: başka program dosyayı kilitlemiş (SQLite özel kilit): 503; kilit kalkınca açılır
+    ok 1 - başka program dosyayı kilitlemiş (SQLite özel kilit): 503; kilit kalkınca açılır
+      ---
+      duration_ms: 4535.823459
+      type: 'test'
+      ...
+    # Subtest: veri dosyası bozuk (veri tabanı değil): 503
+    ok 2 - veri dosyası bozuk (veri tabanı değil): 503
+      ---
+      duration_ms: 546.607426
+      type: 'test'
+      ...
+    # Subtest: veri dosyası silinmiş: 503 (boş şirket AÇILMAZ); yedekten geri yüklenince veri döner
+    ok 3 - veri dosyası silinmiş: 503 (boş şirket AÇILMAZ); yedekten geri yüklenince veri döner
+      ---
+      duration_ms: 1117.066165
+      type: 'test'
+      ...
+    # Subtest: veri klasörü tamamen silinmiş: 503; yedekten geri yüklenince veri döner
+    ok 4 - veri klasörü tamamen silinmiş: 503; yedekten geri yüklenince veri döner
+      ---
+      duration_ms: 294.76807
+      type: 'test'
+      ...
+    # Subtest: yeni açılan şirket (boş klasör) yine açılır
+    ok 5 - yeni açılan şirket (boş klasör) yine açılır
+      ---
+      duration_ms: 1239.578268
+      type: 'test'
+      ...
+    1..5
+ok 15 - kilitli, eksik ya da bozuk veri dosyası: 503 company-unavailable, 001'e düşmez, boş şirket açılmaz
+  ---
+  duration_ms: 8974.740671
+  type: 'suite'
+  ...
+# Subtest: şirket listesi (sirketler.json) bozuk, boş ya da yarım yazılmış
+    # Subtest: bozuk JSON: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+    ok 1 - bozuk JSON: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+      ---
+      duration_ms: 1566.693532
+      type: 'test'
+      ...
+    # Subtest: boş dosya: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+    ok 2 - boş dosya: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+      ---
+      duration_ms: 1681.124191
+      type: 'test'
+      ...
+    # Subtest: boş liste: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+    ok 3 - boş liste: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+      ---
+      duration_ms: 1519.769112
+      type: 'test'
+      ...
+    # Subtest: yarım kalmış kayıt (sirketler.json.tmp) asıl listeyi bozmaz
+    ok 4 - yarım kalmış kayıt (sirketler.json.tmp) asıl listeyi bozmaz
+      ---
+      duration_ms: 1511.604602
+      type: 'test'
+      ...
+    # Subtest: bozuk sirketler.json: 002 ve sonraki şirketler kaybolmaz (veri klasörleri diskte duruyor)
+    ok 5 - bozuk sirketler.json: 002 ve sonraki şirketler kaybolmaz (veri klasörleri diskte duruyor)
+      ---
+      duration_ms: 1752.204877
+      type: 'test'
+      ...
+    1..5
+ok 16 - şirket listesi (sirketler.json) bozuk, boş ya da yarım yazılmış
+  ---
+  duration_ms: 8032.174403
+  type: 'suite'
+  ...
+# Subtest: yedek adı süzgeci: .yaziliyor, -wal, .geri-yukleme yedek sayılmaz
+ok 17 - yedek adı süzgeci: .yaziliyor, -wal, .geri-yukleme yedek sayılmaz
+  ---
+  duration_ms: 0.315916
+  type: 'test'
+  ...
+# Subtest: 001'in verisini 'Tümünü Sıfırla' ortak katmanı silmez
+    # Subtest: seçili şirket, şirket yetkileri ve kurtarma anahtarı kalır; 001'in kendi verisi sıfırlanır
+    ok 1 - seçili şirket, şirket yetkileri ve kurtarma anahtarı kalır; 001'in kendi verisi sıfırlanır
+      ---
+      duration_ms: 2624.077541
+      type: 'test'
+      ...
+    1..1
+ok 18 - 001'in verisini 'Tümünü Sıfırla' ortak katmanı silmez
+  ---
+  duration_ms: 2625.370802
+  type: 'suite'
+  ...
+# Subtest: disk dolu: yarım yedek dosyası diskte kalmaz
+    # Subtest: VACUUM INTO hata verirse .yaziliyor silinir, hata çağırana iletilir; liste değişmez
+    ok 1 - VACUUM INTO hata verirse .yaziliyor silinir, hata çağırana iletilir; liste değişmez
+      ---
+      duration_ms: 78.248833
+      type: 'test'
+      ...
+    1..1
+ok 19 - disk dolu: yarım yedek dosyası diskte kalmaz
+  ---
+  duration_ms: 78.576486
+  type: 'suite'
+  ...
+# Subtest: veri dosyası ya da klasörü kaybolan şirket boş açılmaz
+    # Subtest: dosya silinmiş: 503, boş dosya oluşmaz; klasör silinmiş: 503, geri yükleme çalışır; yeni şirket yine açılır
+    ok 1 - dosya silinmiş: 503, boş dosya oluşmaz; klasör silinmiş: 503, geri yükleme çalışır; yeni şirket yine açılır
+      ---
+      duration_ms: 2340.615551
+      type: 'test'
+      ...
+    1..1
+ok 20 - veri dosyası ya da klasörü kaybolan şirket boş açılmaz
+  ---
+  duration_ms: 2340.959365
+  type: 'suite'
+  ...
+# Subtest: gerçek eski sürüm verisinden güncel sürüme göç
+    # Subtest: v2.0.16 ile üretilmiş veri (zincir kesiti): hiçbir kayıt ve yedek kaybolmaz, eski yedekler geri yüklenir
+    ok 1 - v2.0.16 ile üretilmiş veri (zincir kesiti): hiçbir kayıt ve yedek kaybolmaz, eski yedekler geri yüklenir
+      ---
+      duration_ms: 2420.456581
+      type: 'test'
+      ...
+    # Subtest: v2.0.17 ile üretilmiş veri (zincir kesiti): hiçbir kayıt ve yedek kaybolmaz, eski yedekler geri yüklenir
+    ok 2 - v2.0.17 ile üretilmiş veri (zincir kesiti): hiçbir kayıt ve yedek kaybolmaz, eski yedekler geri yüklenir
+      ---
+      duration_ms: 6166.80188
+      type: 'test'
+      ...
+    # Subtest: v2.0.18 ile üretilmiş veri (zincir kesiti): hiçbir kayıt ve yedek kaybolmaz, eski yedekler geri yüklenir
+    ok 3 - v2.0.18 ile üretilmiş veri (zincir kesiti): hiçbir kayıt ve yedek kaybolmaz, eski yedekler geri yüklenir
+      ---
+      duration_ms: 9976.375588
+      type: 'test'
+      ...
+    # Subtest: v2.0.19 ile üretilmiş veri (zincir kesiti): hiçbir kayıt ve yedek kaybolmaz, eski yedekler geri yüklenir
+    ok 4 - v2.0.19 ile üretilmiş veri (zincir kesiti): hiçbir kayıt ve yedek kaybolmaz, eski yedekler geri yüklenir
+      ---
+      duration_ms: 12703.343158
+      type: 'test'
+      ...
+    # Subtest: v2.0.20 ile üretilmiş veri (zincir kesiti): hiçbir kayıt ve yedek kaybolmaz, eski yedekler geri yüklenir
+    ok 5 - v2.0.20 ile üretilmiş veri (zincir kesiti): hiçbir kayıt ve yedek kaybolmaz, eski yedekler geri yüklenir
+      ---
+      duration_ms: 16195.784472
+      type: 'test'
+      ...
+    1..5
+ok 21 - gerçek eski sürüm verisinden güncel sürüme göç
+  ---
+  duration_ms: 47464.359535
+  type: 'suite'
+  ...
+# Subtest: çok eski kurulum: v1.3.1 → v2.0.16 → v2.0.19 (eski adlı veri dosyası hukuk-ofisi.sqlite)
+    # Subtest: veri dosyası yeniden adlandırılmadan açılır; v1.3.1'in kendi aracıyla aldığı yedek dahil her yedek kendi şirketinde ve geri yüklenir
+    ok 1 - veri dosyası yeniden adlandırılmadan açılır; v1.3.1'in kendi aracıyla aldığı yedek dahil her yedek kendi şirketinde ve geri yüklenir
+      ---
+      duration_ms: 6070.208892
+      type: 'test'
+      ...
+    1..1
+ok 22 - çok eski kurulum: v1.3.1 → v2.0.16 → v2.0.19 (eski adlı veri dosyası hukuk-ofisi.sqlite)
+  ---
+  duration_ms: 6070.672917
+  type: 'suite'
+  ...
+# Subtest: gerçek v2.0.19 hatası: kodu değişen şirketin eski koduyla açılan yeni şirket aynı veri dosyasında
+    # Subtest: güncel sürüm çakışmayı bildirir; Ayır kayıpsız ayırır; sonra veriler karışmaz
+    ok 1 - güncel sürüm çakışmayı bildirir; Ayır kayıpsız ayırır; sonra veriler karışmaz
+      ---
+      duration_ms: 3184.549666
+      type: 'test'
+      ...
+    1..1
+ok 23 - gerçek v2.0.19 hatası: kodu değişen şirketin eski koduyla açılan yeni şirket aynı veri dosyasında
+  ---
+  duration_ms: 3184.989426
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 24 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 16.382581
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 25 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 157.199498
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 26 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.444059
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 27 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.995948
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 28 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.524244
+  type: 'test'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 4.905449
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 244.074691
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 209.252015
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 339.536539
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 425.427471
+      type: 'test'
+      ...
+    1..5
+ok 29 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 1224.351591
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 69.948527
+      type: 'test'
+      ...
+    1..1
+ok 30 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 70.177163
+  type: 'suite'
+  ...
+# Subtest: BS-7 şema sürüm kapısı
+    # Subtest: göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+    ok 1 - göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+      ---
+      duration_ms: 552.733585
+      type: 'test'
+      ...
+    # Subtest: 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+    ok 2 - 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+      ---
+      duration_ms: 4466.005325
+      type: 'test'
+      ...
+    # Subtest: 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+    ok 3 - 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+      ---
+      duration_ms: 3736.591528
+      type: 'test'
+      ...
+    # Subtest: geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+    ok 4 - geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+      ---
+      duration_ms: 3639.242543
+      type: 'test'
+      ...
+    1..4
+ok 31 - BS-7 şema sürüm kapısı
+  ---
+  duration_ms: 12397.763154
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 119.189179
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 5.484695
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.313307
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 3.382661
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 7.656762
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 36.988685
+      type: 'test'
+      ...
+    1..6
+ok 32 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 176.423156
+  type: 'suite'
+  ...
+# Subtest: şirket klasörleri: kodu değişen şirketin klasörü yeni şirkete verilmez; açılamayan şirket 001'e düşmez
+    # Subtest: 002 → 005 yapılıp yeni şirket açılınca (002) ayrı veri tabanı alır; veriler karışmaz (2.0.17'den kalan kritik hata)
+    ok 1 - 002 → 005 yapılıp yeni şirket açılınca (002) ayrı veri tabanı alır; veriler karışmaz (2.0.17'den kalan kritik hata)
+      ---
+      duration_ms: 1104.547655
+      type: 'test'
+      ...
+    # Subtest: şirketin veri dosyası açılamazsa istek 503 alır; 001'in verisi gösterilmez
+    ok 2 - şirketin veri dosyası açılamazsa istek 503 alır; 001'in verisi gösterilmez
+      ---
+      duration_ms: 735.190094
+      type: 'test'
+      ...
+    1..2
+ok 33 - şirket klasörleri: kodu değişen şirketin klasörü yeni şirkete verilmez; açılamayan şirket 001'e düşmez
+  ---
+  duration_ms: 3410.740803
+  type: 'suite'
+  ...
+# Subtest: silinen şirketin eski yedekleri aynı kodla açılan yeni şirkete geçmez ve onun üzerine yüklenemez
+    # Subtest: eski (2.0.19) sirket-002 yedeği yeni 002'ye taşınmaz/listelenmez; kimliksiz yedek başka veri tabanına 409; aynı ad+kod klasörü ek alır
+    ok 1 - eski (2.0.19) sirket-002 yedeği yeni 002'ye taşınmaz/listelenmez; kimliksiz yedek başka veri tabanına 409; aynı ad+kod klasörü ek alır
+      ---
+      duration_ms: 2790.637402
+      type: 'test'
+      ...
+    1..1
+ok 34 - silinen şirketin eski yedekleri aynı kodla açılan yeni şirkete geçmez ve onun üzerine yüklenemez
+  ---
+  duration_ms: 2894.058291
+  type: 'suite'
+  ...
+# Subtest: geri yükleme sağlamlığı: bozuk canlı dosya, eşzamanlı istek, unvan, 001 sonucu ekranda, güncelleme sırasında uygulanmaz
+    # Subtest: şirket yeniden adlandırıldıktan sonra geri yüklenirse unvan (office.name) yeni adda kalır
+    ok 1 - şirket yeniden adlandırıldıktan sonra geri yüklenirse unvan (office.name) yeni adda kalır
+      ---
+      duration_ms: 345.933005
+      type: 'test'
+      ...
+    # Subtest: canlı dosya bozuksa geri yükleme engellenmez: önce ham kopya alınır, sonra yedeğe dönülür
+    ok 2 - canlı dosya bozuksa geri yükleme engellenmez: önce ham kopya alınır, sonra yedeğe dönülür
+      ---
+      duration_ms: 278.204945
+      type: 'test'
+      ...
+    # Subtest: şirkette geri yükleme sürerken ikinci geri yükleme, ad değiştirme, sıfırlama 409
+    ok 3 - şirkette geri yükleme sürerken ikinci geri yükleme, ad değiştirme, sıfırlama 409
+      ---
+      duration_ms: 51.105665
+      type: 'test'
+      ...
+    # Subtest: 001 geri yüklemesi başarısız olursa Yönetim → Yedekler'de görünür; güncelleme sırasında uygulanmaz
+    ok 4 - 001 geri yüklemesi başarısız olursa Yönetim → Yedekler'de görünür; güncelleme sırasında uygulanmaz
+      ---
+      duration_ms: 601.571536
+      type: 'test'
+      ...
+    1..4
+ok 35 - geri yükleme sağlamlığı: bozuk canlı dosya, eşzamanlı istek, unvan, 001 sonucu ekranda, güncelleme sırasında uygulanmaz
+  ---
+  duration_ms: 3174.77286
+  type: 'suite'
+  ...
+# Subtest: budama ve otomatik yedek: güvenlik yedekleri rutin kopyalarla silinmez; değişmeyen şirket yeniden kopyalanmaz
+    # Subtest: 40 rutin yedekten sonra sıfırlama/geri yükleme öncesi yedekler yerinde; rutinler 30'a budanır
+    ok 1 - 40 rutin yedekten sonra sıfırlama/geri yükleme öncesi yedekler yerinde; rutinler 30'a budanır
+      ---
+      duration_ms: 2589.116431
+      type: 'test'
+      ...
+    # Subtest: veri dosyası son yedekten beri değişmediyse otomatik yedek alınmaz; değişince alınır
+    ok 2 - veri dosyası son yedekten beri değişmediyse otomatik yedek alınmaz; değişince alınır
+      ---
+      duration_ms: 3.878003
+      type: 'test'
+      ...
+    1..2
+ok 36 - budama ve otomatik yedek: güvenlik yedekleri rutin kopyalarla silinmez; değişmeyen şirket yeniden kopyalanmaz
+  ---
+  duration_ms: 2593.205363
+  type: 'suite'
+  ...
+# Subtest: yedek klasörü ve dosya adı kuralları
+    # Subtest: klasör adı: '<kod> - <ad>'; Windows'ta geçersiz karakterler temizlenir, Türkçe harfler kalır
+    ok 1 - klasör adı: '<kod> - <ad>'; Windows'ta geçersiz karakterler temizlenir, Türkçe harfler kalır
+      ---
+      duration_ms: 0.859166
+      type: 'test'
+      ...
+    # Subtest: ad: destekofis-<kod>-<zaman>-<etiket>; eski adlar tanınır; yol geçişi reddedilir
+    ok 2 - ad: destekofis-<kod>-<zaman>-<etiket>; eski adlar tanınır; yol geçişi reddedilir
+      ---
+      duration_ms: 1.759711
+      type: 'test'
+      ...
+    1..2
+ok 37 - yedek klasörü ve dosya adı kuralları
+  ---
+  duration_ms: 3.450809
+  type: 'suite'
+  ...
+# Subtest: iki şirket: Tüm Şirketler / Yalnız, liste, indirme, otomatik yedek, ad değişimi, sıfırlama, silme, yetki
+    # Subtest: Yedek Al (varsayılan Tüm Şirketler): her şirket kendi klasöründe, adında kodu, içinde doğru veri ve kimlik
+    ok 1 - Yedek Al (varsayılan Tüm Şirketler): her şirket kendi klasöründe, adında kodu, içinde doğru veri ve kimlik
+      ---
+      duration_ms: 206.291507
+      type: 'test'
+      ...
+    # Subtest: Yalnız <kod · ad>: yalnız seçili şirket (ya da verilen şirket) yedeklenir
+    ok 2 - Yalnız <kod · ad>: yalnız seçili şirket (ya da verilen şirket) yedeklenir
+      ---
+      duration_ms: 193.368601
+      type: 'test'
+      ...
+    # Subtest: liste bütün şirketleri Şirket bilgisiyle, yeniden eskiye gösterir; indirme şirketiyle ve kodla bulunur
+    ok 3 - liste bütün şirketleri Şirket bilgisiyle, yeniden eskiye gösterir; indirme şirketiyle ve kodla bulunur
+      ---
+      duration_ms: 213.511368
+      type: 'test'
+      ...
+    # Subtest: Yönetim → Şirketler: veri dosyası, boyutu, cari/kayıt sayısı, son yedek ve yedek klasörü
+    ok 4 - Yönetim → Şirketler: veri dosyası, boyutu, cari/kayıt sayısı, son yedek ve yedek klasörü
+      ---
+      duration_ms: 5.331532
+      type: 'test'
+      ...
+    # Subtest: yetki: personel yedekleri göremez/alamaz/indiremez/geri yükleyemez (403); yetkisi olmayan şirketin yedeği listede yok
+    ok 5 - yetki: personel yedekleri göremez/alamaz/indiremez/geri yükleyemez (403); yetkisi olmayan şirketin yedeği listede yok
+      ---
+      duration_ms: 49.081028
+      type: 'test'
+      ...
+    # Subtest: ad ve kod değişince klasör yeniden adlandırılır, yedekler korunur; özel karakterler temizlenir
+    ok 6 - ad ve kod değişince klasör yeniden adlandırılır, yedekler korunur; özel karakterler temizlenir
+      ---
+      duration_ms: 228.616702
+      type: 'test'
+      ...
+    # Subtest: ad değişince dolu klasörle çakışma: ek alır, karışmaz; yarım kalan taşıma kayda yazılır ve tamamlanır
+    ok 7 - ad değişince dolu klasörle çakışma: ek alır, karışmaz; yarım kalan taşıma kayda yazılır ve tamamlanır
+      ---
+      duration_ms: 86.731653
+      type: 'test'
+      ...
+    # Subtest: şirket meşgulken (geri yükleniyor/siliniyor) o şirkete gelen istek 503 alır; başka şirketin verisi gösterilmez
+    ok 8 - şirket meşgulken (geri yükleniyor/siliniyor) o şirkete gelen istek 503 alır; başka şirketin verisi gösterilmez
+      ---
+      duration_ms: 50.608165
+      type: 'test'
+      ...
+    # Subtest: sıfırlama ve silme öncesi yedekler şirketin klasörüne; şirket silinince yedek klasörü yerinde kalır
+    ok 9 - sıfırlama ve silme öncesi yedekler şirketin klasörüne; şirket silinince yedek klasörü yerinde kalır
+      ---
+      duration_ms: 614.77491
+      type: 'test'
+      ...
+    1..9
+ok 38 - iki şirket: Tüm Şirketler / Yalnız, liste, indirme, otomatik yedek, ad değişimi, sıfırlama, silme, yetki
+  ---
+  duration_ms: 3945.089909
+  type: 'suite'
+  ...
+# Subtest: otomatik yedek: bu açılışta hiç açılmamış şirket de yedeklenir; npm run backup bütün şirketler
+    # Subtest: zamanlayıcı turu bütün şirketleri yedekler; 002'nin örneği açılmaz, veri tabanı bağlantısı kalmaz
+    ok 1 - zamanlayıcı turu bütün şirketleri yedekler; 002'nin örneği açılmaz, veri tabanı bağlantısı kalmaz
+      ---
+      duration_ms: 162.826208
+      type: 'test'
+      ...
+    # Subtest: gerçek zamanlayıcı (açılıştan kısa süre sonra) ve npm run backup aracı
+    ok 2 - gerçek zamanlayıcı (açılıştan kısa süre sonra) ve npm run backup aracı
+      ---
+      duration_ms: 2572.956461
+      type: 'test'
+      ...
+    1..2
+ok 39 - otomatik yedek: bu açılışta hiç açılmamış şirket de yedeklenir; npm run backup bütün şirketler
+  ---
+  duration_ms: 4745.509477
+  type: 'suite'
+  ...
+# Subtest: göç: eski yedekler (kök ve sirket-002) şirket klasörlerine taşınır; tekrar açılışta iş yapmaz
+    # Subtest: açılışta taşınır (silinmez); yedek olmayan dosya, taze güncelleme yedeği ve sahipsiz klasör yerinde kalır
+    ok 1 - açılışta taşınır (silinmez); yedek olmayan dosya, taze güncelleme yedeği ve sahipsiz klasör yerinde kalır
+      ---
+      duration_ms: 76.622977
+      type: 'test'
+      ...
+    # Subtest: tekrar açılışta iş yapmaz; taşınan eski yedek kendi şirketine geri yüklenebilir, öbürüne yüklenemez (409)
+    ok 2 - tekrar açılışta iş yapmaz; taşınan eski yedek kendi şirketine geri yüklenebilir, öbürüne yüklenemez (409)
+      ---
+      duration_ms: 276.176911
+      type: 'test'
+      ...
+    1..2
+ok 40 - göç: eski yedekler (kök ve sirket-002) şirket klasörlerine taşınır; tekrar açılışta iş yapmaz
+  ---
+  duration_ms: 2407.882949
+  type: 'suite'
+  ...
+# Subtest: geri yükleme: doğru şirkete; yanlış şirkete 409; 002 hemen, 001 yeniden açılışta; ortak katman korunur
+    # Subtest: yanlış şirkete geri yükleme reddedilir (409): hedef farklı, ya da yedek elle başka şirketin klasörüne konmuş
+    ok 1 - yanlış şirkete geri yükleme reddedilir (409): hedef farklı, ya da yedek elle başka şirketin klasörüne konmuş
+      ---
+      duration_ms: 19.711493
+      type: 'test'
+      ...
+    # Subtest: onay ve parola: yanlış kod 400, yanlış parola 403; daha yeni sürümün yedeği 409
+    ok 2 - onay ve parola: yanlış kod 400, yanlış parola 403; daha yeni sürümün yedeği 409
+      ---
+      duration_ms: 194.940472
+      type: 'test'
+      ...
+    # Subtest: 002: hemen geri yüklenir; önce bugünkü veri yedeklenir; 001 ve kullanıcılar etkilenmez
+    ok 3 - 002: hemen geri yüklenir; önce bugünkü veri yedeklenir; 001 ve kullanıcılar etkilenmez
+      ---
+      duration_ms: 514.167894
+      type: 'test'
+      ...
+    # Subtest: 001: geri yükleme hazırlanır, sunucu yeniden açılınca uygulanır; kullanıcılar, lisans ve şirket listesi korunur
+    ok 4 - 001: geri yükleme hazırlanır, sunucu yeniden açılınca uygulanır; kullanıcılar, lisans ve şirket listesi korunur
+      ---
+      duration_ms: 1001.270729
+      type: 'test'
+      ...
+    # Subtest: servis yöneticisi altında: 001 geri yüklemesinde uygulama kendini yeniden başlatır, veri yedekteki hâline döner
+    ok 5 - servis yöneticisi altında: 001 geri yüklemesinde uygulama kendini yeniden başlatır, veri yedekteki hâline döner
+      ---
+      duration_ms: 4945.301209
+      type: 'test'
+      ...
+    # Subtest: bozuk işaret ya da kaybolmuş yedek: sunucu mevcut veriyle açılır
+    ok 6 - bozuk işaret ya da kaybolmuş yedek: sunucu mevcut veriyle açılır
+      ---
+      duration_ms: 205.967387
+      type: 'test'
+      ...
+    1..6
+ok 41 - geri yükleme: doğru şirkete; yanlış şirkete 409; 002 hemen, 001 yeniden açılışta; ortak katman korunur
+  ---
+  duration_ms: 8759.815473
+  type: 'suite'
+  ...
+# Subtest: geri yükleme dosya değiştirme: WAL'daki son işlem kaybolmaz
+    # Subtest: rename başarısız olsa da canlı veri (WAL'daki satır dahil) yerinde
+    ok 1 - rename başarısız olsa da canlı veri (WAL'daki satır dahil) yerinde
+      ---
+      duration_ms: 93.977208
+      type: 'test'
+      ...
+    1..1
+ok 42 - geri yükleme dosya değiştirme: WAL'daki son işlem kaybolmaz
+  ---
+  duration_ms: 94.128205
+  type: 'suite'
+  ...
+# Subtest: 2.0.21 · yedek denetimi: güncel kodla gerçek iş akışı
+    # Subtest: yedekler, ad/kod değişimi, silme, aynı kodla yeni şirket, otomatik tur → her yedek kendi şirketinin klasöründe
+    ok 1 - yedekler, ad/kod değişimi, silme, aynı kodla yeni şirket, otomatik tur → her yedek kendi şirketinin klasöründe
+      ---
+      duration_ms: 2029.538981
+      type: 'test'
+      ...
+    # Subtest: denetim yanlış yere konmuş yedeği bulur (elle kopyalanmış: 001'in yedeği 005'in klasöründe)
+    ok 2 - denetim yanlış yere konmuş yedeği bulur (elle kopyalanmış: 001'in yedeği 005'in klasöründe)
+      ---
+      duration_ms: 58.161041
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı denetimi göremez
+    ok 3 - yetkisiz kullanıcı denetimi göremez
+      ---
+      duration_ms: 178.193231
+      type: 'test'
+      ...
+    1..3
+ok 43 - 2.0.21 · yedek denetimi: güncel kodla gerçek iş akışı
+  ---
+  duration_ms: 7563.747191
+  type: 'suite'
+  ...
+# Subtest: 2.0.21 · yedek denetimi: gerçek v2.0.19 verisinden güncelleme
+    # Subtest: 2.0.19'un bıraktığı yedekler: güncel kod açılınca her biri kendi şirketinin klasöründe; çakışma bildirilir
+    ok 1 - 2.0.19'un bıraktığı yedekler: güncel kod açılınca her biri kendi şirketinin klasöründe; çakışma bildirilir
+      ---
+      duration_ms: 2677.206977
+      type: 'test'
+      ...
+    1..1
+ok 44 - 2.0.21 · yedek denetimi: gerçek v2.0.19 verisinden güncelleme
+  ---
+  duration_ms: 4277.970805
+  type: 'suite'
+  ...
+1..44
+# tests 135
+# suites 38
+# pass 135
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 243510.099974
