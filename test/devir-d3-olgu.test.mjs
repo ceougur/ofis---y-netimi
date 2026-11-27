@@ -183,3 +183,33 @@ describe("D3 tur 2 — Dönem Kilidi: kilit yok / K'den önce / K / K'yi aşan �
     assert.deepEqual([c.kBakiyeMinor, c.satirlar.filter(row => row.tur === "acik-kalem").map(row => [row.tutarMinor, row.vade])], [154000, [[70000, "2026-04-10"], [84000, "2026-12-20"]]]);
   });
 });
+
+describe("D3 tur 2 — kilitli dönemde KURAL DEĞİŞİKLİĞİ: plan donmuş defteri (karma yevmiye) okur, canlı türetmeyi değil; Kural Farkı devri DURDURUR (S-3 = A)", () => {
+  const rule = { on: false };
+  // Kural değişikliği benzetimi (YALNIZ TEST kancası; test/c6h-bilanco-uc deseni): açıkken satış faturasının 600 / 120 satırlarına 100,00 eklenir.
+  rule.fn = entries => (!rule.on ? entries : entries.map(entry => (!entry.lines.some(line => line.account === "600") ? entry : { ...entry, lines: entry.lines.map(line => (line.account === "600" ? { ...line, credit: line.credit + 10000 } : line.account === "120" ? { ...line, debit: line.debit + 10000 } : line)) })));
+  let ctx;
+  let api;
+  let worker;
+  before(async () => {
+    worker = planModule ? await import("../server/lib/devir/plan-worker.mjs").catch(() => null) : null;
+    ctx = await boot({ now: { time: "2027-02-10T12:00:00+03:00", fixed: true }, __testLedgerRule: rule });
+    api = ctx.api;
+    const c = (await must("C", api.post("/api/workspace/accounts", { name: "Kural Müşterisi", type: "customer" }))).id;
+    await must("satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: c, issueDate: "2026-03-10", lines: [{ name: "Hizmet", qty: 1, unitPrice: 1000, discountRate: 0, vatRate: 0 }], payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true }));
+    await must("kilit K", api.put("/api/admin/period-lock", { lockedUntil: K }));
+    await ctx.app.ledger.snapshots.runPending();
+    rule.on = true; // dondurmadan SONRA kural değişti: canlı türetme 600'ü 1.100,00 görür, donmuş defter 1.000,00
+  });
+  after(() => ctx?.server.close());
+
+  it("elle: K kapanışında 600 = 1.000,00 (donmuş), 120 = 1.000,00; Dönem Net Kârı 1.000,00; ön denetim 'Kural Farkı Düzeltme Fişi'ni Yazın' DURDURUR", () => {
+    assert.ok(worker, "D3 ön izleme yok (eski kod)");
+    const out = worker.runPreview({ store: ctx.app.store, ledger: ctx.app.context.ledger, job: { K, today: "2027-02-10", option: "borc-alacak", company: null, isRoot: true } });
+    const n04 = out.plan.archive.kapanisFisleri.find(row => row.kod === "N-04");
+    assert.deepEqual(n04.lines.filter(line => line.account === "600").map(line => line.debit), [100000]);
+    assert.equal(out.plan.archive.kapanisBakiyeleri.filter(row => row.hesap === "120").reduce((sum, row) => sum + row.minor, 0), 100000);
+    assert.equal(out.plan.archive.donemSonucuMinor, 100000);
+    assert.ok(out.onDenetim.durdurur.some(row => row.kod === "kural-farki"), out.onDenetim.durdurur.map(row => row.kod).join(", "));
+  });
+});

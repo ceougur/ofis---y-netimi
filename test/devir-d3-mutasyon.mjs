@@ -14,8 +14,15 @@ const ONLY = opt("--yalniz") ? new Set(opt("--yalniz").split(",").map(Number)) :
 
 const PLAN = "server/lib/devir/plan.mjs";
 const PRE = "server/lib/devir/preflight.mjs";
+const READER = "server/lib/devir/plan-reader.mjs";
 const ELLE = "test/devir-d3-plan.test.mjs";
 const ESDEGER = "test/devir-d3-esdeger.test.mjs";
+// D3 tur 2 testleri (API verisi, elle sayılar)
+const BAG = "test/devir-d3-bag.test.mjs";
+const EVRAK = "test/devir-d3-evrak.test.mjs";
+const BANKA = "test/devir-d3-banka.test.mjs";
+const OLGU = "test/devir-d3-olgu.test.mjs";
+const SUPHELI = "test/devir-d3-supheli.test.mjs";
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 const MUTASYONLAR = [
   [1, "açık kalemin vadesi kaybolur (K+1 olur; vadesizde belge günü yerine)", PLAN, "      vade: item.vade || item.date,", "      vade: nextDay,", [ELLE, ESDEGER], /not ok \d+ - (cari satırları|.*gecikmiş)/],
@@ -33,6 +40,21 @@ const MUTASYONLAR = [
   [13, "N-13 alt defter hesabına da yazar (modül hesabı fişe girer)", PLAN, "    if (MODULE_ACCOUNTS[row.hesap] || row.hesap === OPENING_GL) continue;", "    if (row.hesap === OPENING_GL) continue;", [ELLE], /not ok \d+ - (N-13|arşiv K kapanışı)/],
   [14, "eksi stoklu ürüne değer verilir (KG-9 / M5)", PLAN, "degerMinor: product.qty > 0 ? product.valueMinor : 0, dayanak", "degerMinor: product.qty < 0 ? 1 : product.valueMinor, dayanak", [ELLE], /not ok \d+ - (stok|kapanış)/],
   [15, "açık kalemin kuyruk rolü kaybolur (ödeme rolündeki kalem yükümlülük olur)", PLAN, "      rol: item.due ? \"yukumluluk\" : \"odeme\",", "      rol: \"yukumluluk\",", [ESDEGER], /not ok \d+ - (plan elle|.*gecikmiş|ROL)/],
+  // ---- D3 tur 2: bu turun her sınıfı için en az bir mutant ----
+  [16, "bağ yönlendirmesi: K sonrası bağ açık faturanın devir kalemine değil arşive yönelir", PLAN, "      return openInvoices.has(link.invoiceId)", "      return false", [BAG], /not ok \d+ - bağ listesi/],
+  [17, "bağ listesi: Mahsup Et'in karşı belgesi (counter_id) okunmaz", READER, "AND counter_type = 'invoice' AND counter_id IN (${before})`, K)) add(", "AND counter_type = 'invoice' AND 0 AND counter_id IN (${before})`, K)) add(", [BAG], /not ok \d+ - bağ listesi/],
+  [18, "bağ listesi: iade → asıl fatura bağı okunmaz", READER, "WHERE issue_date > ?1 AND original_id <> '' AND original_id IN", "WHERE 0 AND issue_date > ?1 AND original_id <> '' AND original_id IN", [BAG], /not ok \d+ - bağ listesi/],
+  [19, "evrak durumu: bankada tahsildeki evrak portföyde sayılır", READER, "    if (state === \"portfolio\" && Number(row.inBank) > 0) state = \"bank\";", "", [EVRAK], /not ok \d+ - (her evrak|ön izleme sayıları|kapanış = açılış)/],
+  [20, "evrak durumu: K'deki değil BUGÜNKÜ son olay okunur", READER, "WHERE e.cheque_id = c.id AND e.date <= ?1 ORDER BY e.date DESC", "WHERE e.cheque_id = c.id ORDER BY e.date DESC", [EVRAK], /not ok \d+ - (her evrak|ön izleme sayıları|kapanış = açılış)/],
+  [21, "alt hesap açılışı: kredi kartı (309) banka açılışlarına girmez", PLAN, "    if (![\"102\", \"108\", \"300\", \"309\"].includes(row.hesap)) continue;", "    if (![\"102\", \"108\", \"300\"].includes(row.hesap)) continue;", [BANKA], /not ok \d+ - (her alt hesap|kapanış = açılış)/],
+  [22, "POS alt hesabının sahibi okunmaz (atanmamış sayılır)", PLAN, "    const pos = row.hesap === \"108\" && !owner ? posBySub.get(row.alt) : null;", "    const pos = null;", [BANKA], /not ok \d+ - her alt hesap/],
+  [23, "şüphelinin K payı: K sonrası tahsilat / Değersiz de düşülür", READER, ".filter(credit => credit.date <= K);", ";", [SUPHELI], /not ok \d+ - \(e\) şüpheli K payı/],
+  [24, "129 karşılık cari boyutunda beklenir (tur 1 hâli)", PLAN, " : row.cari ? -(own?.provisionMinor || 0) : -looseProvision;", " : -(own?.provisionMinor || 0);", [SUPHELI], /not ok \d+ - \(e\) şüpheli K payı/],
+  [25, "kart durumu: K'den SONRA kapanan kart K'de kapalı sayılır", READER, " && String(row.closedAt).slice(0, 10) <= K,", ",", [SUPHELI], /not ok \d+ - \(f\) K'den SONRA Borçta Kalsın/],
+  [26, "kilit: kilitli dönemde donmuş defter yerine canlı türetme okunur", READER, "  const entries = ledger.book({ to: K, live }).filter(entry => entry.date <= K);", "  const entries = live.filter(entry => entry.date <= K);", [OLGU], /not ok \d+ - elle: K kapanışında 600/],
+  [27, "M12: bakiyesi 0 ve açık kalemsiz hareketli cariye iki toplam satırı yazılır", PLAN, "  if (balance === 0 && !open.length) return { rows: [], open, balance, openDebt: 0, openCredit: 0, net: 0 };", "", [EVRAK], /not ok \d+ - kapanış = açılış/],
+  [28, "e-Belge: Sonucu Belirsiz gönderim sayılmaz (yalnız 'processing')", READER, "(e_status = 'processing' OR ${uncertain})", "(e_status = 'processing')", [OLGU], /not ok \d+ - ön denetim \(10\.02\.2027/],
+  [29, "e-Belge: numaralı gönderilmemiş belge Gönderilecekler'de sayılmaz (yalnız 'waiting')", READER, "AND ${unsent} AND NOT ${uncertain}", "AND e_status = 'waiting' AND NOT ${uncertain}", [OLGU], /not ok \d+ - ön denetim \(10\.02\.2027/],
 ];
 
 const run = files => {
@@ -42,7 +64,7 @@ const run = files => {
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
 };
 
-const taban = run([ELLE, ESDEGER]);
+const taban = run([ELLE, ESDEGER, BAG, EVRAK, BANKA, OLGU, SUPHELI]);
 console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${taban.status})`);
 if (taban.status !== 0 || taban.fail !== 0 || !(taban.pass > 0)) throw new Error("taban testi yeşil değil — mutasyon taraması anlamsız");
 let caught = 0;
