@@ -96,7 +96,7 @@ Tasarım notu: `docs/devir/2.5.1-DEVAM/mi2-tasarim.md` (koddan önce, commit 750
 - Yetki (koddan): Liste ve Grup Özeti `accounts.view` (yerleşik bütün roller; personel cari kartının defterinde de her tahsilat tutarını bugün görüyor —
   `server/lib/permissions.mjs` "accounts.view": ALL). `accounts.view` olmayan özel rol dört uçta 403 (testte).
 
-Testler: `test/mi2-grup-ozeti-251.test.mjs` (14): elle senaryo, dönemler, ödeme yapanlar + süzgeçler, Grup Özeti satırlar = TOPLAM = Liste kartları (14 süzgeç
+Testler: `test/mi2-grup-ozeti-251.test.mjs` (13): elle senaryo, dönemler, ödeme yapanlar + süzgeçler, Grup Özeti satırlar = TOPLAM = Liste kartları (14 süzgeç
 seçeneği × her grup / alt grup satırı = o süzgeçteki Liste), rapor eşdeğerliği (3 dönem), karşılıksız çek, dönem sınırları (ay / yıl başı, hafta, artık yıl),
 bitiş günü dahil / ertesi gün hariç (bellek içi küçük veri tabanı — program ileri tarihli hareketi zaten reddediyor: integrity "İleri tarihli hareket"),
 PDF / Excel, yetki. Ekran: `test/e2e/senaryo-mi2-251.mjs` (23 denetim).
