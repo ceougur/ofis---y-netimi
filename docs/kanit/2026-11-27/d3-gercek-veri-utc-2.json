@@ -1,0 +1,38 @@
+{
+  "ad": "d3-gercek-veri-utc-2",
+  "komut": "node test/devir-d3-gercek-veri.mjs --eski /dev/shm/d3-a1207/v250 --tohum 11 --cari 300",
+  "commit": "d410732e82f51424cd5acd619708bf597da9b27d",
+  "dal": "worktree-agent-a1207a9fb3d4d1b0f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T07:40:45.497Z",
+  "sure_sn": 415.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 15,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "001: devirsiz eşdeğer — 4080 karşılaştırma (cari × gün × seçenek), fark 12 [{\"cari\":\"account-7ad53003-8cb4-412b-97be-494ea246b9c5\",\"day\":\"2027-01-01\",\"devirsiz\":0,\"devirli\":97960,\"kalemDevirsiz\":[\"2027-01-18|97960\"],\"kalemDevirli\":[\"2026-09-12|97960\"],\"sinceDevirsiz\":\"\",\"sinceDevirli\":\"2026-09-12\"},{\"cari\":\"account-7ad53003-8cb4-412b-97be-494ea246b9c5\",\"day\":\"2027-01-02\",\"devirsiz\":0,\"devirli\":97960,\"kalemDevirsiz\":[\"2027-01-18|97960\"],\"kalemDevirli\":[\"2026-09-12|97960\"],\"sinceDevirsiz\":\"\",\"sinceDevirli\":\"2026-09-12\"},{\"cari\":\"account-7ad53003-8cb4-412b-97be-494ea246b9c5\",\"day\":\"2027-01-15\",\"devirsiz\":0,\"devirli\":97960,\"kalemDevirsiz\":[\"2027-01-18|97960\"],\"kalemDevir",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3-ajan/kanit/2026-11-27/d3-gercek-veri-utc-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1207a9fb3d4d1b0f",
+  "ham_cikti_sha256": "8454d08e6ab1364643da420b2937bf846d7e95018241c3ab612d9f8472496db4",
+  "ham_cikti_bayt": 2553
+}

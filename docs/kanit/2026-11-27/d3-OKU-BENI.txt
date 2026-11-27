@@ -1,0 +1,7 @@
+D3 kanıtları (27.11.2026; KANIT_DIR kopyası, tools/kanit.mjs kos çıktıları).
+- d3-hacim: ÖZEL kilit (flock -x -w 1800 olcum.lock) 08:02:48–08:32:48 UTC arası ALINAMADI (flock çıkış 1) → ÖLÇÜLEMEDİ.
+  d3-hacim-gosterge-1 / -2: paylaşımlı kilitle, yük > 2 altında GÖSTERGE (GEÇERSİZ). -1 = 57e482e7 öncesi ileti biçimi, -2 = sonrası.
+- d3-gercek-veri-utc: ikinci aşaması iki commit arasında açıldı (route eski, iş parçacığı yeni) — GEÇERSİZ, yeniden koşuldu.
+- d3-gercek-veri-utc-2: GERÇEK BULGU (ödeme rolündeki açık kalem; devirsiz eşdeğer 12 fark) — 6c7a5194 ile düzeltildi; son koşular d3-gercek-veri-son-*.
+- d3-kahin-*-taban-*: t251-taban arşiv kopyasında (depo değil; commit alanı "undefined" bu yüzden).
+- d3-eski-kod-*: yeni testler t251-taban kopyasında; beklenen neden "D3 ... modülü yok (eski kod)" / "D3 ön izleme yok (eski kod)".
