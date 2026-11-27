@@ -84,7 +84,7 @@ Ekran senaryosunun İLK koşusu (a61f334e) 11/12'ydi: notta tutar ekranda "₺2.
 
 ## 8. BAŞ MİMAR KARARI GEREKİYOR / ÖNERİ
 1. Karar (6) için öneri (ön izlemenin zincire uyması): en temiz çözüm ön izlemede "önceki KDV'li ay mahsup edilmeden sonraki ay mahsup edilemez" ENGELİ (bugün yalnız uyarı: "X mahsup edilmedi; … önce X ayını mahsup etmeniz önerilir"). Böylece kopuk zincir hiç oluşmaz, mahsuplu aylarda rapor = ön izleme = defter her zaman. Hareketsiz aylar engel sayılmamalı (fişsiz geçilebiliyor). Fiş davranışı değiştiği için kullanıcı kararı gerekir; bu turda kodlanmadı.
-2. "Mahsup Edilmemiş Ay" kapsamı genişledi (§A.4): zincirde aralıktan önceki bütün mahsupsuz KDV'li aylar sayıları etkilediği için hepsi listelenir (en eskiden; en çok 6 + "ve N ay daha"). Mahsup fişini hiç kullanmayan şirkette not her raporda uzun kalır (100 bin verisinde yıllık raporda "Aralık 2025, Ocak 2026 … ve N ay daha"). Kısaltma (yalnız "N ay mahsup edilmedi") ana oturumun kararına.
+2. "Mahsup Edilmemiş Ay" kapsamı genişledi (§A.4): zincirde aralıktan önceki bütün mahsupsuz KDV'li aylar sayıları etkilediği için hepsi listelenir (en eskiden; en çok 6 + "ve N ay daha"). Mahsup fişini hiç kullanmayan şirkette not her raporda uzun kalır (100 bin verisinde yıllık raporda "Ekim 2022, … Mart 2023 ve 42 ay daha"). Kısaltma (yalnız "N ay mahsup edilmedi") ana oturumun kararına.
 3. Ay satırlarındaki aralık ve "Sonraki Döneme Devreden" kuralları tur 1 §8 ile AYNEN (karar (5)); D7 mutantının gösterdiği fark (son KDV'li ayın sonucu ↔ zincirin taşıdığı) yalnız S-M1-3 durumunda ayrışır ve A = B kuralıyla son KDV'li ayın sonucu seçildi.
 
 ## 9. SONRAKİ SÜRÜME
