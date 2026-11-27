@@ -1,0 +1,190 @@
+TAP version 13
+# (node:28942) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden
+    # Subtest: S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel
+    ok 1 - S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel
+      ---
+      duration_ms: 146.748679
+      type: 'test'
+      ...
+    # Subtest: MA (001): Mayıs ödenecek 60 (1.200 − 1.140); Mart / Nisan devreden 1.140 taşınır; Eylül ödenecek 0, sonraki 1.960 (kâhin: mali müşavir)
+    ok 2 - MA (001): Mayıs ödenecek 60 (1.200 − 1.140); Mart / Nisan devreden 1.140 taşınır; Eylül ödenecek 0, sonraki 1.960 (kâhin: mali müşavir)
+      ---
+      duration_ms: 165.729906
+      type: 'test'
+      ...
+    # Subtest: MA (001) yıllık 2026: Önceki 0, Ödenecek 60, Sonraki 1.960 = defterdeki 190; ay ay satırlar kendi devreden / ödenecek değeriyle; ekran = PDF = Excel
+    ok 3 - MA (001) yıllık 2026: Önceki 0, Ödenecek 60, Sonraki 1.960 = defterdeki 190; ay ay satırlar kendi devreden / ödenecek değeriyle; ekran = PDF = Excel
+      ---
+      duration_ms: 115.513552
+      type: 'test'
+      ...
+    # Subtest: boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen
+    ok 4 - boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen
+      ---
+      duration_ms: 56.837135
+      type: 'test'
+      ...
+    # Subtest: mahsup fişi kesilmemiş ay (S-M1-1 = B): rapor ZİNCİRLİ + 'Mahsup Edilmemiş Ay' notu, ön izleme defterden; mahsup kesilince / geri alınınca / yeniden kesilince rapor sayısı aynı
+    ok 5 - mahsup fişi kesilmemiş ay (S-M1-1 = B): rapor ZİNCİRLİ + 'Mahsup Edilmemiş Ay' notu, ön izleme defterden; mahsup kesilince / geri alınınca / yeniden kesilince rapor sayısı aynı
+      ---
+      duration_ms: 396.423378
+      type: 'test'
+      ...
+    # Subtest: ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)
+    ok 6 - ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)
+      ---
+      duration_ms: 186.564814
+      type: 'test'
+      ...
+    # Subtest: iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş
+    ok 7 - iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş
+      ---
+      duration_ms: 292.805503
+      type: 'test'
+      ...
+    # Subtest: S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800
+    ok 8 - S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800
+      ---
+      duration_ms: 114.858828
+      type: 'test'
+      ...
+# (node:28942) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not
+    ok 9 - kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not
+      ---
+      duration_ms: 475.248707
+      type: 'test'
+      ...
+    # Subtest: yetki: finans raporu yetkisi olmayan 403; muhasebe aynı sayıları görür
+    ok 10 - yetki: finans raporu yetkisi olmayan 403; muhasebe aynı sayıları görür
+      ---
+      duration_ms: 291.600689
+      type: 'test'
+      ...
+    1..10
+ok 1 - 2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden
+  ---
+  duration_ms: 4149.368361
+  type: 'suite'
+  ...
+# (node:28943) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilecek KDV (S-DKM1-1 = A) ve S4 emilimiyle kopuk fiş (dar kontrol L)
+    # Subtest: 001 kararın örneği: Ocak 500 / Şubat 700 / Mart 400 (fişten), Ocak–Mart Ödenecek 1.600 = fişler = 391; Ocak'ta not; ön izleme ve defter değişmez; ekran = PDF = Excel
+    ok 1 - 001 kararın örneği: Ocak 500 / Şubat 700 / Mart 400 (fişten), Ocak–Mart Ödenecek 1.600 = fişler = 391; Ocak'ta not; ön izleme ve defter değişmez; ekran = PDF = Excel
+      ---
+      duration_ms: 281.691437
+      type: 'test'
+      ...
+    # Subtest: 001 aralığın kenarları: Ocak–Şubat 1.200, Şubat–Mart 1.100 (notsuz), Tüm Zamanlar 1.600, Mart–Nisan önceki 0; gelecek ay devreden 0
+    ok 2 - 001 aralığın kenarları: Ocak–Şubat 1.200, Şubat–Mart 1.100 (notsuz), Tüm Zamanlar 1.600, Mart–Nisan önceki 0; gelecek ay devreden 0
+      ---
+      duration_ms: 37.008407
+      type: 'test'
+      ...
+    # Subtest: 002 mahsupsuz Şubat İndirilecek KDV'deki azalmayı zincirde düşer (S4 emilimi): Şubat 700, Mart 400, Şubat–Mart 1.100 — Mart ikinci kez düşmez
+    ok 3 - 002 mahsupsuz Şubat İndirilecek KDV'deki azalmayı zincirde düşer (S4 emilimi): Şubat 700, Mart 400, Şubat–Mart 1.100 — Mart ikinci kez düşmez
+      ---
+      duration_ms: 42.814349
+      type: 'test'
+      ...
+    # Subtest: 002 dar kontrol L: Şubat atlanıp Mart fişi defter sırasıyla (azalmayı yeniden düşerek) 900 kesilir → rapor zinciri gösterir (Mart 400, Ocak–Mart 1.600) + 'Zincirle Uyuşmayan Mahsup Fişi'; onarım
+    ok 4 - 002 dar kontrol L: Şubat atlanıp Mart fişi defter sırasıyla (azalmayı yeniden düşerek) 900 kesilir → rapor zinciri gösterir (Mart 400, Ocak–Mart 1.600) + 'Zincirle Uyuşmayan Mahsup Fişi'; onarım
+      ---
+      duration_ms: 159.019347
+      type: 'test'
+      ...
+    # Subtest: 001 mahsubu geri alınan ay: Mart, Şubat, Ocak sırayla geri alınır — toplam her adımda 1.600; Ocak geri alınınca Ocak 1.000 / Şubat 200 (bugünkü kayıtlar), not kalkar; yeniden kesilince 1.000 / 200 / 400
+    ok 5 - 001 mahsubu geri alınan ay: Mart, Şubat, Ocak sırayla geri alınır — toplam her adımda 1.600; Ocak geri alınınca Ocak 1.000 / Şubat 200 (bugünkü kayıtlar), not kalkar; yeniden kesilince 1.000 / 200 / 400
+      ---
+      duration_ms: 138.170783
+      type: 'test'
+      ...
+    1..5
+ok 2 - 2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilecek KDV (S-DKM1-1 = A) ve S4 emilimiyle kopuk fiş (dar kontrol L)
+  ---
+  duration_ms: 2970.933399
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur — KDV Özeti: yön notu (S-M1-2), yıl dönümünde azalan ay, sonraki fişten sonra gelen azalma, 'Mahsup Edilmemiş Ay' 6 ay sınırı
+    # Subtest: 001 S-M1-2: fiş 'sonraki döneme devreden 1.000', zincir 'ödenecek 800' → rapor zinciri (200 / 800 / 0) gösterir, not yön farkını da yazar; ön izleme değişmez
+    ok 1 - 001 S-M1-2: fiş 'sonraki döneme devreden 1.000', zincir 'ödenecek 800' → rapor zinciri (200 / 800 / 0) gösterir, not yön farkını da yazar; ön izleme değişmez
+      ---
+      duration_ms: 107.799541
+      type: 'test'
+      ...
+    # Subtest: 001 yıl dönümü: Aralık 2026 fişi (ödenecek 400), Aralık alışı Ocak'ta iptal → Aralık 400 (fişten) + not; Ocak 2027 200 + 200 = 400; Bu Yıl 400; 2026 yılı 1.200; Aralık–Ocak 800 = 391
+    ok 2 - 001 yıl dönümü: Aralık 2026 fişi (ödenecek 400), Aralık alışı Ocak'ta iptal → Aralık 400 (fişten) + not; Ocak 2027 200 + 200 = 400; Bu Yıl 400; 2026 yılı 1.200; Aralık–Ocak 800 = 391
+      ---
+      duration_ms: 171.698436
+      type: 'test'
+      ...
+    # Subtest: 002 azalma sonraki ayın fişinden SONRA: Ocak 500 (fişten, not), Şubat 200 (fişten, NOT YOK — Şubat'ın kaydı değişmedi), Mart 900 (zincirde, azalmayı düşer); Ocak–Mart 1.600
+    ok 3 - 002 azalma sonraki ayın fişinden SONRA: Ocak 500 (fişten, not), Şubat 200 (fişten, NOT YOK — Şubat'ın kaydı değişmedi), Mart 900 (zincirde, azalmayı düşer); Ocak–Mart 1.600
+      ---
+      duration_ms: 20.150937
+      type: 'test'
+      ...
+    # Subtest: 002 'Mahsup Edilmemiş Ay' en çok 6 ay: Ekim (6 ay: Nisan–Eylül, eksiksiz) ve Kasım (7 ay: 6 ay + 've 1 ay daha')
+    ok 4 - 002 'Mahsup Edilmemiş Ay' en çok 6 ay: Ekim (6 ay: Nisan–Eylül, eksiksiz) ve Kasım (7 ay: 6 ay + 've 1 ay daha')
+      ---
+      duration_ms: 9.32794
+      type: 'test'
+      ...
+    1..4
+ok 3 - 2.5.1 M1 küçük tur — KDV Özeti: yön notu (S-M1-2), yıl dönümünde azalan ay, sonraki fişten sonra gelen azalma, 'Mahsup Edilmemiş Ay' 6 ay sınırı
+  ---
+  duration_ms: 2254.063066
+  type: 'suite'
+  ...
+# (node:28949) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B)
+    # Subtest: 001 hiç mahsup fişi yok: ay ay zincir (elle), yıl 0 / 500 / 200, Mart–Mayıs 1.000 / 500 / 400; ön izleme defterden (değişmedi); not bütün mahsupsuz ayları söyler
+    ok 1 - 001 hiç mahsup fişi yok: ay ay zincir (elle), yıl 0 / 500 / 200, Mart–Mayıs 1.000 / 500 / 400; ön izleme defterden (değişmedi); not bütün mahsupsuz ayları söyler
+      ---
+      duration_ms: 311.547878
+      type: 'test'
+      ...
+    # Subtest: 001 aylar SIRAYLA mahsup edilir: her adımda rapor aynı (zincir mahsuptan bağımsız); sonunda rapor = ön izleme = fiş = 190 (A = B)
+    ok 2 - 001 aylar SIRAYLA mahsup edilir: her adımda rapor aynı (zincir mahsuptan bağımsız); sonunda rapor = ön izleme = fiş = 190 (A = B)
+      ---
+      duration_ms: 396.642647
+      type: 'test'
+      ...
+    # Subtest: 002 kopuk zincir: Şubat atlanıp Mart mahsup edilmiş → rapor zinciri gösterir (Mart 1.600 / 0 / 600) + 'Zincirle Uyuşmayan Mahsup Fişi' notu; ön izleme ve defter değişmez
+    ok 3 - 002 kopuk zincir: Şubat atlanıp Mart mahsup edilmiş → rapor zinciri gösterir (Mart 1.600 / 0 / 600) + 'Zincirle Uyuşmayan Mahsup Fişi' notu; ön izleme ve defter değişmez
+      ---
+      duration_ms: 339.750215
+      type: 'test'
+      ...
+    # Subtest: iki şirket karışmaz: 001'in mahsupları 002'nin zincirine, 002'ninki 001'e girmez
+    ok 4 - iki şirket karışmaz: 001'in mahsupları 002'nin zincirine, 002'ninki 001'e girmez
+      ---
+      duration_ms: 11.076381
+      type: 'test'
+      ...
+    # Subtest: 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu
+    ok 5 - 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu
+      ---
+      duration_ms: 69.169457
+      type: 'test'
+      ...
+    1..5
+ok 4 - 2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B)
+  ---
+  duration_ms: 2808.154358
+  type: 'suite'
+  ...
+1..4
+# tests 24
+# suites 4
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5871.381175

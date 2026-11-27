@@ -1,0 +1,92 @@
+### 1 taban yeni senaryo · 15:42:37 · yük 3.82 4.25 4.94
+== senaryo-kdv-mahsup-sonrasi-251 3.82 4.25 4.94 6/248 31339
+  ✗ Ocak–Mart özet kartları 0 / 1.600 / 0 (taban 2.100) ({"Hesaplanan KDV (391) (İadeler Düşülmüş)":"₺1.600,00","İndirilecek KDV (191) (İadeler Düşülmüş)":"₺0,00","Alıcı Olarak Kesilen Tevkifat (2 No.lu)":"₺0,00","Önceki Dönemden Devreden KDV":"₺0,00","Ödenecek KDV":"₺2.100,00","Sonraki Döneme Devreden KDV":"₺0,00","KDV Mahsup Fişi":"Ocak 2026, Şubat 2026, Mart 2026"})
+  ✗ ay satırları Ocak 500 / Şubat 700 / Mart 400 ([["Ocak 2026","Ödenecek KDV","1000,00"],["Şubat 2026","Ödenecek KDV","700,00"],["Mart 2026","Ödenecek KDV","400,00"]])
+  ✗ Ocak notu: undefined
+  ✗ not kartı tam genişlik, normal yazı (undefined · kutu 955)
+  ✗ tablo altı ya kutunun görünen alanında ya da (kutunun yarısından yüksekse) tablonun sonunda ({"rows":4,"overlap":[],"hidden":["Önceki Dönemden Devreden KDV","Ödenecek KDV","Sonraki Döneme Devreden KDV"],"boxHeight":310,"footHeight":158,"overflow":true,"free":false})
+  ✗ Ocak 0 / 500 / 0 (fişten; taban 1.000) ({"summary":["0,00","1000,00","0,00"],"foot":["0,00","1000,00","0,00"]})
+  ✗ Bu Yıl (1024 × 560) 0 / 1.600 / 0 ({"summary":["0,00","2100,00","0,00"],"foot":["0,00","2100,00","0,00"]})
+  ✗ Bu Yıl (1024 × 560): TOPLAM ve Önceki Dönemden Devreden dahil bütün satırlar okunur ({"rows":4,"overlap":[],"hidden":["","Önceki Dönemden Devreden KDV","Ödenecek KDV","Sonraki Döneme Devreden KDV"],"boxHeight":280,"footHeight":197,"overflow":true,"free":false})
+✗ senaryo-kdv-mahsup-sonrasi-251: 5 geçti, 8 kaldı
+[kanit] başarısız testler (9):
+  ✖ senaryo-kdv-mahsup-sonrasi-251: 5 geçti, 8 kaldı
+[kanit] m1k-e2e-taban-senaryo-kdv-mahsup-sonrasi-251: BAŞARISIZ (çıkış 1; 8 başarısız, 0 iptal) · çıkış 1 · 5/13 geçti, 8 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+### 2 yeni bütün ekran senaryoları · 15:42:45 · yük 4.16 4.31 4.95
+== senaryo-kdv-mahsup-sonrasi-251 4.16 4.31 4.95 5/251 31443
+✓ senaryo-kdv-mahsup-sonrasi-251: 13 geçti, 0 kaldı
+[kanit] m1k-e2e-yeni-senaryo-kdv-mahsup-sonrasi-251: GEÇTİ · çıkış 0 · 13/13 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-kdv-zincir-251 4.87 4.46 4.99 5/247 31561
+✓ senaryo-kdv-zincir-251: 12 geçti, 0 kaldı
+[kanit] m1k-e2e-yeni-senaryo-kdv-zincir-251: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-kdv-devreden-251 5.27 4.56 5.02 5/249 31685
+✓ senaryo-kdv-devreden-251: 14 geçti, 0 kaldı
+[kanit] m1k-e2e-yeni-senaryo-kdv-devreden-251: GEÇTİ · çıkış 0 · 14/14 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-kdv-donemi-250 5.46 4.63 5.04 6/246 31803
+✓ senaryo-kdv-donemi-250: 23 geçti, 0 kaldı
+[kanit] m1k-e2e-yeni-senaryo-kdv-donemi-250: GEÇTİ · çıkış 0 · 23/23 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-defter-243 6.16 4.86 5.11 6/250 31934
+✓ senaryo-defter-243: 33 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-af4f8faccec231727 · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-af4f8faccec231727/test/e2e/artifacts/senaryo-defter-243
+[kanit] m1k-e2e-yeni-senaryo-defter-243: GEÇTİ · çıkış 0 · 33/33 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-c7b-kabul-250 6.77 5.22 5.22 4/171 32538
+✓ senaryo-c7b-kabul-250: 39 geçti, 0 kaldı
+[kanit] m1k-e2e-yeni-senaryo-c7b-kabul-250: GEÇTİ · çıkış 0 · 39/39 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-mobil-247 6.63 5.35 5.26 6/249 605
+77 geçti, 0 kaldı
+[kanit] m1k-e2e-yeni-senaryo-mobil-247: GEÇTİ · çıkış 0 · 77/77 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-banka-210 6.02 5.29 5.24 5/248 746
+TAMAM: 429 denetim geçti, 0 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-af4f8faccec231727/test/e2e/artifacts/senaryo-banka-210
+[kanit] m1k-e2e-yeni-senaryo-banka-210: GEÇTİ · çıkış 0 · 429/429 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+### 3a komşu utc · 15:51:35 · yük 3.44 4.76 5.11
+# tests 613
+# pass 613
+# fail 0
+[kanit] m1k-komsu-utc: GEÇTİ · çıkış 0 · 613/613 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+### 3b komşu ist · 15:54:34 · yük 4.59 4.64 4.99
+# tests 613
+# pass 613
+# fail 0
+[kanit] m1k-komsu-ist: GEÇTİ · çıkış 0 · 613/613 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+### 4 kahin-defter taban UTC · 15:57:22 · yük 3.96 4.38 4.84
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-2ghZ9P
+
+[kanit] m1k-kahin-defter-taban-utc: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+### 4 kahin-defter taban Europe/Istanbul · 15:57:27 · yük 3.88 4.36 4.83
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-dC04aZ
+
+[kanit] m1k-kahin-defter-taban-ist: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+### 4 kahin-defter yeni UTC · 15:57:32 · yük 3.73 4.32 4.81
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-4D7i5I
+
+[kanit] m1k-kahin-defter-yeni-utc: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+### 4 kahin-defter yeni Europe/Istanbul · 15:57:37 · yük 3.67 4.30 4.80
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-c7sPUN
+
+[kanit] m1k-kahin-defter-yeni-ist: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ef0ccf1 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+### 5 ön izleme / fiş taban = yeni · 15:57:43 · yük 3.54 4.26 4.79
+taban UTC çıkış 0 · 54 satır
+yeni UTC çıkış 0 · 54 satır
+UTC: ön izleme / fiş satırı taban 26 · yeni 26 · BİREBİR EVET
+  rapor satırlarında fark (bu turun işi): 4 — L.mart-rapor, L.ocak-mart, L2.aylar, L2.ocak-mart
+taban Europe/Istanbul çıkış 0 · 54 satır
+yeni Europe/Istanbul çıkış 0 · 54 satır
+Europe/Istanbul: ön izleme / fiş satırı taban 26 · yeni 26 · BİREBİR EVET
+  rapor satırlarında fark (bu turun işi): 4 — L.mart-rapor, L.ocak-mart, L2.aylar, L2.ocak-mart
+### 6 karma yoklama · 15:58:11 · yük 2.87 4.03 4.69
+-- taban
+(Use `node --trace-warnings ...` to show where the warning was created)
+Ocak fişi (önceki / ödenecek / sonraki) [ 0, 50000, 0 ]
+Şubat fişi [ 0, 70000, 0 ]
+fişler (ay, ödenecek, güncel değil) [["2026-01",50000,true],["2026-02",70000,false]]
+Ocak raporu {"three":[0,110000,0],"h391":110000,"h191":0,"notes":[["KDV Mahsup Fişi","Ocak 2026"],["Mahsuptan Sonra Değişen Ay","Ocak 2026 (mahsubu geri alıp yeniden yapın)"]]}
+Şubat raporu {"three":[0,70000,0],"h391":20000,"h191":0,"notes":[["KDV Mahsup Fişi","Şubat 2026"]]}
+Ocak–Şubat raporu {"three":[0,180000,0],"h391":130000,"h191":0,"notes":[["KDV Mahsup Fişi","Ocak 2026, Şubat 2026"],["Mahsuptan Sonra Değişen Ay","Ocak 2026 (mahsubu geri alıp yeniden yapın)"]]}
+-- yeni
+(Use `node --trace-warnings ...` to show where the warning was created)
+Ocak fişi (önceki / ödenecek / sonraki) [ 0, 50000, 0 ]
+Şubat fişi [ 0, 70000, 0 ]
+fişler (ay, ödenecek, güncel değil) [["2026-01",50000,true],["2026-02",70000,false]]
+Ocak raporu {"three":[0,110000,0],"h391":110000,"h191":0,"notes":[["KDV Mahsup Fişi","Ocak 2026"],["Mahsuptan Sonra Değişen Ay","Ocak 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)"]]}
+Şubat raporu {"three":[0,70000,0],"h391":20000,"h191":0,"notes":[["KDV Mahsup Fişi","Şubat 2026"]]}
+Ocak–Şubat raporu {"three":[0,180000,0],"h391":130000,"h191":0,"notes":[["KDV Mahsup Fişi","Ocak 2026, Şubat 2026"],["Mahsuptan Sonra Değişen Ay","Ocak 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)"]]}
+### BİTTİ · 15:58:13 · yük 2.87 4.03 4.69

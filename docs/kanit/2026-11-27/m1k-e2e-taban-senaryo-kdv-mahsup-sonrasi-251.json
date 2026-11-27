@@ -1,0 +1,78 @@
+{
+  "ad": "m1k-e2e-taban-senaryo-kdv-mahsup-sonrasi-251",
+  "komut": "node test/e2e/senaryo-kdv-mahsup-sonrasi-251.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T15:58:29.837Z",
+  "sure_sn": 7.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 13,
+    "gecen": 5,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ocak–Mart özet kartları 0 / 1.600 / 0 (taban 2.100) ({\"Hesaplanan KDV (391) (İadeler Düşülmüş)\":\"₺1.600,00\",\"İndirilecek KDV (191) (İadeler Düşülmüş)\":\"₺0,00\",\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\":\"₺0,00\",\"Önceki Dönemden Devreden KDV\":\"₺0,00\",\"Ödenecek KDV\":\"₺2.100,00\",\"Sonraki Döneme Devreden ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ay satırları Ocak 500 / Şubat 700 / Mart 400 ([[\"Ocak 2026\",\"Ödenecek KDV\",\"1000,00\"],[\"Şubat 2026\",\"Ödenecek KDV\",\"700,00\"],[\"Mart 2026\",\"Ödenecek KDV\",\"400,00\"]])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ocak notu: undefined",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "not kartı tam genişlik, normal yazı (undefined · kutu 955)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "tablo altı satırları üst üste binmiyor ({\"rows\":4,\"overlap\":[\"Önceki Dönemden Devreden KDV\",\"Ödenecek KDV\",\"Sonraki Döneme Devreden KDV\"],\"hidden\":[],\"boxHeight\":310,\"footHeight\":158,\"overflow\":true,\"free\":false})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ocak 0 / 500 / 0 (fişten; taban 1.000) ({\"summary\":[\"0,00\",\"1000,00\",\"0,00\"],\"foot\":[\"0,00\",\"1000,00\",\"0,00\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Bu Yıl (1024 × 560) 0 / 1.600 / 0 ({\"summary\":[\"0,00\",\"2100,00\",\"0,00\"],\"foot\":[\"0,00\",\"2100,00\",\"0,00\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Bu Yıl (1024 × 560): TOPLAM ve Önceki Dönemden Devreden dahil bütün satırlar okunur ({\"rows\":4,\"overlap\":[\"Önceki Dönemden Devreden KDV\",\"Ödenecek KDV\",\"Sonraki Döneme Devreden KDV\"],\"hidden\":[],\"boxHeight\":280,\"footHeight\":197,\"overflow\":true,\"free\":false})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-kdv-mahsup-sonrasi-251: 5 geçti, 8 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k/kanit/2026-11-27/m1k-e2e-taban-senaryo-kdv-mahsup-sonrasi-251.log",
+  "klasor": "/dev/shm/m1k-kdv/eski",
+  "ham_cikti_sha256": "be1300de8f91e320a921651a15b88273d53d393e65306abdc4027252d992a469",
+  "ham_cikti_bayt": 2670
+}

@@ -1,0 +1,78 @@
+{
+  "ad": "m1k-yeni-test-taban-ist",
+  "komut": "node --test test/kdv-ozeti-mahsup-sonrasi-251.test.mjs test/kdv-ozeti-zincir-251.test.mjs test/kdv-ozeti-devreden-251.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T15:39:31.645Z",
+  "sure_sn": 5.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 15,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:306:3",
+      "hata": "Mart fişten · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilecek KDV (S-DKM1-1 = A) ve S4 emilimiyle kopuk fiş (dar kontrol L) › 001 kararın örneği: Ocak 500 / Şubat 700 / Mart 400 (fişten), Ocak–Mart Ödenecek 1.600 = fişler = 391; Ocak'ta not; ön izleme ve defter değişmez; ekran = PDF = Excel",
+      "konum": "test/kdv-ozeti-mahsup-sonrasi-251.test.mjs:147:3",
+      "hata": "Ocak sonucu kesilmiş fişten (taban: bugünkü kayıtlarla 1.000) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.000,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"1.000,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Ocak 2026\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilecek KDV (S-DKM1-1 = A) ve S4 emilimiyle kopuk fiş (dar kontrol L) › 001 aralığın kenarları: Ocak–Şubat 1.200, Şubat–Mart 1.100 (notsuz), Tüm Zamanlar 1.600, Mart–Nisan önceki 0; gelecek ay devreden 0",
+      "konum": "test/kdv-ozeti-mahsup-sonrasi-251.test.mjs:173:3",
+      "hata": "Ocak–Şubat (aralık azalan ayla başlar) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilecek KDV (S-DKM1-1 = A) ve S4 emilimiyle kopuk fiş (dar kontrol L) › 002 dar kontrol L: Şubat atlanıp Mart fişi defter sırasıyla (azalmayı yeniden düşerek) 900 kesilir → rapor zinciri gösterir (Mart 400, Ocak–Mart 1.600) + 'Zincirle Uyuşmayan Mahsup Fişi'; onarım",
+      "konum": "test/kdv-ozeti-mahsup-sonrasi-251.test.mjs:193:3",
+      "hata": "Mart notu (taban: not yok) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"400,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"400,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Mart 2026\"],[\"Mahsup Edilmemiş Ay\",\"Şubat 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)\"]] · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilecek KDV (S-DKM1-1 = A) ve S4 emilimiyle kopuk fiş (dar kontrol L) › 001 mahsubu geri alınan ay: Mart, Şubat, Ocak sırayla geri alınır — toplam her adımda 1.600; Ocak geri alınınca Ocak 1.000 / Şubat 200 (bugünkü kayıtlar), not kalkar; yeniden kesilince 1.000 / 200 / 400",
+      "konum": "test/kdv-ozeti-mahsup-sonrasi-251.test.mjs:217:3",
+      "hata": "Mart geri alındı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur — KDV Özeti: yön notu (S-M1-2), yıl dönümünde azalan ay, sonraki fişten sonra gelen azalma, 'Mahsup Edilmemiş Ay' 6 ay sınırı › 001 S-M1-2: fiş 'sonraki döneme devreden 1.000', zincir 'ödenecek 800' → rapor zinciri (200 / 800 / 0) gösterir, not yön farkını da yazar; ön izleme değişmez",
+      "konum": "test/kdv-ozeti-mahsup-sonrasi-251.test.mjs:267:3",
+      "hata": "yön notu (taban: yön farkı yazılmıyor) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.000,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"200,00 TL\"],[\"Ödenecek KDV\",\"800,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Mart 2026\"],[\"Mahsup Edilmemiş Ay\",\"Şubat 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)\"],[\"Zincirle Uyuşmayan Mahsup Fişi\",\"Mart 2026 fişi 2.000,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)\"]] · + actual - expected · + 'Mart 2026 fişi 2.000,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)' (beklenen Mart 2026 fişi 2.000,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı; fiş sonraki döneme devreden KDV 1.000,00 TL yazmış, sırayla mahsupta ödenecek KDV 800,00 TL çıkar (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin), gelen Mart 2026 fişi 2.000,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin))"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur — KDV Özeti: yön notu (S-M1-2), yıl dönümünde azalan ay, sonraki fişten sonra gelen azalma, 'Mahsup Edilmemiş Ay' 6 ay sınırı › 001 yıl dönümü: Aralık 2026 fişi (ödenecek 400), Aralık alışı Ocak'ta iptal → Aralık 400 (fişten) + not; Ocak 2027 200 + 200 = 400; Bu Yıl 400; 2026 yılı 1.200; Aralık–Ocak 800 = 391",
+      "konum": "test/kdv-ozeti-mahsup-sonrasi-251.test.mjs:283:3",
+      "hata": "Aralık fişi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur — KDV Özeti: yön notu (S-M1-2), yıl dönümünde azalan ay, sonraki fişten sonra gelen azalma, 'Mahsup Edilmemiş Ay' 6 ay sınırı › 002 azalma sonraki ayın fişinden SONRA: Ocak 500 (fişten, not), Şubat 200 (fişten, NOT YOK — Şubat'ın kaydı değişmedi), Mart 900 (zincirde, azalmayı düşer); Ocak–Mart 1.600",
+      "konum": "test/kdv-ozeti-mahsup-sonrasi-251.test.mjs:305:3",
+      "hata": "Ocak fişten · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B) › 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu",
+      "konum": "test/kdv-ozeti-zincir-251.test.mjs:236:3",
+      "hata": "Haziran mahsubu güncel değil (S-M1-3 = C: sayılar bugünkü kayıtlardan + not) · + actual - expected · + 'Haziran 2026 (mahsubu geri alıp yeniden yapın)' (beklenen Haziran 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin), gelen Haziran 2026 (mahsubu geri alıp yeniden yapın))"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k/kanit/2026-11-27/m1k-yeni-test-taban-ist.log",
+  "klasor": "/dev/shm/m1k-kdv/eski",
+  "ham_cikti_sha256": "b2f4bf36bca8529954a8616852f9db2eee278f38280d09d7e4daa1d6d0f063fc",
+  "ham_cikti_bayt": 23822
+}
