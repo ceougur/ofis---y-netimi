@@ -1,0 +1,26 @@
+(node:17945) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+# v2.5.0 verisi: 001 300 müşteri + 40 tedarikçi, 3808 işlem; 002 1288 işlem; 459 sn
+(node:17945) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 1 - 001: üç ön izleme bitti (done/done/done) ""
+ok 2 - 001: planın sorunu yok []
+ok 3 - 001: bütün değişmezler tutar (12) []
+ok 4 - 001: iki koşu bayt bayt aynı plan
+ok 5 - 001: ön denetimde DURDURUR yok ()
+ok 6 - 001: iki seçenekte açık kalemler ve net aynı
+ok 7 - 001: B tablolarında ≤K + >K = devir öncesi
+# 001: cari 340 kart / 340 açılış · açık fatura satış 707 (502886.82) alış 181 · açık kalem 119 · stok 20 ürün 436234.97 · kasa 703330 · Dönem Net Kârı 670657.65 · hareket ≤K 10420 >K 800 · süre {"okuma":25.9,"yevmiye":129.7,"tekBorcSirasi":187.6,"degerleme":19.2,"onDenetim":67.7,"plan":77.1,"rapor":14.7,"toplam":523.1}
+ok 8 - 001: devirsiz eşdeğer — 4080 karşılaştırma (cari × gün × seçenek), fark 0 []
+ok 9 - 002: üç ön izleme bitti (done/done/done) ""
+ok 10 - 002: planın sorunu yok []
+ok 11 - 002: bütün değişmezler tutar (12) []
+ok 12 - 002: iki koşu bayt bayt aynı plan
+ok 13 - 002: ön denetimde DURDURUR yok ()
+ok 14 - 002: iki seçenekte açık kalemler ve net aynı
+ok 15 - 002: B tablolarında ≤K + >K = devir öncesi
+# 002: cari 110 kart / 110 açılış · açık fatura satış 230 (161979.59) alış 41 · açık kalem 36 · stok 8 ürün 139528.99 · kasa 264136 · Dönem Net Kârı 208526.34 · hareket ≤K 3466 >K 266 · süre {"okuma":13.3,"yevmiye":79.6,"tekBorcSirasi":86,"degerleme":7.2,"onDenetim":15.9,"plan":39.9,"rapor":9.3,"toplam":252.7}
+ok 16 - 002: 001'in carileri planda yok
+# tests 16
+# pass 16
+# fail 0

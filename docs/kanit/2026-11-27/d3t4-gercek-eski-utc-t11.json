@@ -1,0 +1,43 @@
+{
+  "ad": "d3t4-gercek-eski-utc-t11",
+  "komut": "node --disable-warning=ExperimentalWarning test/devir-d3-gercek-veri.mjs --eski /dev/shm/d3t4-k4/v250 --tohum 11",
+  "commit": "54eeb87aab7b65789cac8150ba8a249837996e72",
+  "dal": "HEAD",
+  "kirli": 2,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T17:48:07.006Z",
+  "sure_sn": 920,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 22,
+    "gecen": 20,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "001: devirsiz eşdeğer — 3684 karşılaştırma (cari × gün × seçenek), fark 60 [{\"cari\":\"account-c105b981-fe0a-4814-8019-a5198c53b114\",\"day\":\"2027-01-01\",\"devirsiz\":40800,\"devirli\":28000,\"kalemDevirsiz\":[\"2026-12-22|40800\",\"2027-01-19|111740\"],\"kalemDevirli\":[\"2026-12-22|28000\",\"2027-01-19|124540\"],\"sinceDevirsiz\":\"2026-12-22\",\"sinceDevirli\":\"2026-12-22\"},{\"cari\":\"account-c105b981-fe0a-4814-8019-a5198c53b114\",\"day\":\"2027-01-02\",\"devirsiz\":40800,\"devirli\":28000,\"kalemDevirsiz\":[\"2026-12-22|40800\",\"2027-01-19|111740\"],\"kalemDevirli\":[\"2026-12-22|28000\",\"2027-01-19|124540\"],\"sinceDevirsiz\":\"2026-12-22\",\"sinceDevirli\":\"2026-12-22\"},{\"cari\":\"account-c105b981-fe0a-4814-8019-a5",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "001: S-T2-1 sınıfı — K sonrası mahsubun ≤K belgesi yeni yıla ayrıldı ve carisi devirsiz eşdeğerde (0 cari)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t4/kanit/2026-11-27/d3t4-gercek-eski-utc-t11.log",
+  "klasor": "/dev/shm/d3t4-k4/eski",
+  "ham_cikti_sha256": "5c2c4b8f9c2962be4743a258329627da1c55199e761a5952a35d48d5b6a6cff1",
+  "ham_cikti_bayt": 9556
+}

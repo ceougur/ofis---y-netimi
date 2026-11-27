@@ -1,0 +1,15 @@
+(node:24049) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+# v2.5.0 verisi: 001 300 müşteri + 40 tedarikçi, 3808 işlem; 002 1288 işlem; 367 sn
+(node:24049) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 1 - 001: üç ön izleme bitti (done/done/done) ""
+file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a1207a9fb3d4d1b0f/test/devir-d3-gercek-veri.mjs:143
+  const plan = a.result.plan;
+                        ^
+
+TypeError: Cannot read properties of undefined (reading 'plan')
+    at file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a1207a9fb3d4d1b0f/test/devir-d3-gercek-veri.mjs:143:25
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.4

@@ -1,0 +1,32 @@
+{
+  "ad": "d3t3-gercek-utc-t11",
+  "komut": "node test/devir-d3-gercek-veri.mjs --eski /dev/shm/d3t3-k3/v250 --tohum 11",
+  "commit": "b7b90e6e9ca43be24300e00f7418b72c1059757e",
+  "dal": "worktree-agent-af273e8dbdb200a7c",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T15:20:45.643Z",
+  "sure_sn": 939.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t3/kanit/2026-11-27/d3t3-gercek-utc-t11.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af273e8dbdb200a7c",
+  "ham_cikti_sha256": "d4ac165c16bf60e37e6fdd3f66bad3253e8f63f1833a5f10a1086bece1f68c00",
+  "ham_cikti_bayt": 9350
+}

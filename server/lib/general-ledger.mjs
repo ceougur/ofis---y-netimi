@@ -562,8 +562,10 @@ export function journal(rows) {
     const control = plan.accountType ? CONTROL[plan.accountType] || CONTROL.customer : "127";
     // Mevcut borcu taksitlendiren kart ana deftere yeni alacak getirmez (borç caride zaten yazılı).
     // 2.5.0 Ç5-A (KG-5 = A, H-06, M-10; BAŞ MİMAR B5): Excel'den / tablodan yüklenen kart (plans.import_id) AÇILIŞ alacağıdır — TEK madde B CH (T − P) / A 519, P (kartın
-    // "Excel'de ödenmiş (açılış)" satırları) maddesiz; tarih yüklemenin (plan_imports.created_at) YEREL günü (damga yoksa kartın tarihi); açılış sınıfı. Gelir değildir.
-    // BİLİNEN SINIR (B5): kartın Kayıt Tarihi yükleme gününden önceyse cari ekstresinde kart Kayıt Tarihi'nde, defterde yükleme gününde görünür.
+    // "Excel'de ödenmiş (açılış)" satırları) maddesiz; açılış sınıfı. Gelir değildir.
+    // 2.5.1 D3 tur 3 — S-KD-3 = B (KULLANICI KARARI 27.11.2026: "kart ve defter maddesi Kayıt Tarihi'ne göre ESKİ yıla sayılır ... programdaki öbür kayıtlar gibi tarih esas alınır,
+    // yükleme anı değil"): madde kartın KAYIT TARİHİ'nde (plans.registered_on; boşsa oluşturma günü — rows() `date`). Önceden yüklemenin (plan_imports.created_at) yerel günündeydi
+    // (B5 BİLİNEN SINIR: ekstrede Kayıt Tarihi, defterde yükleme günü) — kalktı. Kilitli döneme Kayıt Tarihi düşen kart zaten yüklenmez (routes/plans.mjs lockedStartReason).
     // 2.5.0 Ç5-A tur 1b (S127 = A, "bir olay tek kez yazılır"; C5-ACILIS-TASARIM §12.1): KG-5'ten önceki kuralla donmuş dönemin iki yanına düşen kart (routes/ledger.mjs rows()
     // pinnedOld — lib/ledger-opening.mjs oldRulePinnedPlans) BÜTÜNÜYLE ESKİ YAPISIYLA: kart maddesi Kayıt Tarihi'nde B CH T, açılış satırları (P) kendi günlerinde ayrı madde
     // (aşağıda planEntries) — donmuş defterdeki maddeyle aynı kimlik / tarih / cari tutarı. Karşı hesap güncel açılış hesabı 519 (öbür kilitli kayıtlar gibi; eski ↔ yeni kural
@@ -571,7 +573,7 @@ export function journal(rows) {
     if (!plan.coversBalance && plan.importId && Number(plan.pinnedOld) === 1) post(`plan:${plan.id}`, plan.date, "Taksit kartı açılışı (Excel / tablo)", "Açılış alacağı (yüklenen taksit kartı)", control, OPENING_GL, plan.total);
     else if (!plan.coversBalance && plan.importId) {
       const n = out.length;
-      post(`plan:${plan.id}`, localDayOf(plan.importedAt) || plan.date, "Taksit kartı açılışı (Excel / tablo)", "Açılış alacağı (yüklenen taksit kartı)", control, OPENING_GL, roundMoney((Number(plan.total) || 0) - (Number(plan.openingPaid) || 0)));
+      post(`plan:${plan.id}`, plan.date, "Taksit kartı açılışı (Excel / tablo)", "Açılış alacağı (yüklenen taksit kartı)", control, OPENING_GL, roundMoney((Number(plan.total) || 0) - (Number(plan.openingPaid) || 0)));
       opened(n);
       // 2.5.0 Ç7b (KG-2 = A; H-03): Yeni Borç kartı belgesiz gelirdir — B CH / A 600.90, kart toplamı, KDV ayrılmaz (Ç7b öncesi: 602).
     } else if (!plan.coversBalance) post(`plan:${plan.id}`, plan.date, "Taksit kartı", "Taksitli satış / hizmet", control, UNCLASSIFIED_GL.sale, plan.total);

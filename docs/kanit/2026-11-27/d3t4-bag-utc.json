@@ -1,0 +1,32 @@
+{
+  "ad": "d3t4-bag-utc",
+  "komut": "node --test --test-concurrency=1 test/devir-d3-bag.test.mjs",
+  "commit": "364af23253795dc1eec91574acc1d28a2791b928",
+  "dal": "worktree-agent-a922ed4d1d1297419",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T16:23:53.348Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t4/kanit/2026-11-27/d3t4-bag-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a922ed4d1d1297419",
+  "ham_cikti_sha256": "2c14cbf92daf34d14a72841d3261fca154f5171b5c8914a2510ea7d78e293bfe",
+  "ham_cikti_bayt": 3778
+}

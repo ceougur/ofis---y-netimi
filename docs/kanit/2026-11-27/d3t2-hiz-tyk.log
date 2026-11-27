@@ -1,0 +1,13 @@
+kilit isteği 12:12:10 yük 5.42 5.85 6.03 7/258 12566
+kilit alındı 12:36:03 yük 1.50 2.29 3.62 2/153 20728
+kod /dev/shm/d3t2-t2/olcum · veri /dev/shm/d3t2-t2/veri100k · K 2025-12-31 · şimdi 2026-10-08T12:00:00+03:00 · yük (başta) 1.50 2.29 3.62
+veri: account_entries 102295 · cash_entries 11554 · stock_moves 80136 · plan_entries 8162 · invoices 34026 · fin_events 1091 · cheque_events 20352 · payments 3710 · Σ 261326 · cari 1484
+(1) TEK BORÇ SIRASI bölümü (ms): şüpheli ayırımı 8.2 · ledgerLines 1952.9 · settleTables 622.6 · obligationExtras 243.8 · döngü 7852.5 (süzgeç 45.3 · girdi 396.3 · buildObligations 7399.5) · cari 1484 (≤K satırı olmayan 0) · satır 124025 (K sonrası 24791) · açık kalemsiz cari 0
+    buildObligations İÇİ (ms; ölçüm kopyası): withEditCuts 4.1 · implicitRefunds 585.3 · runQueue "side" (fatura durumu) 3204.4 · runQueue "net" (TYK) 3069.5 · assemble 531 · çağrı 1484
+    cari başına buildObligations (ms): ortanca 2.4 · %90 14.1 · %99 23 · en çok 34 · en pahalı 5: 34 ms / 98 satır / 19 fatura ; 28.2 ms / 101 satır / 24 fatura ; 26.3 ms / 88 satır / 24 fatura ; 25.5 ms / 128 satır / 31 fatura ; 24.9 ms / 128 satır / 31 fatura
+    CPU profili (öz süre, ms; ilk 15): 2282 queueOnce @ lib/obligation-queue.mjs:362 | 1053.1 (garbage collector) @ (yerleşik):0 | 819 add @ lib/obligation-queue.mjs:395 | 456 coverForcing @ lib/obligation-queue.mjs:223 | 351.2 coverEvent @ lib/obligation-queue.mjs:815 | 291.2 arrive @ lib/obligation-queue.mjs:984 | 241.7 addInstallments @ lib/obligation-queue.mjs:416 | 237.1 runQueue @ lib/obligation-queue.mjs:281 | 222.3 roundMoney @ lib/money.mjs:32 | 207.5 (anonim) @ lib/obligation-input.mjs:112 | 191 invoiceLinks @ lib/obligation-queue.mjs:646 | 164.4 assemble @ lib/obligation-queue.mjs:1127 | 132.7 cardOf @ lib/obligation-queue.mjs:409 | 104 (anonim) @ lib/obligation-queue.mjs:375 | 91.3 listFor @ lib/obligation-queue.mjs:781
+    dosya başına öz süre (ms): lib/obligation-queue.mjs 6655.7 · (yerleşik) 1064.9 · lib/obligation-input.mjs 329.2 · lib/money.mjs 222.3 · test/devir-d3-hacim-tyk.mjs 117.1 · lib/cover-scope.mjs 102.7 · lib/invoice-settle.mjs 87.5 · lib/http.mjs 33.8
+(2) devir tarafı (ms): canlı türetme 2264.1 · karma yevmiye 28.5 · değerleme kurulum 433.3 · at(K) 1. 23.9 · at(K) 2. (planın yinelemesi) 6.6 · Bilanço 488.2 · Gelir Tablosu (K yılı) 85.8 · önceki 3 yılın Gelir Tablosu 246.1 · ledgerLines (ikinci kez — karşılaştırma için) 2222.9
+(3) okuyucu 15085.1 ({"okuma":838,"yevmiye":2495,"tekBorcSirasi":9736.1,"degerleme":464.9,"onDenetim":1550.3}) · plan 1293.2
+yük (sonda) 1.18 2.05 3.45 · en yüksek 1 dk yükü 1.5 → ölçüm GEÇERLİ
+flock/ölçüm çıkış 0

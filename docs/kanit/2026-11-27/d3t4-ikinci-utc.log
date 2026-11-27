@@ -1,0 +1,81 @@
+TAP version 13
+# (node:19380) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket)
+    # Subtest: devir yokken: üç neden de YOK (yanlış durdurma yok)
+    ok 1 - devir yokken: üç neden de YOK (yanlış durdurma yok)
+      ---
+      duration_ms: 348.979235
+      type: 'test'
+      ...
+    # Subtest: y-1: aynı yıl (dosya ayarı + arşiv kaydı) → DURDURUR 'Bu Yıl Zaten Devredildi'; çare Devri Yenile / Devri Geri Al; dört alan
+    ok 2 - y-1: aynı yıl (dosya ayarı + arşiv kaydı) → DURDURUR 'Bu Yıl Zaten Devredildi'; çare Devri Yenile / Devri Geri Al; dört alan
+      ---
+      duration_ms: 439.180524
+      type: 'test'
+      ...
+    # Subtest: y-4: ayarda 2026 var, arşiv kaydı yok (yarıda kalmış devir) → DURDURUR 'Önceki Devir Yarıda Kalmış' (Devir Yedekleri); 'bu yıl devredildi' DEĞİL
+    ok 3 - y-4: ayarda 2026 var, arşiv kaydı yok (yarıda kalmış devir) → DURDURUR 'Önceki Devir Yarıda Kalmış' (Devir Yedekleri); 'bu yıl devredildi' DEĞİL
+      ---
+      duration_ms: 404.946825
+      type: 'test'
+      ...
+    # Subtest: y-2: arşiv kaydı var, dosya ayarı yok → DURDURUR 'Bu Yıl Zaten Devredildi'
+    ok 4 - y-2: arşiv kaydı var, dosya ayarı yok → DURDURUR 'Bu Yıl Zaten Devredildi'
+      ---
+      duration_ms: 478.084555
+      type: 'test'
+      ...
+    # Subtest: y-3: arşiv kaydı var ama arşiv dosyası yok → DURDURUR; ilette 'arşiv dosyası bulunamadı' + Devir Yedekleri
+    ok 5 - y-3: arşiv kaydı var ama arşiv dosyası yok → DURDURUR; ilette 'arşiv dosyası bulunamadı' + Devir Yedekleri
+      ---
+      duration_ms: 340.640358
+      type: 'test'
+      ...
+    # Subtest: y-7: Devri Geri Al'dan sonra (kayıt ve ayar kalktı) → GEÇER
+    ok 6 - y-7: Devri Geri Al'dan sonra (kayıt ve ayar kalktı) → GEÇER
+      ---
+      duration_ms: 337.401369
+      type: 'test'
+      ...
+    # Subtest: y-5: sonraki yıl (2027) devredilmiş, 2026 seçildi → DURDURUR 'Sonraki Yıl Devredilmiş'
+    ok 7 - y-5: sonraki yıl (2027) devredilmiş, 2026 seçildi → DURDURUR 'Sonraki Yıl Devredilmiş'
+      ---
+      duration_ms: 414.4996
+      type: 'test'
+      ...
+# (node:19380) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: y-6: önceki yıl (2025) devredilmiş, 2026 seçildi → GEÇER
+    ok 8 - y-6: önceki yıl (2025) devredilmiş, 2026 seçildi → GEÇER
+      ---
+      duration_ms: 468.790616
+      type: 'test'
+      ...
+    # Subtest: y-9: devir yılları ayarı bozuk (JSON değil) → ayar yok sayılır, arşiv kaydı yok → GEÇER
+    ok 9 - y-9: devir yılları ayarı bozuk (JSON değil) → ayar yok sayılır, arşiv kaydı yok → GEÇER
+      ---
+      duration_ms: 391.715252
+      type: 'test'
+      ...
+    # Subtest: y-8: iki şirket — 002'nin 2026 devri 001'i durdurmaz; 002'nin kendi ön izlemesi durur
+    ok 10 - y-8: iki şirket — 002'nin 2026 devri 001'i durdurmaz; 002'nin kendi ön izlemesi durur
+      ---
+      duration_ms: 773.462306
+      type: 'test'
+      ...
+    1..10
+ok 1 - D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket)
+  ---
+  duration_ms: 6459.813961
+  type: 'suite'
+  ...
+1..1
+# tests 10
+# suites 1
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7022.9975

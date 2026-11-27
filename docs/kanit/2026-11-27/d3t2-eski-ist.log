@@ -1,0 +1,719 @@
+TAP version 13
+# (node:24383) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:24383) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:24383) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — K sonrası bağlar (bağ yönlendirmesi) ve K / K+1 aynı tutarlı kayıtlar
+    # Subtest: bağ listesi (elle): K sonrası satırın ≤K belgeye HER bağı — Kapatılacak Fatura, çek olayı, banka havalesi, Mahsup Et'in iki tarafı, iade → asıl fatura; iki tarafı ≤K ya da >K olan bağ YOK
+    not ok 1 - bağ listesi (elle): K sonrası satırın ≤K belgeye HER bağı — Kapatılacak Fatura, çek olayı, banka havalesi, Mahsup Et'in iki tarafı, iade → asıl fatura; iki tarafı ≤K ya da >K olan bağ YOK
+      ---
+      duration_ms: 10.119077
+      type: 'test'
+      location: '/dev/shm/d3t2-t2/eski/test/devir-d3-bag.test.mjs:106:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              'account_entries',
+              'invoice_id',
+              '2027-01-07',
+        ...
+              'invoice_offsets',
+        -     'counter_id',
+        -     '2027-01-15',
+        -     'fb2',
+        -     'arsiv-basvurusu',
+        -     '',
+        -     '2026|2026-12-02'
+        -   ],
+        -   [
+        -     'invoice_offsets',
+        -     'counter_id',
+        -     '2027-01-17',
+        -     'fb4',
+        -     'arsiv-basvurusu',
+        -     '',
+        -     '2026|2026-12-03'
+        -   ],
+        -   [
+        -     'invoice_offsets',
+              'invoice_id',
+              '2027-01-15',
+              'fb1',
+              'acik-kalem',
+              'fb1',
+              ''
+            ],
+        -   [
+        -     'invoices',
+        -     'original_id',
+        -     '2027-01-18',
+        -     'f5',
+        -     'acik-kalem',
+        -     'f5',
+        -     ''
+        -   ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'account_entries'
+          1: 'invoice_id'
+          2: '2027-01-07'
+          3: 'f7'
+          4: 'acik-kalem'
+          5: 'f7'
+          6: ''
+        1:
+          0: 'account_entries'
+          1: 'invoice_id'
+          2: '2027-01-08'
+          3: 'f3'
+          4: 'acik-kalem'
+          5: 'f3'
+          6: ''
+        2:
+          0: 'account_entries'
+          1: 'invoice_id'
+          2: '2027-01-10'
+          3: 'f1'
+          4: 'acik-kalem'
+          5: 'f1'
+          6: ''
+        3:
+          0: 'account_entries'
+          1: 'invoice_id'
+          2: '2027-01-10'
+          3: 'f9'
+          4: 'acik-kalem'
+          5: 'f9'
+          6: ''
+        4:
+          0: 'account_entries'
+          1: 'invoice_id'
+          2: '2027-01-12'
+          3: 'f2'
+          4: 'arsiv-basvurusu'
+          5: ''
+          6: '2026|2026-11-05'
+        5:
+          0: 'cheque_events'
+          1: 'invoice_id'
+          2: '2027-01-05'
+          3: 'f6'
+          4: 'acik-kalem'
+          5: 'f6'
+          6: ''
+        6:
+          0: 'invoice_offsets'
+          1: 'counter_id'
+          2: '2027-01-15'
+          3: 'fb2'
+          4: 'arsiv-basvurusu'
+          5: ''
+          6: '2026|2026-12-02'
+        7:
+          0: 'invoice_offsets'
+          1: 'counter_id'
+          2: '2027-01-17'
+          3: 'fb4'
+          4: 'arsiv-basvurusu'
+          5: ''
+          6: '2026|2026-12-03'
+        8:
+          0: 'invoice_offsets'
+          1: 'invoice_id'
+          2: '2027-01-15'
+          3: 'fb1'
+          4: 'acik-kalem'
+          5: 'fb1'
+          6: ''
+        9:
+          0: 'invoices'
+          1: 'original_id'
+          2: '2027-01-18'
+          3: 'f5'
+          4: 'acik-kalem'
+          5: 'f5'
+          6: ''
+      actual:
+        0:
+          0: 'account_entries'
+          1: 'invoice_id'
+          2: '2027-01-07'
+          3: 'f7'
+          4: 'acik-kalem'
+          5: 'f7'
+          6: ''
+        1:
+          0: 'account_entries'
+          1: 'invoice_id'
+          2: '2027-01-08'
+          3: 'f3'
+          4: 'acik-kalem'
+          5: 'f3'
+          6: ''
+        2:
+          0: 'account_entries'
+          1: 'invoice_id'
+          2: '2027-01-10'
+          3: 'f1'
+          4: 'acik-kalem'
+          5: 'f1'
+          6: ''
+        3:
+          0: 'account_entries'
+          1: 'invoice_id'
+          2: '2027-01-10'
+          3: 'f9'
+          4: 'acik-kalem'
+          5: 'f9'
+          6: ''
+        4:
+          0: 'account_entries'
+          1: 'invoice_id'
+          2: '2027-01-12'
+          3: 'f2'
+          4: 'arsiv-basvurusu'
+          5: ''
+          6: '2026|2026-11-05'
+        5:
+          0: 'cheque_events'
+          1: 'invoice_id'
+          2: '2027-01-05'
+          3: 'f6'
+          4: 'acik-kalem'
+          5: 'f6'
+          6: ''
+        6:
+          0: 'invoice_offsets'
+          1: 'invoice_id'
+          2: '2027-01-15'
+          3: 'fb1'
+          4: 'acik-kalem'
+          5: 'fb1'
+          6: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/d3t2-t2/eski/test/devir-d3-bag.test.mjs:122:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: açık kalemler (elle): K sonrası bağlı tahsilat K'deki kalanı DÜŞÜRMEZ; ≤K bağlı kısım düşer; kapanmış fatura açık kalem değil; iki tarafı >K olan cariye satır YOK
+    ok 2 - açık kalemler (elle): K sonrası bağlı tahsilat K'deki kalanı DÜŞÜRMEZ; ≤K bağlı kısım düşer; kapanmış fatura açık kalem değil; iki tarafı >K olan cariye satır YOK
+      ---
+      duration_ms: 0.570889
+      type: 'test'
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER (aynı kilitle — S24 = A): bağı açık kaleme YÖNLENDİRİLMİŞ devirli kuyruk = devirsiz (gecikmiş, açık kalemler, en eski vade); elle: A1 02.01 = 600, A2 02.01 = 0, A8 11.01 = 900
+    ok 3 - DEVİRSİZ EŞDEĞER (aynı kilitle — S24 = A): bağı açık kaleme YÖNLENDİRİLMİŞ devirli kuyruk = devirsiz (gecikmiş, açık kalemler, en eski vade); elle: A1 02.01 = 600, A2 02.01 = 0, A8 11.01 = 900
+      ---
+      duration_ms: 29.595912
+      type: 'test'
+      ...
+    # Subtest: S-T2-1 (KULLANICIYA SORULMALI — sayılar SABİT; yanıta göre değişir): K sonrası Mahsup Et'in KARŞI belgesi ≤K (B2) — bakiye aynı, gecikmiş 01.01–29.01 devirsiz 400,00 ↔ devirli 250,00
+    ok 4 - S-T2-1 (KULLANICIYA SORULMALI — sayılar SABİT; yanıta göre değişir): K sonrası Mahsup Et'in KARŞI belgesi ≤K (B2) — bakiye aynı, gecikmiş 01.01–29.01 devirsiz 400,00 ↔ devirli 250,00
+      ---
+      duration_ms: 4.966221
+      type: 'test'
+      ...
+    # Subtest: DİŞ (D4a şartı): K sonrası bağ açık kaleme yönlendirilmezse (bağsız gibi dağılırsa) A8'de devirli ≠ devirsiz — planın `baglar` listesi gerekli
+    ok 5 - DİŞ (D4a şartı): K sonrası bağ açık kaleme yönlendirilmezse (bağsız gibi dağılırsa) A8'de devirli ≠ devirsiz — planın `baglar` listesi gerekli
+      ---
+      duration_ms: 1.270655
+      type: 'test'
+      ...
+    # Subtest: K günü / K+1 günü aynı tutarlı iki kayıt (h1): 31.12'ler K bakiyesinde (150,00), 01.01'ler yeni yılda; tablo sayımı ≤K 17 / >K 12 (elle: 13 fatura + 4 elle / 3 fatura + 8 elle + 1 çek)
+    ok 6 - K günü / K+1 günü aynı tutarlı iki kayıt (h1): 31.12'ler K bakiyesinde (150,00), 01.01'ler yeni yılda; tablo sayımı ≤K 17 / >K 12 (elle: 13 fatura + 4 elle / 3 fatura + 8 elle + 1 çek)
+      ---
+      duration_ms: 0.347579
+      type: 'test'
+      ...
+    1..6
+not ok 1 - D3 tur 2 — K sonrası bağlar (bağ yönlendirmesi) ve K / K+1 aynı tutarlı kayıtlar
+  ---
+  duration_ms: 2566.256712
+  type: 'suite'
+  location: '/dev/shm/d3t2-t2/eski/test/devir-d3-bag.test.mjs:44:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:24472) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — banka, POS, kredi kartı, kredi alt hesapları: K bakiyesi = açılış
+    # Subtest: her alt hesap K bakiyesiyle (elle): Z 390,00 · G 11.000,00 · POS 780,00 (bekleyen; komisyon tahsilat günü gider) · kart −200,00 · kredi −10.000,00; sahibi (banka hesabı / POS) belli
+    not ok 1 - her alt hesap K bakiyesiyle (elle): Z 390,00 · G 11.000,00 · POS 780,00 (bekleyen; komisyon tahsilat günü gider) · kart −200,00 · kredi −10.000,00; sahibi (banka hesabı / POS) belli
+      ---
+      duration_ms: 4.884583
+      type: 'test'
+      location: '/dev/shm/d3t2-t2/eski/test/devir-d3-banka.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              '102',
+              '102.01',
+              39000,
+              'bacc-90e2359b-c99d-4f9b-934c-cb9ede1e5f27',
+        +     '(alan yok)',
+        -     '',
+              'demand',
+              false,
+              'Ziraat Vadesiz'
+            ],
+            [
+        ...
+              'bacc-75f9f20e-29d6-44ab-a970-3b85f8ca53e9',
+        +     '(alan yok)',
+        -     '',
+              'demand',
+              false,
+              'Garanti Vadesiz'
+            ],
+            [
+        ...
+              '',
+        +     '(alan yok)',
+        +     '',
+        +     true,
+        +     'Kredi Kartı Tahsilatları (POS)'
+        -     'pos-ed9e73a7-b5ae-41aa-87c7-f16799daafcb',
+        -     'pos',
+        -     false,
+        -     'Mağaza POS'
+            ],
+            [
+              '300',
+              '300.01',
+              -1000000,
+              'bacc-9a66675b-48ac-4224-ad97-1703d895f989',
+        +     '(alan yok)',
+        -     '',
+              'loan',
+              false,
+              'Ticari Kredi'
+            ],
+            [
+        ...
+              'bacc-0ffd8ae1-3cfc-4a8f-a9f5-84810c5af5c2',
+        +     '(alan yok)',
+        -     '',
+              'card',
+              false,
+              'Şirket Kartı'
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '102'
+          1: '102.01'
+          2: 39000
+          3: 'bacc-90e2359b-c99d-4f9b-934c-cb9ede1e5f27'
+          4: ''
+          5: 'demand'
+          6: false
+          7: 'Ziraat Vadesiz'
+        1:
+          0: '102'
+          1: '102.02'
+          2: 1100000
+          3: 'bacc-75f9f20e-29d6-44ab-a970-3b85f8ca53e9'
+          4: ''
+          5: 'demand'
+          6: false
+          7: 'Garanti Vadesiz'
+        2:
+          0: '108'
+          1: '108.01'
+          2: 78000
+          3: ''
+          4: 'pos-ed9e73a7-b5ae-41aa-87c7-f16799daafcb'
+          5: 'pos'
+          6: false
+          7: 'Mağaza POS'
+        3:
+          0: '300'
+          1: '300.01'
+          2: -1000000
+          3: 'bacc-9a66675b-48ac-4224-ad97-1703d895f989'
+          4: ''
+          5: 'loan'
+          6: false
+          7: 'Ticari Kredi'
+        4:
+          0: '309'
+          1: '309.01'
+          2: -20000
+          3: 'bacc-0ffd8ae1-3cfc-4a8f-a9f5-84810c5af5c2'
+          4: ''
+          5: 'card'
+          6: false
+          7: 'Şirket Kartı'
+      actual:
+        0:
+          0: '102'
+          1: '102.01'
+          2: 39000
+          3: 'bacc-90e2359b-c99d-4f9b-934c-cb9ede1e5f27'
+          4: '(alan yok)'
+          5: 'demand'
+          6: false
+          7: 'Ziraat Vadesiz'
+        1:
+          0: '102'
+          1: '102.02'
+          2: 1100000
+          3: 'bacc-75f9f20e-29d6-44ab-a970-3b85f8ca53e9'
+          4: '(alan yok)'
+          5: 'demand'
+          6: false
+          7: 'Garanti Vadesiz'
+        2:
+          0: '108'
+          1: '108.01'
+          2: 78000
+          3: ''
+          4: '(alan yok)'
+          5: ''
+          6: true
+          7: 'Kredi Kartı Tahsilatları (POS)'
+        3:
+          0: '300'
+          1: '300.01'
+          2: -1000000
+          3: 'bacc-9a66675b-48ac-4224-ad97-1703d895f989'
+          4: '(alan yok)'
+          5: 'loan'
+          6: false
+          7: 'Ticari Kredi'
+        4:
+          0: '309'
+          1: '309.01'
+          2: -20000
+          3: 'bacc-0ffd8ae1-3cfc-4a8f-a9f5-84810c5af5c2'
+          4: '(alan yok)'
+          5: 'card'
+          6: false
+          7: 'Şirket Kartı'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/d3t2-t2/eski/test/devir-d3-banka.test.mjs:77:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: kapanış = açılış: her alt hesapta arşiv K bakiyesi = yeni yıl açılışı; K sonrası havale K'ye girmez; modül farkı YOK; sayılar (2 hesap, 11.390,00, kart −200,00, kredi −10.000,00, POS 780,00)
+    ok 2 - kapanış = açılış: her alt hesapta arşiv K bakiyesi = yeni yıl açılışı; K sonrası havale K'ye girmez; modül farkı YOK; sayılar (2 hesap, 11.390,00, kart −200,00, kredi −10.000,00, POS 780,00)
+      ---
+      duration_ms: 0.579848
+      type: 'test'
+      ...
+    1..2
+not ok 2 - D3 tur 2 — banka, POS, kredi kartı, kredi alt hesapları: K bakiyesi = açılış
+  ---
+  duration_ms: 1982.845607
+  type: 'suite'
+  location: '/dev/shm/d3t2-t2/eski/test/devir-d3-banka.test.mjs:30:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:24496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — evrakın K'deki durumu (çek / senet, alınan / verilen, bankada tahsil, ciro, karşılıksız, K sonrası değişen)
+    # Subtest: her evrak K'deki durumuyla (elle): durum, hesap / alt hesap, tutar, vade; kapanmış / K sonrası alınmış / silinmiş evrak YOK; K sonrası olay K durumunu değiştirmez
+    ok 1 - her evrak K'deki durumuyla (elle): durum, hesap / alt hesap, tutar, vade; kapanmış / K sonrası alınmış / silinmiş evrak YOK; K sonrası olay K durumunu değiştirmez
+      ---
+      duration_ms: 2.399409
+      type: 'test'
+      ...
+    # Subtest: ön izleme sayıları (elle): portföy 5 / 2.270,00 · tahsilde 2 / 1.300,00 · ciroda 2 / 550,00 · karşılıksız 1 / 350,00 · verilen ödenmemiş 3 / 1.600,00
+    ok 2 - ön izleme sayıları (elle): portföy 5 / 2.270,00 · tahsilde 2 / 1.300,00 · ciroda 2 / 550,00 · karşılıksız 1 / 350,00 · verilen ödenmemiş 3 / 1.600,00
+      ---
+      duration_ms: 2.377817
+      type: 'test'
+      ...
+    # Subtest: kapanış = açılış (elle): 101.01 1.770,00 · 121.01 500,00 · 101.02 1.300,00 · 103 −1.300,00 · 321 −300,00; modül farkı YOK; Z'nin bakiyesi 0 ve satırı yok
+    not ok 3 - kapanış = açılış (elle): 101.01 1.770,00 · 121.01 500,00 · 101.02 1.300,00 · 103 −1.300,00 · 321 −300,00; modül farkı YOK; Z'nin bakiyesi 0 ve satırı yok
+      ---
+      duration_ms: 4.264706
+      type: 'test'
+      location: '/dev/shm/d3t2-t2/eski/test/devir-d3-evrak.test.mjs:127:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            0,
+        +   2
+        -   0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 0
+      actual:
+        0: 0
+        1: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/d3t2-t2/eski/test/devir-d3-evrak.test.mjs:134:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 3 - D3 tur 2 — evrakın K'deki durumu (çek / senet, alınan / verilen, bankada tahsil, ciro, karşılıksız, K sonrası değişen)
+  ---
+  duration_ms: 2524.22493
+  type: 'suite'
+  location: '/dev/shm/d3t2-t2/eski/test/devir-d3-evrak.test.mjs:39:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:24510) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — e-Belge, taslak ve tekrarlayan fatura olguları gerçek veri tabanından
+    # Subtest: veri tabanındaki durumlar (önce bunlar — ders 3): W1 / W5 Gönderilecek, W2 Gönderilmeyecek, W3 'none' + entegratör izi (Sonucu Belirsiz; gönderim 502), W4 Gönderildi, W6 numaralı 'none', T1 / T2 taslak
+    ok 1 - veri tabanındaki durumlar (önce bunlar — ders 3): W1 / W5 Gönderilecek, W2 Gönderilmeyecek, W3 'none' + entegratör izi (Sonucu Belirsiz; gönderim 502), W4 Gönderildi, W6 numaralı 'none', T1 / T2 taslak
+      ---
+      duration_ms: 9.125086
+      type: 'test'
+      ...
+    # Subtest: ön denetim (10.02.2027; elle): DURDURUR bekleyen 2 (W1 + W6), listeden silinen 1, sonucu belirsiz 1, taslak 1; UYARIR şablon 1; K sonrası W5 / T2 / R3 sayılmaz
+    not ok 2 - ön denetim (10.02.2027; elle): DURDURUR bekleyen 2 (W1 + W6), listeden silinen 1, sonucu belirsiz 1, taslak 1; UYARIR şablon 1; K sonrası W5 / T2 / R3 sayılmaz
+      ---
+      duration_ms: 390.772655
+      type: 'test'
+      location: '/dev/shm/d3t2-t2/eski/test/devir-d3-olgu.test.mjs:105:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   'e-belge-bekleyen': 1,
+        -   'e-belge-bekleyen': 2,
+        -   'e-belge-belirsiz': 1,
+            'e-belge-listeden-silinen': 1,
+            'taslak-fatura': 1
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        e-belge-bekleyen: 2
+        e-belge-listeden-silinen: 1
+        e-belge-belirsiz: 1
+        taslak-fatura: 1
+      actual:
+        e-belge-bekleyen: 1
+        e-belge-listeden-silinen: 1
+        taslak-fatura: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/d3t2-t2/eski/test/devir-d3-olgu.test.mjs:111:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iptal süresi (05.01.2027): 30.12'de iletilen e-Arşiv için UYARIR 1; aynı belge 10.02.2027'de sayılmaz (yukarıda)
+    ok 3 - iptal süresi (05.01.2027): 30.12'de iletilen e-Arşiv için UYARIR 1; aynı belge 10.02.2027'de sayılmaz (yukarıda)
+      ---
+      duration_ms: 274.234516
+      type: 'test'
+      ...
+    1..3
+not ok 4 - D3 tur 2 — e-Belge, taslak ve tekrarlayan fatura olguları gerçek veri tabanından
+  ---
+  duration_ms: 2398.965297
+  type: 'suite'
+  location: '/dev/shm/d3t2-t2/eski/test/devir-d3-olgu.test.mjs:36:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:24510) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:24510) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:24510) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:24510) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:24510) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — Dönem Kilidi: kilit yok / K'den önce / K / K'yi aşan → aynı plan; ön izleme kilide dokunmaz
+    # Subtest: dört kilit durumunda plan (veri damgası hariç) bayt bayt AYNI, değişmezler tutar; her ön izlemeden önce ve sonra kilit + kilit izi AYNI
+    ok 1 - dört kilit durumunda plan (veri damgası hariç) bayt bayt AYNI, değişmezler tutar; her ön izlemeden önce ve sonra kilit + kilit izi AYNI
+      ---
+      duration_ms: 2523.051369
+      type: 'test'
+      ...
+    1..1
+ok 5 - D3 tur 2 — Dönem Kilidi: kilit yok / K'den önce / K / K'yi aşan → aynı plan; ön izleme kilide dokunmaz
+  ---
+  duration_ms: 3455.693329
+  type: 'suite'
+  ...
+# (node:24510) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — kilitli dönemde KURAL DEĞİŞİKLİĞİ: plan donmuş defteri (karma yevmiye) okur, canlı türetmeyi değil; Kural Farkı devri DURDURUR (S-3 = A)
+    # Subtest: elle: K kapanışında 600 = 1.000,00 (donmuş), 120 = 1.000,00; Dönem Net Kârı 1.000,00; ön denetim 'Kural Farkı Düzeltme Fişi'ni Yazın' DURDURUR
+    ok 1 - elle: K kapanışında 600 = 1.000,00 (donmuş), 120 = 1.000,00; Dönem Net Kârı 1.000,00; ön denetim 'Kural Farkı Düzeltme Fişi'ni Yazın' DURDURUR
+      ---
+      duration_ms: 49.713027
+      type: 'test'
+      ...
+    1..1
+ok 6 - D3 tur 2 — kilitli dönemde KURAL DEĞİŞİKLİĞİ: plan donmuş defteri (karma yevmiye) okur, canlı türetmeyi değil; Kural Farkı devri DURDURUR (S-3 = A)
+  ---
+  duration_ms: 1309.357416
+  type: 'suite'
+  ...
+# (node:24567) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 2 — şüpheli cari (K sonrası bağlı tahsilat), K sonrası Borçta Kalsın kartı, BM-1, BM-6
+    # Subtest: (e) şüpheli K payı (elle): D1 128 = 600 (K sonrası bağlı tahsilat düşmez), D2 128 = 600 (yalnız ≤K tahsilat), D3 128 = 500 / 129 = 500 (Değersiz K sonrası); şüpheli farkı YOK, DURDURUR YOK
+    not ok 1 - (e) şüpheli K payı (elle): D1 128 = 600 (K sonrası bağlı tahsilat düşmez), D2 128 = 600 (yalnız ≤K tahsilat), D3 128 = 500 / 129 = 500 (Değersiz K sonrası); şüpheli farkı YOK, DURDURUR YOK
+      ---
+      duration_ms: 3.199445
+      type: 'test'
+      location: '/dev/shm/d3t2-t2/eski/test/devir-d3-supheli.test.mjs:81:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   {
+        +     beklenenMinor: -50000,
+        +     bulunanMinor: 0,
+        +     cari: '',
+        +     hesap: '129',
+        +     kod: 'supheli-farki'
+        +   },
+        +   {
+        +     alt: '',
+        +     beklenenMinor: -50000,
+        +     bulunanMinor: 0,
+        +     cari: '',
+        +     hesap: '129',
+        +     kod: 'modul-farki'
+        +   },
+        +   {
+        +     alt: '',
+        +     beklenenMinor: 0,
+        +     bulunanMinor: -50000,
+        +     cari: 'account-6e97639a-6218-4025-a4a8-6e397025346d',
+        +     hesap: '129',
+        +     kod: 'modul-farki'
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          kod: 'supheli-farki'
+          cari: ''
+          hesap: '129'
+          beklenenMinor: -50000
+          bulunanMinor: 0
+        1:
+          kod: 'modul-farki'
+          hesap: '129'
+          alt: ''
+          cari: ''
+          beklenenMinor: -50000
+          bulunanMinor: 0
+        2:
+          kod: 'modul-farki'
+          hesap: '129'
+          alt: ''
+          cari: 'account-6e97639a-6218-4025-a4a8-6e397025346d'
+          beklenenMinor: 0
+          bulunanMinor: -50000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/d3t2-t2/eski/test/devir-d3-supheli.test.mjs:89:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: BM-1 (SABİT — kâhin sonucu beklenir; davranış değişmez): D1 Borç Toplamı 600,00 · Alacak Toplamı 600,00 · açık kalem S1 400,00 (vade 01.11); CH K bakiyesi 400,00
+    ok 2 - BM-1 (SABİT — kâhin sonucu beklenir; davranış değişmez): D1 Borç Toplamı 600,00 · Alacak Toplamı 600,00 · açık kalem S1 400,00 (vade 01.11); CH K bakiyesi 400,00
+      ---
+      duration_ms: 0.27277
+      type: 'test'
+      ...
+    # Subtest: (f) K'den SONRA Borçta Kalsın: kart K'de AÇIK, ödenen 300 / kalan 900; taksitler 2–4 300'er; kartın taşıdığı kalem açık kalem DEĞİL; ≤K Borçta Kalsın kartı KAPALI, kalanı açık kalem 2 × 300 (vade 15.11 / 15.12)
+    ok 3 - (f) K'den SONRA Borçta Kalsın: kart K'de AÇIK, ödenen 300 / kalan 900; taksitler 2–4 300'er; kartın taşıdığı kalem açık kalem DEĞİL; ≤K Borçta Kalsın kartı KAPALI, kalanı açık kalem 2 × 300 (vade 15.11 / 15.12)
+      ---
+      duration_ms: 0.146218
+      type: 'test'
+      ...
+    # Subtest: (f) DEVİRSİZ EŞDEĞER (taksitler): planın taksit vadesi ve kalanı = devirsiz programın bugünkü taksitleri (S205 = A: Borçta Kalsın kalemin vadesi MIN(asıl, kapanış günü 10.01.2027) — elle)
+    ok 4 - (f) DEVİRSİZ EŞDEĞER (taksitler): planın taksit vadesi ve kalanı = devirsiz programın bugünkü taksitleri (S205 = A: Borçta Kalsın kalemin vadesi MIN(asıl, kapanış günü 10.01.2027) — elle)
+      ---
+      duration_ms: 2.294655
+      type: 'test'
+      ...
+    # Subtest: BM-6: ödeme rolündeki açık kalem ÖDEME satırı yazmaya yetecek alanları taşır — rol, asıl tarih (vade), tutar, yön, karşı kalem (kaynak satırın kimliği, veri tabanında)
+    ok 5 - BM-6: ödeme rolündeki açık kalem ÖDEME satırı yazmaya yetecek alanları taşır — rol, asıl tarih (vade), tutar, yön, karşı kalem (kaynak satırın kimliği, veri tabanında)
+      ---
+      duration_ms: 0.290651
+      type: 'test'
+      ...
+    1..5
+not ok 7 - D3 tur 2 — şüpheli cari (K sonrası bağlı tahsilat), K sonrası Borçta Kalsın kartı, BM-1, BM-6
+  ---
+  duration_ms: 1971.841264
+  type: 'suite'
+  location: '/dev/shm/d3t2-t2/eski/test/devir-d3-supheli.test.mjs:34:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..7
+# tests 21
+# suites 7
+# pass 16
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18835.61387

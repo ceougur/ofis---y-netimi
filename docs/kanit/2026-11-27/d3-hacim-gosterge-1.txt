@@ -1,0 +1,16 @@
+4
+4.13 5.22 5.46 6/193 18439
+Mem:              15           9           1           7          12           5
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a1207a9fb3d4d1b0f · veri /dev/shm/d3-a1207/h100k · K 2025-12-31 · şimdi 2026-10-08T12:00:00+03:00 · yük (başta) 4.13 5.22 5.46
+açılış (bekleyen göç dahil) 43962 ms
+veri: account_entries 102295 · cash_entries 11554 · stock_moves 80136 · plan_entries 8162 · invoices 34026 · fin_events 1091 · cheque_events 20352 · payments 3710 · Σ 261326 · cari 1484
+tur 1: ön izleme (uç, iş parçacığı) 33811.7 ms · olay döngüsü en çok 248.4 ms · yük 5.66 5.44 5.52
+  bileşenler (iş parçacığı, ms): okuma 1040.9 · yevmiye 3959.5 · tek borç sırası 19200.6 · değerleme 824.7 · ön denetim 2620.3 · plan 3182 · rapor 389.5 · toplam 31219
+  plan: sorun 0 · bozuk değişmez 0 · cari açılış 1484 · açık fatura 5858 · açık kalem 9074 · rapor satırı 14244 · kapanış fişi 9
+  sorunlar: [] · durdurur: taslak-fatura
+tur 2: ön izleme (uç, iş parçacığı) 36310.4 ms · olay döngüsü en çok 436.2 ms · yük 5.95 5.53 5.55
+  bileşenler (iş parçacığı, ms): okuma 944.6 · yevmiye 4215.3 · tek borç sırası 21892.6 · değerleme 698.1 · ön denetim 3322.5 · plan 2646.5 · rapor 463.1 · toplam 34184.3
+  plan: sorun 0 · bozuk değişmez 0 · cari açılış 1484 · açık fatura 5858 · açık kalem 9074 · rapor satırı 14244 · kapanış fişi 9
+B-9 (ana iş parçacığı, ms): okuyucu 25218.7 ({"okuma":979.8,"yevmiye":3628.3,"tekBorcSirasi":16051.9,"degerleme":1136.1,"onDenetim":3421.8}) · plan 2365.3 · tam Bilanço (balanceSheet) 1037.9 · hesap bazında mizan (trialBalance) 91 · K yılının Gelir Tablosu 133.3 · madde 122663 · önceki yıl fişi 3
+yük (sonda) 5.70 5.50 5.54 · en yüksek 1 dk yükü 5.95 → ölçüm GEÇERSİZ (yük > 2)
+çıkış 0

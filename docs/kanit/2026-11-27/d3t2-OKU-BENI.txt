@@ -1,0 +1,10 @@
+D3 TUR 2 kanıtları (27.11.2026; KANIT_DIR kopyası, tools/kanit.mjs kos çıktıları). Dal ucu ve commit'ler raporda (docs/devir/2.5.1-DEVAM/d3t2-rapor.md).
+- d3t2-yeni-* / d3t2-eski-*: ilk hâl (commit 4af4ba8; eski = t251-d3-tur1 kopyası /dev/shm/d3t2-t2/eski). d3t2-yeni-son-* / d3t2-eski-son-*: SON hâl (commit f6ce298; eşdeğer yardımcısının son
+  sürümü eski kopyaya da kopyalandı — ders 51). Eski kodda kırmızı beş testin nedeni raporun §4'ünde.
+- d3t2-komsu-*: komşu taraması (514 test). utc koşusu 4af4ba8'de, ist koşusu 5f32436'da başladı (aradaki commit'ler komşu listesine girmeyen test betikleri / belge).
+- d3t2-kahin-defter-* / d3t2-kahin-cari-*: kabul A (tur 1 ile aynı sayılar).
+- d3t2-mutasyon-*: 29 mutant, git archive HEAD (f6ce298) kopyası /dev/shm/d3t2-t2/mut.
+- d3t2-gercek-veri-utc-t7 / -t11 (5f32436) BAŞARISIZ: devirsiz eşdeğer farkları — kök neden EŞDEĞER BENZETİMİNDE (yönlendirilen fatura kaleminin kayıt anı; K sonrası şüpheli kaydın
+  dışarıda kalması), plan değil; d219fcb0 / f6ce2988 ile benzetim düzeltildi, aynı veride yeniden karşılaştırma 0 fark. SON koşular: d3t2-gercek-veri-utc-t7-son, -t11-son, -t23-son, ist-t7, -t11, -t23
+  (hepsi f6ce298, 16/16). d3t2-gercek-veri-utc-t23 (d219fcb) da geçti; yine de son hâlde yinelendi.
+- d3t2-hiz-tyk.log: hız incelemesi, ÖZEL kilit (12:36 UTC alındı), yük ≤ 1,5 → GEÇERLİ.

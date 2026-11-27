@@ -1,0 +1,32 @@
+{
+  "ad": "d3-kahin-defter-son-ist",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/defter/kos.mjs",
+  "commit": "57e482e7acef2d7db8c44bb0f857c85caea05580",
+  "dal": "worktree-agent-a1207a9fb3d4d1b0f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T09:46:01.876Z",
+  "sure_sn": 6.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3-ajan/kanit/2026-11-27/d3-kahin-defter-son-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1207a9fb3d4d1b0f",
+  "ham_cikti_sha256": "2bf816a3336f5b790d40c029ab8d49cb2d7d45a46e70d30bca4816196d9dadbe",
+  "ham_cikti_bayt": 2712
+}

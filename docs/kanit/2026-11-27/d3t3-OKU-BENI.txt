@@ -1,0 +1,16 @@
+D3 TUR 3 kanıtı (2.5.1; dal worktree-agent-af273e8dbdb200a7c, taban t251-d3-tur2 0ae33184). Ham çıktılar tools/kanit.mjs kos ile (KANIT_DIR = ajanın not defteri, sonra buraya kopyalandı).
+Her koşu ortak kilit altında (flock -s scratchpad/olcum.lock), HUKUK_LICENSE_URL=http://127.0.0.1:9.
+
+d3t3-yeni-utc / -ist ........ 14 D3 test dosyası (tur 1 + 2 + 3), yeni kod: 97/97 iki TZ (commit d0fc3ce4); yeni-utc ileti kataloğu kaydıyla (D3T3_KATALOG_DIR)
+d3t3-katalog-ek-utc / -ist .. devir-d3-plan + devir-d3-olgu (dört alan denetimi + katalog kaydı eklendikten sonra): 26/26 iki TZ
+d3t3-eski-utc / -ist ........ t251-d3-tur2 kopyası (git worktree add --detach), YALNIZ yeni 5 test + test/fixtures/devir-d3-ileti-katalog.mjs: 10/34, 24 kırmızı (iki TZ aynı; nedenler: d3t3-tap-neden.py ile)
+                              (kayıttaki "commit" alanı koşuyu başlatan ağacındır; kod /dev/shm/d3t3-k3/eski = 0ae33184)
+d3t3-komsu-kd3-utc .......... S-KD-3 komşuları (68 dosya: d3t3-komsu-kd3-liste.txt) — beklentiler düzeltilmeden: 824/828 (4 kırmızı: KG-5 "yükleme günü" iddiaları)
+d3t3-komsu-degisen-utc ...... beklentisi değişen 3 dosya, düzeltmeden sonra: 26/26
+d3t3-komsu-kd3-ist .......... 68 dosya, düzeltilmiş: 829/829
+d3t3-kahin-defter-utc / -ist  187/187 · d3t3-kahin-cari-utc / -ist 25298/25298 (tur 2 ile aynı)
+d3t3-mutasyon-utc / -ist .... test/devir-d3-mutasyon.mjs --kopya <git archive HEAD>: 42/42 YAKALANDI (taban 82/82)
+d3t3-gercek-<tz>-t<n> ....... test/devir-d3-gercek-veri.mjs --eski <v2.5.0 worktree> --tohum n (commit b7b90e6): 6/6 koşu 21/21
+d3t3-ilk-gercek-* ........... ilk gerçek veri koşuları (commit 14f05a8): t7 21/21; t11 üreteç hatası (saat geri alındı → v2.5.0 kapısı 500) — düzeltildi, yeniden koşuldu
+d3t3-kd3-olcum-{tur2,v250,tur3}.txt  S-KD-3 ölçümü (d3t3-kd3-olc.mjs): yüklenen kartın defter maddesi tarihi — tur 2 ve v2.5.0 2027-01-03 (yükleme günü), tur 3 2026-12-20 (Kayıt Tarihi)
+d3t3-kd3-sayim.py ........... eski veride yılı değişen yüklenmiş kart sayımı (salt okuma)

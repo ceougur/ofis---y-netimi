@@ -1,0 +1,30 @@
+(node:20191) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+# v2.5.0 verisi: 001 300 müşteri + 40 tedarikçi, 3808 işlem; 002 1288 işlem; 425 sn
+(node:20191) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20191) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 1 - 001: üç ön izleme bitti (done/done/done) ""
+ok 2 - 001: planın sorunu yok []
+ok 3 - 001: bütün değişmezler tutar (12) []
+ok 4 - 001: iki koşu bayt bayt aynı plan
+ok 5 - 001: ön denetimde DURDURUR yok ()
+ok 6 - 001: iki seçenekte açık kalemler ve net aynı
+ok 7 - 001: B tablolarında ≤K + >K = devir öncesi
+# 001: cari 340 kart / 340 açılış · açık fatura satış 708 (491461.68) alış 165 · açık kalem 150 · stok 20 ürün 448184.04 · kasa 690204 · Dönem Net Kârı 663851.07 · hareket ≤K 10420 >K 800 · süre {"okuma":22.5,"yevmiye":124.3,"tekBorcSirasi":196.4,"degerleme":17.5,"onDenetim":46.8,"plan":97.8,"rapor":14.7,"toplam":521.5}
+ok 8 - 001: devirsiz eşdeğer — 4080 karşılaştırma (cari × gün × seçenek), fark 0 []
+(node:20191) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 9 - 002: üç ön izleme bitti (done/done/done) ""
+ok 10 - 002: planın sorunu yok []
+ok 11 - 002: bütün değişmezler tutar (12) []
+ok 12 - 002: iki koşu bayt bayt aynı plan
+ok 13 - 002: ön denetimde DURDURUR yok ()
+ok 14 - 002: iki seçenekte açık kalemler ve net aynı
+ok 15 - 002: B tablolarında ≤K + >K = devir öncesi
+# 002: cari 110 kart / 110 açılış · açık fatura satış 240 (184711.51) alış 42 · açık kalem 36 · stok 8 ürün 98199.87 · kasa 252991 · Dönem Net Kârı 244289.44 · hareket ≤K 3466 >K 266 · süre {"okuma":9.8,"yevmiye":55.4,"tekBorcSirasi":78.5,"degerleme":8.8,"onDenetim":23.7,"plan":35.6,"rapor":11.8,"toplam":234.1}
+ok 16 - 002: 001'in carileri planda yok
+# tests 16
+# pass 16
+# fail 0

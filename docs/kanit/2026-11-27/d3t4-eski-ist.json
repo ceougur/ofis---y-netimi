@@ -1,0 +1,118 @@
+{
+  "ad": "d3t4-eski-ist",
+  "komut": "node --test --test-concurrency=1 test/devir-d3-mahsup.test.mjs test/devir-d3-ikinci.test.mjs test/devir-d3-uzman.test.mjs test/devir-d3-stok.test.mjs test/devir-d3-evrak-sinif.test.mjs test/devir-d3-ileti-tum.test.mjs",
+  "commit": "54eeb87aab7b65789cac8150ba8a249837996e72",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T16:55:38.895Z",
+  "sure_sn": 26.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 35,
+    "gecen": 18,
+    "basarisiz": 17,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 17 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket) › y-1: aynı yıl (dosya ayarı + arşiv kaydı) → DURDURUR 'Bu Yıl Zaten Devredildi'; çare Devri Yenile / Devri Geri Al; dört alan",
+      "konum": "test/devir-d3-ikinci.test.mjs:79:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket) › y-4: ayarda 2026 var, arşiv kaydı yok (yarıda kalmış devir) → DURDURUR 'Önceki Devir Yarıda Kalmış' (Devir Yedekleri); 'bu yıl devredildi' DEĞİL",
+      "konum": "test/devir-d3-ikinci.test.mjs:92:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket) › y-2: arşiv kaydı var, dosya ayarı yok → DURDURUR 'Bu Yıl Zaten Devredildi'",
+      "konum": "test/devir-d3-ikinci.test.mjs:102:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket) › y-3: arşiv kaydı var ama arşiv dosyası yok → DURDURUR; ilette 'arşiv dosyası bulunamadı' + Devir Yedekleri",
+      "konum": "test/devir-d3-ikinci.test.mjs:108:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket) › y-5: sonraki yıl (2027) devredilmiş, 2026 seçildi → DURDURUR 'Sonraki Yıl Devredilmiş'",
+      "konum": "test/devir-d3-ikinci.test.mjs:124:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket) › y-8: iki şirket — 002'nin 2026 devri 001'i durdurmaz; 002'nin kendi ön izlemesi durur",
+      "konum": "test/devir-d3-ikinci.test.mjs:146:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 4 — her neden üretilir ve dört alanı temiz (iç kod / İngilizce / alan adı / tablo adı yok) › kâhin ↔ plan karşılaştırması §9'un EKSİK maddeleri tamam: plan sorunlarında adım adım + Ön İzleme'yi yeniden başlat; tutar yönüyle; modülün adı; şüphelide Şüpheli Alacaklar",
+      "konum": "test/devir-d3-ileti-tum.test.mjs:90:3",
+      "hata": "plan-donem-sonucu-farki: Ön İzleme'yi yeniden başlat adımı (beklenen true, gelen false)"
+    },
+    {
+      "ad": "D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba ayrılır (devirli = devirsiz) › açık kalemler (elle): ayrılan pay ≤K belgenin açık kaleminde; K bakiyesi değişmez",
+      "konum": "test/devir-d3-mahsup.test.mjs:122:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba ayrılır (devirli = devirsiz) › ayırım listesi (elle): yeni yıla ayrılan / K'de kapanan; tutar = devirsiz kuyruğun mahsuba verdiği pay; silinmiş mahsup ve ≤K mahsup YOK",
+      "konum": "test/devir-d3-mahsup.test.mjs:139:3",
+      "hata": "planda mahsup ayırım listesi yok (S-T2-1 = B kodu yok) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba ayrılır (devirli = devirsiz) › bağ listesi (elle): ayrılan belgeye K sonrası mahsup → DEVİR KALEMİNE (Alacak Yaz satırı dahil); iki belgesi ≤K mahsup 'k-de-kapandi' işaretli",
+      "konum": "test/devir-d3-mahsup.test.mjs:155:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba ayrılır (devirli = devirsiz) › DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, açık kalemler, en eski vade — her senaryo, her gün; örnek AYNEN: M1 01.01 = 400, 01.02 = 550",
+      "konum": "test/devir-d3-mahsup.test.mjs:171:3",
+      "hata": "m1 2027-01-01 gecikmiş · 25000 !== 40000 (beklenen 40000, gelen 25000)"
+    },
+    {
+      "ad": "D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba ayrılır (devirli = devirsiz) › 002: kendi mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez",
+      "konum": "test/devir-d3-mahsup.test.mjs:187:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 4 — stok ürün ürün değişmezi (eksi, silinmiş, sıfır, K sonrası hareket) › plan (elle): P1 7 / 350,00 · P2 −3 / 0 (eksi) · P5 5 / 50,00; silinmiş P3 ve sıfır P4 satırsız; ürün değişmezi TUTAR",
+      "konum": "test/devir-d3-stok.test.mjs:69:3",
+      "hata": "ürün ürün değişmezi planda yok"
+    },
+    {
+      "ad": "D3 tur 4 — stok ürün ürün değişmezi (eksi, silinmiş, sıfır, K sonrası hareket) › bozulma (olgu): P1 ile P5'in K miktarı yer değiştirir (toplam aynı) → 'stok-urun' kırılır; toplam değişmezleri tutar; ön denetim ürün adlarıyla DURDURUR (dört alan, Stok)",
+      "konum": "test/devir-d3-stok.test.mjs:81:3",
+      "hata": "okuyucunun bağımsız stok miktarı yok"
+    },
+    {
+      "ad": "D3 tur 4 — uzmanın ilk kabul testi (saf hesap): açılış 6.000, Ocak tahsilatı 1.000 yeni yılda, 05.01'de bakiye 5.000, asıl vade › (2) veri damgası: giriş, ekranları okuma, rapor indirme ve ikinci ön izleme DEĞİŞTİRMEZ; tahsilat girişi ve var olan kaydın tutar düzeltmesi DEĞİŞTİRİR",
+      "konum": "test/devir-d3-uzman.test.mjs:114:3",
+      "hata": "onIzlemedenSonraDegisti yok (eski kod)"
+    },
+    {
+      "ad": "D3 tur 4 — uzmanın ilk kabul testi (saf hesap): açılış 6.000, Ocak tahsilatı 1.000 yeni yılda, 05.01'de bakiye 5.000, asıl vade › (2) ileti: 'Ön İzlemeden Sonra Kayıt Girildi' — DURDURUR, dört alan, yeni ön izlemeyi inceleyip yeniden onaylayın",
+      "konum": "test/devir-d3-uzman.test.mjs:138:3",
+      "hata": "ileti yok (eski kod)"
+    },
+    {
+      "ad": "D3 tur 4 — uzmanın ilk kabul testi (saf hesap): açılış 6.000, Ocak tahsilatı 1.000 yeni yılda, 05.01'de bakiye 5.000, asıl vade › (6) Devir Raporu başlığı: hazırlayan, aktarılan kalem sayıları, uyarılar / istisnalar — en başta 'Özet' bölümü; ekran = PDF = Excel",
+      "konum": "test/devir-d3-uzman.test.mjs:150:3",
+      "hata": "rapor Özet bölümüyle başlar · + actual - expected · + 'Devri Durduran Nedenler' (beklenen Özet, gelen Devri Durduran Nedenler)"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t4/kanit/2026-11-27/d3t4-eski-ist.log",
+  "klasor": "/dev/shm/d3t4-k4/eski",
+  "ham_cikti_sha256": "72d52d228ca332fb9e5cfe2a4bdbaac987382a78524504e86f5764fd003f1135",
+  "ham_cikti_bayt": 34607
+}
