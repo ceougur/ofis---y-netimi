@@ -240,7 +240,9 @@ plan = {
                    { kimlik ("devir-<yıl>-kalem-<TYK anahtarı>": inv:<fatura> | line:<satır> | plan:<kart>:<taksit>), tur: "acik-kalem", tarih: K+1, yon, tutarMinor (kalan − şüpheli pay),
                      aciklama ("Devir: <belge no / tür> (<belge tarihi>)"), kaynak: "devir", kaynakKimlik (TYK anahtarı), acilis: false,
                      vade (asıl vade; vadesizde asıl belge günü — hiç boş değil), beklenenTarih (Ödeme Sözü | ""), kalemSinifi ("fatura" | "elle" | "karsiliksiz" | "kart-kalani" | "diger"),
+                     rol ("yukumluluk" | "odeme" — kuyruk rolü; ödeme rolü yeni yılda ÖDEME satırı, vadesi asıl tarih — BM-6),
                      belge: { tarih, faturaId?, no?, satirId?, kartId? } } ] } ],
+    digerAltDefter: [ { kimlik ("devir-<yıl>-altdefter-<alt hesap>"), hesap, alt, tarih, minor, neden ("kayit-tahsilati" | "carisiz") } ],   // BM-2
     kartlar: [ { kimlik, kart, cari ("" = carisiz → 127 plan:<kart>), tarih, toplamMinor, odenenMinor (≤K net tahsilat = plan_entries.opening), kalanMinor, durum ("acik" | "kapali"),
                  kapanisKurali ("waive" | "keep"), mevcutBorc, faturaId, taksitler: [ { taksit, sira, vade, kalanMinor } ] } ],   // kapalı kart da tek açılış alır
     evraklar: [ { kimlik, evrak, yon ("in" | "out"), tur ("cek" | "senet"), durum ("portfolio" | "bank" | "endorsed" | "bounced" | "pending"), cari, tarih, minor,
