@@ -66,9 +66,12 @@ export function createEquivalence(store) {
         redirected.set(own.sourceId, { vade: row.vade, amount });
         continue;
       }
-      synthetic.push(lineOf(row.kimlik, row.yon, row.tarih, row.tutarMinor));
-      dueDates.set(row.kimlik, row.vade);
-      if (row.beklenenTarih) promises.set(row.kimlik, row.beklenenTarih);
+      // D3 tur 4 (S-T2-1 = B): Mahsup Et'in karşı belgesi ≤K Alacak Yaz / Borç Yaz satırı olabilir — redirect'te devir kalemi o satırın KİMLİĞİYLE kuyruğa girer (D4a mahsubun
+      // counter_id'sini devir kalemine çevirir; benzetim kimliği aynı tutarak aynı bağı kurar).
+      const id = redirect && row.kalemSinifi === "elle" && row.belge?.satirId ? row.belge.satirId : row.kimlik;
+      synthetic.push(lineOf(id, row.yon, row.tarih, row.tutarMinor));
+      dueDates.set(id, row.vade);
+      if (row.beklenenTarih) promises.set(id, row.beklenenTarih);
     }
     // split (tehlikenin gösterimi): toplam satırları açık kalemlerden SONRA, bağsız alacak gibi (tasarım §3.5 madde 4: "Alacak Toplamı TYK'da bağsız alacak gibi işlenirse").
     synthetic.push(...totals);
