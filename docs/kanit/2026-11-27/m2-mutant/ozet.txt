@@ -1,0 +1,11 @@
+MUTANT M1-sonradan-bagsiz çıkış 1 · # tests 19 # pass 12 # fail 7 
+MUTANT M2-sonraki-degersiz çıkış 1 · # tests 19 # pass 17 # fail 2 
+MUTANT M3-onceki-gun-payi çıkış 1 · # tests 19 # pass 15 # fail 4 
+MUTANT M4-o-gun-payi-once çıkış 1 · # tests 19 # pass 3 # fail 8 
+MUTANT M5a-yazim-denetimi-yok çıkış 1 · # tests 19 # pass 16 # fail 3 
+MUTANT M5b-mutabakat-degismezi-yok çıkış 1 · # tests 19 # pass 18 # fail 1 
+MUTANT M6-oneri-bakiye-kurali-yok çıkış 1 · # tests 19 # pass 18 # fail 1 
+MUTANT M6b-bakiye-siniri-yok çıkış 1 · # tests 19 # pass 16 # fail 3 
+MUTANT M7-geri-yukleme-siniri-yok çıkış 1 · # tests 19 # pass 14 # fail 5 
+MUTANT M8b-form-ipucu-eski çıkış 1 · 21 geçti, 2 kaldı
+MUTANT M8-form-eski-kalan (ilk koşu, e2e güçlendirmeden ÖNCE) çıkış 0 · 23 geçti, 0 kaldı — YAŞADI; e2e'ye 'tutar boş gelir' denetimi eklendi (56d70add), yeniden koşu: çıkış 1 · 23 geçti, 1 kaldı

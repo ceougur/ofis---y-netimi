@@ -7,6 +7,7 @@
 //   DELETE /api/workspace/accounts/:id/doubtful/:did/provisions/:pid      Karşılığı sil
 //   DELETE /api/workspace/accounts/:id/doubtful/:did/write-offs/:entryId  Değersiz Alacak satırını sil
 //   GET    /api/workspace/accounts/:id/doubtful                          carinin kayıtları + özet (Carileri Görme)
+//   GET    /api/workspace/accounts/:id/doubtful/:did/write-off?date=     Değersiz Alacak Yaz formunun sınırı / önerisi (2.5.1 M2; Carileri Görme)
 //   GET    /api/workspace/doubtful?from=&to=&status=open|closed|all      rapor verisi (Finans raporları)
 // Yetki (plan §3.11b/4 "cari yönetimi + muhasebe"): yazımlar Cari Yönetimi (accounts.manage) + Şüpheli Alacak İşlemleri (accounts.doubtful).
 // Bütün yazımlar bank.post içinde (istek kimliği, işlem geçmişi, dokunulan olaylar; para satırı yok). Değersiz Alacak satırı cari kartına yazılır.
@@ -40,6 +41,13 @@ export function registerDoubtfulRoutes(router, { store, bank, auth, audit, event
     if (!store.get("SELECT 1 AS found FROM accounts WHERE id = ? AND deleted_at IS NULL", text(params.id).slice(0, 120))) throw new HttpError(404, "Cari bulunamadı. Silinmiş olabilir.");
     ok(res, doubtful.listFor(params.id));
   });
+  // 2.5.1 M2 (S268 = A; girdi §2 madde 5): Değersiz Alacak Yaz formunun ipucu ve önerilen tutarı — seçilen tarihin sınırı / önerisi ve en çok yazdıran izinli gün (form tarih değişince okur).
+  router.get(`${ACC}/:did/write-off`, async ({ req, res, params, url }) => {
+    auth.requirePermission(req, "accounts.view");
+    const date = text(url.searchParams.get("date"));
+    if (date && !isIsoDate(date)) throw new HttpError(400, "Geçerli bir tarih seçin.", { code: "date-invalid", field: "date" });
+    ok(res, doubtful.writeOffQuote(text(params.id).slice(0, 120), params.did, date));
+  });
   router.get("/api/workspace/doubtful", async ({ req, res, url }) => {
     // Rapor Merkezi'ndeki Şüpheli Alacaklar raporuyla aynı kural (routes/report-center.mjs anyOf; yargıç 2.3.0 #11): Şüpheli Alacak İşlemleri ya da Finans Raporları.
     const user = auth.requireUser(req);
@@ -71,7 +79,8 @@ export function registerDoubtfulRoutes(router, { store, bank, auth, audit, event
       const posted = bank.post({ user, module: "doubtful", op: "create", requestId: banking.requestId(req, body), scope: `doubtful.${name}`, body: { ...body, accountId: params.id, recordId: params.did }, write: ctx => {
         const done = run(ctx, { user, accountId: params.id, did: params.did, body });
         audit(user, `doubtful.${name}`, params.did, { accountId: params.id, amountMinor: done.minor ?? done.releasedMinor ?? 0, date: done.date, note: done.note, eventNo: done.event?.no, provisionId: done.provisionId, entryId: done.entryId });
-        result = { record: done.record };
+        // 2.5.1 M2: Değersiz Yaz yanıtı bildirim için bu yazımın tutarını ve aynı tarihle daha yazılabilecek tutarı da taşır (writeOffAfter — sınır işlevinden).
+        result = { record: done.record, ...(done.writeOffAfter ? { writtenMinor: done.minor, writeOffAfter: done.writeOffAfter } : {}) };
         return { id: params.did };
       } });
       reply(res, user, params.id, posted?.replayed ? posted : result, params.did);

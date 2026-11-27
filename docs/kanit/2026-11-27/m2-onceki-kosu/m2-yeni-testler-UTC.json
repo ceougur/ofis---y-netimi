@@ -1,0 +1,32 @@
+{
+  "ad": "m2-yeni-testler-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/supheli-degersiz-siniri-m2-251.test.mjs test/supheli-degersiz-siniri-m2-v249-251.test.mjs",
+  "commit": "56d70add140ec368f918c625eee8d9e3a551d763",
+  "dal": "worktree-agent-afce913f2c07f70a9",
+  "kirli": 0,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T11:41:05.151Z",
+  "sure_sn": 40.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 19,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-27/m2-yeni-testler-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afce913f2c07f70a9",
+  "ham_cikti_sha256": "d980a69626d397f8b0b5b8727d83ae224880249ea824160bd4ce3f7b8cd0e330",
+  "ham_cikti_bayt": 8363
+}

@@ -1,0 +1,742 @@
+{
+ "steps": {
+  "a1d1": {
+   "status": 400,
+   "code": "doubtful-writeoff-exceeds",
+   "message": "Değersiz yazılacak tutar (3.000,01 TL) kalan şüpheli tutarı (3.000,00 TL) aşıyor."
+  },
+  "a1d2": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a1d3": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a2d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a2d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a3d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a3d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a3d3": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a3d4": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a4d1": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "a5d1": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "a5d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "a5d3": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "a6d1": {
+   "status": 400,
+   "code": "doubtful-writeoff-exceeds",
+   "message": "Değersiz yazılacak tutar (123,56 TL) kalan şüpheli tutarı (123,55 TL) aşıyor."
+  },
+  "a6d2": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a6d3": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a7d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a7d2": {
+   "status": 400,
+   "code": "doubtful-writeoff-exceeds",
+   "message": "Değersiz yazılacak tutar (23,56 TL) kalan şüpheli tutarı (2.900,00 TL) aşıyor."
+  },
+  "a7d3": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a7d4": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a8d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a8d2": {
+   "status": 400,
+   "code": "doubtful-writeoff-exceeds",
+   "message": "Değersiz yazılacak tutar (1.500,01 TL) kalan şüpheli tutarı (1.500,00 TL) aşıyor."
+  },
+  "a8d3": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a9d1": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "a9d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "a9d3": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "a10d1": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "a10d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "a11d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a11d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a12d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a12d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a13d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a13d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a14d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a14d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a15d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a15d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a16d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a16d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a17d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a17d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a18d1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a18d2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok."
+  },
+  "a19d1": {
+   "status": 400,
+   "code": "doubtful-writeoff-exceeds",
+   "message": "Değersiz yazılacak tutar (100,00 TL) kalan şüpheli tutarı (73,55 TL) aşıyor."
+  },
+  "a20d1": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "a21d1": {
+   "status": 400,
+   "code": "doubtful-writeoff-exceeds",
+   "message": "Değersiz yazılacak tutar (123,56 TL) kalan şüpheli tutarı (123,55 TL) aşıyor."
+  },
+  "a21d2": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a21d3": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "m9x": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m9d1": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "m10ad1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m10ax": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m10bd1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m10bx": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m10cd1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m10cx": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m10dd1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m10dx": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m10ed1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m10ex": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m10fd1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m10fx": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m11ad1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m11ax": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m11ay": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m11bd1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m11bx": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m11by": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "m11bd2": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "m11bd3": {
+   "status": 409,
+   "code": "doubtful-closed",
+   "message": "Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok."
+  },
+  "m11cd1": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "m11cn": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a26d1": {
+   "status": 409,
+   "code": "ledger-integrity",
+   "message": "Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç 423,55 TL, açık şüpheli 500,00 TL); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin."
+  },
+  "a26d2": {
+   "status": 409,
+   "code": "ledger-integrity",
+   "message": "Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç 499,99 TL, açık şüpheli 500,00 TL); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin."
+  },
+  "a26d3": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a27d1": {
+   "status": 400,
+   "code": "doubtful-writeoff-exceeds",
+   "message": "Değersiz yazılacak tutar (3.000,01 TL) kalan şüpheli tutarı (123,55 TL) aşıyor."
+  },
+  "a27d2": {
+   "status": 400,
+   "code": "doubtful-writeoff-exceeds",
+   "message": "Değersiz yazılacak tutar (3.000,00 TL) kalan şüpheli tutarı (123,55 TL) aşıyor."
+  },
+  "a28d1": {
+   "status": 400,
+   "code": "doubtful-writeoff-exceeds",
+   "message": "Değersiz yazılacak tutar (123,56 TL) kalan şüpheli tutarı (123,55 TL) aşıyor."
+  },
+  "a28d2": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "kilit": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  },
+  "a25d0": {
+   "status": 409,
+   "code": "period-locked",
+   "message": "Hareket 17.09.2026 tarihli; 17.09.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı."
+  },
+  "a25d1": {
+   "status": 400,
+   "code": "doubtful-writeoff-exceeds",
+   "message": "Değersiz yazılacak tutar (123,56 TL) kalan şüpheli tutarı (123,55 TL) aşıyor."
+  },
+  "a25d2": {
+   "status": 200,
+   "code": "",
+   "message": ""
+  }
+ },
+ "balances": {
+  "A1": 423.55,
+  "A2": 2423.55,
+  "A3": 2423.55,
+  "A4": 3400,
+  "A5": 400,
+  "A6": 3300,
+  "A7": 3300,
+  "A8": 3300,
+  "A9": 2423.55,
+  "A10": 2423.55,
+  "A11": 423.55,
+  "A12": 423.55,
+  "A13": 423.55,
+  "A14": 423.55,
+  "A15": 423.55,
+  "A16": 423.55,
+  "A17": 423.55,
+  "A18": 423.55,
+  "A19": 3373.55,
+  "A20": 3423.55,
+  "A21": 3300,
+  "M9": 3423.55,
+  "M10A": 3300,
+  "M10B": 423.55,
+  "M10C": 423.55,
+  "M10D": 423.55,
+  "M10E": -200,
+  "M10F": 2300,
+  "M11A": 423.55,
+  "M11B": 2423.55,
+  "M11C": -576.45,
+  "A26": 500,
+  "A27": 3423.55,
+  "A28": 3300,
+  "A25": 3300
+ },
+ "records": {
+  "A1-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A2-S": {
+   "writtenOffMinor": 100000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A3-S": {
+   "writtenOffMinor": 100000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A4-S": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 0,
+   "stateKey": "collected"
+  },
+  "A5-S": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 0,
+   "stateKey": "collected"
+  },
+  "A6-S": {
+   "writtenOffMinor": 12355,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A7-S": {
+   "writtenOffMinor": 12355,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A8-S": {
+   "writtenOffMinor": 200000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A9-S": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 0,
+   "stateKey": "collected"
+  },
+  "A10-S": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 0,
+   "stateKey": "collected"
+  },
+  "A11-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A12-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A13-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A14-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A15-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A16-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A17-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A18-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A19-S": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 7355,
+   "stateKey": "open"
+  },
+  "A20-S": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 0,
+   "stateKey": "collected"
+  },
+  "A20-S2": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 12355,
+   "stateKey": "open"
+  },
+  "A21-S": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 0,
+   "stateKey": "collected"
+  },
+  "A21-S2": {
+   "writtenOffMinor": 12355,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M9-S": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 0,
+   "stateKey": "collected"
+  },
+  "M9-S2": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 0,
+   "stateKey": "released"
+  },
+  "M10A-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M10B-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M10C-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M10D-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M10E-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M10F-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M11A-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M11B-S": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 0,
+   "stateKey": "collected"
+  },
+  "M11C-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A26-S": {
+   "writtenOffMinor": 292355,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A26-S2": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 50000,
+   "stateKey": "open"
+  },
+  "A27-S": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 12355,
+   "stateKey": "open"
+  },
+  "A28-S": {
+   "writtenOffMinor": 12355,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A25-S": {
+   "writtenOffMinor": 12355,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  }
+ },
+ "ids": {
+  "cari": {
+   "A1": "account-d9fba07c-23c7-4695-b5b9-1c78c7689432",
+   "A2": "account-e596faa8-ac6a-4563-8b9e-bf28afdc598b",
+   "A3": "account-0a09ec02-e01a-4815-b52d-8552a4a5a3d1",
+   "A4": "account-e6d32fb7-8e75-4813-b038-536637cf9fba",
+   "A5": "account-f723818f-dd03-45fb-8da3-c31f3a1ebca9",
+   "A6": "account-c985fc15-b05f-4f98-af94-dbb0fa365bf3",
+   "A7": "account-6919318f-7f8a-44a5-ac81-77a3982db9a5",
+   "A8": "account-4e743e57-b28e-4875-b22f-54d9d104d0d7",
+   "A9": "account-e1fa0c89-cf41-4776-96f9-304d0861c0bb",
+   "A10": "account-fc50d1e4-c16b-49a2-9e70-a64b807bedce",
+   "A11": "account-034a0c4e-986c-407d-b2da-d753c3dd258b",
+   "A12": "account-96512df6-30af-46bd-bf21-3c90e067975f",
+   "A13": "account-33852322-f16f-41db-acc9-528dd741df79",
+   "A14": "account-0d124494-b357-470c-8120-c27820d3c360",
+   "A15": "account-7f3faa35-983d-4eda-bcaf-743c7fae15b0",
+   "A16": "account-9a7f6ebe-3771-4b37-96bc-8e92bde6fad2",
+   "A17": "account-148dfe3e-b728-4c58-99fd-18735381701b",
+   "A18": "account-a09bc2ac-93de-4808-b666-7a82defffcd7",
+   "A19": "account-9706afba-2b51-4ba3-819e-5d37960f5c23",
+   "A20": "account-a4dfee60-2304-4a6b-aa68-77943b94f630",
+   "A21": "account-fa2ae305-5aee-4a04-8a68-0f1e7b3babaa",
+   "M9": "account-ed3943e6-d627-4ed7-bb78-e5e381ffb970",
+   "M10A": "account-299db65b-ce3f-4240-b0ef-377a8916eb1f",
+   "M10B": "account-6ed60305-9726-4130-b945-32c78063865d",
+   "M10C": "account-2b7172d4-4cbb-44fd-80e6-5dd6d00046f0",
+   "M10D": "account-aabc6a6d-7c57-4160-9873-089f06dcc88e",
+   "M10E": "account-88d3ec22-a659-4e3c-a9a9-a9a43165ec32",
+   "M10F": "account-2037a996-615f-48e9-9256-a80c86e25b5e",
+   "M11A": "account-78c06115-8d82-4fc5-875b-d767d4847fdd",
+   "M11B": "account-27675d03-fdf2-4e69-824c-28ed543d98ea",
+   "M11C": "account-e3223840-edda-476a-b2d8-fadc8db36d2a",
+   "A26": "account-357ffcb9-b907-4ca9-aef1-a9ac9172050b",
+   "A27": "account-60e62837-9e77-44bb-a29e-fc6e3ba44f12",
+   "A28": "account-9f560689-2689-4fea-94d1-abdacd7b108a",
+   "A25": "account-29e0c5e3-0678-4d4d-8c74-039e14b503ca"
+  },
+  "record": {
+   "A1-S": "dbt-6e85beea-b025-444b-aa6c-0c37f2bef7f1",
+   "A2-S": "dbt-d06af6e7-eae8-4362-bb2e-7d094eff31b7",
+   "A3-S": "dbt-afcee12a-744d-4607-9a17-398cec7f32ab",
+   "A4-S": "dbt-99a5e86c-c6b5-4ee1-8859-45abb1ca4047",
+   "A5-S": "dbt-6b777fcc-4e21-4778-bffd-d090f3e4085a",
+   "A6-S": "dbt-f95cb853-c41e-4d95-8f3b-1bb390f8d786",
+   "A7-S": "dbt-b60284b6-98a5-46ec-b418-f438c190dae7",
+   "A8-S": "dbt-bf9d0564-8d3c-48ea-9958-59403306251b",
+   "A9-S": "dbt-999ea38a-3062-4562-905a-f7d48dd19e77",
+   "A10-S": "dbt-c5b8a449-40bc-43f5-9d9a-53c4b6ad45f3",
+   "A11-S": "dbt-e3ef7fb2-ffa0-4c56-918f-e40ccdd759ee",
+   "A12-S": "dbt-b24d8d63-170d-476b-8ef1-d93c7ac961bb",
+   "A13-S": "dbt-2ac11d19-dc12-4be7-9b1b-373db202a803",
+   "A14-S": "dbt-9f7d9239-a9cd-427e-9ba5-bea43c8fa7c2",
+   "A15-S": "dbt-01d2b781-774f-4585-8dcd-15b774a8ffdf",
+   "A16-S": "dbt-0c1dba32-6f88-4ab2-9b94-d0acdbbab4bf",
+   "A17-S": "dbt-d948f50d-6dee-437a-b2e1-a92ead448df6",
+   "A18-S": "dbt-169b2890-2795-4370-a0a4-4c26f9f5a554",
+   "A19-S": "dbt-eec3806b-1b91-43ce-9b4a-1e48d119989d",
+   "A20-S": "dbt-3db5d885-b249-44c3-9a38-22a1fbd07d6e",
+   "A20-S2": "dbt-7c8ac206-7b58-4f1b-9095-c126ae0c7c96",
+   "A21-S": "dbt-0130f333-66e6-4dce-8b20-638c96c05134",
+   "A21-S2": "dbt-786b0567-c58c-49e8-99f8-8b1d29f707be",
+   "M9-S": "dbt-a14c887f-4b91-4de2-a063-3253482346e5",
+   "M9-S2": "dbt-07628c90-700a-445d-9d78-bec366a5d1dc",
+   "M10A-S": "dbt-2701b880-afb5-41e2-9ba2-ec5fe64c57a5",
+   "M10B-S": "dbt-9460562f-7432-4785-a9bd-81365e83662f",
+   "M10C-S": "dbt-03573ab7-e10d-4fc2-aa8b-8ca864e0f5c0",
+   "M10D-S": "dbt-c7b4e95f-dd03-4b03-8632-e5259eecaeab",
+   "M10E-S": "dbt-44917c75-715a-4075-b31a-9de551e25a6b",
+   "M10F-S": "dbt-f819a8c3-9852-4070-a904-6076603577f1",
+   "M11A-S": "dbt-b39b951f-a0e5-43e0-9cdf-90ea527a6684",
+   "M11B-S": "dbt-24064788-4e36-4e9f-ad8c-49437b53395f",
+   "M11C-S": "dbt-bab0a7f6-e238-431e-a043-a609c1a664b5",
+   "A26-S": "dbt-ab1d435b-9d26-41c8-8ae9-9ad979015eb5",
+   "A26-S2": "dbt-3d11257a-90e1-43d1-9655-c6be8ca33be5",
+   "A27-S": "dbt-48ab708b-332f-49a9-b326-5df57136caa8",
+   "A28-S": "dbt-9c97af9a-1d5c-4263-8cd2-3397e6942edf",
+   "A25-S": "dbt-7916d324-923a-4360-bf76-1463c990fd59"
+  }
+ },
+ "integrity": {
+  "ok": true,
+  "failures": []
+ }
+}
