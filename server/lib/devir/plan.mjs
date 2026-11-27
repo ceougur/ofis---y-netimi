@@ -470,14 +470,24 @@ export function buildDevirPlan(facts, { option = "borc-alacak" } = {}) {
       doubtful.push({ kimlik: `devir-${year}-supheli-${record.id}`, kayit: record.id, cari: party, tarih: nextDay, kayitTarihi: record.date, kalanMinor: record.remainingMinor, karsilikMinor: record.provisionMinor, ...(record.invoiceNo ? { faturaNo: record.invoiceNo } : {}) });
     }
     cover("128", "", party, row.remainingMinor);
-    cover("129", "", party, -row.provisionMinor);
   }
+  // D3 tur 2 (gerçek veride bulundu): programın defteri 129'u CARİSİZ yazar (lib/doubtful-gl.mjs "Karşılık Ayır" B 654 / A 129, cari boyutu yok); tur 1 129'u cari boyutunda bekliyordu
+  // → karşılığı olan her şirkette "supheli-farki" + "modul-farki" (yanlış DURDURMA). 129 hücresi cari boyutluysa (elle kurulmuş olgu) o carinin karşılığıyla, carisizse cari boyutlu
+  // hücresi olmayan carilerin karşılıklarının toplamıyla karşılaştırılır ve karşılanır.
+  const partyProvision = new Set(closingBalances.filter(row => row.hesap === "129" && row.cari).map(row => row.cari));
+  let looseProvision = 0;
+  for (const [party, row] of doubtfulByParty) {
+    if (partyProvision.has(party)) cover("129", "", party, -row.provisionMinor);
+    else looseProvision += row.provisionMinor;
+  }
+  cover("129", "", "", -looseProvision);
   for (const row of closingBalances) {
     if (row.hesap !== "128" && row.hesap !== "129") continue;
     const own = doubtfulByParty.get(row.cari);
-    const want = row.hesap === "128" ? own?.remainingMinor || 0 : -(own?.provisionMinor || 0);
+    const want = row.hesap === "128" ? own?.remainingMinor || 0 : row.cari ? -(own?.provisionMinor || 0) : -looseProvision;
     if (want !== row.minor) problems.push({ kod: "supheli-farki", cari: row.cari, hesap: row.hesap, beklenenMinor: row.minor, bulunanMinor: want });
   }
+  if (looseProvision && !closingBalances.some(row => row.hesap === "129" && !row.cari)) problems.push({ kod: "supheli-farki", cari: "", hesap: "129", beklenenMinor: 0, bulunanMinor: -looseProvision });
   // Taksit kartları (tasarım §3.8): ≤K tahsilat tek açılış; taksit dağılımı korunur; kapalı kart da tek açılış alır. Carisiz kart 127 (cari boyutu plan:<kimlik>).
   const cards = [];
   for (const card of [...(facts.cards || [])].sort((a, b) => cmp(a.id, b.id))) {
