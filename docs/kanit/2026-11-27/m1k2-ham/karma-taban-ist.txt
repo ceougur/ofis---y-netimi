@@ -1,0 +1,6 @@
+Ocak fişi (önceki / ödenecek / sonraki) [ 0, 50000, 0 ]
+Şubat fişi [ 0, 70000, 0 ]
+fişler (ay, ödenecek, güncel değil) [["2026-01",50000,true],["2026-02",70000,false]]
+Ocak raporu {"three":[0,110000,0],"h391":110000,"h191":0,"notes":[["KDV Mahsup Fişi","Ocak 2026"],["Mahsuptan Sonra Değişen Ay","Ocak 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)"]]}
+Şubat raporu {"three":[0,70000,0],"h391":20000,"h191":0,"notes":[["KDV Mahsup Fişi","Şubat 2026"]]}
+Ocak–Şubat raporu {"three":[0,180000,0],"h391":130000,"h191":0,"notes":[["KDV Mahsup Fişi","Ocak 2026, Şubat 2026"],["Mahsuptan Sonra Değişen Ay","Ocak 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)"]]}

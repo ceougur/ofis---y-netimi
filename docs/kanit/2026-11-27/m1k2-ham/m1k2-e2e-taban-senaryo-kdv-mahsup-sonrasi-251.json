@@ -1,0 +1,58 @@
+{
+  "ad": "m1k2-e2e-taban-senaryo-kdv-mahsup-sonrasi-251",
+  "komut": "node test/e2e/senaryo-kdv-mahsup-sonrasi-251.mjs",
+  "commit": "52fb473f69a60d38f3681c5827ad37bfb3c61917",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T18:58:24.986Z",
+  "sure_sn": 7.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 18,
+    "gecen": 14,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "karma: Bu Yıl 0 / 600 / 0 (taban 1.100), tablo altı = özet ({\"summary\":[\"0,00\",\"1100,00\",\"0,00\"],\"foot\":[\"0,00\",\"1100,00\",\"0,00\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "karma: ay satırları Ocak devreden 500 / Şubat 500 devredenle 200 / Mart 400 (taban Ocak 0, Şubat 700) ([[\"Ocak 2026\",\"Ödenecek KDV\",\"0,00\"],[\"Şubat 2026\",\"Ödenecek KDV\",\"700,00\"],[\"Mart 2026\",\"Ödenecek KDV\",\"400,00\"]])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "karma notu (tek not): Ocak 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "karma: Şubat fişi zincirle uyuşmuyor: undefined",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-kdv-mahsup-sonrasi-251: 14 geçti, 4 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k2/kanit/2026-11-27/m1k2-e2e-taban-senaryo-kdv-mahsup-sonrasi-251.log",
+  "klasor": "/dev/shm/m1k2-kdv/eski",
+  "ham_cikti_sha256": "d5cb2eb28db6d547d0cc0d0feb3646ef277829d9c1bf6949c5aa558ddb2b73d1",
+  "ham_cikti_bayt": 4063
+}
