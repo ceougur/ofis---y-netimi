@@ -2,7 +2,7 @@
 
 Taban `t251-m1k2` (f2412ba9, küçük tur 2'nin dal ucu) → dal ucu: bu raporun son commit'i (`worktree-agent-a4aaa7373bd6d8d91`). PUSH YOK. KDV Mahsup Fişi, ön izlemesi ve
 defter DEĞİŞMEDİ (kabul B: taban = yeni BİREBİR) — yalnız Rapor Merkezi'nin KDV Özeti görünümü.
-Ortam: ORTAM_SATIRI
+Ortam: son okuma (bitiş): yük 2,13 / 4 çekirdek (koşu sırasında öbür ajanlarla 4–7 arası; her ağır koşudan önce bir kez beklendi), bellek boş 4 GB (kullanılabilir 13 GB), disk boş 12 GB. Arka plan işim YOK.
 
 ## A. DEĞİŞEN GÖZLENEBİLİR DAVRANIŞ (önce = taban t251-m1k2 → sonra; Raporlar → Tüm Raporlar → KDV Özeti (Beyanname Hazırlığı); ekran = PDF = Excel)
 1. **Kararın örneği AYNEN** (Mart alış KDV 1.000, satış KDV 200 → Mart fişi sonraki döneme devreden 800; sonra Mart'a KDV'si 100 olan satış; Nisan satış KDV 1.000 → Nisan fişi
@@ -74,16 +74,61 @@ YEŞİL — beklenen: o durumların davranışı DEĞİŞMEDİ (sabitleme); diş
   DEĞİŞTİRİLMEDEN): UTC ve İstanbul ön izleme / fiş / geri al / iptal / kilit satırları taban 26 = yeni 26, **BİREBİR EVET**; o senaryoların rapor satırlarında fark **0**; karma
   yoklaması fiş satırları 3 = 3 BİREBİR. Ek (`m1k3-betik/fis-esit-391.sh`; kararın örneği, `m1k2-betik/yalniz-391-devreden-yoklama.mjs` değiştirilmeden): fiş satırları 2 = 2
   BİREBİR (iki TZ); rapor Nisan 800 / 200 → 700 / 300 + uyuşmazlık notu, Mart–Nisan 200 → 300.
-- **C** KOMSU_SATIRI
+- **C** komşular (`m1k3-betik/komsu.sh`: tur 2'nin 50 dosyası + yeni test = 51 dosya): UTC **638/638**, İstanbul **638/638**, 0 başarısız / iptal / atlanan.
+  `npm run test:kahin-defter` (dokunmadan): UTC **187/187**, İstanbul **187/187**.
 - **D** ekran senaryoları (yeni kod, `m1k3-betik/e2e.sh`): senaryo-kdv-mahsup-sonrasi-251 26/26, senaryo-kdv-zincir-251 12/12, senaryo-kdv-devreden-251 14/14, senaryo-kdv-donemi-250
   23/23, senaryo-defter-243 33/33, senaryo-c7b-kabul-250 39/39, senaryo-mobil-247 77/77, senaryo-banka-210 429/429. Beklentisi değişen eski adım YOK (mahsup-sonrasi'ye yalnız D
-  adımı eklendi). Görüntü `m1k3-ekran/m1k3-kdv-ozeti-yalniz391-mart-nisan.png` (baktım: özet Hesaplanan 1.300, İndirilecek 1.000, Önceki 0, Ödenecek 300, Sonraki 0; "Mahsuptan
+  adımı eklendi). Görüntü `m1k3-ekran/yeni/m1k3-kdv-ozeti-yalniz391-mart-nisan.png` (baktım: özet Hesaplanan 1.300, İndirilecek 1.000, Önceki 0, Ödenecek 300, Sonraki 0; "Mahsuptan
   Sonra Değişen Ay: Mart 2026 (mahsup fişi güncel değil …)" ve "Zincirle Uyuşmayan Mahsup Fişi: Nisan 2026 fişi ₺800,00 devredenle kesilmiş, sırayla mahsupta ₺700,00 olmalıydı …"
   not kartlarında tam genişlikte; tabloda Mart "Sonraki Döneme Devreden KDV ₺700,00").
-- **E** MUTANT_SATIRI
+- **E** mutantlar — §5: 39/39 ÖLDÜ, iki TZ (istenen üçü Y1 7 / Y2 6 / Y3 1 başarısız).
 
 ## 5. MUTANT TABLOSU
-MUTANT_TABLOSU
+Ayrı kopya `/dev/shm/m1k3-kdv/mut` (archive 256b03ef: server, test, client, tools, package.json); testler yalniz391 + karma + mahsup-sonrasi + zincir + devreden +
+defter-243-ux24-toplam + c7b-kdv-ozeti-donem-250 + c7b-kdv-s4-250 (tek `node --test`, 61 sınama); `m1k3-ham/mutant-utc.json`, `mutant-ist.json`. Tur 2'nin 34 mutantı AYNEN
+(NEXT satırına dokunan Z2, Z7, K4 yalnız metin olarak yeni satıra uyarlandı — anlamları aynı; betikte yazılı) + bu turun Y1–Y5'i (görev metninin istediği üç: Y1, Y2, Y3).
+"Başarısız" = node --test üst düzey `# fail`. Tek mutant ~13 sn.
+| Mutant | Başarısız UTC / İst | Sonuç |
+|---|---|---|
+| D1 devredeni sıfır al (rapor görünümü) | 22 / 22 (iptal 0 / 0) | ÖLDÜ |
+| D2 devredeni iki kez düş | 22 / 22 (iptal 0 / 0) | ÖLDÜ |
+| D3 çok aylı aralıkta ilk ay yerine son ayın devredeni 'önceki dönem' | 21 / 21 (iptal 0 / 0) | ÖLDÜ |
+| D4 mahsup formülü yerine eski dönem farkı (391 − 191) | 28 / 28 (iptal 0 / 0) | ÖLDÜ |
+| D5 ödenecek ile devredeni ters yaz | 49 / 49 (iptal 0 / 0) | ÖLDÜ |
+| D6 ödenecek yalnız son hareketli ay (toplam yerine) | 27 / 27 (iptal 0 / 0) | ÖLDÜ |
+| D7 sonraki döneme devreden = aralığın son ayının görünümü (hareketli ay yerine) | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| D8 'Mahsup Edilmemiş Ay' notu hiç yazılmaz | 10 / 10 (iptal 0 / 0) | ÖLDÜ |
+| D9 ay satırlarında kullanılan devreden satırı yok | 11 / 11 (iptal 0 / 0) | ÖLDÜ |
+| D10 S4 taşıması zincirde unutulur (carried yok) | 19 / 19 (iptal 0 / 0) | ÖLDÜ |
+| Z1 mahsupsuz ayı zincirden atla (devredeni değiştirmez) | 12 / 12 (iptal 0 / 0) | ÖLDÜ |
+| Z2 ödenecek aydan sonra devredeni taşı | 4 / 4 (iptal 0 / 0) | ÖLDÜ |
+| Z3 zinciri aralığın ilk ayından başlat (öncesini unut) | 26 / 26 (iptal 0 / 0) | ÖLDÜ |
+| Z4 kopuk zincir notunu yazma | 14 / 14 (iptal 0 / 0) | ÖLDÜ |
+| Z5 A ↔ B anahtarını ters çevir | 26 / 26 (iptal 0 / 0) | ÖLDÜ |
+| Z6 fişin devredeni zincirle karşılaştırılmaz (her fiş geçerli) | 15 / 15 (iptal 0 / 0) | ÖLDÜ |
+| Z7 geçerli fişte fişin devredeni yerine hesaplanan taşınır | 8 / 8 (iptal 0 / 0) | ÖLDÜ |
+| M3 zincirde S4 emilimi yok (mahsupsuz ayın saklı İ'si = bugünkü İ) | 3 / 3 (iptal 0 / 0) | ÖLDÜ |
+| M4 aralığın sonraki devredeni = fişin devredeni (carryAfter) | 3 / 3 (iptal 0 / 0) | ÖLDÜ |
+| M7 Mahsup Edilmemiş Ay 6 sınırı 5 | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| N1 fiş zincirde sayılırken S4 emilimi karşılaştırılmaz (yalnız devreden) | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| N2 S-DKM1-1 yok: zincirdeki fişin ayı bugünkü kayıtlardan | 24 / 24 (iptal 0 / 0) | ÖLDÜ |
+| N3 S-M1-3 yok: güncel olmayan fişte de sonuç fişten | 20 / 20 (iptal 0 / 0) | ÖLDÜ |
+| N4 'reduced' notu ayın kendi İ'si yerine düzeltilmiş İ'den (önceki ayın azalması bu aya yazılır) | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| N5 azalan ay notu yazılmaz | 9 / 9 (iptal 0 / 0) | ÖLDÜ |
+| N6 yön farkı notta yazılmaz (S-M1-2) | 2 / 2 (iptal 0 / 0) | ÖLDÜ |
+| N7 devredeni aynı uyuşmazlıkta da devreden cümlesi | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| K1 karma ayda İndirilecek KDV bugünkü kayıtlardan | 9 / 9 (iptal 0 / 0) | ÖLDÜ |
+| K2 karma ayda 391 fişten | 9 / 9 (iptal 0 / 0) | ÖLDÜ |
+| K3 karma ayda not çıkmaz | 8 / 8 (iptal 0 / 0) | ÖLDÜ |
+| K4 karma ayda sonraki aya fişin eski devredeni taşınır | 3 / 3 (iptal 0 / 0) | ÖLDÜ |
+| K5 yalnız 391 değişiminde de karma kuralı (S-M1-3 = C bozulur) | 10 / 10 (iptal 0 / 0) | ÖLDÜ |
+| K6 karma ay 'güncel değil' notunda ikinci kez yazılır | 8 / 8 (iptal 0 / 0) | ÖLDÜ |
+| **Y1 devreden yönde yalnız 391 ayında sonraki aya fişin eski devredeni taşınır** | 7 / 7 (iptal 0 / 0) | ÖLDÜ |
+| **Y2 yalnız 391 ayından sonraki fişin uyuşmazlık notu çıkmaz** | 6 / 6 (iptal 0 / 0) | ÖLDÜ |
+| **Y3 ödenecek yönde kesilmiş fişte de yeni kural (yön dönen ayda bugünkü devreden)** | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| **Y4 İ artan güncel değil ayında da yeni kural (karar yalnız satış KDV'si)** | 2 / 2 (iptal 0 / 0) | ÖLDÜ |
+| **Y5 S4 karma: 'İ azaldı' ölçüsü ayın kendi İ'si (S4 taşıması sayılmaz)** | 1 / 1 (iptal 0 / 0) | ÖLDÜ |
+| N8 güncel değil notunun eski metni | 13 / 13 (iptal 0 / 0) | ÖLDÜ |
 
 ## 6. HIZ
 Ölçülmedi (DOĞRULANMADI). Değişen yol: zincir döngüsünde fişli her ay için dört karşılaştırma (yeni sorgu, yeni döngü yok). Ana oturum isterse `ana-kabul/betik/kabul.sh` ile KDV
@@ -99,8 +144,9 @@ KDV ARTAR (geç gelen alış: Mart fişi devreden 800, sonra Mart'a KDV'si 100 o
 / 100 devreden, (b) 900 devreden / 100).
 - **A)** S-M1K2-1 ile aynı çizgi: her 'güncel değil' ayında sonraki aya BU AYIN (bugünkü) devredeni taşınır — (a) Nisan 300 devredenle: 200 − 300 → Sonraki Döneme Devreden 100,
   Mart–Nisan Ödenecek 0, Sonraki 100 (= 391 − 191) + "Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla
-  mahsupta sonraki döneme devreden KDV 100,00 TL çıkar"; (b) Nisan 900 devredenle 100, Mart–Nisan 100 + "Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 900,00 TL
-  olmalıydı". (Kod bir koşulun kaldırılması; Y3 / Y4 mutantları tam bu davranıştır — tabloda yakalanan sayılar §5.)
+  mahsupta sonraki döneme devreden KDV 100,00 TL çıkar" (not metni programın mevcut kalıbından; sayılar Y3 koşusundan — `m1k3-ham/secenek-a.txt`: Nisan özeti Önceki 300, Ödenecek 0,
+  Sonraki 100; metnin tamamı okunmadı); (b) Nisan 900 devredenle 100, Mart–Nisan 100 + "Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 900,00 TL
+  olmalıydı" (Y4 koşusu: Nisan Önceki 900, Ödenecek 100). (Kod bir koşulun kaldırılması; Y3 / Y4 mutantları tam bu davranıştır — tabloda yakalanan sayılar §5.)
 - **B)** Bugünkü gibi (karar 'YALNIZ satış KDV'si, DEVREDEN yönde' dedi; baş mimar okuması ödenecek yönde DEĞİŞMEZ): sayılar yukarıdaki "bugün"; not geri al + yeniden mahsubu söyler.
 - **C)** Uç durum böyle kalsın (BİLİNEN SINIR) — sayılar B ile aynı; teslim notuna yazılır.
 - **ÖNERİ: A** (S-M1K-1 / S-M1K2-1'in "her değişiklik bir kez" ilkesi; aralık toplamı her durumda 391 − 191; mevcut uyuşmazlık notu kullanıcıya onarımı söyler). Para kuralı —
@@ -144,7 +190,14 @@ KDV ARTAR (geç gelen alış: Mart fişi devreden 800, sonra Mart'a KDV'si 100 o
   yeniden mahsup edin."
 
 ## 15. COMMIT LİSTESİ (t251-m1k2..dal ucu)
-COMMIT_LISTESI
+- 76fedcef rapor taslağı: nasıl bozulur listesi (koddan önce)
+- 256b03ef KDV Özeti kodu (S-M1K2-1 = A) + yeni test dosyası
+- f26ad359 ekran senaryosuna D adımı + betikler (yeni test, ekran, mutant)
+- 3155c885 betikler: komşular, ön izleme eşitliği, kararın örneğinde fiş eşitliği
+- 9a9fa22e betik: kabul B / C adımları
+- f5dc0c61 rapor taslağı
+- 69e28f5e Kanıt: ham çıktılar, ekran görüntüleri, seçenek A sayıları betiği
+- (son) rapor son hâli (bu belge)
 
 ## 16. ANA OTURUMUN YENİDEN KOŞACAĞI KOMUTLAR
 ```
