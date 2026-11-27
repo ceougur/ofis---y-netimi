@@ -98,5 +98,50 @@ export function createEquivalence(store) {
     }
     return out;
   }
-  return { devirsiz, devirli, compare, ledgers };
+  return { devirsiz, devirli, compare, ledgers, kilitBagImzasi: (party, plan, outs) => kilitBagImzasi({ devirsiz, party, plan, outs }) };
+}
+
+/**
+ * D3 tur 5 — S-T4-1 = A'nın "BEKLENEN FARK" sınıfı (KULLANICI 27.11.2026 18:1x UTC, AYNEN: "önerlerini uygula" — S-T4-1 = A: Dönem Kilidi'nden sonra kurulan bağ faturanın kilit anındaki
+ * BAĞSIZ kapanışını KAYDIRMAZ; devir planı bugün zaten A'yı veriyor, programın tek borç sırasının düzeltmesi ayrı 'kilit paketi'nde). Devirli ≠ devirsiz farkı YALNIZ şu imzayla bu sınıfa
+ * sayılır (ders 53 (b): karar numarasıyla açıklanmış fark), öbür her fark BAŞARISIZ kalır:
+ *   (1) planın bağ listesinde bu carinin K sonrası bir bağı ARŞİV BAŞVURUSU (hedef ≤K fatura K'de kapanmış — A'ya göre bağ bağsız gibi dağılır);
+ *   (2) DEVİRSİZ kuyrukta o bağın satırı aynı faturayı "Bağlı" kapatıyor (tutar T > 0) — kilitli dönemde kapanmış faturayı kilitten sonra kurulan bağ yeniden açmış (S-T4-1'in kendisi);
+ *   (3) fark bu tutarla sınırlı: her günde |gecikmiş farkı| ≤ T, borç tarafı açık kalemlerin toplamı AYNI (bakiye aynı), kalem kalem mutlak farkların toplamı ≤ 2T.
+ * Dönüş: { sinif: "S-T4-1", tutarMinor: T, baglar } ya da null. Kilit paketi girince (program A'ya geçince) (2) kendiliğinden düşer — sınıf boşalır.
+ */
+function kilitBagImzasi({ devirsiz, party, plan, outs }) {
+  const archived = (plan?.newYear?.baglar || []).filter(link => link.tur === "arsiv-basvurusu" && link.eskiHedef && link.tarih > (plan.meta?.K || ""));
+  if (!archived.length || !outs?.length) return null;
+  const queue = devirsiz(party, outs[0].day);
+  let shift = 0;
+  const used = [];
+  for (const link of archived) {
+    const closers = queue.invoices.get(link.eskiHedef)?.closers || [];
+    const minor = closers.filter(closer => closer.mode === "linked" && closer.id === link.satir).reduce((sum, closer) => sum + Math.round(Number(closer.amount) * 100), 0);
+    if (minor > 0) {
+      shift += minor;
+      used.push(link.satir);
+    }
+  }
+  if (!(shift > 0)) return null;
+  const sum = list => list.reduce((total, item) => total + Number(item.split("|")[1]), 0);
+  const bucket = list => {
+    const map = new Map();
+    for (const item of list) {
+      const [vade, minor] = item.split("|");
+      map.set(vade, (map.get(vade) || 0) + Number(minor));
+    }
+    return map;
+  };
+  for (const out of outs) {
+    if (Math.abs(out.devirli - out.devirsiz) > shift) return null;
+    if (sum(out.kalemDevirli) !== sum(out.kalemDevirsiz)) return null;
+    const a = bucket(out.kalemDevirli);
+    const b = bucket(out.kalemDevirsiz);
+    let moved = 0;
+    for (const vade of new Set([...a.keys(), ...b.keys()])) moved += Math.abs((a.get(vade) || 0) - (b.get(vade) || 0));
+    if (moved > 2 * shift) return null;
+  }
+  return { sinif: "S-T4-1", tutarMinor: shift, baglar: used };
 }
