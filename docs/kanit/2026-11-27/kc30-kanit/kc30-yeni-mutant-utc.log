@@ -1,0 +1,13 @@
+mutasyon 367 (2.5.1 C42 (S-M2-1 yok — bakım 29 davranışı): aynı gün şüpheliye almadan ÖNCE yazılmış fatu): YAKALANDI d62:adim:a10d1:durum (27)
+mutasyon 368 (2.5.1 C42 (S270 yarım): Değersiz tarihinden SONRA tarihli bağsız tahsilat / kapatıcı sınır): YAKALANDI d62:adim:a10d2:durum (17)
+mutasyon 369 (2.5.1 C42 (S270 yarım): Değersiz tarihinden SONRA tarihli Değersiz satırları sınırdan düşü): YAKALANDI d62:adim:a8d2:durum (4)
+mutasyon 370 (2.5.1 C42 (S-M2-1 A): Değersiz tarihinden ÖNCEKİ günlerin bağlı payı da düşülmez (sınır ve): YAKALANDI d47:adim:z1d1:durum (9); d49:adim:db1a:durum (5); d50:adim:dh1a:durum (9); d62:adim:a10d1:durum (26)
+mutasyon 371 (2.5.1 C42 (S264 yok): Değersiz gününün bağlı payı Değersiz'den ÖNCE düşülür (sınır = o gün): YAKALANDI d62:adim:a11d1:durum (64)
+mutasyon 372 (2.5.1 C42 (değişmez denetimi yok): sınır yalnız formül (F) — yeniden değerlendirmede kalan): YAKALANDI d62:adim:a21d3:durum (14)
+mutasyon 373 (2.5.1 C42 (S270 bakiye kolu yok): Değersiz yazımı cariyi eksi bakiyeye düşürebilir): YAKALANDI d62:adim:a5d1:durum (5)
+mutasyon 374 (2.5.1 C42 (S269 yok): 'kayıt kapalı' denetimi sınırdan ÖNCE — kaydın bugünkü kalanı 0 ise ): YAKALANDI d62:adim:a20d1:durum (16)
+mutasyon 375 (2.5.1 C42 (SK-55 SUS yok): aynı gün önce yazılmış bağlı satırın payı iki okumada farklıyke): YAKALANDI d62:adim:a19d1:durum (5)
+# tests 9
+# pass 9
+# fail 0
+9/9 mutasyon yakalandı

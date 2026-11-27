@@ -1,0 +1,151 @@
+{
+  "ad": "kc30-yapim-asamasi",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T08:29:38.086Z",
+  "sure_sn": 211.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": null,
+  "hukum": "BELİRSİZ",
+  "neden": "özet satırı tanınmadı",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI · SINIF DIŞI] adim:a20d1:durum: program \"ret\" · kâhin \"ok\" (§42 Y30-2 / Y30-3 (S264 / S269 / S270 / S-M2-1): Değersiz ≤ sınır(kayıt, tarih) = 150000 — kabul) · yanıt: doubtful-closed Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI · SINIF DIŞI] adim:a27d2:durum: program \"ret\" · kâhin \"ok\" (§42 Y30-2 / Y30-3 (S264 / S269 / S270 / S-M2-1): Değersiz ≤ sınır(kayıt, tarih) = 300000 — kabul) · yanıt: doubtful-writeoff-exceeds Değersiz yazılacak tutar (3.000,00 TL) kalan şüpheli tutarı (123,55 TL) aşıyor.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI · SINIF DIŞI] adim:a2d2:durum: program \"ret\" · kâhin \"ok\" (§42 Y30-2 / Y30-3 (S264 / S269 / S270 / S-M2-1): Değersiz ≤ sınır(kayıt, tarih) = 200000 — kabul) · yanıt: doubtful-closed Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI · SINIF DIŞI] adim:a3d2:durum: program \"ret\" · kâhin \"ok\" (§42 Y30-2 / Y30-3 (S264 / S269 / S270 / S-M2-1): Değersiz ≤ sınır(kayıt, tarih) = 200000 — kabul) · yanıt: doubtful-closed Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI · SINIF DIŞI] adim:a3d3:durum: program \"ret\" · kâhin \"ok\" (§42 Y30-2 / Y30-3 (S264 / S269 / S270 / S-M2-1): Değersiz ≤ sınır(kayıt, tarih) = 100000 — kabul) · yanıt: doubtful-closed Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI · SINIF DIŞI] adim:a4d1:durum: program \"ret\" · kâhin \"ok\" (§42 Y30-2 / Y30-3 (S264 / S269 / S270 / S-M2-1): Değersiz ≤ sınır(kayıt, tarih) = 300000 — kabul) · yanıt: doubtful-closed Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:a5d1:kod: program \"doubtful-closed\" · kâhin \"doubtful-writeoff-exceeds\" (§42 Y30-2 / Y30-3 / Y30-4 (S264 / S269 / S270 / S-M2-1): Değersiz ≤ sınır(kayıt, tarih) = 40000; sınır 0 → kayıt kapalı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI · SINIF DIŞI] adim:a5d2:durum: program \"ret\" · kâhin \"ok\" (§42 Y30-2 / Y30-3 (S264 / S269 / S270 / S-M2-1): Değersiz ≤ sınır(kayıt, tarih) = 40000 — kabul) · yanıt: doubtful-closed Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI · SINIF DIŞI] adim:a9d1:kod: program \"doubtful-closed\" · kâhin \"doubtful-writeoff-exceeds\" (§42 Y30-2 / Y30-3 / Y30-4 (S264 / S269 / S270 / S-M2-1): Değersiz ≤ sınır(kayıt, tarih) = 200000; sınır 0 → kayıt kapalı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI · SINIF DIŞI] adim:a9d2:kod: program \"doubtful-closed\" · kâhin \"doubtful-writeoff-exceeds\" (§42 Y30-2 / Y30-3 / Y30-4 (S264 / S269 / S270 / S-M2-1): Değersiz ≤ sınır(kayıt, tarih) = 200000; sınır 0 → kayıt kapalı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI · SINIF DIŞI] adim:a9d3:durum: program \"ret\" · kâhin \"ok\" (§42 Y30-2 / Y30-3 (S264 / S269 / S270 / S-M2-1): Değersiz ≤ sınır(kayıt, tarih) = 200000 — kabul) · yanıt: doubtful-closed Bu şüpheli alacak kaydı tamamı tahsil edilmiş; kalan tutar yok.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:A20:bakiye: program 342355 · kâhin 192355 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:A27:bakiye: program 342355 · kâhin 42355 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:A2:bakiye: program 242355 · kâhin 42355 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:A3:bakiye: program 242355 · kâhin 42355 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:A4:bakiye: program 340000 · kâhin 40000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:cari:A5:bakiye: program 40000 · kâhin 0 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN · SINIF DIŞI] k1:cari:A9:bakiye: program 242355 · kâhin 42355 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:FA20:acik: program 2355 · kâhin 0 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FA20:gosterilen: program 2355 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FA20:liste:gosterilen: program 2355 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:FA27:acik: program 2355 · kâhin 0 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FA27:gosterilen: program 2355 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FA27:liste:gosterilen: program 2355 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · SINIF DIŞI] k1:hareket:b-a20:kalan: program 340000 · kâhin 192355 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../2026-11-27/kc30-yapim-asamasi.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc30-m2/kopya",
+  "ham_cikti_sha256": "01727418eb990886f38a18c18f793dff8740b2592887b00e2a4f658fbef1bedd",
+  "ham_cikti_bayt": 31119
+}

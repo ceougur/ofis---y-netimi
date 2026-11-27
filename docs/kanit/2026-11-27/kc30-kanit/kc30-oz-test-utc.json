@@ -1,0 +1,32 @@
+{
+  "ad": "kc30-oz-test-utc",
+  "komut": "python3 -I test/bagimsiz/cari/oz-test.py",
+  "commit": "7bc9e1058dbdc9fdd7d365e2ed2c6702b56d6eba",
+  "dal": "worktree-agent-a9d7b2ca3365fd27e",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T08:34:03.509Z",
+  "sure_sn": 254,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13750,
+    "gecen": 13750,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc30-m2/2026-11-27/kc30-oz-test-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d7b2ca3365fd27e",
+  "ham_cikti_sha256": "38a14d916e3b1f1d1072bf2e05e4b1f7975c62f885d45fb757f866ee96c56cbd",
+  "ham_cikti_bayt": 43173
+}

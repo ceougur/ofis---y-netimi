@@ -1,0 +1,32 @@
+{
+  "ad": "kc30-yeni-mutant-utc",
+  "komut": "python3 -I docs/kanit/2026-11-27/kc30-arac/yeni-mutant.py test/bagimsiz/cari",
+  "commit": "6b849aff887b0bd84d30dbfa2e05b7a5ce278fd0",
+  "dal": "worktree-agent-a9d7b2ca3365fd27e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T08:25:18.247Z",
+  "sure_sn": 11.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 9,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc30-m2/2026-11-27/kc30-yeni-mutant-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d7b2ca3365fd27e",
+  "ham_cikti_sha256": "b284f198c2550ce1f4913cece002886cfcac06470b8411dbb8bc73de57138320",
+  "ham_cikti_bayt": 1499
+}

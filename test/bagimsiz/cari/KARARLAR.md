@@ -6314,3 +6314,95 @@ senaryo / elle beklenen, kural kodu, mutant ve kanıt sayıları sonraki commit'
 
 ### KULLANICIYA SORULMALI (bakım 30 — yorum aşaması; son hâl kanıt bölümünde)
 - Yorum aşamasında karar metinleriyle iki okuma çıkan alt durum BULUNMADI (Y30-2'nin "D'den sonraki günlerin bağlı payı" ve Y30-6 değerlendirmeye sunuldu). Kod ve senaryo aşamasında çıkan olursa burada.
+
+### Kurallar (bakım 30 kod commit'i `73726268` (model) + `6b849aff` (üretici, öz test); yorumların `model.py`'deki karşılığı)
+- `_m2_geriye` (Y30-1; `supheli_al` sonunda, `k250`, mutant 367 değil): carinin kayıt GÜNÜNE tarihli, bu adımdan ÖNCE yazılmış, etkin faturaya bağlı tahsilatları ve (faturanın kendi evrakı dışındaki) evrakları
+  yazım sırasıyla; her biri için pay `_s168_pay` ile iki okumada ölçülür — satırın kendisi ve gruptan ondan sonra yazılmışlar geçici olarak yok sayılarak (`_m2_gizle` / `_m2_goster`): **(i)** şüpheliye alma anında
+  o ana kadar yazılmış her şeyle; **(ii)** aynı günün sırasındaki yerinde — ek olarak carinin aynı gün ondan SONRA yazılmış ve sonraki günlere ait alacak satırları (tahsilat, evrak, elle Alacak, stok iadesi) ve
+  Değersiz'leri yok sayılarak (`_m2_sonrakiler`). Düşen = `_s25_dusen(pay, tutar)` (S25 aynen). Payı tanımsızsa (SK-38 (a) / (b) / (c)) şüpheliye alma adımı `sus_s145` iki dünya SUS (neden "S-M2-1 (§42 Y30-1)"),
+  satırın `s168` = 0. (i) ≠ (ii) → `sus_m2` (SK-55) — `kos` iki OKUMA dünyası kurar (bu dünya (ii), karşılaştırma dünyası (i); farklı çıkan denetimler yazılmaz, `belirsiz` "KULLANICIYA SORULMALI SK-55"); mutant 375: SUS yok.
+  Aynı günün ikinci şüpheliye almasında grup yeniden ölçülür. İz `m2geri` (düşen tutar eski kâhinden farklı), `sk55`, `m2sus`.
+- `_m2_zaman` (Y30-2 / Y30-3): ŞÜPHELİ KALAN zaman çizelgesi (`_supheli_olaylar` — §8 sırası aynen) kayıt başına SONDAKİ kalan; alacak satırı en eski kayıttan kaydın o anki kalanıyla sınırlı düşer (eksiye inmiş
+  kayda düşmez), Değersiz sınırsız; `ek` eklenecek Değersiz (o günün Değersiz'lerinin sonunda); faturaya bağlı satır (tahsilat — faturalı; evrak — faturalı) / bağsız satır / Değersiz için gizleme süzgeçleri.
+- `_m2_sinir(kayıt, D)` (Y30-2 / Y30-3): **F** = `_m2_zaman` (D gününe ve sonrasına ait faturaya bağlı satırlar gizli) kaydın kalanı; denetim: X eklenince carinin HER kaydının sondaki kalanı (bütün satırlar) eksiye inmez
+  (önceden eksiyse daha da inmez) ve bakiye − X ≥ 0; sınır = denetimi sağlayan en büyük X ≤ F (ikili arama, kuruş). Mutantlar 368–373.
+- `degersiz` (Y30-2 … Y30-4; `k250`): tarih kayıttan önce → ret (aynen); sınır ≤ 0 → `doubtful-closed`; tutar > sınır → `doubtful-writeoff-exceeds`; yoksa bağsız kapatıcı (aynen). Karar ve kod eski K7'yle aynıysa etiket
+  PLAN (değişmedi), farklıysa KULLANICI (kural metni "§42 …") + iz `m2deg`. Mutant 374: kaydın bugünkü kalanı 0 ise sınırdan önce `doubtful-closed` (S269 yok).
+- `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: hiçbir yol değişmedi (bütün yeni dallar `k250`); s1 / ux18 üreticileri 2.4.9 modeliyle üretir (dizi aynı). Yeni `--tur m2` üreticisi sınırı 2.5.0 kâhininden seçer (yalnız
+  uç tutarı bulmak için; beklenen değil — değişmez öz testte saf hesapla denetlenir).
+
+### C8ai Nasıl bozulur? (bakım 30 — senaryolarla birlikte yazıldı)
+| # | Bozulma | Senaryo / mutant |
+|---|---|---|
+| Z309 | Aynı gün, şüpheliye almadan önce yazılmış bağlı tahsilat düşmez (bakım 29 — girdi §3 m.14) | d62 A6 / A10 / A21 (mutant 367) |
+| Z310 | Sonradan gelen bağsız tahsilat sınırı küçültmez (geri alınan uygulama — bakiye eksiye) | d62 A9 / A10, A11–A18 ikinci adım (mutant 368) |
+| Z311 | Sonraki tarihli Değersiz satırı sınırdan düşülmez | d62 A8 (mutant 369) |
+| Z312 | Önceki günlerin bağlı payı düşülmez (S-M2-1 A) | d62 A6 / A10, d47 / d49 / d50 (mutant 370) |
+| Z313 | O günün bağlı payı Değersiz'den önce düşülür (S264 yok — eski K7) | d62 A1 / A2 / A3 / A11–A18 (mutant 371) |
+| Z314 | Değişmez denetimi yok — sonraki Değersiz / öbür kayıt eksiye iner | d62 A6 d3 / A7 / A21 (mutant 372) |
+| Z315 | Değersiz cariyi eksi bakiyeye düşürür | d62 A5 (mutant 373) |
+| Z316 | 'Kayıt kapalı' sınırdan önce (S269 yok) | d62 A4 / A20 (mutant 374) |
+| Z317 | SK-55 alanında (pay iki okumalı) değer uydurulur | d62 A19 (mutant 375 — SUS kuralı; `elleYok` / `elleBelirsiz`) |
+| Z318 | S270 değişmezi herhangi bir sırada bozulur | rastgele m2 (öz test §10 — saf hesap, her adım) |
+
+### C10ai Mutantlar (bakım 30; `oz-test.py` DEĞERLE)
+- 367–374 DEĞERLE; 375 SUS kuralı — öz testin SUS kuralı kümesi {316, 324, 353, 357, 361, 364, 366, 375}. Ayrı koşu (`kc30-arac/yeni-mutant.py`, iki TZ): 9/9 yakalandı (ilk yakalayan: 367 `d62 adim:a10d1:durum`, 368 `a10d2`,
+  369 `a8d2`, 370 `d47 adim:z1d1:durum` (+ d49, d50, d62), 371 `a11d1`, 372 `a21d3`, 373 `a5d1`, 374 `a20d1`, 375 `a19d1`).
+
+### Senaryolar (bakım 30)
+- **yeni `d62-c5-m2-degersiz-siniri`** (bugün 15.10.2026; 28 cari, 220 adım + kontrol; 188 elleBeklenen + 2 elleYok + 3 elleBelirsiz = 193): taban T (F 2.900 10.09 + Borç 3.400 12.09 · 17.09 F'ye bağlı 2.876,45 · 17.09 SONRA Şüpheliye Al 3.000 —
+  Y30-1: pay 2.900 → düşen 2.876,45, kalan 123,55, bakiye 3.423,55). A1 (m.1: 3.000,01 ret aşan / 3.000 kabul / 0,01 kapalı; bakiye 423,55) · A2, A3 (m.2: 1.000 + 2.000; 1.000 × 3 + 0,01 kapalı) · A4 (m.3: bağlı = şüpheli,
+  3.000 kabul, bakiye 400) · A5 (Y30-3 (ii): bakiye sınırı 400) · A6 (m.4 / m.14: @18.09 123,56 ret / 123,55 kabul; sonra @17.09 0,01 kapalı) · A7 (m.5: 100 @25.09; @17.09 23,56 ret / 23,55 kabul; @25.09 kapalı) · A8 (Y30-2 (3): sonraki
+  Değersiz + sonraki bağsız, @17.09 1.500) · A9, A10 (m.6: @17.09 3.000 ret / 2.000,01 ret / 2.000 kabul, bakiye 423,55; @01.10 ve @18.09 kapalı, bakiye 2.423,55) · A11–A18 (m.7: aynı gün altı yazım sırası + ertesi gün iki sıra — 2.950 kabul,
+  50 kapalı, bakiye 423,55; A12 / A18 SK-55 belirsiz, adımlar ve bakiye iki okumada aynı) · A19 (SK-55 SUS: Değersiz 100 @18.09 — (i) kabul / (ii) ret) · A20, A21 (m.8: iki kayıt — S1'e 1.500 kabul, bakiye 1.923,55; S2'ye bugün 123,55
+  yazılmışken S1'e @17.09 kapalı) · A22–A24 (m.10: bağlı tahsilatın silinmesi 3.300; bağlı çekin bağının kaldırılması 423,55; çekin silinmesi 3.300) · A25 (m.12: kilit 17.09, @18.09 123,55) · A26 (Y30-6: S155 — 3.000 ve 2.923,56 ret,
+  2.923,55 kabul, bakiye 500) · A27, A28 (Y30-2 (1): 20.09'daki bağlı pay @18.09'da düşülmez — 3.000; @21.09'da düşülür — 123,55). Elle tablo karar metinlerinden ve §42'den, kâhin koşulmadan (üreteç `docs/kanit/2026-11-27/kc30-arac/uret-d62.py`,
+  commit `19610dd3` — kural kodu `73726268`'den ÖNCE); ilk kâhin koşusunda 193 elle denetimin HEPSİ tuttu (elle hesap düzeltmesi YOK).
+- Eski elle senaryoların elle tabloları ve adımları DEĞİŞMEDİ.
+- **Rastgele `--tur m2`** (yeni; tohumlu): her bölüm yeni müşteri carisi; öz testte tohum 1–3 × 120, her adımda saf değişmez denetimi (§10).
+
+### Dil ekleri (/3, bakım 30)
+- Yeni dil adımı YOK.
+
+### C12ai DENENMEYEN (bakım 30; neden)
+- Silinenler'den Değersiz geri yüklemesi (girdi m.11) ve Şüpheliden Çıkar (m.9): dilde adım yok (eşleme + dil eki ana oturumun işi).
+- Faturaya bağlı TAHSİLATIN bağının kaldırılması, tarihinin (16.09 / 20.09) ve tutarının (3.500 / 1.000) değiştirilmesi (m.10): dilde yok (Düzenle yalnız elle Borç / Alacak; bağ değiştirme yalnız evrakta) — evrakla karşılığı A23 / A24.
+- Dönem kilidinin kilitli güne Değersiz yazımını kilitlemesi (m.12): kâhinin kuralı değil (K6.5 (b)) — yalnız kilit sonrası tarih.
+- İpucu / önerilen tutar / D'nin geriye kurulmaması (S268, girdi §2 m.5): görünüm — kâhin yalnız 'tarih → sınır'ı modeller.
+- Faturanın kendi (peşin) evrakı: S-M2-1 geriye ölçümüne alınmadı (bakım 19 yolu aynen); kayıttan SONRA tarihli ama ÖNCE yazılmış bağlı satır (geriye tarihli şüpheliye alma) bugünkü gibi.
+- Y30-1 okuma (ii)'de gizlenen satırlara iade faturası dahil değil (kâhinin sınırı; elle senaryo yok).
+- Değersiz'den SONRA yazılan, Değersiz'den ÖNCE tarihli para satırı (değişmezi Değersiz DIŞI bir adım bozar): üretici bilerek üretmez; kâhin bugünkü gibi (kayıt kalanı eksiye iner, açık şüpheli 0 sayılır) — SONRAYA.
+- Program koşusu (program ↔ yeni kâhin karşılaştırması) bu bakımın işi değil (görev metni) — yalnız yapım aşaması listesinin üretici komutu koşuldu.
+
+### SONRAKİ SÜRÜME (2.5.1 — 20.11 kuralı)
+- Değersiz silme / geri yükleme, Şüpheliden Çıkar, bağlı tahsilatın Düzenle'si (tarih / tutar / bağ) dil adımları ve d62'nin bu sınıfları.
+- Değersiz'den önce tarihli, sonra yazılmış para satırında değişmezin okunuşu (yukarıda).
+- Geriye tarihli şüpheliye almada önce yazılmış sonraki tarihli bağlı satırın S-M2-1 karşılığı.
+
+### C0ai Değişen eski beklentiler (G3; taban `t251-taban` ↔ bakım 30 kâhin çıktısı, `2.5.0`; eski kopyanın 114 elle senaryosu + rastgele s1 / ux18 tohum 1–10 × 120; `kc30-arac/g3.py`, iki TZ)
+- Üretici 20/20 aynı dizi; eski elle senaryoların adımları DEĞİŞMEDİ; `--kural 2.4.9` / 2.4.6 / 2.4.5: **405/405 bayt bayt aynı**.
+- 2.5.0 G3: eski 80.568 denetim · yeni 81.227 (fark yalnız yeni d62) · değişen / kalkan / yeni **0** · **BEKLENMEYEN 0** · yalnız etiketi değişen 0. (Eski senaryolarda Değersiz ya aynı gün ve bağlı satırsız, ya da bağlı satır
+  kayıttan sonra yazılmış — yeni kural aynı kararı veriyor.) Rastgele m2 (yeni sınıf, tohum 1–10 × 120) 9.514 denetim. Döküm UTC ↔ Europe/Istanbul aynı.
+
+### Eski kâhin kırmızısı (elle tablo; eski kâhin `t251-taban`, `kc30-arac/elle.py --kirmizi-bekle`, iki TZ aynı)
+- **53/193 elle denetim kırmızı** (d62). Kural kural: S-M2-1 (A6 @18.09 123,56 kabul — eski sınır 3.000; A10 kapalı yerine kabul; A21; A23 / A24 bağlı çekin bakım 19 yolu; A26 S2'nin K1 reddi); S264 (A13–A15 2.950 ret / 50 kabul —
+  eski K7 o günün bağlı payını düşüyordu); S270 (A7 23,56 ve 0,01 kabul; A25); bakiye kolu (A5 400 ret); D'den sonraki gün (A27 3.000 ret); SK-55 `elleYok` / `elleBelirsiz` (A12 / A18 / A19). **Kırmızısı OLMAYAN (140):** A1–A4, A8, A9,
+  A11, A16, A17, A20, A22, A28 ve A12 / A18'in adımları ve bakiyeleri — eski kâhinde önce yazılmış bağlı tahsilat hiç düşmediği için aynı gün Değersiz'de sonuç aynı.
+
+### Yapım aşaması listesi
+- Kendi kopyada (not defteri; `node_modules` KOPYALANDI — bağlanmadı, ders 29) `kos.mjs --yapim-asamasi-yaz --mutasyonsuz` (KAHIN_YAPIM_ASAMASI, UTC, HUKUK_LICENSE_URL=127.0.0.1:9): **52 kayıt** (AYRIŞTIRILMADI 45, "Ç5-B tur 2" 7 —
+  paket etiketi üreticinin; hepsi d62); ESKİ LİSTEYLE FARK: eski 0 → yeni 52 (yeni 52, kapanan 0, değeri değişen 0). Liste ayrı commit'te (`7bc9e105`); içeriği programla karşılaştırılmadı (ana oturumun işi). Not: üretici koşusunun
+  günlüğü program değerlerini de yazdı — kâhinin kuralı ve elle tablosu bu koşudan ÖNCE commit edildi (`73726268`, `19610dd3`), koşudan sonra kâhinin kuralına / elle tablosuna dokunulmadı.
+
+### Kanıt (bakım 30; iki saat dilimi; kâhin kodu `73726268` + `6b849aff`, araçlar `fbebba25`; `docs/kanit/2026-11-27/kc30-kanit/`, araçlar `kc30-arac/`)
+- oz-test **13.750/13.750** (UTC ve Europe/Istanbul; bütün mutantlar 200–375 yakalandı, rastgele m2 değişmezi 4.101 denetim, ihlal 0) · yeni mutantlar ayrı koşu **9/9** (iki TZ) · d62 **193/193** · ESKİ kâhinde **53/193 kırmızı** ·
+  G3 **BEKLENMEYEN 0** (2.5.0 değişen 0; eski kurallar 405/405 aynı) · yapım aşaması listesi 0 → 52.
+- Not (açıkça): hazırlıkta birkaç KARARLAR.md / model.py okuma satırı (`sed`, `python3 -I -c`) KİLİTSİZ koşuldu; koşuların bir kısmı yük 4'ün üstündeyken (başka ajanların yükü; 4,2–8,4) beklemeden başlatıldı — kural ihlali, açıkça.
+
+### KULLANICIYA SORULMALI (bakım 30 — son hâl)
+- **SK-55 (UÇ; PARA KURALI — ders 43) — S-M2-1'in payı hangi anda ölçülür (aynı gün, şüpheliye almadan önce yazılmış bağlı tahsilat ile şüpheliye alma arasında başka bir alacak satırı yazılmışsa):** örnek: F 2.900 + Borç 3.400 ·
+  17.09 F'ye bağlı tahsilat 2.876,45 · 17.09 bağsız tahsilat 50 · 17.09 Şüpheliye Al 3.000 (bu yazım sırasıyla). **A:** şüpheliye alma anında (bağsız 50 F'nin 50'sini kapatmış) — pay 2.850, kayıt kalanı 100 (S168'in "yazıldığı an" ölçütüyle
+  aynı). **B:** aynı günün sırasındaki yerinde (bağlı tahsilat bağsızdan önce yazıldı) — pay 2.876,45, kalan 73,55 (sonuç yalnız bağlı tahsilat ile bağsızın yazım sırasına bağlı). **C (ÖNERİ): Uç durum böyle kalsın (BİLİNEN SINIR — kâhin SUS)**.
+  Etkisi: ertesi gün Değersiz en çok 100 / 73,55; aynı gün Değersiz (2.950) ve bakiye her seçenekte aynı. Ertesi gün tarihli bağsız 50 önce yazılınca (A18) A: 2.850, B: 2.876,45. Yaygın programlarda: doğrulanmış kaynak okunmadı.
+- **Değerlendirmeye (soru değil; BAŞ MİMAR):** Y30-2 (1) — D'den SONRAKİ günün bağlı payı düşülmez (A27: @18.09 3.000, @21.09 123,55); Y30-6 — S155 Değersiz'i sınırın altında reddedebilir (A26: sınır 3.000, kabul edilen en çok 2.923,55):
+  girdinin "ekranın önerdiği tutar HER ZAMAN kabul edilir" sözü için ekran S155'i de bilmeli (program tarafı).
