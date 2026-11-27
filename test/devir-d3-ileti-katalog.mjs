@@ -3,7 +3,7 @@
 // okunur; her neden (iç kod) için ilk örnek dört alanıyla, hangi senaryodan ve hangi veri kaynağından çıktığıyla yazılır. Elle metin YOK — cümleler yanıt gövdesinden.
 // Tur 4: KATALOG TARAMASI — yazılan her kullanıcı alanı (başlık, ne oldu, neden, adımlar, nereye) iletiDenetimi'nden (iç kod / İngilizce / alan adı / ISO tarih / nokta ondalık) ve şemanın
 // tablo adlarından (plan-reader.mjs DEVIR_TABLE_CLASSES) geçer; ihlal varsa listelenir ve çıkış kodu 1.
-// Kullanım: D3T3_KATALOG_DIR=<klasör> node --test test/devir-d3-*.test.mjs
+// Kullanım: D3T3_KATALOG_DIR=<klasör> node --test test/devir-d3-*.test.mjs   (sıra fark etmez — D3 tur 5)
 //           node test/devir-d3-ileti-katalog.mjs <klasör> <çıktı .md>
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -16,10 +16,23 @@ const rows = [];
 for (const file of readdirSync(dir).filter(name => name.endsWith(".jsonl")).sort()) {
   for (const line of readFileSync(path.join(dir, file), "utf8").split(/\r?\n/)) if (line.trim()) rows.push(JSON.parse(line));
 }
+// D3 tur 5 (tur 4 SONRAKİ SÜRÜME notu): "ilk örnek" ve sıra KOŞU SIRASINDAN BAĞIMSIZ — her neden için örnek, o nedenin bütün kayıtları arasından (test, senaryo, kaynak, metin) sırasıyla en
+// küçüğü; nedenler seviye (önce durduranlar) ve iç kod sırasıyla. Karşılaştırma kod noktasıyla (yerel ayar sıralaması değil). Aynı kayıtlar hangi sırayla yazılmış olursa olsun katalog bayt bayt aynı.
+const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+const keyOf = row => [row.test, row.senaryo, row.kaynak, row.metin].map(value => String(value ?? ""));
 const byCode = new Map();
-for (const row of rows) if (!byCode.has(row.kod)) byCode.set(row.kod, { ...row, adet: 0 });
-for (const row of rows) byCode.get(row.kod).adet += 1;
-const order = [...byCode.values()].sort((a, b) => (a.seviye === b.seviye ? 0 : a.seviye === "durdurur" ? -1 : 1));
+for (const row of rows) {
+  const seen = byCode.get(row.kod);
+  if (!seen) byCode.set(row.kod, { ...row, adet: 1 });
+  else {
+    seen.adet += 1;
+    const [a, b] = [keyOf(row), keyOf(seen)];
+    const smaller = a.findIndex((value, index) => value !== b[index]);
+    if (smaller >= 0 && a[smaller] < b[smaller]) byCode.set(row.kod, { ...row, adet: seen.adet });
+  }
+}
+const rank = level => (level === "durdurur" ? 0 : 1);
+const order = [...byCode.values()].sort((a, b) => rank(a.seviye) - rank(b.seviye) || cmp(a.kod, b.kod));
 // Katalog taraması (her kayıtlı ileti, yalnız ilk örnek değil).
 const tables = new RegExp(`\\b(${Object.keys(DEVIR_TABLE_CLASSES).join("|")})\\b`);
 const violations = [];
@@ -27,6 +40,7 @@ for (const row of rows) {
   for (const problem of iletiDenetimi(row)) violations.push(`${row.kod} · ${problem.alan}: ${problem.neden} — ${problem.metin}`);
   for (const value of [row.baslik, row.neOldu, row.neden, row.nereye?.ekran, ...(row.neYapmali || [])]) if (tables.test(String(value || ""))) violations.push(`${row.kod}: tablo adı — ${value}`);
 }
+violations.sort(cmp);
 const lines = [
   "# Devir iletileri kataloğu (DEVİR NEDEN DURDU — 2.5.1 D3)",
   "",
