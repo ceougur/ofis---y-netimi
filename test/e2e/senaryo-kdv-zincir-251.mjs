@@ -138,7 +138,9 @@ try {
   t = await table();
   r = results(summary, t.foot);
   ok(JSON.stringify(r.summary) === JSON.stringify(["1600,00", "0,00", "600,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `mahsuptan sonra rapor yine zincir 1.600 / 0 / 600 (${JSON.stringify(r)})`);
-  ok(summary["Zincirle Uyuşmayan Mahsup Fişi"] === "Mart 2026 fişi 2.000,00 TL devredenle kesilmiş, sırayla mahsupta 1.600,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)", `kopuk zincir notu: ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`);
+  // Ekran para tutarlarını "₺2.000,00" diye yazar (sunucu "2.000,00 TL"; istemcinin genel para gösterimi) — karşılaştırma tutar biçiminden bağımsız.
+  const mismatchNote = String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL");
+  ok(mismatchNote === "Mart 2026 fişi 2.000,00 TL devredenle kesilmiş, sırayla mahsupta 1.600,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)", `kopuk zincir notu: ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`);
   await shot("m1t2-kdv-ozeti-mart-kopuk");
 
   console.log("C) Bu Yıl (2026): ay satırları zincirle");
