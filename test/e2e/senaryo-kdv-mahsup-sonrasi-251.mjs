@@ -5,6 +5,7 @@
 //   KÂHİN (elle; kararın örneği): Ocak satış KDV 1.000, alış KDV 500 → Ocak mahsubu 500; Ocak alışı İptal Et; Şubat satış KDV 200 → Şubat mahsubu 700; Mart satış KDV 400 →
 //   Mart mahsubu 400. Ocak–Mart: Önceki 0 · Ödenecek 1.600 · Sonraki 0; ay satırları Ocak 500 / Şubat 700 / Mart 400 (taban: Ocak 1.000, toplam 2.100); "Mahsuptan Sonra
 //   Değişen Ay: Ocak 2026 (bu ayın kayıtları fişten sonra değişti; …)".
+//   C adımı (küçük tur 2): karma ay (S-M1K-1 = A). D adımı (küçük tur 3): devreden yönde yalnız satış KDV'si (S-M1K2-1 = A) — ikinci kurulumda (saat 15.05.2026).
 // Çıkış: "N geçti, M kaldı". Ekran görüntüleri EKRAN_DIR'e.
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -19,6 +20,7 @@ const { createClient, installPageClock } = await import(pathToFileURL(path.join(
 const PASS = "Prova-Admin-2026!";
 const NOW = "2026-04-15T10:00:00+03:00";
 const root = mkdtempSync(path.join(tmpdir(), "destekofis-kdv-mahsup-sonrasi-"));
+const extra = [];
 const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f53" } });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
@@ -46,7 +48,8 @@ await must("Mart mahsubu", api.post("/api/workspace/tax/vat-offset", { month: "2
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1366, height: 900 }, deviceScaleFactor: 1, locale: "tr-TR" });
 await context.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
-const page = await context.newPage();
+// D adımı (küçük tur 3) ikinci kurulumun sayfasıyla aynı yardımcıları kullanır — page yeniden atanır.
+let page = await context.newPage();
 page.setDefaultTimeout(15000);
 const errors = [];
 page.on("pageerror", error => errors.push(error.message));
@@ -202,6 +205,74 @@ try {
     `karma: Şubat fişi zincirle uyuşmuyor: ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`,
   );
   await shot("m1k2-kdv-ozeti-karma-bu-yil");
+
+  // 2.5.1 M1 küçük tur 3 — S-M1K2-1 = A (kullanıcı 27.11 19:5x "önerini uygula"): mahsup fişi DEVREDEN yönde kesilmiş ayda sonradan YALNIZ satış KDV'si değişirse o ayın (bugünkü)
+  // devredeni sonraki aya taşınır; sonraki ayın fişi eski devredenle kesildiyse 'Zincirle Uyuşmayan Mahsup Fişi'. Bu kurulumun verisi Ocak–Mart'ta ve saati 15.04.2026 — Nisan
+  // mahsup edilemez, Ocak'tan önceki aya mahsup yapılamaz; bu yüzden İKİNCİ KURULUM (saat 15.05.2026), veri API'den, rapor ekrandan. KÂHİN (kararın örneği AYNEN): Mart alış KDV
+  // 1.000, satış KDV 200 → Mart fişi devreden 800; sonra Mart satış KDV 100; Nisan satış KDV 1.000 → Nisan fişi (defterin 800'üyle) 200. Mart–Nisan: Önceki 0 · Ödenecek 300 ·
+  // Sonraki 0 (= 391 1.300 − 191 1.000); ay satırları Mart devreden 700 / Nisan 700 devredenle 300 (taban: Nisan 800 devredenle 200, toplam 200, uyuşmazlık notu yok).
+  console.log("D) Devreden yönde yalnız satış KDV'si (ikinci kurulum, 15.05.2026): Mart fişi devreden 800 → Mart satışı → Nisan fişi 200 → Mart–Nisan");
+  const root2 = mkdtempSync(path.join(tmpdir(), "destekofis-kdv-yalniz391-"));
+  extra.push(root2);
+  const app2 = createApp({ dataDir: path.join(root2, "data"), backupDir: path.join(root2, "backups"), logLevel: "warn", scheduleBackups: false, now: "2026-05-15T10:00:00+03:00", env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f54" } });
+  extra.push(app2);
+  const BASE2 = `http://127.0.0.1:${(await app2.listen(0, "127.0.0.1")).port}`;
+  const api2 = createClient(BASE2);
+  await api2.login("admin", PASS);
+  await must("kurulum geç (2)", api2.post("/api/workspace/bank/setup/dismiss", {}));
+  const T2 = (await must("tedarikçi (2)", api2.post("/api/workspace/accounts", { name: "Toptancı Kırtasiye", type: "supplier", registeredOn: "2026-01-01" }))).id;
+  const M2 = (await must("müşteri (2)", api2.post("/api/workspace/accounts", { name: "Ayşe Kaya", type: "customer", registeredOn: "2026-01-01" }))).id;
+  const sale2 = (date, net) => must(`satış (2) ${date}`, api2.post("/api/workspace/invoices", { scenario: "service_sale", accountId: M2, issueDate: date, lines: [{ name: "Danışmanlık", qty: 1, unitPrice: net, vatRate: 20 }], payment: { rest: "open" } }));
+  await must("Mart alış (2)", api2.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: T2, issueDate: "2026-03-05", number: "TK-21", lines: [{ name: "Kırtasiye", qty: 1, unitPrice: 5000, vatRate: 20, expenseCode: "office" }], payment: { rest: "open" } }));
+  await sale2("2026-03-10", 1000);
+  const marFis = (await must("Mart mahsubu (2)", api2.post("/api/workspace/tax/vat-offset", { month: "2026-03" }))).offset;
+  ok(marFis.carryOutMinor === 80000 && marFis.payableMinor === 0, `Mart fişi sonraki döneme devreden 800 (${JSON.stringify([marFis.carryInMinor, marFis.payableMinor, marFis.carryOutMinor])})`);
+  await sale2("2026-03-20", 500);
+  await sale2("2026-04-10", 5000);
+  const aprFis = (await must("Nisan mahsubu (2)", api2.post("/api/workspace/tax/vat-offset", { month: "2026-04" }))).offset;
+  ok(aprFis.carryInMinor === 80000 && aprFis.payableMinor === 20000, `Nisan fişi 800 devredenle 200 (defter DEĞİŞMEDİ) (${JSON.stringify([aprFis.carryInMinor, aprFis.payableMinor, aprFis.carryOutMinor])})`);
+  const context2 = await browser.newContext({ viewport: { width: 1366, height: 900 }, deviceScaleFactor: 1, locale: "tr-TR" });
+  await context2.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
+  page = await context2.newPage();
+  page.setDefaultTimeout(15000);
+  page.on("pageerror", error => errors.push(error.message));
+  await installPageClock(page, app2.config.now);
+  await page.goto(`${BASE2}/`);
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", PASS);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+  await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+  await page.click('#hof-sidecard [data-action="analytics"]');
+  await page.waitForSelector(`${MODAL} .hof-rep-tab[data-tab="all"]`);
+  await page.click(`${MODAL} .hof-rep-tab[data-tab="all"]`);
+  await page.waitForSelector(`${MODAL} [data-rc-list] [data-report="kdv-ozeti"]`);
+  await page.click(`${MODAL} [data-rc-list] [data-report="kdv-ozeti"]`);
+  await ready();
+  await range("2026-03-01", "2026-04-30");
+  summary = await summaryOf();
+  t = await table();
+  r = results(summary, t.foot);
+  ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "300,00", "0,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `yalnız 391: Mart–Nisan 0 / 300 / 0 (taban 200), tablo altı = özet (${JSON.stringify(r)})`);
+  ok(digits(summary["Hesaplanan KDV (391) (İadeler Düşülmüş)"]) === "1300,00" && digits(summary["İndirilecek KDV (191) (İadeler Düşülmüş)"]) === "1000,00", `yalnız 391: Ödenecek = 391 1.300 − 191 1.000 (${JSON.stringify(summary)})`);
+  const onlyLines = t.body.filter(item => RESULTS.includes(item[1])).map(item => [item[0], item[1], digits(item[5])]);
+  ok(
+    JSON.stringify(onlyLines) === JSON.stringify([["Mart 2026", "Sonraki Döneme Devreden KDV", "700,00"], ["Nisan 2026", "Önceki Dönemden Devreden KDV", "700,00"], ["Nisan 2026", "Ödenecek KDV", "300,00"]]),
+    `yalnız 391: ay satırları Mart devreden 700 / Nisan 700 devredenle 300 (taban Nisan 800 devredenle 200) (${JSON.stringify(onlyLines)})`,
+  );
+  ok(summary["Mahsuptan Sonra Değişen Ay"] === "Mart 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)", `yalnız 391: Mart 'güncel değil' notu kalır: ${summary["Mahsuptan Sonra Değişen Ay"]}`);
+  ok(
+    String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === "Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)",
+    `yalnız 391: Nisan fişi zincirle uyuşmuyor: ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`,
+  );
+  await shot("m1k3-kdv-ozeti-yalniz391-mart-nisan");
+  await page.click(`${MODAL} [data-rc-main] .hof-rc-range [data-preset="thisYear"]`);
+  await page.waitForTimeout(400);
+  await ready();
+  summary = await summaryOf();
+  t = await table();
+  r = results(summary, t.foot);
+  ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "300,00", "0,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `yalnız 391: Bu Yıl 0 / 300 / 0 (${JSON.stringify(r)})`);
+  await shot("m1k3-kdv-ozeti-yalniz391-bu-yil");
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);
@@ -211,6 +282,11 @@ try {
   console.log(`\n${failed ? "✗" : "✓"} senaryo-kdv-mahsup-sonrasi-251: ${passed} geçti, ${failed} kaldı`);
   await browser.close();
   await app.close();
+  // D adımının ikinci kurulumu: önce sunucu kapanır, sonra klasörü silinir.
+  for (const item of extra.reverse()) {
+    if (typeof item === "string") rmSync(item, { recursive: true, force: true });
+    else await item.close();
+  }
   if (!process.env.EKRAN_DIR) rmSync(root, { recursive: true, force: true });
   process.exitCode = failed ? 1 : 0;
 }
