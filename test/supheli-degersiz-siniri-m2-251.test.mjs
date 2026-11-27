@@ -17,7 +17,7 @@ import { after, before, describe, it } from "node:test";
 import { ADMIN_PASSWORD, loginAdmin, startTestServer } from "./helpers.mjs";
 import { apiOf, integrityOf, must } from "./banka-210-ortak.mjs";
 import { M2_NOW, M2_TODAY, m2Base, m2Classes, m2Deg, runM2Classes } from "./fixtures/m2-degersiz-senaryo.mjs";
-import { doubtfulProblems } from "../server/lib/bank/doubtful.mjs";
+import { doubtfulProblems, ledgerBalanceMinor } from "../server/lib/bank/doubtful.mjs";
 
 const OK = 200;
 const EXCEEDS = [400, "doubtful-writeoff-exceeds"];
@@ -90,6 +90,10 @@ describe("M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12)
   });
   it("carilerin bakiyesi (k1)", () => {
     const wrong = Object.entries(BALANCES).filter(([name, tl]) => Math.round(res.balances[name] * 100) !== Math.round(tl * 100)).map(([name, tl]) => `${name}: beklenen ${tl}, program ${res.balances[name]}`);
+    assert.deepEqual(wrong, []);
+  });
+  it("liste / form ucunun okuduğu defter bakiyesi her caride cari kartının bakiyesiyle aynı (yazım yolu kartın bakiyesini okur)", () => {
+    const wrong = Object.entries(res.ids.cari).filter(([name, id]) => ledgerBalanceMinor(ctx.store, id) !== Math.round(res.balances[name] * 100)).map(([name, id]) => `${name}: defter ${ledgerBalanceMinor(ctx.store, id)} · kart ${res.balances[name]}`);
     assert.deepEqual(wrong, []);
   });
   it("Mutabakat Testi tamam (değişmez; m.10 düzeltmeleri ve m.11 avansı reddedilmedi, ihlal yok)", async () => {
@@ -326,6 +330,7 @@ for (const seed of [1, 2, 3]) {
             } else assert.ok(["doubtful-writeoff-exceeds", "doubtful-closed", "period-locked", "doubtful-missing"].includes(r.code), `geri yükleme ret kodu ${r.code}: ${r.error}`);
           }
           assert.deepEqual(doubtfulProblems(ctx.store, { parties: [acc.id] }).map(item => item.sample), [], `tohum ${seed} cari ${c} adım ${step} (${kind}): değişmez`);
+          if (kind === "write" || kind === "restore" || kind === "delete") assert.equal(ledgerBalanceMinor(ctx.store, acc.id), Math.round((await must("kart", api.get(`/api/workspace/accounts/${acc.id}`))).totals.balance * 100), "defter bakiyesi = kart bakiyesi");
         }
       }
       const integrity = await integrityOf(api);

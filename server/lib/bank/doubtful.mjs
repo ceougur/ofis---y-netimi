@@ -538,7 +538,7 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
   return out;
 }
 /** Carinin defter bakiyesi (kuruş): cari kartının satırlarıyla aynı kaynak (lib/accounts.mjs accountLedger; borç − alacak). */
-function ledgerBalanceMinor(store, party) {
+export function ledgerBalanceMinor(store, party) {
   const lines = createAccountLines({ store });
   const ledger = createObligationInput({ store }).ledgerLines({ ids: [party], plans: lines.ledgerPlansOf([party]) }).get(party) || [];
   let sum = 0;
@@ -566,6 +566,10 @@ export function doubtfulSummary(store, accountId) {
   const empty = { count: 0, openCount: 0, openMinor: 0, provisionMinor: 0, collectedMinor: 0, writtenOffMinor: 0, releasedMinor: 0 };
   if (!hasDoubtful(store)) return empty;
   const { records, state } = doubtfulState(store, { parties: [accountId] });
+  return summarize(records, state, empty);
+}
+// Özetin toplama kuralı (doubtfulSummary ve şüpheli kayıt listesi aynı ayırmanın sonucundan — 2.5.1 M2 hız: liste ikinci ayırıcı koşusu yapmaz).
+function summarize(records, state, empty = { count: 0, openCount: 0, openMinor: 0, provisionMinor: 0, collectedMinor: 0, writtenOffMinor: 0, releasedMinor: 0 }) {
   const out = { ...empty };
   for (const record of records) {
     const s = state.get(record.id);
@@ -650,13 +654,14 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     const ctx = writeOffContextOf(store, accountId);
     const { records } = ctx.rows;
     const { state, allocations } = ctx.full;
-    const balanceMinor = records.some(record => record.status === "open") ? headroom(accountId).balanceMinor : 0;
+    // Bakiye carinin defter satırlarından (cari kartının bakiyesiyle aynı kaynak — accountLedger; eşitlik testte denetlenir). Yazım yolları kartın kendi bakiyesini okur (headroom).
+    const balanceMinor = records.some(record => record.status === "open") ? ledgerBalanceMinor(store, accountId) : 0;
     const writable = record => {
       if (record.status !== "open" || !state.get(record.id)) return null;
       const days = writeOffDaysOf(ctx, record, balanceMinor);
       return { anyMinor: days.anyMinor || 0, today: quoteOut(days.today), best: quoteOut(days.best) };
     };
-    return { records: records.map(record => ({ ...view(record, state.get(record.id), allocations), writeOff: writable(record) })), summary: doubtfulSummary(store, accountId) };
+    return { records: records.map(record => ({ ...view(record, state.get(record.id), allocations), writeOff: writable(record) })), summary: hasDoubtful(store) ? summarize(records, state) : doubtfulSummary(store, accountId) };
   }
   /** Rapor verisi: bütün (silinmemiş) carilerin kayıtları; status open | closed | all; from/to kayıt tarihine. "Açık" durumu TARİH İTİBARIYLA
    *  listedir (eleştirmen E1, 15.10.2026): dönem başlangıcı süzmez — geçen yıl açılmış, hâlâ açık kayıt "Bu Yıl"da görünür, TOPLAM Kalan = 128. */
@@ -859,7 +864,7 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
   function writeOffQuote(accountId, did, date = "") {
     const record = recordRow(did, { accountId });
     const ctx = writeOffContextOf(store, record.party);
-    const balanceMinor = headroom(record.party).balanceMinor;
+    const balanceMinor = ledgerBalanceMinor(store, record.party);
     const days = writeOffDaysOf(ctx, record, balanceMinor);
     const today = period.today();
     const day = date || today;
