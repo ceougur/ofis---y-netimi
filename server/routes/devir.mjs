@@ -5,15 +5,61 @@
 //   GET  /api/admin/devir/backups           kalıcı devir yedekleri (Yönetim → Yedekler → Devir Yedekleri)
 //   POST /api/admin/devir/backups/verify    { company, name } — devir yedeğinin her dosyası bildirgesiyle aynı mı
 //   GET  /api/admin/maintenance             bakım kipindeki şirketler + önceki çalışmada yarıda kalan kip
+// 2.5.1 D3 — devir ÖN İZLEMESİ (yalnız okuma; yazan uç YOK — D4; docs/devir/D3-D4-TASARIM.md §3.9):
+//   POST /api/admin/devir/preview           { company, cutoff (YYYY-12-31), option ("borc-alacak" | "sadece-bakiye") } → { id, state } — iş parçacığında başlar; aynı şirkette
+//                                           süren ön izleme varsa YENİSİ açılmaz, sürenin kimliği döner (joined: true)
+//   GET  /api/admin/devir/preview/:id       { id, company, state (running | done | failed), asama, result? { plan, onDenetim, rapor, zamanlama }, stale, error? }
+//   GET  /api/admin/devir/preview/:id/report.pdf | report.xlsx   Devir Raporu (ekran = PDF = Excel; aynı satırlar)
 import path from "node:path";
-import { HttpError, ok, readJson, text } from "../lib/http.mjs";
+import { Worker } from "node:worker_threads";
+import { randomUUID } from "node:crypto";
+import { HttpError, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
+import { reportFileBase } from "../lib/report-files.mjs";
+import { ROOT_COMPANY_ID } from "../lib/companies.mjs";
+import { checkCutoff, DEVIR_OPTIONS } from "../lib/devir/plan.mjs";
+import { devirReportPdf, devirReportXlsx } from "../lib/devir/report.mjs";
+import { runPreview } from "../lib/devir/plan-worker.mjs";
 import { archiveFileOf, archiveKey, readArchiveFacts, validYear } from "../lib/devir/archives.mjs";
 import { commitPendingMigration, verifyArchive } from "../lib/devir/archive-open.mjs";
 import { devirBackupRoot, verifyDevirBackup } from "../lib/devir/devir-backups.mjs";
 
 const BACKUP_DIR_NAME = /^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z-[a-z0-9-]+$/;
 
-export function registerDevirRoutes(router, { auth, companies, backups, maintenance, archiveView, archiveCache }) {
+const PREVIEW_ENTRY = new URL("../lib/devir/plan-worker.mjs", import.meta.url);
+const PREVIEW_KEEP = 8;
+const PREVIEW_TIMEOUT_MS = 30 * 60_000;
+
+/** Ön izleme iş parçacığı: { dbPath, time, job } → sonuç; onProgress(aşama). Hata: HttpError (aynı durum kodu) ya da 500. */
+export function runPreviewWorker(data, { onProgress = () => {}, timeoutMs = PREVIEW_TIMEOUT_MS } = {}) {
+  let worker = null;
+  const promise = new Promise((resolve, reject) => {
+    let settled = false;
+    worker = new Worker(PREVIEW_ENTRY, { workerData: { ...data, devirPreview: true }, name: "destekofis-devir-on-izleme" });
+    worker.unref();
+    const finish = (error, value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      if (error) reject(error);
+      else resolve(value);
+      worker.terminate().catch(() => {});
+    };
+    const timer = setTimeout(() => finish(new Error("devir ön izlemesi zamanında bitmedi")), timeoutMs);
+    timer.unref?.();
+    worker.on("message", message => {
+      if (message?.type === "progress") return onProgress(message.asama);
+      if (message?.ok) return finish(null, message.data);
+      if (message && message.status && message.status < 500) return finish(new HttpError(message.status, message.message, { code: message.code }));
+      return finish(Object.assign(new Error(message?.message || "devir ön izlemesi başarısız"), { stack: message?.stack || "" }));
+    });
+    worker.once("error", error => finish(error instanceof Error ? error : new Error(String(error))));
+    worker.once("exit", code => finish(new Error(`devir ön izleme iş parçacığı kapandı (kod ${code})`)));
+  });
+  return { promise, terminate: () => worker?.terminate().catch(() => {}) };
+}
+
+export function registerDevirRoutes(router, { auth, companies, backups, maintenance, archiveView, archiveCache, appFor = null, now = null }) {
   const companyFor = (admin, id) => {
     const company = companies.get(text(id));
     if (!company || !companies.canAccess(admin, company.id)) throw new HttpError(404, "Şirket bulunamadı ya da bu şirketi görme yetkiniz yok.");
@@ -63,6 +109,100 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
     const dir = path.join(root, name);
     if (path.dirname(path.resolve(dir)) !== path.resolve(root)) throw new HttpError(400, "Geçersiz devir yedeği adı.");
     ok(res, { company: company.id, name, ...(await verifyDevirBackup(dir)) });
+  });
+
+  // ---------- 2.5.1 D3: ön izleme işleri (bellekte; şirket başına en çok bir süren iş) ----------
+  const previews = new Map(); // id → iş
+  const running = new Map(); // şirket → süren işin kimliği
+  const clockNow = () => (typeof now === "function" ? now() : new Date());
+  const publicJob = (job, withResult = true) => ({
+    id: job.id,
+    company: job.companyId,
+    cutoff: job.job.K,
+    option: job.job.option,
+    state: job.state,
+    asama: job.asama,
+    startedAt: job.startedAt,
+    finishedAt: job.finishedAt || "",
+    // Ön izleme sürerken bakım kipi açıldıysa (Devri Başlat) sonuç bayattır (tasarım §3.11 madde 40); D4 kopyada yeniden hesaplar.
+    stale: job.stale || Boolean(maintenance?.has?.(job.companyId)),
+    ...(job.error ? { error: job.error } : {}),
+    ...(withResult && job.result ? { result: job.result } : {}),
+  });
+  const keepRecent = () => {
+    const done = [...previews.values()].filter(job => job.state !== "running").sort((a, b) => (a.finishedAt < b.finishedAt ? -1 : 1));
+    while (done.length > PREVIEW_KEEP) previews.delete(done.shift().id);
+  };
+  router.post("/api/admin/devir/preview", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    const body = (await readJson(req)) || {};
+    const company = companyFor(admin, body.company);
+    const cutoff = text(body.cutoff);
+    const option = text(body.option) || "borc-alacak";
+    if (!DEVIR_OPTIONS[option]) throw new HttpError(400, "Cari bakiye tipi geçerli değil.", { code: "DEVIR_SECENEK" });
+    if (typeof appFor !== "function") throw new HttpError(503, "Ön izleme bu kurulumda kullanılamıyor.");
+    // Şirket ÖNCE açılır (bekleyen göçü koşar; meşgulse 503 — geri yükleme / ayırma sürüyor).
+    const target = appFor(company);
+    const today = target.context?.period?.today?.() || clockNow().toISOString().slice(0, 10);
+    checkCutoff(cutoff, today);
+    const existing = running.get(company.id);
+    if (existing && previews.get(existing)?.state === "running") return ok(res, { ...publicJob(previews.get(existing), false), joined: true });
+    const label = createReportHeader({ store: target.store, company: () => company }).companyLabel() || `${company.code} · ${company.name}`;
+    const job = { K: cutoff, today, option, company: { id: company.id, code: company.code, name: company.name, label }, isRoot: company.id === ROOT_COMPANY_ID };
+    const entry = { id: `onizleme-${randomUUID()}`, companyId: company.id, job, state: "running", asama: "basladi", startedAt: clockNow().toISOString(), finishedAt: "", result: null, error: null, stale: false, label };
+    previews.set(entry.id, entry);
+    running.set(company.id, entry.id);
+    const dbPath = target.config?.dbPath || "";
+    const finish = (error, result) => {
+      entry.finishedAt = clockNow().toISOString();
+      if (error) {
+        entry.state = "failed";
+        entry.error = { status: error.status || 500, code: error.code || "", message: error.status ? error.message : "Devir ön izlemesi hesaplanamadı." };
+      } else {
+        entry.state = "done";
+        entry.result = result;
+      }
+      if (maintenance?.has?.(company.id)) entry.stale = true;
+      if (running.get(company.id) === entry.id) running.delete(company.id);
+      keepRecent();
+    };
+    if (dbPath && dbPath !== ":memory:" && !target.store.inTransaction) {
+      const handle = runPreviewWorker({ dbPath, time: clockNow().toISOString(), job }, { onProgress: asama => (entry.asama = asama) });
+      entry.terminate = handle.terminate;
+      handle.promise.then(result => finish(null, result), error => finish(error));
+    } else {
+      // İş parçacığısız yol (bellekteki veri tabanı): aynı işlev, şirket örneğinin kendi hizmetleriyle.
+      try {
+        finish(null, runPreview({ store: target.store, ledger: target.context.ledger, job, progress: asama => (entry.asama = asama) }));
+      } catch (error) {
+        finish(error);
+      }
+    }
+    ok(res, publicJob(entry, false));
+  });
+  const previewOf = (admin, id) => {
+    const entry = previews.get(text(id));
+    if (!entry || !companies.canAccess(admin, entry.companyId)) throw new HttpError(404, "Ön izleme bulunamadı.", { code: "devir-preview-not-found" });
+    return entry;
+  };
+  router.get("/api/admin/devir/preview/:id", async ({ req, res, params }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    ok(res, publicJob(previewOf(admin, params.id)));
+  });
+  const reportFile = (admin, id) => {
+    const entry = previewOf(admin, id);
+    if (entry.state !== "done" || !entry.result) throw new HttpError(409, "Ön izleme henüz bitmedi.", { code: "devir-preview-running" });
+    return { entry, data: entry.result.rapor, ctx: { now: clockNow(), companyLabel: entry.label, userName: admin.display_name || admin.username || "" } };
+  };
+  router.get("/api/admin/devir/preview/:id/report.pdf", async ({ req, res, params, url }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    const { entry, data, ctx } = reportFile(admin, params.id);
+    sendBuffer(res, devirReportPdf(data, ctx), { type: "application/pdf", name: `${reportFileBase(data.title, entry.job.today)}.pdf`, inline: url.searchParams.get("download") !== "1" });
+  });
+  router.get("/api/admin/devir/preview/:id/report.xlsx", async ({ req, res, params }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    const { entry, data, ctx } = reportFile(admin, params.id);
+    sendBuffer(res, devirReportXlsx(data, ctx), { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${reportFileBase(data.title, entry.job.today)}.xlsx` });
   });
 
   router.get("/api/admin/maintenance", async ({ req, res }) => {

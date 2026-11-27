@@ -526,7 +526,7 @@ function buildApp(overrides, opening) {
   registerMobileTunnelRoutes(router, context);
   if (!hub) registerCompanyRoutes(router, { ...context, appFor: company => appFor(company), resetData: (company, ...args) => appFor(company).resetData(...args), closeCompany: id => closeCompany(id) });
   // 2.5.0 D2 (routes/devir.mjs): arşiv kaydı + durum, arşiv bütünlük denetimi, devir yedekleri listesi, bakım kipi durumu — ortak katmanda.
-  if (!hub) registerDevirRoutes(router, { ...context, archiveView: company => archiveView(company), archiveCache: () => archiveVerifyCache });
+  if (!hub) registerDevirRoutes(router, { ...context, archiveView: company => archiveView(company), archiveCache: () => archiveVerifyCache, appFor: company => appFor(company) });
   // Hareket tarihi ve dönem kilidi (v2.0.13): Kasa, Cari, Stok ve Taksit aynı kuralla. v2.0.26 (A1): kayıt tahsilatı da
   // (çalışma alanı rotaları) aynı kurala bağlı; bu yüzden onlardan önce kurulur.
   context.period = createPeriod({ store, now: config.now });
