@@ -201,6 +201,8 @@ async function generate(client, { q = "", parties = PARTIES, suppliers = 40, ite
       add("doubtful", parties * 0.01);
       add("refund", parties * 0.02);
       add("delrestore", 1);
+      // D3 tur 4 (S-T2-1 = B): Aralık 2026'da ≤K alış + K sonrası Mahsup Et (yalnız bu ay — önceki ayların rastgele dizisi değişmez).
+      if (y === 2026 && m === 12) add("offset", 6);
     }
     for (let i = 0; i < Math.round(parties * 0.4 * perMonth); i += 1) events.push({ kind: "sale", day: pick(days) });
     for (let i = 0; i < Math.round(suppliers * 0.5 * perMonth); i += 1) events.push({ kind: "purchase", day: pick(days) });
@@ -425,6 +427,41 @@ async function generate(client, { q = "", parties = PARTIES, suppliers = 40, ite
         });
         return true;
       }
+      case "offset": {
+        // D3 tur 4 (S-T2-1 = B — KULLANICI 27.11.2026 14:18 UTC): satışı olan müşteriye ≤K alış faturası; Ocak'ta Mahsup Et — alış yönü (Ocak satışı ↔ Aralık alışı; tam ya da kısmi),
+        // satış yönü (Aralık satışı ↔ Ocak alışı), iki belge ≤K (Aralık satışı ↔ Aralık alışı, Ocak'ta), sonradan silinen mahsup. Reddedilen istek sayılır (ders 3).
+        const owners = [...salesOf.keys()].filter(owner => (salesOf.get(owner) || []).some(row => row.day <= K));
+        if (!owners.length) return true;
+        const customer = pick(owners);
+        const amount = between(100, 400);
+        const line = price => [{ name: "Hizmet", qty: 1, unitPrice: price, discountRate: 0, vatRate: 0 }];
+        const bought = await tryApi("mahsup-alis-k-oncesi", client.post("/api/workspace/invoices", { kind: "purchase", accountId: customer, number: `MH-${day}-${between(1000, 9999)}`, issueDate: day, lines: line(amount), payment: pay, force: true }));
+        if (!bought?.id) return true;
+        const fate = rand();
+        const when = `2027-01-${pad(between(2, 19))}`;
+        const take = fate < 0.2 ? amount : Math.max(1, Math.round(amount / 2));
+        const old = (salesOf.get(customer) || []).find(row => row.day <= K);
+        const offset = (cls, invoiceId, counterId, value) => tryApi(cls, client.post(`/api/workspace/invoices/${invoiceId}/offsets`, { counterType: "invoice", counterId, amount: String(value), date: when }));
+        soon(when, async () => {
+          if (fate < 0.4) {
+            const fresh = await tryApi("mahsup-ocak-satis", client.post("/api/workspace/invoices", { kind: "sale", accountId: customer, issueDate: when, lines: line(amount + 50), payment: pay, force: true }));
+            if (fresh?.id) await offset(fate < 0.2 ? "mahsup-k-sonrasi-alis-yonu-tam" : "mahsup-k-sonrasi-alis-yonu-kismi", fresh.id, bought.id, take);
+          } else if (fate < 0.6) {
+            const jan = await tryApi("mahsup-ocak-alis", client.post("/api/workspace/invoices", { kind: "purchase", accountId: customer, number: `MJ-${when}-${between(1000, 9999)}`, issueDate: when, lines: line(amount), payment: pay, force: true }));
+            if (jan?.id && old) await offset("mahsup-k-sonrasi-satis-yonu", old.id, jan.id, 30);
+          } else if (fate < 0.8) {
+            if (old) await offset("mahsup-k-sonrasi-iki-belge-k-oncesi", old.id, bought.id, 30);
+          } else {
+            const fresh = await tryApi("mahsup-ocak-satis", client.post("/api/workspace/invoices", { kind: "sale", accountId: customer, issueDate: when, lines: line(amount + 50), payment: pay, force: true }));
+            if (fresh?.id && (await offset("mahsup-silinecek", fresh.id, bought.id, take))) {
+              const list = await tryApi("mahsup-listesi", client.get(`/api/workspace/invoices/${fresh.id}/offsets`));
+              const id = list?.offsets?.[0]?.id;
+              if (id) await tryApi("mahsup-silindi", client.del(`/api/workspace/invoices/${fresh.id}/offsets/${id}`));
+            }
+          }
+        });
+        return true;
+      }
       case "delrestore": {
         // Tahsilat Sil + Silinenler'den geri yükle (aynı kayıt geri gelir).
         const customer = pick(customers);
@@ -554,6 +591,13 @@ for (const [company, label, store] of [["sirket-001", "001", () => server.app.st
     }
   }
   check(diffs.length === 0, `${label}: devirsiz eşdeğer — ${compared} karşılaştırma (cari × gün × seçenek), fark ${diffs.length} ${JSON.stringify(diffs.slice(0, 3)).slice(0, 600)}`);
+  if (!SIMPLE) {
+    // D3 tur 4 (S-T2-1 = B): K sonrası mahsup ayırımı planda VAR ve carilerinin benzetim içindekileri yukarıdaki devirsiz eşdeğerde (fark 0).
+    const ayirim = plan.newYear.mahsupAyirmalari || [];
+    const inside = [...new Set(ayirim.map(row => row.cari))].filter(party => !outside.has(party));
+    console.log(`# ${label}: S-T2-1 ayırımı ${ayirim.length} (yeni yıla ${ayirim.filter(row => row.tur === "yeni-yila-ayrildi").length}, K'de kapanan ${ayirim.filter(row => row.tur === "k-de-kapandi").length}); carisi ${new Set(ayirim.map(row => row.cari)).size}, devirsiz eşdeğerde ${inside.length}`);
+    check(ayirim.some(row => row.tur === "yeni-yila-ayrildi") && inside.length > 0, `${label}: S-T2-1 sınıfı — K sonrası mahsubun ≤K belgesi yeni yıla ayrıldı ve carisi devirsiz eşdeğerde (${inside.length} cari)`);
+  }
 }
 server.close();
 // Kendi geçici veri klasörü (mkdtemp; yalnız bu tam yol — ders 36): başarılı koşuda silinir, başarısızda incelemek için kalır.

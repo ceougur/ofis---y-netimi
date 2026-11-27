@@ -1,10 +1,14 @@
 #!/usr/bin/env node
-// 2.5.1 D3 tur 3 — İLETİ KATALOĞU üreticisi (test değildir; CI dışı). Testlerin GERÇEKTEN ürettiği iletiler (test/fixtures/devir-d3-ileti-katalog.mjs kaydedicisi, D3T3_KATALOG_DIR)
+// 2.5.1 D3 tur 3 / tur 4 — İLETİ KATALOĞU üreticisi (test değildir; CI dışı). Testlerin GERÇEKTEN ürettiği iletiler (test/fixtures/devir-d3-ileti-katalog.mjs kaydedicisi, D3T3_KATALOG_DIR)
 // okunur; her neden (iç kod) için ilk örnek dört alanıyla, hangi senaryodan ve hangi veri kaynağından çıktığıyla yazılır. Elle metin YOK — cümleler yanıt gövdesinden.
-// Kullanım: D3T3_KATALOG_DIR=<klasör> node --test test/devir-d3-ileti.test.mjs test/devir-d3-kural.test.mjs test/devir-d3-wa.test.mjs
+// Tur 4: KATALOG TARAMASI — yazılan her kullanıcı alanı (başlık, ne oldu, neden, adımlar, nereye) iletiDenetimi'nden (iç kod / İngilizce / alan adı / ISO tarih / nokta ondalık) ve şemanın
+// tablo adlarından (plan-reader.mjs DEVIR_TABLE_CLASSES) geçer; ihlal varsa listelenir ve çıkış kodu 1.
+// Kullanım: D3T3_KATALOG_DIR=<klasör> node --test test/devir-d3-*.test.mjs
 //           node test/devir-d3-ileti-katalog.mjs <klasör> <çıktı .md>
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { iletiDenetimi } from "../server/lib/devir/iletiler.mjs";
+import { DEVIR_TABLE_CLASSES } from "../server/lib/devir/plan-reader.mjs";
 
 const [dir, out] = process.argv.slice(2);
 if (!dir || !out) throw new Error("kullanım: node test/devir-d3-ileti-katalog.mjs <kayıt klasörü> <çıktı .md>");
@@ -16,13 +20,21 @@ const byCode = new Map();
 for (const row of rows) if (!byCode.has(row.kod)) byCode.set(row.kod, { ...row, adet: 0 });
 for (const row of rows) byCode.get(row.kod).adet += 1;
 const order = [...byCode.values()].sort((a, b) => (a.seviye === b.seviye ? 0 : a.seviye === "durdurur" ? -1 : 1));
+// Katalog taraması (her kayıtlı ileti, yalnız ilk örnek değil).
+const tables = new RegExp(`\\b(${Object.keys(DEVIR_TABLE_CLASSES).join("|")})\\b`);
+const violations = [];
+for (const row of rows) {
+  for (const problem of iletiDenetimi(row)) violations.push(`${row.kod} · ${problem.alan}: ${problem.neden} — ${problem.metin}`);
+  for (const value of [row.baslik, row.neOldu, row.neden, row.nereye?.ekran, ...(row.neYapmali || [])]) if (tables.test(String(value || ""))) violations.push(`${row.kod}: tablo adı — ${value}`);
+}
 const lines = [
-  "# Devir iletileri kataloğu (DEVİR NEDEN DURDU — 2.5.1 D3 tur 3)",
+  "# Devir iletileri kataloğu (DEVİR NEDEN DURDU — 2.5.1 D3)",
   "",
   "Kaynak: testlerin ön izleme yanıtından KAYDETTİĞİ gerçek iletiler (elle yazılmış değil) — `test/devir-d3-ileti-katalog.mjs` üretti. Her neden için ilk örnek; \"Kaynak\" verinin nasıl kurulduğunu söyler",
   "(API: programın kendi API'si; ham veri: API'nin üretemediği eski sürüm / göç durumu; olgu: program tutarlı veride üretmediği için olgu düzeyinde). İç kod (`kod`) makine alanıdır, kullanıcıya gösterilmez.",
   "",
   `Neden sayısı: ${order.length} (durdurur ${order.filter(row => row.seviye === "durdurur").length}, uyarı ${order.filter(row => row.seviye === "uyarir").length}); kayıtlı ileti ${rows.length}.`,
+  `Katalog taraması (iç kod / İngilizce / alan adı / tablo adı / ISO tarih / nokta ondalık — kayıtlı ${rows.length} iletinin bütün kullanıcı alanları): ${violations.length ? `${violations.length} İHLAL` : "0 ihlal"}.`,
   "",
 ];
 let level = "";
@@ -40,5 +52,10 @@ for (const row of order) {
   lines.push(`- Senaryo: ${row.senaryo} — kaynak: ${row.kaynak}; test: \`${row.test}\`; bu kodla kaydedilen ileti: ${row.adet}`);
   lines.push("");
 }
+if (violations.length) lines.push("## Tarama İhlalleri", "", ...violations.map(item => `- ${item}`), "");
 writeFileSync(out, `${lines.join("\n")}\n`);
-console.log(`${order.length} neden → ${out}`);
+console.log(`${order.length} neden, ${rows.length} ileti, tarama ihlali ${violations.length} → ${out}`);
+if (violations.length) {
+  for (const item of violations) console.error(item);
+  process.exitCode = 1;
+}
