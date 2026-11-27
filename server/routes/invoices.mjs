@@ -30,6 +30,7 @@ import { jpegInfo } from "../lib/pdf-write.mjs";
 import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, cents, computeInvoice, exclusiveParts, lineAccount, priceForNetFee, toTry, typeCode } from "../lib/invoice-math.mjs";
 import { PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { CLOSER_MODES, buildObligations } from "../lib/obligation-queue.mjs";
+import { planInLabel, planItemNumbers } from "../lib/plan-item-no.mjs";
 import { createObligationInput } from "../lib/obligation-input.mjs";
 import { editCutsOf } from "../lib/cover-scope.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
@@ -916,6 +917,20 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const testSeriesInLive = row => unsentNumbered(row) && TEST_SERIES_SET.has(row.series) && edocLive && settings().integrator.env === "live";
   const TEST_LIVE_TEXT = number => `${number} test ortamında numara almış bir belgedir (seri ${String(number || "").slice(0, 3)}); test serisi canlı ortamda gönderilmez. İptal Et ile iptal edip yeniden kesin: firmanızın serisinden numara alır.`;
   // S229 / S230: ödeme durumu ve açık GÖSTERİLEN açıktır (shownState); ownOpen faturanın kendi açığı, inPlan Mevcut Borç kart(lar)ının aldığı kısım.
+  // 2.5.1 Mİ (S-Mİ1-1 = A — tek taksit numarası her yerde): fatura penceresinin "Bu Faturayı Kapatanlar" satırı taksit tahsilatıysa metni kuyruğun girdisindeki satırdan
+  // gelir ("Taksit Tahsilatı · N. taksit", N saklanan sıra — kuyruğun girdisi bayt bayt aynı kalır); GÖSTERİLEN metin görünen numarayla (lib/plan-item-no.mjs). Yalnız fatura
+  // penceresi (detay) — liste satırlarının kapatanları ekranda yazılmaz.
+  const PLAN_IN_LABEL = /^(Taksit Tahsilatı|Açılış \(devir\))( · \d+\. taksit)?$/;
+  function numberedClosers(closers) {
+    const ids = (closers || []).filter(item => String(item.id || "").startsWith("plan-entry:") && PLAN_IN_LABEL.test(item.label || "")).map(item => item.id.slice(11));
+    if (!ids.length) return closers;
+    const entries = new Map(store.all("SELECT id, plan_id AS planId, item_id AS itemId, opening FROM plan_entries WHERE id IN (SELECT value FROM json_each(?))", JSON.stringify([...new Set(ids)])).map(entry => [entry.id, entry]));
+    const numbers = planItemNumbers(store, [...entries.values()].map(entry => entry.planId));
+    return closers.map(item => {
+      const entry = String(item.id || "").startsWith("plan-entry:") && PLAN_IN_LABEL.test(item.label || "") ? entries.get(item.id.slice(11)) : null;
+      return entry ? { ...item, label: planInLabel(entry.opening, entry.itemId ? numbers.get(entry.itemId) : null) } : item;
+    });
+  }
   const shape = (row, rawState = null) => {
     const state = shownState(row, rawState);
     return {
@@ -1251,8 +1266,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const cancelLimit = cancelWindowOf(row);
     const cancelRecheck = cancelRecheckOf(row, cancelLimit);
     const returnable = lines.map(line => ({ id: line.id, left: Math.max(0, Math.round((line.qty - (returned.get(line.id) || 0)) * 1000) / 1000) }));
+    const shaped = shape(row, state);
     return {
-      ...shape(row, state),
+      ...shaped,
+      closers: numberedClosers(shaped.closers),
       party: parseJson(row.partyJson, {}),
       seller: parseJson(row.sellerJson, {}),
       pricesIncludeVat: Boolean(row.pricesIncludeVat),

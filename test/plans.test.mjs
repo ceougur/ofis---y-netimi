@@ -62,7 +62,7 @@ describe("taksit motoru (saf)", () => {
     assert.equal(ledger.totals.remaining, 1500);
     assert.equal(ledger.totals.overdue, 500);
     assert.equal(ledger.state, "overdue");
-    assert.deepEqual(ledger.next, { id: "b", seq: 2, no: 2, dueDate: "2026-09-01", remaining: 500, days: -14, state: "overdue" });
+    assert.deepEqual(ledger.next, { id: "b", seq: 2, dueDate: "2026-09-01", remaining: 500, days: -14, state: "overdue" });
 
     // 3. taksite bağlı tahsilat: önce ona sayılır; 2. taksit hâlâ gecikmiş.
     ledger = allocate(plan, items, [{ id: "e1", kind: "in", amount: 1000, date: "2026-08-05" }, { id: "e2", kind: "in", amount: 1000, date: "2026-09-10", itemId: "c" }], { today: "2026-09-15" });

@@ -12,6 +12,7 @@ import { posMetaOf } from "../lib/bank/pos.mjs";
 import { doubtfulState } from "../lib/bank/doubtful.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, closeDaySql, isAccountType, mapAccountHeaders, waivedOf, waivesSql } from "../lib/accounts.mjs";
 import { createAccountLines } from "../lib/account-lines.mjs";
+import { itemNumbers, numberedLines, numbersOfPlans, planItemNumbers, withNo } from "../lib/plan-item-no.mjs";
 import { COLLECTION_LABELS, COLLECTION_WAYS, PERIOD_LABELS, addCollected, collectionsByAccount, emptyCollected, periodOf } from "../lib/account-collections.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
@@ -150,7 +151,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   };
 
   // Cari kartındaki taksit kartı özeti (detail ve waFacts AYNI eşlemeyle; İş Z 2.4.8).
-  const planSummaryOf = plan => ({ id: plan.id, name: plan.name, refNo: plan.refNo, status: plan.status, state: plan.state, totals: plan.totals, next: plan.next, itemCount: plan.itemCount, registeredOn: plan.registeredOn, total: plan.total, coversBalance: Boolean(plan.coversBalance) });
+  // next.no (2.5.1 Mİ): sıradaki taksitin görünen numarası (lib/plan-item-no.mjs; kartın taksitlerinden) — özet gösterimdir, kuyruğun girdisi değildir.
+  const planSummaryOf = plan => ({ id: plan.id, name: plan.name, refNo: plan.refNo, status: plan.status, state: plan.state, totals: plan.totals, next: plan.next ? withNo(plan.next, itemNumbers(plan.items || [])) : plan.next, itemCount: plan.itemCount, registeredOn: plan.registeredOn, total: plan.total, coversBalance: Boolean(plan.coversBalance) });
 
   // withRemaining (2.4.5 madde 6): false → borç kayıtlarının Kalan'ı hesaplanmaz (fatura kapaması yalnız defteri ister; aynı kapama iki kez koşmasın);
   // geri ödenecek iadeler ve silme engeli (2.4.9 C1 TUR 1) de okunmaz.
@@ -223,7 +225,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       typeLabel: ACCOUNT_TYPES[account.type] || "",
       entries,
       plans: summaries,
-      ledger: ledger.lines,
+      // 2.5.1 Mİ (S-Mİ1-1 = A): ekrana / ekstreye (PDF, Excel, WhatsApp, Rapor Merkezi'nin Cari Ekstre'si, mobil) giden satırda "Taksit Tahsilatı · N. taksit"in N'i görünen
+      // numara (lib/plan-item-no.mjs). withRemaining: false — fatura kapamasının / Tek Yükümlülük Kuyruğu'nun DEFTER OKUMASI (routes/invoices.mjs, routes/plans.mjs queueBuild):
+      // satırlar saklanan sırayla AYNEN (kuyruğun girdisi bayt bayt aynı — BAŞ MİMAR KARARI 27.11 (1)). Kuyruk (tyk) yukarıda numarasız satırlardan kuruldu.
+      ledger: withRemaining ? numberedLines(ledger.lines, numbersOfPlans(planList)) : ledger.lines,
       // totals.overdue / overdueCount: ESKİ anlam (açık taksit kartlarının gecikmişi) — WhatsApp Ödeme Hatırlatma Ç5-C'ye kadar bunu okur (lib/whatsapp/queue.mjs overdueOf;
       // tasarım §8 B1-W). TYK gecikmişi overdueDebt* (ekranda "Gecikmiş Borç").
       totals: tyk ? { ...ledger.totals, overdueInstallments: ledger.totals.overdue, ...tykTotals(tyk), ...(shown ? { planRemaining: roundMoney(summaries.reduce((sum, plan) => sum + (plan.status === "closed" ? 0 : Math.max(0, Number(plan.totals?.remaining) || 0)), 0)) } : {}) } : ledger.totals,
@@ -262,7 +267,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // Ç5-B: TYK gecikmişi ve Ödeme Sözü (overdueDebt*, promise*) bütün carilerin önbelleğinden (cari başına ağır okuma yok — ders 47); totals.overdue ESKİ anlamda
     // kalır (WhatsApp elemesi Ç5-C'ye kadar onu okur).
     const tyk = !store.inTransaction && invoiceModule()?.allObligations ? invoiceModule().allObligations()?.get(account.id) : null;
-    return { ...account, plans: planList.map(planSummaryOf), ledger: ledger.lines, totals: tyk ? { ...ledger.totals, overdueInstallments: ledger.totals.overdue, ...tykTotals(tyk) } : ledger.totals };
+    return { ...account, plans: planList.map(planSummaryOf), ledger: numberedLines(ledger.lines, numbersOfPlans(planList)), totals: tyk ? { ...ledger.totals, overdueInstallments: ledger.totals.overdue, ...tykTotals(tyk) } : ledger.totals };
   }
 
   // Liste: hareket toplamları tek sorguda, taksit özetleri tek geçişte (5 bin caride de hızlı).
@@ -2009,7 +2014,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // 2.5.0 AH (routes/invoices.mjs repairScreen): ids — yalnız bu carilerin defteri (açılış onarımı carileri parça parça okur: 1.000.000 satırda bütün
   // carilerin defteri birden belleğe alınınca yığın aşılıyordu); plans — kart haritası (ledgerPlansByAccount) bir kez kurulup parçalara verilir. Satırlar,
   // sıraları ve kural aynı (ids kümesi içindeki her carinin defteri, kümesiz çağrıdaki defteriyle birebir).
-  function allLedgers({ invoiced = false, dated = false, ids = null, plans: planMapIn = null } = {}) {
+  // numbered (2.5.1 Mİ, S-Mİ1-1 = A): GÖSTERİM yolları (Rapor Merkezi'nin Tüm Cari Hareketleri) satır metnindeki taksit numarasını görünen numarayla ister; varsayılan
+  // (false) satırlar saklanan sırayla AYNEN — fatura kapamasının / kuyruğun toplu girdisi (routes/invoices.mjs) bayt bayt aynı.
+  function allLedgers({ invoiced = false, dated = false, ids = null, plans: planMapIn = null, numbered = false } = {}) {
     const list = Array.isArray(ids) ? JSON.stringify(ids.map(String)) : "";
     const scope = list ? "SELECT value FROM json_each(?)" : [invoiced ? "SELECT DISTINCT account_id FROM invoices" : "", dated ? DATED_SQL : ""].filter(Boolean).join(" UNION ");
     const args = list ? [list] : [];
@@ -2018,6 +2025,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const entries = entriesByAccount(scope, args);
     const planMap = planMapIn || (plans()?.ledgerPlansByAccount ? plans().ledgerPlansByAccount() : new Map());
     const lines = ledgerLinesOf(rows, entries, planMap);
+    if (numbered) {
+      const numbers = planItemNumbers(store);
+      for (const [id, list] of lines) lines.set(id, numberedLines(list, numbers));
+    }
     return { accounts: rows, lines, ...(dated ? { dated: new Set(store.all(DATED_SQL).map(row => row.account_id)) } : {}) };
   }
   // Kasa (v2.1.0, K5): cari tahsilat ve ödemeleri Kasa'ya tek kaynaktan (lib/bank/money-lines.mjs, kaynak 3) düşer; silinen carinin

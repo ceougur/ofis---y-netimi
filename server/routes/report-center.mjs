@@ -15,6 +15,7 @@ import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.
 import { roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { allocate, dayText, isoDay } from "../lib/plans.mjs";
+import { itemNumbers, itemText, planItemNumbers } from "../lib/plan-item-no.mjs";
 import { tl } from "../lib/report-pdf.mjs";
 import { createReportHeader } from "../lib/report-header.mjs";
 import { reportFileBase, reportPdf, reportXlsx } from "../lib/report-files.mjs";
@@ -1839,7 +1840,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
       preset: "thisYear",
       build(query) {
         const range = rangeOf(query, "thisYear");
-        const ledgers = accounts().allLedgers();
+        // 2.5.1 Mİ (S-Mİ1-1 = A): "Taksit Tahsilatı · N. taksit"in N'i görünen numara (numbered — gösterim yolu).
+        const ledgers = accounts().allLedgers({ numbered: true });
         const rows = [];
         let debit = 0;
         let credit = 0;
@@ -2434,7 +2436,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
       build(query) {
         const range = rangeOf(query, "thisYear");
         const list = store.all(
-          `SELECT e.date, e.kind, e.amount, e.note, e.receipt_no AS receiptNo, e.cheque_id AS chequeId, e.opening, p.name AS planName, COALESCE(a.name, '') AS accountName, i.seq, COALESCE(u.display_name, '') AS actorName
+          `SELECT e.date, e.kind, e.amount, e.note, e.receipt_no AS receiptNo, e.cheque_id AS chequeId, e.opening, p.name AS planName, COALESCE(a.name, '') AS accountName, i.seq, e.item_id AS itemId, COALESCE(u.display_name, '') AS actorName
            FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id LEFT JOIN plan_items i ON i.id = e.item_id LEFT JOIN users u ON u.id = e.created_by
            WHERE (? = '' OR e.date >= ?) AND (? = '' OR e.date <= ?) ORDER BY e.date, e.created_at`,
           range.from, range.from, range.to, range.to,
@@ -2442,6 +2444,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         // Açılış (devir, v2.0.8): programa girmeden önce ödenmiş kısım (Excel'den yüklenen "Ödenen"). Kasa'ya hiç girmedi.
         // v2.0.20 (kullanıcı: "hepsini toplasın raporlar da"): ayrı kalemde görünür VE toplam tahsil edilene dahildir.
         const total = { in: 0, out: 0, opening: 0 };
+        // 2.5.1 Mİ (S-Mİ1-1 = A): Taksit sütunu görünen numara (lib/plan-item-no.mjs; kart penceresiyle aynı).
+        const numbers = list.length ? planItemNumbers(store) : new Map();
         for (const row of list) {
           const key = row.opening ? "opening" : row.kind;
           total[key] = roundMoney(total[key] + row.amount);
@@ -2451,7 +2455,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
           headers: ["Tarih", "Makbuz", "Kart", "Cari", "Taksit", "Tür", "Yöntem", "Tutar", "Açıklama", "Giren"],
           types: ["", "", "", "", "", "", "", "money", "", ""],
           // İade / ödeme satırı eksi yazılır: TOPLAM satırı doğrudan net tahsil edilendir.
-          rows: list.map(row => [dayText(row.date), row.receiptNo ? String(row.receiptNo) : "", row.planName, row.accountName, row.seq ? `${row.seq}. taksit` : "", row.opening ? "Önceden Ödenen (Açılış)" : row.kind === "in" ? "Tahsilat" : "İade / Ödeme", row.opening ? "Excel'den" : row.chequeId ? "Çek / senet" : "Nakit / havale", money(!row.opening && row.kind !== "in" ? -row.amount : row.amount), row.note, row.actorName]),
+          rows: list.map(row => [dayText(row.date), row.receiptNo ? String(row.receiptNo) : "", row.planName, row.accountName, row.seq && row.itemId ? itemText(numbers.get(row.itemId)) : "", row.opening ? "Önceden Ödenen (Açılış)" : row.kind === "in" ? "Tahsilat" : "İade / Ödeme", row.opening ? "Excel'den" : row.chequeId ? "Çek / senet" : "Nakit / havale", money(!row.opening && row.kind !== "in" ? -row.amount : row.amount), row.note, row.actorName]),
           summary: [["Tahsilat", money(total.in)], ...(total.opening ? [["Önceden Ödenen (Açılış)", money(total.opening)]] : []), ["İade / Ödeme", money(total.out)], ["Toplam Tahsil Edilen", money(roundMoney(total.in + total.opening - total.out))]],
         };
       },
@@ -2958,7 +2962,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     for (const plan of list) {
       const own = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
       const ledger = plans()?.queueLedger ? plans().queueLedger(plan, own, queue, day) : own;
-      for (const item of ledger.items) if (filter(item)) out.push({ plan, item });
+      // 2.5.1 Mİ (S-Mİ1-1 = A): Taksit sütunu görünen numara (kartın bütün taksitlerinden; süzgeçten önce).
+      const numbers = itemNumbers(items.get(plan.id) || []);
+      for (const item of ledger.items) if (filter(item)) out.push({ plan, item, no: numbers.get(item.id) });
     }
     out.sort((a, b) => (lateFirst ? a.item.days - b.item.days : 0) || (a.item.dueDate < b.item.dueDate ? -1 : a.item.dueDate > b.item.dueDate ? 1 : 0) || collator.compare(a.plan.name, b.plan.name));
     const stateText = item => (item.state === "paid" ? "Ödendi" : item.state === "overdue" ? `${Math.abs(item.days)} gün gecikti` : item.state === "today" ? "Bugün" : item.partial ? "Kısmen ödendi" : "Açık");
@@ -2967,7 +2973,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
       subtitle,
       headers: ["Vade", "Ad", "Cari", "Telefon", "Taksit", "Tutar", "Ödenen", "Kalan", "Durum"],
       types: ["", "", "", "", "", "money", "money", "money", ""],
-      rows: out.map(({ plan, item }) => [dayText(item.dueDate), plan.name, plan.accountName, plan.phone, `${item.seq}. taksit`, money(item.amount), money(item.paid), money(item.remaining), stateText(item)]),
+      rows: out.map(({ plan, item, no }) => [dayText(item.dueDate), plan.name, plan.accountName, plan.phone, itemText(no), money(item.amount), money(item.paid), money(item.remaining), stateText(item)]),
       summary: [["Taksit", String(out.length)], ["Tutar", money(sum("amount"))], ["Ödenen", money(sum("paid"))], ["Kalan", money(sum("remaining"))]],
     };
   }

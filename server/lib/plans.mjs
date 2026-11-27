@@ -58,6 +58,10 @@ export function distribute({ total, count, firstDue, everyMonths = 1 }) {
   return items;
 }
 
+// Kartın taksit SIRASI: vade, vade eşitse saklanan sıra (seq). allocate bu sırayla dağıtır; taksitin GÖRÜNEN numarası (2.5.1 Mİ — lib/plan-item-no.mjs itemNumbers,
+// tek kaynak) bu sıradaki yeridir: 1, 2, 3…, boşluksuz (saklanan seq silinen taksitten sonra boşluk bırakır, sonradan eklenen / vadesi değişen taksitte sırayı tutmaz).
+export const compareItems = (a, b) => (a.dueDate === b.dueDate ? a.seq - b.seq : a.dueDate < b.dueDate ? -1 : 1);
+
 /**
  * Hareketleri taksitlere eşler ve kartın özetini çıkarır.
  * @param {{ total: number, status?: string }} plan
@@ -66,7 +70,7 @@ export function distribute({ total, count, firstDue, everyMonths = 1 }) {
  * @param {{ today?: string, soonDays?: number }} options
  */
 export function allocate(plan, items, entries, { today = isoDay(new Date()), soonDays = 7 } = {}) {
-  const ordered = [...items].sort((a, b) => (a.dueDate === b.dueDate ? a.seq - b.seq : a.dueDate < b.dueDate ? -1 : 1));
+  const ordered = [...items].sort(compareItems);
   const paidByItem = new Map(ordered.map(item => [item.id, 0]));
   let pool = 0;
   let paidIn = 0;
@@ -110,11 +114,10 @@ export function allocate(plan, items, entries, { today = isoDay(new Date()), soo
   }
   const extra = Math.max(0, roundMoney(pool)); // taksitlerin üstünde kalan fazla tahsilat
   const closed = plan.status === "closed";
-  // no (2.5.1 Mİ-1): taksitin GÖRÜNEN sıra numarası — kartın taksitleri bu sırayla (vade, sonra saklanan sıra) 1, 2, 3…, boşluksuz. Saklanan `seq` silinen
-  // taksitten sonra boşluk bırakır ('1.', '3.') ve vadesi değişen / sonradan eklenen taksitte sırayı tutmaz; ekranlar (Cari Listesi'nin "… gün gecikti (2. taksit)"
-  // eki, taksit kartı penceresi) numarayı YALNIZ buradan okur (tek kaynak). Müşteriye giden metinler (makbuz, ekstre, WhatsApp, kart / liste PDF'i) `seq`te kaldı.
-  const shaped = ordered.map((item, index) => {
-    const no = index + 1;
+  // Görünen taksit numarası (no) BURADA YOK (2.5.1 Mİ tur 2 — BAŞ MİMAR KARARI 27.11 (1)): allocate'in çıktısı Tek Yükümlülük Kuyruğu'nun girdisine de gider (cari kartının
+  // kart listesi forAccount → cari defteri); o girdi eskisiyle bayt bayt aynı kalır (test/obligation-input-250 hakemi). Numara yalnız gösterim / çıktı yollarında,
+  // lib/plan-item-no.mjs'ten (tek kaynak; bu dosyanın compareItems sırası).
+  const shaped = ordered.map(item => {
     const paid = roundMoney(paidByItem.get(item.id));
     const remaining = roundMoney(Math.max(0, item.amount - paid));
     const days = daysUntil(item.dueDate, today);
@@ -126,7 +129,7 @@ export function allocate(plan, items, entries, { today = isoDay(new Date()), soo
     else if (days <= soonDays) state = "upcoming";
     // ownPaid / ownRemaining (2.5.0 Ç5-B kapanış düzeltmesi, S129 = A): kartın KENDİ hesabı (kart tahsilatları) — kart ekranı `paid` / `remaining`i Tek Yükümlülük
     // Kuyruğu'ndan gösterir (routes/plans.mjs withQueue); sınır / soru / önerilen tutar (S118 = B), Mutabakat Testi ve mutabakat motoru bu alanları okur.
-    return { ...item, no, paid, remaining, ownPaid: paid, ownRemaining: remaining, partial: paid > EPS && remaining > EPS, days, state };
+    return { ...item, paid, remaining, ownPaid: paid, ownRemaining: remaining, partial: paid > EPS && remaining > EPS, days, state };
   });
   const planned = roundMoney(shaped.reduce((sum, item) => sum + item.amount, 0));
   const net = roundMoney(paidIn - paidOut);
@@ -143,7 +146,7 @@ export function allocate(plan, items, entries, { today = isoDay(new Date()), soo
   return {
     items: shaped,
     totals: { total, planned, unplanned, paidIn: roundMoney(paidIn), paidOut: roundMoney(paidOut), paid: net, remaining, ownPaid: net, ownRemaining: remaining, extra, overdue: overdueAmount, overdueCount: overdue.length },
-    next: next ? { id: next.id, seq: next.seq, no: next.no, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
+    next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
     state,
   };
 }
