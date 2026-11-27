@@ -267,3 +267,8 @@ DENENMEYEN: e2e / ekran (plan ajanı); tam `npm test` (görev gereği YOK); Wind
 - `totals.overdue` alanının adı / anlamı (B-4: anlam değişmez; yeniden adlandırma ayrı iş).
 - Rapor Merkezi "Geciken taksiti olan" süzgecinin ADI (sayı zaten doğru) → müşteri isteğinin Rapor Merkezi turuna (2.5.1 içinde; Ç5-C değil).
 - Önizlemenin bugünkü hızı bütçeyi aşıyorsa (6d) ve Ç5-C kötüleştirmiyorsa → hız işi kullanıcı kararına; Ç5-C'yi bekletmez.
+
+## 10. COMMIT LİSTESİ VE DAL UCU
+- be1730cb adım 1 (bugünkü durum) · 8d3ad542 adım 2–3 (fark tablosu + kanıt dosyaları + ilke taslağı) · 0939003c adım 4 (paketleme, sonuç) · bu satırı ekleyen commit (dal ucu; `git log -1`).
+- Dal: `worktree-agent-a66f8ceb164363d04`, taban `t251-taban` (64396478). PUSH YOK. Yazılan yollar yalnız `docs/devir/C5C-ILKE-TASLAK.md` ve `docs/devir/2.5.1-DEVAM/pc5c-*`.
+- Not defteri: veri kopyası `scratchpad/pc5c-is/veri` iş bitince tam yoluyla silindi; betikler `scratchpad/pc5c-is/betik/` (kopyaları depoda `pc5c-*-betik.mjs`, `pc5c-siniflar.py`).
