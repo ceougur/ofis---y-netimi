@@ -1,0 +1,17 @@
+// 2.5.1 M2 — ders 53 (b): Değersiz Alacak sınıflarını v2.4.9'un GERÇEK koduyla koşar (programın kendi API'si), sonucu v249.json'a yazar. Kalıcı karşılaştırma
+// test/supheli-degersiz-siniri-m2-v249-251.test.mjs (aynı sınıflar yeni kodla; 'beklenen farklar' karar numarasıyla).
+// Kullanım (ayrı kopyada; ders 23): git archive v2.4.9 | tar -x -C <kök> (node_modules ana depoya bağlı) →
+//   ROOT=<v2.4.9 kökü> SCEN=<bu deponun test/fixtures/m2-degersiz-senaryo.mjs> HUKUK_LICENSE_URL=http://127.0.0.1:9 node uret.mjs > v249.json
+// Sahte saat 15.10.2026 12:00 (+03:00), akan saat.
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const ROOT = process.env.ROOT;
+const helpers = await import(pathToFileURL(path.join(ROOT, "test/helpers.mjs")).href);
+const scen = await import(pathToFileURL(process.env.SCEN).href);
+const server = await helpers.startTestServer({ now: scen.M2_NOW, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+const client = await helpers.loginAdmin(server);
+const out = await scen.runM2Classes(client);
+const integrity = await client.get("/api/workspace/ledger/integrity");
+const steps = Object.fromEntries(Object.entries(out.steps).map(([id, item]) => [id, [item.status, item.code]]));
+console.log(JSON.stringify({ kod: "v2.4.9", commit: "ccf0b0cab9721f6d8ef737ca51809c960d32ba5f", now: scen.M2_NOW, mutabakat: integrity.data?.data?.ok ?? null, steps, balances: out.balances, records: out.records }, null, 1));
+await server.close();

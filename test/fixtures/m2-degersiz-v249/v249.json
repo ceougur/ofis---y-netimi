@@ -1,0 +1,917 @@
+{
+ "kod": "v2.4.9",
+ "commit": "ccf0b0cab9721f6d8ef737ca51809c960d32ba5f",
+ "now": "2026-10-15T12:00:00+03:00",
+ "mutabakat": true,
+ "steps": {
+  "t:A1-T": [
+   200,
+   ""
+  ],
+  "s:A1-S": [
+   200,
+   ""
+  ],
+  "a1d1": [
+   400,
+   "doubtful-writeoff-exceeds"
+  ],
+  "a1d2": [
+   200,
+   ""
+  ],
+  "a1d3": [
+   409,
+   "doubtful-closed"
+  ],
+  "t:A2-T": [
+   200,
+   ""
+  ],
+  "s:A2-S": [
+   200,
+   ""
+  ],
+  "a2d1": [
+   200,
+   ""
+  ],
+  "a2d2": [
+   200,
+   ""
+  ],
+  "t:A3-T": [
+   200,
+   ""
+  ],
+  "s:A3-S": [
+   200,
+   ""
+  ],
+  "a3d1": [
+   200,
+   ""
+  ],
+  "a3d2": [
+   200,
+   ""
+  ],
+  "a3d3": [
+   200,
+   ""
+  ],
+  "a3d4": [
+   409,
+   "doubtful-closed"
+  ],
+  "t:A4-T": [
+   200,
+   ""
+  ],
+  "s:A4-S": [
+   200,
+   ""
+  ],
+  "a4d1": [
+   200,
+   ""
+  ],
+  "s:A5-S": [
+   200,
+   ""
+  ],
+  "t:A5-T": [
+   409,
+   "doubtful-normal-exceeds"
+  ],
+  "a5d1": [
+   200,
+   ""
+  ],
+  "a5d2": [
+   200,
+   ""
+  ],
+  "a5d3": [
+   200,
+   ""
+  ],
+  "t:A6-T": [
+   200,
+   ""
+  ],
+  "s:A6-S": [
+   200,
+   ""
+  ],
+  "a6d1": [
+   200,
+   ""
+  ],
+  "a6d2": [
+   200,
+   ""
+  ],
+  "a6d3": [
+   200,
+   ""
+  ],
+  "t:A7-T": [
+   200,
+   ""
+  ],
+  "s:A7-S": [
+   200,
+   ""
+  ],
+  "a7d1": [
+   200,
+   ""
+  ],
+  "a7d2": [
+   200,
+   ""
+  ],
+  "a7d3": [
+   200,
+   ""
+  ],
+  "a7d4": [
+   200,
+   ""
+  ],
+  "s:A8-S": [
+   200,
+   ""
+  ],
+  "a8d1": [
+   200,
+   ""
+  ],
+  "t:A8-N": [
+   200,
+   ""
+  ],
+  "a8d2": [
+   400,
+   "doubtful-writeoff-exceeds"
+  ],
+  "a8d3": [
+   200,
+   ""
+  ],
+  "t:A9-T": [
+   200,
+   ""
+  ],
+  "s:A9-S": [
+   200,
+   ""
+  ],
+  "t:A9-N": [
+   200,
+   ""
+  ],
+  "a9d1": [
+   400,
+   "doubtful-writeoff-exceeds"
+  ],
+  "a9d2": [
+   400,
+   "doubtful-writeoff-exceeds"
+  ],
+  "a9d3": [
+   200,
+   ""
+  ],
+  "t:A10-T": [
+   200,
+   ""
+  ],
+  "s:A10-S": [
+   200,
+   ""
+  ],
+  "t:A10-N": [
+   200,
+   ""
+  ],
+  "a10d1": [
+   200,
+   ""
+  ],
+  "a10d2": [
+   200,
+   ""
+  ],
+  "t:A11-T": [
+   200,
+   ""
+  ],
+  "s:A11-S": [
+   200,
+   ""
+  ],
+  "t:A11-N": [
+   200,
+   ""
+  ],
+  "a11d1": [
+   200,
+   ""
+  ],
+  "a11d2": [
+   409,
+   "doubtful-closed"
+  ],
+  "t:A12-T": [
+   200,
+   ""
+  ],
+  "t:A12-N": [
+   200,
+   ""
+  ],
+  "s:A12-S": [
+   200,
+   ""
+  ],
+  "a12d1": [
+   200,
+   ""
+  ],
+  "a12d2": [
+   409,
+   "doubtful-closed"
+  ],
+  "s:A13-S": [
+   200,
+   ""
+  ],
+  "t:A13-T": [
+   200,
+   ""
+  ],
+  "t:A13-N": [
+   200,
+   ""
+  ],
+  "a13d1": [
+   200,
+   ""
+  ],
+  "a13d2": [
+   409,
+   "doubtful-closed"
+  ],
+  "s:A14-S": [
+   200,
+   ""
+  ],
+  "t:A14-N": [
+   200,
+   ""
+  ],
+  "t:A14-T": [
+   200,
+   ""
+  ],
+  "a14d1": [
+   200,
+   ""
+  ],
+  "a14d2": [
+   409,
+   "doubtful-closed"
+  ],
+  "t:A15-N": [
+   200,
+   ""
+  ],
+  "s:A15-S": [
+   200,
+   ""
+  ],
+  "t:A15-T": [
+   200,
+   ""
+  ],
+  "a15d1": [
+   200,
+   ""
+  ],
+  "a15d2": [
+   409,
+   "doubtful-closed"
+  ],
+  "t:A16-N": [
+   200,
+   ""
+  ],
+  "t:A16-T": [
+   200,
+   ""
+  ],
+  "s:A16-S": [
+   200,
+   ""
+  ],
+  "a16d1": [
+   200,
+   ""
+  ],
+  "a16d2": [
+   409,
+   "doubtful-closed"
+  ],
+  "t:A17-T": [
+   200,
+   ""
+  ],
+  "s:A17-S": [
+   200,
+   ""
+  ],
+  "t:A17-N": [
+   200,
+   ""
+  ],
+  "a17d1": [
+   200,
+   ""
+  ],
+  "a17d2": [
+   409,
+   "doubtful-closed"
+  ],
+  "t:A18-N": [
+   200,
+   ""
+  ],
+  "t:A18-T": [
+   200,
+   ""
+  ],
+  "s:A18-S": [
+   200,
+   ""
+  ],
+  "a18d1": [
+   200,
+   ""
+  ],
+  "a18d2": [
+   409,
+   "doubtful-closed"
+  ],
+  "t:A19-T": [
+   200,
+   ""
+  ],
+  "t:A19-N": [
+   200,
+   ""
+  ],
+  "s:A19-S": [
+   200,
+   ""
+  ],
+  "a19d1": [
+   200,
+   ""
+  ],
+  "t:A20-T": [
+   200,
+   ""
+  ],
+  "s:A20-S": [
+   200,
+   ""
+  ],
+  "s:A20-S2": [
+   200,
+   ""
+  ],
+  "a20d1": [
+   200,
+   ""
+  ],
+  "t:A21-T": [
+   200,
+   ""
+  ],
+  "s:A21-S": [
+   200,
+   ""
+  ],
+  "s:A21-S2": [
+   200,
+   ""
+  ],
+  "a21d1": [
+   200,
+   ""
+  ],
+  "a21d2": [
+   200,
+   ""
+  ],
+  "a21d3": [
+   200,
+   ""
+  ],
+  "t:M9-T": [
+   200,
+   ""
+  ],
+  "s:M9-S": [
+   200,
+   ""
+  ],
+  "s:M9-S2": [
+   200,
+   ""
+  ],
+  "m9x": [
+   200,
+   ""
+  ],
+  "m9d1": [
+   200,
+   ""
+  ],
+  "t:M10A-T": [
+   200,
+   ""
+  ],
+  "s:M10A-S": [
+   200,
+   ""
+  ],
+  "m10ad1": [
+   200,
+   ""
+  ],
+  "m10ax": [
+   200,
+   ""
+  ],
+  "t:M10B-T": [
+   200,
+   ""
+  ],
+  "s:M10B-S": [
+   200,
+   ""
+  ],
+  "m10bd1": [
+   200,
+   ""
+  ],
+  "m10bx": [
+   200,
+   ""
+  ],
+  "t:M10C-T": [
+   200,
+   ""
+  ],
+  "s:M10C-S": [
+   200,
+   ""
+  ],
+  "m10cd1": [
+   200,
+   ""
+  ],
+  "m10cx": [
+   200,
+   ""
+  ],
+  "t:M10D-T": [
+   200,
+   ""
+  ],
+  "s:M10D-S": [
+   200,
+   ""
+  ],
+  "m10dd1": [
+   200,
+   ""
+  ],
+  "m10dx": [
+   200,
+   ""
+  ],
+  "t:M10E-T": [
+   200,
+   ""
+  ],
+  "s:M10E-S": [
+   200,
+   ""
+  ],
+  "m10ed1": [
+   200,
+   ""
+  ],
+  "m10ex": [
+   200,
+   ""
+  ],
+  "t:M10F-T": [
+   200,
+   ""
+  ],
+  "s:M10F-S": [
+   200,
+   ""
+  ],
+  "m10fd1": [
+   200,
+   ""
+  ],
+  "m10fx": [
+   200,
+   ""
+  ],
+  "t:M11A-T": [
+   200,
+   ""
+  ],
+  "s:M11A-S": [
+   200,
+   ""
+  ],
+  "m11ad1": [
+   200,
+   ""
+  ],
+  "m11ax": [
+   200,
+   ""
+  ],
+  "m11ay": [
+   200,
+   ""
+  ],
+  "t:M11B-T": [
+   200,
+   ""
+  ],
+  "s:M11B-S": [
+   200,
+   ""
+  ],
+  "m11bd1": [
+   200,
+   ""
+  ],
+  "m11bx": [
+   200,
+   ""
+  ],
+  "t:M11B-N": [
+   200,
+   ""
+  ],
+  "m11by": [
+   409,
+   "doubtful-writeoff-exceeds"
+  ],
+  "m11bd2": [
+   400,
+   "doubtful-writeoff-exceeds"
+  ],
+  "m11bd3": [
+   200,
+   ""
+  ],
+  "t:M11C-T": [
+   200,
+   ""
+  ],
+  "s:M11C-S": [
+   200,
+   ""
+  ],
+  "m11cd1": [
+   200,
+   ""
+  ],
+  "m11cn": [
+   200,
+   ""
+  ],
+  "t:A26-T": [
+   200,
+   ""
+  ],
+  "s:A26-S": [
+   200,
+   ""
+  ],
+  "s:A26-S2": [
+   400,
+   "doubtful-exceeds-balance"
+  ],
+  "a26d1": [
+   200,
+   ""
+  ],
+  "a26d2": [
+   409,
+   "doubtful-closed"
+  ],
+  "a26d3": [
+   409,
+   "doubtful-closed"
+  ],
+  "s:A27-S": [
+   200,
+   ""
+  ],
+  "t:A27-T": [
+   200,
+   ""
+  ],
+  "a27d1": [
+   400,
+   "doubtful-writeoff-exceeds"
+  ],
+  "a27d2": [
+   200,
+   ""
+  ],
+  "s:A28-S": [
+   200,
+   ""
+  ],
+  "t:A28-T": [
+   200,
+   ""
+  ],
+  "a28d1": [
+   200,
+   ""
+  ],
+  "a28d2": [
+   200,
+   ""
+  ],
+  "t:A25-T": [
+   200,
+   ""
+  ],
+  "s:A25-S": [
+   200,
+   ""
+  ],
+  "kilit": [
+   200,
+   ""
+  ],
+  "a25d0": [
+   409,
+   "period-locked"
+  ],
+  "a25d1": [
+   200,
+   ""
+  ],
+  "a25d2": [
+   200,
+   ""
+  ]
+ },
+ "balances": {
+  "A1": 423.55,
+  "A2": 423.55,
+  "A3": 423.55,
+  "A4": 400,
+  "A5": 2599.98,
+  "A6": 3176.43,
+  "A7": 3276.43,
+  "A8": 3300,
+  "A9": 423.55,
+  "A10": 2423.53,
+  "A11": 423.55,
+  "A12": 423.55,
+  "A13": 423.55,
+  "A14": 423.55,
+  "A15": 423.55,
+  "A16": 423.55,
+  "A17": 423.55,
+  "A18": 423.55,
+  "A19": 3273.55,
+  "A20": 1923.55,
+  "A21": 3176.43,
+  "M9": 1923.55,
+  "M10A": 3300,
+  "M10B": 423.55,
+  "M10C": 423.55,
+  "M10D": 423.55,
+  "M10E": -200,
+  "M10F": 2300,
+  "M11A": 423.55,
+  "M11B": 423.55,
+  "M11C": -576.45,
+  "A26": 423.55,
+  "A27": 423.55,
+  "A28": 3176.44,
+  "A25": 3176.44
+ },
+ "records": {
+  "A1-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A2-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A3-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A4-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A5-S": {
+   "writtenOffMinor": 80002,
+   "remainingMinor": 219998,
+   "stateKey": "open"
+  },
+  "A6-S": {
+   "writtenOffMinor": 24712,
+   "remainingMinor": 275288,
+   "stateKey": "open"
+  },
+  "A7-S": {
+   "writtenOffMinor": 14712,
+   "remainingMinor": 285288,
+   "stateKey": "open"
+  },
+  "A8-S": {
+   "writtenOffMinor": 200000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A9-S": {
+   "writtenOffMinor": 200000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A10-S": {
+   "writtenOffMinor": 2,
+   "remainingMinor": 199998,
+   "stateKey": "open"
+  },
+  "A11-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A12-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A13-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A14-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A15-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A16-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A17-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A18-S": {
+   "writtenOffMinor": 295000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A19-S": {
+   "writtenOffMinor": 10000,
+   "remainingMinor": 285000,
+   "stateKey": "open"
+  },
+  "A20-S": {
+   "writtenOffMinor": 150000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A20-S2": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 150000,
+   "stateKey": "open"
+  },
+  "A21-S": {
+   "writtenOffMinor": 1,
+   "remainingMinor": 149999,
+   "stateKey": "open"
+  },
+  "A21-S2": {
+   "writtenOffMinor": 24711,
+   "remainingMinor": 125289,
+   "stateKey": "open"
+  },
+  "M9-S": {
+   "writtenOffMinor": 150000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M9-S2": {
+   "writtenOffMinor": 0,
+   "remainingMinor": 0,
+   "stateKey": "released"
+  },
+  "M10A-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M10B-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M10C-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M10D-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M10E-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M10F-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M11A-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M11B-S": {
+   "writtenOffMinor": 200000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "M11C-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A26-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A27-S": {
+   "writtenOffMinor": 300000,
+   "remainingMinor": 0,
+   "stateKey": "writtenOff"
+  },
+  "A28-S": {
+   "writtenOffMinor": 24711,
+   "remainingMinor": 275289,
+   "stateKey": "open"
+  },
+  "A25-S": {
+   "writtenOffMinor": 24711,
+   "remainingMinor": 275289,
+   "stateKey": "open"
+  }
+ }
+}

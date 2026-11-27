@@ -468,7 +468,92 @@ export function doubtfulProblems(store, { parties = null } = {}) {
   for (const [key, hit] of derived.allocations) {
     if ((hit.outsideMinor || 0) > 0) fail(`${key}:outside`, `Değersiz Alacak satırı ${key.replace(/^account:/, "")}: kaydın kalanını ${tl(hit.outsideMinor)} aşıyor (değersiz satırından önceye düşen tahsilat kalanı küçülttü); tahsilatı değersiz satırından sonraki tarihe yazın ya da önce değersiz satırını silin`);
   }
+  // 2.5.1 M2 — S270 değişmezi (yazım sırasını okuyan iki koşul; writeOffInvariantProblems'in notu).
+  for (const item of writeOffInvariantProblems(store, { parties })) out.push(item);
   return out;
+}
+
+/**
+ * 2.5.1 M2 — S270 = A DEĞİŞMEZİ (Mutabakat Testi + kapı; doubtfulProblems'in parçası). Karar AYNEN: "hiçbir sırada bir şüpheli kaydın Değersiz toplamı, o kayda şüpheliye alınan tutardan kayda
+ * düşmüş tahsilatlar çıkınca kalanı aşamaz; Değersiz yazımı cariyi alacaklıya (eksi bakiyeye) düşürmez." Değersiz'in sınırı yazım SIRASINA bağlıdır (aynı son durum meşru sırayla da — Değersiz'den
+ * SONRA gelen avans — bozuk sırayla da — önce yazılmış sonraki tarihli bağsız tahsilat — oluşur), bu yüzden denetim yazım sırasını (created_at → rowid; ders 31) ve satırın sonradan
+ * değiştirilmesini (updated_at; evrakta cheques.updated_at) okur:
+ *   (i)  her Değersiz satırı W, YAZILDIĞI ANDAKİ dünyada sınırı aşmaz: W'den sonra yazılmış Değersiz satırları yok, W gününe ve sonrasına ait faturaya bağlı satırlar yok (S264), W gününe ve
+ *        sonrasına ait bağsız satırlardan yalnız W'den ÖNCE yazılmış ve sonradan değişmemiş olanlar var (S270 "sonradan gelen bağsız tahsilat"); kaydın kalanı W'yi karşılar.
+ *   (ii) carinin bakiyesi eksi, son işlemi bir Değersiz satırı ve o satırdan sonra cari için başka yazım / değişiklik / silme / geri yükleme yok → Değersiz cariyi eksiye düşürmüş.
+ * Eski sürümden gelen ihlal kapının taban kuralıyla (sayı büyümedikçe) yazımı engellemez; Mutabakat Testi'nde görünür.
+ */
+export function writeOffInvariantProblems(store, { parties = null } = {}) {
+  if (!hasTable(store, "account_entries")) return [];
+  const list = parties ? JSON.stringify([...parties]) : null;
+  if (list === "[]") return [];
+  const lines = store.all(
+    `SELECT e.id, e.account_id AS party, e.source_id AS recordId, e.date, CAST(ROUND(e.amount * 100) AS INTEGER) AS minor, COALESCE(e.created_at, '') AS at, e.rowid AS seq
+     FROM account_entries e WHERE +e.source = 'doubtful' AND e.kind = 'credit'${list ? " AND e.account_id IN (SELECT value FROM json_each(?))" : ""} ORDER BY e.account_id, e.created_at, e.rowid`,
+    ...(list ? [list] : []),
+  );
+  if (!lines.length) return [];
+  const out = [];
+  const byParty = new Map();
+  for (const line of lines) {
+    if (!byParty.has(line.party)) byParty.set(line.party, []);
+    byParty.get(line.party).push(line);
+  }
+  const has = name => hasTable(store, name);
+  for (const [party, own] of byParty) {
+    const ctx = writeOffContextOf(store, party);
+    const records = new Map(ctx.rows.records.map(record => [record.id, record]));
+    // Satırın son değişme anı (yalnız sonradan değişen satırlar): cari satırı updated_at; evrak satırında evrakın updated_at'i; taksit tahsilatı updated_at; fatura updated_at / issued_at.
+    const changed = new Map();
+    for (const row of store.all(`SELECT e.id, COALESCE(e.updated_at, '') AS u${has("cheques") ? ", COALESCE((SELECT c.updated_at FROM cheques c WHERE e.source = 'cheque' AND c.id = e.source_id), '') AS c" : ", '' AS c"} FROM account_entries e WHERE e.account_id = ?`, party)) {
+      const at = row.u > row.c ? row.u : row.c;
+      if (at) changed.set(`account:${row.id}`, at);
+    }
+    if (has("plans") && has("plan_entries")) for (const row of store.all("SELECT pe.id, COALESCE(pe.updated_at, '') AS u FROM plans p JOIN plan_entries pe ON pe.plan_id = p.id WHERE p.account_id = ? AND pe.updated_at IS NOT NULL", party)) if (row.u) changed.set(`plan-entry:${row.id}`, row.u);
+    if (has("invoices")) for (const row of store.all("SELECT id, COALESCE(updated_at, '') AS u FROM invoices WHERE account_id = ? AND updated_at IS NOT NULL", party)) if (row.u) changed.set(`invoice:${row.id}`, row.u);
+    const writtenAfter = (credit, line) => (credit.at > line.at) || (credit.at === line.at && String(credit.key).startsWith("account:") && Number(credit.seq) > Number(line.seq));
+    // (i)
+    for (const line of own) {
+      const record = records.get(line.recordId);
+      if (!record || record.status === "cancelled") continue;
+      const key = `account:${line.id}`;
+      const credits = ctx.credits.filter(credit => {
+        if (credit.key === key) return false;
+        if (credit.target) return !writtenAfter(credit, line);
+        if (credit.date < line.date) return true;
+        if (ctx.bound.has(credit.key)) return false;
+        return !writtenAfter(credit, line) && !((changed.get(credit.key) || "") >= line.at);
+      });
+      const { state } = allocateDoubtful({ records: ctx.rows.records, provisions: ctx.rows.provisions, credits, linked: ctx.rows.linked || null });
+      const room = Math.max(0, state.get(record.id)?.remaining ?? 0);
+      if (line.minor > room) out.push({ key: `${line.id}:writeoff-limit`, sample: `Değersiz Alacak satırı ${dayText(line.date)} ${tl(line.minor)}: yazıldığı andaki sınırı (${tl(room)}) aşıyor — kaydın kalanından önce yararlanan bağsız tahsilat düşülmeden yazılmış (S270)` });
+    }
+    // (ii)
+    const last = own[own.length - 1];
+    const balance = ledgerBalanceMinor(store, party);
+    if (balance < 0 && !activityAfter(store, party, last)) out.push({ key: `${party}:writeoff-balance`, sample: `Değersiz Alacak satırı ${dayText(last.date)} ${tl(last.minor)} cariyi eksi bakiyeye (${tl(balance)}) düşürdü (S270)` });
+  }
+  return out;
+}
+/** Carinin defter bakiyesi (kuruş): cari kartının satırlarıyla aynı kaynak (lib/accounts.mjs accountLedger; borç − alacak). */
+function ledgerBalanceMinor(store, party) {
+  const lines = createAccountLines({ store });
+  const ledger = createObligationInput({ store }).ledgerLines({ ids: [party], plans: lines.ledgerPlansOf([party]) }).get(party) || [];
+  let sum = 0;
+  for (const line of ledger) sum += Math.round((Number(line.debit) || 0) * 100) - Math.round((Number(line.credit) || 0) * 100);
+  return sum;
+}
+/** Değersiz satırı `line`'dan SONRA cari için başka bir işlem oldu mu (yazım, değişiklik, silme / geri yükleme). Belirsiz eşitlikte (aynı an) işlem VAR sayılır (denetim yanlış alarm vermez). */
+function activityAfter(store, party, line) {
+  const has = name => hasTable(store, name);
+  const q = (sql, ...args) => Boolean(store.get(sql, ...args));
+  if (q("SELECT 1 AS found FROM account_entries WHERE account_id = ? AND id <> ? AND (rowid > ? OR COALESCE(updated_at, '') >= ?) LIMIT 1", party, line.id, line.seq, line.at)) return true;
+  if (has("invoices") && q("SELECT 1 AS found FROM invoices WHERE account_id = ?2 AND (COALESCE(created_at, '') >= ?1 OR COALESCE(updated_at, '') >= ?1 OR COALESCE(issued_at, '') >= ?1 OR COALESCE(cancelled_at, '') >= ?1) LIMIT 1", line.at, party)) return true;
+  if (has("plans") && q("SELECT 1 AS found FROM plans p WHERE p.account_id = ?2 AND (COALESCE(p.created_at, '') >= ?1 OR COALESCE(p.updated_at, '') >= ?1 OR COALESCE(p.deleted_at, '') >= ?1 OR EXISTS (SELECT 1 FROM plan_entries pe WHERE pe.plan_id = p.id AND (COALESCE(pe.created_at, '') >= ?1 OR COALESCE(pe.updated_at, '') >= ?1))) LIMIT 1", line.at, party)) return true;
+  if (has("cheques") && q("SELECT 1 AS found FROM cheques c WHERE (c.account_id = ?2 OR c.endorse_account_id = ?2) AND (COALESCE(c.created_at, '') >= ?1 OR COALESCE(c.updated_at, '') >= ?1 OR COALESCE(c.deleted_at, '') >= ?1) LIMIT 1", line.at, party)) return true;
+  if (has("doubtful_receivables") && q("SELECT 1 AS found FROM doubtful_receivables WHERE account_id = ?2 AND (COALESCE(created_at, '') >= ?1 OR COALESCE(updated_at, '') >= ?1) LIMIT 1", line.at, party)) return true;
+  if (has("trash") && q("SELECT 1 AS found FROM trash WHERE (deleted_at >= ?1 OR COALESCE(restored_at, '') >= ?1) AND instr(payload_json, ?2) > 0 LIMIT 1", line.at, party)) return true;
+  return false;
 }
 
 /**
@@ -817,6 +902,12 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
   // kapı örnekleri yanıtın `problems` alanında kalır (destek için).
   const conflictReason = key => {
     const [id, kind] = [key.slice(0, key.lastIndexOf(":")), key.slice(key.lastIndexOf(":") + 1)];
+    // 2.5.1 M2 (S270 değişmezi): Değersiz Alacak satırının yazıldığı andaki sınırı / carinin bakiyesi.
+    if (kind === "writeoff-limit") {
+      const entry = store.get("SELECT date, amount FROM account_entries WHERE id = ?", id);
+      return entry ? { text: `${dayText(entry.date)} tarihli ${tl(Math.round(Number(entry.amount) * 100))} Değersiz Alacak satırı yazıldığı andaki sınırı aşardı`, fix: "Değersiz Alacak satırını" } : null;
+    }
+    if (kind === "writeoff-balance") return { text: "Değersiz Alacak satırı cariyi eksi bakiyeye düşürürdü", fix: "Değersiz Alacak satırını" };
     if (kind === "outside") {
       const entry = store.get("SELECT date, amount FROM account_entries WHERE id = ?", id.replace(/^account:/, ""));
       return entry ? { text: `${dayText(entry.date)} tarihli ${tl(Math.round(Number(entry.amount) * 100))} Değersiz Alacak satırı kaydın kalanını aşardı`, fix: "Değersiz Alacak satırını" } : null;
