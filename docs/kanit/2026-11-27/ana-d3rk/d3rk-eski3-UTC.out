@@ -1,0 +1,902 @@
+TAP version 13
+# (node:10657) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — tur 2'nin açıkları: K'den sonra Düzenle ile eklenen peşin ve K'den sonra kurulan çek bağı (ikisi de ≤K satırda)
+    # Subtest: veri tabanı (ders 3): peşin satırı 15.12.2026 tarihli (10.01.2027'de yazıldı); çekin ilk olayı 20.12.2026 tarihli ve faturaya bağlı
+    ok 1 - veri tabanı (ders 3): peşin satırı 15.12.2026 tarihli (10.01.2027'de yazıldı); çekin ilk olayı 20.12.2026 tarihli ve faturaya bağlı
+      ---
+      duration_ms: 2.169224
+      type: 'test'
+      ...
+    # Subtest: plan: faturanın K açık kalemi 300,00 (1.000 − 400 peşin − 300 çek; elle); bağ listesinde bu fatura YOK; DURDURUR yok
+    ok 2 - plan: faturanın K açık kalemi 300,00 (1.000 − 400 peşin − 300 çek; elle); bağ listesinde bu fatura YOK; DURDURUR yok
+      ---
+      duration_ms: 0.204055
+      type: 'test'
+      ...
+    # Subtest: devirsiz eşi: programın bugünkü fatura kalanı = planın K açık kalemi (300,00; K'den sonra başka hareket yok)
+    ok 3 - devirsiz eşi: programın bugünkü fatura kalanı = planın K açık kalemi (300,00; K'den sonra başka hareket yok)
+      ---
+      duration_ms: 10.490313
+      type: 'test'
+      ...
+    1..3
+ok 1 - D3 tur 3 — tur 2'nin açıkları: K'den sonra Düzenle ile eklenen peşin ve K'den sonra kurulan çek bağı (ikisi de ≤K satırda)
+  ---
+  duration_ms: 1026.311004
+  type: 'suite'
+  ...
+# (node:10665) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:10665) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:10665) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık
+    # Subtest: (a) her DURDURUR nedeni dört alanlı; sayı / belge no / tarih veri tabanıyla aynı
+    not ok 1 - (a) her DURDURUR nedeni dört alanlı; sayı / belge no / tarih veri tabanıyla aynı
+      ---
+      duration_ms: 10.319005
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:96:3'
+      failureType: 'testCodeFailure'
+      error: 'e-belge-bekleyen: neOldu boş'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        fourFields (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:35:38)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:102:7)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (a) UYARIR maddeleri de dört alanlı; uyarılar durdururla karışmaz
+    not ok 2 - (a) UYARIR maddeleri de dört alanlı; uyarılar durdururla karışmaz
+      ---
+      duration_ms: 0.256542
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:125:3'
+      failureType: 'testCodeFailure'
+      error: 'aralik-mahsubu: neOldu boş'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        fourFields (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:35:38)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:129:7)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b) iki ön izleme: nedenler ve sıraları bayt bayt aynı
+    ok 3 - (b) iki ön izleme: nedenler ve sıraları bayt bayt aynı
+      ---
+      duration_ms: 0.119298
+      type: 'test'
+      ...
+    # Subtest: (e) Devir Raporu: 'Devri Durduran Nedenler' ve 'Uyarılar' ayrı başlıklar; ekran = Excel = PDF aynı cümleler
+    not ok 4 - (e) Devir Raporu: 'Devri Durduran Nedenler' ve 'Uyarılar' ayrı başlıklar; ekran = Excel = PDF aynı cümleler
+      ---
+      duration_ms: 0.286679
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:141:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'map')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:144:188
+        Array.flatMap (<anonymous>)
+        expect (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:144:46)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:146:58)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık
+  ---
+  duration_ms: 1513.70478
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:46:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: D3 tur 3 — (a) Defter Mutabakatı (kural kancası; ön izlemenin aynı işlevi, iş parçacığısız)
+    # Subtest: Defter Mutabakatı DURDURUR (120 farkı 500,00 TL; dört alan)
+    not ok 1 - Defter Mutabakatı DURDURUR (120 farkı 500,00 TL; dört alan)
+      ---
+      duration_ms: 0.62508
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:177:3'
+      failureType: 'testCodeFailure'
+      error: 'The "string" argument must be of type string. Received type undefined (undefined)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:181:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - D3 tur 3 — (a) Defter Mutabakatı (kural kancası; ön izlemenin aynı işlevi, iş parçacığısız)
+  ---
+  duration_ms: 446.649383
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:161:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: D3 tur 3 — (a) planın kendi sorunları (program tutarlı veride üretmez — OLGU düzeyinde, her sorun türü): cari adı, hesap, iki tutar
+    # Subtest: her plan sorunu ve değişmez dört alanlı; tutarlar sorundaki sayılarla aynı
+    not ok 1 - her plan sorunu ve değişmez dört alanlı; tutarlar sorundaki sayılarla aynı
+      ---
+      duration_ms: 0.953285
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:190:3'
+      failureType: 'testCodeFailure'
+      error: 'problemIletisi is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:207:21)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 4 - D3 tur 3 — (a) planın kendi sorunları (program tutarlı veride üretmez — OLGU düzeyinde, her sorun türü): cari adı, hesap, iki tutar
+  ---
+  duration_ms: 1.189087
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:189:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir
+    # Subtest: (c) temiz şirket: DURDURUR yok, yalnız uyarı (Aralık mahsubu, 001) → geçilebilir
+    not ok 1 - (c) temiz şirket: DURDURUR yok, yalnız uyarı (Aralık mahsubu, 001) → geçilebilir
+      ---
+      duration_ms: 273.883579
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:222:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     'Devri Durduran Nedenler',
+        -     'Yok',
+        -     'Devri durduran neden yok.',
+        -     '',
+        -     '',
+        -     ''
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Devri Durduran Nedenler'
+          1: 'Yok'
+          2: 'Devri durduran neden yok.'
+          3: ''
+          4: ''
+          5: ''
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:228:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ret: 31.12 olmayan tarih / bu yıl / geçersiz seçenek → 400, kod makine alanında, ileti dört alanlı
+    not ok 2 - ret: 31.12 olmayan tarih / bu yıl / geçersiz seçenek → 400, kod makine alanında, ileti dört alanlı
+      ---
+      duration_ms: 3.226785
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:231:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'kod')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        fourFields (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:35:46)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:242:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: beklenmeyen hata (okuyucunun okuduğu sütun yok — ham veri): Türkçe cümle + 'Verileriniz değişmedi.'; ham ileti yanıta girmez; veri aynı
+    not ok 3 - beklenmeyen hata (okuyucunun okuduğu sütun yok — ham veri): Türkçe cümle + 'Verileriniz değişmedi.'; ham ileti yanıta girmez; veri aynı
+      ---
+      duration_ms: 273.15286
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:250:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'kod')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        fourFields (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:35:46)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:256:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 5 - D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir
+  ---
+  duration_ms: 927.789693
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:215:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\r?\\n/ — ders 27)
+    # Subtest: preflight.mjs: stop / warn listesine yalnız devirIletisi ya da problemIletisi girer; ham 'metin:' yok
+    not ok 1 - preflight.mjs: stop / warn listesine yalnız devirIletisi ya da problemIletisi girer; ham 'metin:' yok
+      ---
+      duration_ms: 0.889718
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:278:3'
+      failureType: 'testCodeFailure'
+      error: 'D3 tur 3 ileti yardımcısı yok (eski kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: ~
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:279:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: routes/devir.mjs ön izleme bölümü: HttpError yalnız refuse() ile; başarısız işin iletisi ham hata iletisi değil
+    not ok 2 - routes/devir.mjs ön izleme bölümü: HttpError yalnız refuse() ile; başarısız işin iletisi ham hata iletisi değil
+      ---
+      duration_ms: 0.305722
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:286:3'
+      failureType: 'testCodeFailure'
+      error: 'D3 tur 3 ileti yardımcısı yok (eski kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: ~
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:287:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: devir modüllerinde iletiler.mjs dışında seviye / metin nesnesi kurulmaz
+    not ok 3 - devir modüllerinde iletiler.mjs dışında seviye / metin nesnesi kurulmaz
+      ---
+      duration_ms: 0.284708
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:298:3'
+      failureType: 'testCodeFailure'
+      error: 'D3 tur 3 ileti yardımcısı yok (eski kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: ~
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:299:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iletiDenetimi yasak kalıpları yakalar (dişi)
+    not ok 4 - iletiDenetimi yasak kalıpları yakalar (dişi)
+      ---
+      duration_ms: 0.175325
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:304:3'
+      failureType: 'testCodeFailure'
+      error: 'D3 tur 3 ileti yardımcısı yok (eski kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: ~
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:305:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 6 - D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\r?\\n/ — ders 27)
+  ---
+  duration_ms: 1.84982
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-ileti.test.mjs:276:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:10679) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil)
+    # Subtest: veri tabanı (ders 3): Kayıt Tarihleri 20.12.2026 / 31.12.2026 / 01.01.2027, yükleme 03.01.2027
+    ok 1 - veri tabanı (ders 3): Kayıt Tarihleri 20.12.2026 / 31.12.2026 / 01.01.2027, yükleme 03.01.2027
+      ---
+      duration_ms: 2.075776
+      type: 'test'
+      ...
+    # Subtest: defter maddesi Kayıt Tarihi'nde (yükleme günü değil): Excel 20.12.2026 B 120 / A 519 9.000; K günü 31.12.2026; K+1 01.01.2027
+    not ok 2 - defter maddesi Kayıt Tarihi'nde (yükleme günü değil): Excel 20.12.2026 B 120 / A 519 9.000; K günü 31.12.2026; K+1 01.01.2027
+      ---
+      duration_ms: 4.007373
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kart-tarihi.test.mjs:49:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+        +     '2027-01-03',
+        -     '2026-12-20',
+              'A 519 9000',
+              'B 120 9000'
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '2026-12-20'
+          1: 'A 519 9000'
+          2: 'B 120 9000'
+      actual:
+        0:
+          0: '2027-01-03'
+          1: 'A 519 9000'
+          2: 'B 120 9000'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kart-tarihi.test.mjs:52:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: plan (K = 31.12.2026): Excel kartı ESKİ yılda — carinin K bakiyesi 9.000, açılış satırları 9.000, kart 9.000 açık; K günü kartı 5.000; K+1 kartı yeni yılda (planda yok)
+    not ok 3 - plan (K = 31.12.2026): Excel kartı ESKİ yılda — carinin K bakiyesi 9.000, açılış satırları 9.000, kart 9.000 açık; K günü kartı 5.000; K+1 kartı yeni yılda (planda yok)
+      ---
+      duration_ms: 0.629045
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kart-tarihi.test.mjs:57:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   0,
+        +   0
+        -   900000,
+        -   900000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 900000
+        1: 900000
+      actual:
+        0: 0
+        1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kart-tarihi.test.mjs:62:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: elle girilmiş kart (aynı Kayıt Tarihi, 9.000) Excel kartıyla AYNI plan sayıları; taksit vadeleri programın kart ekranıyla aynı (devirsiz eşdeğer)
+    not ok 4 - elle girilmiş kart (aynı Kayıt Tarihi, 9.000) Excel kartıyla AYNI plan sayıları; taksit vadeleri programın kart ekranıyla aynı (devirsiz eşdeğer)
+      ---
+      duration_ms: 0.906907
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kart-tarihi.test.mjs:75:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            durum: 'acik',
+        +   k: 900000,
+        -   k: 0,
+            kalan: 900000,
+            taksit: [
+              [
+                '2027-01-20',
+                300000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        k: 0
+        kalan: 900000
+        durum: 'acik'
+        taksit:
+          0:
+            0: '2027-01-20'
+            1: 300000
+          1:
+            0: '2027-02-20'
+            1: 300000
+          2:
+            0: '2027-03-20'
+            1: 300000
+      actual:
+        k: 900000
+        kalan: 900000
+        durum: 'acik'
+        taksit:
+          0:
+            0: '2027-01-20'
+            1: 300000
+          1:
+            0: '2027-02-20'
+            1: 300000
+          2:
+            0: '2027-03-20'
+            1: 300000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kart-tarihi.test.mjs:80:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 7 - D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil)
+  ---
+  duration_ms: 1031.232429
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kart-tarihi.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:10687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter farkı (cari / alt hesap başına; toplamı 0 olsa da) devri DURDURUR; Kilidi Aç → Yeniden Kilitle ile geçer
+    # Subtest: aynı caride 120 −4.000 / 128 +4.000 (toplam 0): DURDURUR, ileti iki satırı ve çareyi söyler; Kilidi Aç → Yeniden Kilitle (gerçek API) → GEÇER
+    not ok 1 - aynı caride 120 −4.000 / 128 +4.000 (toplam 0): DURDURUR, ileti iki satırı ve çareyi söyler; Kilidi Aç → Yeniden Kilitle (gerçek API) → GEÇER
+      ---
+      duration_ms: 810.99154
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:92:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kural-farki, plan-supheli-farki, plan-modul-farki, degismez-gecici-hesap
+        + actual - expected
+        
+          [
+        +   'kural-farki'
+        -   'kural-farki-alt-defter'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'kural-farki-alt-defter'
+      actual:
+        0: 'kural-farki'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:99:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: iki AYRI caride +4.000 / −4.000 (hesap toplamı 0): DURDURUR (cari başına)
+    not ok 2 - iki AYRI caride +4.000 / −4.000 (hesap toplamı 0): DURDURUR (cari başına)
+      ---
+      duration_ms: 555.358204
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:121:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'kural-farki'
+        -   'kural-farki-alt-defter'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'kural-farki-alt-defter'
+      actual:
+        0: 'kural-farki'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:127:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: aynı cari, aynı hesap, aynı yılın iki maddesinde +4.000 / −4.000 (kilit günündeki birikim 0): kural farkı DURDURMAZ (yanlış durdurma yok)
+    ok 3 - aynı cari, aynı hesap, aynı yılın iki maddesinde +4.000 / −4.000 (kilit günündeki birikim 0): kural farkı DURDURMAZ (yanlış durdurma yok)
+      ---
+      duration_ms: 486.002083
+      type: 'test'
+      ...
+# (node:10687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: fark hiç yokken (kilit 31.12.2026, kanca yok): kural farkı DURDURMAZ
+    ok 4 - fark hiç yokken (kilit 31.12.2026, kanca yok): kural farkı DURDURMAZ
+      ---
+      duration_ms: 919.736579
+      type: 'test'
+      ...
+    1..4
+not ok 8 - D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter farkı (cari / alt hesap başına; toplamı 0 olsa da) devri DURDURUR; Kilidi Aç → Yeniden Kilitle ile geçer
+  ---
+  duration_ms: 2773.690581
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:91:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:10687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir
+    # Subtest: kilit = 31.12.2026: DURDURUR (fiş 01.01.2027'ye düşüyor); ileti fiş tutarını (3.000,00 TL) ve kâr etkisini söyler; çare (kilit 30.12 → fiş 31.12 → kilit 31.12) → GEÇER, kâr 10.000 → 7.000
+    not ok 1 - kilit = 31.12.2026: DURDURUR (fiş 01.01.2027'ye düşüyor); ileti fiş tutarını (3.000,00 TL) ve kâr etkisini söyler; çare (kilit 30.12 → fiş 31.12 → kilit 31.12) → GEÇER, kâr 10.000 → 7.000
+      ---
+      duration_ms: 788.816971
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:164:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kural-farki
+        + actual - expected
+        
+          [
+        +   'kural-farki'
+        -   'kural-farki-kilit'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'kural-farki-kilit'
+      actual:
+        0: 'kural-farki'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:173:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:10687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilit = 31.12.2026 iken fiş YENİ YILA yazılmış (01.01.2027): DURDURUR; Ters Kaydet → kilit 30.12 → fiş 31.12 → kilit 31.12 → GEÇER, kâr 7.000
+    not ok 2 - kilit = 31.12.2026 iken fiş YENİ YILA yazılmış (01.01.2027): DURDURUR; Ters Kaydet → kilit 30.12 → fiş 31.12 → kilit 31.12 → GEÇER, kâr 7.000
+      ---
+      duration_ms: 758.327136
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:201:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'kural-farki-fis-yeni-yilda'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'kural-farki-fis-yeni-yilda'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:212:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:10687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:10687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilit K'den ÖNCE (30.06.2026): S-3 iletisi (fiş 01.07.2026, eski yılda) — S-KD-2 değil; fiş yazılınca GEÇER, kâr 7.000
+    not ok 3 - kilit K'den ÖNCE (30.06.2026): S-3 iletisi (fiş 01.07.2026, eski yılda) — S-KD-2 değil; fiş yazılınca GEÇER, kâr 7.000
+      ---
+      duration_ms: 803.221164
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:232:3'
+      failureType: 'testCodeFailure'
+      error: 'kural-farki: dört alan (ileti düzeni)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        cleanFields (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:64:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:240:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kilit hiç yok: kural farkı tanımsız — DURDURMAZ; kâr canlı türetmeden 7.000
+    ok 4 - kilit hiç yok: kural farkı tanımsız — DURDURMAZ; kâr canlı türetmeden 7.000
+      ---
+      duration_ms: 515.591901
+      type: 'test'
+      ...
+# (node:10687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilit K'yi AŞIYOR (15.01.2027), fark ≤K maddede: DURDURUR (fiş 16.01.2027); fark YALNIZ K'den sonraki maddedeyse S-3 genel iletisi
+    not ok 5 - kilit K'yi AŞIYOR (15.01.2027), fark ≤K maddede: DURDURUR (fiş 16.01.2027); fark YALNIZ K'den sonraki maddedeyse S-3 genel iletisi
+      ---
+      duration_ms: 927.52521
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:267:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'kural-farki'
+        -   'kural-farki-kilit'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'kural-farki-kilit'
+      actual:
+        0: 'kural-farki'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:274:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 9 - D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir
+  ---
+  duration_ms: 3794.775158
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:162:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:10687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — S-KD-2 GERÇEK eski sürüm verisiyle (ders 17): v2.4.9'un GERÇEK kodunun ürettiği fikstür (surum-2.4.9-s127; kilit 31.12.2025, Excel kartları) — K = 31.12.2025
+    # Subtest: kilit K'de (31.12.2025), kural farkı ≤K maddelerde: DURDURUR 'Kural Farkı Eski Yılda Düzeltilmeli'; ilette yazan fiş tutarı = kilit 30.12.2025'e alınınca Kural Farkı Düzeltme ön izlemesinin tutarı; çare → GEÇER
+    not ok 1 - kilit K'de (31.12.2025), kural farkı ≤K maddelerde: DURDURUR 'Kural Farkı Eski Yılda Düzeltilmeli'; ilette yazan fiş tutarı = kilit 30.12.2025'e alınınca Kural Farkı Düzeltme ön izlemesinin tutarı; çare → GEÇER
+      ---
+      duration_ms: 348.983129
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:322:3'
+      failureType: 'testCodeFailure'
+      error: 'kural-farki'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:326:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 10 - D3 tur 3 — S-KD-2 GERÇEK eski sürüm verisiyle (ders 17): v2.4.9'un GERÇEK kodunun ürettiği fikstür (surum-2.4.9-s127; kilit 31.12.2025, Excel kartları) — K = 31.12.2025
+  ---
+  duration_ms: 737.594183
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-kural.test.mjs:293:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:10706) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYARIR (durdurmaz); sayılar şirketin kuyruğundan
+    # Subtest: veri tabanı (ders 3): 001'de iş 1 Sürüyor (2 iş bekliyor), iş 2 Duraklatıldı (1 iş)
+    ok 1 - veri tabanı (ders 3): 001'de iş 1 Sürüyor (2 iş bekliyor), iş 2 Duraklatıldı (1 iş)
+      ---
+      duration_ms: 2.128
+      type: 'test'
+      ...
+    # Subtest: 001: UYARIR 'WhatsApp Gönderimi Durdurulacak' — 2 iş (1 süren, 1 duraklatılmış), 3 kişi; dört alan; kuyruk değişmedi; 002'nin işi sayılmadı
+    not ok 2 - 001: UYARIR 'WhatsApp Gönderimi Durdurulacak' — 2 iş (1 süren, 1 duraklatılmış), 3 kişi; dört alan; kuyruk değişmedi; 002'nin işi sayılmadı
+      ---
+      duration_ms: 324.849375
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-wa.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aralik-mahsubu, yeniden-baslatma, erken-devir
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-wa.test.mjs:71:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002: yalnız kendi işi (1 iş, 1 kişi) — öbür şirketin işi sayılmaz
+    not ok 3 - 002: yalnız kendi işi (1 iş, 1 kişi) — öbür şirketin işi sayılmaz
+      ---
+      duration_ms: 333.648268
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-wa.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     1,
+        -     1,
+        -     0,
+        -     1
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 1
+          1: 1
+          2: 0
+          3: 1
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-wa.test.mjs:87:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:10706) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: işler bitince / iptal edilince uyarı YOK; durdurur listesi uyarıyla değişmemişti
+    ok 4 - işler bitince / iptal edilince uyarı YOK; durdurur listesi uyarıyla değişmemişti
+      ---
+      duration_ms: 774.917758
+      type: 'test'
+      ...
+    1..4
+not ok 11 - D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYARIR (durdurmaz); sayılar şirketin kuyruğundan
+  ---
+  duration_ms: 2542.094861
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3/test/devir-d3-wa.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..11
+# tests 34
+# suites 11
+# pass 10
+# fail 24
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17140.21436
+
+[kanit] başarısız testler (24):
+  ✖ D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık › (a) her DURDURUR nedeni dört alanlı; sayı / belge no / tarih veri tabanıyla aynı [test/devir-d3-ileti.test.mjs:96:3] — e-belge-bekleyen: neOldu boş (beklenen true, gelen false)
+  ✖ D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık › (a) UYARIR maddeleri de dört alanlı; uyarılar durdururla karışmaz [test/devir-d3-ileti.test.mjs:125:3] — aralik-mahsubu: neOldu boş (beklenen true, gelen false)
+  ✖ D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık › (e) Devir Raporu: 'Devri Durduran Nedenler' ve 'Uyarılar' ayrı başlıklar; ekran = Excel = PDF aynı cümleler [test/devir-d3-ileti.test.mjs:141:3] — Cannot read properties of undefined (reading 'map')
+  ✖ D3 tur 3 — (a) Defter Mutabakatı (kural kancası; ön izlemenin aynı işlevi, iş parçacığısız) › Defter Mutabakatı DURDURUR (120 farkı 500,00 TL; dört alan) [test/devir-d3-ileti.test.mjs:177:3] — The "string" argument must be of type string. Received type undefined (undefined)
+  ✖ D3 tur 3 — (a) planın kendi sorunları (program tutarlı veride üretmez — OLGU düzeyinde, her sorun türü): cari adı, hesap, iki tutar › her plan sorunu ve değişmez dört alanlı; tutarlar sorundaki sayılarla aynı [test/devir-d3-ileti.test.mjs:190:3] — problemIletisi is not a function
+  ✖ D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir › (c) temiz şirket: DURDURUR yok, yalnız uyarı (Aralık mahsubu, 001) → geçilebilir [test/devir-d3-ileti.test.mjs:222:3] — Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )
+  ✖ D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir › ret: 31.12 olmayan tarih / bu yıl / geçersiz seçenek → 400, kod makine alanında, ileti dört alanlı [test/devir-d3-ileti.test.mjs:231:3] — Cannot read properties of undefined (reading 'kod')
+  ✖ D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir › beklenmeyen hata (okuyucunun okuduğu sütun yok — ham veri): Türkçe cümle + 'Verileriniz değişmedi.'; ham ileti yanıta girmez; veri aynı [test/devir-d3-ileti.test.mjs:250:3] — Cannot read properties of undefined (reading 'kod')
+  ✖ D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\r?\\n/ — ders 27) › preflight.mjs: stop / warn listesine yalnız devirIletisi ya da problemIletisi girer; ham 'metin:' yok [test/devir-d3-ileti.test.mjs:278:3] — D3 tur 3 ileti yardımcısı yok (eski kod) (beklenen true, gelen ~)
+  ✖ D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\r?\\n/ — ders 27) › routes/devir.mjs ön izleme bölümü: HttpError yalnız refuse() ile; başarısız işin iletisi ham hata iletisi değil [test/devir-d3-ileti.test.mjs:286:3] — D3 tur 3 ileti yardımcısı yok (eski kod) (beklenen true, gelen ~)
+  ✖ D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\r?\\n/ — ders 27) › devir modüllerinde iletiler.mjs dışında seviye / metin nesnesi kurulmaz [test/devir-d3-ileti.test.mjs:298:3] — D3 tur 3 ileti yardımcısı yok (eski kod) (beklenen true, gelen ~)
+  ✖ D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\r?\\n/ — ders 27) › iletiDenetimi yasak kalıpları yakalar (dişi) [test/devir-d3-ileti.test.mjs:304:3] — D3 tur 3 ileti yardımcısı yok (eski kod) (beklenen true, gelen ~)
+  ✖ D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil) › defter maddesi Kayıt Tarihi'nde (yükleme günü değil): Excel 20.12.2026 B 120 / A 519 9.000; K günü 31.12.2026; K+1 01.01.2027 [test/devir-d3-kart-tarihi.test.mjs:49:3] — Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )
+  ✖ D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil) › plan (K = 31.12.2026): Excel kartı ESKİ yılda — carinin K bakiyesi 9.000, açılış satırları 9.000, kart 9.000 açık; K günü kartı 5.000; K+1 kartı yeni yılda (planda yok) [test/devir-d3-kart-tarihi.test.mjs:57:3] — Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )
+  ✖ D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil) › elle girilmiş kart (aynı Kayıt Tarihi, 9.000) Excel kartıyla AYNI plan sayıları; taksit vadeleri programın kart ekranıyla aynı (devirsiz eşdeğer) [test/devir-d3-kart-tarihi.test.mjs:75:3] — Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )
+  ✖ D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter farkı (cari / alt hesap başına; toplamı 0 olsa da) devri DURDURUR; Kilidi Aç → Yeniden Kilitle ile geçer › aynı caride 120 −4.000 / 128 +4.000 (toplam 0): DURDURUR, ileti iki satırı ve çareyi söyler; Kilidi Aç → Yeniden Kilitle (gerçek API) → GEÇER [test/devir-d3-kural.test.mjs:92:3] — kural-farki, plan-supheli-farki, plan-modul-farki, degismez-gecici-hesap · + actual - expected · [ (beklenen , gelen )
+  ✖ D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter farkı (cari / alt hesap başına; toplamı 0 olsa da) devri DURDURUR; Kilidi Aç → Yeniden Kilitle ile geçer › iki AYRI caride +4.000 / −4.000 (hesap toplamı 0): DURDURUR (cari başına) [test/devir-d3-kural.test.mjs:121:3] — Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )
+  ✖ D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir › kilit = 31.12.2026: DURDURUR (fiş 01.01.2027'ye düşüyor); ileti fiş tutarını (3.000,00 TL) ve kâr etkisini söyler; çare (kilit 30.12 → fiş 31.12 → kilit 31.12) → GEÇER, kâr 10.000 → 7.000 [test/devir-d3-kural.test.mjs:164:3] — kural-farki · + actual - expected · [ (beklenen , gelen )
+  ✖ D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir › kilit = 31.12.2026 iken fiş YENİ YILA yazılmış (01.01.2027): DURDURUR; Ters Kaydet → kilit 30.12 → fiş 31.12 → kilit 31.12 → GEÇER, kâr 7.000 [test/devir-d3-kural.test.mjs:201:3] — Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )
+  ✖ D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir › kilit K'den ÖNCE (30.06.2026): S-3 iletisi (fiş 01.07.2026, eski yılda) — S-KD-2 değil; fiş yazılınca GEÇER, kâr 7.000 [test/devir-d3-kural.test.mjs:232:3] — kural-farki: dört alan (ileti düzeni)
+  ✖ D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir › kilit K'yi AŞIYOR (15.01.2027), fark ≤K maddede: DURDURUR (fiş 16.01.2027); fark YALNIZ K'den sonraki maddedeyse S-3 genel iletisi [test/devir-d3-kural.test.mjs:267:3] — Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )
+  ✖ D3 tur 3 — S-KD-2 GERÇEK eski sürüm verisiyle (ders 17): v2.4.9'un GERÇEK kodunun ürettiği fikstür (surum-2.4.9-s127; kilit 31.12.2025, Excel kartları) — K = 31.12.2025 › kilit K'de (31.12.2025), kural farkı ≤K maddelerde: DURDURUR 'Kural Farkı Eski Yılda Düzeltilmeli'; ilette yazan fiş tutarı = kilit 30.12.2025'e alınınca Kural Farkı Düzeltme ön izlemesinin tutarı; çare → GEÇER [test/devir-d3-kural.test.mjs:322:3] — kural-farki (beklenen true, gelen false)
+  ✖ D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYARIR (durdurmaz); sayılar şirketin kuyruğundan › 001: UYARIR 'WhatsApp Gönderimi Durdurulacak' — 2 iş (1 süren, 1 duraklatılmış), 3 kişi; dört alan; kuyruk değişmedi; 002'nin işi sayılmadı [test/devir-d3-wa.test.mjs:66:3] — aralik-mahsubu, yeniden-baslatma, erken-devir · 0 !== 1 (beklenen 1, gelen 0)
+  ✖ D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYARIR (durdurmaz); sayılar şirketin kuyruğundan › 002: yalnız kendi işi (1 iş, 1 kişi) — öbür şirketin işi sayılmaz [test/devir-d3-wa.test.mjs:84:3] — Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )
+
+[kanit] d3rk-eski3-UTC: BAŞARISIZ (çıkış 1; 24 başarısız, 0 iptal) · çıkış 1 · 10/34 geçti, 24 başarısız, 0 iptal, 0 atlanan · commit 0ae3318 +7 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4

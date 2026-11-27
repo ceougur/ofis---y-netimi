@@ -1,0 +1,43 @@
+{
+  "ad": "mi2-mutant-t2-saklanan-sira-makbuz",
+  "komut": "node --test test/mi1-taksit-no-251.test.mjs test/mi2-tek-numara-251.test.mjs",
+  "commit": "3297eb639cc6f8d535dac96e521b2d0cb1742ef0",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T15:42:08.456Z",
+  "sure_sn": 2.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 18,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › makbuz PDF'i (anlık üretilir): '2. taksit (vade 06.10.2026)' — saklanan '3. taksit' değil",
+      "konum": "test/mi2-tek-numara-251.test.mjs:109:3",
+      "hata": "makbuzda '2. taksit (vade 06.10.2026)': TAHSİLAT MAKBUZU No 2 · 18.10.2026 Kimden Mİ2 Silinmiş Sıra No 1 Açıklama 3. taksit (vade 06.10.2026) Tutar 400,00 TL # dört yüz TL # Toplam borç 2.000,00 TL Tahsil edilen 1.400,00 TL Kalan borç 600,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 09:35 (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › AYNI VADELİ iki taksit: sıra saklanan sıradan (1 → 1., sonradan eklenen 3 → 2.); makbuz '2. taksit (vade 06.08.2026)'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:192:3",
+      "hata": "makbuz: TAHSİLAT MAKBUZU No 3 · 19.10.2026 Kimden Mİ2 Aynı Vade Sıra No 2 Açıklama 3. taksit (vade 06.08.2026) Tutar 300,00 TL # üç yüz TL # Toplam borç 3.000,00 TL Tahsil edilen 300,00 TL Kalan borç 2.700,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 09:47 (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-27/mi2-mutant-t2-saklanan-sira-makbuz.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim",
+  "ham_cikti_sha256": "71db9bcbde378ddf60b459aa67d683ed718e7049ad2195419e131c7a8d436e73",
+  "ham_cikti_bayt": 9309
+}

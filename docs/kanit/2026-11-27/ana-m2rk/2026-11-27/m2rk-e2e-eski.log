@@ -1,0 +1,29 @@
+(node:18293) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ 1 Form tarihi bugün; ipucu bugünün ve 17.09'un sınırını söyler
+  ✓ açık kayıtta Değersiz Alacak Yaz düğmesi
+  ✓ form tarihi bugün (2026-10-15) — kendiliğinden geriye kurulmaz
+  ✓ önerilen tutar bugünün sınırı 123,55 (123,55)
+  ✗ ipucu: ""
+
+■ 2 Tarih 17.09.2026 (klavye + Tab) → ipucu ve önerilen tutar yenilenir
+  ✓ tarih 2026-09-17
+  ✗ ipucu: ""
+  ✗ önerilen tutar 3.000,00 (123,55)
+
+■ 3 1.000 yazılır (insan hızı); bildirim bu yazımı ve gerçek kalanı söyler; düğme durur (S269)
+  ✗ bildirim: "Değersiz alacak yazıldı: ₺1.000,00 · şüphelide kalan ₺0,00."
+  ✓ veri tabanı: Değersiz toplamı 1000
+  ✓ kayıt durumu: Değersiz Yazıldı
+  ✗ S269: kalanı o günün bağlı payıyla 0 görünen kayıtta düğme DURUR
+
+■ 4 Kalanın yazılması: 2.000,01 ret, 2.000 kabul
+  ✗ senaryo kesildi: page.click: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-accounts-modal [data-dbt-act="writeoff"]')[22m
+
+    at openWriteOff (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m2rk/eski/test/e2e/senaryo-degersiz-siniri-m2-251.mjs:76:14)
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m2rk/eski/test/e2e/senaryo-degersiz-siniri-m2-251.mjs:162:9
+
+6 geçti, 6 kaldı

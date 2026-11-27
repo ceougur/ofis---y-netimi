@@ -1,0 +1,40 @@
+başladı 20:04 1.17 1.73 2.90 2/116 9430
+d3rk-yeni-UTC cikis=0 20:05 yük 4.34 2.59 3.09
+[kanit] d3rk-yeni-UTC: GEÇTİ · çıkış 0 · 190/190 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9f1989c +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-eski1-UTC cikis=1 20:05 yük 4.31 2.61 3.10
+[kanit] d3rk-eski1-UTC: BAŞARISIZ (çıkış 1; 42 başarısız, 0 iptal) · çıkış 1 · 0/42 geçti, 42 başarısız, 0 iptal, 0 atlanan · commit 6439647 +6 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-eski2-UTC cikis=1 20:05 yük 4.39 2.72 3.12
+[kanit] d3rk-eski2-UTC: BAŞARISIZ (çıkış 1; 5 başarısız, 0 iptal) · çıkış 1 · 16/21 geçti, 5 başarısız, 0 iptal, 0 atlanan · commit e1a6f26 +1 değişmiş dosya +6 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-eski3-UTC cikis=1 20:06 yük 4.60 2.84 3.16
+[kanit] d3rk-eski3-UTC: BAŞARISIZ (çıkış 1; 24 başarısız, 0 iptal) · çıkış 1 · 10/34 geçti, 24 başarısız, 0 iptal, 0 atlanan · commit 0ae3318 +7 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-eski4-UTC cikis=1 20:06 yük 5.06 3.06 3.22
+[kanit] d3rk-eski4-UTC: BAŞARISIZ (çıkış 1; 17 başarısız, 0 iptal) · çıkış 1 · 18/35 geçti, 17 başarısız, 0 iptal, 0 atlanan · commit 54eeb87 +1 değişmiş dosya +7 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-eski5-UTC cikis=1 20:06 yük 5.37 3.29 3.29
+[kanit] d3rk-eski5-UTC: BAŞARISIZ (çıkış 1; 5 başarısız, 0 iptal) · çıkış 1 · 27/32 geçti, 5 başarısız, 0 iptal, 0 atlanan · commit 8d9c87c +1 değişmiş dosya +7 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-komsu-UTC cikis=0 20:08 yük 5.82 3.95 3.53
+[kanit] d3rk-komsu-UTC: GEÇTİ · çıkış 0 · 103/103 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9f1989c +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-kahin-defter-UTC cikis=0 20:08 yük 5.54 3.95 3.53
+[kanit] d3rk-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9f1989c +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-kahin-cari-UTC cikis=0 20:17 yük 5.91 5.50 4.46
+[kanit] d3rk-kahin-cari-UTC: GEÇTİ · çıkış 0 · 25298/25298 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9f1989c +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-yeni-Istanbul cikis=0 20:19 yük 6.47 5.87 4.74
+[kanit] d3rk-yeni-Istanbul: GEÇTİ · çıkış 0 · 190/190 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9f1989c +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-eski1-Istanbul cikis=1 20:19 yük 6.43 5.87 4.75
+[kanit] d3rk-eski1-Istanbul: BAŞARISIZ (çıkış 1; 42 başarısız, 0 iptal) · çıkış 1 · 0/42 geçti, 42 başarısız, 0 iptal, 0 atlanan · commit 6439647 +6 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-eski2-Istanbul cikis=1 20:19 yük 6.42 5.91 4.79
+[kanit] d3rk-eski2-Istanbul: BAŞARISIZ (çıkış 1; 5 başarısız, 0 iptal) · çıkış 1 · 16/21 geçti, 5 başarısız, 0 iptal, 0 atlanan · commit e1a6f26 +1 değişmiş dosya +6 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-eski3-Istanbul cikis=1 20:20 yük 7.21 6.13 4.89
+[kanit] d3rk-eski3-Istanbul: BAŞARISIZ (çıkış 1; 24 başarısız, 0 iptal) · çıkış 1 · 10/34 geçti, 24 başarısız, 0 iptal, 0 atlanan · commit 0ae3318 +7 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-eski4-Istanbul cikis=1 20:20 yük 6.67 6.07 4.90
+[kanit] d3rk-eski4-Istanbul: BAŞARISIZ (çıkış 1; 17 başarısız, 0 iptal) · çıkış 1 · 18/35 geçti, 17 başarısız, 0 iptal, 0 atlanan · commit 54eeb87 +1 değişmiş dosya +7 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-eski5-Istanbul cikis=1 20:21 yük 6.77 6.15 4.96
+[kanit] d3rk-eski5-Istanbul: BAŞARISIZ (çıkış 1; 5 başarısız, 0 iptal) · çıkış 1 · 27/32 geçti, 5 başarısız, 0 iptal, 0 atlanan · commit 8d9c87c +1 değişmiş dosya +7 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-komsu-Istanbul cikis=0 20:22 yük 5.81 6.02 5.01
+[kanit] d3rk-komsu-Istanbul: GEÇTİ · çıkış 0 · 103/103 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9f1989c +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-kahin-defter-Istanbul cikis=0 20:22 yük 5.75 6.00 5.01
+[kanit] d3rk-kahin-defter-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9f1989c +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-kahin-cari-Istanbul cikis=0 20:31 yük 7.09 6.52 5.65
+[kanit] d3rk-kahin-cari-Istanbul: GEÇTİ · çıkış 0 · 25298/25298 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9f1989c +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-mutasyon-UTC cikis=0 20:36 yük 5.16 5.38 5.37
+[kanit] d3rk-mutasyon-UTC: GEÇTİ · çıkış 0 · 64/64 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9f1989c +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+BİTTİ 20:36 5.16 5.38 5.37 2/140 24582

@@ -1,0 +1,32 @@
+{
+  "ad": "d3rk-kahin-defter-Istanbul",
+  "komut": "npm run test:kahin-defter",
+  "commit": "9f1989c72af759c0dc2feb9e66869da46b6f84f8",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T20:22:23.828Z",
+  "sure_sn": 5.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kanit/2026-11-27/d3rk-kahin-defter-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/yeni",
+  "ham_cikti_sha256": "f77fce9838bd77f4e0e550d0504ab0321f8ca796e4912a149ae2c5afdcf95398",
+  "ham_cikti_bayt": 2825
+}

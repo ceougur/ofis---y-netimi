@@ -1,0 +1,32 @@
+{
+  "ad": "s3-kahin-cari",
+  "komut": "npm run test:kahin-cari",
+  "commit": "3895eddff7f04f01458f1c5fe511c7af98e8b9bb",
+  "dal": "t251-sinama-3",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T22:15:34.248Z",
+  "sure_sn": 598.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 25957,
+    "gecen": 25957,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../s3/kanit/2026-11-27/s3-kahin-cari.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/sinama2",
+  "ham_cikti_sha256": "88d328edbfce6021e44d0f2b49b3fe383433bf384c19c74ca354d375cc0857d2",
+  "ham_cikti_bayt": 85894
+}

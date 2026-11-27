@@ -1,0 +1,6 @@
+başladı 20:04 1.17 1.73 2.90 7/140 9459
+d3rk-gercek-t7-UTC cikis=0 20:18 yük 5.85 5.68 4.62
+[kanit] d3rk-gercek-t7-UTC: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9f1989c +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+d3rk-gercek-t23-UTC cikis=0 20:32 yük 5.38 6.10 5.56
+[kanit] d3rk-gercek-t23-UTC: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9f1989c +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+BİTTİ 20:32

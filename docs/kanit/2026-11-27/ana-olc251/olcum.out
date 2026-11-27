@@ -1,0 +1,286 @@
+ÖLÇÜM PENCERESİ · nproc 4 · başta 1.22 2.75 4.69 1/115 11450 · 18:12:38
+=== Mİ değişen yollar · kod taban (100e54ee) · başta 1.22 2.75 4.69 1/115 11457 · geçerli · 18:12:38
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/taban (taban) · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.22 2.75 4.69
+veri: 1484 cari, 102295 cari satırı, 11448 kart, 53848 taksit, 8162 taksit hareketi
+Cari Listesi (Aktif, 300): orta 768.8 ms · en az 719.7 · en çok 850.8 · olay döngüsü en çok 850.9 ms
+Cari kartı (en hareketli cari): orta 112 ms · en az 106.9 · en çok 125.1 · olay döngüsü en çok 118.6 ms
+Zil / takvim (dues): orta 283.3 ms · en az 271.1 · en çok 376.8 · olay döngüsü en çok 227.8 ms
+Taksitler listesi: orta 821.2 ms · en az 784.9 · en çok 877.2 · olay döngüsü en çok 823.1 ms
+Vade Takip: orta 1631.8 ms · en az 1489.4 · en çok 1757.5 · olay döngüsü en çok 1744.8 ms
+Tüm Cari Hareketleri (Bu Yıl): orta 1564.6 ms · en az 1473.4 · en çok 1734.2 · olay döngüsü en çok 1731.2 ms
+Taksit Tahsilatları (Bu Yıl): orta 24.2 ms · en az 24 · en çok 28.4 · olay döngüsü en çok 24.3 ms
+Taksit Vadeleri (Bu Yıl): orta 553.9 ms · en az 502.6 · en çok 601 · olay döngüsü en çok 599.8 ms
+yük (sonda) 1.17 2.43 4.44
+çıkış 0 · sonda 1.17 2.43 4.44 1/113 11480 · geçerli
+=== Mİ değişen yollar · kod sinama (bcb57de8) · başta 1.17 2.43 4.44 1/113 11488 · geçerli · 18:13:43
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/sinama (sinama) · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.17 2.43 4.44
+veri: 1484 cari, 102295 cari satırı, 11448 kart, 53848 taksit, 8162 taksit hareketi
+Cari Listesi (Aktif, 300): orta 803 ms · en az 724 · en çok 923.6 · olay döngüsü en çok 915.9 ms
+Cari kartı (en hareketli cari): orta 107.1 ms · en az 102.8 · en çok 113.9 · olay döngüsü en çok 114.4 ms
+Zil / takvim (dues): orta 308.6 ms · en az 284.3 · en çok 496.8 · olay döngüsü en çok 283.4 ms
+Taksitler listesi: orta 798.8 ms · en az 795.5 · en çok 1012.2 · olay döngüsü en çok 965.2 ms
+Vade Takip: orta 1584.6 ms · en az 1534.2 · en çok 1769.1 · olay döngüsü en çok 1755.3 ms
+Tüm Cari Hareketleri (Bu Yıl): orta 1826.1 ms · en az 1681.3 · en çok 1979 · olay döngüsü en çok 1977.6 ms
+Taksit Tahsilatları (Bu Yıl): orta 179.6 ms · en az 160.2 · en çok 199.4 · olay döngüsü en çok 197.5 ms
+Taksit Vadeleri (Bu Yıl): orta 539.2 ms · en az 509.5 · en çok 597.2 · olay döngüsü en çok 592.4 ms
+yük (sonda) 1.53 2.29 4.25
+çıkış 0 · sonda 1.53 2.29 4.25 1/111 11610 · geçerli
+=== Mİ değişen yollar · kod sinama (bcb57de8) · başta 1.53 2.29 4.25 1/111 11618 · geçerli · 18:14:49
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/sinama (sinama) · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.53 2.29 4.25
+veri: 1484 cari, 102295 cari satırı, 11448 kart, 53848 taksit, 8162 taksit hareketi
+Cari Listesi (Aktif, 300): orta 787.6 ms · en az 784.2 · en çok 797.1 · olay döngüsü en çok 789.6 ms
+Cari kartı (en hareketli cari): orta 98 ms · en az 92.6 · en çok 103.2 · olay döngüsü en çok 98.8 ms
+Zil / takvim (dues): orta 287.6 ms · en az 246 · en çok 350.9 · olay döngüsü en çok 209.5 ms
+Taksitler listesi: orta 802.6 ms · en az 783.1 · en çok 899.6 · olay döngüsü en çok 836.8 ms
+Vade Takip: orta 1667.3 ms · en az 1597.7 · en çok 1775.6 · olay döngüsü en çok 1760.6 ms
+Tüm Cari Hareketleri (Bu Yıl): orta 1789.8 ms · en az 1623.5 · en çok 2073.3 · olay döngüsü en çok 2072 ms
+Taksit Tahsilatları (Bu Yıl): orta 186.6 ms · en az 173.7 · en çok 227 · olay döngüsü en çok 229.1 ms
+Taksit Vadeleri (Bu Yıl): orta 560.7 ms · en az 514.3 · en çok 671.1 · olay döngüsü en çok 671.6 ms
+yük (sonda) 1.33 2.10 4.06
+çıkış 0 · sonda 1.33 2.10 4.06 1/115 11787 · geçerli
+=== Mİ değişen yollar · kod taban (100e54ee) · başta 1.33 2.10 4.06 1/115 11795 · geçerli · 18:15:54
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/taban (taban) · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.33 2.10 4.06
+veri: 1484 cari, 102295 cari satırı, 11448 kart, 53848 taksit, 8162 taksit hareketi
+Cari Listesi (Aktif, 300): orta 756.4 ms · en az 709.4 · en çok 775.5 · olay döngüsü en çok 769.7 ms
+Cari kartı (en hareketli cari): orta 109.3 ms · en az 104.6 · en çok 115.1 · olay döngüsü en çok 114.7 ms
+Zil / takvim (dues): orta 275.4 ms · en az 253.2 · en çok 370.3 · olay döngüsü en çok 222.4 ms
+Taksitler listesi: orta 808.6 ms · en az 767 · en çok 868.5 · olay döngüsü en çok 823.7 ms
+Vade Takip: orta 1537.7 ms · en az 1518.3 · en çok 1715.7 · olay döngüsü en çok 1699.7 ms
+Tüm Cari Hareketleri (Bu Yıl): orta 1582 ms · en az 1424.7 · en çok 1797.3 · olay döngüsü en çok 1794.1 ms
+Taksit Tahsilatları (Bu Yıl): orta 16.4 ms · en az 15.5 · en çok 19.4 · olay döngüsü en çok 16.9 ms
+Taksit Vadeleri (Bu Yıl): orta 486.9 ms · en az 467.2 · en çok 568.4 · olay döngüsü en çok 567.3 ms
+yük (sonda) 1.27 1.95 3.88
+çıkış 0 · sonda 1.27 1.95 3.88 1/111 11967 · geçerli
+=== Değersiz sınırı (şüpheli liste vb.) · kod taban (100e54ee) · başta 1.27 1.95 3.88 1/110 11975 · geçerli · 18:16:56
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/taban · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.25 1.94 3.87
+ölçülen cari account-2242338a-e304-479c-860e-559607894371: 9 şüpheli kaydı, 35 cari satırı
+tur 1 · yük 1.17 1.88 3.81
+  şüpheli kayıt listesi: 200 · 4 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 66.7 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 5.9 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6176.7 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6706.2 ms · olay döngüsü en çok 6698.3 ms
+tur 2 · yük 1.12 1.82 3.75
+  şüpheli kayıt listesi: 200 · 10.7 ms · olay döngüsü en çok 8.8 ms
+  cari kartı: 200 · 71.2 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 2.7 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6384.3 ms · olay döngüsü en çok 6379.5 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6041.9 ms · olay döngüsü en çok 6039.8 ms
+tur 3 · yük 1.60 1.88 3.72
+  şüpheli kayıt listesi: 200 · 11.2 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 81.3 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 2 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6068.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6664.7 ms · olay döngüsü en çok 6660.6 ms
+tur 4 · yük 1.46 1.84 3.68
+  şüpheli kayıt listesi: 200 · 10.8 ms · olay döngüsü en çok 9.6 ms
+  cari kartı: 200 · 82.7 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 1.7 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6297.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6348.5 ms · olay döngüsü en çok 6346 ms
+tur 5 · yük 1.39 1.80 3.63
+  şüpheli kayıt listesi: 200 · 9.8 ms · olay döngüsü en çok 8.6 ms
+  cari kartı: 200 · 75.7 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 2 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6209.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6500.2 ms · olay döngüsü en çok 6501.2 ms
+ORTANCA (ms):
+  şüpheli kayıt listesi: 10.7 (n=5, en az 4, en çok 11.2)
+  cari kartı: 75.7 (n=5, en az 66.7, en çok 82.7)
+  form sınır ucu (yalnız yeni kod): 2 (n=5, en az 1.7, en çok 5.9)
+  YAZIM Değersiz Yaz: 6209.2 (n=5, en az 6068.2, en çok 6384.3)
+  YAZIM Silinenler'den geri yükleme: 6500.2 (n=5, en az 6041.9, en çok 6706.2)
+yük (sonda) 1.28 1.74 3.57
+çıkış 0 · sonda 1.28 1.74 3.57 1/111 12005 · geçerli
+=== Değersiz sınırı (şüpheli liste vb.) · kod sinama (bcb57de8) · başta 1.28 1.74 3.57 1/111 12013 · geçerli · 18:18:56
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/sinama · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.28 1.74 3.57
+ölçülen cari account-2242338a-e304-479c-860e-559607894371: 9 şüpheli kaydı, 35 cari satırı
+tur 1 · yük 1.17 1.67 3.49
+  şüpheli kayıt listesi: 200 · 9.2 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 70 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 5.3 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6791.7 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6274.6 ms · olay döngüsü en çok 6266.3 ms
+tur 2 · yük 1.12 1.63 3.43
+  şüpheli kayıt listesi: 200 · 10.9 ms · olay döngüsü en çok 9.3 ms
+  cari kartı: 200 · 74 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 4.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6505.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6364.2 ms · olay döngüsü en çok 6362.8 ms
+tur 3 · yük 1.08 1.59 3.38
+  şüpheli kayıt listesi: 200 · 10.6 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 72 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 3.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6084.3 ms · olay döngüsü en çok 6085.9 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6305.9 ms · olay döngüsü en çok 6299.8 ms
+tur 4 · yük 1.07 1.56 3.34
+  şüpheli kayıt listesi: 200 · 11.1 ms · olay döngüsü en çok 9.7 ms
+  cari kartı: 200 · 75.4 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 3.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6068.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6130.6 ms · olay döngüsü en çok 6127.9 ms
+tur 5 · yük 1.13 1.54 3.30
+  şüpheli kayıt listesi: 200 · 11 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 77.7 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 4.3 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6287.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6032.2 ms · olay döngüsü en çok 6031.4 ms
+ORTANCA (ms):
+  şüpheli kayıt listesi: 10.9 (n=5, en az 9.2, en çok 11.1)
+  cari kartı: 74 (n=5, en az 70, en çok 77.7)
+  form sınır ucu (yalnız yeni kod): 4.2 (n=5, en az 3.6, en çok 5.3)
+  YAZIM Değersiz Yaz: 6287.2 (n=5, en az 6068.8, en çok 6791.7)
+  YAZIM Silinenler'den geri yükleme: 6274.6 (n=5, en az 6032.2, en çok 6364.2)
+yük (sonda) 1.09 1.50 3.25
+çıkış 0 · sonda 1.09 1.50 3.25 1/111 12041 · geçerli
+=== Değersiz sınırı (şüpheli liste vb.) · kod sinama (bcb57de8) · başta 1.09 1.50 3.25 1/111 12049 · geçerli · 18:20:59
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/sinama · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.09 1.50 3.25
+ölçülen cari account-2242338a-e304-479c-860e-559607894371: 9 şüpheli kaydı, 35 cari satırı
+tur 1 · yük 1.13 1.48 3.19
+  şüpheli kayıt listesi: 200 · 4.4 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 64.6 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 5.4 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6220.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6350 ms · olay döngüsü en çok 6350.2 ms
+tur 2 · yük 1.10 1.45 3.15
+  şüpheli kayıt listesi: 200 · 10.3 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 72.8 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 3.9 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6292 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6256.9 ms · olay döngüsü en çok 6257.9 ms
+tur 3 · yük 1.07 1.42 3.11
+  şüpheli kayıt listesi: 200 · 10.7 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 75.2 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 3.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6436.8 ms · olay döngüsü en çok 6434.1 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6401.1 ms · olay döngüsü en çok 6400.5 ms
+tur 4 · yük 1.13 1.41 3.07
+  şüpheli kayıt listesi: 200 · 10.3 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 70.9 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 3.5 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6373.8 ms · olay döngüsü en çok 6375.3 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6332.1 ms · olay döngüsü en çok 6333.4 ms
+tur 5 · yük 1.16 1.40 3.03
+  şüpheli kayıt listesi: 200 · 11.1 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 85.7 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 4.1 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6458.1 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6644.7 ms · olay döngüsü en çok 6643.8 ms
+ORTANCA (ms):
+  şüpheli kayıt listesi: 10.3 (n=5, en az 4.4, en çok 11.1)
+  cari kartı: 72.8 (n=5, en az 64.6, en çok 85.7)
+  form sınır ucu (yalnız yeni kod): 3.9 (n=5, en az 3.5, en çok 5.4)
+  YAZIM Değersiz Yaz: 6373.8 (n=5, en az 6220.6, en çok 6458.1)
+  YAZIM Silinenler'den geri yükleme: 6350 (n=5, en az 6256.9, en çok 6644.7)
+yük (sonda) 1.41 1.44 3.00
+çıkış 0 · sonda 1.41 1.44 3.00 1/111 12077 · geçerli
+=== Değersiz sınırı (şüpheli liste vb.) · kod taban (100e54ee) · başta 1.41 1.44 3.00 1/111 12085 · geçerli · 18:22:59
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/taban · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.41 1.44 3.00
+ölçülen cari account-2242338a-e304-479c-860e-559607894371: 9 şüpheli kaydı, 35 cari satırı
+tur 1 · yük 1.38 1.43 2.96
+  şüpheli kayıt listesi: 200 · 5.8 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 74.3 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 8.3 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6607.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6428.2 ms · olay döngüsü en çok 6425.7 ms
+tur 2 · yük 1.27 1.40 2.92
+  şüpheli kayıt listesi: 200 · 16.8 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 78.9 ms · olay döngüsü en çok 77 ms
+  form sınır ucu (yalnız yeni kod): 405 · 3 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6186.9 ms · olay döngüsü en çok 6182.4 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6546.1 ms · olay döngüsü en çok 6543.1 ms
+tur 3 · yük 1.20 1.38 2.88
+  şüpheli kayıt listesi: 200 · 10 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 91.2 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 1.9 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6481.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6552.3 ms · olay döngüsü en çok 6551.5 ms
+tur 4 · yük 1.14 1.35 2.83
+  şüpheli kayıt listesi: 200 · 10.4 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 75.4 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 2.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6444.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5959 ms · olay döngüsü en çok 5960.1 ms
+tur 5 · yük 1.10 1.33 2.79
+  şüpheli kayıt listesi: 200 · 11 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 83.3 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 2.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6422.5 ms · olay döngüsü en çok 6421.5 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6573.4 ms · olay döngüsü en çok 6568.3 ms
+ORTANCA (ms):
+  şüpheli kayıt listesi: 10.4 (n=5, en az 5.8, en çok 16.8)
+  cari kartı: 78.9 (n=5, en az 74.3, en çok 91.2)
+  form sınır ucu (yalnız yeni kod): 2.2 (n=5, en az 1.9, en çok 8.3)
+  YAZIM Değersiz Yaz: 6444.2 (n=5, en az 6186.9, en çok 6607.6)
+  YAZIM Silinenler'den geri yükleme: 6546.1 (n=5, en az 5959, en çok 6573.4)
+yük (sonda) 1.37 1.37 2.78
+çıkış 0 · sonda 1.37 1.37 2.78 1/112 12117 · geçerli
+=== KDV Özeti · kod taban (100e54ee) · başta 1.37 1.37 2.78 1/115 12128 · geçerli · 18:25:04
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/taban · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.37 1.37 2.78
+veri: 34026 fatura, 61162 kalem, 102295 cari satırı
+  KDV Özeti yıllık (01.01–31.12.2026): 200 · ilk 2385.3 ms · ılık ortanca 2406.6 ms (en az 2238, en çok 2641.3) · olay döngüsü en çok 2636.1 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti Bu Yıl (preset): 200 · ilk 2191.2 ms · ılık ortanca 2289.7 ms (en az 2184, en çok 2342.2) · olay döngüsü en çok 2342.5 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti tek ay (Eylül 2026): 200 · ilk 2344.7 ms · ılık ortanca 2164.6 ms (en az 2070.9, en çok 2341.1) · olay döngüsü en çok 2160.1 ms · satır 13
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=70.832,34 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=1.396.635,75 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.761.404,34 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.087.207,75 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 41 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Mahsup ön izlemesi (Eylül 2026): 200 · ilk 4628 ms · ılık ortanca 4359.2 ms (en az 4324.7, en çok 4684.2) · olay döngüsü en çok 4324.3 ms · satır -
+  KDV Özeti tek ay (Ağustos 2026) — elle sağlama: 200 · ilk 2266.8 ms · ılık ortanca 2364.6 ms (en az 2137.8, en çok 2405.8) · olay döngüsü en çok 2388.7 ms · satır 11
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=122.696,91 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=452.078,82 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.432.022,43 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=10.761.404,34 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 40 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+yük (sonda) 1.06 1.26 2.58
+çıkış 0 · sonda 1.06 1.26 2.58 1/112 12153 · geçerli
+=== KDV Özeti · kod m1k (52fb473f) · başta 1.06 1.26 2.58 1/112 12161 · geçerli · 18:26:52
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/m1k · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.06 1.26 2.58
+veri: 34026 fatura, 61162 kalem, 102295 cari satırı
+  KDV Özeti yıllık (01.01–31.12.2026): 200 · ilk 2583.1 ms · ılık ortanca 2302.8 ms (en az 2260.1, en çok 2706.2) · olay döngüsü en çok 2470.4 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti Bu Yıl (preset): 200 · ilk 2315.1 ms · ılık ortanca 2211 ms (en az 2058.2, en çok 2512.2) · olay döngüsü en çok 2223 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti tek ay (Eylül 2026): 200 · ilk 2083.8 ms · ılık ortanca 2144.2 ms (en az 2087.7, en çok 2298) · olay döngüsü en çok 0 ms · satır 13
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=70.832,34 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=1.396.635,75 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.761.404,34 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.087.207,75 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 41 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Mahsup ön izlemesi (Eylül 2026): 200 · ilk 4151 ms · ılık ortanca 4348.6 ms (en az 4070, en çok 4508) · olay döngüsü en çok 4500.5 ms · satır -
+  KDV Özeti tek ay (Ağustos 2026) — elle sağlama: 200 · ilk 2268.4 ms · ılık ortanca 2131.6 ms (en az 2099.3, en çok 2445) · olay döngüsü en çok 2098.2 ms · satır 11
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=122.696,91 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=452.078,82 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.432.022,43 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=10.761.404,34 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 40 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+yük (sonda) 1.10 1.23 2.43
+çıkış 0 · sonda 1.10 1.23 2.43 1/114 12188 · geçerli
+=== KDV Özeti · kod m1k (52fb473f) · başta 1.10 1.23 2.43 1/114 12196 · geçerli · 18:28:37
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/m1k · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.10 1.23 2.43
+veri: 34026 fatura, 61162 kalem, 102295 cari satırı
+  KDV Özeti yıllık (01.01–31.12.2026): 200 · ilk 2453.4 ms · ılık ortanca 2306.4 ms (en az 2089.9, en çok 2582.8) · olay döngüsü en çok 2359.3 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti Bu Yıl (preset): 200 · ilk 2571.7 ms · ılık ortanca 2263 ms (en az 2188.1, en çok 2360.5) · olay döngüsü en çok 2187.3 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti tek ay (Eylül 2026): 200 · ilk 2477.5 ms · ılık ortanca 2248 ms (en az 2085.4, en çok 2418.7) · olay döngüsü en çok 2411.7 ms · satır 13
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=70.832,34 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=1.396.635,75 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.761.404,34 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.087.207,75 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 41 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Mahsup ön izlemesi (Eylül 2026): 200 · ilk 4272.1 ms · ılık ortanca 4257.5 ms (en az 4170.1, en çok 4660) · olay döngüsü en çok 4659.9 ms · satır -
+  KDV Özeti tek ay (Ağustos 2026) — elle sağlama: 200 · ilk 2212.4 ms · ılık ortanca 2131.9 ms (en az 2061.7, en çok 2301) · olay döngüsü en çok 2122.3 ms · satır 11
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=122.696,91 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=452.078,82 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.432.022,43 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=10.761.404,34 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 40 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+yük (sonda) 1.02 1.16 2.27
+çıkış 0 · sonda 1.02 1.16 2.27 1/110 12220 · geçerli
+=== KDV Özeti · kod taban (100e54ee) · başta 1.02 1.16 2.27 1/111 12229 · geçerli · 18:30:22
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/taban · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · yük (başta) 1.02 1.16 2.27
+veri: 34026 fatura, 61162 kalem, 102295 cari satırı
+  KDV Özeti yıllık (01.01–31.12.2026): 200 · ilk 2450.1 ms · ılık ortanca 2269.7 ms (en az 2143.7, en çok 2387.4) · olay döngüsü en çok 2319.5 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti Bu Yıl (preset): 200 · ilk 2304.2 ms · ılık ortanca 2243.1 ms (en az 2142.9, en çok 2317.8) · olay döngüsü en çok 2142.2 ms · satır 135
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=1.952.048,70 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=5.261.829,66 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=8.785.405,02 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.095.185,98 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 42 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Özeti tek ay (Eylül 2026): 200 · ilk 2223.9 ms · ılık ortanca 2214.5 ms (en az 2068.8, en çok 2379.9) · olay döngüsü en çok 2208.3 ms · satır 13
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=70.832,34 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=1.396.635,75 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.761.404,34 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=12.087.207,75 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 41 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  KDV Mahsup ön izlemesi (Eylül 2026): 200 · ilk 4097.8 ms · ılık ortanca 4228.2 ms (en az 4019.6, en çok 4518.2) · olay döngüsü en çok 4303.4 ms · satır -
+  KDV Özeti tek ay (Ağustos 2026) — elle sağlama: 200 · ilk 2094.8 ms · ılık ortanca 2047.7 ms (en az 1965.5, en çok 2182.3) · olay döngüsü en çok 2118.1 ms · satır 11
+    özet: Hesaplanan KDV (391) (İadeler Düşülmüş)=122.696,91 TL | İndirilecek KDV (191) (İadeler Düşülmüş)=452.078,82 TL | Alıcı Olarak Kesilen Tevkifat (2 No.lu)=0,00 TL | Önceki Dönemden Devreden KDV=10.432.022,43 TL | Ödenecek KDV=0,00 TL | Sonraki Döneme Devreden KDV=10.761.404,34 TL | Mahsup Edilmemiş Ay=Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 40 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+yük (sonda) 1.24 1.20 2.17
+çıkış 0 · sonda 1.24 1.20 2.17 1/116 12371 · geçerli
+=== Devir ön izlemesi H-1 (tur 4 kodu) · kod d3t4 (8d9c87c0) · başta 1.24 1.20 2.17 1/116 12379 · geçerli · 18:32:04
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/d3t4 · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/kopya · K 2025-12-31 · şimdi 2026-10-08T12:00:00+03:00 · yük (başta) 1.24 1.20 2.17
+veri: account_entries 102295 · cash_entries 11554 · stock_moves 80136 · plan_entries 8162 · invoices 34026 · fin_events 1091 · cheque_events 20352 · payments 3710 · Σ 261326 · cari 1484
+(1) TEK BORÇ SIRASI bölümü (ms): şüpheli ayırımı 7.4 · ledgerLines 1643.7 · settleTables 513.5 · obligationExtras 200 · döngü 6875.1 (süzgeç 41.4 · girdi 370 · buildObligations 6448.5) · cari 1484 (≤K satırı olmayan 0) · satır 124025 (K sonrası 24791) · açık kalemsiz cari 0
+    buildObligations İÇİ (ms; ölçüm kopyası): okunamadı (kod kökü ölçüm kopyası değil — kanca yok)
+    cari başına buildObligations (ms): ortanca 2 · %90 12.5 · %99 19.7 · en çok 32.5 · en pahalı 5: 32.5 ms / 101 satır / 24 fatura ; 31.2 ms / 98 satır / 19 fatura ; 25.3 ms / 101 satır / 24 fatura ; 25.3 ms / 128 satır / 31 fatura ; 23.9 ms / 101 satır / 24 fatura
+    CPU profili (öz süre, ms; ilk 15): 1958.2 queueOnce @ lib/obligation-queue.mjs:353 | 879.4 (garbage collector) @ (yerleşik):0 | 761.4 add @ lib/obligation-queue.mjs:386 | 397.6 coverForcing @ lib/obligation-queue.mjs:214 | 293.1 coverEvent @ lib/obligation-queue.mjs:806 | 258.2 arrive @ lib/obligation-queue.mjs:975 | 229.8 addInstallments @ lib/obligation-queue.mjs:407 | 196.5 (anonim) @ lib/obligation-input.mjs:112 | 182.9 roundMoney @ lib/money.mjs:32 | 170.6 runQueue @ lib/obligation-queue.mjs:272 | 164 assemble @ lib/obligation-queue.mjs:1118 | 153.3 invoiceLinks @ lib/obligation-queue.mjs:637 | 116.3 cardOf @ lib/obligation-queue.mjs:400 | 91.3 listFor @ lib/obligation-queue.mjs:772 | 88 s2 @ lib/obligation-queue.mjs:73
+    dosya başına öz süre (ms): lib/obligation-queue.mjs 5704.3 · (yerleşik) 886.8 · lib/obligation-input.mjs 315.7 · lib/money.mjs 182.9 · lib/cover-scope.mjs 108.5 · test/devir-d3-hacim-tyk.mjs 99.1 · lib/invoice-settle.mjs 63.3 · lib/http.mjs 34.9
+(2) devir tarafı (ms): canlı türetme 2101.9 · karma yevmiye 23.9 · değerleme kurulum 335.3 · at(K) 1. 25.8 · at(K) 2. (planın yinelemesi) 6.8 · Bilanço 464.2 · Gelir Tablosu (K yılı) 69.3 · önceki 3 yılın Gelir Tablosu 197.6 · ledgerLines (ikinci kez — karşılaştırma için) 1713.8
+(3) okuyucu 14186.1 ({"okuma":840.2,"yevmiye":2465.7,"tekBorcSirasi":9033.4,"degerleme":415.2,"onDenetim":1430.9}) · plan 1108.3
+yük (sonda) 1.23 1.20 2.11 · en yüksek 1 dk yükü 1.24 → ölçüm GEÇERLİ
+çıkış 0 · sonda 1.23 1.20 2.11 1/112 12400 · geçerli
+bitti 18:32:57 · 1.23 1.20 2.11 1/112 12406

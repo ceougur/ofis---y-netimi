@@ -1,0 +1,43 @@
+{
+  "ad": "mi2-mutant-t2-girdiye-sizdir",
+  "komut": "node --test test/obligation-input-250.test.mjs test/mi2-kuyruk-girdisi-251.test.mjs",
+  "commit": "3297eb639cc6f8d535dac96e521b2d0cb1742ef0",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T15:42:10.766Z",
+  "sure_sn": 6.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 4,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ tur 2 — görünen taksit numarası kuyruğun girdisine girmez (taksiti silinmiş / vadesi öne alınmış kart) › kartın kendi hesabı (allocate) ve cari kartının kart listesi (forAccount): taksit satırında ve sıradaki taksitte numara alanı YOK",
+      "konum": "test/mi2-kuyruk-girdisi-251.test.mjs:65:3",
+      "hata": "forAccount çıktısında 'no' yok: [0].items[0].no · [0].items[1].no · [0].next.no · [1].items[0].no · [1].items[1].no · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı › sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi",
+      "konum": "test/obligation-input-250.test.mjs:415:3",
+      "hata": "hakemden farklı çıktı (taşıma davranışı değiştirdi): ilk|001|OZ 001 Silinen Kart · ilk|001|OZ 001 Stok Taksit · iade-sil|001|OZ 001 Stok Taksit · geri|001|OZ 001 Silinen Kart · geri|001|OZ 001 Stok Taksit · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-27/mi2-mutant-t2-girdiye-sizdir.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim",
+  "ham_cikti_sha256": "a8088e94e34069fddfeedfa046d8e1bc69ca200ebbf1d0ab183372a207d6f02f",
+  "ham_cikti_bayt": 8158
+}

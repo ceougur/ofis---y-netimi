@@ -1,0 +1,11 @@
+başladı 20:57 1.40 3.32 4.32 2/118 32713
+d8de65e6 Merge tag 't251-d3-tur5' into t251-sinama-3
+tam cikis=1 22:15
+  ✖ 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması) › programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi) [test/maliyet-bagsizlik.test.mjs:83:3] — başka modül maliyet tablosuna dokunuyor: · server/lib/devir/plan-reader.mjs:32: maliyet_sekmeler: { sinif: "D" }, maliyet_kartlar: { sinif: "D" }, maliyet_satirlar: { sinif: "D" }, maliyet_adimlar: { · + actual - expected (beklenen , gelen )
+
+[kanit] s3-tam-npm-test: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 6387/6388 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit d8de65e +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+kahin-cari cikis=0
+[kanit] s3-kahin-cari: GEÇTİ · çıkış 0 · 25957/25957 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3895edd +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+kahin-defter cikis=0
+[kanit] s3-kahin-defter: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 3895edd +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+BİTTİ 22:25 11.61 9.64 7.90 12/186 2199

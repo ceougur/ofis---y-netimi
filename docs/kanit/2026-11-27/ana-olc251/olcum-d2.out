@@ -1,0 +1,135 @@
+ÖLÇÜM PENCERESİ 2 (devir yedeği) · başta 1.19 1.20 2.10 3/116 12421 · 18:33:04
+=== Devir yedeği hacmi (d2-hacim) · kod taban · başta 1.19 1.20 2.10 2/116 12424 · geçerli · 18:33:04
+# veri-uretimi: 686094 ms, olay döngüsü en çok 800 ms
+ok 1 - 100000 hareket programın API'siyle yazılmış veride (satır 100000, üretimde başarısız istek 0; taban /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/d2taban)
+# bes-arsiv-benzetimi: 4503 ms, olay döngüsü en çok 654 ms
+# arsiv-listesi: 5 ms, olay döngüsü en çok 5 ms
+ok 2 - arşiv listesi 5 arşiv
+ok 3 - arşiv listesi ≤ 1 sn ve olay döngüsü ≤ 50 ms (5 / 5)
+# yedek-listesi: 3 ms, olay döngüsü en çok 5 ms
+ok 4 - Yedekler listesi ≤ 1 sn / ≤ 50 ms (3 / 5)
+# arsiv-ornegi-acilis: 248 ms, olay döngüsü en çok 9 ms
+ok 5 - arşiv örneği açıldı; özet akışla, kuruluş ≤ 50 ms olay döngüsü (248 ms / 9 ms)
+# arsiv-ilk-istek: 2497 ms, olay döngüsü en çok 244 ms
+# canli-ayni-istek: 2606 ms, olay döngüsü en çok 351 ms
+ok 6 - arşivde Kasa listesi 2497 ms (canlıda aynı istek 2606 ms — arşive özgü ek yük yok)
+# bes-arsiv-dogrulama: 957 ms, olay döngüsü en çok 16 ms
+ok 7 - 5 arşivin bütünlük denetimi olay döngüsünü ≤ 50 ms tutar (16 ms; toplam 957 ms)
+# devir-yedegi: 2286 ms, olay döngüsü en çok 7 ms
+ok 8 - devir yedeği alındı (11 dosya, 823 MB, 2286 ms, olay döngüsü en çok 7 ms — VACUUM INTO ana iş parçacığında, rutin yedekle aynı)
+# devir-yedekleri-listesi: 6 ms, olay döngüsü en çok 5 ms
+ok 9 - Devir Yedekleri listesi ≤ 1 sn / ≤ 50 ms (6 / 5)
+# bakim-ac: 10 ms, olay döngüsü en çok 5 ms
+ok 10 - bakım kipi açılışı ≤ 500 ms (10)
+# bakim-kapat: 5 ms, olay döngüsü en çok 5 ms
+# diskten-tanima-taramasi: 1 ms, olay döngüsü en çok 5 ms
+ok 11 - açılıştaki arşiv taraması ≤ 500 ms (1)
+{"veri-uretimi":{"ms":686094,"loopMaxMs":800},"dosyaBoyuMB":145,"bes-arsiv-benzetimi":{"ms":4503,"loopMaxMs":654},"arsiv-listesi":{"ms":5,"loopMaxMs":5},"yedek-listesi":{"ms":3,"loopMaxMs":5},"arsiv-ornegi-acilis":{"ms":248,"loopMaxMs":9},"arsiv-ilk-istek":{"ms":2497,"loopMaxMs":244},"canli-ayni-istek":{"ms":2606,"loopMaxMs":351},"bes-arsiv-dogrulama":{"ms":957,"loopMaxMs":16},"devir-yedegi":{"ms":2286,"loopMaxMs":7},"devirYedegiMB":823,"devir-yedekleri-listesi":{"ms":6,"loopMaxMs":5},"bakim-ac":{"ms":10,"loopMaxMs":5},"bakim-kapat":{"ms":5,"loopMaxMs":5},"diskten-tanima-taramasi":{"ms":1,"loopMaxMs":5}}
+1..11
+# tests 11
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+çıkış 0 · sonda 1.08 1.05 1.52 1/110 12845 · geçerli
+=== Devir yedeği hacmi (d2-hacim) · kod sinama · başta 1.08 1.05 1.52 1/110 12848 · geçerli · 18:44:50
+ok 1 - 100000 hareket programın API'siyle yazılmış veride (satır 100000, üretimde başarısız istek 0; taban /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/d2taban)
+# bes-arsiv-benzetimi: 4614 ms, olay döngüsü en çok 569 ms
+# arsiv-listesi: 10 ms, olay döngüsü en çok 6 ms
+ok 2 - arşiv listesi 5 arşiv
+ok 3 - arşiv listesi ≤ 1 sn ve olay döngüsü ≤ 50 ms (10 / 6)
+# yedek-listesi: 6 ms, olay döngüsü en çok 5 ms
+ok 4 - Yedekler listesi ≤ 1 sn / ≤ 50 ms (6 / 5)
+# arsiv-ornegi-acilis: 250 ms, olay döngüsü en çok 13 ms
+ok 5 - arşiv örneği açıldı; özet akışla, kuruluş ≤ 50 ms olay döngüsü (250 ms / 13 ms)
+# arsiv-ilk-istek: 2391 ms, olay döngüsü en çok 239 ms
+# canli-ayni-istek: 2482 ms, olay döngüsü en çok 399 ms
+ok 6 - arşivde Kasa listesi 2391 ms (canlıda aynı istek 2482 ms — arşive özgü ek yük yok)
+# bes-arsiv-dogrulama: 973 ms, olay döngüsü en çok 9 ms
+ok 7 - 5 arşivin bütünlük denetimi olay döngüsünü ≤ 50 ms tutar (9 ms; toplam 973 ms)
+# devir-yedegi: 2064 ms, olay döngüsü en çok 10 ms
+ok 8 - devir yedeği alındı (11 dosya, 823 MB, 2064 ms, olay döngüsü en çok 10 ms — VACUUM INTO ana iş parçacığında, rutin yedekle aynı)
+# devir-yedekleri-listesi: 8 ms, olay döngüsü en çok 5 ms
+ok 9 - Devir Yedekleri listesi ≤ 1 sn / ≤ 50 ms (8 / 5)
+# bakim-ac: 14 ms, olay döngüsü en çok 5 ms
+ok 10 - bakım kipi açılışı ≤ 500 ms (14)
+# bakim-kapat: 7 ms, olay döngüsü en çok 5 ms
+# diskten-tanima-taramasi: 1 ms, olay döngüsü en çok 5 ms
+ok 11 - açılıştaki arşiv taraması ≤ 500 ms (1)
+{"dosyaBoyuMB":145,"bes-arsiv-benzetimi":{"ms":4614,"loopMaxMs":569},"arsiv-listesi":{"ms":10,"loopMaxMs":6},"yedek-listesi":{"ms":6,"loopMaxMs":5},"arsiv-ornegi-acilis":{"ms":250,"loopMaxMs":13},"arsiv-ilk-istek":{"ms":2391,"loopMaxMs":239},"canli-ayni-istek":{"ms":2482,"loopMaxMs":399},"bes-arsiv-dogrulama":{"ms":973,"loopMaxMs":9},"devir-yedegi":{"ms":2064,"loopMaxMs":10},"devirYedegiMB":823,"devir-yedekleri-listesi":{"ms":8,"loopMaxMs":5},"bakim-ac":{"ms":14,"loopMaxMs":5},"bakim-kapat":{"ms":7,"loopMaxMs":5},"diskten-tanima-taramasi":{"ms":1,"loopMaxMs":5}}
+1..11
+# tests 11
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+çıkış 0 · sonda 1.06 1.04 1.51 1/113 12868 · geçerli
+=== Devir yedeği hacmi (d2-hacim) · kod sinama · başta 1.06 1.04 1.51 1/113 12871 · geçerli · 18:45:09
+ok 1 - 100000 hareket programın API'siyle yazılmış veride (satır 100000, üretimde başarısız istek 0; taban /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/d2taban)
+# bes-arsiv-benzetimi: 4326 ms, olay döngüsü en çok 598 ms
+# arsiv-listesi: 8 ms, olay döngüsü en çok 6 ms
+ok 2 - arşiv listesi 5 arşiv
+ok 3 - arşiv listesi ≤ 1 sn ve olay döngüsü ≤ 50 ms (8 / 6)
+# yedek-listesi: 5 ms, olay döngüsü en çok 6 ms
+ok 4 - Yedekler listesi ≤ 1 sn / ≤ 50 ms (5 / 6)
+# arsiv-ornegi-acilis: 250 ms, olay döngüsü en çok 12 ms
+ok 5 - arşiv örneği açıldı; özet akışla, kuruluş ≤ 50 ms olay döngüsü (250 ms / 12 ms)
+# arsiv-ilk-istek: 2973 ms, olay döngüsü en çok 434 ms
+# canli-ayni-istek: 2383 ms, olay döngüsü en çok 244 ms
+ok 6 - arşivde Kasa listesi 2973 ms (canlıda aynı istek 2383 ms — arşive özgü ek yük yok)
+# bes-arsiv-dogrulama: 1021 ms, olay döngüsü en çok 17 ms
+ok 7 - 5 arşivin bütünlük denetimi olay döngüsünü ≤ 50 ms tutar (17 ms; toplam 1021 ms)
+# devir-yedegi: 2252 ms, olay döngüsü en çok 7 ms
+ok 8 - devir yedeği alındı (11 dosya, 823 MB, 2252 ms, olay döngüsü en çok 7 ms — VACUUM INTO ana iş parçacığında, rutin yedekle aynı)
+# devir-yedekleri-listesi: 6 ms, olay döngüsü en çok 6 ms
+ok 9 - Devir Yedekleri listesi ≤ 1 sn / ≤ 50 ms (6 / 6)
+# bakim-ac: 8 ms, olay döngüsü en çok 5 ms
+ok 10 - bakım kipi açılışı ≤ 500 ms (8)
+# bakim-kapat: 7 ms, olay döngüsü en çok 5 ms
+# diskten-tanima-taramasi: 1 ms, olay döngüsü en çok 5 ms
+ok 11 - açılıştaki arşiv taraması ≤ 500 ms (1)
+{"dosyaBoyuMB":145,"bes-arsiv-benzetimi":{"ms":4326,"loopMaxMs":598},"arsiv-listesi":{"ms":8,"loopMaxMs":6},"yedek-listesi":{"ms":5,"loopMaxMs":6},"arsiv-ornegi-acilis":{"ms":250,"loopMaxMs":12},"arsiv-ilk-istek":{"ms":2973,"loopMaxMs":434},"canli-ayni-istek":{"ms":2383,"loopMaxMs":244},"bes-arsiv-dogrulama":{"ms":1021,"loopMaxMs":17},"devir-yedegi":{"ms":2252,"loopMaxMs":7},"devirYedegiMB":823,"devir-yedekleri-listesi":{"ms":6,"loopMaxMs":6},"bakim-ac":{"ms":8,"loopMaxMs":5},"bakim-kapat":{"ms":7,"loopMaxMs":5},"diskten-tanima-taramasi":{"ms":1,"loopMaxMs":5}}
+1..11
+# tests 11
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+çıkış 0 · sonda 1.04 1.04 1.50 1/110 12889 · geçerli
+=== Devir yedeği hacmi (d2-hacim) · kod taban · başta 1.04 1.04 1.50 1/110 12892 · geçerli · 18:45:28
+ok 1 - 100000 hareket programın API'siyle yazılmış veride (satır 100000, üretimde başarısız istek 0; taban /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/d2taban)
+# bes-arsiv-benzetimi: 4500 ms, olay döngüsü en çok 652 ms
+# arsiv-listesi: 10 ms, olay döngüsü en çok 5 ms
+ok 2 - arşiv listesi 5 arşiv
+ok 3 - arşiv listesi ≤ 1 sn ve olay döngüsü ≤ 50 ms (10 / 5)
+# yedek-listesi: 7 ms, olay döngüsü en çok 5 ms
+ok 4 - Yedekler listesi ≤ 1 sn / ≤ 50 ms (7 / 5)
+# arsiv-ornegi-acilis: 294 ms, olay döngüsü en çok 16 ms
+ok 5 - arşiv örneği açıldı; özet akışla, kuruluş ≤ 50 ms olay döngüsü (294 ms / 16 ms)
+# arsiv-ilk-istek: 2590 ms, olay döngüsü en çok 380 ms
+# canli-ayni-istek: 2490 ms, olay döngüsü en çok 283 ms
+ok 6 - arşivde Kasa listesi 2590 ms (canlıda aynı istek 2490 ms — arşive özgü ek yük yok)
+# bes-arsiv-dogrulama: 1058 ms, olay döngüsü en çok 16 ms
+ok 7 - 5 arşivin bütünlük denetimi olay döngüsünü ≤ 50 ms tutar (16 ms; toplam 1058 ms)
+# devir-yedegi: 2358 ms, olay döngüsü en çok 13 ms
+ok 8 - devir yedeği alındı (11 dosya, 823 MB, 2358 ms, olay döngüsü en çok 13 ms — VACUUM INTO ana iş parçacığında, rutin yedekle aynı)
+# devir-yedekleri-listesi: 8 ms, olay döngüsü en çok 5 ms
+ok 9 - Devir Yedekleri listesi ≤ 1 sn / ≤ 50 ms (8 / 5)
+# bakim-ac: 9 ms, olay döngüsü en çok 6 ms
+ok 10 - bakım kipi açılışı ≤ 500 ms (9)
+# bakim-kapat: 5 ms, olay döngüsü en çok 5 ms
+# diskten-tanima-taramasi: 1 ms, olay döngüsü en çok 5 ms
+ok 11 - açılıştaki arşiv taraması ≤ 500 ms (1)
+{"dosyaBoyuMB":145,"bes-arsiv-benzetimi":{"ms":4500,"loopMaxMs":652},"arsiv-listesi":{"ms":10,"loopMaxMs":5},"yedek-listesi":{"ms":7,"loopMaxMs":5},"arsiv-ornegi-acilis":{"ms":294,"loopMaxMs":16},"arsiv-ilk-istek":{"ms":2590,"loopMaxMs":380},"canli-ayni-istek":{"ms":2490,"loopMaxMs":283},"bes-arsiv-dogrulama":{"ms":1058,"loopMaxMs":16},"devir-yedegi":{"ms":2358,"loopMaxMs":13},"devirYedegiMB":823,"devir-yedekleri-listesi":{"ms":8,"loopMaxMs":5},"bakim-ac":{"ms":9,"loopMaxMs":6},"bakim-kapat":{"ms":5,"loopMaxMs":5},"diskten-tanima-taramasi":{"ms":1,"loopMaxMs":5}}
+1..11
+# tests 11
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+çıkış 0 · sonda 1.32 1.10 1.51 1/110 12913 · geçerli
+bitti 18:45:48 · 1.32 1.10 1.51 1/110 12917

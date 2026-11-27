@@ -1,0 +1,153 @@
+{
+  "ad": "d3rk-eski3-Istanbul",
+  "komut": "node --test --test-concurrency=1 test/devir-d3-acik.test.mjs test/devir-d3-ileti.test.mjs test/devir-d3-kart-tarihi.test.mjs test/devir-d3-kural.test.mjs test/devir-d3-wa.test.mjs",
+  "commit": "0ae33184d1f2242c82ac8459da2d5fddec668f3b",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T20:19:53.976Z",
+  "sure_sn": 29.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 34,
+    "gecen": 10,
+    "basarisiz": 24,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 24 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık › (a) her DURDURUR nedeni dört alanlı; sayı / belge no / tarih veri tabanıyla aynı",
+      "konum": "test/devir-d3-ileti.test.mjs:96:3",
+      "hata": "e-belge-bekleyen: neOldu boş (beklenen true, gelen false)"
+    },
+    {
+      "ad": "D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık › (a) UYARIR maddeleri de dört alanlı; uyarılar durdururla karışmaz",
+      "konum": "test/devir-d3-ileti.test.mjs:125:3",
+      "hata": "aralik-mahsubu: neOldu boş (beklenen true, gelen false)"
+    },
+    {
+      "ad": "D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık › (e) Devir Raporu: 'Devri Durduran Nedenler' ve 'Uyarılar' ayrı başlıklar; ekran = Excel = PDF aynı cümleler",
+      "konum": "test/devir-d3-ileti.test.mjs:141:3",
+      "hata": "Cannot read properties of undefined (reading 'map')"
+    },
+    {
+      "ad": "D3 tur 3 — (a) Defter Mutabakatı (kural kancası; ön izlemenin aynı işlevi, iş parçacığısız) › Defter Mutabakatı DURDURUR (120 farkı 500,00 TL; dört alan)",
+      "konum": "test/devir-d3-ileti.test.mjs:177:3",
+      "hata": "The \"string\" argument must be of type string. Received type undefined (undefined)"
+    },
+    {
+      "ad": "D3 tur 3 — (a) planın kendi sorunları (program tutarlı veride üretmez — OLGU düzeyinde, her sorun türü): cari adı, hesap, iki tutar › her plan sorunu ve değişmez dört alanlı; tutarlar sorundaki sayılarla aynı",
+      "konum": "test/devir-d3-ileti.test.mjs:190:3",
+      "hata": "problemIletisi is not a function"
+    },
+    {
+      "ad": "D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir › (c) temiz şirket: DURDURUR yok, yalnız uyarı (Aralık mahsubu, 001) → geçilebilir",
+      "konum": "test/devir-d3-ileti.test.mjs:222:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir › ret: 31.12 olmayan tarih / bu yıl / geçersiz seçenek → 400, kod makine alanında, ileti dört alanlı",
+      "konum": "test/devir-d3-ileti.test.mjs:231:3",
+      "hata": "Cannot read properties of undefined (reading 'kod')"
+    },
+    {
+      "ad": "D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir › beklenmeyen hata (okuyucunun okuduğu sütun yok — ham veri): Türkçe cümle + 'Verileriniz değişmedi.'; ham ileti yanıta girmez; veri aynı",
+      "konum": "test/devir-d3-ileti.test.mjs:250:3",
+      "hata": "Cannot read properties of undefined (reading 'kod')"
+    },
+    {
+      "ad": "D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\\\r?\\\\n/ — ders 27) › preflight.mjs: stop / warn listesine yalnız devirIletisi ya da problemIletisi girer; ham 'metin:' yok",
+      "konum": "test/devir-d3-ileti.test.mjs:278:3",
+      "hata": "D3 tur 3 ileti yardımcısı yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\\\r?\\\\n/ — ders 27) › routes/devir.mjs ön izleme bölümü: HttpError yalnız refuse() ile; başarısız işin iletisi ham hata iletisi değil",
+      "konum": "test/devir-d3-ileti.test.mjs:286:3",
+      "hata": "D3 tur 3 ileti yardımcısı yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\\\r?\\\\n/ — ders 27) › devir modüllerinde iletiler.mjs dışında seviye / metin nesnesi kurulmaz",
+      "konum": "test/devir-d3-ileti.test.mjs:298:3",
+      "hata": "D3 tur 3 ileti yardımcısı yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\\\r?\\\\n/ — ders 27) › iletiDenetimi yasak kalıpları yakalar (dişi)",
+      "konum": "test/devir-d3-ileti.test.mjs:304:3",
+      "hata": "D3 tur 3 ileti yardımcısı yok (eski kod) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil) › defter maddesi Kayıt Tarihi'nde (yükleme günü değil): Excel 20.12.2026 B 120 / A 519 9.000; K günü 31.12.2026; K+1 01.01.2027",
+      "konum": "test/devir-d3-kart-tarihi.test.mjs:49:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil) › plan (K = 31.12.2026): Excel kartı ESKİ yılda — carinin K bakiyesi 9.000, açılış satırları 9.000, kart 9.000 açık; K günü kartı 5.000; K+1 kartı yeni yılda (planda yok)",
+      "konum": "test/devir-d3-kart-tarihi.test.mjs:57:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil) › elle girilmiş kart (aynı Kayıt Tarihi, 9.000) Excel kartıyla AYNI plan sayıları; taksit vadeleri programın kart ekranıyla aynı (devirsiz eşdeğer)",
+      "konum": "test/devir-d3-kart-tarihi.test.mjs:75:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter farkı (cari / alt hesap başına; toplamı 0 olsa da) devri DURDURUR; Kilidi Aç → Yeniden Kilitle ile geçer › aynı caride 120 −4.000 / 128 +4.000 (toplam 0): DURDURUR, ileti iki satırı ve çareyi söyler; Kilidi Aç → Yeniden Kilitle (gerçek API) → GEÇER",
+      "konum": "test/devir-d3-kural.test.mjs:92:3",
+      "hata": "kural-farki, plan-supheli-farki, plan-modul-farki, degismez-gecici-hesap · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter farkı (cari / alt hesap başına; toplamı 0 olsa da) devri DURDURUR; Kilidi Aç → Yeniden Kilitle ile geçer › iki AYRI caride +4.000 / −4.000 (hesap toplamı 0): DURDURUR (cari başına)",
+      "konum": "test/devir-d3-kural.test.mjs:121:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir › kilit = 31.12.2026: DURDURUR (fiş 01.01.2027'ye düşüyor); ileti fiş tutarını (3.000,00 TL) ve kâr etkisini söyler; çare (kilit 30.12 → fiş 31.12 → kilit 31.12) → GEÇER, kâr 10.000 → 7.000",
+      "konum": "test/devir-d3-kural.test.mjs:164:3",
+      "hata": "kural-farki · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir › kilit = 31.12.2026 iken fiş YENİ YILA yazılmış (01.01.2027): DURDURUR; Ters Kaydet → kilit 30.12 → fiş 31.12 → kilit 31.12 → GEÇER, kâr 7.000",
+      "konum": "test/devir-d3-kural.test.mjs:201:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir › kilit K'den ÖNCE (30.06.2026): S-3 iletisi (fiş 01.07.2026, eski yılda) — S-KD-2 değil; fiş yazılınca GEÇER, kâr 7.000",
+      "konum": "test/devir-d3-kural.test.mjs:232:3",
+      "hata": "kural-farki: dört alan (ileti düzeni)"
+    },
+    {
+      "ad": "D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir › kilit K'yi AŞIYOR (15.01.2027), fark ≤K maddede: DURDURUR (fiş 16.01.2027); fark YALNIZ K'den sonraki maddedeyse S-3 genel iletisi",
+      "konum": "test/devir-d3-kural.test.mjs:267:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 3 — S-KD-2 GERÇEK eski sürüm verisiyle (ders 17): v2.4.9'un GERÇEK kodunun ürettiği fikstür (surum-2.4.9-s127; kilit 31.12.2025, Excel kartları) — K = 31.12.2025 › kilit K'de (31.12.2025), kural farkı ≤K maddelerde: DURDURUR 'Kural Farkı Eski Yılda Düzeltilmeli'; ilette yazan fiş tutarı = kilit 30.12.2025'e alınınca Kural Farkı Düzeltme ön izlemesinin tutarı; çare → GEÇER",
+      "konum": "test/devir-d3-kural.test.mjs:322:3",
+      "hata": "kural-farki (beklenen true, gelen false)"
+    },
+    {
+      "ad": "D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYARIR (durdurmaz); sayılar şirketin kuyruğundan › 001: UYARIR 'WhatsApp Gönderimi Durdurulacak' — 2 iş (1 süren, 1 duraklatılmış), 3 kişi; dört alan; kuyruk değişmedi; 002'nin işi sayılmadı",
+      "konum": "test/devir-d3-wa.test.mjs:66:3",
+      "hata": "aralik-mahsubu, yeniden-baslatma, erken-devir · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYARIR (durdurmaz); sayılar şirketin kuyruğundan › 002: yalnız kendi işi (1 iş, 1 kişi) — öbür şirketin işi sayılmaz",
+      "konum": "test/devir-d3-wa.test.mjs:84:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-27/d3rk-eski3-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3rk/eski3",
+  "ham_cikti_sha256": "18379a6a68002223d96cafad3633719ed7f8582c878d84ddd87d68e641bab63c",
+  "ham_cikti_bayt": 44403
+}

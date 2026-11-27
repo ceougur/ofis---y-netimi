@@ -1,0 +1,144 @@
+TAP version 13
+# (node:32718) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ-2 — dönemlik tahsilat ve Grup Özeti
+    # Subtest: ön koşul: Excel kartı cariye bağlandı ve açılışı bugün; silinen tahsilat veri tabanında yok
+    ok 1 - ön koşul: Excel kartı cariye bağlandı ve açılışı bugün; silinen tahsilat veri tabanında yok
+      ---
+      duration_ms: 6.895405
+      type: 'test'
+      ...
+    # Subtest: dönem yokken Liste'nin yanıtı bugünkü gibi: period / collected alanı YOK
+    ok 2 - dönem yokken Liste'nin yanıtı bugünkü gibi: period / collected alanı YOK
+      ---
+      duration_ms: 33.012933
+      type: 'test'
+      ...
+    # Subtest: (b) ELLE: Bugün — her yol ayrı; tedarikçi ödemesi, silinen tahsilat, dünkü tahsilat sayılmaz; açılış ayrı
+    ok 3 - (b) ELLE: Bugün — her yol ayrı; tedarikçi ödemesi, silinen tahsilat, dünkü tahsilat sayılmaz; açılış ayrı
+      ---
+      duration_ms: 8.624793
+      type: 'test'
+      ...
+    # Subtest: (b) ELLE: Dün, Bu Hafta, Bu Ay, Tarih Aralığı; Tümü durumunda pasif dahil
+    ok 4 - (b) ELLE: Dün, Bu Hafta, Bu Ay, Tarih Aralığı; Tümü durumunda pasif dahil
+      ---
+      duration_ms: 38.460053
+      type: 'test'
+      ...
+    # Subtest: (b) 'Bu Dönemde Ödeme Yapanlar' grup / tür / bakiye / gecikme süzgeçleriyle BİRLİKTE; kartlar süzgeçten SONRA
+    ok 5 - (b) 'Bu Dönemde Ödeme Yapanlar' grup / tür / bakiye / gecikme süzgeçleriyle BİRLİKTE; kartlar süzgeçten SONRA
+      ---
+      duration_ms: 21.551163
+      type: 'test'
+      ...
+    # Subtest: (c) Grup Özeti: her grup bir satır (boş grup dahil), alt grup kırılımı, Grupsuz; satırlar = TOPLAM = süzgeçsiz Liste kartları — HER süzgeç seçeneğiyle
+    ok 6 - (c) Grup Özeti: her grup bir satır (boş grup dahil), alt grup kırılımı, Grupsuz; satırlar = TOPLAM = süzgeçsiz Liste kartları — HER süzgeç seçeneğiyle
+      ---
+      duration_ms: 342.310301
+      type: 'test'
+      ...
+    # Subtest: (a) EŞDEĞERLİK: cari başına Tahsilat + Önceden Ödenen = 'Cari Bazında Tahsilat' raporunun Toplam'ı; açılış = raporun açılış sütunu (Bugün, Bu Ay, tüm yıl)
+    ok 7 - (a) EŞDEĞERLİK: cari başına Tahsilat + Önceden Ödenen = 'Cari Bazında Tahsilat' raporunun Toplam'ı; açılış = raporun açılış sütunu (Bugün, Bu Ay, tüm yıl)
+      ---
+      duration_ms: 34.991779
+      type: 'test'
+      ...
+    # Subtest: (d) karşılıksız çıkan çek: raporun kuralıyla aynı (alınan çek tahsilattan düşmez; karşılıksız ayrı borç satırı) — eşdeğerlik korunur
+    ok 8 - (d) karşılıksız çıkan çek: raporun kuralıyla aynı (alınan çek tahsilattan düşmez; karşılıksız ayrı borç satırı) — eşdeğerlik korunur
+      ---
+      duration_ms: 134.491016
+      type: 'test'
+      ...
+    # Subtest: (d) dönem sınırları sahte saatle: gece yarısı, ay başı, yıl başı (pazartesi başlangıçlı hafta)
+    ok 9 - (d) dönem sınırları sahte saatle: gece yarısı, ay başı, yıl başı (pazartesi başlangıçlı hafta)
+      ---
+      duration_ms: 5.961895
+      type: 'test'
+      ...
+    # Subtest: (d) dönem sınırı: bitiş günü DAHİL, ertesi gün HARİÇ; başlangıçtan önceki gün HARİÇ — yardımcı, bellek içi küçük veri tabanıyla (program ileri tarihli hareketi zaten reddeder)
+    not ok 10 - (d) dönem sınırı: bitiş günü DAHİL, ertesi gün HARİÇ; başlangıçtan önceki gün HARİÇ — yardımcı, bellek içi küçük veri tabanıyla (program ileri tarihli hareketi zaten reddeder)
+      ---
+      duration_ms: 3.900792
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-grup-ozeti-251.test.mjs:257:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        19 ve 20 dahil; 18 ve 21 hariç; silinmiş cari / kart, iade sayılmaz
+        + actual - expected
+        
+          [
+        +   137,
+        +   37,
+        -   130,
+        -   30,
+            100,
+            0,
+            0,
+            0,
+            0,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 130
+        1: 30
+        2: 100
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+      actual:
+        0: 137
+        1: 37
+        2: 100
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-grup-ozeti-251.test.mjs:270:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (d) Grup Özeti PDF ve Excel ekranla aynı: satırlar, sütunlar, TOPLAM
+    ok 11 - (d) Grup Özeti PDF ve Excel ekranla aynı: satırlar, sütunlar, TOPLAM
+      ---
+      duration_ms: 86.611629
+      type: 'test'
+      ...
+    # Subtest: (d) Liste PDF / Excel: dönem seçiliyse Tahsilat sütunu; Excel'in 'Gecikmiş Borç' sütunu dolu (önceden 'Geciken' başlığı hep boştu)
+    ok 12 - (d) Liste PDF / Excel: dönem seçiliyse Tahsilat sütunu; Excel'in 'Gecikmiş Borç' sütunu dolu (önceden 'Geciken' başlığı hep boştu)
+      ---
+      duration_ms: 30.631236
+      type: 'test'
+      ...
+    # Subtest: (e) yetki: Cari'yi görmeyen özel rol 403; personel (Carileri Görme) görür — cari kartının defterinde de her tahsilatı görüyor
+    ok 13 - (e) yetki: Cari'yi görmeyen özel rol 403; personel (Carileri Görme) görür — cari kartının defterinde de her tahsilatı görüyor
+      ---
+      duration_ms: 262.007979
+      type: 'test'
+      ...
+    1..13
+not ok 1 - Mİ-2 — dönemlik tahsilat ve Grup Özeti
+  ---
+  duration_ms: 2808.696854
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-grup-ozeti-251.test.mjs:25:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 13
+# suites 1
+# pass 12
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3349.187385

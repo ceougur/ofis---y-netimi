@@ -1,0 +1,98 @@
+{
+  "ad": "mit2-eski-Istanbul",
+  "komut": "node --test --test-concurrency=1 test/obligation-input-250.test.mjs test/mi2-kuyruk-girdisi-251.test.mjs test/mi2-tek-numara-251.test.mjs test/mi1-taksit-no-251.test.mjs test/mi2-grup-ozeti-251.test.mjs test/plans.test.mjs",
+  "commit": "c674b41bb9df381fa784b9279b123e195185b066",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T15:26:19.740Z",
+  "sure_sn": 24.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 51,
+    "gecen": 38,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Mİ tur 2 — görünen taksit numarası kuyruğun girdisine girmez (taksiti silinmiş / vadesi öne alınmış kart) › kartın kendi hesabı (allocate) ve cari kartının kart listesi (forAccount): taksit satırında ve sıradaki taksitte numara alanı YOK",
+      "konum": "test/mi2-kuyruk-girdisi-251.test.mjs:65:3",
+      "hata": "allocate çıktısında 'no' yok · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — görünen taksit numarası kuyruğun girdisine girmez (taksiti silinmiş / vadesi öne alınmış kart) › gösterim yolları görünen numarayı yazar: cari kartı ekranı ve Tüm Cari Hareketleri'nin okuduğu numaralı defter",
+      "konum": "test/mi2-kuyruk-girdisi-251.test.mjs:84:3",
+      "hata": "ekran: kart 2'nin öne alınan taksiti 1., kart 1'in kalan 3.'sü 2. · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › makbuz PDF'i (anlık üretilir): '2. taksit (vade 06.10.2026)' — saklanan '3. taksit' değil",
+      "konum": "test/mi2-tek-numara-251.test.mjs:109:3",
+      "hata": "makbuzda '2. taksit (vade 06.10.2026)': TAHSİLAT MAKBUZU No 2 · 18.10.2026 Kimden Mİ2 Silinmiş Sıra No 1 Açıklama 3. taksit (vade 06.10.2026) Tutar 400,00 TL # dört yüz TL # Toplam borç 2.000,00 TL Tahsil edilen 1.400,00 TL Kalan borç 600,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 12:35 (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › taksit kartı PDF'i (ekstre / Yazdır): taksit satırları '1.' ve '2.' — '3.' satırı yok",
+      "konum": "test/mi2-tek-numara-251.test.mjs:117:3",
+      "hata": "kart PDF'inin taksit satırları: [\"1. 06.08.2026\",\"3. 06.10.2026\"] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › Taksitler listesi (ekran + PDF): sıradaki '06.10.2026 · 2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:124:3",
+      "hata": "liste PDF'inde '06.10.2026 · 2. taksit': Taksitler Listesi Tümü · Tüm gruplar · “Mİ2 Silinmiş” Oluşturma: 20.10.2026 12:36 Hazırlayan: Ofis yöneticisi Kart 1 Kalan Alacak 600,00 TL Geciken 600,00 TL · 1 taksit Bu Ay Beklenen 600,00 TL Tahsil Edilen 1.400,00 TL No Ad Soyad Grup Telefon Kayıt Toplam Ödenen Kalan Sıradaki Vade Durum Bilgi Notu 1 Mİ2 Silinmiş 22.06.2026 2.000,00 TL 1.400,00 TL 600,00 TL 06.10.2026 · 3. taksit Gecikti · 1 tak (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › cari ekstresi — ekran (cari kartı), PDF, Anlık Durum ekstresi (ekran / PDF / Excel): 'Taksit Tahsilatı · 1. taksit' ve '· 2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:133:3",
+      "hata": "cari kartının ekstresi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › Rapor Merkezi: Cari Ekstre, Tüm Cari Hareketleri, Taksit Tahsilatları (+ Excel / PDF), Taksit Vadeleri, Geciken Taksitler — '2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:149:3",
+      "hata": "Cari Ekstre:  | Devir | Dönem başı bakiye |  |  | 0,00 TL · 22.06.2026 | Taksit Planı | Mİ2 Silinmiş · 2 taksit | 2.000,00 TL |  | 2.000,00 TL B · 17.10.2026 | Taksit Tahsilatı · 1. taksit | Makbuz 1 |  | 1.000,00 TL | 1.000,00 TL B (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › WhatsApp ekstresi (elle, wa.me metni): 'Taksit Tahsilatı · 2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:171:3",
+      "hata": "Sayın Mİ2 Silinmiş, · cari hesap ekstreniz: · 22.06.2026 Taksit Planı · Mİ2 Silinmiş · 2 taksit: +2.000,00 TL (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › zil / takvim ve Vade Takip: kalem etiketi '2. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:178:3",
+      "hata": "zil / takvim · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › AYNI VADELİ iki taksit: sıra saklanan sıradan (1 → 1., sonradan eklenen 3 → 2.); makbuz '2. taksit (vade 06.08.2026)'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:192:3",
+      "hata": "makbuz: TAHSİLAT MAKBUZU No 3 · 19.10.2026 Kimden Mİ2 Aynı Vade Sıra No 2 Açıklama 3. taksit (vade 06.08.2026) Tutar 300,00 TL # üç yüz TL # Toplam borç 3.000,00 TL Tahsil edilen 300,00 TL Kalan borç 2.700,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 12:41 (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › Tablo (kayda bağlı kart): taksit bloğu '1.' (saklanan 2) ve işlem geçmişi '· 1. taksit'",
+      "konum": "test/mi2-tek-numara-251.test.mjs:201:3",
+      "hata": "geçmişte itemNo 1: {\"caseKey\":\"mi2-kayit-1\",\"items\":[{\"id\":\"entry-f7a9066c-362c-4509-b685-ba8a2911adff\",\"planId\":\"plan-9a4cfc40-b6f1-4237-b8ed-87ffc91587d6\",\"planName\":\"Mİ2 Kayıt Kişisi\",\"itemId\":\"item-9e43f14d-0330-4f27-9216-070351e66f51\",\"itemSeq\":2,\"kind\":\"in\",\"amount\":250,\"date\":\"2026-10-19\",\"note\":\"\",\"receiptNo\":4,\"opening\":0,\"actorId\":\"user-bcde6eca-3a2c-4036-ac70-4641756b7c56\",\"createdAt\":\"2026-10-20T09:25:00.000Z\",\"updatedAt\":null,\"actorName\":\"Ofis yöneticisi\",\"type\":\"plan-entry\"}],\"paidTotal\":250,\"planPaid\":250,\"accountPaid\":0,\"account\":{\"id\":\"account-207813cf-d441-41c4-9d60-9e41ed07efe1\",\"refNo\":\"3\",\"n (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar › fatura penceresi 'Bu Faturayı Kapatanlar': vadesi öne alınan taksitin tahsilatı '· 1. taksit' (saklanan 3)",
+      "konum": "test/mi2-tek-numara-251.test.mjs:212:3",
+      "hata": "kapatanlar: [{\"id\":\"plan-entry:entry-eed427f2-ac54-4126-ae30-c20e6f6ab99c\",\"date\":\"2026-10-19\",\"label\":\"Taksit Tahsilatı · 3. taksit\",\"note\":\"\",\"method\":\"\",\"amount\":500,\"mode\":\"linked\",\"modeLabel\":\"Bağlı\",\"methodLabel\":\"\"}] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı › sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi",
+      "konum": "test/obligation-input-250.test.mjs:415:3",
+      "hata": "hakemden farklı çıktı (taşıma davranışı değiştirdi): ilk|001|OZ 001 Silinen Kart · ilk|001|OZ 001 Stok Taksit · iade-sil|001|OZ 001 Stok Taksit · geri|001|OZ 001 Silinen Kart · geri|001|OZ 001 Stok Taksit · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-27/mit2-eski-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mie",
+  "ham_cikti_sha256": "3d08891fa27b672c4555a1975f3761249191915b75050c8aa8aac0b6bd19898a",
+  "ham_cikti_bayt": 35854
+}

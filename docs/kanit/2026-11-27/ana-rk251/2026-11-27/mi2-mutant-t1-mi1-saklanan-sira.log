@@ -1,0 +1,569 @@
+TAP version 13
+# (node:32308) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz
+    # Subtest: ödenmemiş kart: en eski geciken 1. taksit; 1. taksit ödenince satır 2. taksitten (… gün gecikti (2. taksit))
+    ok 1 - ödenmemiş kart: en eski geciken 1. taksit; 1. taksit ödenince satır 2. taksitten (… gün gecikti (2. taksit))
+      ---
+      duration_ms: 290.812036
+      type: 'test'
+      ...
+    # Subtest: SİLİNMİŞ taksit: saklanan sıra 2, 3 kalır — kart ve liste 1, 2 der (boşluk yok)
+    not ok 2 - SİLİNMİŞ taksit: saklanan sıra 2, 3 kalır — kart ve liste 1, 2 der (boşluk yok)
+      ---
+      duration_ms: 91.074704
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi1-taksit-no-251.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        silinmiş: kartta numaralar boşluksuz 1..n
+        + actual - expected
+        
+          [
+        -   1,
+            2,
+        +   3
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 1
+        1: 2
+      actual:
+        0: 2
+        1: 3
+      operator: 'deepStrictEqual'
+      stack: |-
+        h.sameAsCard (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi1-taksit-no-251.test.mjs:60:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi1-taksit-no-251.test.mjs:84:26)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sonradan EKLENEN, vadesi öncekilerden önce taksit: saklanan sıra 4 — görünen 1; eskiler 2, 3, 4
+    not ok 3 - sonradan EKLENEN, vadesi öncekilerden önce taksit: saklanan sıra 4 — görünen 1; eskiler 2, 3, 4
+      ---
+      duration_ms: 154.143671
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi1-taksit-no-251.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eklenen: kartta numaralar boşluksuz 1..n
+        + actual - expected
+        
+          [
+        +   4,
+            1,
+            2,
+            3,
+        -   4
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 1
+        1: 2
+        2: 3
+        3: 4
+      actual:
+        0: 4
+        1: 1
+        2: 2
+        3: 3
+      operator: 'deepStrictEqual'
+      stack: |-
+        h.sameAsCard (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi1-taksit-no-251.test.mjs:60:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi1-taksit-no-251.test.mjs:99:26)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: VADESİ DEĞİŞEN taksit: 3. taksitin vadesi öne alınınca kart sırası ve numara vadeden
+    not ok 4 - VADESİ DEĞİŞEN taksit: 3. taksitin vadesi öne alınınca kart sırası ve numara vadeden
+      ---
+      duration_ms: 122.636965
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi1-taksit-no-251.test.mjs:104:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        vadesi değişen: kartta numaralar boşluksuz 1..n
+        + actual - expected
+        
+          [
+        +   3,
+            1,
+            2,
+        -   3
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 1
+        1: 2
+        2: 3
+      actual:
+        0: 3
+        1: 1
+        2: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        h.sameAsCard (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi1-taksit-no-251.test.mjs:60:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi1-taksit-no-251.test.mjs:109:26)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bağsız cari tahsilatı 1. taksiti kapatır (kuyruk): liste ve kart 2. taksit der
+    ok 5 - bağsız cari tahsilatı 1. taksiti kapatır (kuyruk): liste ve kart 2. taksit der
+      ---
+      duration_ms: 164.69769
+      type: 'test'
+      ...
+    # Subtest: iade: 2000 tahsil, 1000 iade → iade en yeni taksitten düşer; satır 2. taksit
+    ok 6 - iade: 2000 tahsil, 1000 iade → iade en yeni taksitten düşer; satır 2. taksit
+      ---
+      duration_ms: 194.227946
+      type: 'test'
+      ...
+    # Subtest: birden çok kart: satır vadesi en erken geciken taksitten — numara O KARTTAKİ sırası
+    ok 7 - birden çok kart: satır vadesi en erken geciken taksitten — numara O KARTTAKİ sırası
+      ---
+      duration_ms: 220.42258
+      type: 'test'
+      ...
+    # Subtest: geciken yokken: sıradaki taksit ileride (gün ≥ 0) — numara alanı var, gecikme eki yalnız days < 0'da (istemci)
+    ok 8 - geciken yokken: sıradaki taksit ileride (gün ≥ 0) — numara alanı var, gecikme eki yalnız days < 0'da (istemci)
+      ---
+      duration_ms: 106.0296
+      type: 'test'
+      ...
+    1..8
+not ok 1 - Mİ-1 — geciken taksitin numarası: listede yazan = kartta görünen, boşluksuz
+  ---
+  duration_ms: 2444.607022
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi1-taksit-no-251.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:32309) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar
+    # Subtest: kart penceresi: saklanan 1, 3 → görünen 1, 2; para sayıları (Toplam 2.000, Tahsil Edilen 1.400, Kalan 600) ELLE
+    not ok 1 - kart penceresi: saklanan 1, 3 → görünen 1, 2; para sayıları (Toplam 2.000, Tahsil Edilen 1.400, Kalan 600) ELLE
+      ---
+      duration_ms: 18.719005
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              1,
+              1,
+              '2026-08-06'
+        ...
+              3,
+        +     3,
+        -     2,
+              '2026-10-06'
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 1
+          1: 1
+          2: '2026-08-06'
+        1:
+          0: 3
+          1: 2
+          2: '2026-10-06'
+      actual:
+        0:
+          0: 1
+          1: 1
+          2: '2026-08-06'
+        1:
+          0: 3
+          1: 3
+          2: '2026-10-06'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:102:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: makbuz PDF'i (anlık üretilir): '2. taksit (vade 06.10.2026)' — saklanan '3. taksit' değil
+    not ok 2 - makbuz PDF'i (anlık üretilir): '2. taksit (vade 06.10.2026)' — saklanan '3. taksit' değil
+      ---
+      duration_ms: 70.026431
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:109:3'
+      failureType: 'testCodeFailure'
+      error: "makbuzda '2. taksit (vade 06.10.2026)': TAHSİLAT MAKBUZU No 2 · 18.10.2026 Kimden Mİ2 Silinmiş Sıra No 1 Açıklama 3. taksit (vade 06.10.2026) Tutar 400,00 TL # dört yüz TL # Toplam borç 2.000,00 TL Tahsil edilen 1.400,00 TL Kalan borç 600,00 TL Tahsil eden Ofis yöneticisi Teslim eden Teslim alan / Kaşe · İmza Düzenlenme: 20.10.2026 09:34"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:111:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taksit kartı PDF'i (ekstre / Yazdır): taksit satırları '1.' ve '2.' — '3.' satırı yok
+    not ok 3 - taksit kartı PDF'i (ekstre / Yazdır): taksit satırları '1.' ve '2.' — '3.' satırı yok
+      ---
+      duration_ms: 24.356314
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart PDF'inin taksit satırları: ["1. 06.08.2026","3. 06.10.2026"]
+        + actual - expected
+        
+          [
+            '1. 06.08.2026',
+        +   '3. 06.10.2026'
+        -   '2. 06.10.2026'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '1. 06.08.2026'
+        1: '2. 06.10.2026'
+      actual:
+        0: '1. 06.08.2026'
+        1: '3. 06.10.2026'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:121:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Taksitler listesi (ekran + PDF): sıradaki '06.10.2026 · 2. taksit'
+    not ok 4 - Taksitler listesi (ekran + PDF): sıradaki '06.10.2026 · 2. taksit'
+      ---
+      duration_ms: 13.219231
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'item-b6ffd327-1c5f-4036-86de-74e3553c3781',
+        -   2,
+            3,
+        +   3
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'item-b6ffd327-1c5f-4036-86de-74e3553c3781'
+        1: 2
+        2: 3
+      actual:
+        0: 'item-b6ffd327-1c5f-4036-86de-74e3553c3781'
+        1: 3
+        2: 3
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:127:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: cari ekstresi — ekran (cari kartı), PDF, Anlık Durum ekstresi (ekran / PDF / Excel): 'Taksit Tahsilatı · 1. taksit' ve '· 2. taksit'
+    not ok 5 - cari ekstresi — ekran (cari kartı), PDF, Anlık Durum ekstresi (ekran / PDF / Excel): 'Taksit Tahsilatı · 1. taksit' ve '· 2. taksit'
+      ---
+      duration_ms: 8.717765
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:133:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari kartının ekstresi
+        + actual - expected
+        
+          [
+            'Taksit Tahsilatı · 1. taksit',
+        +   'Taksit Tahsilatı · 3. taksit'
+        -   'Taksit Tahsilatı · 2. taksit'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Taksit Tahsilatı · 1. taksit'
+        1: 'Taksit Tahsilatı · 2. taksit'
+      actual:
+        0: 'Taksit Tahsilatı · 1. taksit'
+        1: 'Taksit Tahsilatı · 3. taksit'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:136:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Rapor Merkezi: Cari Ekstre, Tüm Cari Hareketleri, Taksit Tahsilatları (+ Excel / PDF), Taksit Vadeleri, Geciken Taksitler — '2. taksit'
+    not ok 6 - Rapor Merkezi: Cari Ekstre, Tüm Cari Hareketleri, Taksit Tahsilatları (+ Excel / PDF), Taksit Vadeleri, Geciken Taksitler — '2. taksit'
+      ---
+      duration_ms: 13.929528
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Cari Ekstre:  | Devir | Dönem başı bakiye |  |  | 0,00 TL
+        22.06.2026 | Taksit Planı | Mİ2 Silinmiş · 2 taksit | 2.000,00 TL |  | 2.000,00 TL B
+        17.10.2026 | Taksit Tahsilatı · 1. taksit | Makbuz 1 |  | 1.000,00 TL | 1.000,00 TL B
+        18.10.2026 | Taksit Tahsilatı · 3. taksit | Makbuz 2 |  | 400,00 TL | 600,00 TL B
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:152:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WhatsApp ekstresi (elle, wa.me metni): 'Taksit Tahsilatı · 2. taksit'
+    not ok 7 - WhatsApp ekstresi (elle, wa.me metni): 'Taksit Tahsilatı · 2. taksit'
+      ---
+      duration_ms: 14.186551
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:171:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Sayın Mİ2 Silinmiş,
+        cari hesap ekstreniz:
+        
+        22.06.2026 Taksit Planı · Mİ2 Silinmiş · 2 taksit: +2.000,00 TL
+        17.10.2026 Taksit Tahsilatı · 1. taksit: −1.000,00 TL
+        18.10.2026 Taksit Tahsilatı · 3. taksit: −400,00 TL
+        
+        *Güncel bakiye: 600,00 TL (borcunuz)*
+        Vadesi geçen: 1 taksit, 600,00 TL
+        Sıradaki taksit: 06.10.2026 · 600,00 TL
+        
+        İyi günler dileriz.
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:174:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: zil / takvim ve Vade Takip: kalem etiketi '2. taksit'
+    not ok 8 - zil / takvim ve Vade Takip: kalem etiketi '2. taksit'
+      ---
+      duration_ms: 40.770045
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:178:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        zil / takvim
+        + actual - expected
+        
+          [
+        +   '3. taksit'
+        -   '2. taksit'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2. taksit'
+      actual:
+        0: '3. taksit'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:180:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ödenmiş taksite yeniden tahsilat: 409 iletisi 'Seçilen 1. taksit ödendi' (görünen numara)
+    ok 9 - ödenmiş taksite yeniden tahsilat: 409 iletisi 'Seçilen 1. taksit ödendi' (görünen numara)
+      ---
+      duration_ms: 4.267827
+      type: 'test'
+      ...
+    # Subtest: AYNI VADELİ iki taksit: sıra saklanan sıradan (1 → 1., sonradan eklenen 3 → 2.); makbuz '2. taksit (vade 06.08.2026)'
+    not ok 10 - AYNI VADELİ iki taksit: sıra saklanan sıradan (1 → 1., sonradan eklenen 3 → 2.); makbuz '2. taksit (vade 06.08.2026)'
+      ---
+      duration_ms: 10.957392
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:192:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              1,
+              1,
+              '2026-08-06'
+        ...
+              3,
+        +     3,
+        -     2,
+              '2026-08-06'
+            ],
+            [
+              2,
+        +     2,
+        -     3,
+              '2026-09-06'
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 1
+          1: 1
+          2: '2026-08-06'
+        1:
+          0: 3
+          1: 2
+          2: '2026-08-06'
+        2:
+          0: 2
+          1: 3
+          2: '2026-09-06'
+      actual:
+        0:
+          0: 1
+          1: 1
+          2: '2026-08-06'
+        1:
+          0: 3
+          1: 3
+          2: '2026-08-06'
+        2:
+          0: 2
+          1: 2
+          2: '2026-09-06'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:194:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tablo (kayda bağlı kart): taksit bloğu '1.' (saklanan 2) ve işlem geçmişi '· 1. taksit'
+    not ok 11 - Tablo (kayda bağlı kart): taksit bloğu '1.' (saklanan 2) ve işlem geçmişi '· 1. taksit'
+      ---
+      duration_ms: 3.453664
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:201:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              2,
+        +     2
+        -     1
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 2
+          1: 1
+      actual:
+        0:
+          0: 2
+          1: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:205:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: fatura penceresi 'Bu Faturayı Kapatanlar': vadesi öne alınan taksitin tahsilatı '· 1. taksit' (saklanan 3)
+    not ok 12 - fatura penceresi 'Bu Faturayı Kapatanlar': vadesi öne alınan taksitin tahsilatı '· 1. taksit' (saklanan 3)
+      ---
+      duration_ms: 7.877722
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:212:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            3,
+        +   3
+        -   1
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 3
+        1: 1
+      actual:
+        0: 3
+        1: 3
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:215:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..12
+not ok 2 - Mİ tur 2 — taksiti silinmiş / vadesi değişmiş kartta ekran, makbuz, PDF, Excel, ekstre, WhatsApp, zil, raporlar AYNI numarayı yazar
+  ---
+  duration_ms: 2098.279442
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-rk251/mim/test/mi2-tek-numara-251.test.mjs:24:1'
+  failureType: 'subtestsFailed'
+  error: '11 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 20
+# suites 2
+# pass 6
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3047.427974

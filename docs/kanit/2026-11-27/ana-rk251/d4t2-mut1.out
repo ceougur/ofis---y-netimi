@@ -1,0 +1,15 @@
+taban: 7 geçti / 0 kaldı (çıkış 0)
+M1 yeniden denemeyi kaldır (tek deneme): YAKALANDI (çıkış 1, 1 geçti / 3 kaldı; ilk kırmızı: geçici hata (EPERM, EBUSY, EACCES, ENOTEMPTY — dört kez) → yeniden denenir, 5. denemede ta)
+M2 kalıcı taşıma hatasını yut (yedek başarılı sayılır): YAKALANDI (çıkış 1, 2 geçti / 2 kaldı; ilk kırmızı: kalıcı geçici hata (EBUSY hiç bitmez) → sınırlı deneme (12), 503 devir-backup-move + Türkç)
+M3 taşıma düşünce yazılmış klasörü sil (listede Yarım kalmaz): YAKALANDI (çıkış 1, 2 geçti / 2 kaldı; ilk kırmızı: kalıcı geçici hata (EBUSY hiç bitmez) → sınırlı deneme (12), 503 devir-backup-move + Türkç)
+M4 arşiv başvurusunu yok say: YAKALANDI (çıkış 1, 2 geçti / 1 kaldı; ilk kırmızı: iki arşiv yılı (002) + arşivsiz 001: arşivin gösterdiği dosya kalır (ilk ve son arşiv, arş)
+M5 açılamayan arşivi 'göstermiyor' say: YAKALANDI (çıkış 1, 1 geçti / 2 kaldı; ilk kırmızı: açılamayan (bozuk) arşiv kaydı: o şirkette hiçbir belge dosyası silinmez (yalnız eski .tmp)
+M6 yalnız ilk arşive bak: YAKALANDI (çıkış 1, 2 geçti / 1 kaldı; ilk kırmızı: iki arşiv yılı (002) + arşivsiz 001: arşivin gösterdiği dosya kalır (ilk ve son arşiv, arş)
+M7 arşiv bağlantısını kapatma (açık tutamak): YAKALANDI (çıkış 1, 2 geçti / 1 kaldı; ilk kırmızı: iki arşiv yılı (002) + arşivsiz 001: arşivin gösterdiği dosya kalır (ilk ve son arşiv, arş)
+M8 arşivin 30 günü geçmemiş silinmiş kaydını sayma: YAKALANDI (çıkış 1, 2 geçti / 1 kaldı; ilk kırmızı: iki arşiv yılı (002) + arşivsiz 001: arşivin gösterdiği dosya kalır (ilk ve son arşiv, arş)
+M9 arşivin 30 günü geçmiş silinmiş kaydını da say: YAKALANDI (çıkış 1, 2 geçti / 1 kaldı; ilk kırmızı: iki arşiv yılı (002) + arşivsiz 001: arşivin gösterdiği dosya kalır (ilk ve son arşiv, arş)
+M10 bağlama: temizliğe arşiv listesi verilmez: YAKALANDI (çıkış 1, 1 geçti / 2 kaldı; ilk kırmızı: iki arşiv yılı (002) + arşivsiz 001: arşivin gösterdiği dosya kalır (ilk ve son arşiv, arş)
+M11 bağlama: arşiv dosyası yanlış şirket klasöründen (ortak kök): YAKALANDI (çıkış 1, 2 geçti / 1 kaldı; ilk kırmızı: iki arşiv yılı (002) + arşivsiz 001: arşivin gösterdiği dosya kalır (ilk ve son arşiv, arş)
+SONUÇ: 11/11 mutasyon yakalandı
+
+[kanit] d4t2-mut1: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit fc4c5fc +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
