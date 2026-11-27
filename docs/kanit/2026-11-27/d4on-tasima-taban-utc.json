@@ -1,0 +1,53 @@
+{
+  "ad": "d4on-tasima-taban-utc",
+  "komut": "node --test test/devir-d4on-yedek-tasima-251.test.mjs",
+  "commit": "643964786dac426963eecaf2b7556f29849e8cb3",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T06:31:52.643Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 0,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D4-ÖN: devir yedeğinin son adına taşınması (Windows yeniden denemesi) › geçici hata (EPERM, EBUSY, EACCES, ENOTEMPTY — dört kez) → yeniden denenir, 5. denemede taşınır; yedek Tamam, doğrulama geçer, yarım klasör kalmaz",
+      "konum": "test/devir-d4on-yedek-tasima-251.test.mjs:59:3",
+      "hata": "EPERM: test: enjekte, rename"
+    },
+    {
+      "ad": "D4-ÖN: devir yedeğinin son adına taşınması (Windows yeniden denemesi) › kalıcı geçici hata (EBUSY hiç bitmez) → sınırlı deneme (12), 503 devir-backup-move + Türkçe neden; yazılmış klasör silinmez, listede Yarım",
+      "konum": "test/devir-d4on-yedek-tasima-251.test.mjs:90:3",
+      "hata": "undefined EBUSY: test: enjekte, rename · undefined !== 503"
+    },
+    {
+      "ad": "D4-ÖN: devir yedeğinin son adına taşınması (Windows yeniden denemesi) › yeniden denenmeyen hata (EXDEV) → hemen 503 (tek deneme, bekleme yok); klasör listede Yarım",
+      "konum": "test/devir-d4on-yedek-tasima-251.test.mjs:121:3",
+      "hata": "undefined EXDEV: test: enjekte, rename · undefined !== 503"
+    },
+    {
+      "ad": "D4-ÖN: devir yedeğinin son adına taşınması (Windows yeniden denemesi) › açık tutamak: klasördeki veri tabanı kopyası açık tutulurken taşıma düşer (Windows'ta GERÇEK EPERM, Linux'ta eşdeğer enjeksiyon), tutamak bırakılınca yeniden denemeyle taşınır",
+      "konum": "test/devir-d4on-yedek-tasima-251.test.mjs:149:3",
+      "hata": "EPERM: Linux eşdeğeri: klasörde açık tutamak, rename"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d4on-ajan/kanit/2026-11-27/d4on-tasima-taban-utc.log",
+  "klasor": "/dev/shm/d4on-tas/eski",
+  "ham_cikti_sha256": "8a89870e785d3addb0ed51220760300dd02d6a2148f153317c48dae74c3e0cfa",
+  "ham_cikti_bayt": 5707
+}
