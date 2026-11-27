@@ -1,0 +1,20 @@
+CI #1106 (pull_request) completed/success  https://github.com/ceougur/ofis---y-netimi/actions/runs/45912737295
+  YEŞİL                  Uçtan uca (Chromium)
+  YEŞİL                  Test (windows-latest, Node 24)
+  YEŞİL                  Test (ubuntu-latest, Node 24)
+  YEŞİL                  Test (windows-latest, Node 22)
+  YEŞİL                  Test (ubuntu-latest, Node 22)
+  YEŞİL                  Doğrulama Kapısı
+  YEŞİL                  Dağıtım paketi
+CI #1105 (push) completed/success  https://github.com/ceougur/ofis---y-netimi/actions/runs/45912730484
+  YEŞİL                  Test (ubuntu-latest, Node 22)
+  YEŞİL                  Test (ubuntu-latest, Node 24)
+  YEŞİL                  Test (windows-latest, Node 22)
+  YEŞİL                  Test (windows-latest, Node 24)
+  YEŞİL                  Uçtan uca (Chromium)
+  YEŞİL                  Doğrulama Kapısı
+  YEŞİL                  Dağıtım paketi
+
+5f4a6eb: CI YEŞİL
+
+[exited with code 0]

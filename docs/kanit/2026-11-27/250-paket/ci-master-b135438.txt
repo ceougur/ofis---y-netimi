@@ -1,0 +1,12 @@
+CI #1107 (push) completed/success  https://github.com/ceougur/ofis---y-netimi/actions/runs/45927412064
+  YEŞİL                  Test (ubuntu-latest, Node 22)
+  YEŞİL                  Test (ubuntu-latest, Node 24)
+  YEŞİL                  Test (windows-latest, Node 24)
+  YEŞİL                  Test (windows-latest, Node 22)
+  YEŞİL                  Uçtan uca (Chromium)
+  YEŞİL                  Doğrulama Kapısı
+  YEŞİL                  Dağıtım paketi
+
+b135438: CI YEŞİL
+
+[exited with code 0]

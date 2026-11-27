@@ -1,0 +1,18 @@
+=== saglam
+
+Beklenen : f6e6a34364d75928cd5286ca1a26531870c1a216c422e5619b5e2d97f5212628
+Bulunan  : f6e6a34364d75928cd5286ca1a26531870c1a216c422e5619b5e2d97f5212628
+
+TAMAM: +ûzet e+ƒle+ƒti. "DestekOfis-2.5.0-Arsiv-Kaynak.bundle" ar+ƒivde saklanabilir; a+ºmak i+ºin: git clone "DestekOfis-2.5.0-Arsiv-Kaynak.bundle" destekofis
+
+Press any key to continue... wine cikis=0
+olusan bundle sha256 f6e6a34364d75928cd5286ca1a26531870c1a216c422e5619b5e2d97f5212628
+=== bozuk
+
+Beklenen : f6e6a34364d75928cd5286ca1a26531870c1a216c422e5619b5e2d97f5212628
+Bulunan  : 3d4825c81436f3b2cc7a25d6e521760c67b9bbcac9c836a8a232255e87ef80e8
+
+HATA: +ûzet TUTMUYOR. Bu dosyay-¦ KULLANMAYIN; par+ºalar-¦ yeniden indirip tekrar deneyin.
+
+Press any key to continue... wine cikis=0
+olusan bundle sha256 3d4825c81436f3b2cc7a25d6e521760c67b9bbcac9c836a8a232255e87ef80e8

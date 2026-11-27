@@ -1,0 +1,13 @@
+
+> destekofis@2.5.0 build:windows
+> node tools/build-windows.mjs
+
+DestekOfis 2.5.0 — Windows paketi
+• Uygulama dosyaları hazırlanıyor
+• Çalışma zamanı: Node.js ve nssm
+  node.exe 24.21.0 (nodejs.org (SHA-256 doğrulandı), sha256 ba4e6d110e8c1592…)
+• İstemci başlatıcısı derleniyor (Go, windows/amd64)
+  DestekOfis.exe 6.1 MB
+• Kurulum dosyası derleniyor (Inno Setup)
+
+✓ dist/DestekOfis-Kurulum-2.5.0.exe · 36.2 MB · sha256 75b936faf10c4d64e46220792b82f411f0e25d0b3a9113846e4a0ac93782efff
