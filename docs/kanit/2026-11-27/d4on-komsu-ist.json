@@ -1,0 +1,32 @@
+{
+  "ad": "d4on-komsu-ist",
+  "komut": "node --test test/devir-arsiv-wal-250.test.mjs test/devir-d2-bakim-250.test.mjs test/devir-d2-yedek-250.test.mjs test/devir-d2-arsiv-250.test.mjs test/devir-d2-arsiv-goc-kesinti-250.test.mjs test/documents.test.mjs test/trash.test.mjs test/kayit-bag-31e.test.mjs test/sema-kapisi-bs7.test.mjs test/yedek-220.test.mjs test/yedek-220-inceleme.test.mjs test/geri-yukleme-uyari-244.test.mjs test/guvenilirlik-221-tatbikat.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/updater.test.mjs test/devir-d4on-yedek-tasima-251.test.mjs test/devir-d4on-belge-temizligi-251.test.mjs",
+  "commit": "276a4df15562c358de7588655757eaef9175a590",
+  "dal": "worktree-agent-a4961dfd67df3ffcd",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T06:44:29.441Z",
+  "sure_sn": 64,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 203,
+    "gecen": 203,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d4on-ajan/kanit/2026-11-27/d4on-komsu-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4961dfd67df3ffcd",
+  "ham_cikti_sha256": "95ee08e36212dbafe0c4b5d120bbc1dbc2b4502c69e02850a7afac52172504c7",
+  "ham_cikti_bayt": 86405
+}

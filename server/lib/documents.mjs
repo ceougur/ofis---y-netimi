@@ -7,6 +7,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
 
 export const MAX_DOCUMENT_BYTES = 25 * 1024 * 1024;
 const KEEP_DELETED_DAYS = 30;
@@ -62,7 +63,7 @@ export function detectDocumentType(name, buffer) {
   return { ext, ...type };
 }
 
-export function createDocumentStore({ dir, log } = {}) {
+export function createDocumentStore({ dir, log, archives = () => [] } = {}) {
   const fileOf = sha => path.join(dir, sha.slice(0, 2), sha);
   const valid = sha => /^[0-9a-f]{64}$/.test(String(sha || ""));
 
@@ -87,7 +88,40 @@ export function createDocumentStore({ dir, log } = {}) {
     }
   }
 
-  // Silineli 30 günü geçen kayıtlar kalkar; hiçbir kaydın göstermediği ve 30 günden eski dosyalar silinir.
+  // 2.5.1 D4-ÖN (DEVIR-PLANI G8; docs/devir/D2-ALTYAPI-TASARIM.md §12): arşiv ile çalışma yılı AYNI belgeler/ klasörünü paylaşır → bir dosya ancak NE çalışma yılının
+  // NE de şirketin kayıtlı arşivlerinden herhangi birinin belge kaydı gösteriyorsa silinir. Arşiv kuralı çalışma yılınınkiyle aynı: silinmemiş kayıt ya da silineli
+  // 30 günü geçmemiş kayıt gösterir. Arşiv kısa süreli SALT OKUNUR bağlantıyla okunur (yazılmaz, göç ettirilmez; bekleme süresi yok — kilitliyse hemen
+  // "okunamadı"), okuma bitince bağlantı kapanır (Windows'ta açık tutamak devrin taşımasını düşürür — ders 48). Okunamayan arşiv (bozuk / eksik / kilitli / tablosu yok)
+  // HER ŞEYİ gösteriyor sayılır: o turda hiçbir belge dosyası silinmez (yalnız eski .tmp artıkları). archives: () => [{ year, file }] (routes/documents.mjs bağlar;
+  // arşivsiz şirkette boş liste — tek ek maliyet listenin okunması).
+  function archiveReferences(cutoff) {
+    const shown = new Set();
+    const unreadable = [];
+    let list = [];
+    try {
+      list = archives() || [];
+    } catch (error) {
+      unreadable.push({ year: "?", error });
+    }
+    for (const { year, file } of list) {
+      let db = null;
+      try {
+        db = new DatabaseSync(file, { readOnly: true });
+        for (const row of db.prepare("SELECT DISTINCT sha256 FROM case_documents WHERE deleted_at IS NULL OR deleted_at >= ?").all(cutoff)) shown.add(row.sha256);
+      } catch (error) {
+        unreadable.push({ year, error });
+      } finally {
+        try {
+          db?.close();
+        } catch {
+          // kapatma hatası okumanın sonucunu değiştirmez
+        }
+      }
+    }
+    return { shown, unreadable };
+  }
+
+  // Silineli 30 günü geçen kayıtlar kalkar; hiçbir kaydın (çalışma yılı ya da arşiv) göstermediği ve 30 günden eski dosyalar silinir.
   // (Yeni dosyalara dokunulmaz: yedekten geri dönülüp yeniden ileri alınırsa belgeler kaybolmasın.)
   function purge(store, now = Date.now()) {
     const cutoff = new Date(now - KEEP_DELETED_DAYS * 86_400_000).toISOString();
@@ -97,13 +131,16 @@ export function createDocumentStore({ dir, log } = {}) {
       rows = store.run("DELETE FROM case_documents WHERE deleted_at IS NOT NULL AND deleted_at < ?", cutoff).changes;
       if (!existsSync(dir)) return { rows, files };
       const used = new Set(store.all("SELECT DISTINCT sha256 FROM case_documents").map(row => row.sha256));
+      const archived = archiveReferences(cutoff);
+      if (archived.unreadable.length) log?.warn?.(`Belge temizliği: arşiv okunamadı (${archived.unreadable.map(item => `${item.year}: ${item.error?.code || item.error?.message || item.error}`).join("; ")}); belge dosyaları bu turda silinmedi.`);
+      const keepAll = archived.unreadable.length > 0;
       for (const bucket of readdirSync(dir)) {
         const folder = path.join(dir, bucket);
         if (!/^[0-9a-f]{2}$/.test(bucket) || !statSync(folder).isDirectory()) continue;
         for (const name of readdirSync(folder)) {
           const file = path.join(folder, name);
           const old = statSync(file).mtimeMs < now - KEEP_DELETED_DAYS * 86_400_000;
-          if (name.endsWith(".tmp") ? old : valid(name) && !used.has(name) && old) {
+          if (name.endsWith(".tmp") ? old : valid(name) && !used.has(name) && !keepAll && !archived.shown.has(name) && old) {
             rmSync(file, { force: true });
             files += 1;
           }

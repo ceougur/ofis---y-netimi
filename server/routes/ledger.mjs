@@ -299,7 +299,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     // kontrol hesabına bakmaz).
     if (!filter || set?.parties) out.doubtful = doubtfulRows(store, { parties: filter ? filter.parties : null });
     // 2.4.3 MM3: KDV Mahsup Fişleri (etkin ve geri alınmış; geri alınanın ters kaydı aynı gün). Süzgeçli kurulumda (kapının dokunulan varlıkları)
-    // yüklenmez: mahsup tablosuna yazım tam kapıya düşer (integrity-scope "kapsam dışı").
+    // yüklenmez: mahsup yazımı kapıyı HİÇ tetiklemez (vat_offsets lib/db.mjs FINANCIAL / SCOPE_TABLES'ta yok — 2.0.15'ten beri BİLİNEN SINIR, aynı yerdeki not), yani
+    // süzgeçli kurulum başka bir para yazımının dokunduğu varlıklar içindir ve mahsup onlardan biri değildir; mahsup satırları yalnız tam kurulumda (tam kapı, Ana Defter).
+    // (2.5.1 D4-ÖN düzeltmesi: önceki yorum "mahsup tablosuna yazım tam kapıya düşer (integrity-scope 'kapsam dışı')" diyordu; tablo kapsama hiç girmediğinden o dala ulaşılmaz.)
     if (!filter && has("vat_offsets")) out.vatOffsets = store.all("SELECT id, rowid AS seq, month, date, out_minor AS outMinor, in_minor AS inMinor, carry_in_minor AS carryInMinor, carry_out_minor AS carryOutMinor, payable_minor AS payableMinor, status FROM vat_offsets ORDER BY date, created_at, rowid");
     // 2.5.0 Ç2: saklanan fiş defteri (lib/ledger-vouchers.mjs; tek toplu sorgu). Süzgeçli kurulumda yüklenmez (KDV mahsubu gibi): fiş yazımı her zaman tam kapıya
     // düşer (integrity-scope FULL_TABLES). Alt defter hesabına (beklenen bakiyesi olan her hesap: cari kontrol hesapları dahil) fiş yazılmaz — Ç2 tur 1: fiş denetiminde

@@ -1,0 +1,32 @@
+{
+  "ad": "d4on-belge-yeni-ist",
+  "komut": "node --test test/devir-d4on-belge-temizligi-251.test.mjs",
+  "commit": "b52db13f824e0d70df77c5fa6dba91f695c66292",
+  "dal": "worktree-agent-a4961dfd67df3ffcd",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T06:36:19.840Z",
+  "sure_sn": 13.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d4on-ajan/kanit/2026-11-27/d4on-belge-yeni-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4961dfd67df3ffcd",
+  "ham_cikti_sha256": "bc3ddc329f02f7996991d3417cefccdf6bff0e3888b64d5f289b9487dffa3272",
+  "ham_cikti_bayt": 2001
+}

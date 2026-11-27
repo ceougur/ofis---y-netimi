@@ -5,13 +5,15 @@ import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { HttpError, SECURITY_HEADERS, limited, ok, readBuffer, sendBuffer, text } from "../lib/http.mjs";
 import { MAX_DOCUMENT_BYTES, cleanDocumentName, createDocumentStore, detectDocumentType } from "../lib/documents.mjs";
+import { archiveFileOf } from "../lib/devir/archives.mjs";
 import { createZip } from "../lib/zip.mjs";
 import { canUser } from "../lib/permissions.mjs";
 
 const KINDS_VIEWABLE = new Set(["application/pdf", "image/jpeg", "image/png", "image/gif", "image/webp"]);
 
-export function registerDocumentRoutes(router, { store, auth, audit, events, config, log, dataset = null, canWriteInBackground = () => true, writeLock = null }) {
-  const files = createDocumentStore({ dir: path.join(config.dataDir, "belgeler"), log });
+export function registerDocumentRoutes(router, { store, auth, audit, events, config, log, dataset = null, canWriteInBackground = () => true, writeLock = null, companies = null, companyId = "" }) {
+  // 2.5.1 D4-ÖN (G8): temizlik şirketin kayıtlı arşivlerinin belge kayıtlarını da görür (arşiv bu şirketin belgeler/ klasörünü paylaşır; lib/documents.mjs).
+  const files = createDocumentStore({ dir: path.join(config.dataDir, "belgeler"), log, archives: () => (companies?.archivesOf?.(companyId) || []).map(entry => ({ year: entry.year, file: archiveFileOf(config.dataDir, entry.year) })) });
   // Açılışta eski silinmiş belgeleri ve sahipsiz dosyaları temizler (arka planda, açılışı bekletmez).
   // 2.4.8 İş P1: şirket dosyası kilitliyse temizlik o an atlanır ve kilit işareti süresi sonra yeniden denenir (en çok 3 kez).
   // İş R1: yeniden deneme zamanlayıcısı tutulur; stop() (şirket kapanışı) ikisini de siler ve kapanmış örnekte temizlik hiç çalışmaz.

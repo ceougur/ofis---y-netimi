@@ -219,7 +219,9 @@ describe("BS-7 şema sürüm kapısı", () => {
     const dir = workDir();
     const seed = await seedTwoCompanies(dir);
     makeAhead(seed.rootFile);
-    // Ortak katman: giriş oturumu (sessions) ve denetim izi (audit_events) 001 dosyasında; bunlar yazılır (giriş olmadan veri görülemez).
+    // Ortak katman: giriş oturumu (sessions) ve kullanıcılar (users) 001 dosyasında; giriş bunları yazar (giriş olmadan veri görülemez).
+    // audit_events ortak katman DEĞİL, şirket verisidir (lib/company-backups.mjs COMMON_TABLES'ta yok; 2.5.0 D2): kapılı 001'de denetim izi yazılmaz (app.mjs createAudit
+    // canWrite: !writeGate). Burada atlanması yalnız ölçüm kolaylığı — atlanmasa da bu test geçer (2.5.1 D4-ÖN'de denendi).
     const skip = ["sessions", "audit_events", "users"];
     const before = fingerprint(seed.rootFile, { skip });
     const settingsAt = () => {

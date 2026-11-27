@@ -1,0 +1,43 @@
+TAP version 13
+# (node:21746) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D4-ÖN: devir yedeğinin son adına taşınması (Windows yeniden denemesi)
+    # Subtest: geçici hata (EPERM, EBUSY, EACCES, ENOTEMPTY — dört kez) → yeniden denenir, 5. denemede taşınır; yedek Tamam, doğrulama geçer, yarım klasör kalmaz
+    ok 1 - geçici hata (EPERM, EBUSY, EACCES, ENOTEMPTY — dört kez) → yeniden denenir, 5. denemede taşınır; yedek Tamam, doğrulama geçer, yarım klasör kalmaz
+      ---
+      duration_ms: 1189.600438
+      type: 'test'
+      ...
+    # Subtest: kalıcı geçici hata (EBUSY hiç bitmez) → sınırlı deneme (12), 503 devir-backup-move + Türkçe neden; yazılmış klasör silinmez, listede Yarım
+    ok 2 - kalıcı geçici hata (EBUSY hiç bitmez) → sınırlı deneme (12), 503 devir-backup-move + Türkçe neden; yazılmış klasör silinmez, listede Yarım
+      ---
+      duration_ms: 3338.455952
+      type: 'test'
+      ...
+    # Subtest: yeniden denenmeyen hata (EXDEV) → hemen 503 (tek deneme, bekleme yok); klasör listede Yarım
+    ok 3 - yeniden denenmeyen hata (EXDEV) → hemen 503 (tek deneme, bekleme yok); klasör listede Yarım
+      ---
+      duration_ms: 38.083645
+      type: 'test'
+      ...
+    # Subtest: açık tutamak: klasördeki veri tabanı kopyası açık tutulurken taşıma düşer (Windows'ta GERÇEK EPERM, Linux'ta eşdeğer enjeksiyon), tutamak bırakılınca yeniden denemeyle taşınır
+    ok 4 - açık tutamak: klasördeki veri tabanı kopyası açık tutulurken taşıma düşer (Windows'ta GERÇEK EPERM, Linux'ta eşdeğer enjeksiyon), tutamak bırakılınca yeniden denemeyle taşınır
+      ---
+      duration_ms: 204.534731
+      type: 'test'
+      ...
+    1..4
+ok 1 - D4-ÖN: devir yedeğinin son adına taşınması (Windows yeniden denemesi)
+  ---
+  duration_ms: 4771.933192
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5263.804358
