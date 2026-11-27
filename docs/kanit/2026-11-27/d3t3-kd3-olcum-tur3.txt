@@ -1,0 +1,12 @@
+# S-KD-3 ölçümü — kod: tur3 (/home/user/ofis---y-netimi/.claude/worktrees/agent-af273e8dbdb200a7c) commit d0fc3ce4; TZ=UTC; komut: node scratchpad/d3t3/kd3-olc.mjs <kod>
+import 200 {"ok":true,"data":{"created":1,"skipped":[],"groups":0,"linked":0,"records":0,"opening":0,"shape":"summary","importId":"import-bf70c5fd-0f43-42b0-bb99-ba2fd5380aa0"}}
+plans [{"id":"plan-4ad86ad7-337e-4971-816f-2a43455060ee","account_id":"account-1691d8b1-5829-4e83-8839-341d9f6d0b40","total":9000,"registered_on":"2026-12-20","created_at":"2027-01-03T07:00:00.000Z","import_id":"import-bf70c5fd-0f43-42b0-bb99-ba2fd5380aa0"}]
+plan_imports [{"id":"import-bf70c5fd-0f43-42b0-bb99-ba2fd5380aa0","created_at":"2027-01-03T07:00:00.000Z"}]
+defter [{"id":"plan:plan-4ad86ad7-337e-4971-816f-2a43455060ee","date":"2026-12-20","lines":["B 120 9000","A 519 9000"]}]
+account_entries []
+cari hareket 405 {"ok":false,"error":"Bu yöntem desteklenmiyor."}
+preview 200 {"ok":true,"data":{"id":"onizleme-c82ae8eb-4667-44c3-9db8-ce54b5e8154a","company":"sirket-001","cutoff":"2026-12-31","option":"borc-alacak","state":"running","asama":"basladi","startedAt":"2027-01-03T07:00:00.000Z","finishedAt":"","stale":false}}
+plan cariler [{"ad":"Kart Müşterisi","k":900000,"satir":[["borc-toplami",900000]]}]
+plan kartlar [{"toplam":900000,"kalan":900000,"durum":"acik"}]
+sorunlar [] durdurur []
+120/519 kapanış [{"hesap":"120","alt":"","cari":"account-1691d8b1-5829-4e83-8839-341d9f6d0b40","minor":900000},{"hesap":"519","alt":"","cari":"","minor":-900000}]
