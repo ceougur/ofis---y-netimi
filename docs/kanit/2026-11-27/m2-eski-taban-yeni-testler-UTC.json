@@ -9,96 +9,101 @@
   "node": "v22.23.4",
   "cpu": 4,
   "bellek_gb": 16,
-  "basladi": "2026-11-27T12:13:55.103Z",
-  "sure_sn": 31.2,
+  "basladi": "2026-11-27T14:15:17.411Z",
+  "sure_sn": 36.7,
   "cikis_kodu": 1,
   "sinyal": null,
   "zaman_asimi": false,
   "ozet": {
     "bicim": "node:test",
-    "toplam": 20,
+    "toplam": 21,
     "gecen": 3,
-    "basarisiz": 17,
+    "basarisiz": 18,
     "iptal": 0,
     "atlanan": 0
   },
   "hukum": "BAŞARISIZ",
-  "neden": "çıkış 1; 17 başarısız, 0 iptal",
+  "neden": "çıkış 1; 18 başarısız, 0 iptal",
   "basarisiz_testler": [
     {
       "ad": "M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12) › her adımın sonucu (durum + kod) beklenen",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:82:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:89:3",
       "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
     },
     {
       "ad": "M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12) › carilerin bakiyesi (k1)",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:91:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:98:3",
       "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
     },
     {
+      "ad": "M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12) › liste / form ucunun okuduğu defter bakiyesi her caride cari kartının bakiyesiyle aynı (yazım yolu kartın bakiyesini okur)",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:102:3",
+      "hata": "ledgerBalanceMinor yok (değişiklik öncesi kod)"
+    },
+    {
       "ad": "M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12) › ret iletileri gerçek sınırı ve nedeni söyler (dk-ud3 DÜŞÜK-1, dk-ud4 'breaks')",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:100:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:111:3",
       "hata": "The input did not match the regular expression /en çok tutarı \\(23,55 TL\\) aşıyor/. Input: · 'Değersiz yazılacak tutar (23,56 TL) kalan şüpheli tutarı (2.900,00 TL) aşıyor.' (beklenen , gelen Değersiz yazılacak tutar (23,56 TL) kalan şüpheli tutarı (2.900,00 TL) aşıyor.)"
     },
     {
       "ad": "M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12) › kayıtların durumu: kısmi zincir (A2 / A3) ve bağlı = şüpheli (A4) Değersiz Yazıldı, kalan 0",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:111:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:122:3",
       "hata": "A2-S · + actual - expected · { (beklenen , gelen )"
     },
     {
       "ad": "M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5) › S269: kısmi Değersiz'den sonra kayıt 'Değersiz Yazıldı' (kalan 0) görünür ama yazılabilir — liste alanı 17.09 tarihiyle 2.000, bugün 0",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:139:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:150:3",
       "hata": "Cannot read properties of undefined (reading 'anyMinor')"
     },
     {
       "ad": "M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5) › formun ucu: seçilen tarihin sınırı + en çok yazdıran gün; kayıttan önce / ileri tarih yazılamaz",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:147:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:158:3",
       "hata": "sınır: 405 {\"ok\":false,\"error\":\"Bu yöntem desteklenmiyor.\"} · 405 !== 200 (beklenen 200, gelen 405)"
     },
     {
       "ad": "M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5) › S-M2-1 = B: @17.09 3.000 (o günün bağlı payından önce), @18.09 123,55 (önceki günün payı düşülmüş); sonradan gelen bağsız (S270) @17.09 2.000",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:155:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:166:3",
       "hata": "sınır: 405 {\"ok\":false,\"error\":\"Bu yöntem desteklenmiyor.\"} · 405 !== 200 (beklenen 200, gelen 405)"
     },
     {
       "ad": "M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5) › Y30-6: S155 — sınır 3.000, önerilen 2.923,55 (öbür açık kayıt 500); önerilen tutar kabul, sınır reddedilir",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:162:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:173:3",
       "hata": "sınır: 405 {\"ok\":false,\"error\":\"Bu yöntem desteklenmiyor.\"} · 405 !== 200 (beklenen 200, gelen 405)"
     },
     {
       "ad": "M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5) › bildirim verisi: bu yazımın tutarı, yazımdan sonraki gerçek kalan ve aynı tarihle daha yazılabilecek tutar",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:172:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:183:3",
       "hata": "bu yazım (toplam değil) · + actual - expected · + undefined"
     },
     {
       "ad": "M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5) › Değersiz'den SONRA Şüpheliden Çıkar kabul; değişmez çıkarılmış kaydı Değersiz anının dünyasında açık sayar (ihlal yok)",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:178:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:189:3",
       "hata": "çıkarılmış kayıtta yazılabilir alanı yok (düğme gizli) · + actual - expected · + undefined"
     },
     {
       "ad": "M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5) › m.12 Dönem Kilidi 17.09: liste en çok yazdıran gün 18.09 (123,55), formun ucu 17.09'u kilitli söyler",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:184:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:195:3",
       "hata": "Cannot read properties of undefined (reading 'best')"
     },
     {
       "ad": "M2 — S270 değişmezi: geri alınan uygulamanın bozuk durumu (Değersiz 3.000, bakiye −576,45) Mutabakat Testi'nde ve kapıda YAKALANIR › meşru sıra temiz; bağsız tahsilat Değersiz'den ÖNCE yazılmış ve Değersiz 3.000 yapılınca (geri alınan uygulamanın durumu, bakiye −576,45) iki koşul da kırmızı, kapı sonraki yazımı reddeder",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:204:3",
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:215:3",
       "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
     },
     {
       "ad": "M2 — rastgele sıra, tohum 1 (girdi §3 m.13) › her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:276:5",
-      "hata": "sınır: 405 {\"ok\":false,\"error\":\"Bu yöntem desteklenmiyor.\"} · 405 !== 200 (beklenen 200, gelen 405)"
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:287:5",
+      "hata": "ledgerBalanceMinor yok (değişiklik öncesi kod)"
     },
     {
       "ad": "M2 — rastgele sıra, tohum 2 (girdi §3 m.13) › her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:276:5",
-      "hata": "sınır: 405 {\"ok\":false,\"error\":\"Bu yöntem desteklenmiyor.\"} · 405 !== 200 (beklenen 200, gelen 405)"
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:287:5",
+      "hata": "ledgerBalanceMinor yok (değişiklik öncesi kod)"
     },
     {
       "ad": "M2 — rastgele sıra, tohum 3 (girdi §3 m.13) › her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam",
-      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:276:5",
-      "hata": "sınır: 405 {\"ok\":false,\"error\":\"Bu yöntem desteklenmiyor.\"} · 405 !== 200 (beklenen 200, gelen 405)"
+      "konum": "test/supheli-degersiz-siniri-m2-251.test.mjs:287:5",
+      "hata": "ledgerBalanceMinor yok (değişiklik öncesi kod)"
     },
     {
       "ad": "M2 — Değersiz sınırı ↔ v2.4.9'un gerçek kodu (sınıf sınıf; ders 53 (b)) › aynı olması gerekenler birebir, farklar yalnız beklenen farklar listesinde (karar numarasıyla)",
@@ -113,6 +118,6 @@
   ],
   "ham_cikti": "../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-afce913f2c07f70a9/docs/kanit/2026-11-27/m2-eski-taban-yeni-testler-UTC.log",
   "klasor": "/dev/shm/m2-kod/eski",
-  "ham_cikti_sha256": "be66f231c69f0c964b5b61a0372f4e10967c70d36cc8164483a824c0e9b7ec0b",
-  "ham_cikti_bayt": 35592
+  "ham_cikti_sha256": "3572a46b9bce7c4f5c73a64b8b39307ed660c6060f1fdc215f465037939b4f41",
+  "ham_cikti_bayt": 36431
 }
