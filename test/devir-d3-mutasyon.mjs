@@ -32,6 +32,13 @@ const KURAL = "test/devir-d3-kural.test.mjs";
 const KART = "test/devir-d3-kart-tarihi.test.mjs";
 const WA = "test/devir-d3-wa.test.mjs";
 const ACIK = "test/devir-d3-acik.test.mjs";
+// D3 tur 4 testleri
+const MAHSUP = "test/devir-d3-mahsup.test.mjs";
+const IKINCI = "test/devir-d3-ikinci.test.mjs";
+const UZMAN = "test/devir-d3-uzman.test.mjs";
+const STOK = "test/devir-d3-stok.test.mjs";
+const EVRAKSINIF = "test/devir-d3-evrak-sinif.test.mjs";
+const ILETITUM = "test/devir-d3-ileti-tum.test.mjs";
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 const MUTASYONLAR = [
   [1, "açık kalemin vadesi kaybolur (K+1 olur; vadesizde belge günü yerine)", PLAN, "      vade: item.vade || item.date,", "      vade: nextDay,", [ELLE, ESDEGER], /not ok \d+ - (cari satırları|.*gecikmiş)/],
@@ -51,7 +58,7 @@ const MUTASYONLAR = [
   [14, "eksi stoklu ürüne değer verilir (KG-9 / M5)", PLAN, "degerMinor: product.qty > 0 ? product.valueMinor : 0, dayanak", "degerMinor: product.qty < 0 ? 1 : product.valueMinor, dayanak", [ELLE], /not ok \d+ - (stok|kapanış)/],
   [15, "açık kalemin kuyruk rolü kaybolur (ödeme rolündeki kalem yükümlülük olur)", PLAN, "      rol: item.due ? \"yukumluluk\" : \"odeme\",", "      rol: \"yukumluluk\",", [ESDEGER], /not ok \d+ - (plan elle|.*gecikmiş|ROL)/],
   // ---- D3 tur 2: bu turun her sınıfı için en az bir mutant ----
-  [16, "bağ yönlendirmesi: K sonrası bağ açık faturanın devir kalemine değil arşive yönelir", PLAN, "      return openInvoices.has(link.invoiceId)", "      return false", [BAG], /not ok \d+ - bağ listesi/],
+  [16, "bağ yönlendirmesi: K sonrası bağ açık faturanın devir kalemine değil arşive yönelir", PLAN, "      return openKeys.has(key)", "      return false", [BAG], /not ok \d+ - bağ listesi/],
   [17, "bağ listesi: Mahsup Et'in karşı belgesi (counter_id) okunmaz", READER, "AND counter_type = 'invoice' AND counter_id IN (${before})`, K)) add(", "AND counter_type = 'invoice' AND 0 AND counter_id IN (${before})`, K)) add(", [BAG], /not ok \d+ - bağ listesi/],
   [18, "bağ listesi: iade → asıl fatura bağı okunmaz", READER, "WHERE issue_date > ?1 AND original_id <> '' AND original_id IN", "WHERE 0 AND issue_date > ?1 AND original_id <> '' AND original_id IN", [BAG], /not ok \d+ - bağ listesi/],
   [19, "evrak durumu: bankada tahsildeki evrak portföyde sayılır", READER, "    if (state === \"portfolio\" && Number(row.inBank) > 0) state = \"bank\";", "", [EVRAK], /not ok \d+ - (her evrak|ön izleme sayıları|kapanış = açılış)/],
@@ -79,6 +86,21 @@ const MUTASYONLAR = [
   [40, "Devir Raporu: uyarılar 'Devri Durduran Nedenler' başlığına karışır", REPORT, "  reasons(\"uyarilar\", \"Uyarılar\", preflight?.uyarir || [], \"Uyarı yok.\");", "  reasons(\"uyarilar\", \"Devri Durduran Nedenler\", preflight?.uyarir || [], \"Uyarı yok.\");", [ILETI], /not ok \d+ - \(e\) Devir Raporu/],
   [41, "ön izleme ucu: beklenmeyen hatanın HAM iletisi yanıta girer", ROUTES, "        entry.error = { status: error.status || 500, code: ileti.kod, message: ileti.metin, ileti };", "        entry.error = { status: error.status || 500, code: ileti.kod, message: error.message, ileti };", [ILETI], /not ok \d+ - (beklenmeyen hata|routes\/devir\.mjs)/],
   [42, "WhatsApp uyarısı bitmiş / iptal edilmiş işleri de sayar", READER, "FROM wa_batches b WHERE b.state IN ('running', 'paused')`", "FROM wa_batches b WHERE b.state IN ('running', 'paused', 'done', 'canceled')`", [WA], /not ok \d+ - işler bitince/],
+  // ---- D3 tur 4 ----
+  [43, "S-T2-1: K sonrası mahsubun ≤K belgesi AYRILMAZ (tur 2 / tur 3 hâli)", READER, "  if (!later.length) return { lines: own, reserved: new Map(), docs, rows: [] };", "  if (true) return { lines: own, reserved: new Map(), docs, rows: [] };", [MAHSUP, BAG], /not ok \d+ - açık kalemler/],
+  [44, "S-T2-1: ayrılan pay yeni yıla açık kalem olarak devretmez (K'de kapanmış sayılır)", READER, "    if (kind === \"yeni-yila-ayrildi\") reserved.set(old[0], (reserved.get(old[0]) || 0) + take);", "    void kind;", [MAHSUP], /not ok \d+ - (açık kalemler|DEVİRSİZ)/],
+  [45, "S-T2-1: iki belgesi ≤K olan K sonrası mahsup K'de uygulanmaz", READER, "    for (const key of old) cut.set(key, (cut.get(key) || 0) + take);", "    if (old.length < 2) for (const key of old) cut.set(key, (cut.get(key) || 0) + take);", [MAHSUP], /not ok \d+ - açık kalemler/],
+  [46, "ikinci devir: aynı yılın devri geçer", PRE, "  if (year && registered.has(year)) {", "  if (false) {", [IKINCI], /not ok \d+ - y-1/],
+  [47, "ikinci devir: devredilmiş yıldan önceki yılın devri geçer", PRE, ".filter(item => item > year).sort() : [];", ".filter(item => item > year && false).sort() : [];", [IKINCI], /not ok \d+ - y-5/],
+  [48, "ikinci devir: yarıda kalmış devir (ayar var, kayıt yok) geçer", PRE, "  if (half.length) {", "  if (false) {", [IKINCI], /not ok \d+ - y-4/],
+  [49, "stok değişmezi yalnız toplamdan (ürün ürün karşılaştırma yok)", PLAN, "      if (wantMilli !== gotMilli || wantValue !== gotValue) wrong.push(", "      if (false) wrong.push(", [STOK], /not ok \d+ - bozulma/],
+  [50, "veri damgası karşılaştırması hep 'aynı' der", READER, "  return { degisti: !before || before !== now, onceki: before, simdiki: now };", "  return { degisti: false, onceki: before, simdiki: now };", [UZMAN], /not ok \d+ - \(2\) veri damgası/],
+  [51, "veri damgası var olan kaydın düzeltmesini görmez (yalnız satır sayısı)", READER, "    parts.push(`iz:${row.n}:${row.m}`);", "    void row;", [UZMAN], /not ok \d+ - \(2\) veri damgası/],
+  [52, "veri damgası giriş izini de sayar (giriş devri yanlış durdurur)", READER, "\"settings.%\", \"staff.%\"];", "\"settings.%\", \"staff.%\", \"auth.%\"];", [UZMAN], /not ok \d+ - \(2\) veri damgası/],
+  [53, "ön izleme e-Belge servisine istek gönderir", ROUTES, "    const target = appFor(company);\n", "    const target = appFor(company);\n    try {\n      await target.config?.fetchImpl?.(\"http://127.0.0.1:9/edm\");\n    } catch {\n      // mutant\n    }\n", [UZMAN], /not ok \d+ - sahte EDM/],
+  [54, "Devir Raporu başlığı: ön izlemeyi hazırlayan yazılmaz", REPORT, "    [\"Ön İzlemeyi Hazırlayan\", preparedBy || \"Bilinmiyor\"],\n    ...(madeAt", "    [\"Ön İzlemeyi Hazırlayan\", \"Bilinmiyor\"],\n    ...(madeAt", [UZMAN], /not ok \d+ - \(6\) Devir Raporu başlığı/],
+  [55, "ileti eksikleri: plan sorunlarında 'Ön İzleme'yi yeniden başlat' adımı yok (tur 3 hâli)", PRE, "  const steps = (...list) => [...list, RESTART, support];", "  const steps = (...list) => [...list, support];", [ILETITUM], /not ok \d+ - kâhin ↔ plan karşılaştırması/],
+  [56, "ileti eksikleri: tutar yönsüz (eksi işaretli)", PRE, "`${accountText(row.hesap)} ${sideText(row.minor)}`", "`${accountText(row.hesap)} ${tlText(row.minor)}`", [ILETITUM, ILETI], /not ok \d+ - /],
 ];
 
 const run = files => {
@@ -88,7 +110,7 @@ const run = files => {
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
 };
 
-const taban = run([ELLE, ESDEGER, BAG, EVRAK, BANKA, OLGU, SUPHELI, ILETI, KURAL, KART, WA, ACIK]);
+const taban = run([ELLE, ESDEGER, BAG, EVRAK, BANKA, OLGU, SUPHELI, ILETI, KURAL, KART, WA, ACIK, MAHSUP, IKINCI, UZMAN, STOK, EVRAKSINIF, ILETITUM]);
 console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${taban.status})`);
 if (taban.status !== 0 || taban.fail !== 0 || !(taban.pass > 0)) throw new Error("taban testi yeşil değil — mutasyon taraması anlamsız");
 let caught = 0;

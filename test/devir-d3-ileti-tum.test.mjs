@@ -66,14 +66,15 @@ function allMessages() {
   const extra = [
     ...["DEVIR_K_31_ARALIK", "DEVIR_K_GELECEK", "DEVIR_SECENEK"].map(code => iletiModule.onIzlemeReddiIletisi(code, { cutoff: "2026-06-30", today: "2027-01-10" })),
     iletiModule.beklenmeyenHataIletisi(),
-    iletiModule.onIzlemeBayatIletisi({ onIzlemeAni: "2027-01-05T10:15:00.000Z" }),
+    // Tur 4'ün yeni iletisi (eski kodda yok — eski kodda kırmızının nedeni öbür iddialardan okunsun diye kapı değil).
+    ...(iletiModule.onIzlemeBayatIletisi ? [iletiModule.onIzlemeBayatIletisi({ onIzlemeAni: "2027-01-05T10:15:00.000Z" })] : []),
   ];
   return { a, b, all: [...a.durdurur, ...a.uyarir, ...b.durdurur, ...extra] };
 }
 
 describe("D3 tur 4 — her neden üretilir ve dört alanı temiz (iç kod / İngilizce / alan adı / tablo adı yok)", () => {
   it("bütün ön denetim maddeleri + bütün plan sorunları + bütün değişmezler + redler: dört alan, yasak kalıp yok, tablo adı yok, adımlar var", () => {
-    assert.ok(iletiModule?.onIzlemeBayatIletisi && preflightModule && readerModule?.DEVIR_TABLE_CLASSES, "ileti düzeni / tur 4 iletileri yok (eski kod)");
+    assert.ok(iletiModule && preflightModule && readerModule?.DEVIR_TABLE_CLASSES, "ileti düzeni yok (eski kod)");
     const { all } = allMessages();
     const tables = new RegExp(`\\b(${Object.keys(readerModule.DEVIR_TABLE_CLASSES).join("|")})\\b`);
     for (const ileti of all) {
@@ -87,7 +88,7 @@ describe("D3 tur 4 — her neden üretilir ve dört alanı temiz (iç kod / İng
   });
 
   it("kâhin ↔ plan karşılaştırması §9'un EKSİK maddeleri tamam: plan sorunlarında adım adım + Ön İzleme'yi yeniden başlat; tutar yönüyle; modülün adı; şüphelide Şüpheli Alacaklar", () => {
-    assert.ok(iletiModule?.onIzlemeBayatIletisi, "tur 4 iletileri yok (eski kod)");
+    assert.ok(iletiModule && preflightModule, "ileti düzeni yok (eski kod)");
     const { a } = allMessages();
     const byKod = new Map();
     for (const row of a.durdurur) if (!byKod.has(row.kod)) byKod.set(row.kod, row);
@@ -108,7 +109,7 @@ describe("D3 tur 4 — her neden üretilir ve dört alanı temiz (iç kod / İng
   });
 
   it("KAYNAK TARAMASI: kaynaktaki her neden kodu üretildi; planın / okuyucunun her sorun türünün kendi iletisi var (varsayılana düşmez)", () => {
-    assert.ok(iletiModule?.onIzlemeBayatIletisi, "tur 4 iletileri yok (eski kod)");
+    assert.ok(iletiModule && preflightModule, "ileti düzeni yok (eski kod)");
     const { all } = allMessages();
     const produced = new Set(all.map(row => row.kod));
     const literal = new Set();

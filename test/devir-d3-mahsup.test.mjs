@@ -138,6 +138,7 @@ describe("D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyru�
 
   it("ayırım listesi (elle): yeni yıla ayrılan / K'de kapanan; tutar = devirsiz kuyruğun mahsuba verdiği pay; silinmiş mahsup ve ≤K mahsup YOK", () => {
     assert.ok(planModule, "D3 devir planı modülü yok (eski kod)");
+    assert.ok(Array.isArray(job.result.plan.newYear.mahsupAyirmalari), "planda mahsup ayırım listesi yok (S-T2-1 = B kodu yok)");
     const got = job.result.plan.newYear.mahsupAyirmalari.map(row => [nameOf(row.cari), row.tur, row.tutarMinor, row.belgeler.map(key => nameOf(key.replace(/^(inv|line):/, ""))).sort().join("+")]).sort();
     assert.deepEqual(got, [
       ["m1", "yeni-yila-ayrildi", 15000, "m1a"],
