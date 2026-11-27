@@ -34,7 +34,7 @@ await must("kurulum geç", api.post("/api/workspace/bank/setup/dismiss", {}));
 const T = (await must("tedarikçi", api.post("/api/workspace/accounts", { name: "Toptancı Kırtasiye", type: "supplier", registeredOn: "2026-01-01" }))).id;
 const M = (await must("müşteri", api.post("/api/workspace/accounts", { name: "Ayşe Kaya", type: "customer", registeredOn: "2026-01-01" }))).id;
 const sale = (date, net) => must(`satış ${date}`, api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: M, issueDate: date, lines: [{ name: "Danışmanlık", qty: 1, unitPrice: net, vatRate: 20 }], payment: { rest: "open" } }));
-await sale("2026-01-05", 5000);
+const janSale = (await sale("2026-01-05", 5000)).id;
 const janBuy = (await must("Ocak alış", api.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: T, issueDate: "2026-01-10", number: "TK-1", lines: [{ name: "Kırtasiye", qty: 1, unitPrice: 2500, vatRate: 20, expenseCode: "office" }], payment: { rest: "open" } }))).id;
 await must("Ocak mahsubu", api.post("/api/workspace/tax/vat-offset", { month: "2026-01" }));
 await must("Ocak alışı İptal Et", api.post(`/api/workspace/invoices/${janBuy}/cancel`, { reason: "Hatalı fatura", force: true }));
@@ -168,6 +168,40 @@ try {
   layout = await footLayout();
   ok(layout.overlap.length === 0 && (layout.hidden.length === 0 || layout.free), `Bu Yıl (1024 × 560): TOPLAM ve Önceki Dönemden Devreden dahil bütün satırlar okunur (${JSON.stringify(layout)})`);
   await shot("m1k-kdv-ozeti-bu-yil-dar");
+
+  // 2.5.1 M1 küçük tur 2 — S-M1K-1 = A (karma ay): Ocak'ın satışı da fişten sonra İptal Et (İ azalmıştı, şimdi 391 de değişti — FIS serisinde Mart'tan sonra Ocak tarihli satış
+  // girilemez, numara / tarih sırası). KÂHİN (elle): Ocak İ fişten 500, 391 bugünkü 0 → Ocak sonraki döneme devreden 500; Şubat zincirde 500 devredenle: 200 + 500 (S4) − 500 = 200
+  // (fiş 0 devredenle 700 → 'Zincirle Uyuşmayan'); Mart 400; Bu Yıl 0 / 600 / 0 = 391 600 − 191 0 (taban: Ocak 0, Şubat fişten 700, toplam 1.100; not "güncel değil").
+  console.log("C) Karma ay: Ocak satışı mahsuptan sonra İptal Et → Bu Yıl yeniden (1366 × 900)");
+  await page.setViewportSize({ width: 1366, height: 900 });
+  await must("Ocak satışı İptal Et", api.post(`/api/workspace/invoices/${janSale}/cancel`, { reason: "Hatalı fatura", force: true }));
+  await page.click(`${MODAL} [data-rc-main] .hof-rc-range [data-preset="thisYear"]`);
+  await page.waitForTimeout(400);
+  await ready();
+  await page.focus(`${MODAL} [data-rc-main] [data-rc-run]`);
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(400);
+  await ready();
+  summary = await summaryOf();
+  t = await table();
+  r = results(summary, t.foot);
+  ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "600,00", "0,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `karma: Bu Yıl 0 / 600 / 0 (taban 1.100), tablo altı = özet (${JSON.stringify(r)})`);
+  ok(digits(summary["Hesaplanan KDV (391) (İadeler Düşülmüş)"]) === "600,00" && digits(summary["İndirilecek KDV (191) (İadeler Düşülmüş)"]) === "0,00", `karma: Ödenecek = 391 600 − 191 0 (${JSON.stringify(summary)})`);
+  const mixedLines = t.body.filter(item => RESULTS.includes(item[1])).map(item => [item[0], item[1], digits(item[5])]);
+  ok(
+    JSON.stringify(mixedLines) === JSON.stringify([["Ocak 2026", "Sonraki Döneme Devreden KDV", "500,00"], ["Şubat 2026", "Önceki Dönemden Devreden KDV", "500,00"], ["Şubat 2026", "Ödenecek KDV", "200,00"], ["Mart 2026", "Ödenecek KDV", "400,00"]]),
+    `karma: ay satırları Ocak devreden 500 / Şubat 500 devredenle 200 / Mart 400 (taban Ocak 0, Şubat 700) (${JSON.stringify(mixedLines)})`,
+  );
+  ok(
+    summary["Mahsuptan Sonra Değişen Ay"] === "Ocak 2026 (mahsup fişi güncel değil — Hesaplanan KDV bugünkü kayıtlardan, İndirilecek KDV kesilmiş mahsup fişinden alındı, azalma sonraki mahsupta düşülür; mahsubu geri alıp yeniden mahsup edin)",
+    `karma notu (tek not): ${summary["Mahsuptan Sonra Değişen Ay"]}`,
+  );
+  ok(
+    // Ekran tutarı "₺0,00" yazar (API / PDF "0,00 TL"); karşılaştırma tek yazıma çevrilerek.
+    String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === "Şubat 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 500,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)",
+    `karma: Şubat fişi zincirle uyuşmuyor: ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`,
+  );
+  await shot("m1k2-kdv-ozeti-karma-bu-yil");
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);
