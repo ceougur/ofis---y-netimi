@@ -3593,8 +3593,8 @@ class Model:
         # K-D S-1 = A (README KD2): ÖNCE devirle gelen önceki yıl 590 / 591'i yıl yıl (eskiden yeniye) 570.Y / 580.Y'ye — "Önceki Yıl Sonucu Fişi (Y)", K tarihli, sınıf 4
         aktarim = defaultdict(int)
         for (h, Y), v in sorted(arsiv.onceki_yil_sonuc(K).items(), key=lambda x: (x[0][1], x[0][0])):
-            arsiv.fis_ekle(K, 4, "onceki_yil_sonucu", [L(h, -v), L(f"570.{Y}" if h == "590" else f"580.{Y}", v)],
-                           {"adim": "N-08", "yil": Y, "aktarim": h}, kaynak=did)
+            arsiv.fis_ekle(tarih=K, sinif=4, tur="onceki_yil_sonucu", satirlar=[L(h, -v), L(f"570.{Y}" if h == "590" else f"580.{Y}", v)],
+                           ek={"adim": "N-08", "yil": Y, "aktarim": h}, kaynak=did)
             aktarim[str(Y)] -= v
         if aktarim:
             out["aktarim"] = dict(aktarim)
