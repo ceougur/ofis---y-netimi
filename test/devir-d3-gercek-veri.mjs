@@ -13,7 +13,7 @@
 // K sonrası adımlar kilitten sonra (S24 = A; devirsiz eşi "aynı kilitle"). Devirsiz eşdeğer bağ yönlendirmesiyle; kartlı / şüpheli cariler benzetim dışı (sayısı yazılır).
 // Kullanım: node test/devir-d3-gercek-veri.mjs --eski <v2.5.0 kopyası> [--tohum 7] [--cari 300] [--sade]   (HUKUK_LICENSE_URL=http://127.0.0.1:9 — ders 30)
 // Çıktı TAP benzeri ("ok N - …" / "not ok N - …") + sonunda "# tests / pass / fail"; çıkış kodu başarısızlıkta 1.
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -504,5 +504,9 @@ for (const [company, label, store] of [["sirket-001", "001", () => server.app.st
   check(diffs.length === 0, `${label}: devirsiz eşdeğer — ${compared} karşılaştırma (cari × gün × seçenek), fark ${diffs.length} ${JSON.stringify(diffs.slice(0, 3)).slice(0, 600)}`);
 }
 server.close();
+// Kendi geçici veri klasörü (mkdtemp; yalnız bu tam yol — ders 36): başarılı koşuda silinir, başarısızda incelemek için kalır.
+await new Promise(resolve => setTimeout(resolve, 500));
+if (!failed) rmSync(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+else console.log(`# veri klasörü (inceleme için kaldı): ${root}`);
 console.log(`# tests ${tests}\n# pass ${tests - failed}\n# fail ${failed}`);
 process.exit(failed ? 1 : 0);
