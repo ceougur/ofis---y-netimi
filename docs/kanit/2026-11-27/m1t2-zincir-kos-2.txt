@@ -1,0 +1,108 @@
+başta 4.09 4.57 4.06 5/230 26688 07:37:57
+== taban UTC 4.09 4.57 4.06 4/231 26692
+# tests 15
+# pass 5
+# fail 10
+[kanit] başarısız testler (10):
+[kanit] m1t2-yeni-test-taban-utc: BAŞARISIZ (çıkış 1; 10 başarısız, 0 iptal) · çıkış 1 · 5/15 geçti, 10 başarısız, 0 iptal, 0 atlanan · commit 60f1a0a +1 değişmiş dosya +3 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== taban Europe/Istanbul 4.08 4.56 4.06 4/231 26795
+# tests 15
+# pass 5
+# fail 10
+[kanit] başarısız testler (10):
+[kanit] m1t2-yeni-test-taban-ist: BAŞARISIZ (çıkış 1; 10 başarısız, 0 iptal) · çıkış 1 · 5/15 geçti, 10 başarısız, 0 iptal, 0 atlanan · commit 60f1a0a +1 değişmiş dosya +3 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== yeni UTC 4.08 4.56 4.06 5/234 26878
+# tests 15
+# pass 15
+# fail 0
+[kanit] m1t2-yeni-test-yeni-utc: GEÇTİ · çıkış 0 · 15/15 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a61f334 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== yeni Europe/Istanbul 4.48 4.64 4.08 4/234 26946
+# tests 15
+# pass 15
+# fail 0
+[kanit] m1t2-yeni-test-yeni-ist: GEÇTİ · çıkış 0 · 15/15 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a61f334 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== mutant UTC başta 4.68 4.68 4.10 6/237 27031 07:38:13
+D1 devredeni sıfır al (rapor görünümü) → ÖLDÜ (başarısız 14/27)
+D2 devredeni iki kez düş → ÖLDÜ (başarısız 14/27)
+D3 çok aylı aralıkta ilk ay yerine son ayın devredeni 'önceki dönem' → ÖLDÜ (başarısız 8/27)
+D4 mahsup formülü yerine eski dönem farkı (391 − 191) → ÖLDÜ (başarısız 14/27)
+D5 ödenecek ile devredeni ters yaz → ÖLDÜ (başarısız 16/27)
+D6 ödenecek yalnız son hareketli ay (toplam yerine) → ÖLDÜ (başarısız 6/27)
+D7 sonraki döneme devreden = aralığın son ayının görünümü (hareketli ay yerine) → ÖLDÜ (başarısız 1/27)
+D8 'Mahsup Edilmemiş Ay' notu hiç yazılmaz → ÖLDÜ (başarısız 7/27)
+D9 ay satırlarında kullanılan devreden satırı yok → ÖLDÜ (başarısız 7/27)
+D10 S4 taşıması zincirde unutulur (carried yok) → ÖLDÜ (başarısız 1/27)
+Z1 mahsupsuz ayı zincirden atla (devredeni değiştirmez) → ÖLDÜ (başarısız 9/27)
+Z2 ödenecek aydan sonra devredeni taşı → ÖLDÜ (başarısız 4/27)
+Z3 zinciri aralığın ilk ayından başlat (öncesini unut) → ÖLDÜ (başarısız 13/27)
+Z4 kopuk zincir notunu yazma → ÖLDÜ (başarısız 1/27)
+Z5 A ↔ B anahtarını ters çevir → ÖLDÜ (başarısız 10/27)
+Z6 fişin devredeni zincirle karşılaştırılmaz (her fiş geçerli) → ÖLDÜ (başarısız 2/27)
+Z7 geçerli fişte fişin devredeni yerine hesaplanan taşınır → ÖLDÜ (başarısız 2/27)
+çıkış 0
+== mutant Europe/Istanbul başta 7.01 5.68 4.56 3/212 28368 07:40:30
+D1 devredeni sıfır al (rapor görünümü) → ÖLDÜ (başarısız 14/27)
+D2 devredeni iki kez düş → ÖLDÜ (başarısız 14/27)
+D3 çok aylı aralıkta ilk ay yerine son ayın devredeni 'önceki dönem' → ÖLDÜ (başarısız 8/27)
+D4 mahsup formülü yerine eski dönem farkı (391 − 191) → ÖLDÜ (başarısız 14/27)
+D5 ödenecek ile devredeni ters yaz → ÖLDÜ (başarısız 16/27)
+D6 ödenecek yalnız son hareketli ay (toplam yerine) → ÖLDÜ (başarısız 6/27)
+D7 sonraki döneme devreden = aralığın son ayının görünümü (hareketli ay yerine) → ÖLDÜ (başarısız 1/27)
+D8 'Mahsup Edilmemiş Ay' notu hiç yazılmaz → ÖLDÜ (başarısız 7/27)
+D9 ay satırlarında kullanılan devreden satırı yok → ÖLDÜ (başarısız 7/27)
+D10 S4 taşıması zincirde unutulur (carried yok) → ÖLDÜ (başarısız 1/27)
+Z1 mahsupsuz ayı zincirden atla (devredeni değiştirmez) → ÖLDÜ (başarısız 9/27)
+Z2 ödenecek aydan sonra devredeni taşı → ÖLDÜ (başarısız 4/27)
+Z3 zinciri aralığın ilk ayından başlat (öncesini unut) → ÖLDÜ (başarısız 13/27)
+Z4 kopuk zincir notunu yazma → ÖLDÜ (başarısız 1/27)
+Z5 A ↔ B anahtarını ters çevir → ÖLDÜ (başarısız 10/27)
+Z6 fişin devredeni zincirle karşılaştırılmaz (her fiş geçerli) → ÖLDÜ (başarısız 2/27)
+Z7 geçerli fişte fişin devredeni yerine hesaplanan taşınır → ÖLDÜ (başarısız 2/27)
+çıkış 0
+== tur1 UTC başta 6.95 6.30 4.96 4/227 29654
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-v0ocxC
+
+[kanit] m1t2-kahin-defter-tur1-utc: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 60f1a0a +1 değişmiş dosya +3 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== tur1 Europe/Istanbul başta 6.64 6.24 4.95 3/227 29764
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-5sXYhx
+
+[kanit] m1t2-kahin-defter-tur1-ist: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 60f1a0a +1 değişmiş dosya +3 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== tur2 UTC başta 6.43 6.20 4.95 5/227 29873
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-GsBH2N
+
+[kanit] m1t2-kahin-defter-tur2-utc: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a61f334 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== tur2 Europe/Istanbul başta 6.31 6.18 4.95 5/230 30000
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-moJxM4
+
+[kanit] m1t2-kahin-defter-tur2-ist: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a61f334 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== komşu utc başta 6.05 6.13 4.94 4/228 30113 07:43:13
+[kanit] m1t2-komsu-utc: GEÇTİ · çıkış 0 · 529/529 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a61f334 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-kdv-zincir-251 6.83 6.32 5.24 5/255 32203
+  ✗ kopuk zincir notu: Mart 2026 fişi ₺2.000,00 devredenle kesilmiş, sırayla mahsupta ₺1.600,00 olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+✗ senaryo-kdv-zincir-251: 11 geçti, 1 kaldı
+[kanit] başarısız testler (2):
+  ✖ senaryo-kdv-zincir-251: 11 geçti, 1 kaldı
+[kanit] m1t2-e2e-yeni-senaryo-kdv-zincir-251: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 11/12 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit a61f334 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-kdv-devreden-251 6.86 6.34 5.26 6/261 32445
+✓ senaryo-kdv-devreden-251: 14 geçti, 0 kaldı
+[kanit] m1t2-e2e-yeni-senaryo-kdv-devreden-251: GEÇTİ · çıkış 0 · 14/14 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a61f334 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-kdv-donemi-250 6.91 6.37 5.29 7/247 32640
+✓ senaryo-kdv-donemi-250: 23 geçti, 0 kaldı
+[kanit] m1t2-e2e-yeni-senaryo-kdv-donemi-250: GEÇTİ · çıkış 0 · 23/23 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a61f334 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-defter-243 7.09 6.44 5.34 7/256 514
+✓ senaryo-defter-243: 33 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-af18bb1989d74249b · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-af18bb1989d74249b/test/e2e/artifacts/senaryo-defter-243
+[kanit] m1t2-e2e-yeni-senaryo-defter-243: GEÇTİ · çıkış 0 · 33/33 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a61f334 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-c7b-kabul-250 6.86 6.48 5.40 5/223 764
+✓ senaryo-c7b-kabul-250: 39 geçti, 0 kaldı
+[kanit] m1t2-e2e-yeni-senaryo-c7b-kabul-250: GEÇTİ · çıkış 0 · 39/39 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a61f334 +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+  ✗ Mart özet kartları 1.600 / 0 / 600 — zincir ({"Hesaplanan KDV (391) (İadeler Düşülmüş)":"₺1.000,00","İndirilecek KDV (191) (İadeler Düşülmüş)":"₺0,00","Alıcı Olarak Kesilen Tevkifat (2 No.lu)":"₺0,00","Önceki Dönemden Devreden KDV":"₺2.000,00","Ödenecek KDV":"₺0,00","Sonraki Döneme Devreden KDV":"₺1.000,00","Mahsup Edilmemiş Ay":"Şubat 2026 (devreden KDV mahsup fişinden gelir; sonraki ayların devredeni ve ödeneceği aylar sırayla mahsup edilince kesinleşir)"})
+  ✗ not: Şubat 2026 (devreden KDV mahsup fişinden gelir; sonraki ayların devredeni ve ödeneceği aylar sırayla mahsup edilince kesinleşir)
+  ✗ mahsuptan sonra rapor yine zincir 1.600 / 0 / 600 ({"summary":["2000,00","0,00","1000,00"],"foot":["2000,00","0,00","1000,00"]})
+  ✗ kopuk zincir notu: undefined
+  ✗ Bu Yıl: 0 / 0 / 600 ({"summary":["0,00","0,00","1000,00"],"foot":["0,00","0,00","1000,00"]})
+  ✗ ay satırları ([["Ocak 2026","Sonraki Döneme Devreden KDV","2000,00"],["Şubat 2026","Önceki Dönemden Devreden KDV","2000,00"],["Şubat 2026","Sonraki Döneme Devreden KDV","1600,00"],["Mart 2026","Önceki Dönemden Devreden KDV","2000,00"],["Mart 2026","Sonraki Döneme Devreden KDV","1000,00"]])
+✗ senaryo-kdv-zincir-251: 6 geçti, 6 kaldı
+[kanit] başarısız testler (7):
+  ✖ senaryo-kdv-zincir-251: 6 geçti, 6 kaldı
+[kanit] m1t2-e2e-taban-senaryo-kdv-zincir-251: BAŞARISIZ (çıkış 1; 6 başarısız, 0 iptal) · çıkış 1 · 6/12 geçti, 6 başarısız, 0 iptal, 0 atlanan · commit 60f1a0a +1 değişmiş dosya +3 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+bitti 07:48:44 6.57 6.45 5.43 5/218 1107

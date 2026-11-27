@@ -1,0 +1,83 @@
+{
+  "ad": "m1t2-yeni-test-taban-utc",
+  "komut": "node --test test/kdv-ozeti-zincir-251.test.mjs test/kdv-ozeti-devreden-251.test.mjs",
+  "commit": "60f1a0a72fe43f2014a155406968d02629193b89",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T07:37:57.781Z",
+  "sure_sn": 3.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 5,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:222:3",
+      "hata": "2026-06: rapor (zincir) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"2.000,00 TL\"],[\"Ödenecek KDV\",\"0,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"2.000,00 TL\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › mahsup fişi kesilmemiş ay (S-M1-1 = B): rapor ZİNCİRLİ + 'Mahsup Edilmemiş Ay' notu, ön izleme defterden; mahsup kesilince / geri alınınca / yeniden kesilince rapor sayısı aynı",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:236:3",
+      "hata": "2026-11: rapor (zincir) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.000,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"1.960,00 TL\"],[\"Ödenecek KDV\",\"0,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"960,00 TL\"],[\"Mahsup Edilmemiş Ay\",\"Ekim 2026 (devreden KDV mahsup fişinden gelir; sonraki ayların devredeni ve ödeneceği aylar sırayla mahsup edilince kesinleşir)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:263:3",
+      "hata": "Aralık · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:283:3",
+      "hata": "2026-04: rapor (zincir) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"200,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"800,00 TL\"],[\"Ödenecek KDV\",\"0,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"1.000,00 TL\"],[\"Mahsup Edilmemiş Ay\",\"Mart 2026 (devreden KDV mahsup fişinden gelir; sonraki ayların devredeni ve ödeneceği aylar sırayla mahsup edilince kesinleşir)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden › S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800",
+      "konum": "test/kdv-ozeti-devreden-251.test.mjs:306:3",
+      "hata": "Nisan (S4 taşıması) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B) › 001 hiç mahsup fişi yok: ay ay zincir (elle), yıl 0 / 500 / 200, Mart–Mayıs 1.000 / 500 / 400; ön izleme defterden (değişmedi); not bütün mahsupsuz ayları söyler",
+      "konum": "test/kdv-ozeti-zincir-251.test.mjs:141:3",
+      "hata": "001 2026-02 zincir [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.000,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"1.000,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"Mahsup Edilmemiş Ay\",\"Ocak 2026 (devreden KDV mahsup fişinden gelir; sonraki ayların devredeni ve ödeneceği aylar sırayla mahsup edilince kesinleşir)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B) › 001 aylar SIRAYLA mahsup edilir: her adımda rapor aynı (zincir mahsuptan bağımsız); sonunda rapor = ön izleme = fiş = 190 (A = B)",
+      "konum": "test/kdv-ozeti-zincir-251.test.mjs:171:3",
+      "hata": "2026-01 mahsubundan sonra yıl aynı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B) › 002 kopuk zincir: Şubat atlanıp Mart mahsup edilmiş → rapor zinciri gösterir (Mart 1.600 / 0 / 600) + 'Zincirle Uyuşmayan Mahsup Fişi' notu; ön izleme ve defter değişmez",
+      "konum": "test/kdv-ozeti-zincir-251.test.mjs:192:3",
+      "hata": "Mart zincir (tur 1: 2.000 / 0 / 1.000) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.000,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"2.000,00 TL\"],[\"Ödenecek KDV\",\"0,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"1.000,00 TL\"],[\"KDV Mahsup Fişi\",\"Mart 2026\"],[\"Mahsup Edilmemiş Ay\",\"Şubat 2026 (devreden KDV mahsup fişinden gelir; sonraki ayların devredeni ve ödeneceği aylar sırayla mahsup edilince kesinleşir)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B) › iki şirket karışmaz: 001'in mahsupları 002'nin zincirine, 002'ninki 001'e girmez",
+      "konum": "test/kdv-ozeti-zincir-251.test.mjs:229:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B) › 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu",
+      "konum": "test/kdv-ozeti-zincir-251.test.mjs:236:3",
+      "hata": "Haziran bugünkü sayılarla (elle) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1t2-ajan/kanit/2026-11-27/m1t2-yeni-test-taban-utc.log",
+  "klasor": "/dev/shm/m1t2-kdv/eski",
+  "ham_cikti_sha256": "694cd74f2f824df97c8b9f1ba8de0c635adc16a7e2687d9c0a9a349a6d3ed149",
+  "ham_cikti_bayt": 18985
+}

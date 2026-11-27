@@ -1,0 +1,43 @@
+== mutant UTC başta 1.92 1.58 1.56 5/194 10789 07:18:12
+D1 devredeni sıfır al (rapor görünümü) → ÖLDÜ (başarısız 13/26)
+D2 devredeni iki kez düş → ÖLDÜ (başarısız 13/26)
+D3 çok aylı aralıkta ilk ay yerine son ayın devredeni 'önceki dönem' → ÖLDÜ (başarısız 7/26)
+D4 mahsup formülü yerine eski dönem farkı (391 − 191) → ÖLDÜ (başarısız 13/26)
+D5 ödenecek ile devredeni ters yaz → ÖLDÜ (başarısız 15/26)
+D6 ödenecek yalnız son hareketli ay (toplam yerine) → ÖLDÜ (başarısız 5/26)
+D7 sonraki döneme devreden = aralığın son ayının görünümü (hareketli ay yerine) → YAŞADI (başarısız 0/26)
+D8 'Mahsup Edilmemiş Ay' notu hiç yazılmaz → ÖLDÜ (başarısız 7/26)
+D9 ay satırlarında kullanılan devreden satırı yok → ÖLDÜ (başarısız 6/26)
+D10 S4 taşıması zincirde unutulur (carried yok) → ÖLDÜ (başarısız 1/26)
+Z1 mahsupsuz ayı zincirden atla (devredeni değiştirmez) → ÖLDÜ (başarısız 8/26)
+Z2 ödenecek aydan sonra devredeni taşı → ÖLDÜ (başarısız 3/26)
+Z3 zinciri aralığın ilk ayından başlat (öncesini unut) → ÖLDÜ (başarısız 12/26)
+Z4 kopuk zincir notunu yazma → ÖLDÜ (başarısız 1/26)
+Z5 A ↔ B anahtarını ters çevir → ÖLDÜ (başarısız 9/26)
+Z6 fişin devredeni zincirle karşılaştırılmaz (her fiş geçerli) → ÖLDÜ (başarısız 2/26)
+Z7 geçerli fişte fişin devredeni yerine hesaplanan taşınır → ÖLDÜ (başarısız 1/26)
+çıkış 0
+== mutant Europe/Istanbul başta 4.21 2.44 1.87 2/183 11846 07:19:33
+D1 devredeni sıfır al (rapor görünümü) → ÖLDÜ (başarısız 13/26)
+D2 devredeni iki kez düş → ÖLDÜ (başarısız 13/26)
+D3 çok aylı aralıkta ilk ay yerine son ayın devredeni 'önceki dönem' → ÖLDÜ (başarısız 7/26)
+D4 mahsup formülü yerine eski dönem farkı (391 − 191) → ÖLDÜ (başarısız 13/26)
+D5 ödenecek ile devredeni ters yaz → ÖLDÜ (başarısız 15/26)
+D6 ödenecek yalnız son hareketli ay (toplam yerine) → ÖLDÜ (başarısız 5/26)
+D7 sonraki döneme devreden = aralığın son ayının görünümü (hareketli ay yerine) → YAŞADI (başarısız 0/26)
+D8 'Mahsup Edilmemiş Ay' notu hiç yazılmaz → ÖLDÜ (başarısız 7/26)
+D9 ay satırlarında kullanılan devreden satırı yok → ÖLDÜ (başarısız 6/26)
+D10 S4 taşıması zincirde unutulur (carried yok) → ÖLDÜ (başarısız 1/26)
+Z1 mahsupsuz ayı zincirden atla (devredeni değiştirmez) → ÖLDÜ (başarısız 8/26)
+Z2 ödenecek aydan sonra devredeni taşı → ÖLDÜ (başarısız 3/26)
+Z3 zinciri aralığın ilk ayından başlat (öncesini unut) → ÖLDÜ (başarısız 12/26)
+Z4 kopuk zincir notunu yazma → ÖLDÜ (başarısız 1/26)
+Z5 A ↔ B anahtarını ters çevir → ÖLDÜ (başarısız 9/26)
+Z6 fişin devredeni zincirle karşılaştırılmaz (her fiş geçerli) → ÖLDÜ (başarısız 2/26)
+Z7 geçerli fişte fişin devredeni yerine hesaplanan taşınır → ÖLDÜ (başarısız 1/26)
+çıkış 0
+== komşu utc başta 4.52 2.96 2.10 1/189 13027 07:20:49
+[kanit] m1t2-komsu-utc: GEÇTİ · çıkış 0 · 529/529 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit c97b166 +3 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== komşu ist başta 5.18 3.81 2.56 3/207 15772 07:23:28
+[kanit] m1t2-komsu-ist: GEÇTİ · çıkış 0 · 529/529 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit c97b166 +1 değişmiş dosya +3 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+bitti 07:27:14 6.82 5.76 3.65 5/230 19103

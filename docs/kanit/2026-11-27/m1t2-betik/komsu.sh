@@ -1,0 +1,9 @@
+#!/bin/bash
+# M1 tur 2 komşu testleri: tur 1'in listesi (git grep: kdv-ozeti | vat-offset | KDV Özeti | Mahsup Edilmemiş | vatView | monthPosition → 24 dosyanın hepsi bu listede) + yeni zincir testi.
+# $1 = TZ etiketi (utc | ist), $2 = kod kökü, $3 = kanıt klasörü
+cd "$2" || exit 1
+case "$1" in utc) export TZ=UTC ;; ist) export TZ=Europe/Istanbul ;; esac
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+export KANIT_DIR="$3"
+FILES="test/kdv-ozeti-zincir-251.test.mjs test/kdv-ozeti-devreden-251.test.mjs test/yazim-duzeni.test.mjs test/banka-210-altin.test.mjs test/banka-210-ertelenen.test.mjs test/banka-210-fis.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-220-pos-kdv.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/c7b-degismez-250.test.mjs test/c7b-eski-surum-sinif-250.test.mjs test/c7b-gecis-gunu-250.test.mjs test/c7b-goc52-kilit-izi-250.test.mjs test/c7b-kdv-donemi-250.test.mjs test/c7b-kdv-ozeti-donem-250.test.mjs test/c7b-kdv-s4-250.test.mjs test/c7b-kitap-turetme-250.test.mjs test/c7b-sifirla-kdv-mahsup-250.test.mjs test/cheques-overview.test.mjs test/defter-243-kapi.test.mjs test/defter-243-ux24-toplam.test.mjs test/defter-243-vergi.test.mjs test/defter-hiz-esdegerlik-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-tur3-250.test.mjs test/ekstre-ayrinti-245.test.mjs test/fis-defteri-250.test.mjs test/is-akisi.test.mjs test/kasa-acilis-iz-250.test.mjs test/kasa-acilis-once-250.test.mjs test/kasa-acilis-vergi-s94-250.test.mjs test/license.test.mjs test/mobil-247.test.mjs test/rapor-220.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/tyk-kapanis-250.test.mjs"
+node tools/kanit.mjs kos "m1t2-komsu-$1" -- node --test --test-concurrency=2 $FILES

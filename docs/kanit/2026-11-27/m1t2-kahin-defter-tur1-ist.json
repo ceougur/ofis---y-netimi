@@ -1,0 +1,32 @@
+{
+  "ad": "m1t2-kahin-defter-tur1-ist",
+  "komut": "npm run test:kahin-defter",
+  "commit": "60f1a0a72fe43f2014a155406968d02629193b89",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T07:42:57.157Z",
+  "sure_sn": 5.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1t2-ajan/kanit/2026-11-27/m1t2-kahin-defter-tur1-ist.log",
+  "klasor": "/dev/shm/m1t2-kdv/eski",
+  "ham_cikti_sha256": "0369da2ea3db40bf5f712d059f8471468359169710e5d5397c7fa331a049fa7b",
+  "ham_cikti_bayt": 2825
+}
