@@ -87,6 +87,41 @@ export function devirReport(plan, preflight = null, { companyLabel = "", measure
       textRow(item.baslik, `Nereye: ${item.nereye?.ekran || "Yıl Sonu Devri"}`);
     }
   };
+  // D3 tur 4 — uzman görüşü (6) → BAŞ MİMAR KARARI 27.11: raporun BAŞINDA ön izlemeyi hazırlayan, aktarılan kalem sayıları ve uyarılar / istisnalar. Ekran = PDF = Excel: "Özet" bölümünün
+  // satırları (PDF'te hücre sarılır, kesilmez — özet kutularında uzun değer kesilirdi); kısa olanlar ayrıca başlık kutularında (summary).
+  const n = plan.sayilar || {};
+  const stopCount = (preflight?.durdurur || []).length;
+  const warnCount = (preflight?.uyarir || []).length;
+  const chequeCount = Object.values(n.evrak || {}).reduce((sum, item) => sum + (item.adet || 0), 0);
+  const archived = (plan.newYear.baglar || []).filter(link => link.tur === "arsiv-basvurusu").length;
+  const reserved = (plan.newYear.mahsupAyirmalari || []).filter(item => item.tur === "yeni-yila-ayrildi").length;
+  const negative = n.stok?.eksi || 0;
+  const exceptions = [negative ? `${count(negative)} ürün eksi stokla devreder` : "", archived ? `${count(archived)} ödemenin bağı arşiv başvurusuna çevrilir` : "", reserved ? `${count(reserved)} mahsup için eski yılın belgesi ayrılır` : ""].filter(Boolean);
+  const madeAt = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(preparedAt) ? (() => {
+    const at = new Date(preparedAt);
+    const local = new Date(at.getTime() - at.getTimezoneOffset() * 60_000).toISOString();
+    return `${dayText(local.slice(0, 10))} saat ${local.slice(11, 16)}`; // "saat": Excel üreticisi tarih-saat metnini tarih hücresine çevirmesin (ekran = PDF = Excel aynı metin)
+  })() : "";
+  const stopText = stopCount ? `${count(stopCount)} neden (Devri Durduran Nedenler bölümünde)` : "Yok";
+  const warnText = warnCount ? `${count(warnCount)} uyarı (Uyarılar bölümünde)` : "Yok";
+  const head = [
+    ["Ön İzlemeyi Hazırlayan", preparedBy || "Bilinmiyor"],
+    ...(madeAt ? [["Ön İzlemenin Hazırlandığı An", madeAt]] : []),
+    ["Aktarılan Cari", `${count(n.cariAcilis)} cari (${count(n.cariKarti)} cari kartı yeni yıla geçer)`],
+    ["Açık Fatura", `${count(n.acikFatura?.satis)} satış (${tl(n.acikFatura?.satisMinor)}) · ${count(n.acikFatura?.alis)} alış (${tl(n.acikFatura?.alisMinor)})`],
+    ["Fatura Dışı Açık Kalem", `${count((n.acikKalem?.borc || 0) + (n.acikKalem?.alacak || 0))} kalem`],
+    ["Taksit Kartı", `${count(n.taksitKarti?.acik)} açık (${tl(n.taksitKarti?.kalanMinor)}) · ${count(n.taksitKarti?.kapali)} kapalı`],
+    ["Çek / Senet", `${count(chequeCount)} evrak`],
+    ["Banka Hesabı", `${count(n.banka?.hesap)} hesap`],
+    ["Stok Kalemi", `${count(n.stok?.urun)} ürün (${tl(n.stok?.degerMinor)})`],
+    ["Şüpheli Alacak", `${count(n.supheli?.kayit)} kayıt`],
+    ["Taşınan Hareket", `${count(n.hareket?.tasinacak)} hareket yeni yılda kalır · ${count(n.hareket?.budanacak)} hareket arşivde kalır`],
+    ["Devri Durduran Neden", stopText],
+    ["Uyarı", warnText],
+    ["İstisnalar", exceptions.length ? exceptions.join("; ") : "Yok"],
+  ];
+  open("ozet", "Özet");
+  for (const [label, value] of head) textRow(label, value);
   reasons("durduranlar", "Devri Durduran Nedenler", preflight?.durdurur || [], "Devri durduran neden yok.");
   reasons("uyarilar", "Uyarılar", preflight?.uyarir || [], "Uyarı yok.");
   const opening = measured || plannedOpenings(plan);
@@ -161,42 +196,17 @@ export function devirReport(plan, preflight = null, { companyLabel = "", measure
   const meta = plan.meta;
   const title = "Devir Raporu";
   const subtitle = `${dayText(meta.K)} Kesim · ${dayText(meta.acilisGunu)} Açılış · ${meta.secenekAd}${measured ? "" : " · Ön İzleme"}`;
-  // D3 tur 4 — uzman görüşü (6) → BAŞ MİMAR KARARI 27.11: başlıkta ön izlemeyi hazırlayan, aktarılan kalem sayıları ve uyarılar / istisnalar (ekran = PDF = Excel: aynı `summary`).
-  const n = plan.sayilar || {};
-  const stopCount = (preflight?.durdurur || []).length;
-  const warnCount = (preflight?.uyarir || []).length;
-  const chequeCount = Object.values(n.evrak || {}).reduce((sum, row) => sum + (row.adet || 0), 0);
-  const archived = (plan.newYear.baglar || []).filter(link => link.tur === "arsiv-basvurusu").length;
-  const reserved = (plan.newYear.mahsupAyirmalari || []).filter(row => row.tur === "yeni-yila-ayrildi").length;
-  const negative = n.stok?.eksi || 0;
-  const exceptions = [negative ? `${count(negative)} ürün eksi stokla devreder` : "", archived ? `${count(archived)} ödemenin bağı arşiv başvurusuna çevrilir` : "", reserved ? `${count(reserved)} mahsup için eski yılın belgesi ayrılır` : ""].filter(Boolean);
-  const madeAt = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(preparedAt) ? (() => {
-    const at = new Date(preparedAt);
-    const local = new Date(at.getTime() - at.getTimezoneOffset() * 60_000).toISOString();
-    return `${dayText(local.slice(0, 10))} ${local.slice(11, 16)}`;
-  })() : "";
   const summary = [
     ["Şirket", companyLabel || meta.sirket?.label || ""],
-    ["Ön İzlemeyi Hazırlayan", preparedBy || "—"],
-    ...(madeAt ? [["Ön İzlemenin Hazırlandığı An", madeAt]] : []),
+    ["Ön İzlemeyi Hazırlayan", preparedBy || "Bilinmiyor"],
     ["Devir İçin Son İşlem Tarihi", dayText(meta.K)],
     ["Yeni Yılın Açılış Günü", dayText(meta.acilisGunu)],
     ["Cari Bakiye Tipi", meta.secenekAd],
     ["Defter Türü (Arşivin)", BOOK_TYPES[meta.defterTuru] || meta.defterTuru],
     ["Devir Çalışma Kimliği", meta.calismaKimligi],
     ["Veri Sürümü", meta.veriSurumu],
-    ["Aktarılan Cari", `${count(n.cariAcilis)} cari (${count(n.cariKarti)} cari kartı yeni yıla geçer)`],
-    ["Açık Fatura", `${count(n.acikFatura?.satis)} satış (${tl(n.acikFatura?.satisMinor)}) · ${count(n.acikFatura?.alis)} alış (${tl(n.acikFatura?.alisMinor)})`],
-    ["Fatura Dışı Açık Kalem", `${count((n.acikKalem?.borc || 0) + (n.acikKalem?.alacak || 0))} kalem`],
-    ["Taksit Kartı", `${count(n.taksitKarti?.acik)} açık (${tl(n.taksitKarti?.kalanMinor)}) · ${count(n.taksitKarti?.kapali)} kapalı`],
-    ["Çek / Senet", `${count(chequeCount)} evrak`],
-    ["Banka Hesabı", `${count(n.banka?.hesap)} hesap`],
-    ["Stok Kalemi", `${count(n.stok?.urun)} ürün (${tl(n.stok?.degerMinor)})`],
-    ["Şüpheli Alacak", `${count(n.supheli?.kayit)} kayıt`],
-    ["Taşınan Hareket", `${count(n.hareket?.tasinacak)} hareket yeni yılda kalır · ${count(n.hareket?.budanacak)} hareket arşivde kalır`],
-    ["Devri Durduran Neden", stopCount ? `${count(stopCount)} neden (Devri Durduran Nedenler bölümünde)` : "Yok"],
-    ["Uyarı", warnCount ? `${count(warnCount)} uyarı (Uyarılar bölümünde)` : "Yok"],
-    ["İstisnalar", exceptions.length ? exceptions.join("; ") : "Yok"],
+    ["Devri Durduran Neden", stopCount ? count(stopCount) : "Yok"],
+    ["Uyarı", warnCount ? count(warnCount) : "Yok"],
     ["Dönem Net Kârı (Zararı)", tl(result)],
     ["Not", "590 / 591 vergi öncesi dönem sonucudur."],
   ];
