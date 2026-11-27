@@ -239,7 +239,7 @@ describe("2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B)", ()
     const jun = await report(monthRange("2026-06"), "", "001 Haziran (Güncel Değil)");
     assert.deepEqual(jun.three, [40000, 0, 30000], "Haziran bugünkü sayılarla (elle)");
     assert.deepEqual(await preview("2026-06"), [40000, 0, 30000], "Haziran ön izleme = rapor");
-    assert.match(jun.summary["Mahsuptan Sonra Değişen Ay"] || "", /^Haziran 2026 /, "Haziran mahsubu güncel değil");
+    assert.equal(jun.summary["Mahsuptan Sonra Değişen Ay"], "Haziran 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)", "Haziran mahsubu güncel değil (S-M1-3 = C: sayılar bugünkü kayıtlardan + not)");
     // Temmuz hareketsiz: zincirin taşıdığı = Haziran fişinin devredeni 200 (defterdeki 190) = ön izleme; artıran fark yeniden mahsupla gelir (S4 yalnız azaltanı taşır).
     const jul = await report(monthRange("2026-07"), "", "001 Temmuz");
     assert.deepEqual(jul.three, [20000, 0, 20000], "Temmuz = defterdeki 190");
