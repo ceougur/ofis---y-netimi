@@ -6,12 +6,15 @@
 //   Ayşe: 3 taksit (ilk vade 75 gün önce, aylık), 1. taksit ödendi → satır "… · N gün gecikti (2. taksit)".
 //   Burak: 3 taksit, 1. taksit SİLİNDİ (saklanan sıra 2, 3) → satır "(1. taksit)"; kart penceresinde satırlar "1." ve "2." (eski kod "2.", "3.").
 //   Cem: ilk vade 5 gün sonra → satır "… · sıradaki taksit", parantez YOK.
+// 2.5.1 Mİ tur 2 (S-Mİ1-1 = A — tek numara HER YERDE): Burak'ın son taksitine (saklanan 3 → görünen 2.) 400 tahsilat → kart penceresinin hareket satırı "· 2. taksit",
+//   makbuz PDF'i "2. taksit (vade …)", cari kartının ekstresi "Taksit Tahsilatı · 2. taksit", Taksitler listesi "1. taksit" (sıradaki; saklanan 2) — hiçbirinde "3. taksit" yok.
 // Çalıştırma: node test/e2e/senaryo-mi1-251.mjs   (eski kod: DEPO=<eski kök> node <bu dosya>)
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
+const { pdfText } = await import(new URL("../fixtures/rapor-dosya-oku.mjs", import.meta.url).href);
 
 process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -116,6 +119,11 @@ try {
   await must("Burak 1. taksit sil", api("DELETE", `/api/workspace/plans/${kb.id}/items/${burakItems[0].id}`));
   const seqs = app.store.all("SELECT seq FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", kb.id).map(row => row.seq);
   ok(JSON.stringify(seqs) === "[2,3]", `veri tabanı: Burak'ın kartında saklanan sıra ${JSON.stringify(seqs)} (beklenen [2,3] — boşluk ön koşulu)`);
+  const burakLast = burakItems[2];
+  const burakPaid = await must("Burak son taksite tahsilat", api("POST", `/api/workspace/plans/${kb.id}/entries`, { kind: "in", amount: "400", method: "cash", date: iso(0), cashForce: true, similarOk: true, itemId: burakLast.id }));
+  const burakEntry = burakPaid.entries.find(entry => entry.itemId === burakLast.id);
+  const bound = app.store.get("SELECT i.seq FROM plan_entries e JOIN plan_items i ON i.id = e.item_id WHERE e.id = ?", burakEntry.id)?.seq;
+  ok(bound === 3, `veri tabanı: tahsilat saklanan sırası 3 olan taksite bağlı (${bound})`);
 
   console.log("\n■ 1. Cari Listesi (yan menüden gerçek tıklama): Taksit sütunu");
   await closeAll();
@@ -142,6 +150,35 @@ try {
   ok(JSON.stringify(numbers) === JSON.stringify(["1.", "2."]), `kart penceresinde numaralar ${JSON.stringify(numbers)} (beklenen ["1.","2."]; eski kod ["2.","3."])`);
   const firstLabel = await page.evaluate(sel => document.querySelector(`${sel} tr[data-item] [data-delete-item]`)?.getAttribute("aria-label") || "", TOP);
   ok(firstLabel === "1. taksiti sil", `ilk satırın sil düğmesi "${firstLabel}" (beklenen "1. taksiti sil")`);
+  const moveText = await page.evaluate(sel => [...document.querySelectorAll(`${sel} tr[data-entry]`)].map(row => row.querySelector("td:nth-child(2) b")?.textContent.replace(/\s+/g, " ").trim()).join(" | "), TOP);
+  ok(/Tahsilat · 2\. taksit/.test(moveText) && !/3\. taksit/.test(moveText), `kart penceresinin hareket satırı "${moveText}" (beklenen "Tahsilat · 2. taksit")`);
+  const receipt = await page.evaluate(async url => {
+    const res = await fetch(url);
+    return { status: res.status, bytes: [...new Uint8Array(await res.arrayBuffer())] };
+  }, `/api/workspace/plans/${kb.id}/entries/${burakEntry.id}/makbuz.pdf`);
+  const receiptText = receipt.status === 200 ? pdfText(Buffer.from(receipt.bytes)).replace(/\s+/g, " ") : "";
+  ok(/2\. taksit \(vade /.test(receiptText) && !/3\. taksit/.test(receiptText), `makbuz PDF'i (dosyadan okundu): "${(/\d+\. taksit \(vade [^)]*\)/.exec(receiptText) || [""])[0]}" (beklenen "2. taksit (vade …)")`);
+
+  console.log("\n■ 3. Burak'ın cari kartı (Cari Listesi → satır → Enter): ekstre satırı");
+  await closeAll();
+  await page.click('#hof-sidecard [data-action="accounts"]');
+  await page.waitForSelector(`${TOP} tr[data-account="${burak.id}"]`, { timeout: 15000 });
+  await page.focus(`${TOP} tr[data-account="${burak.id}"]`);
+  await page.keyboard.press("Enter");
+  await page.waitForSelector(`${TOP} [data-open-plan="${kb.id}"]`, { timeout: 15000 });
+  await page.waitForTimeout(400);
+  const ledgerText = await page.evaluate(sel => document.querySelector(sel)?.innerText.replace(/\s+/g, " ") || "", TOP);
+  await shot("burak-cari-karti-ekstre");
+  ok(/Taksit Tahsilatı · 2\. taksit/.test(ledgerText) && !/3\. taksit/.test(ledgerText), `cari kartının ekstresinde "Taksit Tahsilatı · 2. taksit" (${(/Taksit Tahsilatı[^₺]{0,20}/.exec(ledgerText) || [""])[0]})`);
+  await closeAll();
+
+  console.log("\n■ 4. Taksitler listesi (yan menüden): Burak'ın sıradaki taksiti '1. taksit'");
+  await page.click('#hof-sidecard [data-action="plans"]');
+  await page.waitForSelector(`${TOP} .hof-plans-table tbody tr[data-plan]`, { timeout: 15000 });
+  await page.waitForTimeout(400);
+  const planRow = await page.evaluate(([sel, id]) => document.querySelector(`${sel} tr[data-plan="${id}"]`)?.innerText.replace(/\s+/g, " ") || "", [TOP, kb.id]);
+  await shot("taksitler-listesi");
+  ok(/1\. taksit/.test(planRow) && !/[23]\. taksit/.test(planRow), `Taksitler listesinde Burak: "${planRow}" (beklenen sıradaki "1. taksit"; eski kod "2. taksit")`);
   await closeAll();
   ok(!errors.length, `sayfada JavaScript hatası yok${errors.length ? `: ${errors.join(" ; ")}` : ""}`);
 } catch (error) {

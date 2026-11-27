@@ -7437,6 +7437,14 @@ body.hof-dense .dynamic-table th {
 .hof-acc-period input[type="date"] {
   min-width: 0;
 }
+.hof-acc-period-label {
+  display: inline-flex;
+  align-items: center;
+  margin-right: -4px;
+  font-size: 13px;
+  color: #1c2a31;
+  white-space: nowrap;
+}
 .hof-acc-paid {
   display: inline-flex;
   align-items: center;

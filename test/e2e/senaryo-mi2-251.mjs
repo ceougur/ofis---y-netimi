@@ -68,6 +68,20 @@ const shot = async name => {
 const MODAL = ".hof-modal-backdrop.is-visible";
 const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
 const ACC = `${MODAL} [data-accounts]`;
+// 2.5.1 Mİ tur 2 (BAŞ MİMAR KARARI 27.11 (4)): dönem seçicinin "Tahsilat Dönemi:" etiketi her durumda GÖRÜNÜR (önce yalnız "Yok" seçeneğinin metniydi; dönem seçilince
+// kayboluyordu — ana oturumun ekran yürüyüşü). Görünürlük ekrandaki kutudan (genişlik / yükseklik > 0, gizli değil) okunur.
+const periodLabel = () =>
+  page.$eval(`${ACC} .hof-acc-period`, box => {
+    const label = [...box.querySelectorAll("label, span")].find(node => /^Tahsilat Dönemi:?$/.test(node.textContent.trim()) || /^Tahsilat Dönemi:/.test(node.firstChild?.textContent?.trim() || ""));
+    const shown = node => {
+      if (!node) return false;
+      const rect = node.getBoundingClientRect();
+      const style = getComputedStyle(node);
+      return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+    };
+    const text = label ? (label.matches("span") ? label.textContent.trim() : label.firstChild?.textContent?.trim() || "") : "";
+    return { text, visible: shown(label), selected: box.querySelector("select[data-period]")?.selectedOptions[0]?.textContent.trim() || "" };
+  }).catch(() => ({ text: "", visible: false, selected: "" }));
 const typeSlow = async text => {
   for (const ch of text) await page.keyboard.type(ch, { delay: 35 });
 };
@@ -227,6 +241,8 @@ try {
   await page.waitForSelector(`${ACC} table[data-groups]`, { timeout: 15000 });
   const period = await page.$eval(`${ACC} select[data-period]`, node => node.value);
   ok(period === "today", `dönem "${period}" (beklenen today = Bugün)`);
+  const groupsLabel = await periodLabel();
+  ok(groupsLabel.visible && groupsLabel.text === "Tahsilat Dönemi:" && groupsLabel.selected === "Bugün", `Grup Özeti'nde (dönem Bugün) etiket görünür: ${JSON.stringify(groupsLabel)}`);
   const a = await groupTableRow("A Grubu");
   const b = await groupTableRow("B Grubu");
   const g = await groupTableRow("Grupsuz");
@@ -271,6 +287,8 @@ try {
   await page.waitForTimeout(900);
   const payers = await page.$$eval(`${ACC} tr[data-account] td:nth-child(3) > b:first-child`, nodes => nodes.map(node => node.textContent.trim()).sort());
   ok(JSON.stringify(payers) === JSON.stringify(["Can Öğrenci", "Elif Öğrenci"]), `ödeme yapanlar: ${JSON.stringify(payers)}`);
+  const listLabel = await periodLabel();
+  ok(listLabel.visible && listLabel.text === "Tahsilat Dönemi:" && listLabel.selected === "Bugün", `Liste'de dönem seçiliyken etiket görünür: ${JSON.stringify(listLabel)}`);
   const waAll = await page.$(`${ACC} [data-act="waStatement"]`);
   ok(!waAll, "bu süzgeçte 'Tümüne WhatsApp' düğmesi yok (yalnız işaretlenenlere)");
   await shot("liste-odeme-yapanlar");
@@ -287,6 +305,20 @@ try {
   const aRow = rows.slice(head + 1).find(row => row[0] === "A Grubu");
   ok(head >= 0 && total && money(total[rows[head].indexOf("Tahsilat")]) === 1500, `Excel TOPLAM Tahsilat ${total?.[rows[head]?.indexOf("Tahsilat")]} (beklenen 1.500)`);
   ok(aRow && money(aRow[rows[head].indexOf("Nakit")]) === 100 && money(aRow[rows[head].indexOf("POS")]) === 200, `Excel A Grubu: ${JSON.stringify(aRow)}`);
+
+  console.log("\n■ 7. Liste'de dönem 'Tarih Aralığı' ve 'Yok' (klavye): etiket her durumda görünür");
+  await page.click(`${ACC} [data-display="list"]`);
+  await page.waitForSelector(`${ACC} table.hof-acc-table`, { timeout: 15000 });
+  await page.focus(`${ACC} select[data-period]`);
+  await page.selectOption(`${ACC} select[data-period]`, "range");
+  await page.waitForSelector(`${ACC} input[data-period-from]`, { timeout: 15000 });
+  const rangeLabel = await periodLabel();
+  ok(rangeLabel.visible && rangeLabel.text === "Tahsilat Dönemi:" && rangeLabel.selected === "Tarih Aralığı", `Tarih Aralığı seçiliyken etiket görünür: ${JSON.stringify(rangeLabel)}`);
+  await shot("donem-etiketi-tarih-araligi");
+  await page.selectOption(`${ACC} select[data-period]`, "");
+  await page.waitForTimeout(800);
+  const noneLabel = await periodLabel();
+  ok(noneLabel.visible && noneLabel.text === "Tahsilat Dönemi:" && noneLabel.selected === "Yok", `dönem Yok iken etiket görünür, seçenek "Yok": ${JSON.stringify(noneLabel)}`);
   await closeAll();
 
   const integrity = await api("GET", "/api/workspace/ledger/integrity");

@@ -36,7 +36,7 @@
   // 2.5.1 Mİ-2 (KULLANICI 27.11: "gruba göre bugün ne kadar kasaya giriş olmuş … kasaya giriş derken tüm tahsilat yollarını kastettim"): tahsilat dönemi ve
   // yol kırılımı (sunucu: lib/account-collections.mjs — 'Cari Bazında Tahsilat' raporuyla aynı tanım). Dönem seçilmezse Liste bugünkü gibi.
   const PERIODS = [
-    ["", "Tahsilat Dönemi: Yok"],
+    ["", "Yok"],
     ["today", "Bugün"],
     ["yesterday", "Dün"],
     ["week", "Bu Hafta"],
@@ -391,7 +391,9 @@
     const range = view.period === "range" ? `<input type="date" data-period-from value="${esc(view.from)}" aria-label="Başlangıç tarihi" max="${esc(view.to || "")}"><span class="hof-muted">–</span><input type="date" data-period-to value="${esc(view.to)}" aria-label="Bitiş tarihi" min="${esc(view.from || "")}">` : "";
     const paid = view.period ? `<label class="hof-acc-paid"><input type="checkbox" data-paid ${view.paid ? "checked" : ""}> Bu Dönemde Ödeme Yapanlar</label>` : "";
     const hint = view.period === "range" && !periodReady() ? '<small class="hof-muted">Başlangıç ve bitiş günlerini seçin.</small>' : "";
-    return `<div class="hof-acc-period" role="group" aria-label="Tahsilat dönemi"><select data-period aria-label="Tahsilat dönemi">${PERIODS.filter(([id]) => id || view.display === "list").map(([id, label]) => `<option value="${id}" ${id === view.period ? "selected" : ""}>${label}</option>`).join("")}</select>${range}${paid}${hint}</div>`;
+    // 2.5.1 Mİ tur 2 (BAŞ MİMAR KARARI 27.11 (4)): "Tahsilat Dönemi:" etiketi seçenekten AYRI, her durumda görünür (önce yalnız "Tahsilat Dönemi: Yok" seçeneğinin metniydi —
+    // dönem seçilince ve Grup Özeti'nde kayboluyordu).
+    return `<div class="hof-acc-period" role="group" aria-label="Tahsilat dönemi"><span class="hof-acc-period-label" data-period-label>Tahsilat Dönemi:</span><select data-period aria-label="Tahsilat dönemi">${PERIODS.filter(([id]) => id || view.display === "list").map(([id, label]) => `<option value="${id}" ${id === view.period ? "selected" : ""}>${label}</option>`).join("")}</select>${range}${paid}${hint}</div>`;
   };
   const periodText = period => (period ? `${period.label}${period.from === period.to ? ` · ${HOF.formatDate(period.from)}` : ` · ${HOF.formatDate(period.from)} – ${HOF.formatDate(period.to)}`}` : "");
   // Tahsilat hücresi: toplam + sıfır olmayan yollar (ekran = PDF / Excel'deki sütunlar); önceden ödenen ayrı satırda, toplama karışmaz.
