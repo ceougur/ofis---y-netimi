@@ -1,6 +1,7 @@
 # Ödeme Hatırlatma — "Kime, Kaç Kez" İlke Taslağı (2.5.1, Ç5-C)
 
-> Durum: TASLAK — KULLANICI ONAYINA (ders 45: dış servise giden, durum tutan özellikte "kime kaç kez" önce planda yazılır, onaylanır; son adayda yeni kural girmez).
+> **ONAYLANDI — KULLANICI 27.11.2026 12:01 UTC (AYNEN: "ÖNERİLERİNİ UYGULA"): aşağıdaki "YENİ — SORU" maddelerinin HEPSİNDE A şıkkı KARARDIR (S-C5C-1 … S-C5C-10 = A); "ÖNERİ UYGULANIR" maddeleri aynen; 2.2'deki "kaydı açık" okuması onaylandı. BAŞ MİMAR EKLERİ (kullanıcıya gösterildi): S-C5C-1 için önizlemede "vadesi yazılmamış kalem yüzünden listeye giren N kişi" bilgi satırı; S-C5C-9 için devrin ön denetiminde "N kişilik gönderim durdurulacak" uyarısı.**
+> Eski durum satırı: TASLAK — KULLANICI ONAYINA (ders 45: dış servise giden, durum tutan özellikte "kime kaç kez" önce planda yazılır, onaylanır; son adayda yeni kural girmez).
 > Hazırlayan: plan ajanı P-Ç5C (27.11.2026). Kod ve test YAZILMADI. Sayılar programın kendi ürettiği büyük deneme verisinden (1. şirket, 1.484 cari, bugün = 08.10.2026);
 > ayrıntı ve dosya / satır `docs/devir/2.5.1-DEVAM/pc5c-rapor.md`.
 >
