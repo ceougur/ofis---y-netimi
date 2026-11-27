@@ -1,0 +1,14 @@
+ANA OTURUM — MUHASEBE KÂHİNİ DEVİR BAKIMI (K-D) YENİDEN KOŞUSU (2.5.1; 27.11.2026)
+
+Kâhin dalı: 41645d2e (yalnız test/bagimsiz/muhasebe/** + docs/kanit/2026-11-27/kd-*; bağımsızlık denetimi temiz). Taban: t251-taban 64396478.
+Kopyalar: not defteri ana-kd/yeni (seyrek ağaç 41645d2e), ana-kd/taban, ana-kd/eskimodel (3400b615). Betik: kos.sh.txt (mutant adımı MUT=1 ile ayrı).
+İki saat dilimi (TZ=UTC, TZ=Europe/Istanbul):
+- öz test: 249 / 249 (test-UTC.out, test-Istanbul.out)
+- beklenen dosyaları güncel (denetle-*.out)
+- eski ↔ yeni (G3): eski senaryolarda 146 değişen yaprak, BEKLENMEYEN 0; yeni yaprak 12.594 (g3-*.out, g3-dokum-*.json)
+- S-1 gösterim denetimi: 18 rapor, sorun 0 (g3s1-*.out)
+- eski model + yeni testler (UTC): 247 testten 32 kırmızı (19 başarısız + 13 hata) — nedenler okundu (ör. Ödeme Sözü taşıma alanı yok) (eskimodel-UTC.out)
+- taban öz testi: 223 / 223 (tabantest-UTC.out)
+- 17 yeni mutant (MUTASYON_ARALIK=330:347, iki işçi): UTC 17 / 17 ÖLDÜ (596 sn), İstanbul 17 / 17 ÖLDÜ (566 sn); temel (bozulmamış model) 243 test, 0 kırmızı (yenimutant-*.out)
+Sonuç: AJANLA BİREBİR. Tam mutasyon CI'nin kâhin mutasyon adımında koşar.
+Birleşim: 4ac2b3a1 (merge 41645d2e).

@@ -1,0 +1,25 @@
+#!/bin/bash
+# Ana oturum: muhasebe kâhini devir bakımı YENİDEN KOŞUSU (41645d2e; eski kâhin = t251-taban; eski model + yeni test = 3400b615). flock -s altında.
+SP=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+H=$SP/ana-kd; R=/home/user/ofis---y-netimi; O=$H/cikti
+cd $R || exit 1
+[ -d $H/yeni ] || { git worktree add -q --no-checkout --detach $H/yeni 41645d2e && git -C $H/yeni sparse-checkout set --no-cone '/*' '!/docs/kanit/' '/docs/kanit/2026-11-27/kd-g3-betik.py' '/docs/kanit/2026-11-27/kd-g3-s1-denetim.py' && git -C $H/yeni checkout -q; } || exit 1
+[ -d $H/taban ] || { mkdir -p $H/taban && git archive t251-taban test/bagimsiz/muhasebe | tar -x -C $H/taban; } || exit 1
+[ -d $H/eskimodel ] || { mkdir -p $H/eskimodel && git archive 3400b615 test/bagimsiz/muhasebe | tar -x -C $H/eskimodel; } || exit 1
+cd $H/yeni || exit 1
+M=test/bagimsiz/muhasebe; A=docs/kanit/2026-11-27
+[ -f $A/kd-g3-betik.py ] && [ -f $M/test_model.py ] && [ -f $H/taban/$M/model.py ] && [ -f $H/eskimodel/$M/test_model.py ] || { echo "ön koşul eksik"; exit 1; }
+kos() { ad=$1; shift; s=$(date +%s); timeout 2400 "$@" > $O/$ad.out 2>&1; c=$?; echo "$ad · çıkış $c · $(( $(date +%s)-s )) sn · $(grep -E '^(Ran |OK|FAILED|# (tests|pass|fail))|öldü|BEKLENMEYEN|güncel' $O/$ad.out | tail -3 | tr '\n' ' ' | cut -c1-260)"; }
+echo "başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S) · $(git rev-parse --short HEAD)"
+for tz in UTC Europe/Istanbul; do t=${tz##*/}; export TZ=$tz
+  kos test-$t python3 -I $M/test_model.py
+  kos denetle-$t python3 -I $M/uret_beklenen.py --denetle
+  [ "$MUT" = 1 ] && MUTASYON_ARALIK=330:347 MUTASYON_PARALEL=2 kos yenimutant-$t python3 -I $M/mutasyon.py
+  kos g3-$t python3 -I $A/kd-g3-betik.py $H/taban/$M/senaryolar $M/senaryolar $O/g3-dokum-$t.json
+  kos g3s1-$t python3 -I $A/kd-g3-s1-denetim.py $O/g3-dokum-$t.json $H/taban/$M/senaryolar $M/senaryolar
+done
+export TZ=UTC
+( cd $H/eskimodel && kos eskimodel-UTC python3 -I $M/test_model.py )
+( cd $H/taban && kos tabantest-UTC python3 -I $M/test_model.py )
+unset TZ
+echo "sonda $(cat /proc/loadavg) · $(date -u +%H:%M:%S)"; git -C $H/yeni status -s | head -5; echo bitti
