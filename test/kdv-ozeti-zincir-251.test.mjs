@@ -232,4 +232,20 @@ describe("2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B)", ()
     const two = await report({ from: "2026-01-01", to: "2026-12-31" }, q2, "002 yıl");
     assert.deepEqual(two.three, [0, 20000, 0]);
   });
+
+  it("001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu", async () => {
+    // Haziran mahsup edildikten sonra Haziran tarihli alış 500 (KDV 100): Haziran (bugünkü sayılarla) 200 − 100 − 400 → sonraki 300; fiş ve defter 200'de kalır ("Güncel Değil").
+    await buy("001", "2026-06-20", 500);
+    const jun = await report(monthRange("2026-06"), "", "001 Haziran (Güncel Değil)");
+    assert.deepEqual(jun.three, [40000, 0, 30000], "Haziran bugünkü sayılarla (elle)");
+    assert.deepEqual(await preview("2026-06"), [40000, 0, 30000], "Haziran ön izleme = rapor");
+    assert.match(jun.summary["Mahsuptan Sonra Değişen Ay"] || "", /^Haziran 2026 /, "Haziran mahsubu güncel değil");
+    // Temmuz hareketsiz: zincirin taşıdığı = Haziran fişinin devredeni 200 (defterdeki 190) = ön izleme; artıran fark yeniden mahsupla gelir (S4 yalnız azaltanı taşır).
+    const jul = await report(monthRange("2026-07"), "", "001 Temmuz");
+    assert.deepEqual(jul.three, [20000, 0, 20000], "Temmuz = defterdeki 190");
+    assert.deepEqual(await preview("2026-07"), [20000, 0, 20000], "Temmuz ön izleme = rapor");
+    // Haziran–Temmuz: önceki Mayıs sonu 400, ödenecek 0, sonraki = son KDV'li ayın (Haziran) sonucu 300 — tur 1 (A) ile aynı.
+    const both = await report({ from: "2026-06-01", to: "2026-07-31" }, "", "001 Haziran–Temmuz");
+    assert.deepEqual(both.three, [40000, 0, 30000], "Haziran–Temmuz");
+  });
 });
