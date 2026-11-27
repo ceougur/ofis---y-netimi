@@ -173,7 +173,13 @@ function linksAfter(store, K) {
     if (cols.has("invoice_id")) for (const row of store.all(`SELECT id, date, invoice_id AS inv FROM account_entries WHERE date > ?1 AND invoice_id <> '' AND invoice_id IN (${before})`, K)) add("account_entries", row.id, "invoice_id", row.date, row.inv);
     if (cols.has("refund_of")) for (const row of store.all(`SELECT id, date, refund_of AS inv FROM account_entries WHERE date > ?1 AND refund_of <> '' AND refund_of IN (${before})`, K)) add("account_entries", row.id, "refund_of", row.date, row.inv);
   }
-  if (has(store, "invoice_offsets")) for (const row of store.all(`SELECT id, date, invoice_id AS inv FROM invoice_offsets WHERE date > ?1 AND invoice_id IN (${before})`, K)) add("invoice_offsets", row.id, "invoice_id", row.date, row.inv);
+  if (has(store, "invoice_offsets")) {
+    for (const row of store.all(`SELECT id, date, invoice_id AS inv FROM invoice_offsets WHERE date > ?1 AND invoice_id IN (${before})`, K)) add("invoice_offsets", row.id, "invoice_id", row.date, row.inv);
+    // D3 tur 2 (gerçek bağ, tek borç sırası 0. adım — Mahsup Et iki belgeyi birlikte kapatır): mahsubun KARŞI faturası da ≤K olabilir (belge >K, karşı belge ≤K; ya da iki belge ≤K).
+    for (const row of store.all(`SELECT id, date, counter_id AS inv FROM invoice_offsets WHERE date > ?1 AND counter_type = 'invoice' AND counter_id IN (${before})`, K)) add("invoice_offsets", row.id, "counter_id", row.date, row.inv);
+  }
+  // D3 tur 2 (tasarım §3.5 madde 7 "iade bağı", G14 (1); tek borç sırası karar (2) "iade → asıl fatura"): K'den SONRA kesilmiş iade faturasının ≤K asıl faturası.
+  if (columns(store, "invoices").has("original_id")) for (const row of store.all(`SELECT id, issue_date AS date, original_id AS inv FROM invoices WHERE issue_date > ?1 AND original_id <> '' AND original_id IN (${before})`, K)) add("invoices", row.id, "original_id", row.date, row.inv);
   if (has(store, "cheque_events") && columns(store, "cheque_events").has("invoice_id")) for (const row of store.all(`SELECT id, date, invoice_id AS inv FROM cheque_events WHERE date > ?1 AND invoice_id <> '' AND invoice_id IN (${before})`, K)) add("cheque_events", row.id, "invoice_id", row.date, row.inv);
   if (has(store, "fin_events")) for (const row of store.all(`SELECT id, date, invoice_id AS inv FROM fin_events WHERE date > ?1 AND invoice_id <> '' AND invoice_id IN (${before})`, K)) add("fin_events", row.id, "invoice_id", row.date, row.inv);
   if (has(store, "plans") && columns(store, "plans").has("invoice_id")) for (const row of store.all(`SELECT id, COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS date, invoice_id AS inv FROM plans WHERE deleted_at IS NULL AND invoice_id <> '' AND invoice_id IN (${before})`, K)) add("plans", row.id, "invoice_id", row.date, row.inv);

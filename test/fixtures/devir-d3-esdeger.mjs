@@ -31,9 +31,16 @@ export function createEquivalence(store) {
    * Devirli kuyruk (t günü): planın satırları + K sonrası gerçek satırlar. split: true → Borç Toplamı / Alacak Toplamı AYRI satır olarak kuyruğa (netleşme kuralı OLMADAN — tasarım §3.5 madde 4'ün
    * tehlikesini göstermek için); varsayılan net tek satır (kuyrugaGirenMinor).
    */
-  function devirli(party, planRow, K, day, { split = false, roleless = false } = {}) {
+  function devirli(party, planRow, K, day, { split = false, roleless = false, redirect = false } = {}) {
     const after = (ledgers.get(party) || []).filter(line => line.date > K);
     const synthetic = [];
+    // D3 tur 2 — BAĞ YÖNLENDİRMESİNİN benzetimi (D4a ŞARTI; plan `newYear.baglar` tur "acik-kalem"): K sonrası satırın ≤K faturaya bağı (Kapatılacak Fatura, evrak bağı, iade → asıl
+    // fatura, Mahsup Et) yeni yılda faturanın DEVİR KALEMİNE yönelmeli. Bugünkü tek borç sırası bağı yalnız fatura kalemine (`inv:<fatura>`) kurar; benzetim açık fatura kalemini
+    // (kalemSinifi "fatura") kuyruğa o faturanın KENDİ satırı gibi (K+1 tarihli, tutar = planın tutarı, vade = planın vadesi) koyar — K sonrası satırların bağları böylece devir kalemine
+    // gider. redirect = false (tur 1 benzetimi): açık fatura kalemi Borç Yaz gibi yazılır, bağ hedefsiz kalır (bağsız gibi dağılır).
+    const invoiceLines = new Map();
+    if (redirect) for (const line of ledgers.get(party) || []) if (line.date <= K && line.origin === "invoice" && line.kind !== "in" && line.kind !== "out") invoiceLines.set(line.sourceId, line);
+    const redirected = new Map();
     const dueDates = new Map(extras.dueDates);
     const promises = new Map(extras.promises);
     const net = planRow.satirlar.reduce((sum, row) => sum + (row.kuyrugaGirenMinor || 0), 0);
@@ -49,6 +56,13 @@ export function createEquivalence(store) {
         paymentVade.set(row.kimlik, row.vade);
         continue;
       }
+      const own = redirect && row.kalemSinifi === "fatura" ? invoiceLines.get(row.belge?.faturaId) : null;
+      if (own) {
+        const amount = toTl(row.tutarMinor);
+        synthetic.push({ ...own, id: `${own.id}#devir`, date: row.tarih, debit: own.debit ? amount : 0, credit: own.debit ? 0 : amount });
+        redirected.set(own.sourceId, { vade: row.vade, amount });
+        continue;
+      }
       synthetic.push(lineOf(row.kimlik, row.yon, row.tarih, row.tutarMinor));
       dueDates.set(row.kimlik, row.vade);
       if (row.beklenenTarih) promises.set(row.kimlik, row.beklenenTarih);
@@ -57,7 +71,7 @@ export function createEquivalence(store) {
     synthetic.push(...totals);
     const base = input.batchSettleInput(party, [...synthetic, ...after], tables, day);
     const ids = new Set(after.filter(line => line.origin === "invoice").map(line => line.sourceId));
-    base.invoices = base.invoices.filter(invoice => ids.has(invoice.id));
+    base.invoices = base.invoices.filter(invoice => ids.has(invoice.id) || redirected.has(invoice.id)).map(invoice => (redirected.has(invoice.id) ? { ...invoice, dueDate: redirected.get(invoice.id).vade, payable: redirected.get(invoice.id).amount } : invoice));
     base.offsets = base.offsets.filter(offset => offset.date > K);
     const result = buildObligations({ ...input.withExtras(base, { ...extras, dueDates, promises }, party), doubtfulRecords: [] });
     if (!paymentVade.size) return result;
