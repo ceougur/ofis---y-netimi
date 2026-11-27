@@ -1,0 +1,27 @@
+başta 6.70 6.15 5.67 7/281 1651 11:49:33
+açılış 28483 ms · TYK önbelleği (soğuk) 988 ms · waFacts × 1484 = 3360 ms · yük 7.31 6.37 5.76 5/271 1924
+çıkış 0 sonda 7.31 6.37 5.76 6/263 1925 11:50:06
+cari 1484 · açılış 28483 ms · TYK soğuk 988 ms · waFacts×n 3360 ms · bugün 2026-10-08T12:00:00+03:00
+ortak eleme (İstemiyor/Pasif/Telefon): Counter({'Telefon': 212})
+
+Telefonu geçerli, istemiyor/pasif olmayan cari: 1272
+BUGÜN seçilen (eski taksit gecikmişi): 848 cari · tutar toplamı 68.129.872,75
+TYK gecikmişi > 0 (elemesiz): 848 cari · 156.993.991,79
+SONRA (öneri sırası: tedarikçi → şüpheli → söz): {'gider': 848, 'gecikmis_yok': 424}
+SONRA seçilen: 848 cari · 156.993.991,79  (tür: {'customer': 848})
+
+SINIF | cari | bugün tutar | sonra tutar | bakiye ≤ 0
+bugün de · yalnız diger:entry/account/debt+diger:stock/stock/debt+fatura+taksit · gider | 318 | 18.490.475,44 | 48.914.477,32 | 0
+bugün de · yalnız diger:entry/account/debt+diger:payment/account/out+diger:stock/stock/debt+fatura+taksit · gider | 212 | 12.774.225,74 | 70.776.756,88 | 0
+bugün de · yalnız diger:payment/account/out+diger:stock/stock/debt+fatura+taksit · gider | 106 | 4.664.203,23 | 4.957.058,97 | 0
+bugün de · yalnız fatura+taksit · gider | 106 | 11.338.518,55 | 4.753.489,03 | 0
+bugün de · yalnız diger:entry/account/debt+diger:payment/account/out+diger:stock/stock/debt+taksit · gider | 106 | 20.862.449,79 | 27.592.209,59 | 0
+
+İKİSİNDE DE gecikmiş: 848 · tutar artan 742 (+95.449.148,56) · azalan 106 (−6.585.029,52) · aynı 0
+{{3}} (en eski vade) değişen: 848 · daha eski 424
+
+bakiye ≤ 0 iken BUGÜN seçilen: 0; SONRA gecikmiş>0 iken bakiye ≤ 0: 0
+tedarikçi: TYK gecikmişi olan 0 (bugün seçilen tedarikçi 0); Diğer tür gecikmişli 0
+şüpheli kaydı açık: 0 cari; bunlardan bugün seçilen 0, TYK şüphesiz gecikmişi olan 0; kuyruk>0 ama kayıt kapalı 0; kayıt açık ama kuyruk 0 0
+Ödeme Sözü Var (söz ≥ bugün, gecikmiş>0): 0; bunlardan bugün seçilen 0; söz = bugün 0
+kalem türleri (TYK gecikmişli cari sayısı): {'diger:entry/account/debt': 636, 'diger:stock/stock/debt': 742, 'fatura': 742, 'taksit': 848, 'diger:payment/account/out': 424}

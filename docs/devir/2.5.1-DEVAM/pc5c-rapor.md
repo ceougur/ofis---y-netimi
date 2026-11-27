@@ -74,3 +74,105 @@
 | Cari türü | `account.type` (customer / supplier / other) | HAZIR (okunmuyor) |
 | Kalem türü (fatura / taksit / Borç Yaz / açılış / kapalı kart) | `tyk.items[].kind / planId / invoiceId / origin / lineKind` | HAZIR (yalnız iç; ekranda gösterilmiyor) |
 | Gecikmiş kalem SAYISI | `overdueDebtCount` | HAZIR (ileti şablonunda yer yok) |
+
+## 2. FARK TABLOSU
+
+Kanıt: betikler `pc5c-senaryo-betik.mjs` (küçük senaryo, programın API'siyle; boş veri, sahte saat 08.10.2026 durur), `pc5c-fark-betik.mjs` + `pc5c-siniflar.py` (büyük veri);
+ham çıktılar `pc5c-senaryo-cikti.json`, `pc5c-fark-cikti.txt` (bu klasörde). "Bugün" sütunu `queue.mjs` `overdueOf` + `eligibility`'nin birebir okumasıyla (aynı alanlar), "sonra" tek borç
+sırasının `overdue(bugün)`'ü + şüpheli kaydı + Ödeme Sözü + tür, taslaktaki öneri sırasıyla. Program kodu değişmedi; ikisi de `flock -s olcum.lock` altında, yük 5–7 (sayıları etkilemez; süreleri
+geçersiz kılar).
+
+### 2a. Küçük senaryo — her sınıf bir cari (programın API'siyle kuruldu)
+| Cari | Sınıf | Bugün gider mi · {{4}} ({{3}}) | Sonra gider mi · {{4}} ({{3}}) | Karar |
+|---|---|---|---|---|
+| K1 | yalnız taksit (kart 900 = 3 × 300, ilk vade 05.09) | evet · 600 (05.09) | evet · 600 (05.09) | aynı |
+| K2 | yalnız vadeli fatura 900 (vade 20.09) | **hayır** | **evet** · 900 (20.09) | 1.1 |
+| K3 | yalnız Borç Yaz 500 (vade 15.09) | **hayır** | **evet** · 500 (15.09) | 1.1 |
+| K4 | kapatılmış kart, Borçta Kalsın (S220) | **hayır** | **evet** · 600 (05.09) | 3.3 S220 |
+| K5 | kart gecikmiş ama karta bağlanmadan tahsilat 900 → bakiye 0 | **EVET · 600 — bakiyesi 0 iken** | hayır (Gecikmiş Borç Yok) | 2.4 (5) |
+| K6 | tedarikçiye avans 1.000 (kart "Gecikmiş Borç" 1.000) | hayır | hayır (Tedarikçi) | 2.1 S93 |
+| K7 | şüpheli: kart 600 gecikmiş, 300 Şüpheli Alacağa Alındı | **EVET · 600 (şüpheli dahil)** | otomatik hayır (Şüpheli Alacağı Var); elle · 300 (05.10) | 2.2 S7, 3.4 S17 |
+| K8 | kart 600 + Borç Yaz 400, Ödeme Sözü 20.10 | **EVET · 600** | otomatik hayır (Ödeme Sözü Var); elle · 1.000 (05.09) | 2.3 S52 / S73 |
+| K9 | Diğer türü, Borç Yaz 300 (vade 15.09) | hayır | **S-C5C-2:** A evet · 300 / B hayır | SORU |
+| K10 | dün (07.10) kesilmiş VADESİZ fatura 750 | hayır | **S-C5C-1:** A evet · 750 (07.10) / B hayır | SORU |
+| K11 | kart 600 gecikmiş + Alacak Yaz 1.000 → bakiye 100 alacaklı | **EVET · 600, {{5}} "100,00 TL (Alacaklı)"** | hayır (Gecikmiş Borç Yok) | 2.4 (5) |
+| K12 | taksit 600 + vadeli fatura 500 (vade 30.08) | evet · 600 (05.09) | evet · **1.100 (30.08)** | 3.1, 3.2 |
+| K13 | Ödeme Sözü BUGÜN (08.10) | hayır | hayır (Ödeme Sözü Var) | S72 |
+| K14 | vadesi BUGÜN olan fatura 600 | hayır | hayır | 1.2 M1f |
+ÖZET: bugün 6 cari seçiliyor (K1, K5, K7, K8, K11, K12) — **bunların 4'ü kararlara aykırı** (bakiyesi 0, bize alacaklı, şüpheli, söz vermiş). Sonra otomatik 5 cari (K1, K2, K3, K4, K12)
++ yanıta göre K9 / K10 → 5–7. **Çıkan 4, giren 3–5; tutarı değişen 1 (K12: 600 → 1.100).** Kart ekranındaki "Gecikmiş Borç" ile hatırlatma {{4}} sonra HER caride aynı (değişmez §2.10 9).
+
+### 2b. Büyük veri (programın kendi ürettiği temiz-100k kopyası; 1. şirket 1.484 cari, 82 bin para satırı, 34 bin fatura, bugün 08.10.2026)
+- Telefonu geçersiz 212 → değerlendirilen 1.272 cari (1.060 müşteri, 318 tedarikçi, 106 diğer arasından).
+- BUGÜN seçilen: **848 cari · 68.129.872,75 TL**. SONRA: **848 cari · 156.993.991,79 TL** — küme AYNI (bu veride gecikmiş borcu olan her müşterinin gecikmiş taksiti de var; "yalnız fatura" /
+  "yalnız Borç Yaz" sınıfı bu veride oluşmuyor), toplam tutar **2,3 kat**: 742 caride artıyor (+95.449.148,56), 106 caride azalıyor (−6.585.029,52; kart taksidi carinin bağsız tahsilatıyla
+  kuyrukta kapanmış — S50), {{3}} 848'inin hepsinde değişiyor (424'ünde daha eski tarih).
+- Gecikmiş kalemlerin türü (cari sayısı): taksit 848, fatura 742, stok satışı borcu 742, Borç Yaz 636, müşteriye yapılan ödeme (iade / avans) 424.
+- Bu veride şüpheli kaydı açık cari 0, Ödeme Sözü süren 0, tedarikçi / Diğer'de gecikmiş 0 → bu sınıflar büyük veride DENENEMEDİ (§8); kod turunda programın kendi ürettiği çok sınıflı veri gerekir.
+- KULLANICIYA GÖSTERİLECEK ANA SAYI: alıcı kümesi bu veride büyümüyor ama TUTAR 2,3 katına çıkıyor; tipik bir veride (2a) aykırı 4 kişi çıkıyor, faturası / borç kaydı / kapalı kartı
+  gecikmiş 3 kişi giriyor (vadesiz fatura ve Diğer türü yanıta göre +2).
+
+## 3. İLKE TASLAĞI
+
+`docs/devir/C5C-ILKE-TASLAK.md` (kullanıcı dilinde; 30 satırlık "nasıl bozulur?" listesi önce, her satır bir maddeye bağlı; her madde KARARLI / İLKEYLE / YENİ — SORU / ÖNERİ UYGULANIR).
+Soruların tam metni taslağın §10'unda; aşağıda raporun KULLANICIYA SORULMALI bölümü aynı numaralarla.
+
+## 4. BAŞ MİMAR KARARI GEREKİYOR (mimari; soru değil — ders 40 gereği kullanıcıya gösterilir)
+- **B-1 İki kâhinin iş bölümü (bağımsızlık, ders 5).** Hatırlatmanın KİME / HANGİ TUTAR'ı muhasebe (cari) kâhininde ZATEN modelli: sürücü `test/bagimsiz/muhasebe-surucu/karsilastir.py:822-833`
+  "hatirlatma" raporunu `otomatik` (cari → tutar), `supheli_etiketli`, `elle` alanlarıyla karşılaştırıyor ve bugün `{"Ç5-C"}` kimliğiyle "uygulanmadı" (U) sayıyor; Ödeme Sözü olayı sürücüde
+  "uygulanmadı — Ç5-C" (`program.mjs:1215-1218`: kâhinin söz CARİ düzeyinde, programın söz HAREKET düzeyinde — eşleme yok). KAÇ KEZ / DÖNEM / Yine de Gönder WhatsApp kâhininde.
+  ÖNERİ: (a) tutar ve küme muhasebe kâhiniyle (sürücünün Ç5-C satırları kapanır; söz eşlemesi sürücüye — "kâhinin carisi düzeyindeki söz → programda o carinin bütün açık borç
+  kalemlerine Beklenen Ödeme Tarihi" ya da S73 "bütün borcu kapsar" gereği tek kaleme yazmak yeter; kâhin bakımında teyit), (b) kime kaç kez WhatsApp kâhiniyle (kalemler senaryodan), (c) ikisinin
+  arasını program içi DEĞİŞMEZ testi bağlar: her cari için önizlemenin {{4}} / {{3}}'ü = cari kartının Gecikmiş Borç / en eski vadesi (§2.10 9. değişmez). WhatsApp kâhinine tek borç
+  sırasını yeniden yazdırmak önerilmez (iki kâhin aynı kuralı iki kez taşır — Canlı Hata 2 dersi).
+- **B-2 "Şüpheli kaydı açık" tanımı.** Program iki sayı taşıyor: Şüpheli Alacaklar'daki kaydın kalanı (listede `doubtfulOpen`) ve tek borç sırasının şüpheliye ayırdığı pay (`doubtfulQueue`).
+  ÖNERİ: S7'nin metni ("şüpheli alacak kaydı … açık") gereği KAYIT KALANI > 0. Fark yalnız borcu kalmamış kayıtlı caride doğar; o kişi zaten "Gecikmiş Borç Yok" ile elenir (yalnız neden
+  adı farklı) → kime kaç kez etkisi yok.
+- **B-3 Önizlemenin şüpheli bilgisi toplu okunur (ders 47).** `waFacts` bugün kayıt kalanını okumuyor; kişi başı `doubtful().summary` yerine plan() başında TEK toplu okuma
+  (`lib/bank/doubtful.mjs` `openByAccount` — listenin kullandığı kaynak).
+- **B-4 Eski alanın akıbeti.** `totals.overdue` (eski anlam) kartın kendi hesabını okuyan iç yollarda ve çok sayıda testte (`grep -rln "totals.overdue\|totals?.overdue" server client test`: 14 sunucu /
+  istemci, 25+ test dosyası; çoğu KART toplamı) yaşıyor. ÖNERİ: alanın anlamı DEĞİŞMEZ; WhatsApp ve elle yol (`routes/whatsapp.mjs:83, :140`, `hof-whatsapp.js:40`) yeni alanlara
+  (`overdueDebt`, `overdueDebtCount`, `overdueSince`, `promiseUntil` / `promiseActive`) geçer; `test/whatsapp-onizleme-olcek-248.test.mjs`'in eleme alanları listesi yeni alanlarla güncellenir
+  (komşu — ders 10). Alanı yeniden adlandırmak ayrı iş (SONRAKİ SÜRÜME).
+- **B-5 Elle seçim izi (S-C5C-7 = A ise).** İşe "elle" işareti yazılır → şirket dosyasında yeni sütun (GÖÇ). Göç numarasını ana oturum dağıtır (D4a da göç yazacak). Geri yükleme / taşıma:
+  işaret işle birlikte gider (ilke 5); eski yedekten dönen işte işaret yok = elle değil (güvenli yön: ileti gitmez, yol yeniden seçim).
+- **B-6 Gönderim anının cari okuması.** İşçi bugün tam kartı (`detail`, kuyruğu cari başına bir kez kurar) okuyor — doğru yön (önbellek bayatlığı yok). Değiştirilmez; yalnız yeni neden
+  denetimleri (tür, şüpheli kaydı, söz) aynı okumadan.
+
+## 5. PLANIN ESKİYEN YERLERİ
+- `docs/erp/C5-ACILIS-TASARIM.md` §1.4 WhatsApp satırının dosya:satırları (queue.mjs:140-145, :524, :1393, :1411; routes/accounts.mjs:212; whatsapp.mjs:137) → bugün queue.mjs:145-150, :548, :1597,
+  :1774 / :1793; accounts.mjs:257-265 (`waFacts`); whatsapp.mjs:140. §2.12'nin kuralları geçerli; "{{5}} = bakiye" aynen.
+- `docs/erp/C5B-TYK-TASARIM.md` §3 madde 11 ("queue.mjs:146 … DOKUNULMAZ; eski alan korunur (Ç5-C)") → Ç5-C ile kalkar.
+- 2.5.0 iş listesi D 06.11 19:26 B1-W: "cari kartının taksit özeti → Ç5-C" — birleşik tur 8'in S129 / S142 işleriyle taksit özetinin görünen sayıları ZATEN kuyruktan (§1g); Ç5-C'ye kalan yalnız
+  WhatsApp'ın `plan.next` okuması. "RAPOR MERKEZİ 'Geciken' kolonu ve 'Geciken Taksiti Olan' süzgeci … sonraki Ç3 turuna": sayı TYK'ye geçmiş, AD eski kalmış ("Geciken taksiti olan") →
+  müşteri isteğinin Rapor Merkezi turuna (öneri; Ç5-C değil).
+- 2.5.1 plan taslağı §2 Ç5-C satırı S260'ı Ç5-C'nin içinde sayıyor → öneri: ayrı küçük tur (S-C5C-4; başka dosya, başka kâhin).
+- `docs/devir/D3-D4-TASARIM.md` §6.3 "D6 (Ç5-C'den SONRA ya da aynı ajanda)" → öneri: aynı ajanda DEĞİL (D6 D4b'nin Geri Al yoluna bağlı; Ç5-C ondan önce birleşebilir).
+- 2.5.0 teslim notunun "Ödeme Hatırlatma eski 'gecikmiş' anlamında" BİLİNEN SINIRI 2.5.1'de kalkar → sürüm notu + kılavuza tek satır (kılavuzda bugün "kime gider" cümlesi YOK; 2.4.8'de
+  planlanan B1 notu da girmemiş — `docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html` WhatsApp bölümü :439-454).
+
+## 6. ÖNERİLEN PAKETLEME VE SIRA
+
+PAKET_YERI
+
+## 7. WHATSAPP KÂHİNİ BAKIMINA GİRDİ LİSTESİ (kural dilinde; ana oturum karar girdisine çevirir — kâhine iş listesi verilmez, ders 5)
+
+Kâhin bugün S7 ailesini (S7, S7-a, S7-b, S16, S17, S22, S23, S29, S34) ve karar (5)'i modelliyor (README §16–§21); aşağıdakiler YENİ ya da DEĞİŞEN kural (kullanıcı yanıtlarıyla kesinleşir; yanıtsız madde kâhine girmez — ders 43):
+1. KİME (otomatik): carinin gecikmiş borcu > 0 (vade < bugün, yerel gün; vadesiz kalemin vadesi belge günü → ertesi gün — S1, M1f) ve kalemin kaynağı ayırt edilmez (fatura, taksit, Borç Yaz, açılış, karşılıksız, kapatılmış kartın borçta kalanı — 22.11 06:32, B1, S220). Girdi: senaryodaki açık kalemler (B-1); kâhin kalem kaynağını yalnız {{3}} için okur. [S-C5C-1'e bağlı: B seçilirse "vadesi yazılmamış kalem hatırlatmaya girmez".]
+2. KİMDEN ÖNCE ELENİR (yeni nedenler): Tedarikçi (S93; S-C5C-2'ye göre Diğer de), Ödeme Sözü Var (S52, S72 söz günü dahil, S73 bütün borç, K9-1 ertesi takvim günü serbest). Yeni girdi: carinin türü; Ödeme Sözü (kalem başına söz günü; carinin sözü = bugün ya da sonraki en geç söz günü — S72 / S73).
+3. ELEME SIRASI ve ADLAR (öneri uygulanır; ileti iki okumada da gitmez): Silinmiş → İstemiyor → Pasif → numara → Tedarikçi → Şüpheli Alacağı Var → Ödeme Sözü Var → Gecikmiş Borç Yok → Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi. Net borç ≤ 0 adı "Gecikmiş Borç Yok" (secenek yaprağı kalkar — Y13-7).
+4. ELLE SEÇİM (S-C5C-7'ye göre): A ise elle işareti şüpheli VE söz etiketli kişiye uygulanır (kâhinin `supheli_elle` girdisi genelleşir: etiketli kişi listesi); tedarikçiye uygulanmaz (S-C5C-3 = A ise). Elle işaretli işte söz / şüpheli gönderim anında elemez; tutar şüphesiz gecikmiş (S17).
+5. GÖNDERİM ANI (S-C5C-5, S-C5C-6'ya göre): söz ve tür gönderim anında da denetlenir (S7-b düzeni); Devam Et, Sınır, Meta Bekletti 2. denemesi, Başarısızları Yeniden Dene aynı denetim.
+6. YİNE DE GÖNDER İÇERİĞİ (S-C5C-8'e göre): A ise hatırlatmada içerik gönderim anında yeniden hazırlanır ({{3}}/{{4}}/{{5}} gönderim anındaki); Ekstre'de donmuş içerik aynen.
+7. {{3}}: gecikmiş açık kalemlerin (şüpheli payı düşülmüş kalanı > 0) en eski vadesi; {{4}}: onların toplamı (net borçla sınırlı); {{5}}: gönderim anındaki bakiye (S7 caride {{5}} bugün `plan_susuyor` — B-7 öneri: güncel bakiye, şüpheli dahil; görünüm, soru değil).
+8. DÖNEM: değişmez (gün; Zaten Kuyrukta günsüz). Sürüm geçişi senaryosu: aynı gün eski kuralla gitmiş hatırlatma → yeni kuralla aynı gün R3 (İLKEYLE 3).
+9. DEVİR (S-C5C-9'a göre; D6 bakımı ile aynı bakımda değil — D4b'den sonra ayrı): devir anında süren toplu iş; devir sonrası kimlik / kalem vadeleri aynı.
+10. Mutantlar (her yeni kural ≥ 1): söz günü hariç sayılırsa; tür okunmazsa; Diğer elenirse/elenmezse; şüpheli kaydı yerine kuyruk payı; elle işareti tedarikçiyi geçirirse; gönderim anında söz denetlenmezse; Yine de Gönder donmuş tutar.
+
+## 8. DOĞRULANMADI / DENENMEYEN
+
+DOG_YERI
+
+## 9. SONRAKİ SÜRÜME (2.5.1'in içinde kovalanmaz — 20.11 kuralı)
+
+SONRA_YERI
